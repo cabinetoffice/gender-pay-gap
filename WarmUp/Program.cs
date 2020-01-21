@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -11,7 +12,7 @@ namespace WarmUp
     {
         private const int ConsecutiveTestPassesToSucceed = 5;
         private const double MaximumSecondsToRunWarmUp = 5 * 60;
-        private const int SecondsToWaitForEachHttpResponse = 5;
+        private const int MillisecondsToWaitForEachHttpResponse = 20 * 1000;
 
         static int Main(string[] args)
         {
@@ -28,7 +29,7 @@ namespace WarmUp
                 Thread.Sleep(1000);
 
                 Console.WriteLine("");
-                Console.WriteLine("Starting new set of HTTP requests");
+                Console.WriteLine($"Starting new set of HTTP requests - {DateTime.Now.ToString("T")}");
 
                 if (AreAllUrlsAvailable(urlsToTest))
                 {
@@ -68,35 +69,58 @@ namespace WarmUp
 
         private static bool AreAllUrlsAvailable(List<Uri> urlsToTest)
         {
-            var successfulResponses = new HashSet<Uri>();
+            var startTime = DateTime.Now;
+            var responses = new ConcurrentDictionary<Uri, int>();
 
             Task[] tasks = urlsToTest
-                .Select(uri => MakeRequestAndAddToListIfSuccessful(uri, successfulResponses))
+                .Select(uri => MakeRequestAndAddToListIfSuccessful(uri, responses))
                 .ToArray();
 
-            Task.WaitAll(tasks, SecondsToWaitForEachHttpResponse * 1000);
+            //Task.WaitAll(tasks);
+            Task.WaitAll(tasks, MillisecondsToWaitForEachHttpResponse);
+            Thread.Sleep(100);
 
-            bool allSucceeded = urlsToTest.Count == successfulResponses.Count;
+            bool allSucceeded = true;
+            var consoleMessages = new List<string>();
 
-            Console.WriteLine(allSucceeded ? "All Succeeded!" : "Some failures");
             foreach (Uri uri in urlsToTest)
             {
-                string succeededOrFailed = successfulResponses.Contains(uri) ? "Succeeded" : "Failed";
-                Console.WriteLine($"{succeededOrFailed} - {uri}");
+                int? statusCode = responses.ContainsKey(uri) ? responses[uri] : (int?) null;
+                bool succeeded = statusCode.HasValue && statusCode.Value >= 200 && statusCode.Value < 400;
+                string succeededOrFailed = succeeded ? "Succeeded" : "Failed";
+                string statusCodeString = statusCode.HasValue ? statusCode.Value.ToString() : "";
+                consoleMessages.Add($"{succeededOrFailed} - {statusCodeString} - {uri}");
+
+                allSucceeded &= succeeded;
+            }
+            Console.WriteLine(allSucceeded ? "All Succeeded!" : "Some failures");
+            consoleMessages.ForEach(Console.WriteLine);
+
+            if (!allSucceeded)
+            {
+                int waitTime = MillisecondsToWaitForEachHttpResponse - (int) DateTime.Now.Subtract(startTime).TotalMilliseconds;
+                if (waitTime > 0)
+                {
+                    Thread.Sleep(waitTime);
+                }
             }
 
             return allSucceeded;
         }
 
-        private static Task MakeRequestAndAddToListIfSuccessful(Uri uri, HashSet<Uri> successfulResponses)
+        private static Task MakeRequestAndAddToListIfSuccessful(Uri uri, ConcurrentDictionary<Uri, int> responses)
         {
             Task task = new Task(() => {
                 using (HttpClient client = new HttpClient())
                 {
+                    client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0");
+                    client.DefaultRequestHeaders.Add("Accept", "text/html");
+                    client.DefaultRequestHeaders.Add("Cookie", "seen_cookie_message=%7B%22Version%22%3A1%7D;");
+
                     HttpResponseMessage response = client.GetAsync(uri).Result;
-                    if (response.IsSuccessStatusCode)
+                    if (!responses.TryAdd(uri, (int) response.StatusCode))
                     {
-                        successfulResponses.Add(uri);
+                        Console.WriteLine("Couldn't add to dictionary");
                     }
                 }
             });
