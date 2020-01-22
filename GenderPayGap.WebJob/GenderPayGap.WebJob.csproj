@@ -6,6 +6,7 @@
     <WebJobName>$(MsBuildProjectName)</WebJobName>
     <WebJobType>Continuous</WebJobType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
     <AutoGenerateBindingRedirects Condition="'$(AutoGenerateBindingRedirects)' == ''">true</AutoGenerateBindingRedirects>
     <Copyright>Crown Copyright © $([System.DateTime]::UtcNow.Year) ($([System.DateTime]::UtcNow.ToLocalTime()))</Copyright>
     <ProjectGuid>1DF71C5E-2C26-43ED-80EA-79317303909F</ProjectGuid>

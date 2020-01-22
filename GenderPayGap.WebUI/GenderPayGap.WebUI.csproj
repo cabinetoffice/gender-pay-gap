@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>7.1</LangVersion>
     <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <RootNamespace>GenderPayGap.WebUI</RootNamespace>
@@ -155,6 +156,8 @@
     </MSDeployPackagePublishDependsOn>
 
     <WebJobProjects>$(MSBuildProjectDirectory)\..\GenderPayGap.WebJob\GenderPayGap.WebJob.csproj</WebJobProjects>
+
+    <LangVersion>7.1</LangVersion>
 
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
