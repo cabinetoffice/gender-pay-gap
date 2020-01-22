@@ -8,7 +8,7 @@
 
     @RenderSection("Head", false)
 
-    @if (Config.IsLocal() || Config.IsDevelopment())
+    @if (Config.IsLocal())
     {
         @Html.UnpackBundle("/assets/stylesheets/application.min.css", "all")
     }
@@ -27,7 +27,7 @@
     <script src="~/assets/javascripts/jquery-1.11.3.min.js"></script>
     <script src="~/assets/javascripts/jquery.tablesorter.min.js"></script>
 
-    @if (Config.IsLocal() || Config.IsDevelopment())
+    @if (Config.IsLocal())
     {
         @Html.UnpackBundle("/assets/javascripts/application.min.js")
     }

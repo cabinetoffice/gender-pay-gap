@@ -219,7 +219,7 @@ namespace GenderPayGap.IdentityServer4
                 }); //For the wwwroot folder
 
             // Include un-bundled js + css folders to serve the source files in dev environment
-            if (Config.IsDevelopment() || Config.IsLocal())
+            if (Config.IsLocal())
             {
                 app.UseStaticFiles(
                     new StaticFileOptions {
