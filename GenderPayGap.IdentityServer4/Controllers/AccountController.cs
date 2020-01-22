@@ -563,7 +563,7 @@ namespace GenderPayGap.IdentityServer4.Controllers
         {
             // Check if the referring url is an email change verification
             string referrerPathAndQuery = authRequest.Parameters["Referrer"];
-            if (referrerPathAndQuery.StartsWith("/manage-account/complete-change-email"))
+            if (referrerPathAndQuery != null && referrerPathAndQuery.StartsWith("/manage-account/complete-change-email"))
             {
                 string query = referrerPathAndQuery.AfterFirst("?");
                 NameValueCollection queryDict = HttpUtility.ParseQueryString(query);
