@@ -1,0 +1,22 @@
+﻿@{
+    var ClientName = "Gender pay gap reporting service";
+    ViewBag.Title = $"Session expired - {ClientName} - GOV.UK";
+}
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="govuk-box-highlight">
+            <h1 class="bold-large">Session Expired</h1>
+        </div>
+        <p>Your session has expired and you are now signed out of the <span>@ClientName</span>.</p>
+
+        <div>
+            <div class="subsection panel-indent">
+                <div class="bold-small">Click the button below to sign in again.</div>
+            </div>
+
+            <p></p>
+            <a class="button" href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")" role="button">Sign In</a>
+        </div>
+    </div>
+</div>

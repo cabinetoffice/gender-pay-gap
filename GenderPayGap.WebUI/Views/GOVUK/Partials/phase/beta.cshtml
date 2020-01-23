@@ -1,0 +1,17 @@
+﻿@if (!Context.GetUri().PathAndQuery.EqualsI(Url.Action("SendFeedbackGet", "Feedback"), Url.Action("ServiceUnavailable", "Error")))
+{
+    <p>
+        <strong class="phase-tag">BETA</strong>
+        <span>
+            This is a new service – your
+
+            <a href="@(Url.Action("SendFeedbackGet", "Feedback"))"
+               title="Feedback form will open in a new page"
+               class="font16-ext-link">
+                feedback
+            </a>
+
+            will help us to improve it.
+        </span>
+    </p>
+}

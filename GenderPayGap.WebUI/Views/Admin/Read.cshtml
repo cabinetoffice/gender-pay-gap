@@ -1,0 +1,84 @@
+﻿@using System.Data
+@model GenderPayGap.WebUI.Models.Admin.DownloadViewModel.Download
+@{
+    ViewBag.Title = "Administration: " + Model.Filename;
+}
+<style type="text/css">
+    #content{
+        max-width:98% !important;
+    }
+</style>
+<main id="content" role="main" style="clear:both;">
+    <div class="breadcrumbs dynamic-content default-content" style="display: block;float:none;">
+        <ol>
+            <li style="display: block; padding-top: 0.75em; padding-bottom: 0;">
+                &lt;
+
+                <a href="javascript:window.history.back()">Back to previous page</a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="grid-row">
+        <div class="column-full">
+
+            <div style="float:right;font-size:smaller;text-align:right;">
+                <span>
+                    <a href="@Url.Action("Read", "Admin", new {filePath = Context.Request.Query["filePath"], v = Guid.NewGuid().ToShortString()})" title="Show more recent content">@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
+                </span><br/>
+                <span class="heading-secondary">
+                    <a download="true" href="@Url.Action("Download", new {filePath = Model.Filepath})" target="_blank"title="Download this data in CSV format">Download</a>
+                </span>
+            </div>
+            <h1 class="heading-large" style="margin-top: 0.3em;">
+                <span id="companyname">@System.IO.Path.GetFileName(Model.Filename)</span>
+            </h1>
+
+            <div style="left:0;width:100%;overflow-x:auto;overflow-y:visible;border:solid 1px;" class="double-scroll">
+                @if (Model.Datatable != null)
+                {
+                    <table border="1" cellpadding="5">
+                        <thead>
+                        <tr>
+                            @foreach (DataColumn col in Model.Datatable.Columns)
+                            {
+                                <th>@col.Caption</th>
+                            }
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (DataRow row in Model.Datatable.Rows)
+                        {
+                            <tr>
+                                @foreach (object cell in row.ItemArray)
+                                {
+                                    string value = cell.ToString();
+                                    if (value.StartsWithI("http://", "https://"))
+                                    {
+                                        <td><a href="@value" target="_blank">@value</a>)</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@Html.ToHtml(value)</td>
+                                    }
+                                }
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <span style="white-space: nowrap">
+                        @Html.ToHtml(Model.Content);
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.double-scroll').doubleScroll({ resetOnWindowResize: true });
+        });
+    </script>
+</main>

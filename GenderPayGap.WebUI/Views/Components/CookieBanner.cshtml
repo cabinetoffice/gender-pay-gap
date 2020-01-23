@@ -1,0 +1,90 @@
+﻿@using GenderPayGap.Core.Models.Cookies
+<div id="cookie-banner" class="cookie-banner" role="region" aria-label="cookie banner">
+    <div id="cookie-banner-inital-message" class="cookie-banner-width-container cookie-banner-inital-message">
+        <p class="cookie-banner-body">
+            The gender pay gap service uses cookies which are essential for the site to work. We also use non-essential cookies to help us improve government digital services. Any data collected is anonymised.
+        </p>
+        <form method="post" action="@Url.Action("AcceptAllCookies", "Home")" id="cookie-banner-accept-all-form" class="cookie-banner-buttons">
+            <input type="submit" class="cookie-banner-button" value="Accept cookies"/>
+            <a href="@Url.Action("CookieSettingsGet", "Home")" class="cookie-banner-button" role="button">Cookie settings</a>
+        </form>
+    </div>
+
+    <div id="cookie-banner-confirmation-message" class="cookie-banner-width-container cookie-banner-initially-hidden">
+        <p class="cookie-banner-body">
+            You’ve accepted all cookies. You can <a class="cookie-banner-link" href="@Url.Action("CookieSettingsGet", "Home")" tabindex="-1">change your cookie settings</a> at any time.
+        </p>
+        <button id="cookie-banner-hide-button" class="cookie-banner-link cookie-banner-hide-button" tabindex="-1">Hide</button>
+    </div>
+</div>
+<script>
+    (function () {
+        function setCookie(cookieName, cookieValue) {
+            document.cookie = cookieName + "=" + encodeURIComponent(JSON.stringify(cookieValue)) + "; max-age=31536000; path=/; Secure; SameSite=Strict";
+        }
+
+        function acceptAllCookiesButtonClicked(event) {
+            @* Don't submit the form / change the page - we can handle setting the cookies in javascript *@
+            event.preventDefault();
+
+            @* Set the cookies *@
+            setCookie('@(CookieHelper.CookieSettingsCookieName)',
+                {
+                    GoogleAnalyticsGpg: true,
+                    GoogleAnalyticsGovUk: true,
+                    ApplicationInsights: true,
+                    RememberSettings: true
+                });
+            setCookie('@(CookieHelper.SeenCookieMessageCookieName)',
+                {
+                    Version: 1
+                });
+
+            @* Hide the initial cookie warning message, and make the link/button un-tabbable *@
+            document.getElementById('cookie-banner-inital-message').style.display = 'none';
+            document.querySelectorAll('#cookie-banner-initial-message a, #cookie-banner-initial-message input')
+                .forEach(function (element) { element.tabIndex = -1; });
+
+            @* Show the confirmation message, and make the link/button tabbable *@
+            document.getElementById('cookie-banner-confirmation-message').style.display = 'block';
+            document.querySelectorAll('#cookie-banner-confirmation-message a, #cookie-banner-confirmation-message button')
+                .forEach(function (element) { element.tabIndex = 0; });
+
+            @* Initialise and send Google Analytics *@
+            window.initialiseGoogleAnalytics && window.initialiseGoogleAnalytics();
+            window.sendGpgPageView && window.sendGpgPageView();
+            window.sendGovUkPageView && window.sendGovUkPageView();
+        }
+
+        document.getElementById('cookie-banner-accept-all-form').addEventListener("submit", acceptAllCookiesButtonClicked);
+
+        function hideCookieConfirmationClicked() {
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+        document.getElementById('cookie-banner-hide-button').addEventListener("click", hideCookieConfirmationClicked);
+
+        function getCookie(name) {
+            try {
+                var nameWithEquals = name + "=";
+                var cookies = document.cookie.split(';');
+                for(var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i];
+                    while (cookie.charAt(0) === ' ') {
+                        cookie = cookie.substring(1, cookie.length);
+                    }
+                    if (cookie.indexOf(nameWithEquals) === 0) {
+                        var cookieValueString = cookie.substring(nameWithEquals.length, cookie.length);
+                        var cookieValue = JSON.parse(decodeURIComponent(cookieValueString));
+                        return cookieValue;
+                    }
+                }
+            } catch (e) { /* If there's an error, return null */ } 
+            return null;
+        }
+
+        var seenCookieMessage = getCookie('@(CookieHelper.SeenCookieMessageCookieName)');
+        if (seenCookieMessage && seenCookieMessage.Version >= @(CookieHelper.CurrentCookieMessageVersion)) {
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+    })();
+</script>

@@ -1,0 +1,94 @@
+﻿@model CompareViewModel
+@{
+    ViewBag.Title = "Gender pay gap: Employer comparison";
+    string backUrl = string.IsNullOrWhiteSpace(Model.LastSearchUrl) ? "/" : Model.LastSearchUrl;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-large">
+                Employer comparison
+                <span class="print-only"> (@Model.YearFormatted)</span>
+            </h1>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <a class="link-button" rel="track" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">How can employers close the gap</a>
+            <br/>
+            <br/>
+        </div>
+    </div>
+
+    @if (Model.CompareBasketCount > 0)
+    {
+        <div class="grid-row">
+            <div class="column-full">
+                <partial name="YearTabs"/>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="column-full">
+                <div class="overflowx">
+                    <table id="table" class="gpg-govuk-table">
+                        <partial name="CompareTableHeaders"/>
+                        <partial name="CompareTableRows"/>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="column-full">
+                <partial name="CompareActions"/>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <p>
+                    You have no employers to compare.
+                </p>
+                <a class="button no-print" href="@backUrl">Search for employers</a>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts
+{
+    <script>
+        (function () {
+            "use strict";
+
+            //Keep comparison basket within viewport
+            GOVUK.stickAtTopWhenScrolling.init();
+
+            new GOVUK.Ajaxify({
+                onRefresh: function () {
+                    GOVUK.stickAtTopWhenScrolling.init();
+                },
+                onError: function (errorCode, error, errorThrown) {
+                    window.location.href = '/error/1146';
+                }
+            });
+
+            new GOVUK.analyticsPlugins.downloadLinkTracker({ selector: 'a[rel="download"]' });
+
+            new GOVUK.analyticsPlugins.mailtoLinkTracker();
+
+            // Initial floating header setup
+            new GOVUK.AppendHead();
+        }());
+    </script>
+}

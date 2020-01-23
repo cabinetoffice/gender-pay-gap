@@ -1,0 +1,183 @@
+﻿@model ManageAccountViewModel
+
+@await Html.PartialAsync("AccountNavigation")
+
+@if (string.IsNullOrWhiteSpace(ViewBag.ChangeSuccessMessage) == false)
+{
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div class="gpg-c-notification gpg-c-notification--success" aria-labelledby="success-summary-title" role="alert" tabindex="-1">
+                <span id="success-summary-title" class="gpg-c-notification__title">
+                    @ViewBag.ChangeSuccessMessage
+                </span>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-large">Manage your account</h1>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        @if (string.IsNullOrEmpty(ViewBag.CloseAccountUrl) == false)
+        {
+            <a href="@(ViewBag.CloseAccountUrl)">
+                Close your account
+            </a>
+        }
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="gpg-c-cya">
+            <h2 class="heading-medium">Login details</h2>
+        </div>
+        <dl class="govuk-check-your-answers cya-questions-short">
+            <div>
+                <dt class="cya-question">@Html.DisplayNameFor(m => m.EmailAddress)</dt>
+                <dd class="cya-answer">@Model.EmailAddress</dd>
+                <dd class="cya-change">
+                    @if (string.IsNullOrEmpty(ViewBag.ChangeEmailUrl) == false)
+                    {
+                        <a href="@(ViewBag.ChangeEmailUrl)">
+                            Change
+                        </a>
+                    }
+                </dd>
+            </div>
+            <div>
+                <dt class="cya-question">Password</dt>
+                <dd class="cya-answer cya-password">***********</dd>
+                <dd class="cya-change">
+                    @if (string.IsNullOrEmpty(ViewBag.ChangePasswordUrl) == false)
+                    {
+                        <a href="@(ViewBag.ChangePasswordUrl)">
+                            Change
+                        </a>
+                    }
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>
+
+<div class="grid-row">
+
+    <div class="column-two-thirds">
+
+        <div class="grid-row gpg-c-cya">
+
+            <div class="column-half">
+                <h2 class="heading-medium" style="margin-top: 0">
+                    Personal details
+                </h2>
+            </div>
+
+            <div class="column-half gpg-c-cya__changelink">
+                @if (string.IsNullOrEmpty(ViewBag.ChangeDetailsUrl) == false)
+                {
+                    <a href="@(ViewBag.ChangeDetailsUrl)">
+                        Change
+                        <span class="visually-hidden"> my personal details</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <dl class="govuk-check-your-answers cya-questions-short">
+            <div>
+                <dt class="cya-question">@Html.DisplayNameFor(m => m.FirstName)</dt>
+                <dd class="cya-answer">@Model.FirstName</dd>
+            </div>
+            <div>
+                <dt class="cya-question">@Html.DisplayNameFor(m => m.LastName)</dt>
+                <dd class="cya-answer">@Model.LastName</dd>
+            </div>
+            <div>
+                <dt class="cya-question">@Html.DisplayNameFor(m => m.JobTitle)</dt>
+                <dd class="cya-answer">@Model.JobTitle</dd>
+
+            </div>
+            <div>
+                <dt class="cya-question">@Html.DisplayNameFor(m => m.ContactPhoneNumber)</dt>
+                <dd class="cya-answer">@Model.ContactPhoneNumber</dd>
+            </div>
+        </dl>
+
+    </div>
+
+</div>
+
+<div class="grid-row">
+
+    <div class="column-two-thirds">
+
+        <div class="grid-row gpg-c-cya">
+
+            <div class="column-half">
+                <h2 class="heading-medium" style="margin-top: 0">
+                    Contact preferences
+                </h2>
+            </div>
+
+            <div class="column-half gpg-c-cya__changelink">
+                @if (string.IsNullOrEmpty(ViewBag.ChangeDetailsUrl) == false)
+                {
+                    <a href="@(ViewBag.ChangeDetailsUrl)">
+                        Change
+                        <span class="visually-hidden"> my contact preferences</span>
+                    </a>
+                }
+            </div>
+
+        </div>
+
+        <dl class="govuk-check-your-answers cya-questions-short">
+
+            <div>
+                <dt class="cya-question" style="width: 80%;">
+                    <span style="font-weight: normal">@Html.DisplayNameFor(m => m.SendUpdates)</span>
+                </dt>
+
+                <dd class="cya-change gpg-c-yesno">
+                    @if (Model.SendUpdates)
+                    {
+                        <span class="gpg-c-yesno__mark--tick"></span>
+                        <span class="gpg-c-yesno--text">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="gpg-c-yesno__mark--cross"></span>
+                        <span class="gpg-c-yesno--text">No</span>
+                    }
+                </dd>
+            </div>
+
+            <div>
+                <dt class="cya-question">
+                    <span style="font-weight: normal">@Html.DisplayNameFor(m => m.AllowContact)</span>
+                </dt>
+                <dd class="cya-change gpg-c-yesno">
+                    @if (Model.AllowContact)
+                    {
+                        <span class="gpg-c-yesno__mark--tick"></span>
+                        <span class="gpg-c-yesno--text">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="gpg-c-yesno__mark--cross"></span>
+                        <span class="gpg-c-yesno--text">No</span>
+                    }
+                </dd>
+            </div>
+        </dl>
+
+    </div>
+</div>
+<hr style="border: 1px solid black; background: black;"/>
+<partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>

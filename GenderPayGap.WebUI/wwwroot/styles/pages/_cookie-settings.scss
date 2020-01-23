@@ -1,0 +1,17 @@
+﻿
+.cookie-settings-page {
+    .your-cookie-settings-were-saved-box {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 2px solid $govuk-brand-colour;
+
+        @media (min-width: 40.0625em) {
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        *:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

@@ -1,0 +1,79 @@
+﻿@using GenderPayGap.WebUI.Models.Shared
+@using GenderPayGap.WebUI.Models.Viewing
+@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+@{
+
+    var medianHourlyRateChartModel = new VerticalBarChartModel
+    {
+        Id = "MedianHourlyDiffChart",
+        FemaleIsLower = Model.FemaleHasLowerMedianHourlyPercent,
+        Male = Model.FemaleHasLowerMedianHourlyPercent ? 100 : 100 + Model.DiffMedianHourlyPercent.Value,
+        Female = Model.FemaleHasLowerMedianHourlyPercent ? 100 - Model.DiffMedianHourlyPercent.Value : 100,
+        MaleMonetisation = Model.MaleMedianHourlyRateMonitised,
+        FemaleMonetisation = Model.FemaleMedianHourlyRateMonitised
+    };
+
+    // calculates the median hourly rate text to display
+    string medianMonetisation = $"<strong>women earn {Model.FemaleMedianHourlyRateMonitised}</strong> for every <strong>{Model.MaleMedianHourlyRateMonitised}</strong> that men earn when comparing median hourly wages.";
+
+    string medianLoHiStatement = Model.FemaleHasLowerMedianHourlyPercent ?
+        "<strong>lower</strong> than men&rsquo;s." :
+        "<strong>higher</strong> than men&rsquo;s.";
+
+    // calculates the mean hourly rate text to display
+    string meanLoHiStatement = Model.FemaleHasLowerMeanHourlyPercent ?
+        "<strong>lower</strong> than men&rsquo;s." :
+        "<strong>higher</strong> than men&rsquo;s.";
+}
+<div class="grid-row">
+    <div class="column-full">
+        <section id="HourlyRateInfo">
+            <h2 class="heading-medium">
+                <span>Hourly wages pay gap</span>
+            </h2>
+
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <span>In this organisation, @Html.Raw(medianMonetisation)</span>
+                    <span>Their median hourly wage is <strong>@(string.Format("{0:0.#}", Math.Abs(Model.DiffMedianHourlyPercent.Value)))%</strong></span>
+                    <span>@Html.Raw(medianLoHiStatement)</span>
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <div class="govuk-legend">
+                        <span class="font-xsmall">
+                            <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
+                            <span class="govuk-legend__caption govuk-legend__caption--men" data-legend-text="Men"></span>
+                        </span>
+                    </div>
+
+                    <partial name="EmployerDetails/VerticalBarChart" model="medianHourlyRateChartModel"/>
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <span>When comparing mean hourly wages, </span>
+                    <span>women&rsquo;s mean hourly wage is <strong>@(string.Format("{0:0.#}", Math.Abs(Model.DiffMeanHourlyPayPercent.Value)))%</strong></span>
+                    <span>@Html.Raw(meanLoHiStatement)</span>
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <br/>
+                    @await Html.PartialModelAsync(new Details
+                    {
+                        Id = "AboutHourlyRate",
+                        LinkText = "About mean and median",
+                        SummaryPartial = "EmployerDetails/HourlyRate/AboutHourlyRate"
+                    })
+                </div>
+            </div>
+        </section>
+
+        <hr/>
+    </div>
+</div>

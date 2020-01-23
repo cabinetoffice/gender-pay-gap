@@ -1,0 +1,518 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Classes.Formatters
+@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+<div class="grid-row">
+<div class="column-two-thirds">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.ReturnId)
+    @Html.HiddenFor(model => model.OrganisationId)
+    @Html.HiddenFor(model => model.EncryptedOrganisationId)
+
+    @Html.HiddenFor(model => model.ReportInfo.Draft)
+    @Html.HiddenFor(model => model.ReportInfo.ReportModifiedDate)
+    @Html.HiddenFor(model => model.ReportInfo.ReportingStartDate)
+
+    @Html.HiddenFor(model => model.FirstName)
+    @Html.HiddenFor(model => model.JobTitle)
+    @Html.HiddenFor(model => model.LastName)
+
+    @Html.HiddenFor(model => model.DiffMeanBonusPercent)
+    @Html.HiddenFor(model => model.DiffMeanHourlyPayPercent)
+    @Html.HiddenFor(model => model.DiffMedianBonusPercent)
+    @Html.HiddenFor(model => model.DiffMedianHourlyPercent)
+    @Html.HiddenFor(model => model.FemaleLowerPayBand)
+    @Html.HiddenFor(model => model.FemaleMedianBonusPayPercent)
+    @Html.HiddenFor(model => model.FemaleMiddlePayBand)
+    @Html.HiddenFor(model => model.FemaleUpperPayBand)
+    @Html.HiddenFor(model => model.FemaleUpperQuartilePayBand)
+    @Html.HiddenFor(model => model.MaleLowerPayBand)
+    @Html.HiddenFor(model => model.MaleMedianBonusPayPercent)
+    @Html.HiddenFor(model => model.MaleMiddlePayBand)
+    @Html.HiddenFor(model => model.MaleUpperPayBand)
+    @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
+    @Html.HiddenFor(model => model.AccountingDate)
+    @Html.HiddenFor(model => model.SectorType)
+
+    @Html.HiddenFor(model => model.OrganisationSize)
+    @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
+
+
+    var controller = ViewData["Controller"] as BaseController;
+    var reportDateFormatter = new GDSDateFormatter(Model.ReportInfo.ReportingStartDate);
+
+    <h1 class="heading-large">
+        @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
+        Review your gender pay gap data
+    </h1>
+
+    @await Html.CustomValidationSummaryAsync()
+
+    if (!Model.IsValidReturn())
+    {
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                More information is required to complete your submission
+            </strong>
+        </div>
+    }
+
+    <h2>
+        Your organisation&rsquo;s @(reportDateFormatter.StartYear) to @(reportDateFormatter.EndYear) gender pay gap data
+    </h2>
+
+    <table class="table gpg-data">
+        <thead>
+        <tr>
+            <th colspan="2">
+                <span>Hourly rate</span>
+            </th>
+            <th class="question" colspan="3">
+                <span class="edit">
+                    @(Html.ActionLink(
+                        "Edit",
+                        "EnterCalculations",
+                        "Submit",
+                        null,
+                        null,
+                        "HourlyPay",
+                        new {returnUrl = "CheckData"},
+                        new {id = "ChangeCalculations"}
+                        ))
+                </span>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                Difference in mean hourly rate of pay
+            </td>
+            <td class="numeric" colspan="2">
+                <span id="DisplayDiffMeanHourlyPayPercent">
+                    @if (Model.DiffMeanHourlyPayPercent.HasValue)
+                    {
+                        @Html.ValueFor(model => model.DiffMeanHourlyPayPercent)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Difference in median hourly rate of pay
+            </td>
+            <td class="numeric" colspan="2">
+                <span id="DisplayDiffMedianHourlyPercent">
+                    @if (Model.DiffMedianHourlyPercent.HasValue)
+                    {
+                        @Html.ValueFor(model => model.DiffMedianHourlyPercent)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+    <table class="table gpg-data">
+        <thead>
+        <tr>
+            <th colspan="2">
+                <span>Bonus pay</span>
+            </th>
+            <th>
+                <span class="edit">
+                    @(Html.ActionLink(
+                        "Edit",
+                        "EnterCalculations",
+                        "Submit",
+                        null,
+                        null,
+                        "BonusPay",
+                        new {returnUrl = "CheckData"},
+                        new {id = "ChangeCalculations"}
+                        ))
+                </span>
+            </th>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="numeric">
+                <strong>Male</strong>
+            </td>
+            <td class="numeric">
+                <strong>Female</strong>
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="vertical-align: bottom;">
+                Percentage of employees who received bonus pay
+            </td>
+            <td class="numeric">
+                <span id="DisplayMaleMedianBonusPayPercent">
+                    @if (Model.MaleMedianBonusPayPercent.HasValue)
+                    {
+                        @Html.ValueFor(model => model.MaleMedianBonusPayPercent)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+            <td class="numeric">
+                <span id="DisplayFemaleMedianBonusPayPercent">
+                    @if (Model.FemaleMedianBonusPayPercent.HasValue)
+                    {
+                        @Html.ValueFor(model => model.FemaleMedianBonusPayPercent)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Difference in mean bonus pay
+            </td>
+            <td class="numeric" colspan="2">
+                <span id="DisplayDiffMeanBonusPercent">
+                    @if (Model.DiffMeanBonusPercent.HasValue)
+                    {
+                        @Html.ValueFor(model => model.DiffMeanBonusPercent)
+                        @:%
+                    }
+                    else if (Model.MaleMedianBonusPayPercent == 0)
+                    {
+                        <span>Not applicable</span>
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Difference in median bonus pay
+            </td>
+            <td class="numeric" colspan="2">
+                <span id="DisplayDiffMedianBonusPercent">
+                    @if (Model.DiffMedianBonusPercent.HasValue)
+                    {
+                        @Html.ValueFor(model => model.DiffMedianBonusPercent)
+                        @:%
+                    }
+                    else if (Model.MaleMedianBonusPayPercent == 0)
+                    {
+                        <span>Not applicable</span>
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table gpg-data">
+        <thead>
+        <tr>
+            <th colspan="2">
+                <span>Employees by pay quartile</span>
+            </th>
+            <th>
+                <span class="edit">
+                    @(Html.ActionLink(
+                        "Edit",
+                        "EnterCalculations",
+                        "Submit",
+                        null,
+                        null,
+                        "PayQuartiles",
+                        new {returnUrl = "CheckData"},
+                        new {id = "ChangeCalculations"}
+                        ))
+                </span>
+            </th>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="numeric">
+                <strong>Male</strong>
+            </td>
+            <td class="numeric">
+                <strong>Female</strong>
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td>
+                Upper quartile
+            </td>
+            <td class="numeric">
+                <span id="DisplayMaleUpperQuartilePayBand">
+                    @if (Model.MaleUpperQuartilePayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.MaleUpperQuartilePayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+            <td class="numeric">
+                <span id="DisplayFemaleUpperQuartilePayBand">
+                    @if (Model.FemaleUpperQuartilePayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.FemaleUpperQuartilePayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Upper middle quartile
+            </td>
+            <td class="numeric">
+                <span id="DisplayMaleUpperPayBand">
+                    @if (Model.MaleUpperPayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.MaleUpperPayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+            <td class="numeric">
+                <span id="DisplayFemaleUpperPayBand">
+                    @if (Model.FemaleUpperPayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.FemaleUpperPayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Lower middle quartile
+            </td>
+            <td class="numeric">
+                <span id="DisplayMaleMiddlePayBand">
+                    @if (Model.MaleMiddlePayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.MaleMiddlePayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+            <td class="numeric">
+                <span id="DisplayFemaleMiddlePayBand">
+                    @if (Model.FemaleMiddlePayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.FemaleMiddlePayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Lower quartile
+            </td>
+            <td class="numeric">
+                <span id="DisplayMaleLowerPayBand">
+                    @if (Model.MaleLowerPayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.MaleLowerPayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+            <td class="numeric">
+                <span id="DisplayFemaleLowerPayBand">
+                    @if (Model.FemaleLowerPayBand.HasValue)
+                    {
+                        @Html.ValueFor(model => model.FemaleLowerPayBand)
+                        @:%
+                    }
+                    else
+                    {
+                        <span class="gpg-data__status--notcompleted">Not completed</span>
+                    }
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    if (Model.SectorType != SectorTypes.Public)
+    {
+        <table class="table gpg-data">
+            <thead>
+            <tr>
+                <th class="question" colspan="3">
+                    Person responsible in your organisation
+                    <span class="edit">@Html.ActionLink("Edit", "PersonResponsible", new {returnUrl = "CheckData"}, new {id = "ChangePersonResponsible"})</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="DisplayPersonResponsible" colspan="3">
+                    @if (!string.IsNullOrEmpty(Model.FirstName))
+                    {
+                        <span>
+                            <span id="DisplayFirstName">@Html.ValueFor(model => model.FirstName)</span>&nbsp;<span id="DisplayLastName">@Html.ValueFor(model => model.LastName)</span>
+                        </span>
+                        <br/>
+                        <span id="DisplayJobTitle">@Html.ValueFor(model => model.JobTitle)</span>
+                    }
+                    else
+                    {
+                        <div class="gpg-data__status--notcompleted">
+                            <span id="PersonResponsible">Not completed</span>
+                        </div>
+                    }
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    }
+    <table class="table gpg-data">
+        <thead>
+        <tr>
+            <th class="question" colspan="3">
+                Size of your organisation
+                <span class="edit">@Html.ActionLink("Edit", "OrganisationSize", new {returnUrl = "CheckData"}, new {id = "ChangeOrganisationSize"})</span>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="row" colspan="3">
+            <td>
+                Number of employees within your organisation
+            </td>
+            <td id="DisplayOrganisationSize">
+                <span class="@(Model.OrganisationSize == OrganisationSizes.NotProvided ? "gpg-data__status--notprovided" : "")">
+                    @(Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name)
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table class="table gpg-data">
+        <thead>
+        <tr>
+            <th class="question" colspan="3">
+                Link to your gender pay gap information
+                <span class="edit">@Html.ActionLink("Edit", "EmployerWebsite", new {returnUrl = "CheckData"}, new {id = "ChangeEmployerWebsite"})</span>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="3">
+                @if (string.IsNullOrWhiteSpace(Model.CompanyLinkToGPGInfo))
+                {
+                    <div class="gpg-data__status--notprovided">
+                        <span id="CompanyLinkToGPGInfo">Not provided</span>
+                    </div>
+                }
+                else
+                {
+                    <a id="DisplayCompanyLinkToGPGInfo" style="word-break:break-all" href='@Html.ValueFor(model => model.CompanyLinkToGPGInfo)' target="_blank">@Html.ValueFor(model => model.CompanyLinkToGPGInfo)</a>
+                }
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="panel panel-border-wide">
+        <p>
+            <span class="bold-small">On submission your data will be published on the gender pay gap service.</span>
+            <br/>
+            <br/>
+            <span>
+                Please note that submission of inaccurate data means you have not complied with the gender pay gap regulations.
+            </span>
+        </p>
+    </div>
+    <br/>
+    if (Model.IsDifferentFromDatabase && Model.ShouldProvideLateReason && Model.IsValidReturn())
+    {
+        <a id="ContinueLateReasonStep" href="@Url.Action("LateReason")" class="button">Continue</a>
+    }
+    else if (Model.IsDifferentFromDatabase && Model.IsValidReturn())
+    {
+        <input id="ConfirmStep" class="button" type="submit" role="button" value="Confirm and submit"/>
+    }
+    else
+    {
+        <input id="ConfirmStep" class="button" type="submit" role="button" value="Confirm and submit" disabled="disabled"/>
+    }
+
+    if (Model.ReportInfo.Draft.HasDraftBeenModifiedDuringThisSession && Model.HasUserData())
+    {
+        @:&nbsp;&nbsp;<a href="@Url.Action("DraftComplete")" class="button">Save Draft</a>
+    }
+    else
+    {
+        @:&nbsp;&nbsp;<a class="button" disabled="disabled">Save Draft</a>
+    }
+    <br/>
+    <input id="CancelStep" class="link-button" type="submit" role="button" formaction="cancel-check-data" value="Cancel" style="margin-top: 15px"/>
+}
+
+</div>
+</div>

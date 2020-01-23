@@ -1,0 +1,27 @@
+﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+
+<div>
+    <partial name="Finder/Parts/ResultsInfo" model="Model"/>
+</div>
+
+@if (Model.Employers.ActualRecordTotal > 1)
+{
+    <div id="AddAllOrgsToCompare" style="@(Model.t == "1" ? "display: none;" : "display: block;");">
+        <a rel="track" data-track-category="Compare Link Clicked" href="@(Url.Action(nameof(ViewingController.AddSearchResultsToCompare), "Viewing"))@(Context.Request.QueryString)">
+            Add all organisations to comparison list
+        </a>
+        <br/>
+        <br/>
+    </div>
+}
+
+<div>
+    @if (Model.Employers.Results.Count < 1)
+    {
+        <partial name="Finder/Parts/NoResults" model="Model"/>
+    }
+    else
+    {
+        <partial name="Finder/Parts/Results" model="Model"/>
+    }
+</div>

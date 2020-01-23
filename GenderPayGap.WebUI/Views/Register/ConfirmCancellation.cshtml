@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Confirm registration cancellation - Gender pay gap reporting service";
+}
+@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
+
+<main id="content" role="main">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(m => m.SectorType)
+        @Html.HiddenFor(m => m.ReviewCode)
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                @await Html.CustomValidationSummaryAsync()
+                <h1 class="heading-large">Reject registration request</h1>
+                <p class="bold-small">
+                    You’re about to reject a registration request by:
+                </p>
+
+                <p> @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)</p>
+                <p class="bold-small"> to report gender pay gap data for:</p>
+                <p class="dynamic-content" style="display: block;"> @Model.OrganisationName,<br> @Html.Raw(Model.GetFullAddress().Replace(", ", ",<br/>"))</p>
+                <div class="form-group @Html.SetErrorClass(model => model.CancellationReason, "error")">
+                    <label class="form-label" for="textarea-a">
+                        Reason for rejection (optional)
+                    </label>
+                    @Html.TextAreaFor(model => model.CancellationReason, new {cols = "10", rows = "4", style = "width:315px"})
+                </div>
+                <br>
+                <p>
+                    <button type="submit" class="button" name="command" value="continue">Yes, reject registration request</button>
+                </p>
+                <p>
+                    <button type="submit" class="link-button" name="command" value="cancel">Cancel</button>
+                </p>
+
+            </div>
+        </div>
+    }
+</main>

@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding
+<div id="ErrorSummary" class="@(ViewData.ModelState.IsValid ? "customvalidation-summary-valid" : "customvalidation-summary-errors") error-summary" data-valmsg-summary="@(!ViewBag.ExcludePropertyErrors)">
+    @if (!string.IsNullOrWhiteSpace(ViewBag.ValidationSummaryMessage))
+    {
+        <h2 class="heading-medium error-summary-heading">@Html.Raw(ViewBag.ValidationSummaryMessage)</h2>
+    }
+    <ul class="error-summary-list">
+        @foreach (ModelError modelError in ViewData.ModelState.Where(kv => ViewBag.ExcludePropertyErrors == false || string.IsNullOrWhiteSpace(kv.Key)).SelectMany(keyValuePair => keyValuePair.Value.Errors))
+        {
+            <li>
+                <a href="#Username">@(Html.Raw(modelError.ErrorMessage))</a>
+            </li>
+        }
+    </ul>
+</div>

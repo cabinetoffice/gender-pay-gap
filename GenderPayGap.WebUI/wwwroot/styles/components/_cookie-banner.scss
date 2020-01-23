@@ -1,0 +1,166 @@
+﻿
+.cookie-banner {
+    border: 2px solid $govuk-input-border-colour;
+    padding: 15px 0;
+
+    @media (min-width: 40.0625em) {
+        padding: 20px 0;
+    }
+
+    .cookie-banner-width-container {
+        max-width: 960px;
+        margin: 0 15px;
+        position: relative;
+
+        @media (min-width: 40.0625em) {
+            margin: 0 30px;
+        }
+
+        @media (min-width: 1020px) {
+            margin: 0 auto;
+        }
+    }
+
+    .cookie-banner-body {
+        margin: 0;
+        padding-bottom: 10px;
+        font-family: "GDS Transport", Arial, sans-serif;
+        font-weight: 400;
+        color: $govuk-text-colour;
+        font-size: 16px;
+        line-height: 20px;
+
+        @media (min-width: 40.0625em) {
+            font-size: 19px;
+            line-height: 25px;
+        }
+    }
+
+    .cookie-banner-inital-message {
+        .cookie-banner-body {
+            color: govuk-colour("green");
+        }
+    }
+
+    .cookie-banner-button {
+        /* Resets (for 'input' and 'a' tags) */
+        display: inline-block;
+        background: none;
+        text-decoration: none;
+        cursor: default;
+        white-space: normal;
+        -webkit-appearance: none;
+        padding: 0;
+        /* Actual styling */
+        font-family: "GDS Transport", Arial, sans-serif;
+        font-weight: 400;
+        color: $govuk-text-colour;
+        padding: 6px 10px;
+        margin-right: 10px;
+        margin-bottom: 5px;
+        font-size: 16px;
+        line-height: 20px;
+
+        @media (min-width: 40.0625em) {
+            font-size: 19px;
+            line-height: 25px;
+        }
+
+        &:focus {
+            border-color: $govuk-focus-colour;
+            outline: 3px solid transparent;
+            box-shadow: inset 0 0 0 1px $govuk-focus-colour;
+        }
+
+        &:focus:not(:active):not(:hover) {
+            border-color: $govuk-focus-colour;
+            color: #0b0c0c;
+            background-color: $govuk-focus-colour;
+            box-shadow: 0 2px 0 $govuk-link-active-colour;
+        }
+    }
+
+    .cookie-banner-inital-message {
+        .cookie-banner-button {
+            border: 2px solid govuk-colour("green");
+            color: govuk-colour("green");
+
+            &:focus {
+                border-color: $govuk-focus-colour;
+                outline: 3px solid transparent;
+                box-shadow: inset 0 0 0 1px $govuk-focus-colour;
+            }
+
+            &:focus:not(:active):not(:hover) {
+                border-color: $govuk-focus-colour;
+                color: #0b0c0c;
+                background-color: $govuk-focus-colour;
+                box-shadow: 0 2px 0 $govuk-link-active-colour;
+            }
+        }
+    }
+
+    .cookie-banner-initially-hidden {
+        display: none;
+    }
+
+    .cookie-banner-link {
+        /* Resets (for 'input' and 'a' tags) */
+        display: inline;
+        background: none;
+        text-decoration: underline;
+        cursor: pointer;
+        white-space: normal;
+        -webkit-appearance: none;
+        padding: 0;
+        border: none;
+        outline: none;
+        /* Actual styling */
+        font-family: "GDS Transport", Arial, sans-serif;
+        font-weight: 400;
+        color: $govuk-text-colour;
+        font-size: 16px;
+        line-height: 20px;
+
+        @media (min-width: 40.0625em) {
+            font-size: 19px;
+            line-height: 25px;
+        }
+
+        color: $govuk-link-colour;
+
+        &:hover {
+            color: $govuk-link-hover-colour;
+        }
+
+        &:visited {
+            color: $govuk-link-visited-colour;
+        }
+
+        &:active {
+            color: $govuk-link-active-colour;
+        }
+
+        &:focus {
+            border-color: $govuk-focus-colour;
+            outline: 3px solid transparent;
+            text-decoration: none;
+            box-shadow: inset 0 0 0 1px $govuk-focus-colour;
+        }
+
+        &:focus:not(:active):not(:hover) {
+            border-color: $govuk-focus-colour;
+            color: #0b0c0c;
+            background-color: $govuk-focus-colour;
+            box-shadow: 0 2px 0 $govuk-link-active-colour;
+        }
+    }
+
+    .cookie-banner-hide-button {
+        @media (min-width: 48em) {
+            position: absolute;
+            right: 5px;
+            top: 0;
+        }
+    }
+}

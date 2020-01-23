@@ -1,0 +1,48 @@
+﻿@model GenderPayGap.Database.UserOrganisation
+
+@{
+    ViewBag.Title = "Send PIN Confirmation - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                PIN sent
+            </h1>
+        </div>
+        <p class="govuk-body">
+            We have sent <b>@(Model.User.Fullname)</b>
+            from
+            <b>@(Model.Organisation.OrganisationName)</b>
+            an email containing their PIN.
+        </p>
+
+        <h2 class="govuk-heading-m">More options</h2>
+
+        <p class="govuk-body">
+            Go  to
+            <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId}))"
+               class="govuk-link">
+                @(Model.Organisation.OrganisationName)
+            </a>
+        </p>
+        <p class="govuk-body">
+            Go to
+            <a href="@(Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId}))"
+               class="govuk-link">
+                @(Model.User.Fullname)
+            </a>
+        </p>
+        <p class="govuk-body">
+            Go to
+            <a href="@(Url.Action("UnconfirmedPins", "AdminUnconfirmedPins"))"
+               class="govuk-link">
+                Unconfirmed PINs in the post
+            </a>
+        </p>
+
+    </div>
+</div>

@@ -1,0 +1,153 @@
+﻿@inject IOptionsSnapshot<SubmissionOptions> SubmissionOptions
+@using GenderPayGap.BusinessLogic.Models.Organisation
+@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.Organisation
+@model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationModel
+@{
+    var controller = ViewData["Controller"] as OrganisationController;
+    Organisation currentOrg = Model.Organisation;
+    ViewBag.Title = "Manage " + currentOrg.OrganisationName + " organisation - Gender pay gap reporting service";
+}
+
+@await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-large">
+            <span class="heading-secondary">Reporting as @currentOrg.OrganisationName</span>
+            Manage your organisation's reporting
+        </h1>
+        <div style="margin-bottom: 20px">
+            <dl>
+                <div>
+                    <dt>
+                        <strong>Address</strong>
+                    </dt>
+                </div>
+                <div>
+                    <dt style="font-weight: lighter; font-size: 0.8em; color: gray;">
+                        @Html.Raw(currentOrg.LatestAddress.GetAddressString("&#44;<br/>"))
+                    </dt>
+                </div>
+            </dl>
+        </div>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <details>
+            <summary>
+                <span class="summary">Need to make changes to your organisation details?</span>
+            </summary>
+            <div class="panel panel-border-narrow">
+                <p>
+                    If you are a private or voluntary organisation and need to change your organisation name,
+                    sector information, or address you should do this via Companies House.
+                    Changes that you make will automatically be reflected on this site.
+                    If this information is not available on Companies House, please contact <a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a>
+                </p>
+            </div>
+        </details>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">
+            Manage reports
+        </h2>
+
+        <div class="gpg-manage-reports">
+
+            <div class="gpg-manage-reports__head">
+                <div class="gpg-manage-reports__desc">
+                    Year
+                </div>
+                <div class="gpg-manage-reports__desc">
+                    Reporting requirement
+                </div>
+                <div class="gpg-manage-reports__desc gpg-manage-reports__desc--action">
+                    Report status
+                </div>
+            </div>
+
+            @for (int i = Model.ReportInfoModels.Count - 1, editScopeCount = SubmissionOptions.Value.EditableScopeCount; i >= 0; i--, editScopeCount--)
+            {
+                ReportInfoModel report = Model.ReportInfoModels[i];
+                if (report == null)
+                {
+                    continue;
+                }
+                var displayReportModel = new DisplayReportModel
+                {
+                    Report = report,
+                    OrganisationId = currentOrg.OrganisationId,
+                    EncCurrentOrgId = Model.EncCurrentOrgId,
+                    CanChangeScope = editScopeCount > 0
+                };
+                @await Html.PartialAsync("DisplayReportSection", displayReportModel)
+            }
+
+        </div>
+
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <h2 class="heading-medium">
+            Registered users
+        </h2>
+        @if (Model.AssociatedUserOrgs.Count == 0)
+        {
+            <p>
+                You are the only person registered to report for this organisation.
+            </p>
+            <p>
+                If you remove yourself:
+            </p>
+            <ul class="list list-bullet">
+                <li>You will not be able to report for this organisation</li>
+                <li>Someone else must register this organisation to report - this can take up to a week</li>
+                <li>Your account will remain open</li>
+            </ul>
+        }
+        else
+        {
+            <p>
+                The following people are registered to report gender pay gap data for this organisation.
+            </p>
+        }
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <table class="organisations-table">
+                    @foreach (UserOrganisation assocUserOrg in Model.AssociatedUserOrgs)
+                    {
+                        string userFullname = assocUserOrg.User.Fullname;
+                        string encUserId = Encryption.EncryptQuerystring(assocUserOrg.UserId.ToString());
+                        <tr>
+                            <td style="border: none;" class="org-name">@userFullname</td>
+                            <td style="border: none;">
+                                <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = encUserId}))">
+                                    Remove user from reporting
+                                </a>
+                            </td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td style="border: none;" class="org-name">
+                            @controller.CurrentUser.Fullname <span>(You)</span>
+                        </td>
+                        <td style="border: none;">
+                            <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = Encryption.EncryptQuerystring(controller.CurrentUser.UserId.ToString())}))">
+                                Remove user from reporting
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

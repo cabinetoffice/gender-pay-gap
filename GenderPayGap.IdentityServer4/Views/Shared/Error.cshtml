@@ -1,0 +1,16 @@
+﻿@model GenderPayGap.IdentityServer4.Models.Home.ErrorViewModel
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="govuk-box-highlight">
+            <h1 class="bold-large">Something’s gone wrong</h1>
+        </div>
+        <div class="bold-small">
+            @if (Model.Description != null)
+            {
+                <div>@Model.Description</div>
+            }
+        </div>
+        <p>Please try again later</p>
+    </div>
+</div>

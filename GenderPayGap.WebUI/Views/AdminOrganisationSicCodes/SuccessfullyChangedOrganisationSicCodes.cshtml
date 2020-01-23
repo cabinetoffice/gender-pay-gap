@@ -1,0 +1,69 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.Database.Organisation
+
+@{
+    ViewBag.Title = $"Changed SIC codes - {Model.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.OrganisationName,
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Name history",
+            Href = Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new { id = Model.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Change SIC codes"
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-7">
+            <h1 class="govuk-panel__title govuk-!-font-size-36">
+                SIC codes have been changed
+            </h1>
+        </div>
+
+        <p class="govuk-body">
+            Return to
+            <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId}))"
+               class="govuk-link">
+                @(Model.OrganisationName)
+            </a>
+        </p>
+
+        <p class="govuk-body">
+            Return to
+            <a href="@Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new {id = Model.OrganisationId})"
+               class="govuk-link">
+                @(Model.OrganisationName) SIC codes history
+            </a>
+        </p>
+
+    </div>
+</div>

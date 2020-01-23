@@ -1,0 +1,26 @@
+﻿@model dynamic
+@{
+    string name = Model.name?.ToString();
+    string value = Model.value?.ToString();
+    ;
+    string defaultValue = Misc.ToStringOrNull(Model.defaultValue) ?? "Not provided";
+}
+@if (!string.IsNullOrWhiteSpace(value) || !string.IsNullOrWhiteSpace(defaultValue))
+{
+    <tr>
+        <td>
+            @name
+        </td>
+        <td>
+            @if (string.IsNullOrWhiteSpace(value))
+            {
+                @defaultValue
+            }
+            else
+            {
+                @value
+            }
+        </td>
+        <td></td>
+    </tr>
+}

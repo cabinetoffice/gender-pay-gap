@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "PIN confirmation - Gender pay gap reporting service";
+}
+
+<main id="content" role="main">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div class="govuk-box-highlight">
+                    <h1 class="bold-medium">We're sending a PIN by post to the following name &amp; address:</h1>
+                </div>
+                <div id="default-content" class="dynamic-content default-content ltd" style="display: block;">
+                    <p>@ViewBag.UserFullName (@ViewBag.UserJobTitle),<br> @ViewBag.Organisation, <br/>@Html.Raw(ViewBag.Address)</p>
+
+                </div>
+                <div class="bold-small">What happens next.</div>
+                <p>Your PIN should arrive within 7 days.</p>
+                <p>
+                    When you get it, sign in to the&nbsp;<a href="@Url.Action("ActivateService")">Gender pay gap reporting service</a>.&nbsp;Use the PIN to activate the service.
+                </p>
+                <div class="bold-small">
+                    More options
+                </div>
+                <p>
+                    <a href="@Url.Action("OrganisationType")">Add another organisation</a>
+                </p>
+                <p>
+                    <a href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Manage Organisations</a>
+                </p>
+            </div>
+        </div>
+    }
+</main>

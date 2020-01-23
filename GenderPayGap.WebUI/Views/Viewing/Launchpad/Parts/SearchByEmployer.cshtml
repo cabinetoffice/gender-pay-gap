@@ -1,0 +1,25 @@
+﻿@using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new {id = "FinderForm"}))
+{
+    <div id="SearchByEmployerGroup" class="form-group">
+        <div class="gov-uk-c-searchbar">
+            <div class="gov-uk-l-searchbar__table">
+                <div class="gov-uk-l-searchbar__cell">
+                    <input id="SearchEmployers"
+                           class="gov-uk-c-searchbar__input"
+                           name="search"
+                           type="text"
+                           autocomplete="off"
+                           spellcheck="false"
+                           placeholder="Search for an employer"
+                           aria-label="Search for an employer"
+                           aria-expanded="false"
+                           maxlength="100"/>
+
+                </div>
+                <div class="gov-uk-l-searchbar__cell">
+                    <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--black" id="NextStep" type="submit">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

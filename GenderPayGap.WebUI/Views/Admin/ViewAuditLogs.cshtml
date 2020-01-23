@@ -1,0 +1,165 @@
+@using System.Linq
+@using GenderPayGap.Core
+@using GenderPayGap.Database.Models
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminViewAuditLogsViewModel
+
+@{
+    string userOrOrganisationName =
+        Model.Organisation == null
+            ? Model.User.Fullname
+            : Model.Organisation.OrganisationName;
+
+    ViewBag.Title = $"Audit logs - {userOrOrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        if (Model.Organisation != null)
+        {
+            crumbs.Add(new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
+            });
+        }
+        else
+        {
+            crumbs.Add(new CrumbViewModel
+            {
+                Text = Model.User.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})
+            });
+        }
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Audit logs"
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Audit logs
+    <br />
+    <span class="govuk-!-font-size-27">
+        for
+        @(userOrOrganisationName)
+    </span>
+</h1>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Date</th>
+                @if (Model.Organisation == null)
+                {
+                    <th scope="col" class="govuk-table__header">Organisation</th>
+                }
+                else
+                {
+                    <th scope="col" class="govuk-table__header">User</th>
+                }
+            <th scope="col" class="govuk-table__header">Action</th>
+            <th scope="col" class="govuk-table__header" colspan="2">Details</th>
+        </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+        @foreach (AuditLog item in Model.AuditLogs)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
+                    <span style="white-space: nowrap;">
+                        @(item.CreatedDate.ToString("d MMM yyyy"))
+                    </span>
+                    <span style="white-space: nowrap;">
+                        @(item.CreatedDate.ToString("HH:mm:ss"))
+                    </span>
+                </td>
+                @if (Model.Organisation == null)
+                {
+                    <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
+                        <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = item.Organisation.OrganisationId })"
+                           class="govuk-link">
+                            @(item.Organisation.OrganisationName)
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new { id = item.OriginalUser.UserId })"
+                           class="govuk-link">
+                            @(item.OriginalUser.Fullname)
+                        </a>
+
+                        @if (item.ImpersonatedUser != null)
+                        {
+                            <br/>
+                            <b>impersonating</b>
+                            <br/>
+                            <a href="@Url.Action("ViewUser", "AdminViewUser", new { id = item.ImpersonatedUser.UserId })"
+                               class="govuk-link">
+                                @(item.ImpersonatedUser.Fullname)
+                            </a>
+                        }
+                    </td>
+                }
+                <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
+                    @(EnumHelper.DisplayNameOf(item.Action))
+                </td>
+                <td class="govuk-table__cell">
+                    @if (item.Details.Count > 0)
+                    {
+                        KeyValuePair<string, string> detail = item.Details.First();
+                        <span>
+                            <b>@(detail.Key)</b>:
+                        </span>
+                    }
+                </td>
+                <td class="govuk-table__cell">
+                    @if (item.Details.Count > 0)
+                    {
+                        KeyValuePair<string, string> detail = item.Details.First();
+                        <span>
+                            @detail.Value
+                        </span>
+                    }
+                </td>
+            </tr>
+            @foreach (KeyValuePair<string, string> detail in item.Details.Skip(1))
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <span>
+                            <b>@(detail.Key)</b>:
+                        </span>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span>
+                            @(detail.Value)
+                        </span>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>

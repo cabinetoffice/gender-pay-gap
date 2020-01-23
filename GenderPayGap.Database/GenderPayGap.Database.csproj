@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ProjectGuid>F3DB4C50-110C-44BB-A308-B924FA0BE635</ProjectGuid>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>NU1605;CS4014;LindhartAnalyserMissingAwaitWarning;</WarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="2.0.7" />
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Buffering" Version="0.2.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="MockQueryable.Moq" Version="1.1.0" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.0.4" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
+    <ProjectReference Include="..\GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj" />
+    <ProjectReference Include="..\GenderPayGap.Extensions\GenderPayGap.Extensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <!-- Add support for Layer validation -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.10.0" />
+
+    <!-- Include the layer model as an additional file that will be passed to the analyzer -->
+  </ItemGroup>
+
+</Project>

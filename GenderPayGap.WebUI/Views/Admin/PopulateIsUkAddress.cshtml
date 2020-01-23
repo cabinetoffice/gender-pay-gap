@@ -1,0 +1,16 @@
+﻿@model Dictionary<string, long?>
+
+@{
+    ViewBag.Title = "Populate the IsUkAddress field on the OrganisatioNAddresses table ";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<p class="govuk-body">
+    Started with Organisation Id @(Model["StartedFrom"])
+    <br/>
+    Completed up to Organisation Address Id @(Model["FinishedUpTo"])
+</p>
+
+<p class="govuk-body">
+    <a href="@Url.Action("PopulateIsUkAddress", "Admin")?previousOrganisationId=@(Model["FinishedUpTo"])">Do More</a>
+</p>

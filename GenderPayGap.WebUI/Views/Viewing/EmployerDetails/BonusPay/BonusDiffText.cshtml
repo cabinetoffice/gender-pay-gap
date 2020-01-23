@@ -1,0 +1,20 @@
+﻿@model GenderPayGap.WebUI.Models.Viewing.BonusDiffTextViewModel
+
+@if (Model.WomenReceivedBonuses || Model.MenReceivedBonuses)
+{
+    <div class="data data-metric">
+        @if (Model.MenReceivedBonuses)
+        {
+            <span>When comparing mean bonus pay, women&rsquo;s @(Model.Statistic) bonus pay is </span>
+            <strong id="@(Model.Id)" class="data-item">
+                <span>@(string.Format("{0:0.#}", Model.Percent))% </span>
+                <span>@(Model.Compare)</span>
+            </strong>
+            <span>than men&rsquo;s.</span>
+        }
+        else
+        {
+            <span>Only women received bonuses.</span>
+        }
+    </div>
+}

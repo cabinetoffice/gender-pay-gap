@@ -1,0 +1,67 @@
+﻿@model GenderPayGap.WebUI.Models.Organisation.RemoveOrganisationModel
+@{
+    ViewBag.Title = "Confirm removal of organisation - Gender pay gap reporting service";
+    var controller = ViewData["Controller"] as BaseController;
+
+    long userId = Encryption.DecryptQuerystring(Model.EncUserId).ToInt64();
+    bool userRemovingSelf = controller.CurrentUser.UserId == userId && controller.IsImpersonatingUser == false;
+    string userNamePostFix = userRemovingSelf ? "You" : "";
+}
+<main id="content" role="main">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.EncOrganisationId)
+        @Html.HiddenFor(m => m.EncUserId)
+        @Html.HiddenFor(m => m.OrganisationName)
+        @Html.HiddenFor(m => m.UserName)
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-large">
+                    Confirm removal of user
+                </h1>
+                <p>You are about to remove the following user from reporting Gender Pay Gap data for this organisation.</p>
+                <dl class="govuk-check-your-answers cya-questions-short">
+                    <div>
+                        <dt class="cya-question">
+                            User name
+                        </dt>
+                        <dd id="UserNameAnswer" class="cya-answer">
+                            @Model.UserName
+                            @if (string.IsNullOrEmpty(userNamePostFix) == false)
+                            {
+                                <span>(@userNamePostFix)</span>
+                            }
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="cya-question">
+                            Organisation name
+                        </dt>
+                        <dd id="OrgNameAnswer" class="cya-answer">
+                            @Model.OrganisationName
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="cya-question">
+                            Address
+                        </dt>
+                        <dd id="OrgAddressAnswer" class="cya-answer">
+                            @Html.Raw(Model.OrganisationAddress.Replace(",", "&#44;<br/>"))
+                        </dd>
+                    </div>
+                </dl>
+                <br/>
+                <div class="form-group">
+                    <p>
+                        <button type="submit" class="button button-warning" name="id">Remove user</button>
+                    </p>
+                    <p>
+                        <a href="@Url.Action("ManageOrganisation", new {id = Model.EncOrganisationId})">Cancel</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</main>

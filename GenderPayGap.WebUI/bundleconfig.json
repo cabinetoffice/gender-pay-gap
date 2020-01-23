@@ -1,0 +1,75 @@
+[
+  // bundle css
+  {
+    "outputFileName": "wwwroot/assets/stylesheets/application.min.css",
+    "inputFiles": [
+      "Content/application.css",
+      "Content/application.navigation.css",
+      "Content/application.buttons.css",
+      "Content/application.badges.css",
+      "Content/application.tabs.css",
+      "Content/application.warnings.css",
+      "Content/application.notification.css",
+      "Content/application.cya.css",
+      "Content/Pagination.css",
+      "Content/Site.css",
+      "Content/site.badges.css",
+      "Content/site.charts.css",
+      "Content/site.details.css",
+      "Content/site.finder.css",
+      "Content/site.scrolling-headers.css",
+      "Content/site.submissions.css",
+      "Content/site.manage-reports.css",
+      "Content/cscp.css",
+      "Content/gpg-govuk-table.css"
+    ],
+    "minify": {
+      "enabled": true
+    }
+  },
+  // bundle js
+  {
+    "outputFileName": "wwwroot/assets/javascripts/application.min.js",
+    "inputFiles": [
+      // GovUk
+      "Scripts/GOVUK/accordion-with-descriptions.js",
+      "Scripts/GOVUK/analytics.js",
+      "Scripts/GOVUK/details.polyfill.js",
+      "Scripts/GOVUK/download-link-tracker.js",
+      "Scripts/GOVUK/error-tracking.js",
+      "Scripts/GOVUK/external-link-tracker.js",
+      "Scripts/GOVUK/google-analytics-universal-tracker.js",
+      "Scripts/GOVUK/govuk-tracker.js",
+      "Scripts/GOVUK/mailto-link-tracker.js",
+      "Scripts/GOVUK/modules.js",
+      "Scripts/GOVUK/primary-links.js",
+      "Scripts/GOVUK/print-intent.js",
+      "Scripts/GOVUK/selection-buttons.js",
+      "Scripts/GOVUK/shim-links-with-button-role.js",
+      "Scripts/GOVUK/show-hide-content.js",
+      "Scripts/GOVUK/stageprompt.js",
+      "Scripts/GOVUK/stick-at-top-when-scrolling.js",
+      "Scripts/GOVUK/stop-scrolling-at-footer.js",
+      // App
+      "Scripts/Application/add-remove-comparison.js",
+      "Scripts/Application/Ajaxify.js",
+      "Scripts/Application/Collapsible.js",
+      "Scripts/Application/Compare.js",
+      "Scripts/Application/CurrentLocation.js",
+      "Scripts/Application/History.js",
+      "Scripts/Application/LiveSearch.js",
+      "Scripts/Application/OptionSelect.js",
+      "Scripts/Application/PreventDoubleClick.js",
+      "Scripts/Application/ShowHide.js",
+      "Scripts/Application/Site.js",
+      "Scripts/Application/SuggestEmployer.js",
+      "Scripts/Application/view-comparison.js",
+      "Scripts/Application/custom-link-tracker.js",
+      "Scripts/Application/details-tracker.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  }
+]

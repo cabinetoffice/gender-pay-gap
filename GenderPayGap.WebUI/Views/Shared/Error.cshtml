@@ -1,0 +1,31 @@
+﻿@model GenderPayGap.Core.Models.ErrorViewModel
+@{
+    ViewBag.Title = "ERROR: " + Model.Title;
+    ViewData["Sitemap:Route"] = "error/{errorCode?}";
+}
+<main id="content" role="main" errorCode="@Model.ErrorCode">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div class="govuk-box-highlight">
+                <h1 class="bold-large">@Model.Title</h1>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                
+            <p>@Html.Raw(Model.Description)</p>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.CallToAction))
+            {
+                <div class="subsection panel-indent">
+                    <div class="bold-small">@Html.Raw(Model.CallToAction)</div>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.ActionUrl))
+            {
+                <p></p>
+                <a class="button" href="@Model.ActionUrl" role="button">@Model.ActionText</a>
+            }
+        </div>
+    </div>
+</main>

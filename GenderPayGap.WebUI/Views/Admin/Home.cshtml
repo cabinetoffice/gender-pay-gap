@@ -1,0 +1,118 @@
+﻿@model GenderPayGap.WebUI.Models.Admin.AdminHomepageViewModel
+@{
+    ViewBag.Title = "Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<h1 class="govuk-heading-xl">Administration</h1>
+
+@if (Model.IsDowngradedDueToIpRestrictions)
+{
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            You are accessing this administration page from an untrusted network. Some advanced administration features have been disabled.
+        </strong>
+    </div>
+}
+
+<h2 class="govuk-heading-l">Search</h2>
+
+<form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))">
+    <div class="govuk-form-group">
+        <label class="govuk-label" for="search-query">
+            <b>Organisation:</b> current name, previous name, employer reference, company number
+            <br/>
+            <b>User:</b> name, email address
+        </label>
+        <div class="admin-search-box">
+            <input class="govuk-input admin-search-input" id="search-query" name="query" type="text">
+            <input type="submit" value="Search" class="admin-search-button"/>
+        </div>
+    </div>
+</form>
+
+<h2 class="govuk-heading-l">Actions</h2>
+
+@if (Model.IsSuperAdministrator)
+{
+    <p class="govuk-body">
+        <a href="@(Url.Action("Impersonate"))" class="govuk-link govuk-!-font-weight-bold">Impersonate user</a>
+        <br/>
+        Login as a user to view their screens.
+    </p>
+}
+
+@if (Model.IsSuperAdministrator && Model.IsDatabaseAdministrator)
+{
+    <p class="govuk-body">
+        <a href="@(Url.Action("ManualChanges"))" class="govuk-link govuk-!-font-weight-bold">Execute manual changes</a>
+        <br/>
+        Execute various manual tasks on system and data.
+    </p>
+}
+
+<h2 class="govuk-heading-l">Registrations</h2>
+
+<p class="govuk-body">
+    <a href="@(Url.Action("UnconfirmedPins", "AdminUnconfirmedPins"))" class="govuk-link govuk-!-font-weight-bold">Unconfirmed PINs in the post</a>
+    <br/>
+    PINs in the Post that haven't yet been confirmed.
+</p>
+
+<p class="govuk-body">
+    <a href="@(Url.Action("PendingRegistrations"))" class="govuk-link govuk-!-font-weight-bold">Pending registrations</a>
+    <br/>
+    List of registrations which are awaiting manual authorisation.
+</p>
+
+<h2 class="govuk-heading-l">Information</h2>
+
+<p class="govuk-body">
+    <a href="@(Url.Action("History"))" class="govuk-link govuk-!-font-weight-bold">History</a>
+    <br/>
+    Registration and submission historical audit files.
+</p>
+
+<p class="govuk-body">
+    <a href="@(Url.Action("Downloads"))" class="govuk-link govuk-!-font-weight-bold">Downloads</a>
+    <br/>
+    Download organisation, registration, user, consent.
+</p>
+
+<p class="govuk-body">
+    <a href="@(Url.Action("Uploads"))" class="govuk-link govuk-!-font-weight-bold">Uploads</a>
+    <br/>
+    Download and uploads for private sector database, SIC codes and merge files.
+</p>
+
+<h2 class="govuk-heading-l">Logs</h2>
+
+<p class="govuk-body">
+    <a href="@Url.Action("DownloadFeedback", "AdminDownloads")" class="govuk-link govuk-!-font-weight-bold">Download feedback</a>
+    <br/>
+    Download a CSV of feedback submitted through the "Send Feedback" links
+    <br/>
+    Total feedback submissions: @(Model.FeedbackCount)
+    <br/>
+    Latest feedback received: @(Model.LatestFeedbackDate?.ToString("d MMM yyyy"))
+</p>
+
+<p class="govuk-body">
+    <a href="@Url.Action("WebsiteLogs", "DownloadableFile")" class="govuk-link govuk-!-font-weight-bold">Web UI logs</a>
+    <br/>
+    System error, warning, information and bad SIC log files from websites.
+</p>
+
+<p class="govuk-body">
+    <a href="@Url.Action("WebjobLogs", "DownloadableFile")" class="govuk-link govuk-!-font-weight-bold">Webjob logs</a>
+    <br/>
+    System error, warning, information, Stannp and email log files from background webjobs processor.
+</p>
+
+<p class="govuk-body">
+    <a href="@Url.Action("IdentityLogs", "DownloadableFile")" class="govuk-link govuk-!-font-weight-bold">Identity Server logs</a>
+    <br/>
+    System error, warning and information log files from identity server.
+</p>

@@ -1,0 +1,91 @@
+﻿@using GenderPayGap.BusinessLogic.Models.Organisation
+@using GenderPayGap.WebUI.Classes.Formatters
+@model GenderPayGap.WebUI.Models.Organisation.DisplayReportModel
+@{
+    ReportInfoModel reportInfoModel = Model.Report;
+    var reportDateFormatter = new GDSDateFormatter(reportInfoModel.ReportingStartDate);
+    int linkId = reportDateFormatter.StartYear;
+    long organisationId = Model.OrganisationId;
+    string scopeRequest = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString());
+}
+<div class="gpg-manage-reports__row">
+
+    <div class="gpg-manage-reports__cell gpg-manage-reports__cell--year">
+        @(reportInfoModel.ReportingStartDate.Year)/@((reportInfoModel.ReportingStartDate.Year + 1).ToTwoDigitYear())
+    </div>
+
+    <div class="gpg-manage-reports__cell">
+        <div>
+            @if (reportInfoModel.NotRequiredToReport)
+            {
+                <span>NOT REQUIRED TO REPORT</span>
+            }
+            else
+            {
+                <span>REQUIRED TO REPORT <br/> by @(reportDateFormatter.FullEndDate)</span>
+            }
+        </div>
+        @if (Model.CanChangeScope)
+        {
+            <div>
+                <a id="ChangeScope@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ChangeOrganisationScope", new {request = scopeRequest}))">Change</a>
+            </div>
+        }
+    </div>
+
+    <div class="gpg-manage-reports__cell gpg-manage-reports__cell--action">
+        @{
+            bool isReportAvailable = reportInfoModel.ReportModifiedDate != null;
+            bool isDraftAvailable = reportInfoModel.HasDraftContent();
+
+            string returnOrDraftInfoIsAvailable = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString(), true.ToString());
+            string returnOrDraftInfoIsNotAvailable = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString(), false.ToString());
+        }
+
+        <div>
+            @if (reportInfoModel.ReportModifiedDate == null)
+            {
+                <span>Your organisation has not reported</span>
+            }
+            else
+            {
+                <span>Reported </span>
+                if (reportInfoModel.NotRequiredToReport)
+                {
+                    <span>voluntarily</span>
+                }
+                var modifiedDateFormatter = new GDSDateFormatter(reportInfoModel.ReportModifiedDate.Value);
+                <span> on @modifiedDateFormatter.FullStartDate</span>
+            }
+        </div>
+        <br/>
+        @if (!isReportAvailable && !isDraftAvailable)
+        {
+            <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsNotAvailable}))">
+                <span>Draft report</span>
+            </a>
+        }
+
+        @if (!isReportAvailable && isDraftAvailable)
+        {
+            <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
+                <span>Edit draft</span>
+            </a>
+        }
+
+        @if (isReportAvailable && !isDraftAvailable)
+        {
+            <a id="ChangeReport@(linkId)-@(Model.EncCurrentOrgId)" class="button" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
+                <span>Edit Report</span>
+            </a>
+        }
+
+        @if (isReportAvailable && isDraftAvailable)
+        {
+            <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
+                <span>Edit draft report</span>
+            </a>
+        }
+    </div>
+
+</div>

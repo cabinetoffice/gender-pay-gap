@@ -1,0 +1,23 @@
+﻿@inject IOptionsSnapshot<ViewingOptions> ViewingOptions
+@using GenderPayGap.Core
+@model CompareViewModel
+@{
+    int endYear = Global.CurrentAccountingYear;
+    int startYear = endYear - (ViewingOptions.Value.ShowReportYearCount - 1);
+    if (startYear < Global.FirstReportingYear)
+    {
+        startYear = Global.FirstReportingYear;
+    }
+}
+<div class="no-print">
+    <ul class="govuk-tabs__list">
+        @for (int year = startYear; year <= endYear; year++)
+        {
+            <li class="govuk-tabs__list-item">
+                <!a class="govuk-tabs__tab" href="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})" @(Model.Year == year ? "selected" : "")>
+                    @year/@((year + 1).ToTwoDigitYear())
+                </!a>
+            </li>
+        }
+    </ul>
+</div>

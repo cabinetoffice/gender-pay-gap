@@ -1,0 +1,270 @@
+@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Http
+@model GenderPayGap.Database.User
+
+@{
+    ViewBag.Title = "User Details - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        Uri referrer = Context.Request.GetTypedHeaders().Referer;
+        string searchPageUrl = Url.Action("SearchGet", "AdminSearch", null, "https");
+
+        if (referrer != null && referrer.AbsoluteUri.StartsWith(searchPageUrl))
+        {
+            crumbs.Add(new CrumbViewModel
+            {
+                Text = "Search results",
+                Href = "javascript:window.history.back();"
+            });
+        }
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.Fullname
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    User details
+    <br />
+    <span class="govuk-!-font-size-27">
+        for @(Model.Fullname)
+    </span>
+</h1>
+
+<h2 class="govuk-heading-l">General information</h2>
+
+<table class="govuk-table">
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Name</th>
+            <td class="govuk-table__cell">@(Model.Fullname)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Email address</th>
+            <td class="govuk-table__cell">@(Model.EmailAddress)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">User Id</th>
+            <td class="govuk-table__cell">@(Model.UserId)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Status</th>
+            <td class="govuk-table__cell">
+                @(Model.Status)
+                <br/>
+                <span class="govuk-body-s">
+                    (since @(Model.StatusDate.ToString("d MMM yyyy")))
+                </span>
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Job title</th>
+            <td class="govuk-table__cell">@(Model.JobTitle)</td>
+        </tr>
+        @if (!string.IsNullOrEmpty(Model.ContactFirstName)
+             || !string.IsNullOrEmpty(Model.ContactLastName)
+             || !string.IsNullOrEmpty(Model.ContactJobTitle)
+             || !string.IsNullOrEmpty(Model.ContactEmailAddress))
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Contact name</th>
+                <td class="govuk-table__cell">@(Model.ContactFullname)</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Contact job title</th>
+                <td class="govuk-table__cell">@(Model.ContactJobTitle)</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Contact email address</th>
+                <td class="govuk-table__cell">@(Model.ContactEmailAddress)</td>
+            </tr>
+        }
+        else
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Contact name / job title / email</th>
+                <td class="govuk-table__cell">(not set)</td>
+            </tr>
+        }
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Email Verified</th>
+            <td class="govuk-table__cell">
+                @if (Model.EmailVerifiedDate.HasValue)
+                {
+                    <span>
+                        Yes
+                        <br/>
+                        <span class="govuk-body-s">
+                            (on @(Model.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
+                        </span>
+                    </span>
+                }
+                else
+                {
+                    <span class="govuk-!-font-weight-bold">
+                        No
+                    </span>
+                    <br/>
+                    <span>
+                        Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy"))
+                    </span>
+                }
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Happy to be contacted</th>
+            <td class="govuk-table__cell">@(Model.AllowContact ? "Yes" : "No")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Would like to receive updates</th>
+            <td class="govuk-table__cell">@(Model.SendUpdates ? "Yes" : "No")</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Audit logs</th>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewUserAuditLogs", "AdminViewAuditLogs", new {id = Model.UserId})"
+                   class="govuk-link">
+                    View audit logs
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="govuk-heading-l">Impersonate User</h2>
+<form method="POST" action="@Url.Action("ImpersonatePost", "Admin")">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="emailAddress" value="@(Model.EmailAddress)"/>
+    <input type="submit" class="govuk-button" data-module="govuk-button" value="Impersonate"/>
+</form>
+
+<h2 class="govuk-heading-l">Registered organisations</h2>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Organisation</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Actions</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (UserOrganisation userOrganisation in Model.UserOrganisations)
+        {
+            Organisation organisation = userOrganisation.Organisation;
+            string userStatus = null;
+            @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+            {
+                userStatus = "AWAITING_PIN";
+            }
+            else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+            {
+                userStatus = "AWAITING_APPROVAL";
+            }
+            else
+            {
+                userStatus = "REGISTERED";
+            }
+
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId})"
+                       class="govuk-link">
+                        @(organisation.OrganisationName)
+                    </a>
+                </td>
+                <td class="govuk-table__cell">
+                    @if (userStatus == "AWAITING_PIN")
+                    {
+                        <span>
+                            Awaiting activation PIN
+                            <br/>
+                            <span class="govuk-!-font-weight-bold">
+                                @(userOrganisation.PIN)
+                            </span>
+                            <br/>
+                            <span class="govuk-body-s">
+                                sent on
+                                <span style="white-space: nowrap">
+                                    @(userOrganisation.PINSentDate.Value.ToString("d MMM yyyy"))
+                                </span>
+                                <br/>
+                                expires on
+                                <span style="white-space: nowrap">
+                                    @(userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays).ToString("d MMM yyyy"))
+                                </span>
+                                @if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now)
+                                {
+                                    <br/>
+                                    <span class="govuk-!-font-weight-bold">
+                                        EXPIRED
+                                    </span>
+                                }
+                                else if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now.AddDays(7))
+                                {
+                                    <br/>
+                                    <span class="govuk-!-font-weight-bold">
+                                        EXPIRES IN LESS THAN ONE WEEK
+                                    </span>
+                                }
+                            </span>
+                        </span>
+                    }
+                    else if (userStatus == "AWAITING_APPROVAL")
+                    {
+                        @:Awaiting registration approval
+                    }
+                    else
+                    {
+                        <span>
+                            Registration complete
+                            <br/>
+                            (confirmed on
+                            <span style="white-space: nowrap">
+                                @(userOrganisation.PINConfirmedDate.Value.ToString("d MMM yyyy")))
+                            </span>
+                        </span>
+                    }
+                </td>
+                <td class="govuk-table__cell">
+                    @if (userStatus == "AWAITING_APPROVAL")
+                    {
+                        <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
+                           class="govuk-link">
+                            Review request
+                        </a>
+                    }
+                    else if (userStatus == "AWAITING_PIN")
+                    {
+                        <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
+                                     new {userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                           class="govuk-link">
+                            Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

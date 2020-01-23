@@ -1,0 +1,41 @@
+﻿@using GenderPayGap.Database
+@model List<GenderPayGap.Database.UserOrganisation>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Date</th>
+        <th scope="col" class="govuk-table__header">Organisation</th>
+        <th scope="col" class="govuk-table__header">Sector</th>
+        <th scope="col" class="govuk-table__header">User</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    @foreach (UserOrganisation userOrg in Model)
+    {
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell" style="white-space: nowrap;">
+                @(userOrg.Modified.ToString("d MMM yyyy"))
+            </td>
+            <td class="govuk-table__cell">
+                <b>@(userOrg.Organisation.OrganisationName)</b>
+                <br/>
+                @(userOrg.Address.GetAddressString())
+            </td>
+            <td class="govuk-table__cell">
+                @(userOrg.Organisation.SectorType)
+            </td>
+            <td class="govuk-table__cell">
+                @(userOrg.User.ContactFullname.Coalesce(userOrg.User.Fullname)) (@(userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress)))
+            </td>
+            <td class="govuk-table__cell">
+                <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrg.GetReviewCode()}))"
+                   class="govuk-link">
+                    Review
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

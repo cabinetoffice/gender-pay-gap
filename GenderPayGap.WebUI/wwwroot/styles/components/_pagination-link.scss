@@ -1,0 +1,24 @@
+﻿.pagination-link {
+  color: $govuk-link-colour;
+  text-decoration: none;
+  
+  .pagination-link-title {
+    display: block;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .pagination-link-text {
+    box-sizing: border-box;
+    font-size: 19px;
+    font-weight: bold;
+  }
+  
+  .pagination-link-label {
+    margin-left: 22px;
+    display: inline-block;
+    margin-top: .1em;
+    text-decoration: underline;
+  }
+}

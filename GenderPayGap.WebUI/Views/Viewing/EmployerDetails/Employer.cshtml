@@ -1,0 +1,174 @@
+﻿@inject IOptionsSnapshot<ViewingOptions> ViewingOptions
+@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.Shared
+@model EmployerDetailsViewModel
+@{
+    //Required for variables in Sitemap taghelpers
+    ViewBag.EmployerName = Model.Organisation.OrganisationName;
+
+    Organisation organisation = Model.Organisation;
+    ViewBag.Title = organisation.OrganisationName + " Details";
+    ViewBag.pageDescription = "View gender pay gap details for " + organisation.OrganisationName;
+    ViewBag.ogTitle = ViewBag.Title;
+    ViewBag.ogType = "business.gender_pay_gap";
+    ViewBag.pageClass = "employer-report-page";
+
+    string employerIdentifier = organisation.GetEncryptedId();
+
+    string backUrl = !string.IsNullOrWhiteSpace(Model.EmployerBackUrl) ? Model.EmployerBackUrl : !string.IsNullOrWhiteSpace(Model.LastSearchUrl) ? Model.LastSearchUrl : "/";
+    if (string.IsNullOrWhiteSpace(ViewBag.ReturnUrl))
+    {
+        ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
+    }
+    var viewModel = new AddRemoveButtonViewModel {OrganisationIdEncrypted = employerIdentifier, OrganisationName = organisation.OrganisationName};
+}
+
+<partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
+<div class="grid-row">
+    <div class="column-full">
+        <div class="grid-row">
+            <div class="column-full">
+                <h1 class="heading-large">
+                    <span id="OrganisationName">
+                        @organisation.OrganisationName
+                    </span>
+                </h1>
+                @if (organisation.OrganisationNames.Count > 1)
+                {
+                    <div class="panel">
+                        <div>Previously known as</div>
+                        <strong>@organisation.OrganisationNames.ElementAt(organisation.OrganisationNames.Count - 2).Name</strong>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="column-full">
+                <dl class="metadata employer-report-metadata">
+                    <div>
+                        <dt class="metadata-text-label">Address</dt>
+                        <dd class="metadata-text-value">@(organisation.LatestAddress?.GetAddressString())</dd>
+                    </div>
+                    <div>
+                        <dt class="metadata-text-label">Nature of business (SIC)</dt>
+                        <dd class="metadata-text-value">@organisation.GetSicSectorsString()</dd>
+                    </div>
+                </dl>
+                <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
+                <hr>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="column-full">
+                <h2 class="heading-small">Gender pay gap reports</h2>
+                <div class="body" style="font-size: 16px;">
+                    <p>
+                        This page shows all reports submitted or expected from the employer. Employers with less than 250 staff may report voluntarily and these reports are marked as &quot;Voluntary&quot;. Reports submitted after the deadline are marked as &quot;Late&quot;.
+                    </p>
+                </div>
+
+                @await Html.PartialModelAsync(new Details
+                {
+                    Id = "WhoNeedsToReport",
+                    LinkText = "Who needs to report and what are the deadlines?",
+                    SummaryPartial = "EmployerDetails/WhoNeedsToReport"
+                })
+
+            </div>
+        </div>
+
+        @foreach (Return report in organisation.GetRecentReports(ViewingOptions.Value.ShowReportYearCount))
+        {
+            <div class="grid-row">
+                <div class="column-full">
+                    <table>
+                        <thead></thead>
+                        <tbody>
+                            <tr>
+                                <td style="border-bottom: none;  width: 300px;">
+                                    <span class="heading-small">@report.GetReportingPeriod()</span>
+                                </td>
+                                <td style="border-bottom: none;">
+                                    <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel { IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission() }"/>
+                                </td>
+                            </tr>
+                            @if (report.ReturnId == 0)
+                            {
+                                <tr>
+                                    <td colspan="2" style="border-bottom: none;">
+                                        @if (organisation.GetIsInscope(report.AccountingDate.Year))
+                                        {
+                                            <span>
+                                                This organisation
+                                                @(report.AccountingDate.Year == Global.CurrentAccountingYear ? "is" : "was")
+                                                required to report by @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy"))
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>Not required to report</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2" style="border-bottom: none;">
+                                        @Html.ActionLink("View Report", "Report", new {employerIdentifier, year = report.AccountingDate.Year}, new {style = "font-size: 19px!important;"})
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border-bottom: none;">
+                                        This data has been taken from @(report.AccountingDate.ToString("d MMMM yyyy"))
+                                    </td>
+                                </tr>
+                            }
+                            @if (report.ReturnId > 0 && organisation.SectorType == SectorTypes.Private)
+                            {
+                                <tr>
+                                    <td colspan="2" style="border-bottom: none;">
+
+                                        <div class="heading-xsmall" style="font-weight:bold">Person responsible</div>
+                                        <div>
+                                            <span>@report.FirstName @report.LastName</span>
+                                        </div>
+                                        <div>
+                                            <span>(@report.JobTitle)</span>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            }
+                            <hr/>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        <hr style="border: 1px solid black; background: black;"/>
+        <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
+        <hr/>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        (function () {
+            "use strict";
+
+            GOVUK.details.addDetailsPolyfill();
+
+            new GOVUK.Ajaxify({
+                onError: function (errorCode, error, errorThrown) {
+                    window.location.href = '/error/1146';
+                }
+            });
+        }());
+
+    </script>
+}

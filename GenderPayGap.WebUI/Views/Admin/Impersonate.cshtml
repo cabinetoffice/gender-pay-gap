@@ -1,0 +1,47 @@
+﻿@model GenderPayGap.WebUI.Models.Admin.DownloadViewModel
+@{
+    ViewBag.Title = "Administration: Impersonation";
+}
+
+<main id="content" role="main">
+    <div class="breadcrumbs dynamic-content default-content" style="display: block;">
+        <ol>
+            <li style="display: block; padding-top: 0.75em; padding-bottom: 0;">
+                &lt;
+                @Html.ActionLink("Back to Administration home", "Home")
+            </li>
+        </ol>
+    </div>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            @using (Html.BeginForm())
+            {
+                @await Html.CustomValidationSummaryAsync()
+                @Html.AntiForgeryToken()
+                <h1 class="heading-large" style="margin-top: 0.3em;">
+                    <span id="companyname">Administration</span>
+                    <span class="heading-secondary">Impersonation</span>
+                </h1>
+
+                <legend class="visuallyhidden">Email</legend>
+                <p>Enter the email address of the user you wish to impersonate.</p>
+                <fieldset>
+                    <div class="form-group">
+                        <label for="emailAddress" class="form-label col-md-10">Email address</label>
+                        <div class="col-md-10">
+                            <input type="email" class="form-control" name="emailAddress" id="emailAddress"/>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <div class="form-group">
+                        <input id="NextStep" type="submit" class="button" value="Impersonate"/>
+                    </div>
+                </fieldset>
+            }
+        </div>
+
+    </div>
+</main>

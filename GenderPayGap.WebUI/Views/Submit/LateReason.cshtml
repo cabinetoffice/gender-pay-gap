@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Html
+@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+<div class="grid-row">
+    <div class="column-two-thirds">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.HiddenFor(model => model.ReturnId)
+            @Html.HiddenFor(model => model.OrganisationId)
+            @Html.HiddenFor(model => model.EncryptedOrganisationId)
+            @Html.HiddenFor(model => model.FirstName)
+            @Html.HiddenFor(model => model.JobTitle)
+            @Html.HiddenFor(model => model.LastName)
+
+            @Html.HiddenFor(model => model.ReturnId)
+            @Html.HiddenFor(model => model.DiffMeanBonusPercent)
+            @Html.HiddenFor(model => model.DiffMeanHourlyPayPercent)
+            @Html.HiddenFor(model => model.DiffMedianBonusPercent)
+            @Html.HiddenFor(model => model.DiffMedianHourlyPercent)
+            @Html.HiddenFor(model => model.FemaleLowerPayBand)
+            @Html.HiddenFor(model => model.FemaleMedianBonusPayPercent)
+            @Html.HiddenFor(model => model.FemaleMiddlePayBand)
+            @Html.HiddenFor(model => model.FemaleUpperPayBand)
+            @Html.HiddenFor(model => model.FemaleUpperQuartilePayBand)
+            @Html.HiddenFor(model => model.MaleLowerPayBand)
+            @Html.HiddenFor(model => model.MaleMedianBonusPayPercent)
+            @Html.HiddenFor(model => model.MaleMiddlePayBand)
+            @Html.HiddenFor(model => model.MaleUpperPayBand)
+            @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
+
+            @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
+            @Html.HiddenFor(model => Model.AccountingDate)
+            @Html.HiddenFor(model => Model.SectorType)
+            @Html.HiddenFor(model => Model.OrganisationSize)
+
+            // handles the reason error css class
+            HtmlString reasonErrorClass = null;
+            if (string.IsNullOrEmpty(Model.LateReason))
+            {
+                reasonErrorClass = Html.SetErrorClass(model => model.LateReason, "error");
+            }
+            else if (Model.LateReason == "Other")
+            {
+                reasonErrorClass = Html.SetErrorClass(model => model.LateReason, "error");
+            }
+
+            var controller = ViewData["Controller"] as BaseController;
+
+            <a id="BackLink" class="link-back" href="@Url.Action("CheckData")">Back <span class="visuallyhidden"> to the previous question</span></a>
+
+            <h1 class="heading-large">
+                <span>@await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)</span>
+                <span>We need more information</span>
+            </h1>
+
+            <div id="EHRCResponseGroup" class="form-group @Html.SetErrorClass(model => model.EHRCResponse, "error")">
+                <fieldset class="inline">
+                    <legend>
+                        <h1 class="heading-medium">
+                            Have you received a letter about a breach of the regulations from the Equality and Human Rights Commission?
+                        </h1>
+                        @Html.ValidationMessageFor(model => model.EHRCResponse, "", new {id = "EHRCResponseGroup", @class = "error-message"})
+                    </legend>
+                    <div class="multiple-choice">
+                        <input id="EHRCResponseYes" type="radio" name="EHRCResponse" value="true" @(!string.IsNullOrEmpty(Model.EHRCResponse) && Model.EHRCResponse.ToLower() == "true" ? "checked" : "")>
+                        <label for="EHRCResponseYes">Yes</label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="EHRCResponseNo" type="radio" name="EHRCResponse" value="false" @(!string.IsNullOrEmpty(Model.EHRCResponse) && Model.EHRCResponse.ToLower() == "false" ? "checked" : "")>
+                        <label for="EHRCResponseNo">No</label>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="form-group @reasonErrorClass">
+                @Html.LabelFor(model => model.LateReason, new {@class = "form-label"})
+                @Html.ValidationMessageFor(model => model.LateReason, "", new {id = "ReasonError", @class = "error-message"})
+                @Html.TextAreaFor(model => model.LateReason, new {id = "LateReason", name = "LateReason", rows = "5", @class = "form-control form-control-3-4"})
+            </div>
+
+            <p>
+                <input id="NextStep" class="button" type="submit" role="button" value="Confirm and submit"/>
+            </p>
+        }
+    </div>
+</div>

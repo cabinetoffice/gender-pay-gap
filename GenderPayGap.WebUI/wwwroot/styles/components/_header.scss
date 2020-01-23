@@ -1,0 +1,6 @@
+﻿
+li.sign-out-link {
+    @media (min-width: map-get($govuk-breakpoints, 'desktop')) {
+        float: right;
+    }
+}

@@ -1,0 +1,41 @@
+﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+@{
+    bool showPrev = Model.Employers.CurrentPage > 1;
+    bool showNext = Model.Employers.CurrentPage < Model.Employers.PageCount;
+
+    int prevPage = showPrev ? Model.Employers.CurrentPage - 1 : -1;
+    int nextPage = showNext ? Model.Employers.CurrentPage + 1 : -1;
+}
+@if (Model.Employers.Results.Count > 0)
+{
+    <div class="grid-row">
+        <div class="pagination-container" data-pagecount="@Model.Employers.PageCount" data-currentpage="@Model.Employers.CurrentPage">
+
+            @if (showPrev)
+            {
+                <div class="column-half" style="padding: 0">
+                    <div class="pagination pagination-prev">
+                        <a href="@Url.WithQuery("SearchResults", new {p = Model.Employers.CurrentPage - 1})">
+                            Previous
+                            <span class="visuallyhidden"> Page </span>
+                            <span class="pagination-numbers" data-total="@Model.Employers.PageCount">@(Model.Employers.CurrentPage - 1) of @Model.Employers.PageCount</span>
+                        </a>
+                    </div>
+                </div>
+            }
+
+            @if (showNext)
+            {
+                <div class="column-half">
+                    <div class="pagination pagination-next">
+                        <a href="@Url.WithQuery("SearchResults", new {p = Model.Employers.CurrentPage + 1})">
+                            Next
+                            <span class="visuallyhidden"> Page </span>
+                            <span class="pagination-numbers" data-total="@Model.Employers.PageCount">@(Model.Employers.CurrentPage + 1) of @Model.Employers.PageCount</span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

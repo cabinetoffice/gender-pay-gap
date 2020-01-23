@@ -1,0 +1,24 @@
+﻿@model GenderPayGap.WebUI.Models.Viewing.PayQuartileBarChartModel
+<figure id="@Model.Id" class="govuk-chart-horz">
+    <figcaption class="font-xsmall">
+        @Model.Title
+        @if (string.IsNullOrEmpty(Model.SecondaryTitle) == false)
+        {
+            <span class="secondary-text"> @(Model.SecondaryTitle)</span>
+        }
+    </figcaption>
+
+    <div class="govuk-chart-horz__bar govuk-chart-horz__bar--men">
+        <div class="govuk-chart-horz__bar govuk-chart-horz__bar--women" style="width: @(Math.Round(Model.Female))%"></div>
+    </div>
+
+    <div class="govuk-chart-horz__foot">
+        <div class="govuk-chart-horz__text--left">
+            <span class="bold-small">@(Model.FemaleFormatted)% <span class="visually-hidden"> of the @Model.Title.ToLower() are women</span></span>
+        </div>
+        <div class="govuk-chart-horz__text--right">
+            <span class="bold-small">@(Model.MaleFormatted)% <span class="visually-hidden"> of the @Model.Title.ToLower() are men</span></span>
+        </div>
+    </div>
+
+</figure>

@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "PIN confirmation - Gender pay gap reporting service";
+}
+
+<main id="content" role="main">
+    @await Html.PartialAsync("_ServiceInfo")
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <h1 class="heading-large">
+                    Request a new PIN
+                </h1>
+                <p>A PIN will be posted to the following name and address:</p>
+                <p>@ViewBag.UserFullName (@ViewBag.UserJobTitle),<br> @ViewBag.Organisation, <br/>@Html.Raw(ViewBag.Address)</p>
+                <p>
+                    <button type="submit" class="button" name="command" value="Resend">Request a new pin</button>
+                </p>
+                <p>
+                    @Html.ActionLink("Cancel", "ActivateService")
+                </p>
+            </div>
+        </div>
+    }
+</main>

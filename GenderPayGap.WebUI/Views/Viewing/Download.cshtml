@@ -1,0 +1,45 @@
+﻿@model GenderPayGap.WebUI.Models.Search.DownloadViewModel
+@{
+    ViewBag.Title = "Gender pay gap";
+}
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">
+            Download gender pay gap data
+        </h1>
+        <p>
+            These files are in a CSV (Comma Separated Values) format that can be read by any spreadsheet program or word processor. They are not formatted for printing.
+        </p>
+        <div>
+            <h2 class="heading-medium">
+                Employers who have published their gender pay gap figures
+            </h2>
+            <table class="download-table" data-downloadcount="@Model.Downloads.Count">
+                <thead>
+                <tr>
+                    <th scope="col">Reporting year</th>
+                    <th scope="col" class="numeric">Number of employers</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model.Downloads.Count < 1)
+                {
+                    <td colspan="2">No downloads found</td>
+                }
+                else
+                {
+                    for (var i = 0; i < Model.Downloads.Count; i++)
+                    {
+                        <tr>
+                            <td data-prefix="Reporting year">
+                                <a download="true" data-name="download" data-index="@i" href="@Model.Downloads[i].Url" target="_blank">@Model.Downloads[i].Title </a><span class="info"> (@Model.Downloads[i].Extension.ToUpper(), @Model.Downloads[i].Size)</span>
+                            </td>
+                            <td data-prefix="Number of employers" class="numeric"> @Model.Downloads[i].Count </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

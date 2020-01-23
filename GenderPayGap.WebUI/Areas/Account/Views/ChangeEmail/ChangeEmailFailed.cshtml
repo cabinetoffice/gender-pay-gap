@@ -1,0 +1,32 @@
+﻿@if (ViewContext.ModelState.ErrorCount > 0)
+{
+    @await Html.PartialAsync("Patterns/ErrorSummary", ViewContext.ModelState)
+}
+
+<div class="grid-row">
+
+    <div class="column-two-thirds">
+
+        <form action="post">
+            <legend>
+                <h1 class="heading-large">
+                    Failed to verify email address
+                </h1>
+            </legend>
+
+        </form>
+
+        <h2 class="heading-medium">More Options</h2>
+
+        <ul class="list">
+            <li>
+                <a href="@(Url.Action<ManageAccountController>(nameof(ManageAccountController.ManageAccount)))">Manage account</a>
+            </li>
+
+            <li>
+                <a href="@(Url.Action<OrganisationController>(nameof(OrganisationController.ManageOrganisations)))">Manage organisations</a>
+            </li>
+        </ul>
+    </div>
+
+</div>

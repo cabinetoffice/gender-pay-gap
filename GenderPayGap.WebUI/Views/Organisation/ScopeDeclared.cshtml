@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "We need more information - Gender pay gap reporting service";
+}
+@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.Organisation.DeclareScopeModel
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-large">
+                <span class="heading-secondary">@Model.OrganisationName</span>
+            </h1>
+            <div class="govuk-box-highlight">
+                <h1 class="bold-large">
+                    You've confirmed your organisation is <span> @(Model.ScopeStatus == ScopeStatuses.OutOfScope ? "not " : "")required to report for snapshot date @Model.SnapshotDate.ToString("d MMMM yyyy").</span>
+                </h1>
+            </div>
+            <p>
+                Press continue to manage your organisation.
+            </p>
+            <p></p>
+            <a class="button" href="@Url.Action("ManageOrganisation", "Organisation", new {id = ViewContext.RouteData.Values["Id"]})" role="button">Continue</a>
+        </div>
+    </div>
+</main>

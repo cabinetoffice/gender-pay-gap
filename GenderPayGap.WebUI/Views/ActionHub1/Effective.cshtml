@@ -1,0 +1,106 @@
+﻿@using GenderPayGap.WebUI.Models.Shared
+@{
+    Layout = "Index.cshtml";
+    var index = 1;
+}
+
+<h2 class="heading-large">Effective actions</h2>
+<p>
+    These actions have been tested in real world settings and found to have a positive impact.
+</p>
+
+<div class="action-step">
+    <i class="icon icon-step-@(index++)"></i>
+    <h3 class="heading-small">
+        Include multiple women in shortlists for recruitment and promotions
+    </h3>
+    <p>
+        When putting together a shortlist of qualified candidates, make sure more than one woman is included. Shortlists with only one woman do not increase the chance of a woman being selected.
+    </p>
+</div>
+<div class="action-step">
+    <i class="icon icon-step-@(index++)"></i>
+    <h3 class="heading-small">
+        Use skill-based assessment tasks in recruitment
+    </h3>
+    <p>
+        Rather than relying only on interviews, ask candidates to perform tasks they would be expected to perform in the role they are applying for. Use their performance on those tasks to assess their suitability for the role. Standardise the tasks and how they are scored to ensure fairness across candidates.
+    </p>
+</div>
+<div class="action-step">
+    <i class="icon icon-step-@(index++)"></i>
+    <h3 class="heading-small">
+        Use structured interviews for recruitment and promotions
+    </h3>
+    <p>
+        Structured and unstructured interviews both have strengths and weaknesses, but unstructured interviews are more likely to allow unfair bias to creep in and influence decisions.
+        <br/><br/>
+        Use structured interviews that:
+        <ul class="list list-bullet">
+            <li>Ask exactly the same questions of all candidates in a predetermined order and format</li>
+            <li>Grade the responses using pre-specified, standardised criteria. This makes the responses comparable and reduces the impact of unconscious bias</li>
+        </ul>
+    </p>
+</div>
+<div class="action-step">
+    <i class="icon icon-step-@(index++)"></i>
+    <h3 class="heading-small">
+        Encourage salary negotiation by showing salary ranges
+    </h3>
+    <p>
+        Women are less likely to negotiate their pay. This is partly because women are put off if they are not sure about what a reasonable offer is.
+        Employers should clearly communicate the salary range on offer for a role to encourage women to negotiate their salary.
+        This helps the applicant know what they can reasonably expect.
+    </p>
+    <p>
+        If the salary for a role is negotiable, employers should state this clearly as this can also encourage women to negotiate.
+        If women negotiate their salaries more, they will end up with salaries that more closely match the salaries of men.
+    </p>
+</div>
+<div class="action-step">
+    <i class="icon icon-step-@(index++)"></i>
+    <h3 class="heading-small">
+        Introduce transparency to promotion, pay and reward processes
+    </h3>
+    <p>
+        Transparency means being open about processes, policies and criteria for decision-making.
+        This means employees are clear what is involved, and that managers understand that their decisions need to be objective and evidence-based because those decisions can be reviewed by others.
+        Introducing transparency to promotion, pay and reward processes can reduce pay inequalities.
+    </p>
+</div>
+<div class="action-step">
+    <i class="icon icon-step-@(index++)"></i>
+    <h3 class="heading-small">
+        Appoint diversity managers and/or diversity task forces
+    </h3>
+    <p>
+        Diversity managers and task forces monitor talent management processes (such as recruitment or promotions) and diversity within the organisation.
+        They can reduce biased decisions in recruitment and promotion because people who make decisions know that their decision may be reviewed.
+        This accountability can improve the representation of women in your organisation.
+        <br/><br/>
+        Diversity managers should:
+
+        <ul class="list list-bullet">
+            <li>Have a senior/executive role within the organisation</li>
+
+            <li>Have visibility of internal data</li>
+
+            <li>Be in the position to ask for more information on why decisions were made</li>
+
+            <li>Be empowered to develop and implement diversity strategies and policies</li>
+
+        </ul>
+    </p>
+</div>
+
+@await Html.PartialModelAsync(new Accordion(
+    new AccordionSection("References", "", "/Views/ActionHub1/EffectiveParts/References.cshtml", "Effective")
+    ))
+
+@await Html.PartialModelAsync(new Pagination(
+    new PaginationLink(Url.Action("Overview", "ActionHub"), "Previous", "Overview", true),
+    new PaginationLink(Url.Action("Promising", "ActionHub"), "Next", "Promising actions")
+    ))
+<div style="margin-bottom: 25px; font-size: 16px!important">
+    <a rel="download" class="print-link" data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/Evidence-based_actions_for_employers.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Gender pay gap explained&quot;}" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">Print entire guide</a>
+</div>

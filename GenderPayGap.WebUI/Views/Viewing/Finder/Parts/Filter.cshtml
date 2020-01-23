@@ -1,0 +1,62 @@
+﻿@using GenderPayGap.WebUI.Models.Search
+@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+@{
+    var size = new FilterGroup
+    {
+        Id = "SizeFilter",
+        Group = "es",
+        Label = "Employer size",
+        Expanded = false,
+        Metadata = Model.SizeOptions
+    };
+
+    var sectors = new FilterGroup
+    {
+        Id = "SectorFilter",
+        Group = "s",
+        Label = "Sector",
+        Expanded = false,
+        Metadata = Model.SectorOptions,
+        MaxHeight = "300px"
+    };
+
+    var years = new FilterGroup
+    {
+        Id = "ReportingYearFilter",
+        Group = "y",
+        Label = "Reporting year",
+        Expanded = false,
+        Metadata = Model.ReportingYearOptions
+    };
+
+    var statuses = new FilterGroup
+    {
+        Id = "ReportingStatusFilter",
+        Group = "st",
+        Label = "Reporting status",
+        Expanded = false,
+        Metadata = Model.ReportingStatusOptions
+    };
+}
+
+<a id="ClearFilters" href="search-results?search=@(Model.search)">Clear all filters</a>
+
+<div class="filter-divider"></div>
+
+<partial name="Finder/Parts/Facets/OptionSelect" model="size"/>
+
+<div class="filter-divider"></div>
+
+<partial name="Finder/Parts/Facets/OptionSelect" model="sectors"/>
+
+<div class="filter-divider"></div>
+
+<partial name="Finder/Parts/Facets/OptionSelect" model="years"/>
+
+<div class="filter-divider"></div>
+
+<partial name="Finder/Parts/Facets/OptionSelect" model="statuses"/>
+
+<div class="filter-divider"></div>
+
+<input id="UpdateFilterParams" class="button button-update js-update-filters" type="submit" value="Update results"/>

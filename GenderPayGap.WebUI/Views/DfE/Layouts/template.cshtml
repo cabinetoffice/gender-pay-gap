@@ -1,0 +1,82 @@
+﻿@using GenderPayGap.Core.Models.Cookies
+@{
+    Layout = "../../govuk/layouts/template.cshtml";
+}
+
+@section Head {
+    @await Html.PartialAsync("_Tracking")
+
+    @RenderSection("Head", false)
+
+    @if (Config.IsLocal() || Config.IsDevelopment())
+    {
+        @Html.UnpackBundle("/assets/stylesheets/application.min.css", "all")
+    }
+    else
+    {
+        <link rel="stylesheet" type="text/css" media="all" href="~/assets/stylesheets/application.min.css" asp-append-version="true"/>
+    }
+}
+
+@RenderSection("PreMain", false)
+<main id="content" class="page @(ViewBag.pageClass)" role="main" tabindex="-1">
+    @RenderBody()
+</main>
+
+@section BodyEnd {
+    <script src="~/assets/javascripts/jquery-1.11.3.min.js"></script>
+    <script src="~/assets/javascripts/jquery.tablesorter.min.js"></script>
+
+    @if (Config.IsLocal() || Config.IsDevelopment())
+    {
+        @Html.UnpackBundle("/assets/javascripts/application.min.js")
+    }
+    else
+    {
+        <script src="~/assets/javascripts/application.min.js" type="text/javascript" asp-append-version="true"></script>
+    }
+
+    @RenderSection("scripts", false)
+
+    @{
+        CookieSettings cookieSettings = CookieHelper.GetCookieSettingsCookie(Context.Request);
+    }
+    @if (cookieSettings.GoogleAnalyticsGpg || cookieSettings.GoogleAnalyticsGovUk)
+    {
+        <script type="text/javascript">
+
+            // Load Google Analytics libraries
+            GOVUK.Analytics.load();
+
+            // Use document.domain in dev, preview and staging so that tracking works
+            // Otherwise explicitly set the domain as www.gov.uk (and not gov.uk).
+            var cookieDomain = (document.domain === 'www.gov.uk') ? '.www.gov.uk' : document.domain;
+
+            // Configure profiles and make interface public
+            // for custom dimensions, virtual pageviews and events
+            GOVUK.analytics = new GOVUK.Analytics({
+                universalId: '@Html.AppSetting("GoogleAnalyticsAccountId")',
+                cookieDomain: cookieDomain
+            });
+
+            // Track external links marked with _blank
+            new GOVUK.analyticsPlugins.externalLinkTracker();
+
+            // Track links with custom event attributes
+            new GOVUK.analyticsPlugins.customLinkTracker();
+
+            // Track expandable details-summary elements with custom event attributes
+            new GOVUK.analyticsPlugins.detailsTracker();
+
+            //Track download files
+            new GOVUK.analyticsPlugins.downloadLinkTracker();
+
+            // Set custom dimensions before tracking pageviews
+            // GOVUK.analytics.setDimension(…)
+
+            // Activate any event plugins eg. print intent, error tracking
+            // GOVUK.analyticsPlugins.error();
+            // GOVUK.analyticsPlugins.printIntent();
+        </script>
+    }
+}

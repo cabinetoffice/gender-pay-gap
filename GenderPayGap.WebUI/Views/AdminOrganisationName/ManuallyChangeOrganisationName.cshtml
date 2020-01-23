@@ -1,0 +1,110 @@
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.ChangeOrganisationNameViewModel
+
+@{
+    ViewBag.Title = $"Change name - {Model.Organisation.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.Organisation.OrganisationName,
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Name history",
+            Href = Url.Action("ViewNameHistory", "AdminOrganisationName", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Change name"
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change name
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+
+        <form method="post" action="@Url.Action("ChangeNamePost", "AdminOrganisationName", new { id = Model.Organisation.OrganisationId })">
+            @(Html.AntiForgeryToken())
+            @(Html.HiddenFor(m => m.Action))
+
+            @(Html.GovUkErrorSummary(new[]
+            {
+                nameof(ChangeOrganisationNameViewModel.Reason),
+            }))
+
+            <fieldset class="govuk-fieldset">
+
+                @*<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h2 class="govuk-fieldset__heading">
+                        What is their name?
+                    </h2>
+                </legend>*@
+
+                @(Html.GovUkTextInputFor(
+                    m => m.Name,
+                    labelOptions: new LabelViewModel { Text = "What is their name?" },
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" }
+                ))
+            </fieldset>
+
+            @(Html.GovUkTextAreaFor(
+                m => m.Reason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the reason for this change?",
+                    Classes = "govuk-label--m"
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-4"
+                }
+            ))
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })"
+                   class="govuk-link">
+                    Cancel and return to organisation page
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>
+

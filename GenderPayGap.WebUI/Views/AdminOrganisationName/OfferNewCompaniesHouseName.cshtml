@@ -1,0 +1,149 @@
+﻿@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.ChangeOrganisationNameViewModel
+
+@{
+    ViewBag.Title = $"Change name - {Model.Organisation.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.Organisation.OrganisationName,
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Name history",
+            Href = Url.Action("ViewNameHistory", "AdminOrganisationName", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Change name"
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change name
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+        
+        @(Html.GovUkErrorSummary())
+
+        <h2 class="govuk-heading-l">
+            This organisation has a different name registered with Companies House
+        </h2>
+
+        <form method="post" action="@Url.Action("ChangeNamePost", "AdminOrganisationName", new { id = Model.Organisation.OrganisationId })">
+            @(Html.AntiForgeryToken())
+            @(Html.HiddenFor(m => m.Action))
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">
+                            Current name
+                        </th>
+                        <td class="govuk-table__cell">
+                            @(Model.Organisation.OrganisationName)
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">
+                            Name from Companies House
+                        </th>
+                        <td class="govuk-table__cell">
+                            @(Model.Name)
+                            @(Html.HiddenFor(m => m.Name))
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            @(Html.GovUkRadiosFor(
+                m => m.AcceptCompaniesHouseName,
+                fieldsetOptions: new FieldsetViewModel
+                {
+                    Legend = new LegendViewModel
+                    {
+                        Text = "Would you like to use this name from Companies House?",
+                        Classes = "govuk-fieldset__legend--m"
+                    },
+                    Classes = "govuk-!-margin-top-6"
+                }
+            ))
+
+            <div id="reason-for-change-container">
+                @(Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    },
+                    hintOptions: new HintViewModel
+                    {
+                        Text = "(Only required if you are using the name from Companies House)"
+                    }
+                ))
+            </div>
+            <script>
+                (function () {
+                    var acceptCoHoRadio = document.getElementById('@($"GovUk_Radio_{nameof(ChangeOrganisationNameViewModel.AcceptCompaniesHouseName)}_{nameof(AcceptCompaniesHouseName.Accept)}")');
+                    var radios = document.querySelectorAll('input[type=radio][name="@($"GovUk_Radio_{nameof(ChangeOrganisationNameViewModel.AcceptCompaniesHouseName)}")"]');
+
+                    function changeReasonVisibilityBasedOnCoHoNameAcceptRadio() {
+                        var reasonElement = document.getElementById('reason-for-change-container');
+                        reasonElement.style.display = (acceptCoHoRadio.checked ? null : 'none');
+                    }
+
+                    changeReasonVisibilityBasedOnCoHoNameAcceptRadio();
+
+                    radios.forEach(function(radio) {
+                        radio.addEventListener('change', changeReasonVisibilityBasedOnCoHoNameAcceptRadio);
+                    });
+                })();
+            </script>
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })"
+                   class="govuk-link">
+                    Cancel and return to organisation page
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>

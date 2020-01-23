@@ -1,0 +1,152 @@
+﻿@model CompareViewModel
+
+<thead class="report-header">
+<tr>
+    <th class="header" rowspan="2">Employer</th>
+    <th class="header" rowspan="2">Employer size</th>
+    <th class="header" colspan="2">
+        <div style="display:table;">
+            <div class="groupingHeader" style="vertical-align: middle;display: table-cell; padding-right: 0px;">Difference in hourly rate </div>
+            <a target="_blank" class="no-print" aria-label="MeanMedian" href="@Url.Action("CompareHelp", "Compare", new {view = "MeanMedian"})">
+                <span class="info-data sample-too-small"></span>
+            </a>
+        </div>
+    </th>
+    <th class="header" colspan="4">
+        <div class="groupingHeader" style="vertical-align: middle;display: table-cell; padding-right: 12px;">
+            Proportion of women in each pay quartile
+            <a target="_blank" class="no-print" aria-label="Quartiles" href="@Url.Action("CompareHelp", "Compare", new {view = "Quartiles"})">
+                <span class="info-data sample-too-small"></span>
+            </a>
+        </div>
+    </th>
+    <th class="header" colspan="2">
+        <div class="groupingHeader">Who received bonus pay</div>
+    </th>
+    <th class="header" colspan="2">
+        <div class="groupingHeader">Difference in bonus pay</div>
+    </th>
+</tr>
+<tr class="row">
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("DiffMeanHourlyPayPercent")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "DiffMeanHourlyPayPercent", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Mean
+            </a>
+            <a class="no-print" aria-label="DiffMeanHourlyPayPercent" href="@Url.Action("SortEmployers", new {column = "DiffMeanHourlyPayPercent", returnUrl = ViewBag.ReturnUrl})">
+                <img class="arrow-data" style="margin-left: 7px;" src=@Model.GetColumnSortIcon("DiffMeanHourlyPayPercent") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("DiffMedianHourlyPercent")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "DiffMedianHourlyPercent", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Median
+            </a>
+            <a class="no-print" aria-label="DiffMedianHourlyPercent" href="@Url.Action("SortEmployers", new {column = "DiffMedianHourlyPercent", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("DiffMedianHourlyPercent") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("FemaleLowerPayBand")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "FemaleLowerPayBand", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Lower quartile
+            </a>
+            <a class="no-print" aria-label="FemaleLowerPayBand" href="@Url.Action("SortEmployers", new {column = "FemaleLowerPayBand", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleLowerPayBand") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("FemaleMiddlePayBand")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "FemaleMiddlePayBand", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Lower middle quartile
+            </a>
+            <a class="no-print" aria-label="FemaleMiddlePayBand" href="@Url.Action("SortEmployers", new {column = "FemaleMiddlePayBand", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleMiddlePayBand") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("FemaleUpperPayBand")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "FemaleUpperPayBand", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Upper middle quartile
+            </a>
+            <a class="no-print" aria-label="FemaleUpperPayBand" href="@Url.Action("SortEmployers", new {column = "FemaleUpperPayBand", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleUpperPayBand") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("FemaleUpperQuartilePayBand")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "FemaleUpperQuartilePayBand", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Top quartile
+            </a>
+            <a class="no-print" aria-label="FemaleUpperQuartilePayBand" href="@Url.Action("SortEmployers", new {column = "FemaleUpperQuartilePayBand", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleUpperQuartilePayBand") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("FemaleMedianBonusPayPercent")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "FemaleMedianBonusPayPercent", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Women
+            </a>
+            <a class="no-print" aria-label="FemaleMedianBonusPayPercent" href="@Url.Action("SortEmployers", new {column = "FemaleMedianBonusPayPercent", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleMedianBonusPayPercent") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("MaleMedianBonusPayPercent")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "MaleMedianBonusPayPercent", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Men
+            </a>
+            <a class="no-print" aria-label="MaleMedianBonusPayPercent" href="@Url.Action("SortEmployers", new {column = "MaleMedianBonusPayPercent", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("MaleMedianBonusPayPercent") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("DiffMeanBonusPercent")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "DiffMeanBonusPercent", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Mean
+            </a>
+            <a class="no-print" aria-label="DiffMeanBonusPercent" href="@Url.Action("SortEmployers", new {column = "DiffMeanBonusPercent", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("DiffMeanBonusPercent") alt=""/>
+            </a>
+        </div>
+    </th>
+    <th class="sortableColumnHeader @Model.GetColumnSortCssClass("DiffMedianBonusPercent")">
+        <div style="display:table;">
+            <a style="vertical-align: middle;display: table-cell;"
+               href="@Url.Action("SortEmployers", new {column = "DiffMedianBonusPercent", returnUrl = ViewBag.ReturnUrl})"
+               role="button">
+                Median
+            </a>
+            <a class="no-print" aria-label="DiffMedianBonusPercent" href="@Url.Action("SortEmployers", new {column = "DiffMedianBonusPercent", returnUrl = ViewBag.ReturnUrl})">
+                <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("DiffMedianBonusPercent") alt=""/>
+            </a>
+        </div>
+    </th>
+</tr>
+</thead>

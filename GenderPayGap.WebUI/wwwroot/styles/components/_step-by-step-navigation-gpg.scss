@@ -1,0 +1,12 @@
+.app-step-nav__list-item--active:before {
+  margin-top: -1px;
+  margin-left: 13px;
+  width: 13px;
+  height: 2px;
+  border: none;
+  border-radius: 0;
+}
+
+.app-step-nav__list-item--active .app-step-nav__link {
+  text-decoration: underline;
+}

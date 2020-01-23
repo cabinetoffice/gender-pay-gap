@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Report your gender pay gap data - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml");}
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Report your gender pay gap data
+        </h1>
+
+        <p class="govuk-body">
+            Report your gender pay gap data here
+            
+        </p>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+               new ReportingStepsViewModel
+               {
+                   CurrentStep = 6,
+                   CurrentTask = 0
+               }); }
+    </div>
+</div>

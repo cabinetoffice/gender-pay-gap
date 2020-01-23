@@ -1,0 +1,48 @@
+﻿@model ChangeEmailViewModel
+
+@if (ViewContext.ModelState.ErrorCount > 0)
+{
+    @await Html.PartialAsync("Patterns/ErrorSummary", ViewContext.ModelState)
+}
+
+<div class="grid-row">
+
+    <div class="column-two-thirds">
+
+        <form method="post">
+
+            @Html.AntiForgeryToken()
+
+            <fieldset>
+
+                <legend>
+                    <h1 class="heading-large">Enter your new email address</h1>
+                </legend>
+
+                <div class="form-group @Html.SetErrorClass(model => model.EmailAddress, "error")">
+                    @Html.LabelFor(m => m.EmailAddress, new {@class = "form-label"})
+                    @Html.ValidationMessageFor(model => model.EmailAddress, "", new {@class = "error-message"})
+                    @Html.CustomEditorFor(model => model.EmailAddress, new {@class = "form-control form-control-3-4"})
+                </div>
+
+                <div class="form-group @Html.SetErrorClass(model => model.ConfirmEmailAddress, "error")">
+                    @Html.LabelFor(m => m.ConfirmEmailAddress, new {@class = "form-label"})
+                    @Html.ValidationMessageFor(model => model.ConfirmEmailAddress, "", new {@class = "error-message"})
+                    @Html.CustomEditorFor(model => model.ConfirmEmailAddress, new {@class = "form-control form-control-3-4"})
+                </div>
+
+                <div>
+                    <input class="button" type="submit" role="button" value="Confirm"/>
+                </div>
+
+                <div>
+                    <a href="@(Url.Action<ManageAccountController>(nameof(ManageAccountController.ManageAccount)))" style="display: inline-block; margin-top: 1em;">Cancel</a>
+                </div>
+
+            </fieldset>
+
+        </form>
+
+    </div>
+
+</div>

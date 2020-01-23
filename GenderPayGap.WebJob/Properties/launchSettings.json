@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GenderPayGap.WebJob": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Local"
+      }
+    }
+  }
+}

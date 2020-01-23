@@ -1,0 +1,116 @@
+﻿@using GenderPayGap.WebUI.Models.Admin
+@model GenderPayGap.WebUI.Models.Admin.UploadViewModel
+@{
+    ViewBag.Title = "Administration: Uploads";
+    string infoNotification = TempData["uploadinfo"].ToStringOrEmpty();
+    var controller = ViewData["Controller"] as BaseController;
+}
+<main id="content" role="main">
+    <div class="breadcrumbs dynamic-content default-content" style="display: block;">
+        <ol>
+            <li style="display: block; padding-top: 0.75em; padding-bottom: 0;">
+                &lt;
+                @Html.ActionLink("Back to administration home", "Home")
+            </li>
+        </ol>
+    </div>
+
+    @if (string.IsNullOrWhiteSpace(infoNotification) == false)
+    {
+        <p class="panel panel-border-wide" style="border-color: yellow">@Html.Raw(infoNotification)</p>
+        TempData["uploadinfo"] = string.Empty;
+    }
+
+    <div class="grid-row">
+        <div class="column-full">
+            @using (Html.BeginForm("Uploads", "Admin", FormMethod.Post, new {enctype = "multipart/form-data"}))
+            {
+                @await Html.CustomValidationSummaryAsync()
+                @Html.AntiForgeryToken()
+
+                <div style="float: right; font-size: smaller;">
+                    <span>
+                        <a href="@Url.Action("Uploads", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content">@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
+                    </span>
+                </div>
+
+                <h1 class="heading-large" style="margin-top: 0.3em;">
+                    <span id="companyname">Administration</span>
+                    <span class="heading-secondary">Uploads</span>
+                </h1>
+
+                <table class="download-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">File</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @if (!Model.Uploads.Any(u => u.Count != "0"))
+                    {
+                        <tr>
+                            <td colspan="3">No uploads found</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (UploadViewModel.Upload upload in Model.Uploads)
+                        {
+                            <tr>
+                                <td>
+                                    @if (upload.Modified > DateTime.MinValue)
+                                    {
+                                        <a href="@Url.Action("Read", new {filePath = upload.Filepath})">
+                                            <b>@upload.Title</b>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <b>@upload.Title</b>
+                                    }
+                                    <br/>@upload.Description</td>
+                                <td>
+                                    @if (upload.Modified == DateTime.MinValue)
+                                    {
+                                        @upload.Filename
+                                    }
+                                    <span class="info"> (@upload.Count)</span>
+                                    <br/>
+                                    @if (upload.Modified > DateTime.MinValue)
+                                    {
+                                        <span>Last modified: </span>
+                                        <span title="@upload.Modified.ToShortTimeString()">@upload.Modified.ToString("d MMM yy HH:mm")</span>
+                                    }
+                                </td>
+                                <td style="vertical-align:top">
+                                    @if (controller.IsSuperAdministrator)
+                                    {
+                                        <input type="file" name="files" style="display: none" onchange="$('#btnUpload').click()"/>
+                                        <a onclick="$(this).prevAll(':file').click()" style="font-size: small; cursor: pointer;" class="link-button" title="click here to select a local file to upload and replace this content">Upload</a>
+                                        if (upload.Count != "0" && upload.Type.EqualsI("DnBOrgs"))
+                                        {
+                                            <br/>
+                                            <button type="submit" style="font-size: small; cursor: pointer;" class="link-button" id="btnImport" name="Command" value="Import" title="Imports these records into the database">Import</button>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    </tbody>
+                </table>
+
+                if (controller.IsSuperAdministrator)
+                {
+                    <p style="color: red; font-size: small; text-align: center">
+                        <b>Note:</b> Uploads may take 5 minutes to update on all servers<br/>
+                        <button type="submit" id="btnUpload" name="command" value="Upload" style="display: none;">Upload</button>
+                        <button type="submit" id="btnRecheck" name="command" class="button" value="Recheck" onclick="if (!confirm('Are you sure you want to recheck all companies without SIC codes from companies house?')) return false;">Recheck company SIC Codes</button>
+                    </p>
+                }
+            }
+        </div>
+    </div>
+</main>

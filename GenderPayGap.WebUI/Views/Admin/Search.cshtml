@@ -1,0 +1,191 @@
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Html
+@model GenderPayGap.WebUI.Models.Admin.AdminSearchViewModel
+
+@{
+    ViewBag.Title = "Search - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@{
+
+    object HighlightMatches(AdminSearchMatchViewModel searchMatch)
+    {
+        IHtmlContent startComment = Html.Raw("<!--");
+        IHtmlContent endComment = Html.Raw("-->");
+
+        Func<object, object> html =
+            @<text>
+                <span class="admin-search-highlighted">
+                    @(startComment)
+                    @{
+                        string name = searchMatch.Text;
+                        List<AdminSearchMatchGroupViewModel> matchGroups = searchMatch.MatchGroups;
+
+                        var previousMatchEnd = 0;
+                        foreach (AdminSearchMatchGroupViewModel matchGroup in matchGroups)
+                        {
+                            string nonBoldText = name.Substring(previousMatchEnd, matchGroup.Start - previousMatchEnd);
+                            string boldText = name.Substring(matchGroup.Start, matchGroup.Length);
+
+                            // The HTML / C# below looks a bit odd and oddly-formatted
+                            // This is deliberate
+                            // We do this because we want to avoid spaces between the text
+                            @(endComment)@(nonBoldText)<b>@(boldText)</b>@(startComment)
+
+                            previousMatchEnd = matchGroup.Start + matchGroup.Length;
+                        }
+
+                        string finalNonBoldText = name.Substring(previousMatchEnd, name.Length - previousMatchEnd);
+                    }
+                    @(endComment)@(finalNonBoldText)
+                </span>
+             </text>;
+
+        return html(new object());
+    }
+
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Search results"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row admin-search-page">
+    <div class="govuk-grid-column-full">
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">Search</h1>
+
+        <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))">
+            <div class="govuk-form-group @(Model.Error != null ? "govuk-form-group--error" : "")">
+                <label class="govuk-label" for="search-query">
+                    <b>Organisation:</b> current name, previous name, employer reference, company number
+                    <br/>
+                    <b>User:</b> name, email address
+                </label>
+                @if (Model.Error != null)
+                {
+                    <span class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @(Model.Error)
+                    </span>
+                }
+                <div class="admin-search-box">
+                    <input class="govuk-input @(Model.Error != null ? "govuk-input--error" : "") admin-search-input" id="search-query" name="query" type="text" value="@(Model.SearchQuery)">
+                    <input type="submit" value="Search" class="admin-search-button"/>
+                </div>
+            </div>
+        </form>
+
+        @if (Model.SearchResults != null)
+        {
+            <!--
+            Loading      @(Model.SearchResults.LoadingMilliSeconds)ms
+            Filtering    @(Model.SearchResults.FilteringMilliSeconds)ms
+            Ordering     @(Model.SearchResults.OrderingMilliSeconds)ms
+            Highlighting @(Model.SearchResults.HighlightingMilliSeconds)ms
+            -->
+
+            <details class="govuk-details" data-module="govuk-details" open>
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-48">
+                            @(Model.SearchResults.OrganisationResults.Count)
+                        </span>
+                        organisations containing
+                        <span class="govuk-!-font-weight-bold">
+                            @(Model.SearchQuery)
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <table class="govuk-table">
+                        <tbody class="govuk-table__body">
+                        @foreach (AdminSearchResultOrganisationViewModel organisation in Model.SearchResults.OrganisationResults)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId}))"
+                                       class="govuk-link">
+                                        @(HighlightMatches(organisation.OrganisationName))
+                                    </a>
+
+                                    @foreach (AdminSearchMatchViewModel previousName in organisation.OrganisationPreviousNames)
+                                    {
+                                        <br/>
+                                        @:previously @(HighlightMatches(previousName))
+                                    }
+
+                                    @if (organisation.EmployerRef != null)
+                                    {
+                                        <br/>
+                                        @:Employer ref: <b>@(organisation.EmployerRef)</b>
+                                    }
+                                    @if (organisation.CompanyNumber != null)
+                                    {
+                                        <br/>
+                                        @:Company number: <b>@(organisation.CompanyNumber)</b>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <details class="govuk-details" data-module="govuk-details" open>
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-48">
+                            @(Model.SearchResults.UserResults.Count)
+                        </span>
+                        users containing
+                        <span class="govuk-!-font-weight-bold">
+                            @(Model.SearchQuery)
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <table class="govuk-table">
+                        <tbody class="govuk-table__body">
+                        @foreach (AdminSearchResultUserViewModel user in Model.SearchResults.UserResults)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                                       class="govuk-link">
+                                        @(HighlightMatches(user.UserFullName))
+                                    </a>
+                                    <br/>
+                                    @(HighlightMatches(user.UserEmailAddress))
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        }
+
+    </div>
+</div>

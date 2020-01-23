@@ -1,0 +1,14 @@
+﻿@model GenderPayGap.WebUI.Models.Viewing.BonusProportionTextViewModel
+<div class="data data-metric">
+    @if (Model.Percent != 0)
+    {
+        <strong id="@(Model.Id)" class="data-item">
+            <span>@(string.Format("{0:0.#}", Model.Percent))% </span>
+        </strong>
+        <span>of @(Model.Gender).</span>
+    }
+    else
+    {
+        <span>No @(Model.Gender) received a bonus.</span>
+    }
+</div>

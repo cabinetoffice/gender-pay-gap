@@ -1,0 +1,20 @@
+﻿@model List<string>
+
+@for (var i = 0; i < Model.Count - 1; i++)
+{
+    <strong>@(Model[i])</strong>
+    if (Model.Count > 1 && i < Model.Count - 2)
+    {
+        <span>, </span>
+    }
+}
+
+@if (Model.Count == 1)
+{
+    <strong>@Model[0]</strong>
+}
+else
+{
+    <span> or </span>
+    <strong>@Model[Model.Count - 1]</strong>
+}

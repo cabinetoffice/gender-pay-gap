@@ -1,0 +1,20 @@
+﻿@model GenderPayGap.WebUI.Models.Shared.Details
+<details>
+    <summary aria-controls="@Model.Id" aria-expanded="@Model.Expanded" data-track-category="@Model.Id" data-track-label="@Model.LinkText">
+        <span class="summary">@Model.LinkText</span>
+    </summary>
+    <div id="@Model.Id" class="@(Model.IsPanel ? "panel panel-border-narrow" : "")" aria-hidden="@(Model.Expanded == false)">
+        @if (string.IsNullOrWhiteSpace(Model.SummaryText) == false)
+        {
+            @Model.SummaryText
+        }
+        @if (Model.HtmlContent != null)
+        {
+            @(Model.HtmlContent)
+        }
+        else if (!string.IsNullOrWhiteSpace(Model.SummaryPartial))
+        {
+            <partial name="@(Model.SummaryPartial)"/>
+        }
+    </div>
+</details>

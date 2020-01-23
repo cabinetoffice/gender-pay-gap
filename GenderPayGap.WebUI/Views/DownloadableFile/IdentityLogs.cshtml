@@ -1,0 +1,11 @@
+﻿@model IEnumerable<GenderPayGap.Core.Interfaces.Downloadable.IDownloadableItem>
+@{
+    ViewBag.Title = "Administration: Identity Server Logs";
+
+    ViewData["logType"] = "Identity Server";
+    ViewData["actionName"] = "IdentityLogs";
+}
+
+<main id="content" role="main">
+    <partial name="Parts/MainLogContent" model="Model" view-data="ViewData"/>
+</main>

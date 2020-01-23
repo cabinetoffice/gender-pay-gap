@@ -1,0 +1,199 @@
+﻿@model GenderPayGap.WebUI.Views.Home.CookieSettingsViewModel
+@{
+    ViewBag.Title = "Cookies on Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row cookie-settings-page">
+    <div class="govuk-grid-column-two-thirds">
+        @if (Model.ChangesHaveBeenSaved)
+        {
+            <section class="your-cookie-settings-were-saved-box">
+                <h3 class="govuk-heading-m">Your cookie settings were saved</h3>
+            </section>
+        }
+
+        <form method="POST" action="@Url.Action("CookieSettingsPost", "Home")">
+            <h1 class="govuk-heading-xl">Cookies on Gender pay gap service</h1>
+            <p class="govuk-body">Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
+            <p class="govuk-body">We use cookies to store information about how you use the gender pay gap service, such as the pages you visit.</p>
+
+            <h2 class="govuk-heading-l">Cookie settings</h2>
+            <p class="govuk-body">We use 4 types of cookie. You can choose which cookies you're happy for us to use.</p>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="GoogleAnalyticsGpg-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h3 class="govuk-fieldset__heading">Cookies used to improve the gender pay gap service</h3>
+                    </legend>
+                    <div id="GoogleAnalyticsGpg-hint" class="govuk-hint">
+                        <p class="govuk-body govuk-hint">We use Google Analytics to measure how you use the service so we can improve it based on user needs. Google Analytics sets cookies that store anonymised information about:</p>
+                        <ul class="govuk-list govuk-list--bullet govuk-hint">
+                            <li>how you got to the site</li>
+                            <li>the pages you visit on the gender pay gap service and how long you spend on them</li>
+                            <li>what you click on while you’re visiting the site</li>
+                        </ul>
+                    </div>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.GoogleAnalyticsGpg, "On",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "GoogleAnalyticsGpg__On",
+                                    @checked = Model.GoogleAnalyticsGpg == "On"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="GoogleAnalyticsGpg__On">
+                                On
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.GoogleAnalyticsGpg, "Off",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "GoogleAnalyticsGpg__Off",
+                                    @checked = Model.GoogleAnalyticsGpg == "Off"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="GoogleAnalyticsGpg__Off">
+                                Off
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="GoogleAnalyticsGovUk-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h3 class="govuk-fieldset__heading">Cookies used by the Government Digital Service</h3>
+                    </legend>
+                    <span id="GoogleAnalyticsGovUk-hint" class="govuk-hint">
+                        The Government Digital Service use information about how you use the gender pay gap service to improve the experience across government digital services.
+                    </span>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.GoogleAnalyticsGovUk, "On",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "GoogleAnalyticsGovUk__On",
+                                    @checked = Model.GoogleAnalyticsGovUk == "On"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="GoogleAnalyticsGovUk__On">
+                                On
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.GoogleAnalyticsGovUk, "Off",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "GoogleAnalyticsGovUk__Off",
+                                    @checked = Model.GoogleAnalyticsGovUk == "Off"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="GoogleAnalyticsGovUk__Off">
+                                Off
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="ApplicationInsights__Hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h3 class="govuk-fieldset__heading">Cookies measuring system performance</h3>
+                    </legend>
+                    <div id="ApplicationInsights__Hint" class="govuk-hint">
+                        <p class="govuk-body govuk-hint">We use Microsoft Azure Application Insights to measure system performance to see if there is anything that is not working in the way it should. Application Insights stores anonymised information about:</p>
+                        <ul class="govuk-list govuk-list--bullet govuk-hint">
+                            <li>the pages you visit on the gender pay gap service</li>
+                            <li>details about the site's performance, for example how long each page takes to load</li>
+                        </ul>
+                    </div>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.ApplicationInsights, "On",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "ApplicationInsights__On",
+                                    @checked = Model.ApplicationInsights == "On"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="ApplicationInsights__On">
+                                On
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.ApplicationInsights, "Off",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "ApplicationInsights__Off",
+                                    @checked = Model.ApplicationInsights == "Off"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="ApplicationInsights__Off">
+                                Off
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="RememberSettings__Hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h3 class="govuk-fieldset__heading">Cookies that remember your settings</h3>
+                    </legend>
+                    <span id="RememberSettings__Hint" class="govuk-hint">
+                        These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the gender pay gap service.
+                    </span>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.RememberSettings, "On",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "RememberSettings__On",
+                                    @checked = Model.RememberSettings == "On"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="RememberSettings__On">
+                                On
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            @(Html.RadioButtonFor(x => x.RememberSettings, "Off",
+                                new
+                                {
+                                    @class = "govuk-radios__input",
+                                    id = "RememberSettings__Off",
+                                    @checked = Model.RememberSettings == "Off"
+                                }))
+                            <label class="govuk-label govuk-radios__label" for="RememberSettings__Off">
+                                Off
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <h3 class="govuk-heading-m">Strictly necessary cookies</h3>
+
+            <p class="govuk-body">These essential cookies do things like:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>enable you to login to report your organisation's gender pay gap</li>
+                <li>remember your progress through the service</li>
+                <li>remember notifications you’ve seen so that we don’t show them again</li>
+            </ul>
+            <p class="govuk-body">They always need to be on.</p>
+            <p class="govuk-body">
+                <a href="@(Url.Action("CookieDetails", "Home"))" class="govuk-link">Find out more about cookies on the gender pay gap service</a>
+            </p>
+
+            <input type="submit" class="govuk-button" data-module="govuk-button" value="Confirm"/>
+
+        </form>
+
+    </div>
+</div>

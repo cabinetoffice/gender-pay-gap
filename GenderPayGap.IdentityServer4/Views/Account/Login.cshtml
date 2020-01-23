@@ -1,0 +1,68 @@
+﻿@using GenderPayGap.IdentityServer4.Classes
+@model GenderPayGap.IdentityServer4.Models.Account.LoginViewModel
+@{
+    ViewData["PageTitle"] = "Sign in - Gender pay gap reporting service - GOV.UK";
+}
+
+<div class="grid-row">
+
+    @if (Model.EnableLocalLogin)
+    {
+        <div class="column-two-thirds">
+
+            @if (ViewData.ModelState.ErrorCount > 0)
+            {
+                @await Html.CustomValidationSummaryAsync(validationSummaryMessage: "There’s a problem with your email address or password")
+            }
+
+            <h1 class="heading-large">
+                Sign in
+            </h1>
+            <p>
+                If you have an account, enter your email address and password. <br/>
+                After signing into your account you can register a new organisation or manage your existing organisations.
+            </p>
+            <p class="notice">
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <strong class="bold-small">
+                    It may take up to a week to register your organisation
+                </strong>
+            </p>
+            <form asp-route="Login">
+                <input type="hidden" asp-for="ReturnUrl"/>
+
+                <anti-forgery-token token="model.antiForgery"></anti-forgery-token>
+                <fieldset>
+                    <legend class="visuallyhidden">Sign in</legend>
+                    <div class="form-group ">
+                        <label asp-for="Username" class="form-label">Email</label>
+                        <input type="email" class="form-control" asp-for="Username" autofocus maxlength="100" autocomplete="off" required>
+                    </div>
+                    <div class="form-group ">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input type="password" class="form-control" asp-for="Password" maxlength="100" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="button dynamic-content default-content alert manual" name="button" value="login">Sign In</button>
+                    </div>
+                </fieldset>
+            </form>
+
+            <h2>Problems with your password?</h2>
+            <a id="forgotten-password" href="/Register/password-reset">Reset your password</a>
+
+            <h2 class="heading-medium">
+                No account yet?
+            </h2>
+            <p>
+                If you're new to the service you will need to create an account. This will allow you to register organisations and report their gender pay gap data.
+                <br/>
+                <a href="/Register">Create an account</a>
+            </p>
+
+        </div>
+    }
+
+</div>

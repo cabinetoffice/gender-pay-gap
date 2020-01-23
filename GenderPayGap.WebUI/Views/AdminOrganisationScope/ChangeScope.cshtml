@@ -1,0 +1,136 @@
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeScopeViewModel
+
+@{
+    ViewBag.Title = "Change scope - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Scope history",
+                Href = Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change scope"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.OrganisationId })">
+            @(Html.AntiForgeryToken())
+            @(Html.HiddenFor(m => m.OrganisationName))
+            @(Html.HiddenFor(m => m.CurrentScopeStatus))
+
+            @(Html.GovUkErrorSummary(new[]
+            {
+                nameof(AdminChangeScopeViewModel.NewScopeStatus),
+                nameof(AdminChangeScopeViewModel.Reason)
+            }))
+
+
+            <h1 class="govuk-heading-xl">Change scope</h1>
+            
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Organisation name</th>
+                        <td class="govuk-table__cell">@(Model.OrganisationName)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Current scope</th>
+                        <td class="govuk-table__cell">@(Model.CurrentScopeStatus)</td>
+                    </tr>
+                    @if (Model.CurrentScopeStatus == ScopeStatuses.InScope)
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">New scope</th>
+                            <td class="govuk-table__cell">@(ScopeStatuses.OutOfScope)</td>
+                        </tr>
+                    }
+                    @if (Model.CurrentScopeStatus == ScopeStatuses.OutOfScope)
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">New scope</th>
+                            <td class="govuk-table__cell">@(ScopeStatuses.InScope)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            
+            <div class="govuk-form-group">
+
+                @if (Model.CurrentScopeStatus != ScopeStatuses.InScope && Model.CurrentScopeStatus != ScopeStatuses.OutOfScope)
+                {
+                    @Html.GovUkRadiosFor(
+                        m => m.NewScopeStatus,
+                        new FieldsetViewModel
+                        {
+                            Legend = new LegendViewModel
+                            {
+                                Text = "Please select a new scope",
+                                Classes = "govuk-fieldset__legend--m"
+                            },
+                            Classes = "govuk-!-margin-top-6"
+                        })
+                }
+                else
+                {
+                    @(Html.HiddenFor(m => m.NewScopeStatus))
+                }
+
+                @Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
+                        Classes = "govuk-!-margin-top-6"
+                    })
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+                       class="govuk-link">
+                        Cancel and return to organisation page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>

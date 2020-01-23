@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Code Expired - Gender pay gap reporting service";
+}
+@model GenderPayGap.WebUI.Models.Scope.ScopingViewModel
+<div class="grid-row">
+    <div class="column-two-thirds">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new {@class = "form", autocomplete = "off", novalidate = ""}))
+        {
+            @Html.AntiForgeryToken()
+
+            <a id="BackLink" class="link-back" href="@Url.Action("OutOfScope")">Back <span class="visuallyhidden"> to the previous question</span></a>
+
+            <h1 class="heading-large">Your security code has expired</h1>
+            <p class="text">
+                We can't identify your organisation right now as the security code you entered has expired.
+            </p>
+            <p class="text">
+                Go <a href="@Url.Action("OutOfScope")">back</a> to enter more codes or
+                <a href="@Url.Action("RegisterOrManage")">@(Model.UserIsRegistered ? "" : "register or ")manage this organisation</a>.
+            </p>
+        }
+    </div>
+</div>

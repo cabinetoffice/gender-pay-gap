@@ -1,0 +1,94 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Core.Models.Cookies
+@using Microsoft.ApplicationInsights.AspNetCore
+@inject JavaScriptSnippet snippet
+@{
+    CookieSettings cookieSettings = CookieHelper.GetCookieSettingsCookie(Context.Request);
+}
+
+<script type="text/javascript">
+    function initialiseGoogleAnalytics() {
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] ||
+                function() {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('set', 'anonymizeIp', true);
+
+    }
+
+    function sendGpgPageView() {
+        // Setup tracking to the GPG Google Analytics account 
+        ga('create', '@(Html.AppSetting("GoogleAnalyticsAccountId"))', 'auto');
+
+        // Track the current page view using the GPG Google Analytics account
+        ga('send', 'pageview');
+    }
+
+    function sendGovUkPageView() {
+        // Setup tracking to the GDS Google Analytics shared tracking account 
+        ga('create', 'UA-145652997-1', 'auto', 'govuk_shared', { 'allowLinker': true });
+        ga('govuk_shared.require', 'linker');
+        ga('govuk_shared.linker.set', 'anonymizeIp', true);
+        ga('govuk_shared.linker:autoLink', ['www.gov.uk']);
+
+        // Track the current page view using the GDS Google Analytics shared tracking account 
+        ga('govuk_shared.send', 'pageview');
+    }
+
+    function deleteGoogleAnalyticsCookies() {
+        function deleteCookie(cookieName) {
+            document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+
+        deleteCookie('_ga');
+        deleteCookie('_gid');
+        deleteCookie('_gat');
+    }
+
+    @if (cookieSettings.GoogleAnalyticsGpg || cookieSettings.GoogleAnalyticsGovUk)
+    {
+        @:initialiseGoogleAnalytics();
+    }
+    else
+    {
+        @:deleteGoogleAnalyticsCookies();
+    }
+    @if (cookieSettings.GoogleAnalyticsGpg)
+    {
+        @:sendGpgPageView();
+    }
+    @if (cookieSettings.GoogleAnalyticsGovUk)
+    {
+        @:sendGovUkPageView();
+    }
+</script>
+
+@if (cookieSettings.ApplicationInsights &&
+     snippet != null &&
+     !string.IsNullOrWhiteSpace(Global.APPINSIGHTS_INSTRUMENTATIONKEY))
+{
+    @Html.Raw(snippet.FullScript)
+}
+else
+{
+    <script>
+        @* Delete Application Insights cookies *@
+        (() => {
+            function deleteCookie(cookieName) {
+                document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
+
+            deleteCookie('ai_session');
+            deleteCookie('ai_user');
+        })();
+    </script>
+}

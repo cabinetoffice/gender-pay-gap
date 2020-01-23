@@ -1,0 +1,22 @@
+﻿@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+<div class="grid-row">
+    <div class="column-two-thirds">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => Model.AccountingDate)
+
+            var controller = ViewData["Controller"] as BaseController;
+
+            @await Html.CustomValidationSummaryAsync()
+            <div class="govuk-box-highlight">
+                <h1 class="bold-large">You've submitted your gender pay gap data for @(Model.AccountingDate.Year) to @(Model.AccountingDate.AddYears(1).Year)</h1>
+            </div>
+            <p>@Html.ActionLink("See your gender pay gap data", "Employer", "Viewing", new {employerIdentifier = Model.EncryptedOrganisationId}, new {id = "btnViewData", target = "_blank"})</p>
+            <p>
+                <a href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Manage organisations</a>
+            </p>
+            <button id="NextStep" type="submit" class="button" name="command">Finish and sign out</button>
+        }
+    </div>
+</div>

@@ -1,0 +1,391 @@
+@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Http
+@model GenderPayGap.Database.Organisation
+
+@{
+    ViewBag.Title = $"Organisation Details - {Model.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        Uri referrer = Context.Request.GetTypedHeaders().Referer;
+        string searchPageUrl = Url.Action("SearchGet", "AdminSearch", null, "https");
+
+        if (referrer != null && referrer.AbsoluteUri.StartsWith(searchPageUrl))
+        {
+            crumbs.Add(new CrumbViewModel
+            {
+                Text = "Search results",
+                Href = "javascript:window.history.back();"
+            });
+        }
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.OrganisationName
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Organisation details
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.OrganisationName)
+    </span>
+</h1>
+
+<p class="govuk-body">
+    <a href="@Url.Action("Employer", "Viewing", new {employerIdentifier = Model.GetEncryptedId()})"
+       class="govuk-link">
+        '@(Model.OrganisationName)' on viewing service
+    </a>
+</p>
+
+<h2 class="govuk-heading-l">General information</h2>
+
+<table class="govuk-table">
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Name</th>
+            <td class="govuk-table__cell">
+                @(Model.OrganisationName)
+            </td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewNameHistory", "AdminOrganisationName", new {id = Model.OrganisationId})"
+                   class="govuk-link">
+                    History <span class="govuk-visually-hidden"> of names</span> / change<span class="govuk-visually-hidden"> name</span>
+                </a>
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Address</th>
+            <td class="govuk-table__cell">
+                @(Model.OrganisationAddresses.OrderByDescending(a => a.Created).FirstOrDefault()?.GetAddressString() ?? "(No 'latest address')")
+            </td>
+            <td class="govuk-table__cell">
+                <a href="@(Url.Action("ViewAddressHistory", "AdminOrganisationAddress", new {id = Model.OrganisationId}))"
+                   class="govuk-link">
+                    History <span class="govuk-visually-hidden"> of addresses</span> / change<span class="govuk-visually-hidden"> address</span>
+                </a>
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Employer Reference</th>
+            <td class="govuk-table__cell" colspan="2">@(Model.EmployerReference)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Organisation ID</th>
+            <td class="govuk-table__cell" colspan="2">@(Model.OrganisationId)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Company Number</th>
+            <td class="govuk-table__cell" colspan="2">@(Model.CompanyNumber)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">
+                Synchronise data<br/>
+                <span class="govuk-!-font-weight-regular">with Companies House</span>
+            </th>
+            @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
+            {
+                <td class="govuk-table__cell">
+                    @(Model.OptedOutFromCompaniesHouseUpdate ? "Opted out" : "Opted in")
+                </td>
+                <td class="govuk-table__cell">
+                    @if (Model.OptedOutFromCompaniesHouseUpdate)
+                    {
+                        <a href="@Url.Action("OptIn", "AdminOrganisationCompaniesHouseOptInOut", new {id = Model.OrganisationId})"
+                           class="govuk-link">
+                            Change <span class="govuk-visually-hidden"> Companies House sync to opted in</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("OptOut", "AdminOrganisationCompaniesHouseOptInOut", new {id = Model.OrganisationId})"
+                           class="govuk-link">
+                            Change <span class="govuk-visually-hidden"> Companies House sync to opted out</span>
+                        </a>
+                    }
+                </td>
+            }
+            else
+            {
+                <td class="govuk-table__cell" colspan="2">
+                    Not applicable
+                    <br/>
+                    <span class="govuk-body-s">
+                        (organisation needs a company number to be eligible to synchronise with Companies House)
+                    </span>
+                </td>
+            }
+        </tr>
+
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Status</th>
+            <td class="govuk-table__cell" colspan="2">@(Model.Status)</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Sector</th>
+            <td class="govuk-table__cell" colspan="2">
+                @(Model.SectorType)
+                @if (Model.LatestPublicSectorType?.PublicSectorType?.Description != null)
+                {
+                    <br/>
+                    <span>
+                        (@(Model.LatestPublicSectorType.PublicSectorType.Description))
+                    </span>
+                }
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">SIC codes</th>
+            <td class="govuk-table__cell">
+                @foreach (OrganisationSicCode organisationSicCode in Model.OrganisationSicCodes.Where(osc => !osc.Retired.HasValue))
+                {
+                    <b>@(organisationSicCode.SicCode.SicCodeId)</b>
+                    @(organisationSicCode.SicCode.Description)
+                    <br/>
+                    <span class="govuk-body-s">
+                        part of: @(organisationSicCode.SicCode.SicSection.Description)
+                    </span>
+                    <br/>
+                }
+            </td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new {id = Model.OrganisationId})"
+                   class="govuk-link">
+                    History <span class="govuk-visually-hidden"> of SIC codes</span> / change<span class="govuk-visually-hidden"> SIC codes</span>
+                </a>
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Scope</th>
+            <td class="govuk-table__cell">
+                <b>
+                    @(Model.LatestScope.SnapshotDate.ToString("yyyy")):
+                </b>
+                @(Model.LatestScope.ScopeStatus)
+            </td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = Model.OrganisationId})"
+                   class="govuk-link">
+                    History <span class="govuk-visually-hidden"> of scopes</span> / change<span class="govuk-visually-hidden"> scope</span>
+                </a>
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header" colspan="2">Audit logs</th>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewOrganisationAuditLogs", "AdminViewAuditLogs", new {id = Model.OrganisationId})"
+                   class="govuk-link">
+                    View audit logs
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="govuk-heading-l">Returns</h2>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Snapshot date</th>
+            <th scope="col" class="govuk-table__header">Public page</th>
+            <th scope="col" class="govuk-table__header">Modified</th>
+            <th scope="col" class="govuk-table__header">Employees</th>
+            <th scope="col" class="govuk-table__header">Modifications</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Late</th>
+            <th scope="col" class="govuk-table__header">Late reason</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @{ var previousAccountingDate = DateTime.MinValue; }
+        @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenByDescending(r => r.StatusDate))
+        {
+            <tr class="govuk-table__row">
+                @if (returnForYear.AccountingDate == previousAccountingDate)
+                {
+                @* Omit this TD, a TD above has a rowspan that covers this row *@
+                }
+                else
+                {
+                    <th scope="row" class="govuk-table__cell" style="white-space: nowrap" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
+                        @(returnForYear.AccountingDate.ToString("d MMM yyyy"))
+                    </th>
+                    <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
+                        <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
+                           class="govuk-link">
+                            @(returnForYear.AccountingDate.Year)
+                        </a>
+                    </td>
+                }
+                <td class="govuk-table__cell">
+                    <span style="white-space: nowrap">
+                        @(returnForYear.Modified.ToString("d MMM yyyy"))
+                    </span>
+                    <span style="white-space: nowrap">
+                        @(returnForYear.Modified.ToString("hh:mm"))
+                    </span>
+                </td>
+                <td class="govuk-table__cell">@(returnForYear.MinEmployees)-@(returnForYear.MaxEmployees)</td>
+                <td class="govuk-table__cell">
+                    @(returnForYear.Modifications != null
+                        ? string.Join(", ", returnForYear.Modifications.Split(",", StringSplitOptions.RemoveEmptyEntries))
+                        : "")
+                </td>
+                <td class="govuk-table__cell">@(returnForYear.Status)</td>
+                <td class="govuk-table__cell">
+                    @if (returnForYear.AccountingDate != previousAccountingDate)
+                    {
+                        <span>@(returnForYear.IsLateSubmission ? "Yes" : "No") - </span>
+                        <a href="@Url.Action("ChangeLateFlag", "AdminReturnLateFlag", new {id = returnForYear.ReturnId})" class="govuk-link">
+                            Change <span class="govuk-visually-hidden"> late submission status for @(returnForYear.GetReportingPeriod())</span>
+                        </a>
+                    }
+                </td>
+                <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
+            </tr>
+            previousAccountingDate = returnForYear.AccountingDate;
+        }
+    </tbody>
+</table>
+
+<h2 class="govuk-heading-l">Registered users</h2>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Name</th>
+            <th scope="col" class="govuk-table__header">Email</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Actions</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (UserOrganisation userOrganisation in Model.UserOrganisations)
+        {
+            User user = userOrganisation.User;
+            string userStatus = null;
+            @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+            {
+                userStatus = "AWAITING_PIN";
+            }
+            else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+            {
+                userStatus = "AWAITING_APPROVAL";
+            }
+            else
+            {
+                userStatus = "REGISTERED";
+            }
+
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                       class="govuk-link">
+                        @(user.Fullname)
+                    </a>
+                </td>
+                <td class="govuk-table__cell">@(user.EmailAddress)</td>
+                <td class="govuk-table__cell">
+                    @if (userStatus == "AWAITING_PIN")
+                    {
+                        <span>
+                            Awaiting activation PIN
+                            <br/>
+                            <span class="govuk-!-font-weight-bold">
+                                @(userOrganisation.PIN)
+                            </span>
+                            <br/>
+                            <span class="govuk-body-s">
+                                sent on
+                                <span style="white-space: nowrap">
+                                    @(userOrganisation.PINSentDate.Value.ToString("d MMM yyyy"))
+                                </span>
+                                <br/>
+                                expires on
+                                <span style="white-space: nowrap">
+                                    @(userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays).ToString("d MMM yyyy"))
+                                </span>
+                                @if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now)
+                                {
+                                    <br/>
+                                    <span class="govuk-!-font-weight-bold">
+                                        EXPIRED
+                                    </span>
+                                }
+                                else if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now.AddDays(7))
+                                {
+                                    <br/>
+                                    <span class="govuk-!-font-weight-bold">
+                                        EXPIRES IN LESS THAN ONE WEEK
+                                    </span>
+                                }
+                            </span>
+                        </span>
+                    }
+                    else if (userStatus == "AWAITING_APPROVAL")
+                    {
+                        @:Awaiting registration approval
+                    }
+                    else
+                    {
+                        <span>
+                            Registration complete
+                            <br/>
+                            (confirmed on
+                            <span style="white-space: nowrap">
+                                @(userOrganisation.PINConfirmedDate.Value.ToString("d MMM yyyy")))
+                            </span>
+                        </span>
+                    }
+                </td>
+                <td class="govuk-table__cell">
+                    @if (userStatus == "REGISTERED")
+                    {
+                        <form method="POST" action="@Url.Action("ImpersonatePost", "Admin")">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="emailAddress" value="@(user.EmailAddress)"/>
+                            <input type="submit" class="govuk-button" data-module="govuk-button" value="Impersonate"/>
+                        </form>
+                    }
+                    else if (userStatus == "AWAITING_PIN")
+                    {
+                        <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
+                                     new {userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                           class="govuk-link">
+                            Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
+                           class="govuk-link">
+                            Review request
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

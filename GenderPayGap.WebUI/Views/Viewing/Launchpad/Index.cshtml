@@ -1,0 +1,101 @@
+@using GenderPayGap.Core
+@{
+    ViewBag.Title = "Gender pay gap data";
+    ViewBag.pageDescription = "Find and compare gender pay gap information reported by employers. Learn more about the gender pay gap and how to close it.";
+    ViewBag.pageClass = "landing-page";
+    var controller = ViewData["Controller"] as ViewingController;
+}
+
+@section PreMain {
+    <div class="hero-container" role="search">
+        <div class="hero font-small">
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <h1 class="heading-xlarge">
+                        Search and compare gender pay gap data
+                    </h1>
+                    <p>
+                        Employers with 250 or more employees have published their figures comparing men and women&rsquo;s average pay across the organisation.
+                    </p>
+                    <partial name="Launchpad/Parts/SearchByEmployer"/>
+                </div>
+            </div>
+            <div class="grid-row related">
+                <div class="column-two-thirds">
+                    <partial name="Launchpad/Parts/RelatedContent"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<partial name="Launchpad/Parts/ServiceSurveyIntroAndLink"/>
+
+<div class="heading-medium" style="margin-bottom: 0.12em;">
+    Report your gender pay gap data
+</div>
+
+<div class="grid-row">
+    <div class="column-three-thirds">
+        <div class="column-two-thirds">
+            <div class="heading-xsmall">
+                For employers to <a href="@(Global.StartUrl ?? Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")) ">submit gender pay gap data</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="heading-medium" style="margin-bottom: 0;">
+    Understanding the gender pay gap
+</div>
+<div class="grid-row">
+    <div class="column-three-thirds">
+        <div class="column-one-third">
+            <div class="heading-small">
+                <a rel="download" download="true" data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/understand-your-gender-pay-gap.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Understand your gender pay gap&quot;}" href="/public/assets/pdf/understand-your-gender-pay-gap.pdf">Eight ways to understand your organisation’s gender pay gap</a>
+            </div>
+            Identify potential causes of the gender pay gap in your organisation
+        </div>
+
+        <div class="column-one-third">
+            <div class="heading-small">
+                <a rel="download" download="true" data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/gender-pay-gap-explained.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Gender pay gap explained&quot;}" href="/public/assets/pdf/gender-pay-gap-explained.pdf">Gender pay gap regulations explained</a>
+            </div>
+            Gender pay gap regulations and equal pay
+        </div>
+    </div>
+</div>
+
+<div class="heading-medium" style="margin-bottom: 0;">
+    How to close the gender pay gap
+</div>
+<div class="grid-row">
+    <div class="column-three-thirds">
+        <div class="column-one-third">
+            <div class="heading-small">
+                <a href="@Url.Action("Overview", "ActionHub")">Actions to close the gap</a>
+            </div>
+            Recommended actions for employers that make a difference
+        </div>
+
+        <div class="column-one-third">
+            <div class="heading-small">
+                <a rel="download" download="true" data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/action-plan-guidance.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Action plan guidance&quot;}" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan</a>
+            </div>
+            A step by step guide for employers to develop an effective action plan
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/javascripts/typeahead.bundle.min.js?v=1.2.0"></script>
+    <script>
+        new GOVUK.SuggestEmployer({
+            formId: '',
+            keywordsId: 'SearchEmployers'
+        });
+
+        new GOVUK.analyticsPlugins.downloadLinkTracker({ selector: 'a[rel="download"]' });
+    </script>
+}

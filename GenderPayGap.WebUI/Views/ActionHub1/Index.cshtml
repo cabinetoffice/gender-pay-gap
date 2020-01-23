@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "~/Views/Dfe/Layouts/template.cshtml";
+    ViewBag.Title = "Actions to close the gap";
+    ViewBag.pageDescription = "";
+    ViewBag.pageClass = "actions-to-close-gap-page";
+}
+@await Html.PartialAsync("/Views/ActionHub1/TitlePart.cshtml")
+@await Html.PartialAsync("/Views/ActionHub1/ContentsPart.cshtml")
+<div class="grid-row">
+    <div class="column-two-thirds">
+        @RenderBody()
+    </div>
+    <div class="column-one-third">
+        <div class="gem-c-related-navigation" style="margin-top: 35px">
+            <nav role="navigation" class="gem-c-related-navigation__nav-section font-xsmall" aria-labelledby="related-nav-related_items" data-module="toggle">
+                <h3 class="heading-small" id="related-nav-related_items">Related content</h3>
+                <ul class="gem-c-related-navigation_link-list" data-module="track-click">
+                    <li class="gem-c-related-navigation__link">
+                        <a rel="track" class="gem-c-related-navigation__section-link--other" data-track-category="Related Link Clicked" href="/viewing/search-results?t=2">Find and compare employer's gender pay gaps</a>
+                    </li>
+                    <li class="gem-c-related-navigation__link">
+                        <a rel="track" class="gem-c-related-navigation__section-link--other" data-track-category="Related Link Clicked" href="/public/assets/pdf/understand-your-gender-pay-gap.pdf">Eight ways to understand your organisation’s gender pay gap</a>
+                    </li>
+                    <li class="gem-c-related-navigation__link">
+                        <a rel="track" class="gem-c-related-navigation__section-link--other" data-track-category="Related Link Clicked" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan</a>
+                    </li>
+                    <li class="gem-c-related-navigation__link">
+                        <a rel="track" class="gem-c-related-navigation__section-link--other" data-track-category="Related Link Clicked" href="/public/assets/pdf/gender-pay-gap-explained.pdf">Gender pay gap explained</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <nav role="navigation" class="gem-c-related-navigation__nav-section font-xsmall" data-module="toggle">
+                <h3 id="related-nav-related_external_links-2" data-track-count="sidebarRelatedItemSection" class="gem-c-related-navigation__sub-heading--other">
+                    Further reading
+                </h3>
+                <div class="references">
+                    <br/>
+                    <ul class="gem-c-related-navigation_link-list">
+                        <li class="gem-c-related-navigation__link">
+                            What Works: Gender equality by design<br/>
+                            by Iris Bohnet<br/>
+                            Harvard University Press, 2016
+                        </li>
+                        <li class="gem-c-related-navigation__link">
+                            Why diversity programs fail<br/>
+                            by F. Dobbin and A. Kalev<br/>
+                            Harvard Business Review, 2016
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        new GOVUK.Modules.AccordionWithDescriptions().start($('.js-accordion-with-descriptions'));
+    </script>
+}

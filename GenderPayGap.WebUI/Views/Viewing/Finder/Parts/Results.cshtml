@@ -1,0 +1,39 @@
+﻿@using GenderPayGap.Core.Models
+@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+
+<ul id="SearchResults" class="results">
+    @foreach (EmployerSearchModel employer in Model.Employers.Results)
+    {
+        string encOrgId = employer.OrganisationIdEncrypted;
+        <li class="document">
+            <div class="comparison-table">
+                <div class="comparison-employer-container">
+                    <h2>
+                        @Html.ActionLink(employer.Name, "Employer", "Viewing", new {employerIdentifier = employer.OrganisationIdEncrypted}, new {data_name = "ViewLink", data_id = employer.OrganisationIdEncrypted})
+                    </h2>
+                    @if (string.IsNullOrWhiteSpace(employer.PreviousName) == false)
+                    {
+                        <div class="panel font-xsmall">
+                            <div>Previously known as</div>
+                            <strong>@employer.PreviousName</strong>
+                        </div>
+                    }
+                    <address>@employer.Address</address>
+                    <dl class="metadata">
+                        <dt class="metadata-text-label">Sector</dt>
+                        <dd class="metadata-text-value">@employer.SicSectionNames.ToDelimitedString(", ")</dd>
+                    </dl>
+                </div>
+                @{
+                    var viewModel = new AddRemoveButtonViewModel
+                    {
+                        OrganisationIdEncrypted = employer.OrganisationIdEncrypted,
+                        OrganisationName = employer.Name
+                    };
+                }
+                <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
+            </div>
+        </li>
+    }
+</ul>
+<partial name="Finder/Parts/Pagination" model="Model"/>

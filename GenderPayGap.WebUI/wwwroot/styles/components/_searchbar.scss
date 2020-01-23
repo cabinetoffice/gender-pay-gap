@@ -1,0 +1,115 @@
+.gov-uk-c-searchbar {
+  .gov-uk-l-searchbar__table {
+    display: table;
+    width: 100%;
+  }
+
+  .gov-uk-l-searchbar__cell {
+    display: table-cell;
+    vertical-align: top;
+    width: 100%;
+  }
+
+  .gov-uk-c-searchbar__input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    height: 50px;
+    background: govuk-colour("white");
+    border-radius: 0;
+    border: 2px solid $govuk-input-border-colour;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+
+    @extend .govuk-body;
+    margin-bottom: 0;
+
+    &:focus {
+      outline: 3px solid $govuk-focus-colour;
+      outline-offset: 0;
+      box-shadow: inset 0 0 0 2px;
+    }
+  }
+
+  .gov-uk-c-searchbar__submit {
+    padding: 5px;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    background: url('/assets/images/search-button-white-and-black.png') no-repeat -12.5% 50%;
+    text-indent: -5000px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+
+    &:focus {
+      outline: none;
+      background-color: $govuk-focus-colour;
+      border: 4px solid $govuk-input-border-colour;
+      background-position: -40px 50%;
+      border-left-width: 2px;
+    }
+  }
+
+  .gov-uk-c-searchbar__submit--blue {
+    background-color: $govuk-brand-colour;
+  }
+
+  .gov-uk-c-searchbar__submit--black {
+    background-color: govuk-colour("black");
+  }
+
+  .suggest-prev-entry {
+    .panel {
+      padding: 0 7.5px;
+      border-left-width: 2px;
+    }
+
+    .bold-small {
+      text-transform: uppercase !important;
+      font-size: initial !important;
+    }
+  }
+
+  .suggest-prevmatching {
+    text-transform: lowercase !important;
+    color: govuk-colour("black");
+  }
+
+  .twitter-typeahead {
+    display: block !important;
+  }
+
+  .tt-menu {
+    margin-top: 15px !important;
+    background-color: govuk-colour("white");
+    z-index: 101 !important;
+    width: 100%;
+    border: 2px solid $govuk-border-colour;
+
+    .tt-cursor {
+      background-color: govuk-colour("light-grey");
+    }
+
+    .tt-suggestion {
+      a {
+        display: block;
+        padding: 7.5px;
+        text-transform: uppercase;
+        line-height: 1.25;
+        margin: 0;
+        @extend .govuk-link;
+
+        strong {
+          text-decoration: underline;
+        }
+
+        &:hover {
+          background-color: govuk-colour("blue");
+          color: govuk-colour("white");
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

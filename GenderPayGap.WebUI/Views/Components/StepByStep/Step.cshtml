@@ -1,0 +1,90 @@
+﻿@using GenderPayGap.WebUI.Views.Components.StepByStep
+@using GovUkDesignSystem
+@model GenderPayGap.WebUI.Views.Components.StepByStep.StepViewModel
+
+<li class="app-step-nav__step js-step @(Model.IsCurrentStep ? "app-step-nav__step--active" : "")"
+    aria-current="step" @(Model.IsCurrentStep ? "data-show" : "")>
+
+    <div class="app-step-nav__header js-toggle-panel"
+         data-position=@(Model.Position)>
+
+        <h3 class="app-step-nav__title">
+
+            @{
+                if (Model.StepType == StepType.Number)
+                {
+                    <span class="app-step-nav__circle app-step-nav__circle--number">
+                        <span class="app-step-nav__circle-inner">
+                            <span class="app-step-nav__circle-background">
+                                <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span>@($" {Model.StepNumber}")
+                                <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
+                            </span>
+                        </span>
+                    </span>
+                }
+                else
+                {
+                    <span class="app-step-nav__circle app-step-nav__circle--logic">
+                        <span class="app-step-nav__circle-inner">
+                            <span class="app-step-nav__circle-background">
+                                @(Model.StepType == StepType.And ? "and" : "or")
+                            </span>
+                        </span>
+                    </span>
+                }
+            }
+
+            <span class="js-step-title">
+                @(Model.Title)
+            </span>
+        </h3>
+    </div>
+
+    <div class="app-step-nav__panel js-panel">
+        @if (Model.Description != null)
+        {
+            <p class="app-step-nav__paragraph">
+                @(Html.GovUkHtmlText(Model.Description))
+            </p>
+        }
+
+        <ol class="app-step-nav__list" data-length=@(Model.StepTasks.Count)>
+
+            @for (var i = 0; i < Model.StepTasks.Count; i++)
+            {
+                var stepTask = Model.StepTasks[i];
+                var position = $"{Model.Position}.{i + 1}";
+
+
+                @if (Model.IsCurrentStep && stepTask.IsCurrentTask)
+                {
+                    <li class="app-step-nav__list-item js-list-item app-step-nav__list-item--active">
+                        <a href="@(stepTask.TaskUrl)"
+                           target="@(stepTask.OpenInNewTab ? "_blank" : "")"
+                           class="app-step-nav__link govuk-link js-link"
+                           data-position="@(position)">
+                            <span class="app-step-nav__link-active-context govuk-visually-hidden">
+                                You are currently viewing:
+                            </span>
+                            @(stepTask.TaskText)
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="app-step-nav__list-item js-list-item">
+                        <a href="@(stepTask.TaskUrl)"
+                           target="@(stepTask.OpenInNewTab ? "_blank" : "")"
+                           class="app-step-nav__link govuk-link js-link"
+                           data-position="@(position)">
+                            @(stepTask.TaskText)
+                        </a>
+                    </li>
+                }
+            }
+
+        </ol>
+
+    </div>
+
+</li>

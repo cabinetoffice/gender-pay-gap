@@ -1,0 +1,26 @@
+﻿@using GenderPayGap.WebUI.Models.Search
+@using Microsoft.Extensions.Primitives
+@model GenderPayGap.WebUI.Models.Search.FilterGroup
+@{
+    string maxHeight = string.IsNullOrWhiteSpace(Model.MaxHeight) ? "100%" : Model.MaxHeight;
+    StringValues queryLookup = Context.Request.Query[Model.Group];
+}
+<div class="govuk-option-select js-collapsible" data-closed-on-load="@(Model.Expanded ? "false" : "true")">
+    <div class="container-head js-container-head">
+        <div class="option-select-label">@(Model.Label)</div>
+    </div>
+    <div class="options-container" id="@(Model.Id)" style="max-height: @(maxHeight)">
+        <div class="js-auto-height-inner">
+            <fieldset>
+                <legend>@(Model.Label)</legend>
+                @foreach (OptionSelect item in Model.Metadata)
+                {
+                    <label for="@(item.Id)" @(item.Disabled ? "disabled" : string.Empty)>
+                        <input name="@(Model.Group)" @(item.Disabled ? "disabled" : string.Empty) value="@(item.Value)" id="@(item.Id)" type="checkbox" @(queryLookup.Contains(item.Value) ? "checked" : "") aria-label="@(item.Id)"/>
+                        <span class="font-xsmall">@(item.Label)</span>
+                    </label>
+                }
+            </fieldset>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+﻿@using GenderPayGap.WebUI.Models.Viewing
+@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+@{
+    decimal diffMedianBonus = Model.DiffMedianBonusPercent.HasValue ? Model.DiffMedianBonusPercent.Value : 0;
+    var medianBonusChartModel = new VerticalBarChartModel
+    {
+        Id = "MedianBonusDiffChart",
+        FemaleIsLower = Model.FemaleHasLowerMedianBonusPay,
+        Male = Model.FemaleHasLowerMedianBonusPay ? 100 : 100 + diffMedianBonus,
+        Female = Model.FemaleHasLowerMedianBonusPay ? 100 - diffMedianBonus : 100,
+        MaleMonetisation = Model.MaleMedianBonusPayMonitised,
+        FemaleMonetisation = Model.FemaleMedianBonusPayMonitised
+    };
+
+    // calculates the median bonus pay text to display
+    string medianBonusMonetisation = $"<strong>women earn {Model.FemaleMedianBonusPayMonitised}</strong> for every <strong>{Model.MaleMedianBonusPayMonitised}</strong> that men earn when comparing median bonus pay.";
+
+    string medianBonusCompareStatement = Model.FemaleHasLowerMedianBonusPay ?
+        "<strong>lower</strong> than men&rsquo;s." :
+        "<strong>higher</strong> than men&rsquo;s.";
+
+    // mean bonus difference
+    var diffMeanBonusText = new BonusDiffTextViewModel
+    {
+        Id = "DiffMeanBonusPercent",
+        Compare = Model.FemaleHasLowerMeanBonusPay ? "lower" : "higher",
+        Percent = Math.Abs(Model.DiffMeanBonusPercent.HasValue ? Model.DiffMeanBonusPercent.Value : 0),
+        Statistic = "mean",
+        MenReceivedBonuses = Model.MenReceivedBonuses,
+        WomenReceivedBonuses = Model.WomenReceivedBonuses
+    };
+
+    // who received bonuses
+    var femaleBonusPayText = new BonusProportionTextViewModel
+    {
+        Id = "FemaleBonusPayText",
+        Percent = Model.FemaleMedianBonusPayPercent.Value,
+        Gender = "women",
+        MenReceivedBonuses = Model.MenReceivedBonuses,
+        WomenReceivedBonuses = Model.WomenReceivedBonuses
+    };
+
+    var maleBonusPayText = new BonusProportionTextViewModel
+    {
+        Id = "MaleBonusPayText",
+        Percent = Model.MaleMedianBonusPayPercent.HasValue ? Model.MaleMedianBonusPayPercent.Value : 0,
+        Gender = "men",
+        MenReceivedBonuses = Model.MenReceivedBonuses,
+        WomenReceivedBonuses = Model.WomenReceivedBonuses
+    };
+}
+
+<section id="BonusPayGap">
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h2 class="heading-medium">Bonus pay gap</h2>
+        </div>
+    </div>
+
+    @if (Model.MenReceivedBonuses)
+    {
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <span>In this organisation, @Html.Raw(medianBonusMonetisation)</span>
+                <span>Their median bonus pay is <strong>@(string.Format("{0:0.#}", Math.Abs(diffMedianBonus)))%</strong></span>
+                <span>@Html.Raw(medianBonusCompareStatement)</span>
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div class="govuk-legend">
+                    <span class="font-xsmall">
+                        <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
+                        <span class="govuk-legend__caption govuk-legend__caption--men" data-legend-text="Men"></span>
+                    </span>
+                </div>
+                <partial name="EmployerDetails/VerticalBarChart" model="medianBonusChartModel"/>
+            </div>
+        </div>
+    }
+
+    <partial name="EmployerDetails/BonusPay/BonusDiffText" model="diffMeanBonusText"/>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h3 id="ReceivedBonusPay" class="heading-small">Who received bonus pay</h3>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            @if (Model.WomenReceivedBonuses || Model.MenReceivedBonuses)
+            {
+                <partial name="EmployerDetails/BonusPay/BonusProportionText" model="femaleBonusPayText"/>
+                <partial name="EmployerDetails/BonusPay/BonusProportionText" model="maleBonusPayText"/>
+            }
+            else
+            {
+                <span>No bonuses were paid.</span>
+            }
+        </div>
+    </div>
+</section>

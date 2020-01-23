@@ -1,0 +1,17 @@
+﻿@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.Register.PinFailedToSendViewModel
+
+@{
+    ViewBag.Title = "Sorry, there is a problem with the service – Gender pay gap service – GOV.UK";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
+        <p class="govuk-body">We saved your registration request for @(Model.OrganisationName).</p>
+        <p class="govuk-body">
+            Contact <a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a> to complete your registration.
+        </p>
+    </div>
+</div>

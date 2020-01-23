@@ -1,0 +1,29 @@
+﻿@using GenderPayGap.Core.Interfaces
+@using GenderPayGap.Database
+@model List<int>
+@inject IDataRepository DataRepo;
+@{
+    IQueryable<SicCode> sicCodes = DataRepo.GetAll<SicCode>().Where(s => Model.Contains(s.SicCodeId));
+}
+<table class="compact">
+    @foreach (SicSection sector in sicCodes.Select(s => s.SicSection).Distinct().OrderBy(s => s.Description))
+    {
+        <tr>
+            <td colspan="2" style="padding-top:10px">
+                <b>@sector.Description</b>
+            </td>
+        </tr>
+        if (sector.SicSectionId != "X")
+        {
+            foreach (SicCode sicCode in sicCodes.Where(s => s.SicSectionId == sector.SicSectionId).Distinct().OrderBy(s => s.SicCodeId))
+            {
+                <tr>
+                    <td>
+                        <li style="list-style-position:inside;white-space:nowrap">@sicCode.SicCodeId</li>
+                    </td>
+                    <td>@sicCode.Description</td>
+                </tr>
+            }
+        }
+    }
+</table>

@@ -1,0 +1,65 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.PendingRegistrationsViewModel
+
+@{
+    ViewBag.Title = "Pending Registrations - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Pending Registrations"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">Pending Registrations</h1>
+
+        @if (Model.PublicSectorUserOrganisations.Count == 0 && Model.NonUkAddressUserOrganisations.Count == 0 && Model.ManuallyRegisteredUserOrganisations.Count == 0)
+        {
+            <p class="govuk-body">No pending registrations found</p>
+        }
+
+        @if (Model.PublicSectorUserOrganisations.Count > 0)
+        {
+            <h2 class="govuk-heading-l">Public-sector organisations</h2>
+
+            @(await Html.PartialAsync("PendingRegistrationsForOrganisationType", Model.PublicSectorUserOrganisations))
+        }
+
+        @if (Model.NonUkAddressUserOrganisations.Count > 0)
+        {
+            <h2 class="govuk-heading-l">Private-sector non-UK addresses</h2>
+
+            @(await Html.PartialAsync("PendingRegistrationsForOrganisationType", Model.NonUkAddressUserOrganisations))
+        }
+
+        @if (Model.ManuallyRegisteredUserOrganisations.Count > 0)
+        {
+            <h2 class="govuk-heading-l">Private-sector manual registrations</h2>
+
+            @(await Html.PartialAsync("PendingRegistrationsForOrganisationType", Model.ManuallyRegisteredUserOrganisations))
+        }
+
+    </div>
+</div>

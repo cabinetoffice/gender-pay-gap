@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "We need more information - Gender pay gap reporting service";
+}
+@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.Organisation.DeclareScopeModel
+<div class="grid-row">
+    <div class="column-full">
+        <a class="link-back" href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Back</a>
+
+        @await Html.CustomValidationSummaryAsync()
+
+        @using (Html.BeginForm(null, null, FormMethod.Post, new {@class = "form", autocomplete = "off"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.SnapshotDate)
+            @Html.HiddenFor(m => m.OrganisationName)
+
+            <h1 class="heading-large">
+                <span class="heading-secondary">@Model.OrganisationName</span>
+                <span>We need more information</span>
+            </h1>
+
+            <p>Was your organisation required to report for snapshot date @Model.SnapshotDate.ToString("d MMMM yyyy")?</p>
+            @Html.ValidationMessageFor(model => model.ScopeStatus, null, new {@class = "error-danger"})
+            <div class="form-group @Html.SetErrorClass(model => model.ScopeStatus, "error")">
+                <fieldset>
+                    <div class="multiple-choice">
+                        @Html.CustomRadioButtonFor(m => m.ScopeStatus, ScopeStatuses.InScope, new {type = "radio", @class = "styled", name = "radio1", id = "radio1-1"})
+                        <label for="radio1-1">Yes</label>
+                    </div>
+                    <div class="multiple-choice selection-button-radio ">
+                        @Html.CustomRadioButtonFor(m => m.ScopeStatus, ScopeStatuses.OutOfScope, new {type = "radio", @class = "styled", name = "radio1", id = "radio1-2"})
+                        <label for="radio1-2">No</label>
+                    </div>
+                </fieldset>
+            </div>
+            <p>
+                If you don't know if your organisation is required to report please read the <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener noreferrer">guidance</a>.
+            </p>
+
+            <div class="form-group">
+                <input id="NextStep" type="submit" class="button" value="Continue"/>
+            </div>
+        }
+    </div>
+</div>

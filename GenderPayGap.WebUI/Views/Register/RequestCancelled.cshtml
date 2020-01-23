@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Registration cancelled - Gender pay gap reporting service";
+}
+@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div class="govuk-box-highlight">
+                <h1 class="bold-large dynamic-content publicManual privateManual" style="display: block;">Registration request cancelled</h1>
+            </div>
+            <div class="bold-small">
+                What happens next.
+            </div>
+            <p class="dynamic-content privateManual" style="display: block;">
+                We’ve sent
+                @if (!string.IsNullOrWhiteSpace(ViewBag.TestUrl))
+                {
+                    <a data-name="testurl" href="@ViewBag.TestUrl">
+                        @Model.ContactFirstName&nbsp;@Model.ContactLastName
+                    </a>
+                }
+                else
+                {
+                    <span>@Model.ContactFirstName&nbsp;@Model.ContactLastName</span>
+                }
+                an email confirming their registration request for @Model.OrganisationName has been cancelled.
+            </p>
+            <a href="@Url.Action("PendingRegistrations", "Admin")" class="button">Continue</a>
+        </div>
+    </div>
+</main>

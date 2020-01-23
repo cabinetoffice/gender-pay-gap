@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "Choose your organisation - Gender pay gap reporting service";
+}
+
+@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
+
+<div id="choose-organisation-content">
+    <div class="grid-row">
+        <div class="column-full">
+            @Html.ActionLink("Back", "OrganisationSearch", null, null, new {@class = "link-back"})
+        </div>
+    </div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.SectorType)
+
+        <input type="submit" style="display:none" name="command" value="search">
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                @await Html.CustomValidationSummaryAsync()
+                <h1 class="heading-large">
+                    <span>Choose your organisation</span>
+                </h1>
+                @Html.ValidationMessageFor(model => model.SearchText, null, new {@class = "error-danger"})
+
+                <div class="gov-uk-c-searchbar">
+                    <div class="gov-uk-l-searchbar__table">
+                        <div class="gov-uk-l-searchbar__cell">
+                            @Html.CustomEditorFor(model => model.SearchText, new {@class = "gov-uk-c-searchbar__input", placeholder = Model.SectorType == SectorTypes.Public ? "Organisation name" : "Organisation name or company no"})
+                        </div>
+                        <div class="gov-uk-l-searchbar__cell">
+                            <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--blue" id="NextStep" name="command" value="search" title="Search">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column-full">
+                @if (!string.IsNullOrWhiteSpace(Model.SearchText))
+                {
+                    if (Model.Employers == null || Model.Employers.Results.Count < 1)
+                    {
+                        <div class="zero-results">
+                            <h2 class="heading-medium">0 employers found that match your search</h2>
+                            <h2>Please try:</h2>
+                            <ul class="list list-bullet">
+                                <li>searching again using different employer name</li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <br>
+                        if (Model.SectorType == SectorTypes.Private)
+                        {
+                            if (Model.LastPrivateSearchRemoteTotal == -1)
+                            {
+                                <div class="subsection panel-indent">
+                                    <div class="bold-small"><span class="error-message" style="display:inline">There was a problem searching the Companies&nbsp;House service. </span><br/>If you cant find your organisation below, please use the search button to try again.</div>
+                                </div>
+                            }
+                            else if (Model.Employers.VirtualRecordTotal != Model.Employers.ActualRecordTotal)
+                            {
+                                <div class="subsection panel-indent">
+                                    <div class="bold-small">Showing @Model.Employers.VirtualRecordTotal.ToString("N0") of @Model.Employers.ActualRecordTotal.ToString("N0") results. Please refine your search or enter your company number.</div>
+                                </div>
+                            }
+                            <p style="width: 66%">Please choose your organisation and we'll send an activation PIN to its registered address. Only organisations registered at Companies House are listed here.</p>
+                        }
+                        <table class="search search3" summary="A list organisations that match your search">
+                            <caption class="visuallyhidden">Customer and Business search listing</caption>
+                            <thead>
+                            <tr>
+                                <th scope="col">Organisation name and registered address</th>
+                                @if (Model.SectorType == SectorTypes.Private)
+                                {
+                                    <th scope="col">Registered number</th>
+                                }
+
+                                <th scope="col">&nbsp;</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @for (var i = 0; i < Model.Employers.Results.Count; i++)
+                            {
+                                <tr style="background-color:@(Model.Employers.Results[i].OrganisationId > 0 ? "inherit" : "#d2e5f5")">
+                                    <td>
+                                        @Model.Employers.Results[i].OrganisationName <span>@Model.Employers.Results[i].GetFullAddress()</span>
+                                    </td>
+                                    @if (Model.SectorType == SectorTypes.Private)
+                                    {
+                                        <td>
+                                            @Model.Employers.Results[i].CompanyNumber
+                                        </td>
+                                    }
+                                    <td>
+                                        <button type="submit" class="link-button" name="command" value="employer_@i">Choose&nbsp;organisation</button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+
+                        if (Model.Employers.Results.Count > 1)
+                        {
+                            <div class="pager">
+                                <div class="pager-controls">
+                                    @if (Model.Employers.CurrentPage > 1)
+                                    {
+                                        <button type="submit" class="link-button" name="command" value="pagePrev">Previous</button>
+                                    }
+                                    @if (Model.Employers.PageCount > 1)
+                                    {
+                                        <ul class="pager-items">
+                                            @for (int i = Model.PagerStartIndex; i <= Model.PagerEndIndex; i++)
+                                            {
+                                                if (i == Model.Employers.CurrentPage)
+                                                {
+                                                    <li>
+                                                        <b>@i</b>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <button type="submit" class="link-button" name="command" value="page_@i">@i</button>
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    }
+                                    @if (Model.Employers.CurrentPage < Model.Employers.PageCount)
+                                    {
+                                        <button type="submit" class="link-button" name="command" value="pageNext">Next</button>
+                                    }
+                                </div>
+                                <div class="pager-summary">Showing @Model.EmployerStartIndex – @Model.EmployerEndIndex of @Model.Employers.VirtualRecordTotal employers</div>
+                            </div>
+                        }
+                    }
+                }
+                <br/>
+                <details role="group">
+                    <summary role="button" aria-controls="details-content-0" aria-expanded="true">Can't find your organisation?</summary>
+                    <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
+                        @Html.ActionLink("Tell us about your organisation", "AddOrganisation")
+
+                    </div>
+                </details>
+
+            </div>
+        </div>
+    }
+</div>

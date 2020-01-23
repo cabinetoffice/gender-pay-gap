@@ -1,0 +1,119 @@
+@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeCompaniesHouseOptInOutViewModel
+
+@{
+    ViewBag.Title = "Opt out - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.Organisation.OrganisationName,
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Opt out of Companies House synchronisation"
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Companies House synchronisation
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+
+        @(Html.GovUkErrorSummary())
+
+        <h2 class="govuk-heading-l">
+            Opting out of synchronisation
+        </h2>
+
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-8">
+            After opting out the following information would NOT be automatically updated:
+        </h2>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Organisation name</th>
+                    <td class="govuk-table__cell">@(Model.Organisation.OrganisationName)</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Organisation address</th>
+                    <td class="govuk-table__cell">@(Model.Organisation.OrganisationAddresses.OrderByDescending(a => a.Created).FirstOrDefault()?.GetAddressString() ?? "(No address)")</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Organisation SIC codes</th>
+                    <td class="govuk-table__cell">
+                        @foreach (OrganisationSicCode organisationSicCode in Model.Organisation.OrganisationSicCodes.Where(osc => !osc.Retired.HasValue))
+                        {
+                            <b>@(organisationSicCode.SicCode.SicCodeId)</b>
+                            @(organisationSicCode.SicCode.Description)
+                            <br />
+                            <span class="govuk-body-s">
+                                part of: @(organisationSicCode.SicCode.SicSection.Description)
+                            </span>
+                            <br />
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form method="POST" action="@Url.Action("OptOut", "AdminOrganisationCompaniesHouseOptInOut", new { id = Model.Organisation.OrganisationId })">
+            @(Html.AntiForgeryToken())
+
+            @Html.GovUkTextAreaFor(
+                m => m.Reason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the reason for this change?",
+                    Classes = "govuk-label--m"
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-8"
+                })
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Confirm",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })"
+                   class="govuk-link">
+                    Cancel and return to organisation page
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>

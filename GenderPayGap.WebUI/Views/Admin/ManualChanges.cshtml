@@ -1,0 +1,94 @@
+﻿@model GenderPayGap.WebUI.Models.Admin.ManualChangesViewModel
+@{
+    ViewBag.Title = "Administration: Manual Changes";
+    var controller = ViewData["Controller"] as BaseController;
+    var options = new[]
+    {
+        "Please select..",
+        "Convert public to private",
+        "Convert private to public",
+        "Retire organisations",
+        "Unretire organisations",
+        "Delete submissions",
+        "Fix organisation names",
+        "Add organisations latest name",
+        "Reset organisation to only original name",
+        "Set organisation company number",
+        "Set organisation DUNS number",
+        "Set organisation SIC codes",
+        "Set organisation addresses",
+        "Set public sector type",
+        "Set organisation as out of scope",
+        "Set organisation as in scope",
+        "Create security code",
+        "Extend security code",
+        "Expire security code",
+        "Create security codes for all active and pending orgs",
+        "Extend security codes for all active and pending orgs",
+        "Expire security codes for all active and pending orgs",
+        "Recreate search indexes",
+        "Update search indexes",
+        "Update GPG download data files",
+        "Fix database errors"
+    };
+}
+
+<main id="content" role="main">
+    <div class="breadcrumbs dynamic-content default-content" style="display: block;">
+        <ol>
+            <li style="display: block; padding-top: 0.75em; padding-bottom: 0;">
+                &lt;
+                @Html.ActionLink("Back to administration home", "Home")
+            </li>
+        </ol>
+    </div>
+
+    <div class="grid-row">
+        <div class="column-full">
+            @using (Html.BeginForm())
+            {
+                @await Html.CustomValidationSummaryAsync()
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.LastTestedCommand)
+                @Html.HiddenFor(m => m.LastTestedInput)
+
+                <h1 class="heading-large" style="margin-top: 0.3em;">
+                    <span id="companyname">Administration</span>
+                    <span class="heading-secondary">Manual Changes</span>
+                </h1>
+                if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+                {
+                    <p style="font-weight:bold;color:darkgreen">@Model.SuccessMessage</p>
+                }
+                if (Model.Tested)
+                {
+                    <p style="font-weight:bold;color:#b10e1e">CHECK THE TEST RESULTS BELOW AND CLICK THE 'EXECUTE' BUTTON AGAIN TO IMPLEMENT THE ACTUAL CHANGES</p>
+                }
+                <h3 class="heading-small">COMMAND</h3>
+                @Html.DropDownListFor(model => Model.Command, new SelectList(options), new {@class = "form-control"})
+
+                <h3 class="heading-small">PARAMETERS</h3>
+                <p>
+                    Enter each change on a new line. Use a equal symbol ('=') to separate reference from values, for example <br/><br/>
+                    'MZC3TMGQ=New Org Name Ltd' or<br/>
+                    'SXAT6DGC=[Address1],[Address2],[Address3],[TownCity],[County],[Country],[PostCode]'<br/>Note: ([Address1], [TownCity] and [PostCode] are required)
+                </p>
+
+                <p>@Html.TextAreaFor(model => Model.Parameters, 6, 60, new {@class = "form-control", style = "width:100%"})</p>
+
+                <h3 class="heading-small">COMMENT</h3>
+                <p>Add a comment here which will be stored against the changes</p>
+
+                <p>@Html.TextAreaFor(model => Model.Comment, 3, 60, new {@class = "form-control", style = "width:100%"})</p>
+
+                <h3 class="heading-small">RESPONSE</h3>
+                <div style="overflow:auto;min-height:100px;max-height:400px;border: 2px solid #6f777b;">@Html.Raw(Model.Results.ReplaceI(Environment.NewLine, "</br>"))</div>
+
+                <p>
+                    <button type="submit" class="button" role="button" onclick="if (!confirm('Are you sure you want to execute this action?')) return false;">Execute</button>
+                </p>
+            }
+        </div>
+
+    </div>
+</main>

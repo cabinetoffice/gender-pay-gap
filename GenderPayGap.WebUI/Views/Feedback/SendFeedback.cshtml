@@ -1,0 +1,195 @@
+@using GenderPayGap.WebUI.Controllers.SendFeedback
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Controllers.SendFeedback.FeedbackViewModel
+@{
+    ViewBag.Title = "Send us feedback - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @(Html.GovUkBackLink(new BackLinkViewModel
+    {
+        Text = "Back",
+        OverrideWithJavascript = true
+    }))
+}
+
+<div class="govuk-grid-row cookie-settings-page">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("SendFeedbackPost", "Feedback")">
+            @(Html.AntiForgeryToken())
+            <h1 class="govuk-heading-xl">Send us feedback</h1>
+            <div class="govuk-form-group">
+
+                @(Html.GovUkErrorSummary(new[]
+                {
+                    nameof(FeedbackViewModel.HowEasyIsThisServiceToUse),
+                    nameof(FeedbackViewModel.HowDidYouHearAboutGpg),
+                    nameof(FeedbackViewModel.WhyVisitGpgSite),
+                    nameof(FeedbackViewModel.WhoAreYou)
+                }))
+
+                @(Html.GovUkRadiosFor(
+                    m => m.HowEasyIsThisServiceToUse,
+                    new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "How easy was this service to use?",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-!-margin-top-6"
+                    }
+                    ))
+
+                @{
+                    var howDidYouHearAboutGpgConditionalOptions =
+                        new Dictionary<HowDidYouHearAboutGpg, Func<object, object>>
+                        {
+                            {
+                                HowDidYouHearAboutGpg.Other,
+                                @<text>
+                                    @( Html.GovUkTextInputFor(m => m.OtherSourceText))
+                                 </text>
+                            }
+                        };
+                }
+
+                @(Html.GovUkCheckboxesFor(
+                    m => m.HowDidYouHearAboutGpg,
+                    new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "How did you hear about the gender pay gap service?",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-!-margin-top-6"
+                    },
+                    new HintViewModel
+                    {
+                        Text = "Select all that apply."
+                    },
+                    howDidYouHearAboutGpgConditionalOptions
+                    ))
+
+                @{
+                    var whyVisitGpgSiteConditionalOptions =
+                        new Dictionary<WhyVisitGpgSite, Func<object, object>>
+                        {
+                            {
+                                WhyVisitGpgSite.Other,
+                                @<text>
+                                    @( Html.GovUkTextInputFor(m => m.OtherReasonText))
+                                 </text>
+                            }
+                        };
+                }
+
+                @(Html.GovUkCheckboxesFor(
+                    m => m.WhyVisitGpgSite,
+                    new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "Why have you visited the site?",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-!-margin-top-6"
+                    },
+                    new HintViewModel
+                    {
+                        Text = "Select all that apply."
+                    },
+                    whyVisitGpgSiteConditionalOptions
+                    ))
+
+                @{
+                    var whoAreYouConditionalOptions =
+                        new Dictionary<WhoAreYou, Func<object, object>>
+                        {
+                            {
+                                WhoAreYou.Other,
+                                @<text>
+                                    @( Html.GovUkTextInputFor(m => m.OtherPersonText))
+                                 </text>
+                            }
+                        };
+                }
+
+                @(Html.GovUkCheckboxesFor(
+                    m => m.WhoAreYou,
+                    new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "Are you",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-!-margin-top-6"
+                    },
+                    new HintViewModel
+                    {
+                        Text = "Select all that apply."
+                    },
+                    whoAreYouConditionalOptions
+                    ))
+
+                @(Html.GovUkCharacterCountFor(
+                    m => m.Details,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "Please take a moment to tell us about your experience, what worked and what didn’t?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
+                        Classes = "govuk-!-margin-top-6"
+                    }
+                    ))
+
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend">
+                        We’d like to reach out from time to time to follow up on the feedback that’s been submitted to us.
+                        If you would like us to get in touch please leave your email and/or phone number below.
+                        For more information about how we use your data, please see our
+                        <a href="https://gender-pay-gap.service.gov.uk/privacy-policy" class="govuk-link">Privacy Policy</a>
+                    </legend>
+
+                    @(Html.GovUkTextInput(new TextInputViewModel
+                    {
+                        Label = new LabelViewModel
+                        {
+                            Text = "Your email address (optional)"
+                        },
+                        Name = nameof(Model.EmailAddress),
+                        InputMode = "email"
+                    }))
+
+                    @(Html.GovUkTextInput(new TextInputViewModel
+                    {
+                        Label = new LabelViewModel
+                        {
+                            Text = "Your phone number (optional)"
+                        },
+                        Name = nameof(Model.PhoneNumber),
+                        InputMode = "tel"
+                    }))
+                </fieldset>
+
+                <div class="govuk-inset-text">
+                    If you are having difficulties with the gender pay gap reporting service please email
+                    <a href="mailto:gpg.reporting@cabinetoffice.gov.uk" class="govuk-link">gpg.reporting@cabinetoffice.gov.uk</a>
+                    so that we can get back to you quickly.
+                </div>
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Submit"
+                }))
+
+            </div>
+        </form>
+    </div>
+</div>

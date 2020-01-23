@@ -1,0 +1,55 @@
+﻿@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+<p class="result-info">
+    <span class="result-count">@(string.Format("{0:n0}", Model.Employers.ActualRecordTotal))</span>
+    <span>employer</span>
+    @if (Model.Employers.ActualRecordTotal != 1)
+    {
+        <span>s</span>
+    }
+
+    @if (string.IsNullOrWhiteSpace(Model.search) == false)
+    {
+        <span>
+            containing
+            @if (Model.t == ((int) SearchType.BySectorType).ToString())
+            {
+                <span>a sector type related to </span>
+            }
+            <strong>@Model.search</strong>
+        </span>
+    }
+
+    @if (Model.SizeFilterInfo.Count > 0)
+    {
+        <span> who have </span>
+        <partial name="Finder/Parts/FilterInfo" model="Model.SizeFilterInfo"/>
+        if (Model.SizeFilterInfo.Count == 1 && Model.SizeFilterInfo[0] == "Not Provided")
+        {
+            <span> an organisation size</span>
+        }
+        else
+        {
+            <span> employees</span>
+        }
+    }
+
+    @if (Model.SectorFilterInfo.Count > 0)
+    {
+        <span> in </span>
+        <partial name="Finder/Parts/FilterInfo" model="Model.SectorFilterInfo"/>
+    }
+
+    @if (Model.ReportingStatusFilterInfo.Count > 0)
+    {
+        <span> who </span>
+        <partial name="Finder/Parts/FilterInfo" model="Model.ReportingStatusFilterInfo"/>
+    }
+
+    @if (Model.ReportingYearFilterInfo.Count > 0)
+    {
+        <span> for </span>
+        <partial name="Finder/Parts/FilterInfo" model="Model.ReportingYearFilterInfo"/>
+    }
+
+</p>

@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Add your organisation - Gender pay gap reporting service";
+    var controller = ViewData["Controller"] as RegisterController;
+}
+@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
+<div id="add-organisation-content">
+    <div class="grid-row">
+        <div class="column-full">
+            <a href="@Url.Action("ChooseOrganisation")" class="link-back">Back</a>
+        </div>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Address1)
+        @Html.HiddenFor(model => model.Address2)
+        @Html.HiddenFor(model => model.Address3)
+        @Html.HiddenFor(model => model.AddressReturnAction)
+        @Html.HiddenFor(model => model.AddressSource)
+        @Html.HiddenFor(model => model.BackAction)
+        @Html.HiddenFor(model => model.City)
+        @Html.HiddenFor(model => model.ConfirmReturnAction)
+        @Html.HiddenFor(model => model.ContactEmailAddress)
+        @Html.HiddenFor(model => model.ContactFirstName)
+        @Html.HiddenFor(model => model.ContactJobTitle)
+        @Html.HiddenFor(model => model.ContactLastName)
+        @Html.HiddenFor(model => model.ContactPhoneNumber)
+        @Html.HiddenFor(model => model.Country)
+        @Html.HiddenFor(model => model.County)
+        @Html.HiddenFor(model => model.NameSource)
+        @Html.HiddenFor(model => model.PoBox)
+        @Html.HiddenFor(model => model.Postcode)
+        @Html.HiddenFor(model => model.SearchText)
+        @Html.HiddenFor(model => model.SectorType)
+        @Html.HiddenFor(model => model.SelectedEmployerIndex)
+        @Html.HiddenFor(model => model.SicSource)
+        @Html.HiddenFor(model => model.ManualRegistration)
+        @Html.HiddenFor(model => model.ManualAddress)
+        @Html.HiddenFor(model => model.ManualAuthorised)
+        @Html.HiddenFor(model => model.SelectedAuthorised)
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                @await Html.CustomValidationSummaryAsync()
+                <h1 class="heading-large">
+                    Details of the organisation you're reporting for
+                </h1>
+                <div class="dynamic-content default-content">
+                    <p>Enter the name for the organisation whose gender pay gap data you’re reporting.</p>
+                    <div class="form-group @Html.SetErrorClass(model => model.OrganisationName, "error")">
+                        @Html.LabelFor(model => model.OrganisationName, "Organisation name", new {@class = "form-label col-md-2"})
+                        @Html.ValidationMessageFor(model => model.OrganisationName, "", new {@class = "error-danger"})
+                        <div class="col-md-10">
+                            @Html.CustomEditorFor(model => model.OrganisationName, new {@class = "form-control"})
+                        </div>
+                    </div>
+
+                    <div id="divReferences">
+                        <p>Enter one or more unique references to help identify your organisation:</p>
+
+                        <div id="divCompanyNumber" class="form-group @Html.SetErrorClass(model => model.CompanyNumber, "error")">
+                            @Html.LabelFor(model => model.CompanyNumber, "Company number", new {@class = "form-label col-md-2"})
+                            @Html.ValidationMessageFor(model => model.CompanyNumber, "", new {@class = "error-danger"})
+                            <div class="col-md-10">
+                                @Html.CustomEditorFor(model => model.CompanyNumber, new {@class = "form-control"})
+                            </div>
+                        </div>
+
+                        <div id="divCharityNumber" class="form-group @Html.SetErrorClass(model => model.CharityNumber, "error")">
+                            @Html.LabelFor(model => model.CharityNumber, "Charity number", new {@class = "form-label col-md-2"})
+                            @Html.ValidationMessageFor(model => model.CharityNumber, "", new {@class = "error-danger"})
+                            <div class="col-md-10">
+                                @Html.CustomEditorFor(model => model.CharityNumber, new {@class = "form-control"})
+                            </div>
+                        </div>
+
+                        <div id="divMutualPartnershipNumber" class="form-group @Html.SetErrorClass(model => model.MutualNumber, "error")">
+                            @Html.LabelFor(model => model.MutualNumber, "Mutual partnership number", new {@class = "form-label col-md-2"})
+                            @Html.ValidationMessageFor(model => model.MutualNumber, "", new {@class = "error-danger"})
+                            <div class="col-md-10">
+                                @Html.CustomEditorFor(model => model.MutualNumber, new {@class = "form-control"})
+                            </div>
+                        </div>
+
+                        <details role="group" @(!string.IsNullOrWhiteSpace(Model.OtherName) || !string.IsNullOrWhiteSpace(Model.OtherValue) ? "open" : "")>
+                            <summary role="button" aria-controls="details-content-0" aria-expanded="true">Other reference?</summary>
+                            <div class="panel panel-border-narrow" id="details-content-0" aria-hidden="false">
+                                <div id="divNameOrType" class="form-group @Html.SetErrorClass(model => model.OtherName, "error")" style="margin-bottom:5px;">
+                                    <label class="form-label" for="OtherName">Name or type <span class="optional">(e.g., 'DUNS ')</span></label>
+                                    @Html.ValidationMessageFor(model => model.OtherName, "", new {@class = "error-danger"})
+                                    <div class="col-md-10">
+                                        @Html.CustomEditorFor(model => model.OtherName, new {@class = "form-control"})
+                                    </div>
+                                </div>
+                                <div id="divUniqueNumberOrValue" class="form-group @Html.SetErrorClass(model => model.OtherValue, "error")">
+                                    <label class="form-label" for="OtherValue">Unique number or value <span class="optional">(e.g., '987654321')</span></label>
+
+                                    @Html.ValidationMessageFor(model => model.OtherValue, "", new {@class = "error-danger"})
+                                    <div class="col-md-10">
+                                        @Html.CustomEditorFor(model => model.OtherValue, new {@class = "form-control"})
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                    <br/>
+                    <label for="NoReference" style="white-space:nowrap">
+                        @Html.CheckBoxFor(m => m.NoReference)
+                        I don't have a reference for this organisation
+                    </label>
+
+                    <br><br>
+                    <input class="button" type="submit" role="button" name="command" value="Continue" aria-label="Continue"/>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>

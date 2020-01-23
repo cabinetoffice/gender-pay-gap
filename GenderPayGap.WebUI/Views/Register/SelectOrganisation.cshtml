@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Select your organisation - Gender pay gap reporting service";
+    var controller = ViewData["Controller"] as RegisterController;
+}
+
+@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
+
+<main id="content" role="main">
+    <div class="grid-row">
+        <div class="column-full">
+            <a href="@Url.Action("AddOrganisation")" class="link-back">Back</a>
+        </div>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                @await Html.CustomValidationSummaryAsync()
+                <h1 class="heading-large">
+                    <span>Select your organisation</span>
+                </h1>
+
+            </div>
+            <div class="column-full">
+                @if (Model.MatchedReferenceCount == 0)
+                {
+                    <p>Select the organisation you wish to report from the list below or click "Continue" to register a new organisation.</p>
+                }
+                else
+                {
+                    <p>The following organisations match your references. Select the organisation you wish to report for from the list below.</p>
+                }
+                <table class="search search3" summary="A list organisations that match your organisation details">
+                    <caption class="visuallyhidden">Customer and Business listing</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col">Organisation name and registered address</th>
+                        <th scope="col">References</th>
+                        <th scope="col">&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.ManualEmployers.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.ManualEmployers[i].OrganisationName <span>@Model.ManualEmployers[i].GetFullAddress()</span>
+                            </td>
+                            <td>
+                                @{ Dictionary<string, string> references = Model.GetReferences(i); }
+                                @foreach (string key in references.Keys)
+                                {
+                                    <span style="white-space:nowrap;display:block;">@key: @(references[key])</span>
+                                }
+                            </td>
+                            <td>
+                                <button type="submit" class="link-button" name="command" value="employer_@i">Choose&nbsp;organisation</button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                @if (Model.MatchedReferenceCount == 0)
+                {
+                    <br/>
+                    <input class="button" type="submit" role="button" name="command" value="Continue"/>
+                }
+            </div>
+        </div>
+    }
+</main>

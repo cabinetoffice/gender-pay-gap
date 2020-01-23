@@ -1,0 +1,167 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <RootNamespace>GenderPayGap.WebUI</RootNamespace>
+    <UserSecretsId>9636f8df-5c1c-4066-b955-0c607fe30b2d</UserSecretsId>
+    <Copyright>Crown Copyright © $([System.DateTime]::UtcNow.Year) ($([System.DateTime]::UtcNow.ToLocalTime()))</Copyright>
+    <ProjectGuid>73D4A349-7276-4C72-9C67-A8FD08D7ED82</ProjectGuid>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <None Include="Content\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Scripts\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- Only need these files during publish phase. Not needed for deployment phase. -->
+  <ItemGroup>
+    <Content Remove="Web.Debug.config" />
+    <Content Remove="Web.loadtest.config" />
+    <Content Remove="Web.Release.config" />
+    <None Include="Web.Debug.config" />
+    <None Include="Web.loadtest.config" />
+    <None Include="Web.Release.config" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="wwwroot\assets\javascripts\application.min.js" />
+    <None Include="wwwroot\assets\stylesheets\application.min.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.loadtest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToPublishDirectory>never</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.LOCAL.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="AppSettings.secret.json" Condition="Exists('AppSettings.secret.json')">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.DEV.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.PREPROD.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.PROD.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <Content Update="appsettings.TEST.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="Autofac.Mvc5" Version="4.0.2" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
+    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.10.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.0.4" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="App_Data\SicCodes.csv" />
+    <Content Include="App_Data\SicSections.csv" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\GenderPayGap.BusinessLogic\GenderPayGap.BusinessLogic.csproj" />
+    <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
+    <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
+    <ProjectReference Include="..\GenderPayGap.Extensions.AspNetCore\GenderPayGap.Extensions.AspNetCore.csproj" />
+    <ProjectReference Include="..\GenderPayGap.Extensions\GenderPayGap.Extensions.csproj" />
+    <ProjectReference Include="..\GovUkDesignSystem\GovUkDesignSystem.csproj" />
+  </ItemGroup>
+
+
+  <!-- *** THIS IS REQUIRED TO TRANSFORM Web.Config on publish *** -->
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.DotNet.Xdt.Tools" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Areas\Account\Resources\AccountResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AccountResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Areas\Account\Resources\AccountResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AccountResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
+    <PropertyGroup>
+      <_SourceWebConfig>$(MSBuildThisFileDirectory)Web.config</_SourceWebConfig>
+      <_XdtTransform>$(MSBuildThisFileDirectory)Web.$(Configuration).config</_XdtTransform>
+      <_TargetWebConfig>$(PublishDir)Web.config</_TargetWebConfig>
+    </PropertyGroup>
+    <Exec Command="dotnet transform-xdt --xml &quot;$(_SourceWebConfig)&quot; --transform &quot;$(_XdtTransform)&quot; --output &quot;$(_TargetWebConfig)&quot;" Condition="Exists('$(_XdtTransform)')" />
+  </Target>
+
+  <!-- *** THIS IS REQUIRED TO DEPLY WEBJOBS WITH WEBUI ON AZURE *** -->
+  <PropertyGroup>
+    <MSDeployPackagePublishDependsOn>
+      CopyWebJobs;
+    </MSDeployPackagePublishDependsOn>
+
+    <WebJobProjects>$(MSBuildProjectDirectory)\..\GenderPayGap.WebJob\GenderPayGap.WebJob.csproj</WebJobProjects>
+
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>NU1605;CS4014;LindhartAnalyserMissingAwaitWarning;</WarningsAsErrors>
+  </PropertyGroup>
+
+  <Target Name="CopyWebJobs">
+    <MSBuild Projects="$(WebJobProjects)" Targets="Restore;Build;Publish;" Properties="DeployOnBuild=true;Configuration=$(Configuration);WebPublishMethod=FileSystem;PublishUrl=$(PublishIntermediateOutputPath)" RunEachTargetSeparately="true" StopOnFirstFailure="true" />
+  </Target>
+</Project>

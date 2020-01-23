@@ -1,0 +1,118 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Core.Classes
+@using GenderPayGap.Database
+@model IEnumerable<GenderPayGap.Database.UserOrganisation>
+@{
+    ViewBag.Title = "Manage your organisation - Gender pay gap reporting service";
+    var controller = ViewData["Controller"] as BaseController;
+    bool hasRegisteredOrgs = Model.Any();
+}
+
+@await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
+
+<div class="grid-row">
+    <div class="column-full">
+        <h1 class="heading-large">
+            Select an organisation
+        </h1>
+        <p>Use this page to access your registered organisations or to register a new organisation.</p>
+        <p>Once you have selected an organisation you can:</p>
+
+        <ul class="list-bullet">
+            <li>Enter gender pay gap data and save it as a draft for publication at a later date</li>
+            <li>Publish your data on the <a href="~/">gender pay gap service</a></li>
+            <li>Declare whether your organisation is required to report for each reporting year </li>
+        </ul>
+
+        <table class="organisations-table" summary="A list of organisations registered to your account" style="margin-top: 30px">
+            <thead>
+            <tr>
+                <th class="org-name" scope="col">Organisation name</th>
+                <th scope="col">Registration Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (UserOrganisation userOrg in Model)
+            {
+                // include the currrent user in the count but dont show a count to pending users
+                int assocUserCount = userOrg.GetAssociatedUsers().Count();
+                DateTime accountingDate = userOrg.Organisation.SectorType.GetAccountingStartDate();
+                int accountingStartYear = accountingDate.Year;
+                string accountingEndYear = (accountingDate.Year + 1).ToString();
+
+                string encOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
+                Return latestReturn = userOrg.Organisation.LatestReturn;
+                ScopeStatuses scopeStatus = userOrg.Organisation.GetScopeStatus(accountingDate);
+                string address = userOrg.Organisation.GetAddressString();
+
+                <tr>
+                    @if (userOrg.PINSentDate != null && userOrg.PINConfirmedDate == null)
+                    {
+                        <th scope="row">
+                            <a id="ActivateOrg-@(encOrgId)" href="@(Url.Action("ActivateOrganisation", "Organisation", new {id = encOrgId}))">
+                                <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
+                            </a>
+                        </th>
+                        <td data-prefix="Status">
+                            Awaiting activation PIN
+                        </td>
+                    }
+                    else if (userOrg.PINSentDate == null && userOrg.PINConfirmedDate == null)
+                    {
+                        <th scope="row">
+                            <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
+                        </th>
+                        <td data-prefix="Status">
+                            Awaiting registration approval
+                        </td>
+                    }
+                    else
+                    {
+                        <th scope="row">
+                            <a id="ManageOrg-@(encOrgId)" href="@Url.Action("ManageOrganisation", "Organisation", new {id = encOrgId})">
+                                <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
+                            </a>
+                        </th>
+                        <td data-prefix="Status">
+                            <span>Registration complete</span>
+                        </td>
+                    }
+                </tr>
+            }
+
+            @if (hasRegisteredOrgs == false)
+            {
+                <tr>
+                    <td colspan="2" style="border-bottom : none">There are no organisations registered to your account.</td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<div class="grid-row">
+
+    <div class="column-two-thirds">
+
+        <p>
+            <a class="button" href="@Url.Action(nameof(RegisterController.OrganisationType), "Register")">Register an organisation</a>
+        </p>
+
+        @if (hasRegisteredOrgs == false)
+        {
+            <h2 class="heading-small">Need to close your account?</h2>
+            <p>
+                If you created an account by mistake or no longer responsible
+                for reporting gender pay gap data you can close your account in <a href="@(Url.Action<ManageAccountController>(nameof(ManageAccountController.ManageAccount)))">manage account</a>.
+            </p>
+        }
+
+    </div>
+
+</div>
+<hr style="border: 1px solid black; background: black;"/>
+<partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>

@@ -1,0 +1,39 @@
+﻿@inject ICompareViewService CompareViewService
+@model AddRemoveButtonViewModel
+@{
+    if (string.IsNullOrWhiteSpace(ViewBag.ReturnUrl))
+    {
+        ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
+    }
+
+    string removeEmployerUrl = Url.Action(
+        nameof(CompareController.RemoveEmployer), "Compare",
+        new {employerIdentifier = Model.OrganisationIdEncrypted, returnUrl = ViewBag.ReturnUrl}
+        );
+
+    string removeEmployerJsUrl = Url.Action(
+        nameof(CompareController.RemoveEmployerJs), "Compare",
+        new {employerIdentifier = Model.OrganisationIdEncrypted, returnUrl = ViewBag.ReturnUrl}
+        );
+
+    string addEmployerUrl = Url.Action(
+        nameof(CompareController.AddEmployer),
+        "Compare",
+        new {employerIdentifier = Model.OrganisationIdEncrypted, returnUrl = ViewBag.ReturnUrl}
+        );
+
+    string addEmployerJsUrl = Url.Action(
+        nameof(CompareController.AddEmployerJs), "Compare",
+        new {employerIdentifier = Model.OrganisationIdEncrypted, returnUrl = ViewBag.ReturnUrl}
+        );
+}
+<div class="comparison-button-container no-print">
+    @if (CompareViewService.BasketContains(Model.OrganisationIdEncrypted))
+    {
+        <a class="button button-comparison-list-remove" id="AddRemoveEmployer@(Model.OrganisationIdEncrypted)" href="@removeEmployerUrl" data-js-url="@removeEmployerJsUrl" data-js-targets="#comparison-basket">Remove <span class="visuallyhidden">@Model.OrganisationName </span>from compare</a>
+    }
+    else
+    {
+        <a class="button button-comparison-list-add" id="AddRemoveEmployer@(Model.OrganisationIdEncrypted)" href="@addEmployerUrl" data-js-url="@addEmployerJsUrl" data-js-targets="#comparison-basket">Add <span class="visuallyhidden">@Model.OrganisationName </span>to compare</a>
+    }
+</div>

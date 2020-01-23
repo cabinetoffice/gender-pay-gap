@@ -1,0 +1,123 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Core
+@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+@{
+    //Required for variables in Sitemap taghelpers
+    ViewBag.EmployerName = Model.OrganisationName;
+    ViewBag.StartYear = Model.AccountingDate.Year;
+    ViewBag.EndYear = (Model.AccountingDate.Year + 1).ToTwoDigitYear();
+
+
+    ViewBag.Title = Model.OrganisationName + " gender pay gap data" + " / " + Model.AccountingDate.Year + "-" + (Model.AccountingDate.Year + 1).ToTwoDigitYear();
+    ViewBag.pageDescription = $"View {Model.AccountingDate.Year} gender pay gap data for {Model.OrganisationName}";
+    ViewBag.ogTitle = ViewBag.Title;
+    ViewBag.ogType = "business.gender_pay_gap";
+    ViewBag.pageClass = "employer-report-page";
+
+
+    string employerIdentifier = Model.EncryptedOrganisationId;
+    var viewModel = new AddRemoveButtonViewModel {OrganisationIdEncrypted = Model.EncryptedOrganisationId, OrganisationName = Model.LatestOrganisationName};
+}
+
+<partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
+
+<div class="grid-row">
+    <div class="column-full">
+        <a class="link-back" href="@(Url.Action("Employer", new {employerIdentifier}))">View all reports for this employer</a>
+        <h1 class="heading-large">
+            <div id="OrganisationName" class="heading-secondary">
+                @Model.LatestOrganisationName
+            </div>
+            <div>
+                Gender pay gap report
+            </div>
+        </h1>
+
+        <div style="margin-bottom: 20px;">
+            <span>
+                <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel { IsLateSubmission = Model.IsLateSubmission, IsVoluntarySubmission = Model.IsVoluntarySubmission }"/>
+            </span>
+            <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
+        </div>
+
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <dl class="metadata employer-report-metadata">
+            <div>
+                <dt class="metadata-text-label">Snapshot date</dt>
+                <dd class="metadata-text-value">@Model.AccountingDate.ToString("d MMMM yyyy")</dd>
+            </div>
+            <div>
+                <dt class="metadata-text-label">Employer size</dt>
+                <dd class="metadata-text-value">
+                    @string.Format("{0}{1}", Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name, Model.OrganisationSize != OrganisationSizes.NotProvided ? " employees" : "")
+                </dd>
+            </div>
+            @if (Model.SectorType == SectorTypes.Private)
+            {
+                <div>
+                    <dt class="metadata-text-label">Person responsible</dt>
+                    <dd class="metadata-text-value">
+                        <span>@Model.FirstName @Model.LastName</span><br/><span>(@Model.JobTitle)</span>
+                    </dd>
+                </div>
+            }
+            <div>
+                <dt class="visually-hidden">More options</dt>
+                <dd>
+                    <div style="margin: 10px auto;">
+                        <a rel="track" data-track-category="Related Link Clicked" target="_blank" href="/public/assets/pdf/understand-your-gender-pay-gap.pdf">Potential causes of the gender pay gap</a>
+                    </div>
+                    <div style="margin: 10px auto;">
+                        <a rel="track" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">How can employers close the gap</a>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.CompanyLinkToGPGInfo))
+                    {
+                        <div style="margin: 10px auto;">
+                            <a href="@Model.CompanyLinkToGPGInfo" rel="external noopener" target="_blank">
+                                What this employer says about their gender pay gap <span class="visually-hidden">, opens in new window</span>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <span>This employer has not provided extra information on their gender pay gap</span>
+                    }
+                </dd>
+            </div>
+        </dl>
+
+        <hr>
+    </div>
+</div>
+
+<partial name="EmployerDetails/HourlyRate/HourlyRateSection" model="Model"/>
+
+<partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
+
+<partial name="EmployerDetails/BonusPay/BonusPaySection" model="Model"/>
+
+<hr style="border: 1px solid black; background: black;"/>
+<partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
+
+@section Scripts {
+    <script>
+
+        (function () {
+            "use strict";
+
+            GOVUK.details.addDetailsPolyfill();
+
+            new GOVUK.Ajaxify({
+                onError: function (errorCode, error, errorThrown) {
+                    window.location.href = '/error/1146';
+                }
+            });
+
+        }());
+
+    </script>
+}

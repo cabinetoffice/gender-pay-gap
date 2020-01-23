@@ -1,0 +1,19 @@
+﻿@using GenderPayGap.WebUI.Classes.Formatters
+@using GenderPayGap.WebUI.Models.Shared
+@model GenderPayGap.WebUI.Models.Scope.ScopingViewModel
+@{
+    var snapshotName = "Snapshot date";
+    var snapshotDateFmt = "";
+    if (!Model.IsChangeJourney && Model.IsOutOfScopeJourney)
+    {
+        snapshotName += "s";
+        snapshotDateFmt = $"{new GDSDateFormatter(Model.AccountingDate.AddYears(-1)).FullStartDate} and {snapshotDateFmt = new GDSDateFormatter(Model.AccountingDate).FullStartDate}";
+    }
+    else
+    {
+        snapshotDateFmt = new GDSDateFormatter(Model.AccountingDate).FullStartDate;
+    }
+}
+@await Html.PartialModelAsync(new CheckYourAnswers(
+    new CheckYourAnswer(snapshotName, snapshotDateFmt, "SnapshotDate")
+    ))

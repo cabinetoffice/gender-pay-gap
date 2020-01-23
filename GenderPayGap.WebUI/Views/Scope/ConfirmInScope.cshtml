@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Confirm In Scope - Gender pay gap reporting service";
+    string emailAdd = Global.GpgReportingEmail;
+    string emailSubject = System.Net.WebUtility.UrlEncode(string.Format("Wrong Employer Details - {0} - {1}", Model.OrganisationName, Model.EnterCodes.EmployerReference));
+
+    // c# 6 doesnt compile with razor in mvc5 so cant use string templates here :( need to update to MVC 6
+    string mailto = string.Join("", "mailto:", emailAdd, "?subject=", emailSubject);
+}
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Classes.Formatters
+@model GenderPayGap.WebUI.Models.Scope.ScopingViewModel
+<div class="grid-row">
+    <div class="column-two-thirds">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new {@class = "form", autocomplete = "off"}))
+        {
+            @Html.AntiForgeryToken()
+
+            var reportDateFormatter = new GDSDateFormatter(Model.AccountingDate);
+
+            <a class="link-back" href="@Model.StartUrl">Back <span class="visuallyhidden"> to the previous question</span></a>
+
+            <h1 class="heading-large">
+                <span>Confirm your organisation is required to report</span>
+            </h1>
+
+
+            @await Html.PartialAsync("Parts/EmployerDetailsPart", Model)
+
+            <br/>
+
+            <p class="text">
+                <span>Please confirm your organisation is in scope to report Gender Pay Gap data for snapshot date @(reportDateFormatter.FullStartDate)</span>
+            </p>
+
+            <div class="form-group">
+                <input id="NextStep" type="submit" class="button" name="command" value="Confirm"/>
+            </div>
+
+            <p class="text">
+                If your organisation name or address is incorrect,
+                please email us at <a href="@mailto" target="_blank">@Global.GpgReportingEmail</a> and let us know the correct information.
+            </p>
+        }
+    </div>
+</div>

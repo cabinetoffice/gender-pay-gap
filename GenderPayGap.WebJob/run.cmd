@@ -1,0 +1,1 @@
+"%ProgramFiles%\dotnet\dotnet.exe" GenderPayGap.WebJob.dll %*

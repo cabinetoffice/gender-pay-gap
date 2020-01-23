@@ -1,0 +1,226 @@
+﻿@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.ChangeOrganisationSicCodesViewModel
+
+@{
+    ViewBag.Title = $"Change SIC codes - {Model.Organisation.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "SIC codes history",
+                Href = Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new {id = Model.Organisation.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change SIC codes"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+@{
+    object CurrentState()
+    {
+        Func<object, object> currentStateHtml = @<text>
+            @foreach (SicCode sicCode in Model.SicCodesToAdd)
+            {
+                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToAdd))" value="@(sicCode.SicCodeId)" />
+            }
+            @foreach (SicCode sicCode in Model.SicCodesToRemove)
+            {
+                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToRemove))" value="@(sicCode.SicCodeId)" />
+            }
+        </text>;
+
+        return currentStateHtml(new object());
+    }
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change SIC codes
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+        
+
+        @(Html.GovUkErrorSummary())
+        
+        <h2 class="govuk-heading-l">
+            Check the new SIC codes
+        </h2>
+
+
+        <h3 class="govuk-heading-m">SIC codes to add</h3>
+
+        @if (Model.SicCodesToAdd.Count == 0)
+        {
+            <p class="govuk-body">
+                No SIC codes to add
+            </p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    @foreach (SicCode sicCode in Model.SicCodesToAdd)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <b>@sicCode.SicCodeId</b>
+                                @sicCode.Description
+                                <br />
+                                <span class="govuk-body-s">
+                                    part of: @sicCode.SicSection.Description
+                                </span>
+                                <input type="hidden" name="@nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToAdd)" value="@sicCode.SicCodeId" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+        <h3 class="govuk-heading-m">SIC codes to keep</h3>
+
+        @if (Model.SicCodesToKeep.Count == 0)
+        {
+            <p class="govuk-body">
+                No SIC codes to keep
+            </p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    @foreach (SicCode sicCode in Model.SicCodesToKeep)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <b>@(sicCode.SicCodeId)</b>
+                                @(sicCode.Description)
+                                <br />
+                                <span class="govuk-body-s">
+                                    part of: @(sicCode.SicSection.Description)
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+        <h3 class="govuk-heading-m">SIC codes to remove</h3>
+
+        @if (Model.SicCodesToRemove.Count == 0)
+        {
+            <p class="govuk-body">
+                No SIC codes to remove
+            </p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    @foreach (SicCode sicCode in Model.SicCodesToRemove)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <b>@(sicCode.SicCodeId)</b>
+                                @(sicCode.Description)
+                                <br />
+                                <span class="govuk-body-s">
+                                    part of: @(sicCode.SicSection.Description)
+                                </span>
+                                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToRemove))" value="@(sicCode.SicCodeId)" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+        <form method="post" action="@Url.Action("ChangeSicCodesPost", "AdminOrganisationSicCodes")">
+            @(Html.AntiForgeryToken())
+            @(Html.Hidden(nameof(ChangeOrganisationSicCodesViewModel.Action),
+                Model.ConfirmationType == ChangeOrganisationSicCodesConfirmationType.Manual
+                    ? ManuallyChangeOrganisationSicCodesActions.ConfirmManual
+                    : ManuallyChangeOrganisationSicCodesActions.ConfirmCoho
+                ))
+            @(CurrentState())
+
+            @(Html.GovUkTextAreaFor(
+                m => m.Reason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the reason for this change?",
+                    Classes = "govuk-label--m"
+                }
+            ))
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Confirm and save",
+                Classes = "govuk-!-margin-right-2 govuk-!-margin-bottom-4"
+            }))
+        </form>
+
+        @if (Model.ConfirmationType == ChangeOrganisationSicCodesConfirmationType.Manual)
+        {
+            <form method="post" action="@Url.Action("ChangeSicCodesPost", "AdminOrganisationSicCodes")">
+                @(Html.AntiForgeryToken())
+                @(Html.Hidden(nameof(ChangeOrganisationSicCodesViewModel.Action),
+                    ManuallyChangeOrganisationSicCodesActions.MakeMoreManualChanges))
+                @(CurrentState())
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Classes = "govuk-button--secondary govuk-!-margin-bottom-4",
+                    Text = "Make more changes",
+                }))
+            </form>
+        }
+
+        <p class="govuk-body">
+            <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
+               class="govuk-link">
+                Cancel and return to organisation page
+            </a>
+        </p>
+
+
+    </div>
+</div>

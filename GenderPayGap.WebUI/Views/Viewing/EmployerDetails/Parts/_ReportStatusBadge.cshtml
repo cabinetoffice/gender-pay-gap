@@ -1,0 +1,10 @@
+﻿@model ReportStatusBadgeViewModel
+
+@if (Model.IsVoluntarySubmission)
+{
+    <div class="govuk-tag-voluntary">Voluntary report</div>
+}
+else if (Model.IsLateSubmission)
+{
+    <div class="govuk-tag-late">Late report</div>
+}
