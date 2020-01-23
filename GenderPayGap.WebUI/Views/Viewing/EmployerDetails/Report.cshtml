@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
 @{
     //Required for variables in Sitemap taghelpers
@@ -74,13 +75,23 @@
                     <div style="margin: 10px auto;">
                         <a rel="track" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">How can employers close the gap</a>
                     </div>
-                    @if (!string.IsNullOrWhiteSpace(Model.CompanyLinkToGPGInfo))
+                    @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
                     {
-                        <div style="margin: 10px auto;">
-                            <a href="@Model.CompanyLinkToGPGInfo" rel="external noopener" target="_blank">
-                                What this employer says about their gender pay gap <span class="visually-hidden">, opens in new window</span>
-                            </a>
-                        </div>
+                        try // This try-catch is here because of a bug in AnchorTagHelper
+                        {
+                            <div style="margin: 10px auto;">
+                                <a href="@Model.CompanyLinkToGPGInfo" rel="external noopener" target="_blank">
+                                    What this employer says about their gender pay gap <span class="visually-hidden">, opens in new window</span>
+                                </a>
+                            </div>
+                        }
+                        catch (ArgumentException)
+                        {
+                            <div style="margin: 10px auto;">
+                                What this employer says about their gender pay gap is available at this website:<br/>
+                                @(Model.CompanyLinkToGPGInfo)
+                            </div>
+                        }
                     }
                     else
                     {

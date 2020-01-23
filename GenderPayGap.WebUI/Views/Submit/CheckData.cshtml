@@ -1,6 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Classes.Formatters
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
 <div class="grid-row">
 <div class="column-two-thirds">
@@ -463,15 +464,24 @@
         <tbody>
         <tr>
             <td colspan="3">
-                @if (string.IsNullOrWhiteSpace(Model.CompanyLinkToGPGInfo))
+                @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
+                {
+                    try // This try-catch is here because of a bug in AnchorTagHelper
+                    {
+                        <a id="DisplayCompanyLinkToGPGInfo" style="word-break: break-all" href='@Html.ValueFor(model => model.CompanyLinkToGPGInfo)' target="_blank">
+                            @Html.ValueFor(model => model.CompanyLinkToGPGInfo)
+                        </a>
+                    }
+                    catch (ArgumentException)
+                    {
+                        @(Model.CompanyLinkToGPGInfo)
+                    }
+                }
+                else
                 {
                     <div class="gpg-data__status--notprovided">
                         <span id="CompanyLinkToGPGInfo">Not provided</span>
                     </div>
-                }
-                else
-                {
-                    <a id="DisplayCompanyLinkToGPGInfo" style="word-break:break-all" href='@Html.ValueFor(model => model.CompanyLinkToGPGInfo)' target="_blank">@Html.ValueFor(model => model.CompanyLinkToGPGInfo)</a>
                 }
             </td>
         </tr>
