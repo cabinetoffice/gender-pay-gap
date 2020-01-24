@@ -16,6 +16,7 @@ namespace GenderPayGap.WebJob
 {
     public partial class Functions
     {
+        // This trigger is set to run every hour, on the hour
         public void SendReminderEmails([TimerTrigger("0 * * * *")] TimerInfo timer)
         {
             var start = DateTime.Now;
