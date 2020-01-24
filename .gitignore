@@ -587,6 +587,8 @@ _[Ss]cripts
 *.dbmdl
 *.jfm
 
+#Load tests reports#
+LoadTests/target
 
 
 /Sandbox/GPGIdentity/GpgApi/App_Data/GpgApi.XML
