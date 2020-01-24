@@ -22,6 +22,7 @@ namespace GenderPayGap.Database
             modelBuilder.Entity<OrganisationPublicSectorType>().ToTable("OrganisationPublicSectorTypes");
             modelBuilder.Entity<Feedback>().ToTable("Feedback");
             modelBuilder.Entity<AuditLog>().ToTable("AuditLogs");
+            modelBuilder.Entity<ReminderEmail>().ToTable("ReminderEmails");
 
             #region AddressStatus
 

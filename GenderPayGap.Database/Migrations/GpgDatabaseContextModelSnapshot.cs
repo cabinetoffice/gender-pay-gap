@@ -158,6 +158,23 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.ToTable("Feedback");
                 });
 
+            modelBuilder.Entity("GenderPayGap.Database.Models.ReminderEmail", b =>
+                {
+                    b.Property<long>("ReminderEmailId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateSent");
+
+                    b.Property<int>("SectorType");
+
+                    b.Property<long>("UserId");
+
+                    b.HasKey("ReminderEmailId");
+
+                    b.ToTable("ReminderEmails");
+                });
+
             modelBuilder.Entity("GenderPayGap.Database.Organisation", b =>
                 {
                     b.Property<long>("OrganisationId")

@@ -60,6 +60,7 @@ namespace GenderPayGap.Database
         public virtual DbSet<OrganisationPublicSectorType> OrganisationPublicSectorTypes { get; set; }
         public virtual DbSet<Feedback> Feedback { get; set; }
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
+        public virtual DbSet<ReminderEmail> ReminderEmails { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {
