@@ -287,7 +287,17 @@ namespace GenderPayGap.IdentityServer4.Controllers
             if (User?.Identity.IsAuthenticated == true)
             {
                 // delete local authentication cookie
-                await HttpContext.SignOutAsync();
+                var options = new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    Path = "/account",
+                    IsEssential = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UnixEpoch
+                };
+                HttpContext.Response.Cookies.Append("idsrv", "", options);
+                HttpContext.Response.Cookies.Append("idsrv.session", "", options);
 
                 // raise the logout event
                 await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
