@@ -1,0 +1,107 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model AdminChangeUserContactPreferencesViewModel
+
+@{
+    ViewBag.Title = $"Change contact preferences - {Model.FullName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+{
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.FullName,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change contact preferences"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change contact preferences
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.FullName)
+            </span>
+        </h1>
+
+        <form method="post" action="@Url.Action("ChangeContactPreferencesPost", "AdminUserContactPreferences", new { id = Model.UserId })">
+            @(Html.AntiForgeryToken())
+            
+            @(Html.GovUkCheckboxItem(new CheckboxItemViewModel
+                {
+                    Name = nameof(Model.AllowContact),
+                    Id = nameof(Model.AllowContact),
+                    Value = true.ToString(),
+                    Checked = Model.AllowContact,
+                    Label = new LabelViewModel
+                    {
+                        For = nameof(Model.AllowContact),
+                        Text = "Happy to be contacted"
+                    }
+                }))
+
+            @(Html.GovUkCheckboxItem(new CheckboxItemViewModel
+                {
+                    Name = nameof(Model.SendUpdates),
+                    Id = nameof(Model.SendUpdates),
+                    Value = true.ToString(),
+                    Checked = Model.SendUpdates,
+                    Label = new LabelViewModel
+                    {
+                        For = nameof(Model.SendUpdates),
+                        Text = "Would like to receive updates"
+                    }
+                }))
+            
+            @(Html.GovUkTextAreaFor(
+                m => m.Reason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the reason for this change?",
+                    Classes = "govuk-label--m"
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-6"
+                }
+                ))
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Confirm and save",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ViewUser", "AdminViewUser", new { id = Model.UserId })"
+                   class="govuk-link">
+                    Cancel and return to user page
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>

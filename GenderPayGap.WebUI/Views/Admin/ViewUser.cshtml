@@ -59,28 +59,33 @@
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Name</th>
             <td class="govuk-table__cell">@(Model.Fullname)</td>
+            <td class="govuk-table__cell"></td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Email address</th>
             <td class="govuk-table__cell">@(Model.EmailAddress)</td>
+            <td class="govuk-table__cell"></td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">User Id</th>
             <td class="govuk-table__cell">@(Model.UserId)</td>
+            <td class="govuk-table__cell"></td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Status</th>
             <td class="govuk-table__cell">
                 @(Model.Status)
-                <br/>
+                <br />
                 <span class="govuk-body-s">
                     (since @(Model.StatusDate.ToString("d MMM yyyy")))
                 </span>
             </td>
+            <td class="govuk-table__cell"></td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Job title</th>
             <td class="govuk-table__cell">@(Model.JobTitle)</td>
+            <td class="govuk-table__cell"></td>
         </tr>
         @if (!string.IsNullOrEmpty(Model.ContactFirstName)
              || !string.IsNullOrEmpty(Model.ContactLastName)
@@ -90,14 +95,17 @@
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Contact name</th>
                 <td class="govuk-table__cell">@(Model.ContactFullname)</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Contact job title</th>
                 <td class="govuk-table__cell">@(Model.ContactJobTitle)</td>
+                <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Contact email address</th>
                 <td class="govuk-table__cell">@(Model.ContactEmailAddress)</td>
+                <td class="govuk-table__cell"></td>
             </tr>
         }
         else
@@ -105,43 +113,58 @@
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Contact name / job title / email</th>
                 <td class="govuk-table__cell">(not set)</td>
+                <td class="govuk-table__cell"></td>
             </tr>
         }
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">Email Verified</th>
-            <td class="govuk-table__cell">
-                @if (Model.EmailVerifiedDate.HasValue)
-                {
-                    <span>
-                        Yes
-                        <br/>
-                        <span class="govuk-body-s">
-                            (on @(Model.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
-                        </span>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Email Verified</th>
+        <td class="govuk-table__cell">
+            @if (Model.EmailVerifiedDate.HasValue)
+            {
+                <span>
+                    Yes
+                    <br />
+                    <span class="govuk-body-s">
+                        (on @(Model.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
                     </span>
-                }
-                else
-                {
-                    <span class="govuk-!-font-weight-bold">
-                        No
-                    </span>
-                    <br/>
-                    <span>
-                        Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy"))
-                    </span>
-                }
-            </td>
-        </tr>
+                </span>
+            }
+            else
+            {
+                <span class="govuk-!-font-weight-bold">
+                    No
+                </span>
+                <br />
+                <span>
+                    Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy"))
+                </span>
+            }
+        </td>
+        <td class="govuk-table__cell"></td>
+    </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Happy to be contacted</th>
             <td class="govuk-table__cell">@(Model.AllowContact ? "Yes" : "No")</td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ChangeContactPreferencesGet", "AdminUserContactPreferences", new {id = Model.UserId})"
+                   class="govuk-link">
+                    Change <span class="govuk-visually-hidden"> contact preferences</span>
+                </a>
+            </td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Would like to receive updates</th>
             <td class="govuk-table__cell">@(Model.SendUpdates ? "Yes" : "No")</td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ChangeContactPreferencesGet", "AdminUserContactPreferences", new {id = Model.UserId})"
+                   class="govuk-link">
+                    Change <span class="govuk-visually-hidden"> contact preferences</span>
+                </a>
+            </td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Audit logs</th>
+            <td class="govuk-table__cell"></td>
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewUserAuditLogs", "AdminViewAuditLogs", new {id = Model.UserId})"
                    class="govuk-link">
