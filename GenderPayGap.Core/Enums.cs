@@ -226,6 +226,8 @@ namespace GenderPayGap.Core
         AdminChangeOrganisationAddress = 4,
         [Display(Name = "Change organisation SIC code")]
         AdminChangeOrganisationSicCode = 5,
+        [Display(Name = "Change user contact preferences")]
+        AdminChangeUserContactPreferences = 6,
     }
 
     public enum HashingAlgorithm
