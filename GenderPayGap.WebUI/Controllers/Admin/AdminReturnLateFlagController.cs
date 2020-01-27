@@ -61,10 +61,10 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
 
-            auditLogger.AuditAction(
+            auditLogger.AuditChangeToOrganisation(
                 this,
                 AuditedAction.AdminChangeLateFlag,
-                specifiedReturn.OrganisationId,
+                specifiedReturn.Organisation,
                 new
                 {
                     ReturnId = id,

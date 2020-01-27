@@ -210,10 +210,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             dataRepository.SaveChangesAsync().Wait();
 
-            auditLogger.AuditAction(
+            auditLogger.AuditChangeToOrganisation(
                 this,
                 AuditedAction.AdminChangeOrganisationAddress,
-                organisation.OrganisationId,
+                organisation,
                 new
                 {
                     Action = viewModel.Action,
