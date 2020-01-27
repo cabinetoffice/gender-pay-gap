@@ -179,10 +179,19 @@
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Scope</th>
             <td class="govuk-table__cell">
-                <b>
-                    @(Model.LatestScope.SnapshotDate.ToString("yyyy")):
-                </b>
-                @(Model.LatestScope.ScopeStatus)
+                @{
+                    var scopes = Model.OrganisationScopes
+                        .Where(s => s.Status == ScopeRowStatuses.Active)
+                        .OrderByDescending(s => s.SnapshotDate);
+                }
+                @foreach (var scope in scopes)
+                {
+                    <b>
+                        @($"{scope.SnapshotDate.Year}-{(scope.SnapshotDate.Year + 1) % 100}"):
+                    </b>
+                    @(scope.ScopeStatus)
+                    <br/>
+                }
             </td>
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = Model.OrganisationId})"
