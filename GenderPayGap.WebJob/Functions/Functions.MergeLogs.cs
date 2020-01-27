@@ -134,7 +134,7 @@ namespace GenderPayGap.WebJob
                 }
             }
 
-            DateTime archiveDeadline = DateTime.Now.AddYears(-1).Date;
+            DateTime archiveDeadline = VirtualDateTime.Now.AddYears(-1).Date;
 
             foreach (string file in fileList)
             {

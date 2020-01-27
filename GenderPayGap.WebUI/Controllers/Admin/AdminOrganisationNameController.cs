@@ -7,6 +7,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
@@ -212,7 +213,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             var organisationName = new OrganisationName {
                 Name = viewModel.Name,
-                Created = DateTime.Now,
+                Created = VirtualDateTime.Now,
                 Source = "Service Desk",
             };
 

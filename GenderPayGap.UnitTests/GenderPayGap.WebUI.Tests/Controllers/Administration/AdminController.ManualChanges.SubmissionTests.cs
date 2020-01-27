@@ -297,7 +297,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             User databaseAdminUser = UserHelper.GetDatabaseAdmin();
             Organisation publicOrganisationWithSubmissions =
                 OrganisationHelper.GetPublicOrganisation("EmployerReference656262");
-            Return mockedReturn = ReturnHelper.CreateTestReturn(publicOrganisationWithSubmissions, DateTime.Now.AddYears(-1).Year);
+            Return mockedReturn = ReturnHelper.CreateTestReturn(publicOrganisationWithSubmissions, VirtualDateTime.Now.AddYears(-1).Year);
             var testController = UiTestHelper.GetController<AdminController>(
                 databaseAdminUser.UserId,
                 null,
@@ -338,7 +338,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
         public async Task AdminController_ManualChanges_POST_Delete_Submissions_Fails_When_Return_Is_Not_On_The_Database_Async()
         {
             // Arrange
-            int yearToTest = DateTime.Now.AddYears(-1).Year;
+            int yearToTest = VirtualDateTime.Now.AddYears(-1).Year;
             User databaseAdminUser = UserHelper.GetDatabaseAdmin();
             Organisation publicOrganisationWithSubmissionsToBeDeleted =
                 OrganisationHelper.GetPublicOrganisation("EmployerReference99778");
@@ -384,7 +384,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 OrganisationHelper.GetPublicOrganisation("EmployerReference77775");
             Return mockedReturn = ReturnHelper.CreateTestReturn(
                 publicOrganisationWithSubmissionsToBeDeleted,
-                DateTime.Now.AddYears(-1).Year);
+                VirtualDateTime.Now.AddYears(-1).Year);
             mockedReturn.Status = ReturnStatuses.Submitted;
             publicOrganisationWithSubmissionsToBeDeleted.LatestReturn = mockedReturn;
             mockedReturn.Organisation = publicOrganisationWithSubmissionsToBeDeleted;
@@ -432,7 +432,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 OrganisationHelper.GetPublicOrganisation("EmployerReference549549");
             Return mockedReturn = ReturnHelper.CreateTestReturn(
                 publicOrganisationWithSubmissionsToBeDeleted,
-                DateTime.Now.AddYears(-1).Year);
+                VirtualDateTime.Now.AddYears(-1).Year);
             mockedReturn.ReturnId = new Random().Next(10000, 99999);
             publicOrganisationWithSubmissionsToBeDeleted.LatestReturn = mockedReturn;
             publicOrganisationWithSubmissionsToBeDeleted.Returns.Add(mockedReturn);
@@ -440,7 +440,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
             Return additionalMockedReturn = ReturnHelper.CreateTestReturn(
                 publicOrganisationWithSubmissionsToBeDeleted,
-                DateTime.Now.AddYears(-1).Year);
+                VirtualDateTime.Now.AddYears(-1).Year);
             additionalMockedReturn.ReturnId = new Random().Next(10000, 99999);
             additionalMockedReturn.StatusDate = additionalMockedReturn.StatusDate.AddDays(-3);
             publicOrganisationWithSubmissionsToBeDeleted.Returns.Add(additionalMockedReturn); // This will be found by search on line 1051

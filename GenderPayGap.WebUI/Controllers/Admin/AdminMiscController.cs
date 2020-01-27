@@ -29,11 +29,11 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("salt-passwords")]
         public async Task<IActionResult> SaltedHash(long? previousUserId = null)
         {
-            DateTime start = DateTime.Now;
+            DateTime start = VirtualDateTime.Now;
             long? startedFrom = previousUserId;
             long finishedUpTo = previousUserId ?? 0;
 
-            while (DateTime.Now.Subtract(start).TotalSeconds < 10)
+            while (VirtualDateTime.Now.Subtract(start).TotalSeconds < 10)
             {
                 User user = dataRepository
                     .GetAll<User>()

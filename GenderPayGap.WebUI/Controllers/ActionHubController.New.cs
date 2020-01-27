@@ -2,6 +2,7 @@
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.HttpResultModels;
+using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private bool UseNewActionHub()
         {
-            return DateTime.Now >= Global.ActionHubSwitchOverDate;
+            return VirtualDateTime.Now >= Global.ActionHubSwitchOverDate;
         }
 
         // GET: ActionHub

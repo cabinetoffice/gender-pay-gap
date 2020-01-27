@@ -237,14 +237,14 @@
                                 <span style="white-space: nowrap">
                                     @(userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays).ToString("d MMM yyyy"))
                                 </span>
-                                @if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now)
+                                @if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
                                 {
                                     <br/>
                                     <span class="govuk-!-font-weight-bold">
                                         EXPIRED
                                     </span>
                                 }
-                                else if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now.AddDays(7))
+                                else if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now.AddDays(7))
                                 {
                                     <br/>
                                     <span class="govuk-!-font-weight-bold">

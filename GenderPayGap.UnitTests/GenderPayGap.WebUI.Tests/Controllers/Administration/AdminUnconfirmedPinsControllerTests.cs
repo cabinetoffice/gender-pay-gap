@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             User user = CreateUser(1, "user1@test.com");
             UserOrganisation userOrganisation = CreateUserOrganisation(organisation, user.UserId, VirtualDateTime.Now);
             userOrganisation.PIN = expiredPIN;
-            userOrganisation.PINSentDate = DateTime.Now.AddYears(-1);
+            userOrganisation.PINSentDate = VirtualDateTime.Now.AddYears(-1);
 
             User govEqualitiesOfficeUser = UserHelper.GetGovEqualitiesOfficeUser();
             govEqualitiesOfficeUser.EmailVerifiedDate = VirtualDateTime.Now;
@@ -107,7 +107,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             Assert.NotNull(userOrganisation.PIN);
 
             // Check that the PINSentDate has been updated
-            Assert.That(userOrganisation.PINSentDate.Value.Date, Is.EqualTo(DateTime.Now.Date));
+            Assert.That(userOrganisation.PINSentDate.Value.Date, Is.EqualTo(VirtualDateTime.Now.Date));
         }
         
         [Test]
@@ -122,7 +122,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             User user = CreateUser(1, "user1@test.com");
             UserOrganisation userOrganisation = CreateUserOrganisation(organisation, user.UserId, VirtualDateTime.Now);
             userOrganisation.PIN = pin;
-            userOrganisation.PINSentDate = DateTime.Now.AddDays(-1);
+            userOrganisation.PINSentDate = VirtualDateTime.Now.AddDays(-1);
 
             User govEqualitiesOfficeUser = UserHelper.GetGovEqualitiesOfficeUser();
             govEqualitiesOfficeUser.EmailVerifiedDate = VirtualDateTime.Now;
@@ -162,7 +162,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             Assert.That(userOrganisation.PIN, Is.EqualTo(pin));
 
             // Check that the PINSentDate has been updated
-            Assert.That(userOrganisation.PINSentDate.Value.Date, Is.EqualTo(DateTime.Now.Date));
+            Assert.That(userOrganisation.PINSentDate.Value.Date, Is.EqualTo(VirtualDateTime.Now.Date));
         }
 
     }
