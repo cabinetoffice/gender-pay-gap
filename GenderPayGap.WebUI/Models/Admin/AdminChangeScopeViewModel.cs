@@ -18,6 +18,8 @@ namespace GenderPayGap.WebUI.Models.Admin
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please select a new scope.")]
         public NewScopeStatus? NewScopeStatus { get; set; }
 
+        public int ReportingYear { get; set; }
+
     }
 
     public enum NewScopeStatus

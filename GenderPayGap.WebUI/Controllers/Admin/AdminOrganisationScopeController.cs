@@ -36,15 +36,16 @@ namespace GenderPayGap.WebUI.Controllers
             return View("ViewOrganisationScope", organisation);
         }
 
-        [HttpGet("organisation/{id}/scope/change")]
-        public IActionResult ChangeScopeGet(long id)
+        [HttpGet("organisation/{id}/scope/change/{year}")]
+        public IActionResult ChangeScopeGet(long id, int year)
         {
             var organisation = dataRepository.Get<Organisation>(id);
-            var currentScopeStatus = organisation.GetScopeStatus();
+            var currentScopeStatus = organisation.GetScopeStatus(year);
 
             var viewModel = new AdminChangeScopeViewModel {
                 OrganisationName = organisation.OrganisationName,
                 OrganisationId = organisation.OrganisationId,
+                ReportingYear = year,
                 CurrentScopeStatus = currentScopeStatus,
                 NewScopeStatus = GetNewScopeStatus(currentScopeStatus)
             };
@@ -52,16 +53,16 @@ namespace GenderPayGap.WebUI.Controllers
             return View("ChangeScope", viewModel);
         }
 
-        [HttpPost("organisation/{id}/scope/change")]
+        [HttpPost("organisation/{id}/scope/change/{year}")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeScopePost(long id, AdminChangeScopeViewModel viewModel)
+        public async Task<IActionResult> ChangeScopePost(long id, int year, AdminChangeScopeViewModel viewModel)
         {
             var organisation = dataRepository.Get<Organisation>(id);
-            var previousOrganisationScope = organisation.GetCurrentScope();
+            var currentOrganisationScope = organisation.GetScopeForYear(year);
 
-            if (previousOrganisationScope.ScopeStatus != ScopeStatuses.InScope
-                && previousOrganisationScope.ScopeStatus != ScopeStatuses.OutOfScope)
+            if (currentOrganisationScope.ScopeStatus != ScopeStatuses.InScope
+                && currentOrganisationScope.ScopeStatus != ScopeStatuses.OutOfScope)
             {
                 viewModel.ParseAndValidateParameters(Request, m => m.NewScopeStatus);
             }
@@ -71,11 +72,17 @@ namespace GenderPayGap.WebUI.Controllers
             if (viewModel.HasAnyErrors())
             {
                 // If there are any errors, return the user back to the same page to correct the mistakes
+                var currentScopeStatus = organisation.GetScopeStatus(year);
+
+                viewModel.OrganisationName = organisation.OrganisationName;
                 viewModel.OrganisationId = organisation.OrganisationId;
+                viewModel.ReportingYear = year;
+                viewModel.CurrentScopeStatus = currentScopeStatus;
+
                 return View("ChangeScope", viewModel);
             }
             
-            RetireOldScopesForCurrentSnapshotDate(organisation);
+            RetireOldScopesForCurrentSnapshotDate(organisation, year);
             
             ScopeStatuses newScope = ConvertNewScopeStatusToScopeStatus(viewModel.NewScopeStatus);
 
@@ -83,11 +90,11 @@ namespace GenderPayGap.WebUI.Controllers
                 Organisation = organisation,
                 ScopeStatus = newScope,
                 ScopeStatusDate = DateTime.Now,
-                ContactFirstname = previousOrganisationScope.ContactFirstname,
-                ContactLastname = previousOrganisationScope.ContactLastname,
-                ContactEmailAddress = previousOrganisationScope.ContactEmailAddress,
+                ContactFirstname = currentOrganisationScope.ContactFirstname,
+                ContactLastname = currentOrganisationScope.ContactLastname,
+                ContactEmailAddress = currentOrganisationScope.ContactEmailAddress,
                 Reason = viewModel.Reason,
-                SnapshotDate = previousOrganisationScope.SnapshotDate,
+                SnapshotDate = currentOrganisationScope.SnapshotDate,
                 StatusDetails = "Changed by Admin",
                 Status = ScopeRowStatuses.Active
             };
@@ -103,7 +110,7 @@ namespace GenderPayGap.WebUI.Controllers
                 AuditedAction.AdminChangeOrganisationScope,
                 id,
                 new Dictionary<string, string> {
-                    {"PreviousScope", previousOrganisationScope.ScopeStatus.ToString()},
+                    {"PreviousScope", currentOrganisationScope.ScopeStatus.ToString()},
                     {"NewScope", newScope.ToString()},
                     {"Reason", viewModel.Reason}
                 });
@@ -111,10 +118,11 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
         }
 
-        private void RetireOldScopesForCurrentSnapshotDate(Organisation organisation)
+        private void RetireOldScopesForCurrentSnapshotDate(Organisation organisation, int year)
         {
-            IOrderedEnumerable<OrganisationScope> organisationScopesForCurrentSnapshotDate = organisation.OrganisationScopes
-                .OrderByDescending(s => s.SnapshotDate);   
+            IEnumerable<OrganisationScope> organisationScopesForCurrentSnapshotDate =
+                organisation.OrganisationScopes
+                .Where(scope => scope.SnapshotDate.Year == year);
             
             foreach (OrganisationScope organisationScope in organisationScopesForCurrentSnapshotDate)
             {
