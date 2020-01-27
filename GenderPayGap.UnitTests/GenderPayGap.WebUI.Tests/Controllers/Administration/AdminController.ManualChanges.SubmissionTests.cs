@@ -81,7 +81,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 OrganisationHelper.GetPublicOrganisation("EmployerReference052");
             Return mockedReturn = ReturnHelper.CreateTestReturn(
                 publicOrganisationWithSubmissionsToBeDeleted,
-                DateTime.Now.AddYears(-1).Year);
+                VirtualDateTime.Now.AddYears(-1).Year);
 
             var testController = UiTestHelper.GetController<AdminController>(
                 databaseAdminUser.UserId,
@@ -113,7 +113,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
             Assert.AreEqual("SUCCESSFULLY EXECUTED 'Delete submissions': 1 of 1", actualManualChangesViewModel.SuccessMessage);
             Assert.AreEqual(
-                $"1: EMPLOYERREFERENCE052: Org123 Year='{DateTime.Now.Year - 1}' Status='Submitted' set to 'Deleted'\r\n",
+                $"1: EMPLOYERREFERENCE052: Org123 Year='{VirtualDateTime.Now.Year - 1}' Status='Submitted' set to 'Deleted'\r\n",
                 actualManualChangesViewModel.Results);
             Assert.IsNull(actualManualChangesViewModel.LastTestedCommand);
             Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
@@ -165,7 +165,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 OrganisationHelper.GetPublicOrganisation("EmployerReference05");
             Return mockedReturn = ReturnHelper.CreateTestReturn(
                 publicOrganisationWithSubmissionsToBeDeleted,
-                DateTime.Now.AddYears(-1).Year);
+                VirtualDateTime.Now.AddYears(-1).Year);
 
             var testController = UiTestHelper.GetController<AdminController>(
                 databaseAdminUser.UserId,
@@ -210,7 +210,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 OrganisationHelper.GetPublicOrganisation("EmployerReference05");
             Return mockedReturn = ReturnHelper.CreateTestReturn(
                 publicOrganisationWithSubmissionsToBeDeleted,
-                DateTime.Now.AddYears(-1).Year);
+                VirtualDateTime.Now.AddYears(-1).Year);
 
             var testController = UiTestHelper.GetController<AdminController>(
                 databaseAdminUser.UserId,

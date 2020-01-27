@@ -1,6 +1,7 @@
 ﻿using System;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI.Controllers;
@@ -21,7 +22,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // ARRANGE
             User mockUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            mockUser.UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, DateTime.Now.ToString())};
+            mockUser.UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, VirtualDateTime.Now.ToString())};
 
             Organisation mockOrg = OrganisationHelper.GetPublicOrganisation();
             Organisation mockOrg2 = OrganisationHelper.GetPublicOrganisation();
@@ -71,8 +72,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var mockUser = new User {
                 UserId = 87654,
                 EmailAddress = "mock@test.com",
-                EmailVerifiedDate = DateTime.Now,
-                UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, DateTime.Now.ToString())}
+                EmailVerifiedDate = VirtualDateTime.Now,
+                UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, VirtualDateTime.Now.ToString())}
             };
 
             var controller = UiTestHelper.GetController<OrganisationController>(-1, mockRouteData, mockUser);
@@ -97,7 +98,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             mockRouteData.Values.Add("Controller", "Organisation");
 
             var mockUser = new User {
-                UserId = 87654, EmailAddress = "mock@test.com", EmailVerifiedDate = DateTime.Now, UserSettings = new UserSetting[0]
+                UserId = 87654, EmailAddress = "mock@test.com", EmailVerifiedDate = VirtualDateTime.Now, UserSettings = new UserSetting[0]
             };
 
             var controller = UiTestHelper.GetController<OrganisationController>(-1, mockRouteData, mockUser);
@@ -124,8 +125,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var mockUser = new User {
                 UserId = 87654,
                 EmailAddress = "mock@test.com",
-                EmailVerifiedDate = DateTime.Now,
-                UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, DateTime.Now.AddYears(-10).ToString())}
+                EmailVerifiedDate = VirtualDateTime.Now,
+                UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, VirtualDateTime.Now.AddYears(-10).ToString())}
             };
 
             var controller = UiTestHelper.GetController<OrganisationController>(-1, mockRouteData, mockUser);

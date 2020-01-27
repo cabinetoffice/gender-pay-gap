@@ -3,6 +3,7 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using Moq;
@@ -41,7 +42,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         public void PresumesOutOfScopeForSnapshotYearsBeforeOrgCreatedDate(SectorTypes testSectorType)
         {
             // setup
-            Organisation testOrg = CreateOrgWithNoScopes(1, testSectorType, DateTime.Now);
+            Organisation testOrg = CreateOrgWithNoScopes(1, testSectorType, VirtualDateTime.Now);
 
             // act
             bool actualChanged = scopeBusinessLogic.FillMissingScopes(testOrg);
@@ -195,7 +196,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             int firstYear = Global.FirstReportingYear;
             int lastYear = Global.CurrentAccountingYear;
 
-            Organisation testOrg = CreateOrgWithNoScopes(testOrgId, testSector, DateTime.Now);
+            Organisation testOrg = CreateOrgWithNoScopes(testOrgId, testSector, VirtualDateTime.Now);
 
             // for all snapshot years check if scope exists
             for (int year = firstYear; year < lastYear; year++)
