@@ -30,6 +30,13 @@ namespace GenderPayGap.WebUI.Classes
             AuditActionToOrganisation(controller, action, organisation.OrganisationId, details);
         }
 
+        public void AuditChangeToUser(Controller controller, AuditedAction action, User user, object anonymousObject)
+        {
+            Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
+
+            AuditActionToUser(controller, action, user.UserId, details);
+        }
+
         private static Dictionary<string, string> ExtractDictionaryOfDetailsFromAnonymousObject(object anonymousObject)
         {
             var details = new Dictionary<string, string>();
@@ -69,6 +76,38 @@ namespace GenderPayGap.WebUI.Classes
                     OriginalUser = originalUser,
                     ImpersonatedUser = impersonatedUser,
                     Organisation = organisation,
+                    Details = details
+                });
+
+            dataRepository.SaveChangesAsync().Wait();
+        }
+
+        private void AuditActionToUser(Controller controller, AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details)
+        {
+            if (controller == null)
+            {
+                throw new System.ArgumentNullException(nameof(controller));
+            }
+
+            var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
+            var isImpersonating = impersonatedUserId > 0;
+            var originalUserId = session["OriginalUser"].ToInt64();
+            var currentUser = controller.User.Identity.IsAuthenticated ? dataRepository.FindUser(controller?.User) : null;
+
+            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : currentUser;
+            var impersonatedUser = dataRepository.Get<User>(actionTakenOnUserId);
+
+            if (impersonatedUser.UserId == originalUser.UserId)
+            {
+                impersonatedUser = null;
+            }
+
+            dataRepository.Insert(
+                new AuditLog {
+                    Action = action,
+                    OriginalUser = originalUser,
+                    ImpersonatedUser = impersonatedUser,
+                    Organisation = null,
                     Details = details
                 });
 
