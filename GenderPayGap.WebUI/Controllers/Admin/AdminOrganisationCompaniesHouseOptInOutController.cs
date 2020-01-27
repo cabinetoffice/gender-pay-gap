@@ -74,7 +74,10 @@ namespace GenderPayGap.WebUI.Controllers
                 this,
                 AuditedAction.AdminChangeCompaniesHouseOpting,
                 organisation.OrganisationId,
-                new Dictionary<string, string> {{"Opt", "In"}, {"Reason", viewModel.Reason}});
+                new {
+                    Opt = "In",
+                    Reason = viewModel.Reason
+                });
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }
@@ -130,7 +133,10 @@ namespace GenderPayGap.WebUI.Controllers
                 this,
                 AuditedAction.AdminChangeCompaniesHouseOpting,
                 organisation.OrganisationId,
-                new Dictionary<string, string> {{"Opt", "Out"}, {"Reason", viewModel.Reason}});
+                new {
+                    Opt = "Out",
+                    Reason = viewModel.Reason
+                });
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }

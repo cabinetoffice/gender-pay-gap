@@ -109,10 +109,10 @@ namespace GenderPayGap.WebUI.Controllers
                 this,
                 AuditedAction.AdminChangeOrganisationScope,
                 id,
-                new Dictionary<string, string> {
-                    {"PreviousScope", currentOrganisationScope.ScopeStatus.ToString()},
-                    {"NewScope", newScope.ToString()},
-                    {"Reason", viewModel.Reason}
+                new {
+                    PreviousScope = currentOrganisationScope.ScopeStatus.ToString(),
+                    NewScope = newScope.ToString(),
+                    Reason = viewModel.Reason
                 });
 
             return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
