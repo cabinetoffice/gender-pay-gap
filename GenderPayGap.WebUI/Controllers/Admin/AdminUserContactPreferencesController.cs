@@ -55,19 +55,18 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("ChangeContactPreferences", viewModel);
             }
 
-            // We don't currently have a way of saying that an admin user made a change TO a normal user 
-            //auditLogger.AuditAction(
-            //    this,
-            //    AuditedAction.AdminChangeUserContactPreferences,
-            //    null,
-            //    new
-            //    {
-            //        AllowContact_Old = user.AllowContact,
-            //        AllowContact_New = viewModel.AllowContact,
-            //        SendUpdates_Old = user.SendUpdates,
-            //        SendUpdates_New = viewModel.SendUpdates,
-            //        Reason = viewModel.Reason
-            //    });
+            auditLogger.AuditChangeToUser(
+                this,
+                AuditedAction.AdminChangeUserContactPreferences,
+                user,
+                new
+                {
+                    AllowContact_Old = user.AllowContact ? "Yes" : "No",
+                    AllowContact_New = viewModel.AllowContact ? "Yes" : "No",
+                    SendUpdates_Old = user.SendUpdates ? "Yes" : "No",
+                    SendUpdates_New = viewModel.SendUpdates ? "Yes" : "No",
+                    Reason = viewModel.Reason
+                });
 
             user.AllowContact = viewModel.AllowContact;
             user.SendUpdates = viewModel.SendUpdates;
