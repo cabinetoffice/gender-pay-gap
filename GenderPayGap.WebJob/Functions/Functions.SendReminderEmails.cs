@@ -20,6 +20,7 @@ namespace GenderPayGap.WebJob
         public void SendReminderEmails([TimerTrigger("0 * * * *")] TimerInfo timer)
         {
             var start = DateTime.Now;
+            CustomLogger.Information("SendReminderEmails Function started", start);
             {
                 try
                 {
@@ -35,6 +36,7 @@ namespace GenderPayGap.WebJob
                     {
                         if (DateTime.Now > start.AddMinutes(59))
                         {
+                            CustomLogger.Information("Hit timeout break");
                             break;
                         }
                         List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
@@ -113,6 +115,7 @@ namespace GenderPayGap.WebJob
             try
             {
                 govNotifyApi.SendEmail(notifyEmail);
+                CustomLogger.Information("Email sent", new {NotifyEmail = notifyEmail});
             }
             catch (Exception ex)
             {
