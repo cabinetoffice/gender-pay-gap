@@ -65,8 +65,11 @@ namespace GenderPayGap.WebUI.Controllers
                 this,
                 AuditedAction.AdminChangeLateFlag,
                 specifiedReturn.OrganisationId,
-                new Dictionary<string, string> {
-                    {"ReturnId", $"{id}"}, {"LateFlagChangedTo", $"{viewModel.NewLateFlag}"}, {"Reason", viewModel.Reason}
+                new
+                {
+                    ReturnId = id,
+                    LateFlagChangedTo = viewModel.NewLateFlag,
+                    Reason = viewModel.Reason
                 });
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = specifiedReturn.OrganisationId});

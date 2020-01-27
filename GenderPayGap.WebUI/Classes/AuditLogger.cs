@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Classes
             return details;
         }
 
-        public void AuditAction(Controller controller, AuditedAction action, long? organisationId, Dictionary<string, string> details)
+        private void AuditAction(Controller controller, AuditedAction action, long? organisationId, Dictionary<string, string> details)
         {
             if (controller == null)
             {
