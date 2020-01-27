@@ -70,10 +70,10 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.OptedOutFromCompaniesHouseUpdate = false;
             dataRepository.SaveChangesAsync().Wait();
 
-            auditLogger.AuditAction(
+            auditLogger.AuditChangeToOrganisation(
                 this,
                 AuditedAction.AdminChangeCompaniesHouseOpting,
-                organisation.OrganisationId,
+                organisation,
                 new {
                     Opt = "In",
                     Reason = viewModel.Reason
@@ -129,10 +129,10 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.OptedOutFromCompaniesHouseUpdate = true;
             dataRepository.SaveChangesAsync().Wait();
 
-            auditLogger.AuditAction(
+            auditLogger.AuditChangeToOrganisation(
                 this,
                 AuditedAction.AdminChangeCompaniesHouseOpting,
-                organisation.OrganisationId,
+                organisation,
                 new {
                     Opt = "Out",
                     Reason = viewModel.Reason

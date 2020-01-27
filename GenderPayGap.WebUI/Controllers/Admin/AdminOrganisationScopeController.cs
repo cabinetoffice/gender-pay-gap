@@ -105,10 +105,10 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.LatestScope = newOrganisationScope;
             await dataRepository.SaveChangesAsync();
 
-            auditLogger.AuditAction(
+            auditLogger.AuditChangeToOrganisation(
                 this,
                 AuditedAction.AdminChangeOrganisationScope,
-                id,
+                organisation,
                 new {
                     PreviousScope = currentOrganisationScope.ScopeStatus.ToString(),
                     NewScope = newScope.ToString(),

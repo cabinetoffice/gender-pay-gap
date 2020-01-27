@@ -345,10 +345,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             string newSicCodes = organisation.GetSicCodeIdsString();
 
-            auditLogger.AuditAction(
+            auditLogger.AuditChangeToOrganisation(
                 this,
                 AuditedAction.AdminChangeOrganisationSicCode,
-                organisation.OrganisationId,
+                organisation,
                 new
                 {
                     Action = viewModel.Action,

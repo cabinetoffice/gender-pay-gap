@@ -23,11 +23,11 @@ namespace GenderPayGap.WebUI.Classes
             this.session = session;
         }
 
-        public void AuditAction(Controller controller, AuditedAction action, long? organisationId, object anonymousObject)
+        public void AuditChangeToOrganisation(Controller controller, AuditedAction action, Organisation organisation, object anonymousObject)
         {
             Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
 
-            AuditAction(controller, action, organisationId, details);
+            AuditActionToOrganisation(controller, action, organisation.OrganisationId, details);
         }
 
         private static Dictionary<string, string> ExtractDictionaryOfDetailsFromAnonymousObject(object anonymousObject)
@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Classes
             return details;
         }
 
-        private void AuditAction(Controller controller, AuditedAction action, long? organisationId, Dictionary<string, string> details)
+        private void AuditActionToOrganisation(Controller controller, AuditedAction action, long organisationId, Dictionary<string, string> details)
         {
             if (controller == null)
             {
