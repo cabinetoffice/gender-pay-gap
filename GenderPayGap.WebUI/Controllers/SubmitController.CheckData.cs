@@ -165,9 +165,14 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                     return new HttpBadRequestResult("Submission has no changes");
                 }
 
-                if (!changeSummary.ShouldChangeModifiedDate)
+                if (!changeSummary.FiguresChanged)
                 {
-                    postedReturn.Modified = databaseReturn.Modified;
+                    // If the figure have not changed
+                    //   e.g. if the only change was to the URL / person reporting
+                    // Then don't apply a NEW late flag
+                    // But DO continue to apply an EXISTING late flag
+                    // So, in summary, "If the figure have not changed, copy the old late flag"
+                    postedReturn.IsLateSubmission = databaseReturn.IsLateSubmission;
                 }
 
                 postedReturn.Modifications = changeSummary.Modifications;

@@ -21,8 +21,6 @@
 
         public bool ShouldProvideLateReason => (FiguresChanged || PersonResonsibleChanged) && IsPrevReportingStartYear;
 
-        public bool ShouldChangeModifiedDate => FiguresChanged;
-
         public string Modifications { get; set; }
 
     }
