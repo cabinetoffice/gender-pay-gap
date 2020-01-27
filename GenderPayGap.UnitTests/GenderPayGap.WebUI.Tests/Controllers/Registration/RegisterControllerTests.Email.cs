@@ -166,7 +166,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             UserOrganisation newUserOrganisation = CreateUserOrganisation(organisation, newUser.UserId, VirtualDateTime.Now);
             newUserOrganisation.PIN = "B5EC243";
             newUserOrganisation.PINConfirmedDate = null;
-            newUserOrganisation.PINSentDate = DateTime.Now.AddDays(100000);
+            newUserOrganisation.PINSentDate = VirtualDateTime.Now.AddDays(100000);
 
             var routeData = new RouteData();
             routeData.Values.Add("Action", "ActivateService");

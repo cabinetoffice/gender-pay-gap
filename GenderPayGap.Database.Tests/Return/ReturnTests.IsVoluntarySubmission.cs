@@ -1,6 +1,7 @@
 ﻿using System;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
 using NUnit.Framework;
 
@@ -21,7 +22,7 @@ namespace GenderPayGap.Database.ReturnTests
                 ? OrganisationHelper.GetPrivateOrganisation()
                 : OrganisationHelper.GetPublicOrganisation();
 
-            DateTime snapshotDate = testSector.GetAccountingStartDate(DateTime.Now.Year);
+            DateTime snapshotDate = testSector.GetAccountingStartDate(VirtualDateTime.Now.Year);
             OrganisationScope testScope = ScopeHelper.CreateScope(testScopeStatus, snapshotDate);
             Return testReturn = ReturnHelper.CreateTestReturn(testOrganisation, snapshotDate.Year);
             testReturn.MinEmployees = 0;
@@ -86,7 +87,7 @@ namespace GenderPayGap.Database.ReturnTests
                 ? OrganisationHelper.GetPrivateOrganisation()
                 : OrganisationHelper.GetPublicOrganisation();
 
-            DateTime snapshotDate = testSector.GetAccountingStartDate(DateTime.Now.Year);
+            DateTime snapshotDate = testSector.GetAccountingStartDate(VirtualDateTime.Now.Year);
             OrganisationScope testScope = ScopeHelper.CreateScope(testScopeStatus, snapshotDate);
             Return testReturn = ReturnHelper.CreateTestReturn(testOrganisation, snapshotDate.Year);
             testReturn.MaxEmployees = testOrgSize;
