@@ -21,50 +21,51 @@ namespace GenderPayGap.WebJob
         {
             var start = DateTime.Now;
             CustomLogger.Information("SendReminderEmails Function started", start);
+            
+            try
             {
-                try
+                List<int> reminderDays = GetReminderEmailDays();
+                if (reminderDays.Count == 0)
                 {
-                    List<int> reminderDays = GetReminderEmailDays();
-                    if (reminderDays.Count == 0)
-                    {
-                        return;
-                    }
-
-                    IEnumerable<User> users = _DataRepository.GetAll<User>();
-
-                    foreach (User user in users)
-                    {
-                        if (DateTime.Now > start.AddMinutes(59))
-                        {
-                            CustomLogger.Information("Hit timeout break");
-                            break;
-                        }
-                        List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
-                            .Select(uo => uo.Organisation)
-                            .Where(
-                                o =>
-                                    o.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                                    || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
-                            .Where(
-                                o =>
-                                    o.LatestReturn == null
-                                    || o.LatestReturn.AccountingDate != o.SectorType.GetAccountingStartDate()
-                                    || o.LatestReturn.Status != ReturnStatuses.Submitted)
-                            .ToList();
-
-                        if (inScopeOrganisationsThatStillNeedToReport.Count > 0)
-                        {
-                            SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Public);
-                            SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Private);
-                        }
-                    }
+                    return;
                 }
-                catch (Exception ex)
+
+                IEnumerable<User> users = _DataRepository.GetAll<User>();
+
+                foreach (User user in users)
                 {
-                    CustomLogger.Error("Failed to send reminder emails", ex);
-                    throw;
+                    if (DateTime.Now > start.AddMinutes(59))
+                    {
+                        CustomLogger.Information("Hit timeout break");
+                        break;
+                    }
+                    List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
+                        .Select(uo => uo.Organisation)
+                        .Where(
+                            o =>
+                                o.LatestScope.ScopeStatus == ScopeStatuses.InScope
+                                || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                        .Where(
+                            o =>
+                                o.LatestReturn == null
+                                || o.LatestReturn.AccountingDate != o.SectorType.GetAccountingStartDate()
+                                || o.LatestReturn.Status != ReturnStatuses.Submitted)
+                        .ToList();
+
+                    if (inScopeOrganisationsThatStillNeedToReport.Count > 0)
+                    {
+                        SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Public);
+                        SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Private);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                CustomLogger.Error("Failed to send reminder emails", ex);
+                throw;
+            }
+            
+            CustomLogger.Information("SendReminderEmails Function finished");
         }
 
         private void SendReminderEmailsForSectorType(
