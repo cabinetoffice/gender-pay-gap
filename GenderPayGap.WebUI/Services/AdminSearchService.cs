@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,29 +23,29 @@ namespace GenderPayGap.WebUI.Services
         {
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
 
-            DateTime loadingStart = DateTime.Now;
+            DateTime loadingStart = VirtualDateTime.Now;
             List<Organisation> allOrganisations = LoadAllOrganisations();
             List<User> allUsers = LoadAllUsers();
-            DateTime loadingEnd = DateTime.Now;
+            DateTime loadingEnd = VirtualDateTime.Now;
 
-            DateTime filteringStart = DateTime.Now;
+            DateTime filteringStart = VirtualDateTime.Now;
             List<Organisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
             List<User> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
-            DateTime filteringEnd = DateTime.Now;
+            DateTime filteringEnd = VirtualDateTime.Now;
 
-            DateTime orderingStart = DateTime.Now;
+            DateTime orderingStart = VirtualDateTime.Now;
             List<Organisation> matchingOrganisationsOrderedByName =
                 matchingOrganisations.OrderBy(o => o.OrganisationName.ToLower()).ToList();
             List<User> matchingUsersOrderedByName =
                 matchingUsers.OrderBy(u => u.Fullname).ToList();
-            DateTime orderingEnd = DateTime.Now;
+            DateTime orderingEnd = VirtualDateTime.Now;
 
-            DateTime highlightingStart = DateTime.Now;
+            DateTime highlightingStart = VirtualDateTime.Now;
             List<AdminSearchResultOrganisationViewModel> matchingOrganisationsWithHighlightedMatches =
                 HighlightOrganisationMatches(matchingOrganisationsOrderedByName, searchTerms, query);
             List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
                 HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
-            DateTime highlightingEnd = DateTime.Now;
+            DateTime highlightingEnd = VirtualDateTime.Now;
 
             var results = new AdminSearchResultsViewModel {
                 OrganisationResults = matchingOrganisationsWithHighlightedMatches,

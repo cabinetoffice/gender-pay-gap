@@ -8,6 +8,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
@@ -371,7 +372,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 foreach (int sicCodeId in viewModel.SicCodeIdsToRemove)
                 {
                     OrganisationSicCode organisationSicCodeToRemove = organisation.GetSicCodes().Where(osc => osc.SicCodeId == sicCodeId).First();
-                    organisationSicCodeToRemove.Retired = DateTime.Now;
+                    organisationSicCodeToRemove.Retired = VirtualDateTime.Now;
                 }
             }
         }
@@ -389,7 +390,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                         OrganisationId = organisation.OrganisationId,
                         SicCodeId = sicCode.SicCodeId,
                         Source = "Service Desk",
-                        Created = DateTime.Now,
+                        Created = VirtualDateTime.Now,
                     };
 
                     organisation.OrganisationSicCodes.Add(newSicCode);

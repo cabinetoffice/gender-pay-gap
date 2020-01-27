@@ -9,6 +9,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 
 namespace GenderPayGap.BusinessLogic.Services
 {
@@ -33,7 +34,7 @@ namespace GenderPayGap.BusinessLogic.Services
             var organisation = _DataRepository.Get<Organisation>(organisationId);
 
             CustomLogger.Debug($"Updating LastCheckedAgainstCompaniesHouse - OrganisationId({organisationId})");
-            organisation.LastCheckedAgainstCompaniesHouse = DateTime.Now;
+            organisation.LastCheckedAgainstCompaniesHouse = VirtualDateTime.Now;
             _DataRepository.SaveChangesAsync().Wait();
 
             try
@@ -98,7 +99,7 @@ namespace GenderPayGap.BusinessLogic.Services
                 organisation.OrganisationSicCodes.Where(s => idsToBeRetired.Contains(s.SicCodeId));
             foreach (OrganisationSicCode sicCodeToBeRetired in sicCodesToBeRetired)
             {
-                sicCodeToBeRetired.Retired = DateTime.Now;
+                sicCodeToBeRetired.Retired = VirtualDateTime.Now;
             }
         }
 
@@ -114,7 +115,7 @@ namespace GenderPayGap.BusinessLogic.Services
                 if (_DataRepository.GetAll<SicCode>().Any(sicCode => sicCode.SicCodeId == sicCodeId))
                 {
                     var sicCodeToBeAdded = new OrganisationSicCode {
-                        Organisation = organisation, SicCodeId = sicCodeId, Source = SourceOfChange, Created = DateTime.Now
+                        Organisation = organisation, SicCodeId = sicCodeId, Source = SourceOfChange, Created = VirtualDateTime.Now
                     };
                     organisation.OrganisationSicCodes.Add(sicCodeToBeAdded);
                     _DataRepository.Insert(sicCodeToBeAdded);
@@ -139,8 +140,8 @@ namespace GenderPayGap.BusinessLogic.Services
             organisation.LatestAddress = newOrganisationAddressFromCompaniesHouse;
 
             oldOrganisationAddress.Status = AddressStatuses.Retired;
-            oldOrganisationAddress.StatusDate = DateTime.Now;
-            oldOrganisationAddress.Modified = DateTime.Now;
+            oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
+            oldOrganisationAddress.Modified = VirtualDateTime.Now;
 
             _DataRepository.Insert(newOrganisationAddressFromCompaniesHouse);
         }
@@ -187,10 +188,10 @@ namespace GenderPayGap.BusinessLogic.Services
                 PostCode = companiesHouseAddress?.PostalCode,
                 PoBox = companiesHouseAddress?.PoBox,
                 Status = AddressStatuses.Active,
-                StatusDate = DateTime.Now,
+                StatusDate = VirtualDateTime.Now,
                 StatusDetails = DetailsOfChange,
-                Modified = DateTime.Now,
-                Created = DateTime.Now,
+                Modified = VirtualDateTime.Now,
+                Created = VirtualDateTime.Now,
                 Source = SourceOfChange,
                 IsUkAddress = isUkAddress
             };
@@ -250,7 +251,7 @@ namespace GenderPayGap.BusinessLogic.Services
             }
 
             var nameToAdd = new OrganisationName {
-                Organisation = organisation, Name = companyNameFromCompaniesHouse, Source = SourceOfChange, Created = DateTime.Now
+                Organisation = organisation, Name = companyNameFromCompaniesHouse, Source = SourceOfChange, Created = VirtualDateTime.Now
             };
             organisation.OrganisationNames.Add(nameToAdd);
             organisation.OrganisationName = companyNameFromCompaniesHouse;

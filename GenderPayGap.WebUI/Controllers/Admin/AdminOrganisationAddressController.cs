@@ -7,6 +7,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
@@ -228,8 +229,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             OrganisationAddress oldOrganisationAddress = organisation.GetAddress();
             oldOrganisationAddress.Status = AddressStatuses.Retired;
-            oldOrganisationAddress.StatusDate = DateTime.Now;
-            oldOrganisationAddress.Modified = DateTime.Now;
+            oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
+            oldOrganisationAddress.Modified = VirtualDateTime.Now;
         }
 
         private OrganisationAddress CreateOrganisationAddressFromViewModel(ChangeOrganisationAddressViewModel viewModel)
@@ -244,10 +245,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 Country = viewModel.Country,
                 PostCode = viewModel.PostCode,
                 Status = AddressStatuses.Active,
-                StatusDate = DateTime.Now,
+                StatusDate = VirtualDateTime.Now,
                 StatusDetails = viewModel.Reason,
-                Modified = DateTime.Now,
-                Created = DateTime.Now,
+                Modified = VirtualDateTime.Now,
+                Created = VirtualDateTime.Now,
                 Source = "Service Desk",
             };
 

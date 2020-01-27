@@ -6,6 +6,7 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -60,13 +61,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             UserOrganisation userOrganisation = await dataRepository.GetAll<UserOrganisation>()
                 .FirstOrDefaultAsync(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
 
-            if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < DateTime.Now)
+            if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
             {
                 string newPin = organisationBusinessLogic.GeneratePINCode(false);
                 userOrganisation.PIN = newPin;
             }
 
-            userOrganisation.PINSentDate = DateTime.Now;
+            userOrganisation.PINSentDate = VirtualDateTime.Now;
             await dataRepository.SaveChangesAsync();
 
             EmailSendingService.SendPinEmail(

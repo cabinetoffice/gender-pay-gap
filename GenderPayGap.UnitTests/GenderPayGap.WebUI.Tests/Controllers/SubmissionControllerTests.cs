@@ -450,7 +450,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testReturnId = 4512;
             var testOrganisationId = 2342;
 
-            var user = new User {UserId = testUserId, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = DateTime.Now};
+            var user = new User {UserId = testUserId, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now};
             var address = new OrganisationAddress {
                 OrganisationId = testOrganisationId, Address1 = "Address line 1", PostCode = "PC1", Status = AddressStatuses.Active
             };
@@ -459,7 +459,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 OrganisationId = organisation.OrganisationId,
                 Organisation = organisation,
                 UserId = testUserId,
-                PINConfirmedDate = DateTime.Now,
+                PINConfirmedDate = VirtualDateTime.Now,
                 PIN = "1"
             };
 
@@ -561,7 +561,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUserId = 1000;
             var testReturnId = 1000;
             var testOrganisationId = 2421;
-            var user = new User {UserId = testUserId, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = DateTime.Now};
+            var user = new User {UserId = testUserId, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now};
             var address = new OrganisationAddress {
                 OrganisationId = testOrganisationId, Address1 = "Address line 1", PostCode = "PC1", Status = AddressStatuses.Active
             };
@@ -570,7 +570,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 OrganisationId = organisation.OrganisationId,
                 Organisation = organisation,
                 UserId = testUserId,
-                PINConfirmedDate = DateTime.Now,
+                PINConfirmedDate = VirtualDateTime.Now,
                 PIN = "1"
             };
             DateTime testAccountingDate = SectorTypes.Public.GetAccountingStartDate();

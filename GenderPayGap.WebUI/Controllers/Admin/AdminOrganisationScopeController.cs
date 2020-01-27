@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
@@ -89,7 +90,7 @@ namespace GenderPayGap.WebUI.Controllers
             var newOrganisationScope = new OrganisationScope {
                 Organisation = organisation,
                 ScopeStatus = newScope,
-                ScopeStatusDate = DateTime.Now,
+                ScopeStatusDate = VirtualDateTime.Now,
                 ContactFirstname = currentOrganisationScope.ContactFirstname,
                 ContactLastname = currentOrganisationScope.ContactLastname,
                 ContactEmailAddress = currentOrganisationScope.ContactEmailAddress,

@@ -5,6 +5,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Notify.Models.Responses;
@@ -36,7 +37,7 @@ namespace GenderPayGap.WebUI.Services
                 .PostCode;
 
             string returnUrl = controller.Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
-            DateTime pinExpiryDate = DateTime.Now.AddDays(Global.PinInPostExpiryDays);
+            DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);
 
 
             string templateId = Global.GovUkNotifyPinInThePostTemplateId;

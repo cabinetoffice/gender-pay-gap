@@ -429,11 +429,11 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         [HttpGet("populate-isukaddress")]
         public async Task<IActionResult> PopulateIsUkAddress(long? previousOrganisationId = null)
         {
-            DateTime start = DateTime.Now;
+            DateTime start = VirtualDateTime.Now;
             long? startedFrom = previousOrganisationId;
             long finishedUpTo = previousOrganisationId ?? 0;
 
-            while (DateTime.Now.Subtract(start).TotalSeconds < 10)
+            while (VirtualDateTime.Now.Subtract(start).TotalSeconds < 10)
             {
                 OrganisationAddress address =
                     DataRepository
