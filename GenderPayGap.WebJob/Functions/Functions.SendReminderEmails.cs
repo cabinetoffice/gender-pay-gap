@@ -20,7 +20,6 @@ namespace GenderPayGap.WebJob
         public void SendReminderEmails([TimerTrigger("0 * * * *")] TimerInfo timer)
         {
             var start = DateTime.Now;
-            while (DateTime.Now < start.AddMinutes(59))
             {
                 try
                 {
@@ -34,6 +33,10 @@ namespace GenderPayGap.WebJob
 
                     foreach (User user in users)
                     {
+                        if (DateTime.Now > start.AddMinutes(59))
+                        {
+                            break;
+                        }
                         List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
                             .Select(uo => uo.Organisation)
                             .Where(
@@ -167,14 +170,20 @@ namespace GenderPayGap.WebJob
 
         private static DateTime GetLatestReminderEmailDate(SectorTypes sectorType)
         {
-            List<int> reminderEmailDays = GetReminderEmailDays();
-            var deadlineDate = GetDeadlineDate(sectorType);
-            
-            IEnumerable<DateTime> reminderDates = reminderEmailDays.Select(r => deadlineDate.AddDays(-r));
-            var latestDate = reminderDates.FirstOrDefault(r => r < DateTime.Now);
-            return latestDate;
+            return GetReminderDates(sectorType)
+                .Where(reminderDate => reminderDate < DateTime.Now)
+                .OrderBy(reminderDate => reminderDate)
+                .FirstOrDefault();
         }
+        
+        private static List<DateTime> GetReminderDates(SectorTypes sectorType)
+        {
+            List<int> reminderDays = GetReminderEmailDays();
+            var deadlineDate = GetDeadlineDate(sectorType);
 
+            return reminderDays.Select(reminderDay => deadlineDate.AddDays(-reminderDay)).ToList();
+        }
+        
         private static DateTime GetDeadlineDate(SectorTypes sectorType)
         {
             return sectorType.GetAccountingStartDate().AddYears(1);
