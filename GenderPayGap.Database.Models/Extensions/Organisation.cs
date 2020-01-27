@@ -364,8 +364,13 @@ namespace GenderPayGap.Database
         //Returns the scope for the specified accounting date
         public OrganisationScope GetScopeForYear(DateTime accountingStartDate)
         {
+            return GetScopeForYear(accountingStartDate.Year);
+        }
+
+        public OrganisationScope GetScopeForYear(int year)
+        {
             return OrganisationScopes.FirstOrDefault(
-                s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == accountingStartDate.Year);   
+                s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == year);
         }
 
 

@@ -43,10 +43,8 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.OrganisationId })">
+        <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.OrganisationId, year = Model.ReportingYear })">
             @(Html.AntiForgeryToken())
-            @(Html.HiddenFor(m => m.OrganisationName))
-            @(Html.HiddenFor(m => m.CurrentScopeStatus))
 
             @(Html.GovUkErrorSummary(new[]
             {
@@ -62,6 +60,10 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Organisation name</th>
                         <td class="govuk-table__cell">@(Model.OrganisationName)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Reporting year</th>
+                        <td class="govuk-table__cell">@($"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}")</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Current scope</th>
