@@ -19,7 +19,6 @@ namespace GovUkDesignSystem.HtmlGenerators
             HintViewModel hintOptions = null,
             Conditional conditional = null,
             bool disabled = false)
-            where TModel : GovUkViewModel
         {
             PropertyInfo property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
             string propertyName = property.Name;

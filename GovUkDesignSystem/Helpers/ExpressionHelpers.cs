@@ -8,7 +8,6 @@ namespace GovUkDesignSystem.Helpers
     {
         internal static PropertyInfo GetPropertyFromExpression<TModel, TProperty>(
             Expression<Func<TModel, TProperty>> propertyLambdaExpression)
-            where TModel : GovUkViewModel
         {
             MemberExpression memberExpression = propertyLambdaExpression.Body as MemberExpression;
             return memberExpression.Member as PropertyInfo;
