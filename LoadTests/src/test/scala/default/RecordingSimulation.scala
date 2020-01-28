@@ -1,6 +1,7 @@
 package default
 
 import scala.concurrent.duration._
+import scala.util.Random
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
@@ -23,7 +24,23 @@ class RecordingSimulation extends Simulation {
 
 	val headers_2 = Map("X-Requested-With" -> "XMLHttpRequest")
 
-	val feeder = csv("search.csv").random
+	val headers_3 = Map(
+		"Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+		"Origin" -> "https://wa-t1dv-gpg.azurewebsites.net",
+		"Upgrade-Insecure-Requests" -> "1")
+
+	val headers_4 = Map(
+		"Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+		"DNT" -> "1",
+		"Pragma" -> "no-cache",
+		"Upgrade-Insecure-Requests" -> "1")
+
+	val headers_5 = Map(
+		"DNT" -> "1",
+		"Pragma" -> "no-cache")
+
+	val searchFeeder = csv("search.csv").random
+	val registrationFeeder =  Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
 
 	object HomePage {
 		val visit = exec(http("Visit home page")
@@ -43,7 +60,7 @@ class RecordingSimulation extends Simulation {
 					.headers(headers_1)))
 			.pause(1)
 
-		val search = feed(feeder)
+		val search = feed(searchFeeder)
 			.exec(http("Search a word")
 			.get("/viewing/suggest-employer-name-js?search=${SearchCriteria}")
 			.headers(headers_2))
@@ -52,9 +69,67 @@ class RecordingSimulation extends Simulation {
 			.get("/employer/${EmployerIdentifier}")
 			.headers(headers_0))
 			.pause(1)
+
+		val startSubmission = exec(http("Start submission")
+			.get("/manage-organisations")
+			.headers(headers_0)
+			.resources(http("Load important icon")
+				.get("/public/images/icon-important-2x.png"),
+				http("Load licence image")
+					.get("/account/public/assets/govuk_template/stylesheets/images/open-government-licence_2x.png?0.23.0"),
+				http("Load logo")
+					.get("/account/public/assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png?0.23.0"),
+				http("Load crest")
+					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest-2x.png?0.23.0")))
+			.pause(1)
 	}
 
-	val scn = scenario("Viewing").exec(HomePage.visit, HomePage.search)
+	object SignInPage {
+		val startRegistration = exec(http("Load registration page")
+			.get("/Register/about-you")
+			.headers(headers_0)
+			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.pause(1)
+	}
 
-	setUp(scn.inject(rampUsers(10) during (30 seconds))).protocols(httpProtocol)
+	object RegistrationPage {
+		val register = feed(registrationFeeder)
+			.exec(http("Register")
+			.post("/Register/about-you")
+			.headers(headers_3)
+			.formParam("EmailAddress", "${email}")
+			.formParam("ConfirmEmailAddress", "${email}")
+			.formParam("FirstName", "Test")
+			.formParam("LastName", "Example")
+			.formParam("JobTitle", "Tester")
+			.formParam("Password", "GenderPayGap123")
+			.formParam("ConfirmPassword", "GenderPayGap123")
+			.formParam("AllowContact", "true")
+			.formParam("SendUpdates", "false")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.pause(1)
+	}
+
+	object EmailVerificationPage {
+		val visit = exec(http("Visit email verification page")
+			.get("/Register/verify-email")
+			.headers(headers_4)
+			.resources(http("Load logo")
+				.get("/account/public/assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png?0.23.0")
+				.headers(headers_5),
+				http("Load important icon")
+					.get("/public/images/icon-important.png")
+					.headers(headers_5),
+				http("Load licence image")
+					.get("/account/public/assets/govuk_template/stylesheets/images/open-government-licence.png?0.23.0")
+					.headers(headers_5),
+				http("Load crest")
+					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest.png?0.23.0")
+					.headers(headers_5)))
+			.pause(1)
+	}
+
+	val scn = scenario("Viewing").exec(HomePage.visit, HomePage.search, HomePage.visit, HomePage.startSubmission, SignInPage.startRegistration, RegistrationPage.register, EmailVerificationPage.visit)
+
+	setUp(scn.inject(rampUsers(10) during (1 minute))).protocols(httpProtocol)
 }
