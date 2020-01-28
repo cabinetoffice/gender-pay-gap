@@ -8,6 +8,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
 using Newtonsoft.Json;
@@ -19,7 +20,7 @@ namespace GenderPayGap.WebJob
         // This trigger is set to run every hour, on the hour
         public void SendReminderEmails([TimerTrigger("0 * * * *")] TimerInfo timer)
         {
-            var start = DateTime.Now;
+            var start = VirtualDateTime.Now;
             CustomLogger.Information("SendReminderEmails Function started", start);
             
             try
@@ -34,7 +35,7 @@ namespace GenderPayGap.WebJob
 
                 foreach (User user in users)
                 {
-                    if (DateTime.Now > start.AddMinutes(59))
+                    if (VirtualDateTime.Now > start.AddMinutes(59))
                     {
                         CustomLogger.Information("Hit timeout break");
                         break;
@@ -107,7 +108,7 @@ namespace GenderPayGap.WebJob
         {
             try
             {
-                var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = DateTime.Now};
+                var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = VirtualDateTime.Now};
                 var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
                 dataRepository.Insert(reminderEmailRecord);
                 dataRepository.SaveChangesAsync().Wait();
@@ -169,7 +170,7 @@ namespace GenderPayGap.WebJob
 
         private bool IsAfterEarliestReminder(SectorTypes sectorType)
         {
-            return DateTime.Now > GetEarliestReminderDate(sectorType);
+            return VirtualDateTime.Now > GetEarliestReminderDate(sectorType);
         }
 
         private bool ReminderEmailWasNotSentAfterLatestReminderDate(User user, SectorTypes sectorType)
@@ -201,7 +202,7 @@ namespace GenderPayGap.WebJob
         private static DateTime GetLatestReminderEmailDate(SectorTypes sectorType)
         {
             return GetReminderDates(sectorType)
-                .Where(reminderDate => reminderDate < DateTime.Now)
+                .Where(reminderDate => reminderDate < VirtualDateTime.Now)
                 .OrderBy(reminderDate => reminderDate)
                 .FirstOrDefault();
         }
