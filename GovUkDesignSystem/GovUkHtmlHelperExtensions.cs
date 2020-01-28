@@ -90,6 +90,24 @@ namespace GovUkDesignSystem
             return htmlHelper.Partial("/GovUkDesignSystemComponents/CheckboxItem.cshtml", checkboxItemViewModel);
         }
 
+        public static IHtmlContent GovUkCheckboxItemFor<TModel>(
+            this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, bool>> propertyLambdaExpression,
+            LabelViewModel labelOptions = null,
+            HintViewModel hintOptions = null,
+            Conditional conditional = null,
+            bool disabled = false)
+            where TModel : GovUkViewModel
+        {
+            return CheckboxItemHtmlGenerator.GenerateHtml(
+                htmlHelper,
+                propertyLambdaExpression,
+                labelOptions,
+                hintOptions,
+                conditional,
+                disabled);
+        }
+
         public static IHtmlContent GovUkErrorMessage(
             this IHtmlHelper htmlHelper,
             ErrorMessageViewModel errorMessageViewModel)

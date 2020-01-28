@@ -49,31 +49,21 @@
         <form method="post" action="@Url.Action("ChangeContactPreferencesPost", "AdminUserContactPreferences", new { id = Model.UserId })">
             @(Html.AntiForgeryToken())
             
-            @(Html.GovUkCheckboxItem(new CheckboxItemViewModel
+            @(Html.GovUkCheckboxItemFor(
+                m => m.AllowContact,
+                labelOptions: new LabelViewModel
                 {
-                    Name = nameof(Model.AllowContact),
-                    Id = nameof(Model.AllowContact),
-                    Value = true.ToString(),
-                    Checked = Model.AllowContact,
-                    Label = new LabelViewModel
-                    {
-                        For = nameof(Model.AllowContact),
-                        Text = "Happy to be contacted"
-                    }
-                }))
-
-            @(Html.GovUkCheckboxItem(new CheckboxItemViewModel
+                    Text = "Happy to be contacted"
+                }
+            ))
+            
+            @(Html.GovUkCheckboxItemFor(
+                m => m.SendUpdates,
+                labelOptions: new LabelViewModel
                 {
-                    Name = nameof(Model.SendUpdates),
-                    Id = nameof(Model.SendUpdates),
-                    Value = true.ToString(),
-                    Checked = Model.SendUpdates,
-                    Label = new LabelViewModel
-                    {
-                        For = nameof(Model.SendUpdates),
-                        Text = "Would like to receive updates"
-                    }
-                }))
+                    Text = "Would like to receive updates"
+                }
+            ))
             
             @(Html.GovUkTextAreaFor(
                 m => m.Reason,
@@ -86,7 +76,7 @@
                 {
                     Classes = "govuk-!-margin-top-6"
                 }
-                ))
+            ))
 
             @(Html.GovUkButton(new ButtonViewModel
             {
