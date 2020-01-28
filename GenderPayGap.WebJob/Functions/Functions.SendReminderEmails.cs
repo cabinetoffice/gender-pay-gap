@@ -81,19 +81,44 @@ namespace GenderPayGap.WebJob
                 if (IsAfterEarliestReminder(sectorType)
                     && ReminderEmailWasNotSentAfterLatestReminderDate(user, sectorType))
                 {
-                    SendReminderEmail(user.EmailAddress, sectorType, organisationsOfSectorType);
-                    SaveReminderEmailRecord(user, sectorType);
+                    try
+                    {
+                        SendReminderEmail(user.EmailAddress, sectorType, organisationsOfSectorType);
+                        SaveReminderEmailRecord(user, sectorType);
+                    }
+                    catch (Exception ex)
+                    {
+                        CustomLogger.Error(
+                            "Failed whilst sending or saving reminder email.",
+                            new
+                            {
+                                User = user, 
+                                SectorType = sectorType, 
+                                Organisations = inScopeOrganisationsThatStillNeedToReport,
+                                Exception = ex.Message
+                            });
+                    }
+                    
                 }
             }
         }
 
         private static void SaveReminderEmailRecord(User user, SectorTypes sectorType)
         {
-            var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = DateTime.Now};
-            
-            var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
-            dataRepository.Insert(reminderEmailRecord);
-            dataRepository.SaveChangesAsync().Wait();
+            try
+            {
+                var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = DateTime.Now};
+                var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
+                dataRepository.Insert(reminderEmailRecord);
+                dataRepository.SaveChangesAsync().Wait();
+            }
+            catch (Exception ex)
+            {
+                CustomLogger.Error(
+                    "Failed to save reminder email record to database.",
+                    new {Exception = ex.Message});
+                throw;
+            }
         }
 
         private void SendReminderEmail(string emailAddress,
@@ -123,6 +148,7 @@ namespace GenderPayGap.WebJob
                 CustomLogger.Error(
                     "Failed to send reminder email to Notify.",
                     new {NotifyEmail = notifyEmail, Exception = ex.Message});
+                throw;
             }
         }
 
