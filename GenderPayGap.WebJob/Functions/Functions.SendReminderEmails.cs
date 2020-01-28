@@ -131,6 +131,7 @@ namespace GenderPayGap.WebJob
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"DeadlineDate", sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy")},
+                {"DaysUntilDeadline", sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).Subtract(VirtualDateTime.Now).Days},
                 {"OrganisationNames", GetOrganisationNameString(organisations)},
                 {"OrganisationIsSingular", organisations.Count == 1},
                 {"OrganisationIsPlural", organisations.Count > 1},
