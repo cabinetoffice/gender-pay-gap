@@ -17,12 +17,13 @@ namespace GenderPayGap.WebJob
 {
     public partial class Functions
     {
+
         // This trigger is set to run every hour, on the hour
         public void SendReminderEmails([TimerTrigger("0 * * * *")] TimerInfo timer)
         {
-            var start = VirtualDateTime.Now;
+            DateTime start = VirtualDateTime.Now;
             CustomLogger.Information("SendReminderEmails Function started", start);
-            
+
             try
             {
                 List<int> reminderDays = GetReminderEmailDays();
@@ -40,6 +41,7 @@ namespace GenderPayGap.WebJob
                         CustomLogger.Information("Hit timeout break");
                         break;
                     }
+
                     List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
                         .Select(uo => uo.Organisation)
                         .Where(
@@ -65,7 +67,7 @@ namespace GenderPayGap.WebJob
                 CustomLogger.Error("Failed to send reminder emails", ex);
                 throw;
             }
-            
+
             CustomLogger.Information("SendReminderEmails Function finished");
         }
 
@@ -75,7 +77,8 @@ namespace GenderPayGap.WebJob
             SectorTypes sectorType)
         {
             List<Organisation> organisationsOfSectorType = inScopeOrganisationsThatStillNeedToReport
-                .Where(o => o.SectorType == sectorType).ToList();
+                .Where(o => o.SectorType == sectorType)
+                .ToList();
 
             if (organisationsOfSectorType.Count > 0)
             {
@@ -93,13 +96,12 @@ namespace GenderPayGap.WebJob
                             "Failed whilst sending or saving reminder email.",
                             new
                             {
-                                User = user, 
-                                SectorType = sectorType, 
+                                User = user,
+                                SectorType = sectorType,
                                 Organisations = inScopeOrganisationsThatStillNeedToReport,
                                 Exception = ex.Message
                             });
                     }
-                    
                 }
             }
         }
@@ -126,7 +128,8 @@ namespace GenderPayGap.WebJob
             SectorTypes sectorType,
             List<Organisation> organisations)
         {
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"DeadlineDate", sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy")},
                 {"OrganisationNames", GetOrganisationNameString(organisations)},
                 {"OrganisationIsSingular", organisations.Count == 1},
@@ -135,10 +138,11 @@ namespace GenderPayGap.WebJob
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
+            var notifyEmail = new NotifyEmail
+            {
                 EmailAddress = emailAddress, TemplateId = "db15432c-9eda-4df4-ac67-290c7232c546", Personalisation = personalisation
             };
-            
+
             try
             {
                 govNotifyApi.SendEmail(notifyEmail);
@@ -162,7 +166,7 @@ namespace GenderPayGap.WebJob
 
             if (organisations.Count == 2)
             {
-                return  $"{organisations[0].OrganisationName} and {organisations[1].OrganisationName}";
+                return $"{organisations[0].OrganisationName} and {organisations[1].OrganisationName}";
             }
 
             return $"{organisations[0].OrganisationName} and {organisations.Count - 1} other organisations";
@@ -180,7 +184,7 @@ namespace GenderPayGap.WebJob
                 .Where(re => re.SectorType == sectorType)
                 .OrderByDescending(re => re.DateSent)
                 .FirstOrDefault();
-            
+
             if (latestReminderEmail == null)
             {
                 return true;
@@ -189,14 +193,14 @@ namespace GenderPayGap.WebJob
             DateTime latestReminderEmailDate = GetLatestReminderEmailDate(sectorType);
             return latestReminderEmail.DateSent <= latestReminderEmailDate;
         }
-        
+
         private static DateTime GetEarliestReminderDate(SectorTypes sectorType)
         {
             List<int> reminderEmailDays = GetReminderEmailDays();
             int earliestReminderDay = reminderEmailDays[reminderEmailDays.Count - 1];
 
-            var deadlineDate = GetDeadlineDate(sectorType);
-            return deadlineDate.AddDays(-earliestReminderDay); 
+            DateTime deadlineDate = GetDeadlineDate(sectorType);
+            return deadlineDate.AddDays(-earliestReminderDay);
         }
 
         private static DateTime GetLatestReminderEmailDate(SectorTypes sectorType)
@@ -206,26 +210,26 @@ namespace GenderPayGap.WebJob
                 .OrderBy(reminderDate => reminderDate)
                 .FirstOrDefault();
         }
-        
+
         private static List<DateTime> GetReminderDates(SectorTypes sectorType)
         {
             List<int> reminderDays = GetReminderEmailDays();
-            var deadlineDate = GetDeadlineDate(sectorType);
+            DateTime deadlineDate = GetDeadlineDate(sectorType);
 
             return reminderDays.Select(reminderDay => deadlineDate.AddDays(-reminderDay)).ToList();
         }
-        
+
         private static DateTime GetDeadlineDate(SectorTypes sectorType)
         {
             return sectorType.GetAccountingStartDate().AddYears(1);
         }
-        
+
         private static List<int> GetReminderEmailDays()
         {
             var reminderEmailDays = JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReminderEmailDays"));
             reminderEmailDays.Sort();
             return reminderEmailDays;
         }
+
     }
 }
-
