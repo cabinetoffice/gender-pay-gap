@@ -97,7 +97,6 @@ namespace GovUkDesignSystem
             HintViewModel hintOptions = null,
             Conditional conditional = null,
             bool disabled = false)
-            where TModel : GovUkViewModel
         {
             return CheckboxItemHtmlGenerator.GenerateHtml(
                 htmlHelper,
