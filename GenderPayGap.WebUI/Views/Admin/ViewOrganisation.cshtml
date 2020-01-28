@@ -1,4 +1,5 @@
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -187,7 +188,7 @@
                 @foreach (var scope in scopes)
                 {
                     <b>
-                        @($"{scope.SnapshotDate.Year}-{(scope.SnapshotDate.Year + 1) % 100}"):
+                        @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year)):
                     </b>
                     @(scope.ScopeStatus)
                     <br/>
