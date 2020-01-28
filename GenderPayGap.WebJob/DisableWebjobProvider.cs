@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using GenderPayGap.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace GenderPayGap.WebJob
@@ -13,6 +16,23 @@ namespace GenderPayGap.WebJob
         public DisableWebjobProvider(IConfiguration config)
         {
             config.GetSection("DisabledWebjobs").Bind(DisabledWebjobsSettings);
+        }
+
+        public bool IsDisabled(MethodInfo method)
+        {
+            //Check using the full name first
+            string methodName = method.Name;
+
+            if (!DisabledWebjobsSettings.ContainsKey(method.Name) && method.IsAsyncMethod())
+            {
+                int i = method.Name.LastIndexOf("Async", StringComparison.OrdinalIgnoreCase);
+                if (i > 0)
+                {
+                    methodName = method.Name.Substring(0, i);
+                }
+            }
+
+            return DisabledWebjobsSettings.ContainsKey(methodName) ? DisabledWebjobsSettings[methodName] : false;
         }
 
     }
