@@ -1,8 +1,13 @@
-﻿using GenderPayGap.Core.API;
+﻿using System;
+using System.Linq;
+using GenderPayGap.Core;
+using GenderPayGap.Core.API;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Admin;
+using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,13 +42,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 Organisation = organisation
             };
 
-            if (!string.IsNullOrEmpty(organisation.CompanyNumber))
+            if (string.IsNullOrEmpty(organisation.CompanyNumber))
             {
-                return View("ViewOrganisationCompanyNumber", viewModel);
+                // CompanyNumber is empty - send them straight to ChangeCompanyNumber
+                return View("ChangeOrganisationCompanyNumber", viewModel);
             }
             else
             {
-                return View("ViewOrganisationCompanyNumber", viewModel);
+                // CompanyNumber is not empty - ask the user if they want to change or remove the CompanyNumber
+                return View("OfferChangeOrRemoveOrganisationCompanyNumber", viewModel);
             }
         }
 
@@ -52,9 +59,164 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
+            switch (viewModel.CurrentPage)
+            {
+                case AdminOrganisationCompanyNumberViewModelCurrentPage.OfferChangeOrRemove:
+                    return OfferChangeOrRemove(organisation, viewModel);
+                case AdminOrganisationCompanyNumberViewModelCurrentPage.Remove:
+                    return Remove(organisation, viewModel);
+                case AdminOrganisationCompanyNumberViewModelCurrentPage.Change:
+                    return Change(organisation, viewModel);
+                case AdminOrganisationCompanyNumberViewModelCurrentPage.BackToChange:
+                    return BackToChange(organisation, viewModel);
+                case AdminOrganisationCompanyNumberViewModelCurrentPage.ConfirmNew:
+                    return ConfirmNew(organisation, viewModel);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private IActionResult OfferChangeOrRemove(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
+        {
             viewModel.Organisation = organisation;
 
-            return View("ViewOrganisationCompanyNumber", viewModel);
+            viewModel.ParseAndValidateParameters(Request, m => m.ChangeOrRemove);
+
+            if (viewModel.HasAnyErrors())
+            {
+                return View("OfferChangeOrRemoveOrganisationCompanyNumber", viewModel);
+            }
+
+            if (viewModel.ChangeOrRemove == AdminOrganisationCompanyNumberChangeOrRemove.Remove)
+            {
+                return View("RemoveOrganisationCompanyNumber", viewModel);
+            }
+
+            return View("ChangeOrganisationCompanyNumber", viewModel);
+        }
+
+        private IActionResult Remove(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
+        {
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+
+            if (viewModel.HasAnyErrors())
+            {
+                viewModel.Organisation = organisation;
+                return View("RemoveOrganisationCompanyNumber", viewModel);
+            }
+
+            auditLogger.AuditChangeToOrganisation(
+                this,
+                AuditedAction.AdminChangeOrganisationCompanyNumber,
+                organisation,
+                new
+                {
+                    OldCompanyNumber = organisation.CompanyNumber,
+                    NewCompanyNumber = "(removed)",
+                    Reason = viewModel.Reason
+                }
+            );
+
+            organisation.CompanyNumber = null;
+
+            dataRepository.SaveChangesAsync().Wait();
+
+            return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
+        }
+
+        private IActionResult Change(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
+        {
+            viewModel.ParseAndValidateParameters(Request, m => m.NewCompanyNumber);
+            viewModel.Organisation = organisation;
+
+            if (viewModel.HasAnyErrors())
+            {
+                return View("ChangeOrganisationCompanyNumber", viewModel);
+            }
+
+            string formattedCompanyNumber = viewModel.NewCompanyNumber.Trim().ToUpper();
+
+            if (formattedCompanyNumber == organisation.CompanyNumber?.Trim()?.ToUpper())
+            {
+                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                    m => m.NewCompanyNumber, 
+                    "Company number must be different to the current company number");
+                return View("ChangeOrganisationCompanyNumber", viewModel);
+            }
+
+            Organisation organisationWithSameNewCompanyNumber =
+                dataRepository.GetAll<Organisation>()
+                    .FirstOrDefault(o => o.CompanyNumber == formattedCompanyNumber);
+
+            if (organisationWithSameNewCompanyNumber != null)
+            {
+                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                    m => m.NewCompanyNumber,
+                    $"Another organisation ({organisationWithSameNewCompanyNumber.OrganisationName}, "
+                    + $"with id {organisationWithSameNewCompanyNumber.OrganisationId}) has this company number");
+                return View("ChangeOrganisationCompanyNumber", viewModel);
+            }
+
+            CompaniesHouseCompany companiesHouseCompany;
+            try
+            {
+                companiesHouseCompany = companiesHouseApi.GetCompanyAsync(formattedCompanyNumber).Result;
+            }
+            catch (Exception)
+            {
+                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                    m => m.NewCompanyNumber,
+                    "Companies House API gave an error (maybe the API is down, or maybe the company number is invalid)");
+                return View("ChangeOrganisationCompanyNumber", viewModel);
+            }
+
+            if (companiesHouseCompany == null)
+            {
+                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                    m => m.NewCompanyNumber,
+                    "Companies House didn't recognise this company number");
+                return View("ChangeOrganisationCompanyNumber", viewModel);
+            }
+
+            viewModel.CompaniesHouseCompany = companiesHouseCompany;
+            viewModel.NewCompanyNumber = companiesHouseCompany.CompanyNumber; // Set the company number in the right format
+            return View("ConfirmNewOrganisationCompanyNumber", viewModel);
+        }
+
+        private IActionResult BackToChange(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
+        {
+            viewModel.Organisation = organisation;
+            return View("ChangeOrganisationCompanyNumber", viewModel);
+        }
+
+        private IActionResult ConfirmNew(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
+        {
+            viewModel.Organisation = organisation;
+
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+
+            if (viewModel.HasAnyErrors())
+            {
+                return View("ChangeOrganisationCompanyNumber", viewModel);
+            }
+
+            auditLogger.AuditChangeToOrganisation(
+                this,
+                AuditedAction.AdminChangeOrganisationCompanyNumber,
+                organisation,
+                new
+                {
+                    OldCompanyNumber = organisation.CompanyNumber,
+                    NewCompanyNumber = viewModel.NewCompanyNumber,
+                    Reason = viewModel.Reason
+                }
+            );
+
+            organisation.CompanyNumber = viewModel.NewCompanyNumber;
+
+            dataRepository.SaveChangesAsync().Wait();
+
+            return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new { id = organisation.OrganisationId });
         }
 
     }

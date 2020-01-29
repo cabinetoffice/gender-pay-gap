@@ -264,6 +264,9 @@ namespace GenderPayGap.Core
         AdminUpdatedSicSections = 39,
         [Display(Name = "Admin updated SIC codes")]
         AdminUpdatedSicCodes = 40
+        
+        [Display(Name = "Admin change organisation company number")]
+        AdminChangeOrganisationCompanyNumber = 41,
     }
 
     public enum HashingAlgorithm
