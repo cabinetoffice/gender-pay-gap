@@ -22,6 +22,8 @@ namespace GenderPayGap.WebUI.Models.Admin
         public double FilteringMilliSeconds { get; set; }
         public double OrderingMilliSeconds { get; set; }
         public double HighlightingMilliSeconds { get; set; }
+        public int SearchCacheUpdatedSecondsAgo { get; set; }
+        public bool UsedCache { get; set; }
 
     }
 
