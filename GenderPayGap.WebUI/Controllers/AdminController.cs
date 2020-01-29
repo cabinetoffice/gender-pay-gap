@@ -674,7 +674,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 Type = "User Consent",
                 Filepath = Path.Combine(Global.DownloadsPath, Filenames.SendInfo),
                 Title = "Users to send updates and info",
-                Description = "Users who would like updates and information to help improve their gender pay gap."
+                Description = "Users who answered \"Yes\" to \"I would like to receive information about webinars, events and new guidance\""
             };
             download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
             model.Downloads.Add(download);
@@ -683,7 +683,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 Type = "User Consent",
                 Filepath = Path.Combine(Global.DownloadsPath, Filenames.AllowFeedback),
                 Title = "Users to contact for feedback",
-                Description = "Users who are happy to be contacted to give feedback on GPG service."
+                Description = "Users who answered \"Yes\" to \"I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys\""
             };
             download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
             model.Downloads.Add(download);
