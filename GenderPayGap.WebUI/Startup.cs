@@ -159,6 +159,8 @@ namespace GenderPayGap.WebUI
             Global.SubmissionLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.SubmissionLog);
             Global.SearchLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.SearchLog);
 
+            AdminSearchService.StartCacheUpdateThread();
+
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(MvcApplication.ContainerIoC);
         }

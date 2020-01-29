@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Autofac;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -9,35 +12,91 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Services
 {
+    internal class AdminSearchServiceOrganisation
+    {
+        public long OrganisationId { get; set; }
+        public string OrganisationName { get; set; }
+        public List<string> OrganisationNames { get; set; } // All names (current and previous)
+        public string CompanyNumber { get; set; }
+        public string EmployerReference { get; set; }
+    }
+
+    internal class AdminSearchServiceUser
+    {
+        public long UserId { get; set; }
+        public string FullName { get; set; }
+        public string EmailAddress { get; set; }
+    }
+
     public class AdminSearchService
     {
-
         private readonly IDataRepository dataRepository;
+
+        private static List<AdminSearchServiceOrganisation> cachedOrganisations;
+        private static List<AdminSearchServiceUser> cachedUsers;
+        private static DateTime cacheLastUpdated = DateTime.MinValue;
 
         public AdminSearchService(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
 
+        public static void StartCacheUpdateThread()
+        {
+            TimerCallback timerCallback = state =>
+            {
+                var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
+                List<AdminSearchServiceOrganisation> allOrganisations = LoadAllOrganisations(dataRepository);
+                List<AdminSearchServiceUser> allUsers = LoadAllUsers(dataRepository);
+
+                cachedOrganisations = allOrganisations;
+                cachedUsers = allUsers;
+                cacheLastUpdated = VirtualDateTime.Now;
+            };
+
+            new Timer(
+                timerCallback,
+                null,
+                dueTime: TimeSpan.FromSeconds(10), // How long to wait before the cache is first updated
+                period: TimeSpan.FromMinutes(1));  // How often is the cache updated
+        }
+
         public AdminSearchResultsViewModel Search(string query)
         {
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
 
+            List<AdminSearchServiceOrganisation> allOrganisations;
+            List<AdminSearchServiceUser> allUsers;
+            DateTime timeDetailsLoaded;
+            bool usedCache;
+
             DateTime loadingStart = VirtualDateTime.Now;
-            List<Organisation> allOrganisations = LoadAllOrganisations();
-            List<User> allUsers = LoadAllUsers();
+            if (cacheLastUpdated < VirtualDateTime.Now.AddSeconds(-70))
+            {
+                allOrganisations = LoadAllOrganisations(dataRepository);
+                allUsers = LoadAllUsers(dataRepository);
+                timeDetailsLoaded = VirtualDateTime.Now;
+                usedCache = false;
+            }
+            else
+            {
+                allOrganisations = cachedOrganisations;
+                allUsers = cachedUsers;
+                timeDetailsLoaded = cacheLastUpdated;
+                usedCache = true;
+            }
             DateTime loadingEnd = VirtualDateTime.Now;
 
             DateTime filteringStart = VirtualDateTime.Now;
-            List<Organisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
-            List<User> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
+            List<AdminSearchServiceOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
+            List<AdminSearchServiceUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
             DateTime filteringEnd = VirtualDateTime.Now;
 
             DateTime orderingStart = VirtualDateTime.Now;
-            List<Organisation> matchingOrganisationsOrderedByName =
+            List<AdminSearchServiceOrganisation> matchingOrganisationsOrderedByName =
                 matchingOrganisations.OrderBy(o => o.OrganisationName.ToLower()).ToList();
-            List<User> matchingUsersOrderedByName =
-                matchingUsers.OrderBy(u => u.Fullname).ToList();
+            List<AdminSearchServiceUser> matchingUsersOrderedByName =
+                matchingUsers.OrderBy(u => u.FullName).ToList();
             DateTime orderingEnd = VirtualDateTime.Now;
 
             DateTime highlightingStart = VirtualDateTime.Now;
@@ -50,10 +109,14 @@ namespace GenderPayGap.WebUI.Services
             var results = new AdminSearchResultsViewModel {
                 OrganisationResults = matchingOrganisationsWithHighlightedMatches,
                 UserResults = matchingUsersWithHighlightedMatches,
+
                 LoadingMilliSeconds = loadingEnd.Subtract(loadingStart).TotalMilliseconds,
                 FilteringMilliSeconds = filteringEnd.Subtract(filteringStart).TotalMilliseconds,
                 OrderingMilliSeconds = orderingEnd.Subtract(orderingStart).TotalMilliseconds,
-                HighlightingMilliSeconds = highlightingEnd.Subtract(highlightingStart).TotalMilliseconds
+                HighlightingMilliSeconds = highlightingEnd.Subtract(highlightingStart).TotalMilliseconds,
+
+                SearchCacheUpdatedSecondsAgo = (int)VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
+                UsedCache = usedCache
             };
             return results;
         }
@@ -65,23 +128,37 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        private List<Organisation> LoadAllOrganisations()
+        private static List<AdminSearchServiceOrganisation> LoadAllOrganisations(IDataRepository repository)
         {
-            return dataRepository
+            return repository
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
+                .Select(o => new AdminSearchServiceOrganisation
+                {
+                    OrganisationId = o.OrganisationId,
+                    OrganisationName = o.OrganisationName,
+                    CompanyNumber = o.CompanyNumber,
+                    EmployerReference = o.EmployerReference,
+                    OrganisationNames = o.OrganisationNames.Select(on => on.Name).ToList()
+                })
                 .ToList();
         }
 
-        private List<User> LoadAllUsers()
+        private static List<AdminSearchServiceUser> LoadAllUsers(IDataRepository repository)
         {
-            return dataRepository
+            return repository
                 .GetAll<User>()
+                .Select(u => new AdminSearchServiceUser
+                {
+                    UserId = u.UserId,
+                    FullName = u.Fullname,
+                    EmailAddress = u.EmailAddress
+                })
                 .ToList();
         }
 
-        private List<Organisation> GetMatchingOrganisations(
-            List<Organisation> allOrganisations,
+        private List<AdminSearchServiceOrganisation> GetMatchingOrganisations(
+            List<AdminSearchServiceOrganisation> allOrganisations,
             List<string> searchTerms,
             string query)
         {
@@ -96,16 +173,16 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        private List<User> GetMatchingUsers(List<User> allUsers, List<string> searchTerms)
+        private List<AdminSearchServiceUser> GetMatchingUsers(List<AdminSearchServiceUser> allUsers, List<string> searchTerms)
         {
             return allUsers
-                .Where(user => NameMatchesSearchTerms(user.Fullname, searchTerms) || NameMatchesSearchTerms(user.EmailAddress, searchTerms))
+                .Where(user => NameMatchesSearchTerms(user.FullName, searchTerms) || NameMatchesSearchTerms(user.EmailAddress, searchTerms))
                 .ToList();
         }
 
-        private bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(Organisation organisation, List<string> searchTerms)
+        private bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(AdminSearchServiceOrganisation organisation, List<string> searchTerms)
         {
-            return organisation.OrganisationNames.Any(on => NameMatchesSearchTerms(on.Name, searchTerms));
+            return organisation.OrganisationNames.Any(on => NameMatchesSearchTerms(on, searchTerms));
         }
 
         private bool NameMatchesSearchTerms(string name, List<string> searchTerms)
@@ -114,7 +191,7 @@ namespace GenderPayGap.WebUI.Services
         }
 
         private List<AdminSearchResultOrganisationViewModel> HighlightOrganisationMatches(
-            List<Organisation> organisations,
+            List<AdminSearchServiceOrganisation> organisations,
             List<string> searchTerms,
             string query)
         {
@@ -124,7 +201,6 @@ namespace GenderPayGap.WebUI.Services
                         AdminSearchMatchViewModel matchGroupsForCurrentName = GetMatchGroups(organisation.OrganisationName, searchTerms);
 
                         IEnumerable<string> previousNames = organisation.OrganisationNames
-                            .Select(on => on.Name)
                             .Except(new[] {organisation.OrganisationName});
 
                         List<AdminSearchMatchViewModel> matchGroupsForPreviousNames = previousNames
@@ -152,14 +228,14 @@ namespace GenderPayGap.WebUI.Services
         }
 
         private List<AdminSearchResultUserViewModel> HighlightUserMatches(
-            List<User> users,
+            List<AdminSearchServiceUser> users,
             List<string> searchTerms
         )
         {
             return users
                 .Select(
                     user => {
-                        AdminSearchMatchViewModel matchGroupsForFullName = GetMatchGroups(user.Fullname, searchTerms);
+                        AdminSearchMatchViewModel matchGroupsForFullName = GetMatchGroups(user.FullName, searchTerms);
                         AdminSearchMatchViewModel matchGroupsForEmailAddress = GetMatchGroups(user.EmailAddress, searchTerms);
 
                         return new AdminSearchResultUserViewModel {
