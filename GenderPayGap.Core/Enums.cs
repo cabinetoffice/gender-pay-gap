@@ -230,6 +230,8 @@ namespace GenderPayGap.Core
         AdminChangeUserContactPreferences = 6,
         [Display(Name = "Re-send verification email")]
         AdminResendVerificationEmail = 7,
+        [Display(Name = "Change organisation public sector classification")]
+        AdminChangeOrganisationPublicSectorClassification = 8,
     }
 
     public enum HashingAlgorithm

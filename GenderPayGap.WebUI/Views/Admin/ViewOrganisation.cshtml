@@ -145,17 +145,26 @@
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Sector</th>
-            <td class="govuk-table__cell" colspan="2">
+            <td class="govuk-table__cell">
                 @(Model.SectorType)
-                @if (Model.LatestPublicSectorType?.PublicSectorType?.Description != null)
-                {
-                    <br/>
-                    <span>
-                        (@(Model.LatestPublicSectorType.PublicSectorType.Description))
-                    </span>
-                }
             </td>
+            <td class="govuk-table__cell"></td>
         </tr>
+        @if (Model.SectorType == SectorTypes.Public)
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Public sector classification</th>
+                <td class="govuk-table__cell">
+                    @(Model.LatestPublicSectorType?.PublicSectorType?.Description ?? "(none)")
+                </td>
+                <td class="govuk-table__cell">
+                    <a href="@Url.Action("ChangePublicSectorClassificationGet", "AdminOrganisationSector", new {id = Model.OrganisationId})"
+                       class="govuk-link">
+                        Change <span class="govuk-visually-hidden">public sector classification</span>
+                    </a>
+                </td>
+            </tr>
+        }
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">SIC codes</th>
             <td class="govuk-table__cell">
