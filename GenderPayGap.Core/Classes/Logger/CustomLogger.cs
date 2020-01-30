@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Newtonsoft.Json;
+using Serilog;
 
 namespace GenderPayGap.Core.Classes.Logger
 {
@@ -32,7 +33,16 @@ namespace GenderPayGap.Core.Classes.Logger
 
         private static string GetLogMessage(string message, object values = null)
         {
-            return values == null ? message : message + ". Log: {@Values}";
+            try
+            {
+                JsonConvert.SerializeObject(values);
+                return values == null ? message : message + ". Log: {@Values}";
+            }
+            catch (JsonSerializationException ex)
+            {
+                Error("SERILOG ERROR: Can't serialize values");
+                throw;
+            }
         }
 
     }
