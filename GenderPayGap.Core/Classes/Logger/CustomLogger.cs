@@ -35,6 +35,8 @@ namespace GenderPayGap.Core.Classes.Logger
         {
             try
             {
+                // The logger doesn't use JsonConvert but it is doing something similar
+                // We try to convert values to JSON to see if it will throw an exception
                 JsonConvert.SerializeObject(values);
                 return values == null ? message : message + ". Log: {@Values}";
             }

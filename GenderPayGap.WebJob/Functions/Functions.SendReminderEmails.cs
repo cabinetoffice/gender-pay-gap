@@ -85,7 +85,7 @@ namespace GenderPayGap.WebJob
                     catch (Exception ex)
                     {
                         CustomLogger.Error(
-                            "Failed whilst sending or saving reminder email.",
+                            "Failed whilst sending or saving reminder email",
                             new
                             {
                                 UserId = user.UserId,
