@@ -41,6 +41,7 @@ class RecordingSimulation extends Simulation {
 
 	val searchFeeder = csv("search.csv").random
 	val registrationFeeder =  Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
+	val signInFeeder =  Iterator.continually(Map("email" -> s"user${Random.nextInt(30)}@example.com"))
 
 	object HomePage {
 		val visit = exec(http("Visit home page")
@@ -69,10 +70,13 @@ class RecordingSimulation extends Simulation {
 			.get("/employer/${EmployerIdentifier}")
 			.headers(headers_0))
 			.pause(1)
+	}
 
-		val startSubmission = exec(http("Start submission")
+	object SignInPage {
+		val visit = exec(http("Start submission")
 			.get("/manage-organisations")
 			.headers(headers_0)
+			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"))
 			.resources(http("Load important icon")
 				.get("/public/images/icon-important-2x.png"),
 				http("Load licence image")
@@ -82,17 +86,26 @@ class RecordingSimulation extends Simulation {
 				http("Load crest")
 					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest-2x.png?0.23.0")))
 			.pause(1)
-	}
 
-	object SignInPage {
-		val startRegistration = exec(http("Load registration page")
-			.get("/Register/about-you")
-			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+		val signIn = feed(signInFeeder)
+			.exec(http("Sign in")
+			.post("/account/sign-in")
+			.headers(headers_3)
+			.formParam("Username", "${email}")
+			.formParam("Password", "Genderpaygap1")
+			.formParam("ReturnUrl", "/account/connect/authorize/callback?client_id=gpgWeb&redirect_uri=https%3A%2F%2Fwa-t1dv-gpg.azurewebsites.net%2Fsignin-oidc&response_type=id_token&scope=openid%20profile%20roles&response_mode=form_post&nonce=637159796365256304.YmUzZWM2OWMtYmM1MS00N2ZiLTk5MDMtNGU5MmM1M2FmODNhN2I0YzUyOTAtZWI0Zi00NzNhLThlZjMtYTFjNTJiZjlkZGIx&Referrer=%2Fmanage-organisations&state=CfDJ8Ew-8KNdXfBAo4Dc6qpsLiJbXPwOag4o5LkViPhhRjLqhamScaRV2qCUWvqFtqYM-f5njYqE7J1s8GpFafIzQXkxIk1pgZy8gIErK5z8MjvR_i7D2z882NA1NVA8xfWF4hZYmySOio1DOI7ganWcAW0e1zxMAwHLygtOjaTnvL2yYeFjPkJ9sktl8usS2tvFu0y_lwWm97zbXq-xby_oF4IMwfLFnHJ8r70INUISLCxaiZudiOg0KHb0MRuTha1IJJJQDLGCaVygqpYGMrq043e6bvDVnRahPpVqLReJeleXr96sc7Snlr5ZbIAYugq0B5AUp2Yv3nedga0Vq4tqPtv-rzGGqwMB0cz2Fl-MK3yQrgflgzjArDTKM9jI_vuJZBpFKziOFjel1FokvaLC0Bc&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=5.3.0.0")
+			.formParam("button", "login")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
 			.pause(1)
 	}
 
 	object RegistrationPage {
+		val visit =  exec(http("Load registration page")
+			.get("/Register/about-you")
+			.headers(headers_0)
+			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.pause(1)
+
 		val register = feed(registrationFeeder)
 			.exec(http("Register")
 			.post("/Register/about-you")
@@ -129,7 +142,34 @@ class RecordingSimulation extends Simulation {
 			.pause(1)
 	}
 
-	val scn = scenario("Viewing").exec(HomePage.visit, HomePage.search, HomePage.visit, HomePage.startSubmission, SignInPage.startRegistration, RegistrationPage.register, EmailVerificationPage.visit)
+	object PrivacyPolicyPage {
+		val visit = exec(http("Load privacy policy page")
+			.get("/privacy-policy")
+			.headers(headers_0)
+			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.pause(1)
 
-	setUp(scn.inject(rampUsers(10) during (1 minute))).protocols(httpProtocol)
+		val accept = exec(http("Accept privacy and policy")
+			.post("/privacy-policy")
+			.headers(headers_3)
+			.formParam("command", "Continue")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+  		.pause(1)
+	}
+
+	val scn = scenario("Viewing").exec(
+		HomePage.visit,
+		HomePage.search,
+		HomePage.visit,
+		SignInPage.visit,
+		RegistrationPage.visit,
+		RegistrationPage.register,
+		EmailVerificationPage.visit,
+		HomePage.visit,
+		SignInPage.visit,
+		SignInPage.signIn,
+		PrivacyPolicyPage.visit,
+		PrivacyPolicyPage.accept)
+
+	setUp(scn.inject(rampUsers(3) during (30 seconds))).protocols(httpProtocol)
 }
