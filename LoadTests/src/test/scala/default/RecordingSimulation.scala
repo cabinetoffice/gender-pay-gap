@@ -9,7 +9,7 @@ import io.gatling.http.Predef._
 class RecordingSimulation extends Simulation {
 
 	val httpProtocol = http
-		.baseUrl("https://wa-t1dv-gpg.azurewebsites.net")
+		.baseUrl("https://wa-t1pp-gpg.azurewebsites.net")
 		.inferHtmlResources()
 		.acceptHeader("*/*")
 		.acceptEncodingHeader("gzip, deflate")
