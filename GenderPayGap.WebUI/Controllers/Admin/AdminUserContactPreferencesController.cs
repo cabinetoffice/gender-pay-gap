@@ -14,9 +14,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     public class AdminUserContactPreferencesController : Controller
     {
 
-        private readonly AuditLogger auditLogger;
-
         private readonly IDataRepository dataRepository;
+        private readonly AuditLogger auditLogger;
 
         public AdminUserContactPreferencesController(IDataRepository dataRepository, AuditLogger auditLogger)
         {

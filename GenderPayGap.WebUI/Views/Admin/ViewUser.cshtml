@@ -136,11 +136,19 @@
                 </span>
                 <br />
                 <span>
-                    Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy"))
+                    Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy, HH:mm"))
                 </span>
             }
         </td>
-        <td class="govuk-table__cell"></td>
+        <td class="govuk-table__cell">
+            @if (!Model.EmailVerifiedDate.HasValue)
+            {
+                <a href="@Url.Action("ResendVerificationEmailGet", "AdminUserResendVerificationEmail", new {id = Model.UserId})"
+                   class="govuk-link">
+                    Re-send verification email
+                </a>
+            }
+        </td>
     </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Happy to be contacted</th>
