@@ -209,6 +209,13 @@ namespace GovUkDesignSystem
             return htmlHelper.Partial("/GovUkDesignSystemComponents/PhaseBanner.cshtml", phaseBannerViewModel);
         }
 
+        public static IHtmlContent GovUkRadios(
+            this IHtmlHelper htmlHelper,
+            RadiosViewModel radioItemViewModel)
+        {
+            return htmlHelper.Partial("/GovUkDesignSystemComponents/Radios.cshtml", radioItemViewModel);
+        }
+
         public static IHtmlContent GovUkRadiosFor<TModel, TProperty>(
             this IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> propertyLambdaExpression,
