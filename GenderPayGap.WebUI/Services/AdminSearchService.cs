@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -43,8 +44,12 @@ namespace GenderPayGap.WebUI.Services
 
         public static void StartCacheUpdateThread()
         {
+            CustomLogger.Information("Starting timer (AdminSearchService.StartCacheUpdateThread)");
+
             TimerCallback timerCallback = state =>
             {
+                CustomLogger.Information("Starting cache update (AdminSearchService.StartCacheUpdateThread)");
+
                 var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
                 List<AdminSearchServiceOrganisation> allOrganisations = LoadAllOrganisations(dataRepository);
                 List<AdminSearchServiceUser> allUsers = LoadAllUsers(dataRepository);
@@ -52,6 +57,8 @@ namespace GenderPayGap.WebUI.Services
                 cachedOrganisations = allOrganisations;
                 cachedUsers = allUsers;
                 cacheLastUpdated = VirtualDateTime.Now;
+
+                CustomLogger.Information("Finished cache update (AdminSearchService.StartCacheUpdateThread)");
             };
 
             new Timer(
@@ -59,6 +66,8 @@ namespace GenderPayGap.WebUI.Services
                 null,
                 dueTime: TimeSpan.FromSeconds(10), // How long to wait before the cache is first updated
                 period: TimeSpan.FromMinutes(1));  // How often is the cache updated
+
+            CustomLogger.Information("Started timer (AdminSearchService.StartCacheUpdateThread)");
         }
 
         public AdminSearchResultsViewModel Search(string query)
