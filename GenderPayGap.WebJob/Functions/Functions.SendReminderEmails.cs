@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -23,51 +23,44 @@ namespace GenderPayGap.WebJob
         {
             DateTime start = VirtualDateTime.Now;
             CustomLogger.Information("SendReminderEmails Function started", start);
-
-            try
+            
+            List<int> reminderDays = GetReminderEmailDays();
+            if (reminderDays.Count == 0)
             {
-                List<int> reminderDays = GetReminderEmailDays();
-                if (reminderDays.Count == 0)
-                {
-                    return;
-                }
-
-                IEnumerable<User> users = _DataRepository.GetAll<User>();
-
-                foreach (User user in users)
-                {
-                    if (VirtualDateTime.Now > start.AddMinutes(59))
-                    {
-                        CustomLogger.Information("Hit timeout break");
-                        break;
-                    }
-
-                    List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
-                        .Select(uo => uo.Organisation)
-                        .Where(
-                            o =>
-                                o.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                                || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
-                        .Where(
-                            o =>
-                                o.LatestReturn == null
-                                || o.LatestReturn.AccountingDate != o.SectorType.GetAccountingStartDate()
-                                || o.LatestReturn.Status != ReturnStatuses.Submitted)
-                        .ToList();
-
-                    if (inScopeOrganisationsThatStillNeedToReport.Count > 0)
-                    {
-                        SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Public);
-                        SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Private);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error("Failed to send reminder emails", ex);
-                throw;
+                CustomLogger.Information("SendReminderEmails Function finished. No ReminderEmailDays set.");
+                return;
             }
 
+            IEnumerable<User> users = _DataRepository.GetAll<User>();
+
+            foreach (User user in users)
+            {
+                if (VirtualDateTime.Now > start.AddMinutes(59))
+                {
+                    CustomLogger.Information("Hit timeout break");
+                    break;
+                }
+
+                List<Organisation> inScopeOrganisationsThatStillNeedToReport = user.UserOrganisations
+                    .Select(uo => uo.Organisation)
+                    .Where(
+                        o =>
+                            o.LatestScope.ScopeStatus == ScopeStatuses.InScope
+                            || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                    .Where(
+                        o =>
+                            o.LatestReturn == null
+                            || o.LatestReturn.AccountingDate != o.SectorType.GetAccountingStartDate()
+                            || o.LatestReturn.Status != ReturnStatuses.Submitted)
+                    .ToList();
+
+                if (inScopeOrganisationsThatStillNeedToReport.Count > 0)
+                {
+                    SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Public);
+                    SendReminderEmailsForSectorType(user, inScopeOrganisationsThatStillNeedToReport, SectorTypes.Private);
+                }
+            }
+            
             CustomLogger.Information("SendReminderEmails Function finished");
         }
 
@@ -87,8 +80,7 @@ namespace GenderPayGap.WebJob
                 {
                     try
                     {
-                        SendReminderEmail(user.EmailAddress, sectorType, organisationsOfSectorType);
-                        SaveReminderEmailRecord(user, sectorType);
+                        SendReminderEmail(user, sectorType, organisationsOfSectorType);
                     }
                     catch (Exception ex)
                     {
@@ -96,9 +88,9 @@ namespace GenderPayGap.WebJob
                             "Failed whilst sending or saving reminder email.",
                             new
                             {
-                                User = user,
+                                UserId = user.UserId,
                                 SectorType = sectorType,
-                                Organisations = inScopeOrganisationsThatStillNeedToReport,
+                                OrganisationIds = inScopeOrganisationsThatStillNeedToReport.Select(o => o.OrganisationId),
                                 Exception = ex.Message
                             });
                     }
@@ -106,25 +98,7 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        private static void SaveReminderEmailRecord(User user, SectorTypes sectorType)
-        {
-            try
-            {
-                var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = VirtualDateTime.Now};
-                var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
-                dataRepository.Insert(reminderEmailRecord);
-                dataRepository.SaveChangesAsync().Wait();
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error(
-                    "Failed to save reminder email record to database.",
-                    new {Exception = ex.Message});
-                throw;
-            }
-        }
-
-        private void SendReminderEmail(string emailAddress,
+        private void SendReminderEmail(User user,
             SectorTypes sectorType,
             List<Organisation> organisations)
         {
@@ -141,21 +115,19 @@ namespace GenderPayGap.WebJob
 
             var notifyEmail = new NotifyEmail
             {
-                EmailAddress = emailAddress, TemplateId = "db15432c-9eda-4df4-ac67-290c7232c546", Personalisation = personalisation
+                EmailAddress = user.EmailAddress, TemplateId = "db15432c-9eda-4df4-ac67-290c7232c546", Personalisation = personalisation
             };
-
-            try
-            {
-                govNotifyApi.SendEmail(notifyEmail);
-                CustomLogger.Information("Email sent", new {NotifyEmail = notifyEmail});
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error(
-                    "Failed to send reminder email to Notify.",
-                    new {NotifyEmail = notifyEmail, Exception = ex.Message});
-                throw;
-            }
+            
+            govNotifyApi.SendEmail(notifyEmail);
+            SaveReminderEmailRecord(user, sectorType);
+        }
+        
+        private static void SaveReminderEmailRecord(User user, SectorTypes sectorType)
+        {
+            var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = VirtualDateTime.Now};
+            var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
+            dataRepository.Insert(reminderEmailRecord);
+            dataRepository.SaveChangesAsync().Wait();
         }
 
         private string GetOrganisationNameString(List<Organisation> organisations)
