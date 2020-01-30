@@ -1,0 +1,55 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.Database.User
+
+@{
+    ViewBag.Title = $"Re-send verification email - {Model.Fullname} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+{
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Re-send verification email"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-7">
+            <h1 class="govuk-panel__title govuk-!-font-size-36">
+                Verification email re-sent
+            </h1>
+        </div>
+
+        <p class="govuk-body">
+            Return to
+            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})"
+               class="govuk-link">
+                @(Model.Fullname)
+            </a>
+        </p>
+
+    </div>
+</div>

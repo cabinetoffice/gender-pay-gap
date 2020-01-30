@@ -228,6 +228,8 @@ namespace GenderPayGap.Core
         AdminChangeOrganisationSicCode = 5,
         [Display(Name = "Change user contact preferences")]
         AdminChangeUserContactPreferences = 6,
+        [Display(Name = "Re-send verification email")]
+        AdminResendVerificationEmail = 7,
     }
 
     public enum HashingAlgorithm
