@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using GenderPayGap.Core;
 
 namespace GenderPayGap.Database.Models
 {
@@ -85,6 +86,7 @@ namespace GenderPayGap.Database.Models
 
         #endregion
 
+        public FeedbackStatus FeedbackStatus { get; set; }
     }
 
     public enum DifficultyTypes

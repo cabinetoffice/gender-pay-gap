@@ -4,14 +4,16 @@ using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GenderPayGap.Database.Core21.Migrations
 {
     [DbContext(typeof(GpgDatabaseContext))]
-    partial class GpgDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200131095719_AddFeedbackStatus")]
+    partial class AddFeedbackStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,6 +190,9 @@ namespace GenderPayGap.Database.Core21.Migrations
 
                     b.Property<DateTime>("Created");
 
+                    b.Property<string>("DUNSNumber")
+                        .HasMaxLength(10);
+
                     b.Property<DateTime?>("DateOfCessation");
 
                     b.Property<string>("EmployerReference")
@@ -241,6 +246,11 @@ namespace GenderPayGap.Database.Core21.Migrations
                         .IsUnique()
                         .HasName("idx_Organisations_CompanyNumber")
                         .HasFilter("([CompanyNumber] IS NOT NULL)");
+
+                    b.HasIndex("DUNSNumber")
+                        .IsUnique()
+                        .HasName("idx_Organisations_DUNSNumber")
+                        .HasFilter("([DUNSNumber] IS NOT NULL)");
 
                     b.HasIndex("EmployerReference")
                         .IsUnique()
@@ -893,6 +903,9 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.Property<string>("PIN");
 
                     b.Property<DateTime?>("PINConfirmedDate");
+
+                    b.Property<string>("PINHash")
+                        .HasMaxLength(250);
 
                     b.Property<DateTime?>("PINSentDate");
 
