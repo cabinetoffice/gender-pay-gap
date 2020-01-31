@@ -10,6 +10,8 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Services
 {
@@ -29,45 +31,66 @@ namespace GenderPayGap.WebUI.Services
         public string EmailAddress { get; set; }
     }
 
+    public class AdminSearchServiceCacheUpdater : IHostedService, IDisposable
+    {
+        private Timer timer;
+
+        public Task StartAsync(CancellationToken stoppingToken)
+        {
+            CustomLogger.Information("Starting timer (AdminSearchService.StartCacheUpdateThread)");
+
+            timer = new Timer(
+                DoWork,
+                null,
+                dueTime: TimeSpan.FromSeconds(10), // How long to wait before the cache is first updated 
+                period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
+
+            CustomLogger.Information("Started timer (AdminSearchService.StartCacheUpdateThread)");
+            
+            return Task.CompletedTask;
+        }
+
+        private void DoWork(object state)
+        {
+            CustomLogger.Information("Starting cache update (AdminSearchService.StartCacheUpdateThread)");
+
+            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
+            List<AdminSearchServiceOrganisation> allOrganisations = AdminSearchService.LoadAllOrganisations(dataRepository);
+            List<AdminSearchServiceUser> allUsers = AdminSearchService.LoadAllUsers(dataRepository);
+
+            AdminSearchService.cachedOrganisations = allOrganisations;
+            AdminSearchService.cachedUsers = allUsers;
+            AdminSearchService.cacheLastUpdated = VirtualDateTime.Now;
+
+            CustomLogger.Information("Finished cache update (AdminSearchService.StartCacheUpdateThread)");
+        }
+
+        public Task StopAsync(CancellationToken stoppingToken)
+        {
+            CustomLogger.Information("Timed Hosted Service is stopping.");
+
+            timer?.Change(Timeout.Infinite, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            timer?.Dispose();
+        }
+    }
+
     public class AdminSearchService
     {
         private readonly IDataRepository dataRepository;
 
-        private static List<AdminSearchServiceOrganisation> cachedOrganisations;
-        private static List<AdminSearchServiceUser> cachedUsers;
-        private static DateTime cacheLastUpdated = DateTime.MinValue;
+        internal static List<AdminSearchServiceOrganisation> cachedOrganisations;
+        internal static List<AdminSearchServiceUser> cachedUsers;
+        internal static DateTime cacheLastUpdated = DateTime.MinValue;
 
         public AdminSearchService(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
-        }
-
-        public static void StartCacheUpdateThread()
-        {
-            CustomLogger.Information("Starting timer (AdminSearchService.StartCacheUpdateThread)");
-
-            TimerCallback timerCallback = state =>
-            {
-                CustomLogger.Information("Starting cache update (AdminSearchService.StartCacheUpdateThread)");
-
-                var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
-                List<AdminSearchServiceOrganisation> allOrganisations = LoadAllOrganisations(dataRepository);
-                List<AdminSearchServiceUser> allUsers = LoadAllUsers(dataRepository);
-
-                cachedOrganisations = allOrganisations;
-                cachedUsers = allUsers;
-                cacheLastUpdated = VirtualDateTime.Now;
-
-                CustomLogger.Information("Finished cache update (AdminSearchService.StartCacheUpdateThread)");
-            };
-
-            new Timer(
-                timerCallback,
-                null,
-                dueTime: TimeSpan.FromSeconds(10), // How long to wait before the cache is first updated
-                period: TimeSpan.FromMinutes(1));  // How often is the cache updated
-
-            CustomLogger.Information("Started timer (AdminSearchService.StartCacheUpdateThread)");
         }
 
         public AdminSearchResultsViewModel Search(string query)
@@ -137,7 +160,7 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        private static List<AdminSearchServiceOrganisation> LoadAllOrganisations(IDataRepository repository)
+        internal static List<AdminSearchServiceOrganisation> LoadAllOrganisations(IDataRepository repository)
         {
             return repository
                 .GetAll<Organisation>()
@@ -153,7 +176,7 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        private static List<AdminSearchServiceUser> LoadAllUsers(IDataRepository repository)
+        internal static List<AdminSearchServiceUser> LoadAllUsers(IDataRepository repository)
         {
             return repository
                 .GetAll<User>()

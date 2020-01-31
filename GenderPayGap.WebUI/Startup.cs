@@ -147,6 +147,8 @@ namespace GenderPayGap.WebUI
                 Config.GetAppSetting("AuthSecret", "secret"),
                 BackChannelHandler);
 
+            services.AddHostedService<AdminSearchServiceCacheUpdater>();
+
             //Override any test services
             ConfigureTestServices?.Invoke(services);
 
@@ -158,8 +160,6 @@ namespace GenderPayGap.WebUI
             Global.RegistrationLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.RegistrationLog);
             Global.SubmissionLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.SubmissionLog);
             Global.SearchLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.SearchLog);
-
-            AdminSearchService.StartCacheUpdateThread();
 
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(MvcApplication.ContainerIoC);
