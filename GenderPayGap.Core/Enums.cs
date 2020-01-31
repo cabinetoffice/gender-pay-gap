@@ -242,6 +242,13 @@ namespace GenderPayGap.Core
         PBKDF2AppliedToSHA512 = 3
     }
 
+    public enum FeedbackStatus
+    {
+        Uncategorised = 0,
+        NotSpam = 1,
+        Spam = 2
+    }
+
     public static class EnumHelper
     {
 

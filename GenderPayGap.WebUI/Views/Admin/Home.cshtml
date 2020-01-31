@@ -96,12 +96,19 @@
 <h2 class="govuk-heading-l">Logs</h2>
 
 <p class="govuk-body">
-    <a href="@Url.Action("DownloadFeedback", "AdminDownloads")" class="govuk-link govuk-!-font-weight-bold">Download feedback</a>
-    <br/>
-    Download a CSV of feedback submitted through the "Send Feedback" links
-    <br/>
+    <a href="@Url.Action("ViewFeedback", "AdminFeedback")" class="govuk-link govuk-!-font-weight-bold">View and download feedback</a>
+    <br />
+    View and download feedback submitted through the "Send Feedback" links
+    <br />
+    @if (Model.NewFeedbackCount > 0)
+    {
+        <span class="govuk-!-font-weight-bold">
+            @(Model.NewFeedbackCount) new responses
+        </span>
+        <br/>
+    }
     Total feedback submissions: @(Model.FeedbackCount)
-    <br/>
+    <br />
     Latest feedback received: @(Model.LatestFeedbackDate?.ToString("d MMM yyyy"))
 </p>
 

@@ -96,6 +96,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 IsDowngradedDueToIpRestrictions =
                     !IsTrustedIP && (CurrentUser.IsDatabaseAdministrator() || CurrentUser.IsSuperAdministrator()),
                 FeedbackCount = DataRepository.GetAll<Feedback>().Count(),
+                NewFeedbackCount = DataRepository.GetAll<Feedback>().Count(f => f.FeedbackStatus == FeedbackStatus.Uncategorised),
                 LatestFeedbackDate = DataRepository.GetAll<Feedback>()
                     .OrderByDescending(feedback => feedback.CreatedDate)
                     .FirstOrDefault()

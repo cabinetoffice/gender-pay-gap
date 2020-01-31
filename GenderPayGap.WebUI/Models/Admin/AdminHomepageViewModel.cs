@@ -10,6 +10,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public bool IsDowngradedDueToIpRestrictions { get; set; }
         public int FeedbackCount { get; set; }
         public DateTime? LatestFeedbackDate { get; set; }
+        public int NewFeedbackCount { get; set; }
 
     }
 }
