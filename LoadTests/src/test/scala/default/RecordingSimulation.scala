@@ -260,6 +260,32 @@ class RecordingSimulation extends Simulation {
 			.pause(1)
 	}
 
+	object ManageAccount {
+		val visit = exec(http("Visit manage account")
+			.get("/manage-account")
+			.headers(headers_0))
+			.pause(1)
+
+		val visitChangePersonalDetails = exec(http("Visit change personal details")
+			.get("/manage-account/change-details")
+			.headers(headers_0)
+			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.pause(1)
+
+		val changePersonalDetails = exec(http("Change personal details")
+			.post("/manage-account/change-details")
+			.headers(headers_3)
+			.formParam("FirstName", "test user")
+			.formParam("LastName", "test user")
+			.formParam("JobTitle", "test job")
+			.formParam("ContactPhoneNumber", "")
+			.formParam("AllowContact", "true")
+			.formParam("SendUpdates", "false")
+			.formParam("AllowContact", "false")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.pause(1)
+	}
+
 	val scn = scenario("Viewing").exec(
 		HomePage.visit,
 		HomePage.search,
