@@ -426,66 +426,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
         #endregion
 
-        [HttpGet("populate-isukaddress")]
-        public async Task<IActionResult> PopulateIsUkAddress(long? previousOrganisationId = null)
-        {
-            DateTime start = VirtualDateTime.Now;
-            long? startedFrom = previousOrganisationId;
-            long finishedUpTo = previousOrganisationId ?? 0;
-
-            while (VirtualDateTime.Now.Subtract(start).TotalSeconds < 10)
-            {
-                OrganisationAddress address =
-                    DataRepository
-                        .GetAll<OrganisationAddress>()
-                        .Where(oa => oa.AddressId > finishedUpTo)
-                        .Where(oa => oa.IsUkAddress == null)
-                        .OrderBy(oa => oa.AddressId)
-                        .FirstOrDefault();
-
-                if (await PostcodesIoApi.IsValidPostcode(address.PostCode))
-                {
-                    address.IsUkAddress = true;
-                    await DataRepository.SaveChangesAsync();
-                }
-
-                finishedUpTo = address.AddressId;
-            }
-
-            var model = new Dictionary<string, long?> {{"StartedFrom", startedFrom}, {"FinishedUpTo", finishedUpTo}};
-
-            return View("PopulateIsUkAddress", model);
-        }
-
-        [HttpGet("manually-set-isukaddress")]
-        public async Task<IActionResult> ManuallySetIsUkAddress()
-        {
-            List<OrganisationAddress> addresses =
-                DataRepository
-                    .GetAll<OrganisationAddress>()
-                    .Where(oa => oa.IsUkAddress == null)
-                    .OrderBy(oa => oa.AddressId)
-                    .Take(100)
-                    .ToList();
-
-            return View("ManuallySetIsUkAddress", addresses);
-        }
-
-        [HttpGet("manually-set-isukaddress-ajax")]
-        public async Task<IActionResult> ManuallySetIsUkAddressAjax(long addressId, bool isUk)
-        {
-            OrganisationAddress address =
-                DataRepository
-                    .GetAll<OrganisationAddress>()
-                    .Where(oa => oa.AddressId == addressId)
-                    .FirstOrDefault();
-
-            address.IsUkAddress = isUk;
-            await DataRepository.SaveChangesAsync();
-
-            return NoContent();
-        }
-
         #region Dependencies
 
         private readonly IHostingEnvironment HostingEnvironment;
