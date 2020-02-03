@@ -286,6 +286,30 @@ class RecordingSimulation extends Simulation {
 			.pause(1)
 	}
 
+	object Feedback {
+		val visit = exec(http("Visit feedback page")
+			.get("/send-feedback")
+			.headers(headers_0)
+			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.pause(1)
+
+		val submit = exec(http("Submit a feedback")
+			.post("/send-feedback")
+			.headers(headers_3)
+			.formParam("GovUk_Radio_HowEasyIsThisServiceToUse", "VeryEasy")
+			.formParam("GovUk_Checkbox_HowDidYouHearAboutGpg", "NewsArticle")
+			.formParam("GovUk_Text_OtherSourceText", "")
+			.formParam("GovUk_Checkbox_WhyVisitGpgSite", "FindOutAboutGpg")
+			.formParam("GovUk_Text_OtherReasonText", "")
+			.formParam("GovUk_Checkbox_WhoAreYou", "EmployeeInterestedInOrganisationData")
+			.formParam("GovUk_Text_OtherPersonText", "")
+			.formParam("GovUk_Text_Details", "It's a test survey")
+			.formParam("EmailAddress", "")
+			.formParam("PhoneNumber", "")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.pause(8)
+	}
+
 	val scn = scenario("Viewing").exec(
 		HomePage.visit,
 		HomePage.search,
