@@ -1,0 +1,195 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@{
+    ViewBag.Title = "Database integrity checks - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Database integrity checks"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<main id="content" role="main">
+    <span class="govuk-caption-xl">Administration</span>
+    <h1 class="govuk-heading-xl">Database integrity checks</h1>
+
+    <div>
+        <h2 class="govuk-heading-l">Organisation Addresses</h2>
+
+        <div id="OrganisationsWithMultipleActiveAddresses">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                            Loading...
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-body">
+                        No organisations
+                    </div>
+                </div>
+            </details>
+        </div>
+        <div id="OrganisationsWhereLatestAddressIsNotActive">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                            Loading...
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-body">
+                        No organisations
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="govuk-heading-l">Organisation Scopes</h2>
+
+        <div id="OrganisationsWithMultipleActiveScopesForASingleYear">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                            Loading...
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-body">
+                        No organisations
+                    </div>
+                </div>
+            </details>
+        </div>
+        <div id="OrganisationsWithNoActiveScopeForEveryYear">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                            Loading...
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-body">
+                        No organisations
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="govuk-heading-l">Organisation Returns</h2>
+
+        <div id="OrganisationsWithMultipleActiveReturnsForASingleYear">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                            Loading...
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-body">
+                        No organisations
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="govuk-heading-l">Organisation Sector Types</h2>
+
+        <div id="PublicSectorOrganisationsWithoutAPublicSectorType">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                            Loading...
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <div class="govuk-body">
+                        No organisations
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() { 
+            $.get("@Url.Action("OrganisationsWithMultipleActiveAddressesAjax", "AdminDatabaseIntegrityChecks")",
+                "",
+                function(data) { $("#OrganisationsWithMultipleActiveAddresses").html(data)
+                },
+                "html"
+              );
+            
+            $.get("@Url.Action("OrganisationsWhereLatestAddressIsNotActiveAjax", "AdminDatabaseIntegrityChecks")",
+                "",
+                function(data) { $("#OrganisationsWhereLatestAddressIsNotActive").html(data)
+                },
+                "html"
+              );
+
+            $.get("@Url.Action("OrganisationsWithMultipleActiveScopesForASingleYearAjax", "AdminDatabaseIntegrityChecks")",
+                "",
+                function(data) { $("#OrganisationsWithMultipleActiveScopesForASingleYear").html(data)
+                },
+                "html"
+              );
+            
+            $.get("@Url.Action("OrganisationsWithNoActiveScopeForEveryYearAjax", "AdminDatabaseIntegrityChecks")",
+                "",
+                function(data) { $("#OrganisationsWithNoActiveScopeForEveryYear").html(data)
+                },
+                "html"
+              );
+            
+            $.get("@Url.Action("OrganisationsWithMultipleActiveReturnsForASingleYearAjax", "AdminDatabaseIntegrityChecks")",
+                "",
+                function(data) { $("#OrganisationsWithMultipleActiveReturnsForASingleYear").html(data)
+                },
+                "html"
+              );
+            
+            $.get("@Url.Action("PublicSectorOrganisationsWithoutAPublicSectorTypeAjax", "AdminDatabaseIntegrityChecks")",
+                "",
+                function(data) { $("#PublicSectorOrganisationsWithoutAPublicSectorType").html(data)
+                },
+                "html"
+              );
+        });
+    </script>
+</main>
