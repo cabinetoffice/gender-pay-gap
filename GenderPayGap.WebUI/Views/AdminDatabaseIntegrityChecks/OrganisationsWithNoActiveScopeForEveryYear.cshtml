@@ -1,0 +1,51 @@
+﻿@using GenderPayGap.Database
+@model GenderPayGap.WebUI.Models.Admin.DatabaseIntegrityChecksViewModel
+
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                @(Model.OrganisationsWithNoActiveScopeForEveryYear.Count)
+            </span>
+            organisations with no active scope for every year
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        @if (!Model.OrganisationsWithNoActiveScopeForEveryYear.Any())
+        {
+            <div class="govuk-body">
+                No organisations
+            </div>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Organisation</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (Organisation organisation in Model.OrganisationsWithNoActiveScopeForEveryYear)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId}))"
+                                   class="govuk-link">
+                                    @(organisation.OrganisationName)
+                                </a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <a href="@(Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId}))"
+                                   class="govuk-link">
+                                    Scope history
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</details>
