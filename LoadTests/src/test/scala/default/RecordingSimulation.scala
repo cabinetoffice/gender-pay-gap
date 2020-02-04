@@ -39,11 +39,11 @@ class RecordingSimulation extends Simulation {
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
 
-	val maxNumberOfTestUsers = 10
+	val maxNumberOfTestUsers = 1000
 
-	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test${Random.nextInt(maxNumberOfTestUsers)+1}"))
+	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test${Random.nextInt(2 * maxNumberOfTestUsers) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
-	val signInFeeder = Iterator.continually(Map("email" -> s"user${Random.nextInt(maxNumberOfTestUsers)+1}@example.com"))
+	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
 
 	object HomePage {
 		val visit = exec(http("Visit home page")
@@ -108,7 +108,7 @@ class RecordingSimulation extends Simulation {
 					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest-2x.png?0.23.0")))
 			.pause(1)
 
-		val signIn = feed(signInFeeder)
+		val signIn = feed(usersOrganisationsFeeder)
 			.exec(http("Sign in")
 			.post("/account/sign-in")
 			.headers(headers_3)
@@ -135,7 +135,6 @@ class RecordingSimulation extends Simulation {
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
 			))
 			.pause(1)
-
 	}
 
 	object RegistrationPage {

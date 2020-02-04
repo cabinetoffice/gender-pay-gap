@@ -1,8 +1,8 @@
-﻿DECLARE @STARTING_ID int
-SET @STARTING_ID = 10000000
+DECLARE @STARTING_ID int
+SET @STARTING_ID = 100000000
 
 DECLARE @NUM_OF_USERS INT
-SET @NUM_OF_USERS = 10
+SET @NUM_OF_USERS = 1000
 
 DECLARE @INDEX INT
 SET @INDEX = 1
@@ -12,10 +12,12 @@ UPDATE Organisations
 	SET LatestRegistration_OrganisationId = null, LatestRegistration_UserId = null WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + @NUM_OF_USERS
 	DELETE FROM Users WHERE UserId > @STARTING_ID AND UserId <= @STARTING_ID + @NUM_OF_USERS
 	DELETE FROM Organisations WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
-	DELETE FROM OrganisationScopes WHERE OrganisationScopeId > @STARTING_ID AND OrganisationScopeId <= @STARTING_ID + 2* @NUM_OF_USERS
 	DELETE FROM UserOrganisations WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
+	DELETE FROM OrganisationScopes WHERE OrganisationScopeId > @STARTING_ID AND OrganisationScopeId <= @STARTING_ID + 2* @NUM_OF_USERS
 	DELETE FROM OrganisationNames WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
 	DELETE FROM OrganisationSicCodes WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
+	DELETE FROM OrganisationAddresses WHERE AddressId > @STARTING_ID AND AddressId <= @STARTING_ID + 2 * @NUM_OF_USERS
+	DELETE FROM Returns WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + @NUM_OF_USERS
 
 
 WHILE @INDEX <= @NUM_OF_USERS
