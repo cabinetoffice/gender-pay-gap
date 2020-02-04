@@ -39,14 +39,19 @@ class RecordingSimulation extends Simulation {
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
 
-	val searchFeeder = csv("search.csv").random
+	val maxNumberOfTestUsers = 10
+
+	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test${Random.nextInt(maxNumberOfTestUsers)+1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
-	val signInFeeder = Iterator.continually(Map("email" -> s"user${Random.nextInt(30)}@example.com"))
+	val signInFeeder = Iterator.continually(Map("email" -> s"user${Random.nextInt(maxNumberOfTestUsers)+1}@example.com"))
 
 	object HomePage {
 		val visit = exec(http("Visit home page")
 			.get("/")
 			.headers(headers_0)
+			.check(
+				status.is(200),
+				regex("Search and compare gender pay gap data"))
 			.resources(http("Load logo")
 				.get("/public/govuk_template/assets/stylesheets/images/gov.uk_logotype_crown.png")
 				.headers(headers_1),
@@ -63,24 +68,36 @@ class RecordingSimulation extends Simulation {
 
 		val search = feed(searchFeeder)
 			.exec(http("Search a word first bit")
-			.get("/viewing/suggest-employer-name-js?search=${SearchCriteria1}")
+			.get("/viewing/suggest-employer-name-js?search=${searchCriteria1}")
 			.headers(headers_2))
 			.pause(1)
 			.exec(http("Search the whole word")
-			.get("/viewing/suggest-employer-name-js?search=${SearchCriteria2}")
-			.headers(headers_2))
+			.get("/viewing/suggest-employer-name-js?search=${searchCriteria2}")
+			.headers(headers_2)
+			.check(
+				status.is(200),
+				jsonPath("$.Matches[0].Id").find.saveAs("FirstSearchResultId"),
+				jsonPath("$.Matches[0].Text").find.saveAs("FirstSearchResultText")))
 			.pause(1)
 			.exec(http("Select an organisation")
-			.get("/employer/${EmployerIdentifier}")
-			.headers(headers_0))
+			.get("/employer/${FirstSearchResultId}")
+			.headers(headers_0)
+			.check(
+				status.is(200),
+				regex("${FirstSearchResultText}")))
 			.pause(1)
 	}
 
 	object SignInPage {
-		val visit = exec(http("Start submission")
+		val visit = exec(http("Visit sign in page")
 			.get("/manage-organisations")
 			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"))
+			.check(
+				status.in(200, 302),
+				regex("Sign in"),
+				regex("If you have an account, enter your email address and password"),
+				css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"))
 			.resources(http("Load important icon")
 				.get("/public/images/icon-important-2x.png"),
 				http("Load licence image")
@@ -97,17 +114,38 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_3)
 			.formParam("Username", "${email}")
 			.formParam("Password", "Genderpaygap1")
-			.formParam("ReturnUrl", "/account/connect/authorize/callback?client_id=gpgWeb&redirect_uri=https%3A%2F%2Fwa-t1pp-gpg.azurewebsites.net%2Fsignin-oidc&response_type=id_token&scope=openid%20profile%20roles&response_mode=form_post&nonce=637159900765691861.M2FkMTQ4ODctNDUwYS00YjQ1LWIwOGItMzBlMWQ5YTZjNTg4NjJjZjg3MDUtMmUxZi00YjE0LTk3NTQtOTU1MTMyODA2NDBm&Referrer=%2Fmanage-organisations&state=CfDJ8Fc5kTS2volCo7SBXrVcosCyLtQmh5l4brlsTckJ6oz6owPKZAdF12fnImsl7Bvm7mL8y9YE9TK3ByJlRFZ38GwNlvABv2Zh3Fxoh5GthH-rK67N2e5fKg2VTjTbbSftlMXqM7-kn_070yeb02pTz3kp0RHgXZI0-CvV4VQVZP9XDUvDmJ_qukh57ggqiR2unYRXub3BScPmC9WCgQnLuFDv0BCuvCmUR5LB2y4im0hoWinfrH7VMyc_akltam3sIAxsmeHsn32yzk_TZZAgvJehWm6IoGDDgAmNayp4-BThn12RzB2ukNdd4v8KIGIDvI_4zU06d0GaeX2yRqOasj4g-lp5GbBLj8p4S4S3ZsDLBRXo35qQGaXynSmaEi6xPrq6UHM0vul227v0Gc7PC30&x-client-SKU=ID_NETSTANDARD2_0&x-client-ver=5.3.0.0")
+			.formParam("ReturnUrl", "${returnUrl}")
 			.formParam("button", "login")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='id_token']","value").saveAs("idToken"),
+				css("input[name='scope']","value").saveAs("signInScope"),
+				css("input[name='state']","value").saveAs("signInState"),
+				css("input[name='session_state']","value").saveAs("signInSessionState")
+			))
+			.exec(http("Sign in OIDC")
+			.post("/signin-oidc")
+			.headers(headers_3)
+			.formParam("id_token", "${idToken}")
+			.formParam("scope", "${signInScope}")
+			.formParam("state", "${signInState}")
+			.formParam("session_state", "${signInSessionState}")
+			.check(
+				regex("Privacy Policy"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
+			))
 			.pause(1)
+
 	}
 
 	object RegistrationPage {
-		val visit =  exec(http("Load registration page")
+		val visit = exec(http("Load registration page")
 			.get("/Register/about-you")
 			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.check(
+				status.is(200),
+				regex("Create an account"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
 			.pause(1)
 
 		val register = feed(registrationFeeder)
@@ -123,41 +161,20 @@ class RecordingSimulation extends Simulation {
 			.formParam("ConfirmPassword", "GenderPayGap123")
 			.formParam("AllowContact", "true")
 			.formParam("SendUpdates", "false")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
-			.pause(1)
-	}
-
-	object EmailVerificationPage {
-		val visit = exec(http("Visit email verification page")
-			.get("/Register/verify-email")
-			.headers(headers_4)
-			.resources(http("Load logo")
-				.get("/account/public/assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png?0.23.0")
-				.headers(headers_5),
-				http("Load important icon")
-					.get("/public/images/icon-important.png")
-					.headers(headers_5),
-				http("Load licence image")
-					.get("/account/public/assets/govuk_template/stylesheets/images/open-government-licence.png?0.23.0")
-					.headers(headers_5),
-				http("Load crest")
-					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest.png?0.23.0")
-					.headers(headers_5)))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(regex("Verify your email address")))
 			.pause(1)
 	}
 
 	object PrivacyPolicyPage {
-		val visit = exec(http("Load privacy policy page")
-			.get("/privacy-policy")
-			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-			.pause(1)
-
 		val accept = exec(http("Accept privacy and policy")
 			.post("/privacy-policy")
 			.headers(headers_3)
 			.formParam("command", "Continue")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				regex("Manage Organisations"),
+				regex("Manage Account")))
   		.pause(1)
 	}
 
@@ -321,11 +338,9 @@ class RecordingSimulation extends Simulation {
 		SignInPage.visit,
 		RegistrationPage.visit,
 		RegistrationPage.register,
-		EmailVerificationPage.visit,
 		HomePage.visit,
 		SignInPage.visit,
 		SignInPage.signIn,
-		PrivacyPolicyPage.visit,
 		PrivacyPolicyPage.accept)
 
 	setUp(scn.inject(rampUsers(3) during (30 seconds))).protocols(httpProtocol)
