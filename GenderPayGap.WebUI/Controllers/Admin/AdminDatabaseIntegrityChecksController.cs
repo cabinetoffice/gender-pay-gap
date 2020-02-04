@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return View("DatabaseIntegrityChecks");
         }
 
-        [HttpGet("organisations-with-multiple-active-addresses-ajax")]
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses-ajax")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveAddressesAjax()
         {
             var organisationsWithMultipleActiveAddresses = new List<Organisation>();
@@ -52,7 +52,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
         }
 
-        [HttpGet("active-organisations-with-the-same-name-ajax")]
+        [HttpGet("database-integrity-checks/active-organisations-with-the-same-name-ajax")]
         public async Task<IActionResult> ActiveOrganisationsWithTheSameNameAjax()
         {
             var activeOrganisationsWithTheSameName = new List<string>();
@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("ActiveOrganisationsWithTheSameName", activeOrganisationsWithTheSameName);
         }
 
-        [HttpGet("organisations-where-latest-address-is-not-active-ajax")]
+        [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active-ajax")]
         public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActiveAjax()
         {
             var organisationsWhereLatestAddressIsNotActive = new List<Organisation>();
@@ -91,7 +91,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
 
-        [HttpGet("organisations-with-multiple-active-scopes-for-a-single-year-ajax")]
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year-ajax")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYearAjax()
         {
             var organisationsWithMultipleActiveScopesForASingleYear = new List<Organisation>();
@@ -115,7 +115,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWithMultipleActiveScopesForASingleYear", organisationsWithMultipleActiveScopesForASingleYear);
         }
 
-        [HttpGet("organisations-with-no-active-scope-for-every-year-ajax")]
+        [HttpGet("database-integrity-checks/organisations-with-no-active-scope-for-every-year-ajax")]
         public async Task<IActionResult> OrganisationsWithNoActiveScopeForEveryYearAjax()
         {
             var organisationsWithNoActiveScopeForEveryYear = new List<Organisation>();
@@ -144,7 +144,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
                 foreach (int year in requiredYears)
                 {
-                    if (!yearsWithActiveScopes.Contains(year))
+                    if (!yearsWithActiveScopes.Contains(year) && !organisationsWithNoActiveScopeForEveryYear.Contains(organisation))
                     {
                         organisationsWithNoActiveScopeForEveryYear.Add(organisation);
                     }
@@ -154,7 +154,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWithNoActiveScopeForEveryYear", organisationsWithNoActiveScopeForEveryYear);
         }
 
-        [HttpGet("organisations-with-multiple-active-returns-for-a-single-year-ajax")]
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-returns-for-a-single-year-ajax")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveReturnsForASingleYearAjax()
         {
             var organisationsWithMultipleActiveReturnsForASingleYear = new List<Organisation>();
@@ -167,7 +167,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(r => r.Status == ReturnStatuses.Submitted);
 
                 bool multipleActiveReturnsForYear = activeReturns
-                    .GroupBy(r => r.AccountingDate)
+                    .GroupBy(r => r.AccountingDate.Year)
                     .Any(g => g.Count() > 1);
 
                 if (multipleActiveReturnsForYear)
@@ -181,7 +181,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 organisationsWithMultipleActiveReturnsForASingleYear);
         }
 
-        [HttpGet("public-sector-organisations-without-a-public-sector-type-ajax")]
+        [HttpGet("database-integrity-checks/public-sector-organisations-without-a-public-sector-type-ajax")]
         public async Task<IActionResult> PublicSectorOrganisationsWithoutAPublicSectorTypeAjax()
         {
             var publicSectorOrganisationsWithoutAPublicSectorType = new List<Organisation>();
