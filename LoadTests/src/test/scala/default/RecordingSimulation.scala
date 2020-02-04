@@ -181,7 +181,9 @@ class RecordingSimulation extends Simulation {
 		val visitChooseOrganisationType = exec(http("Visit register an organisation page")
 			.get("/Register/organisation-type")
 			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Select which type of organisation you would like to register")))
 			.pause(1)
 
 		val chooseOrganisationType = exec(http("Choose organistion type to be private")
@@ -189,13 +191,10 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_3)
 			.formParam("SearchText", "")
 			.formParam("SectorType", "Private")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
-			.pause(1)
-
-		val visitSearchForAnOrganisation = exec(http("Visit search an organisation page")
-			.get("/Register/organisation-search")
-			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Find your organisation")))
 			.pause(1)
 
 		val searchForAnOrganisation = exec(http("Search for an organisation")
@@ -204,37 +203,29 @@ class RecordingSimulation extends Simulation {
 			.formParam("SectorType", "Private")
 			.formParam("ManualRegistration", "True")
 			.formParam("command", "search")
-			.formParam("SearchText", "test1")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
-			.pause(1)
-
-		val visitChooseAnOrganisation = exec(http("Visit choose an organisation page")
-			.get("/Register/choose-organisation")
-			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.formParam("SearchText", "${organisationName}")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Choose your organisation")))
 			.pause(1)
 
 		val chooseAnOrganisation = exec(http("Choose an organisation")
 			.post("/Register/choose-organisation")
 			.headers(headers_3)
 			.formParam("SectorType", "Private")
-			.formParam("SearchText", "test1")
+			.formParam("SearchText", "${organisationName}")
 			.formParam("command", "employer_0")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
-			.pause(1)
-
-		val visitConfirmOrganisationDetails = exec(http("Visit confirm organisation details page")
-			.get("/Register/confirm-organisation")
-			.headers(headers_0)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
 			.pause(1)
 
 		val confirmOrganisationDetails = exec(http("Confirm organisation details")
 			.post("/Register/confirm-organisation")
 			.headers(headers_3)
-			.formParam("SearchText", "test1")
+			.formParam("SearchText", "${organisationName}")
 			.formParam("SelectedEmployerIndex", "0")
-			.formParam("CompanyNumber", "999991")
+			.formParam("CompanyNumber", "${organisationCompanyNumber}")
 			.formParam("CharityNumber", "")
 			.formParam("MutualNumber", "")
 			.formParam("OtherName", "")
@@ -244,7 +235,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("BackAction", "")
 			.formParam("AddressReturnAction", "")
 			.formParam("ConfirmReturnAction", "ChooseOrganisation")
-			.formParam("OrganisationName", "test1")
+			.formParam("OrganisationName", "${organisationName}")
 			.formParam("NameSource", "User")
 			.formParam("AddressSource", "User")
 			.formParam("SicSource", "User")
@@ -271,7 +262,10 @@ class RecordingSimulation extends Simulation {
 			.formParam("SelectedAuthorised", "False")
 			.formParam("IsFastTrackAuthorised", "False")
 			.formParam("command", "confirm")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(regex("We saved your registration request")))
+			.pause(1)
+	}
 			.pause(1)
 
 		val visitPinSent = exec(http("Visit pin sent page")
@@ -327,7 +321,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("EmailAddress", "")
 			.formParam("PhoneNumber", "")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
-			.pause(8)
+			.pause(1)
 	}
 
 	val scn = scenario("Viewing").exec(
@@ -340,7 +334,12 @@ class RecordingSimulation extends Simulation {
 		HomePage.visit,
 		SignInPage.visit,
 		SignInPage.signIn,
-		PrivacyPolicyPage.accept)
+		PrivacyPolicyPage.accept,
+		RegisterOrganisation.visitChooseOrganisationType,
+		RegisterOrganisation.chooseOrganisationType,
+		RegisterOrganisation.searchForAnOrganisation,
+		RegisterOrganisation.chooseAnOrganisation,
+		RegisterOrganisation.confirmOrganisationDetails)
 
 	setUp(scn.inject(rampUsers(3) during (30 seconds))).protocols(httpProtocol)
 }
