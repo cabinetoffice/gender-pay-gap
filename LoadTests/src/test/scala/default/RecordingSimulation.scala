@@ -495,13 +495,16 @@ class RecordingSimulation extends Simulation {
 	object ManageAccount {
 		val visit = exec(http("Visit manage account")
 			.get("/manage-account")
-			.headers(headers_0))
+			.headers(headers_0)
+			.check(regex("Manage your account")))
 			.pause(1)
 
 		val visitChangePersonalDetails = exec(http("Visit change personal details")
 			.get("/manage-account/change-details")
 			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Change your personal details")))
 			.pause(1)
 
 		val changePersonalDetails = exec(http("Change personal details")
@@ -514,7 +517,8 @@ class RecordingSimulation extends Simulation {
 			.formParam("AllowContact", "true")
 			.formParam("SendUpdates", "false")
 			.formParam("AllowContact", "false")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+				.check(regex("Your details have been updated successfully")))
 			.pause(1)
 	}
 
@@ -565,7 +569,10 @@ class RecordingSimulation extends Simulation {
 		ReportGenderPayGap.enterResponsiblePerson,
 		ReportGenderPayGap.enterSizeOfOrganisation,
 		ReportGenderPayGap.enterWebAddress,
-		ReportGenderPayGap.confirmGenderPayGapData)
+		ReportGenderPayGap.confirmGenderPayGapData,
+		ManageAccount.visit,
+		ManageAccount.visitChangePersonalDetails,
+		ManageAccount.changePersonalDetails)
 
 	setUp(scn.inject(rampUsers(3) during (30 seconds))).protocols(httpProtocol)
 }
