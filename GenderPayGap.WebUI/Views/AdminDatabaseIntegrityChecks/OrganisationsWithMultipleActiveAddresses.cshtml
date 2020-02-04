@@ -1,17 +1,17 @@
 ﻿@using GenderPayGap.Database
-@model GenderPayGap.WebUI.Models.Admin.DatabaseIntegrityChecksViewModel
+@model List<Organisation>
 
 <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
             <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
-                @(Model.OrganisationsWithMultipleActiveAddresses.Count)
+                @(Model.Count)
             </span>
             organisations with multiple active addresses
         </span>
     </summary>
     <div class="govuk-details__text">
-        @if (!Model.OrganisationsWithMultipleActiveAddresses.Any())
+        @if (!Model.Any())
         {
             <div class="govuk-body">
                 No organisations
@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                    @foreach (Organisation organisation in Model.OrganisationsWithMultipleActiveAddresses)
+                    @foreach (Organisation organisation in Model)
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
