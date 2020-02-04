@@ -41,9 +41,9 @@ class RecordingSimulation extends Simulation {
 
 	val maxNumberOfTestUsers = 1000
 
-	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test${Random.nextInt(2 * maxNumberOfTestUsers) + 1}"))
+	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${Random.nextInt(2 * maxNumberOfTestUsers) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
-	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
+	val usersOrganisationsFeeder = csv("users_organisations.csv").shuffle
 
 	object HomePage {
 		val visit = exec(http("Visit home page")
