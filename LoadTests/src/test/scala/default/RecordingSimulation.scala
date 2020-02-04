@@ -526,7 +526,9 @@ class RecordingSimulation extends Simulation {
 		val visit = exec(http("Visit feedback page")
 			.get("/send-feedback")
 			.headers(headers_0)
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Send us feedback")))
 			.pause(1)
 
 		val submit = exec(http("Submit a feedback")
@@ -542,7 +544,8 @@ class RecordingSimulation extends Simulation {
 			.formParam("GovUk_Text_Details", "It's a test survey")
 			.formParam("EmailAddress", "")
 			.formParam("PhoneNumber", "")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}"))
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(regex("Thank you")))
 			.pause(1)
 	}
 
@@ -572,7 +575,9 @@ class RecordingSimulation extends Simulation {
 		ReportGenderPayGap.confirmGenderPayGapData,
 		ManageAccount.visit,
 		ManageAccount.visitChangePersonalDetails,
-		ManageAccount.changePersonalDetails)
+		ManageAccount.changePersonalDetails,
+		Feedback.visit,
+		Feedback.submit)
 
 	setUp(scn.inject(rampUsers(3) during (30 seconds))).protocols(httpProtocol)
 }
