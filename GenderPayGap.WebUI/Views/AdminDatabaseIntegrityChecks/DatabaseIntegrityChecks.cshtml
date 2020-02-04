@@ -30,7 +30,7 @@
 <span class="govuk-caption-xl">Administration</span>
 <h1 class="govuk-heading-xl">Database integrity checks</h1>
 
-<div>
+<section>
     <h2 class="govuk-heading-l">Organisation Names</h2>
 
     <div id="ActiveOrganisationsWithTheSameName">
@@ -49,9 +49,9 @@
             </div>
         </details>
     </div>
-</div>
+</section>
 
-<div>
+<section>
     <h2 class="govuk-heading-l">Organisation Addresses</h2>
 
     <div id="OrganisationsWithMultipleActiveAddresses">
@@ -86,9 +86,9 @@
             </div>
         </details>
     </div>
-</div>
+</section>
 
-<div>
+<section>
     <h2 class="govuk-heading-l">Organisation Scopes</h2>
 
     <div id="OrganisationsWithMultipleActiveScopesForASingleYear">
@@ -123,9 +123,9 @@
             </div>
         </details>
     </div>
-</div>
+</section>
 
-<div>
+<section>
     <h2 class="govuk-heading-l">Organisation Returns</h2>
 
     <div id="OrganisationsWithMultipleActiveReturnsForASingleYear">
@@ -144,9 +144,9 @@
             </div>
         </details>
     </div>
-</div>
+</section>
 
-<div>
+<section>
     <h2 class="govuk-heading-l">Organisation Sector Types</h2>
 
     <div id="PublicSectorOrganisationsWithoutAPublicSectorType">
@@ -165,12 +165,12 @@
             </div>
         </details>
     </div>
-</div>
+</section>
 
 <script type="text/javascript">
 
     function loadHtml(url, elementName) {
-        $.get("/admin/" + url ,
+        $.get(url,
         "",
         function(data) { $("#" + elementName).html(data)},
         "html"
@@ -178,13 +178,26 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() { 
-        loadHtml("active-organisations-with-the-same-name-ajax", "ActiveOrganisationsWithTheSameName");
-        loadHtml("organisations-with-multiple-active-addresses-ajax", "OrganisationsWithMultipleActiveAddresses");
-        loadHtml("organisations-where-latest-address-is-not-active-ajax", "OrganisationsWhereLatestAddressIsNotActive");
-        loadHtml("organisations-with-multiple-active-scopes-for-a-single-year-ajax", "OrganisationsWithMultipleActiveScopesForASingleYearAjax");
-        loadHtml("organisations-with-no-active-scope-for-every-year-ajax", "OrganisationsWithNoActiveScopeForEveryYearAjax");
-        loadHtml("organisations-with-multiple-active-returns-for-a-single-year-ajax", "OrganisationsWithMultipleActiveReturnsForASingleYearAjax");
-        loadHtml("public-sector-organisations-without-a-public-sector-type-ajax", "PublicSectorOrganisationsWithoutAPublicSectorType");
+        loadHtml("@Url.Action("ActiveOrganisationsWithTheSameNameAjax", "AdminDatabaseIntegrityChecks")",
+         "ActiveOrganisationsWithTheSameName");
+         
+        loadHtml("@Url.Action("OrganisationsWithMultipleActiveAddressesAjax", "AdminDatabaseIntegrityChecks")",
+         "OrganisationsWithMultipleActiveAddresses");
+        
+        loadHtml("@Url.Action("OrganisationsWhereLatestAddressIsNotActiveAjax", "AdminDatabaseIntegrityChecks")",
+         "OrganisationsWhereLatestAddressIsNotActive");
+        
+        loadHtml("@Url.Action("OrganisationsWithMultipleActiveScopesForASingleYearAjax", "AdminDatabaseIntegrityChecks")",
+         "OrganisationsWithMultipleActiveScopesForASingleYear");
+        
+        loadHtml("@Url.Action("OrganisationsWithNoActiveScopeForEveryYearAjax", "AdminDatabaseIntegrityChecks")",
+         "OrganisationsWithNoActiveScopeForEveryYear");
+        
+        loadHtml("@Url.Action("OrganisationsWithMultipleActiveReturnsForASingleYearAjax", "AdminDatabaseIntegrityChecks")",
+         "OrganisationsWithMultipleActiveReturnsForASingleYear");
+        
+        loadHtml("@Url.Action("PublicSectorOrganisationsWithoutAPublicSectorTypeAjax", "AdminDatabaseIntegrityChecks")",
+         "PublicSectorOrganisationsWithoutAPublicSectorType");
     
     });
 </script>

@@ -1,0 +1,42 @@
+﻿@using GenderPayGap.Database
+@model List<string>
+
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                @(Model.Count)
+            </span>
+            active organisations with the same name
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        @if (!Model.Any())
+        {
+            <div class="govuk-body">
+                No organisations
+            </div>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Organisation name</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (string organisationName in Model)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                    @(organisationName)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</details>
