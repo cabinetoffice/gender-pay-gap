@@ -6,10 +6,10 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
@@ -35,58 +35,72 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("organisations-with-multiple-active-addresses-ajax")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveAddressesAjax()
         {
-            var model = new DatabaseIntegrityChecksViewModel();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses)
-                .ToList();
+            var organisationsWithMultipleActiveAddresses = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<OrganisationAddress>> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses);
 
             foreach (Organisation organisation in organisations)
             {
-                IEnumerable<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
-                    .Where(oa => oa.Status == AddressStatuses.Active);
-                if (activeAddresses.Count() > 2)
+                int numberOfActiveAddresses = organisation.OrganisationAddresses
+                    .Count(oa => oa.Status == AddressStatuses.Active);
+                if (numberOfActiveAddresses > 2)
                 {
-                    model.OrganisationsWithMultipleActiveAddresses.Add(organisation);
+                    organisationsWithMultipleActiveAddresses.Add(organisation);
                 }
             }
 
-            return PartialView("OrganisationsWithMultipleActiveAddresses", model);
+            return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
+        }
+
+        [HttpGet("active-organisations-with-the-same-name-ajax")]
+        public async Task<IActionResult> ActiveOrganisationsWithTheSameNameAjax()
+        {
+            var activeOrganisationsWithTheSameName = new List<string>();
+            IQueryable<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
+                .Where(o => o.Status == OrganisationStatuses.Active);
+
+            var duplicateNames = activeOrganisations.GroupBy(x => x.OrganisationName)
+                .Select(x => new {Name = x.Key, Count = x.Count()})
+                .Where(x => x.Count > 1);
+
+            foreach (var duplicate in duplicateNames)
+            {
+                activeOrganisationsWithTheSameName.Add(duplicate.Name);
+            }
+
+            return PartialView("ActiveOrganisationsWithTheSameName", activeOrganisationsWithTheSameName);
         }
 
         [HttpGet("organisations-where-latest-address-is-not-active-ajax")]
         public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActiveAjax()
         {
-            var model = new DatabaseIntegrityChecksViewModel();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses)
-                .ToList();
+            var organisationsWhereLatestAddressIsNotActive = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<OrganisationAddress>> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses);
             foreach (Organisation organisation in organisations)
             {
                 OrganisationAddress latestAddress = organisation.LatestAddress;
-                List<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
-                    .Where(oa => oa.Status == AddressStatuses.Active)
-                    .ToList();
+                IEnumerable<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
+                    .Where(oa => oa.Status == AddressStatuses.Active);
                 if (!activeAddresses.Contains(latestAddress))
                 {
-                    model.OrganisationsWhereLatestAddressIsNotActive.Add(organisation);
+                    organisationsWhereLatestAddressIsNotActive.Add(organisation);
                 }
             }
 
-            return PartialView("OrganisationsWhereLatestAddressIsNotActive", model);
+            return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
 
         [HttpGet("organisations-with-multiple-active-scopes-for-a-single-year-ajax")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYearAjax()
         {
-            var model = new DatabaseIntegrityChecksViewModel();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes)
-                .ToList();
+            var organisationsWithMultipleActiveScopesForASingleYear = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes);
             foreach (Organisation organisation in organisations)
             {
-                List<OrganisationScope> activeScopes = organisation.OrganisationScopes
-                    .Where(os => os.Status == ScopeRowStatuses.Active)
-                    .ToList();
+                IEnumerable<OrganisationScope> activeScopes = organisation.OrganisationScopes
+                    .Where(os => os.Status == ScopeRowStatuses.Active);
 
                 bool multipleActiveScopesForYear = activeScopes
                     .GroupBy(scope => scope.SnapshotDate)
@@ -94,20 +108,19 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
                 if (multipleActiveScopesForYear)
                 {
-                    model.OrganisationsWithMultipleActiveScopesForASingleYear.Add(organisation);
+                    organisationsWithMultipleActiveScopesForASingleYear.Add(organisation);
                 }
             }
 
-            return PartialView("OrganisationsWithMultipleActiveScopesForASingleYear", model);
+            return PartialView("OrganisationsWithMultipleActiveScopesForASingleYear", organisationsWithMultipleActiveScopesForASingleYear);
         }
 
         [HttpGet("organisations-with-no-active-scope-for-every-year-ajax")]
         public async Task<IActionResult> OrganisationsWithNoActiveScopeForEveryYearAjax()
         {
-            var model = new DatabaseIntegrityChecksViewModel();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes)
-                .ToList();
+            var organisationsWithNoActiveScopeForEveryYear = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes);
 
             foreach (Organisation organisation in organisations)
             {
@@ -120,42 +133,38 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
                 int latestRequiredAccountingDateYear = organisation.SectorType.GetAccountingStartDate().Year;
 
-                List<int> requiredYears = Enumerable.Range(
-                        firstRequiredAccountingDateYear,
-                        (latestRequiredAccountingDateYear - firstRequiredAccountingDateYear) + 1)
-                    .ToList();
+                IEnumerable<int> requiredYears = Enumerable.Range(
+                    firstRequiredAccountingDateYear,
+                    (latestRequiredAccountingDateYear - firstRequiredAccountingDateYear) + 1);
 
-                List<int> yearsWithActiveScopes = organisation.OrganisationScopes
+                IEnumerable<int> yearsWithActiveScopes = organisation.OrganisationScopes
                     .Where(os => os.Status == ScopeRowStatuses.Active)
                     .GroupBy(scope => scope.SnapshotDate)
-                    .Select(g => g.Key.Year)
-                    .ToList();
+                    .Select(g => g.Key.Year);
 
                 foreach (int year in requiredYears)
                 {
                     if (!yearsWithActiveScopes.Contains(year))
                     {
-                        model.OrganisationsWithNoActiveScopeForEveryYear.Add(organisation);
+                        organisationsWithNoActiveScopeForEveryYear.Add(organisation);
                     }
                 }
             }
 
-            return PartialView("OrganisationsWithNoActiveScopeForEveryYear", model);
+            return PartialView("OrganisationsWithNoActiveScopeForEveryYear", organisationsWithNoActiveScopeForEveryYear);
         }
 
         [HttpGet("organisations-with-multiple-active-returns-for-a-single-year-ajax")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveReturnsForASingleYearAjax()
         {
-            var model = new DatabaseIntegrityChecksViewModel();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.Returns)
-                .ToList();
+            var organisationsWithMultipleActiveReturnsForASingleYear = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<Return>> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.Returns);
 
             foreach (Organisation organisation in organisations)
             {
-                List<Return> activeReturns = organisation.Returns
-                    .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .ToList();
+                IEnumerable<Return> activeReturns = organisation.Returns
+                    .Where(r => r.Status == ReturnStatuses.Submitted);
 
                 bool multipleActiveReturnsForYear = activeReturns
                     .GroupBy(r => r.AccountingDate)
@@ -163,22 +172,24 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
                 if (multipleActiveReturnsForYear)
                 {
-                    model.OrganisationsWithMultipleActiveReturnsForASingleYear.Add(organisation);
+                    organisationsWithMultipleActiveReturnsForASingleYear.Add(organisation);
                 }
             }
 
-            return PartialView("OrganisationsWithMultipleActiveReturnsForASingleYear", model);
+            return PartialView(
+                "OrganisationsWithMultipleActiveReturnsForASingleYear",
+                organisationsWithMultipleActiveReturnsForASingleYear);
         }
 
         [HttpGet("public-sector-organisations-without-a-public-sector-type-ajax")]
         public async Task<IActionResult> PublicSectorOrganisationsWithoutAPublicSectorTypeAjax()
         {
-            var model = new DatabaseIntegrityChecksViewModel();
-            List<Organisation> activePublicOrganisations = dataRepository.GetAll<Organisation>()
+            var publicSectorOrganisationsWithoutAPublicSectorType = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> activePublicOrganisations = dataRepository
+                .GetAll<Organisation>()
                 .Where(o => o.SectorType == SectorTypes.Public)
                 .Where(o => o.Status == OrganisationStatuses.Active)
-                .Include(o => o.OrganisationScopes)
-                .ToList();
+                .Include(o => o.OrganisationScopes);
 
             foreach (Organisation organisation in activePublicOrganisations)
             {
@@ -186,15 +197,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     organisation.LatestScope.Status == ScopeRowStatuses.Active
                     && (organisation.LatestScope.ScopeStatus == ScopeStatuses.InScope
                         || organisation.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope);
-                
+
 
                 if (isInScope && organisation.LatestPublicSectorType == null)
                 {
-                    model.PublicSectorOrganisationsWithoutAPublicSectorType.Add(organisation);
+                    publicSectorOrganisationsWithoutAPublicSectorType.Add(organisation);
                 }
             }
 
-            return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", model);
+            return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
         }
 
     }
