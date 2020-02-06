@@ -1,7 +1,7 @@
 ﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
 @{
-    ViewBag.Title = "Gender pay gap search results";
-    ViewBag.pageDescription = "Employers that have published their gender pay gap data.";
+    ViewBag.Title = "Search for an employer's gender pay gap report - GOV.UK";
+    ViewBag.pageDescription = "Search for an employer by name or type to view their gender pay gap data";
     if (string.IsNullOrWhiteSpace(ViewBag.ReturnUrl))
     {
         ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
