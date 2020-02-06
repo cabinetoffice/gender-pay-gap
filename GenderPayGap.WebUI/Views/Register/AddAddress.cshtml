@@ -114,27 +114,6 @@
                         </div>
                     </div>
                     
-                    @if (!Model.IsUkAddress.HasValue && !Model.ManualRegistration)
-                                {
-                                    <div class="form-group">
-                                        <fieldset class="inline">
-                                            <legend>
-                                                <h2 class="heading-medium">
-                                                    Is this a UK address?
-                                                </h2>
-                                            </legend>
-                                            <div class="multiple-choice">
-                                                @Html.RadioButtonFor(model => model.IsUkAddress, "True", new {id = "IsUkAddress_True"})
-                                                @Html.Label("IsUkAddress_True", "Yes")
-                                            </div>
-                                            <div class="multiple-choice">
-                                                @Html.RadioButtonFor(model => model.IsUkAddress, "False", new {id = "IsUkAddress_False"})
-                                                @Html.Label("IsUkAddress_False", "No")
-                                            </div>
-                                        </fieldset>
-                                    </div>
-                                }
-                    
                     <br><br>
                     <input class="button" type="submit" role="button" name="command" value="Continue" aria-label="Continue"/>
                 </div>
