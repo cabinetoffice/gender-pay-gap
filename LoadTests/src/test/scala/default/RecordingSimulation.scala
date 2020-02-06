@@ -8,6 +8,11 @@ import io.gatling.http.Predef._
 
 class RecordingSimulation extends Simulation {
 
+	val MAX_NUM_USERS = 1000
+	// Pauses are uniform duration between these two:
+	val PAUSE_MIN_DUR = 10 seconds
+	val PAUSE_MAX_DUR = 50 seconds
+
 	val httpProtocol = http
 		.baseUrl("https://wa-t1pp-gpg.azurewebsites.net")
 		.inferHtmlResources()
@@ -26,7 +31,7 @@ class RecordingSimulation extends Simulation {
 
 	val headers_3 = Map(
 		"Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-		"Origin" -> "https://wa-t1dv-gpg.azurewebsites.net",
+		"Origin" -> "https://wa-t1pp-gpg.azurewebsites.net",
 		"Upgrade-Insecure-Requests" -> "1")
 
 	val headers_4 = Map(
@@ -38,10 +43,7 @@ class RecordingSimulation extends Simulation {
 	val headers_5 = Map(
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
-
-	val maxNumberOfTestUsers = 1000
-
-	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${Random.nextInt(2 * maxNumberOfTestUsers) + 1}"))
+	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${Random.nextInt(2 * MAX_NUM_USERS) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
 	val usersOrganisationsFeeder = csv("users_organisations.csv").shuffle
 
@@ -64,13 +66,13 @@ class RecordingSimulation extends Simulation {
 				http("Load crest")
 					.get("/public/govuk_template/assets/stylesheets/images/govuk-crest-2x.png")
 					.headers(headers_1)))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val search = feed(searchFeeder)
 			.exec(http("Search a word first bit")
 			.get("/viewing/suggest-employer-name-js?search=${searchCriteria1}")
 			.headers(headers_2))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 			.exec(http("Search the whole word")
 			.get("/viewing/suggest-employer-name-js?search=${searchCriteria2}")
 			.headers(headers_2)
@@ -78,14 +80,14 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				jsonPath("$.Matches[0].Id").find.saveAs("FirstSearchResultId"),
 				jsonPath("$.Matches[0].Text").find.saveAs("FirstSearchResultText")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 			.exec(http("Select an organisation")
 			.get("/employer/${FirstSearchResultId}")
 			.headers(headers_0)
 			.check(
 				status.is(200),
 				regex("${FirstSearchResultText}")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object SignInPage {
@@ -106,7 +108,7 @@ class RecordingSimulation extends Simulation {
 					.get("/account/public/assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png?0.23.0"),
 				http("Load crest")
 					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest-2x.png?0.23.0")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val signIn = feed(usersOrganisationsFeeder)
 			.exec(http("Sign in")
@@ -134,7 +136,7 @@ class RecordingSimulation extends Simulation {
 				regex("Privacy Policy"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
 			))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object RegistrationPage {
@@ -145,7 +147,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Create an account"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val register = feed(registrationFeeder)
 			.exec(http("Register")
@@ -162,7 +164,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("SendUpdates", "false")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(regex("Verify your email address")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object PrivacyPolicyPage {
@@ -174,7 +176,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Manage Organisations"),
 				regex("Manage Account")))
-  		.pause(1)
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object RegisterOrganisation {
@@ -184,7 +186,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Select which type of organisation you would like to register")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val chooseOrganisationType = exec(http("Choose organistion type to be private")
 			.post("/Register/organisation-type")
@@ -195,7 +197,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Find your organisation")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val searchForAnOrganisation = exec(http("Search for an organisation")
 			.post("/Register/organisation-search")
@@ -208,7 +210,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Choose your organisation")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val chooseAnOrganisation = exec(http("Choose an organisation")
 			.post("/Register/choose-organisation")
@@ -218,7 +220,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("command", "employer_0")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val confirmOrganisationDetails = exec(http("Confirm organisation details")
 			.post("/Register/confirm-organisation")
@@ -264,7 +266,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("command", "confirm")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(regex("We saved your registration request")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object ReportGenderPayGap {
@@ -274,7 +276,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("a[id^='ManageOrg']", "href").find.saveAs("linkToAnOrganisation"),
 				regex("Select an organisation")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitOrganisation = exec(http("Visit an organisation page")
 			.get("${linkToAnOrganisation}")
@@ -282,7 +284,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("a[id^='NewReport2019']", "href").find.saveAs("linkToTheLatestReport"),
 				regex("Manage your organisation's reporting")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitEnterReport = exec(http("Visit enter report page")
 			.get("${linkToTheLatestReport}")
@@ -292,7 +294,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
 				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
 				regex("Enter your gender pay gap data for snapshot date")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val enterCalculation = exec(http("Enter calculation")
 			.post("/Submit/enter-calculations")
@@ -332,7 +334,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
 				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
 				regex("Person responsible in your organisation")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val enterResponsiblePerson = exec(http("Enter responsible person")
 			.post("/Submit/person-responsible")
@@ -372,7 +374,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
 				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
 				regex("Size of your organisation")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val enterSizeOfOrganisation = exec(http("Enter size of organisation")
 			.post("/Submit/organisation-size")
@@ -412,7 +414,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
 				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
 				regex("Link to your gender pay gap information")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val enterWebAddress = exec(http("Enter web address")
 			.post("/Submit/employer-website")
@@ -452,7 +454,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
 				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
 				regex("Review your gender pay gap data")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val confirmGenderPayGapData = exec(http("Confirm gender pay gap data")
 			.post("/Submit/check-data")
@@ -489,7 +491,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("JobTitle", "test")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(regex("You've submitted your gender pay gap data for 2019 to 2020")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object ManageAccount {
@@ -497,7 +499,7 @@ class RecordingSimulation extends Simulation {
 			.get("/manage-account")
 			.headers(headers_0)
 			.check(regex("Manage your account")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitChangePersonalDetails = exec(http("Visit change personal details")
 			.get("/manage-account/change-details")
@@ -505,7 +507,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Change your personal details")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changePersonalDetails = exec(http("Change personal details")
 			.post("/manage-account/change-details")
@@ -519,7 +521,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("AllowContact", "false")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 				.check(regex("Your details have been updated successfully")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object Feedback {
@@ -529,7 +531,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Send us feedback")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val submit = exec(http("Submit a feedback")
 			.post("/send-feedback")
@@ -546,10 +548,10 @@ class RecordingSimulation extends Simulation {
 			.formParam("PhoneNumber", "")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(regex("Thank you")))
-			.pause(1)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
-	val scn = scenario("Viewing").exec(
+	val scn = scenario("Gender pay gap").exec(
 		HomePage.visit,
 		HomePage.search,
 		HomePage.visit,
@@ -579,5 +581,5 @@ class RecordingSimulation extends Simulation {
 		Feedback.visit,
 		Feedback.submit)
 
-	setUp(scn.inject(rampUsers(3) during (30 seconds))).protocols(httpProtocol)
+	setUp(scn.inject(rampUsers(30) during (1 minutes))).protocols(httpProtocol)
 }
