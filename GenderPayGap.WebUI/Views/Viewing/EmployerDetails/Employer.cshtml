@@ -8,8 +8,8 @@
     ViewBag.EmployerName = Model.Organisation.OrganisationName;
 
     Organisation organisation = Model.Organisation;
-    ViewBag.Title = organisation.OrganisationName + " Details";
-    ViewBag.pageDescription = "View gender pay gap details for " + organisation.OrganisationName;
+    ViewBag.Title = $"Gender pay gap for {organisation.OrganisationName} - GOV.UK";
+    ViewBag.pageDescription = $"View gender pay gap details for {organisation.OrganisationName} and compare with other organisations";
     ViewBag.ogTitle = ViewBag.Title;
     ViewBag.ogType = "business.gender_pay_gap";
     ViewBag.pageClass = "employer-report-page";

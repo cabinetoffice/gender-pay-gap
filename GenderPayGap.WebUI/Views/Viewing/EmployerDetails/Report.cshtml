@@ -9,8 +9,8 @@
     ViewBag.EndYear = (Model.AccountingDate.Year + 1).ToTwoDigitYear();
 
 
-    ViewBag.Title = Model.OrganisationName + " gender pay gap data" + " / " + Model.AccountingDate.Year + "-" + (Model.AccountingDate.Year + 1).ToTwoDigitYear();
-    ViewBag.pageDescription = $"View {Model.AccountingDate.Year} gender pay gap data for {Model.OrganisationName}";
+    ViewBag.Title = $"{Model.OrganisationName} gender pay gap data for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year - GOV.UK";
+    ViewBag.pageDescription = $"View gender pay gap data for {Model.OrganisationName} for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year and compare with other organisations";
     ViewBag.ogTitle = ViewBag.Title;
     ViewBag.ogType = "business.gender_pay_gap";
     ViewBag.pageClass = "employer-report-page";
