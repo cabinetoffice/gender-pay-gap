@@ -57,8 +57,15 @@
                     <p>Enter the correspondence address for the organisation whose gender pay gap data you’re reporting.</p>
 
                     <h2 class="heading-medium">Organisation address</h2>
-                    <div class="form-group @Html.SetErrorClass(model => model.Address1, "error") form-group-compound">
-                        @Html.LabelFor(model => model.Address1, new {@class = "form-label col-md-2"})
+                    <div class="form-group @Html.SetErrorClass(model => model.PoBox, "error")">
+                        @Html.LabelFor(model => model.PoBox, "PO Box number", new {@class = "form-label col-md-2"})
+                        @Html.ValidationMessageFor(model => model.PoBox, "", new {@class = "error-danger"})
+                        <div class="col-md-10">
+                            @Html.CustomEditorFor(model => model.PoBox, new {@class = "form-control form-control-1-4", placeholder = "optional"})
+                        </div>
+                    </div>
+                    <div class="form-group @Html.SetErrorClass(model => model.Address1, "error")">
+                        @Html.LabelFor(model => model.Address1, "Building and street", new {@class = "form-label col-md-2"})
                         @Html.ValidationMessageFor(model => model.Address1, "", new {@class = "error-danger"})
                         <div class="col-md-10">
                             @Html.CustomEditorFor(model => model.Address1, new {@class = "form-control"})
@@ -72,13 +79,33 @@
                         </div>
                     </div>
                     <div class="form-group @Html.SetErrorClass(model => model.Address3, "error")">
-                        @Html.LabelFor(model => model.Address3, new {@class = "form-label col-md-2"})
+                        @Html.LabelFor(model => model.Address3, new {@class = "form-label col-md-2 visuallyhidden"})
                         @Html.ValidationMessageFor(model => model.Address3, "", new {@class = "error-danger"})
                         <div class="col-md-10">
-                            @Html.CustomEditorFor(model => model.Address3, new {@class = "form-control"})
+                            @Html.CustomEditorFor(model => model.Address3, new {@class = "form-control", placeholder = "optional"})
                         </div>
                     </div>
-
+                    <div class="form-group @Html.SetErrorClass(model => model.City, "error")">
+                        @Html.LabelFor(model => model.City, "Town or city", new {@class = "form-label col-md-2"})
+                        @Html.ValidationMessageFor(model => model.City, "", new {@class = "error-danger"})
+                        <div class="col-md-10">
+                            @Html.CustomEditorFor(model => model.City, new {@class = "form-control", placeholder = "optional"})
+                        </div>
+                    </div>
+                    <div class="form-group @Html.SetErrorClass(model => model.County, "error")">
+                        @Html.LabelFor(model => model.County,  new {@class = "form-label col-md-2"})
+                        @Html.ValidationMessageFor(model => model.County, "", new {@class = "error-danger"})
+                        <div class="col-md-10">
+                            @Html.CustomEditorFor(model => model.County, new {@class = "form-control", placeholder = "optional"})
+                        </div>
+                    </div>
+                    <div class="form-group @Html.SetErrorClass(model => model.Country, "error")">
+                        @Html.LabelFor(model => model.Country,  new {@class = "form-label col-md-2"})
+                        @Html.ValidationMessageFor(model => model.Country, "", new {@class = "error-danger"})
+                        <div class="col-md-10">
+                            @Html.CustomEditorFor(model => model.Country, new {@class = "form-control", placeholder = "optional"})
+                        </div>
+                    </div>
                     <div class="form-group @Html.SetErrorClass(model => model.Postcode, "error")">
                         @Html.LabelFor(model => model.Postcode, new {@class = "form-label col-md-2"})
                         @Html.ValidationMessageFor(model => model.Postcode, "", new {@class = "error-danger"})
@@ -86,6 +113,28 @@
                             @Html.CustomEditorFor(model => model.Postcode, new {@class = "form-control form-control-1-4"})
                         </div>
                     </div>
+                    
+                    @if (!Model.IsUkAddress.HasValue && !Model.ManualRegistration)
+                                {
+                                    <div class="form-group">
+                                        <fieldset class="inline">
+                                            <legend>
+                                                <h2 class="heading-medium">
+                                                    Is this a UK address?
+                                                </h2>
+                                            </legend>
+                                            <div class="multiple-choice">
+                                                @Html.RadioButtonFor(model => model.IsUkAddress, "True", new {id = "IsUkAddress_True"})
+                                                @Html.Label("IsUkAddress_True", "Yes")
+                                            </div>
+                                            <div class="multiple-choice">
+                                                @Html.RadioButtonFor(model => model.IsUkAddress, "False", new {id = "IsUkAddress_False"})
+                                                @Html.Label("IsUkAddress_False", "No")
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                }
+                    
                     <br><br>
                     <input class="button" type="submit" role="button" name="command" value="Continue" aria-label="Continue"/>
                 </div>
