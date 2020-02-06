@@ -19,6 +19,9 @@ DELETE FROM OrganisationSicCodes WHERE OrganisationId > @STARTING_ID AND Organis
 DELETE FROM OrganisationAddresses WHERE AddressId > @STARTING_ID AND AddressId <= @STARTING_ID + 2 * @NUM_OF_USERS
 DELETE FROM Returns WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + @NUM_OF_USERS
 
+-- Delete users created using registration journey
+DELETE FROM Users WHERE Firstname = 'Test' AND Lastname = 'Example' AND JobTitle = 'Tester'
+
 
 WHILE @INDEX <= @NUM_OF_USERS
 BEGIN
