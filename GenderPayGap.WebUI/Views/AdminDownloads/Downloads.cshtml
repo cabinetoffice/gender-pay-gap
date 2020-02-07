@@ -1,0 +1,53 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@{
+    ViewBag.Title = $"Downloads - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Downloads (new)"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Downloads (new)
+        </h1>
+        
+
+        <h2 class="govuk-heading-m">
+            User Consent
+        </h2>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadUserConsentSendUpdates", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Users to send updates and info
+            </a>
+            <br />
+            Users who answered "Yes" to "I would like to receive information about webinars, events and new guidance"
+        </p>
+
+    </div>
+</div>
