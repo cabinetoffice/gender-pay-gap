@@ -32,9 +32,6 @@ namespace GenderPayGap.WebJob
 
             switch (command)
             {
-                case "CompaniesHouseCheck":
-                    await CompaniesHouseCheckAsync(log, true);
-                    break;
                 case "UpdateFile":
                     await UpdateFileAsync(log, parameters["filePath"], parameters["action"]);
                     break;
