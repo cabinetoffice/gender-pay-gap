@@ -33,9 +33,6 @@ namespace GenderPayGap.WebJob
                 case Filenames.UnverifiedRegistrations:
                     await UpdateUnverifiedRegistrationsAsync(log, filePath);
                     break;
-                case Filenames.SendInfo:
-                    await UpdateUsersToSendInfoAsync(filePath);
-                    break;
                 case Filenames.AllowFeedback:
                     await UpdateUsersToContactForFeedbackAsync(filePath);
                     break;
