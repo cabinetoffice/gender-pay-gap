@@ -61,30 +61,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             return count;
         }
-
-        private async Task<long> FixOrganisationsNamesAsync(string parameters, string comment, StringWriter writer, bool test)
-        {
-            if (!string.IsNullOrWhiteSpace(parameters))
-            {
-                throw new ArgumentException("ERROR: parameters must be empty");
-            }
-
-            int count = await DataRepository.GetAll<OrganisationName>()
-                .Where(o => o.Name.ToLower().Contains(" ltd"))
-                .Select(o => o.OrganisationId)
-                .Distinct()
-                .CountAsync();
-            if (!test)
-            {
-                await Program.MvcApplication.ExecuteWebjobQueue.AddMessageAsync(
-                    new QueueWrapper($"command=FixOrganisationsNames&userEmail={CurrentUser.EmailAddress}&comment={comment}"));
-                writer.WriteLine(
-                    $"An email will be sent to '{CurrentUser.EmailAddress}' when the background task '{nameof(FixOrganisationsNamesAsync)}' has completed");
-            }
-
-            return count;
-        }
-
+        
         public class BulkResult
         {
 
@@ -136,9 +113,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     {
                         case "Please select..":
                             throw new ArgumentException("ERROR: You must first select a command");
-                        case "Fix organisation names":
-                            count = await FixOrganisationsNamesAsync(model.Parameters, model.Comment, writer, test);
-                            break;
                         case "Add organisations latest name":
                             count = await SetOrganisationNameAsync(model.Parameters, model.Comment, writer, test);
                             break;
