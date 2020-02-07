@@ -609,19 +609,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             #endregion
 
-            #region Create Consent downloads
-
-            download = new DownloadViewModel.Download {
-                Type = "User Consent",
-                Filepath = Path.Combine(Global.DownloadsPath, Filenames.AllowFeedback),
-                Title = "Users to contact for feedback",
-                Description = "Users who answered \"Yes\" to \"I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys\""
-            };
-            download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-            model.Downloads.Add(download);
-
-            #endregion
-
             //Sort by modified date then by descending date
             model.Downloads.OrderByDescending(d => d.Filename);
 
