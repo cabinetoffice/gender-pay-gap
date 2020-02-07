@@ -287,25 +287,7 @@ namespace GenderPayGap.Core
         public const string StannpSendLog = "StannpSendLog.csv";
         public const string SearchLog = "searchLog.csv";
         public const string UserLog = "UserLog.csv";
-
-        public static string DnBOrganisations
-        {
-            get
-            {
-                DateTime year = SectorTypes.Private.GetAccountingStartDate();
-                return $"GPG-DnBOrgs_{year:yyyy}-{year.AddYears(1):yy}.csv";
-            }
-        }
-
-        public static string PreviousDnBOrganisations
-        {
-            get
-            {
-                DateTime year = SectorTypes.Private.GetAccountingStartDate();
-                return $"GPG-DnBOrgs_{year.AddYears(-1):yyyy}-{year:yy}.csv";
-            }
-        }
-
+        
         public static string GetRootFilename(string filePath)
         {
             string path = Path.GetDirectoryName(filePath);

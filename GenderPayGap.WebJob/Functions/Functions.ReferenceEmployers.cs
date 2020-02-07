@@ -14,11 +14,6 @@ namespace GenderPayGap.WebJob
         {
             try
             {
-                if (RunningJobs.Contains(nameof(DnBImportAsync)))
-                {
-                    return;
-                }
-
                 await ReferenceEmployersAsync();
                 log.LogDebug($"Executed {nameof(ReferenceEmployers)} successfully");
             }
