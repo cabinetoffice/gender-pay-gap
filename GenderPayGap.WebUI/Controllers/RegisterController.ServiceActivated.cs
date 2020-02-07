@@ -247,12 +247,6 @@ namespace GenderPayGap.WebUI.Controllers
                 return true;
             }
 
-            string hashedPin = Crypto.GetSHA512Checksum(normalisedPin);
-            if (userOrg.PINHash == hashedPin)
-            {
-                return true;
-            }
-
             return false;
         }
 

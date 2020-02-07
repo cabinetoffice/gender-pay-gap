@@ -140,7 +140,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .FirstOrDefaultAsync(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
 
             //If a pin has never been sent or resend button submitted then send one immediately
-            if (string.IsNullOrWhiteSpace(userOrg.PIN) && string.IsNullOrWhiteSpace(userOrg.PINHash)
+            if (string.IsNullOrWhiteSpace(userOrg.PIN)
                 || userOrg.PINSentDate.EqualsI(null, DateTime.MinValue)
                 || userOrg.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
             {
@@ -156,7 +156,6 @@ namespace GenderPayGap.WebUI.Controllers
 
                     // Save the PIN and confirm code
                     userOrg.PIN = pin;
-                    userOrg.PINHash = null;
                     userOrg.PINSentDate = now;
                     userOrg.Method = RegistrationMethods.PinInPost;
                     await DataRepository.SaveChangesAsync();
@@ -257,7 +256,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Mark the user org as ready to send a pin
             userOrg.PIN = null;
-            userOrg.PINHash = null;
             userOrg.PINSentDate = null;
             await DataRepository.SaveChangesAsync();
 
