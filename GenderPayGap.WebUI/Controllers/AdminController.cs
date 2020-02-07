@@ -470,26 +470,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             #endregion
 
-            #region Orphaned organisations Addresses
-
-            files = await Global.FileRepository.GetFilesAsync(
-                Global.DownloadsPath,
-                $"{Path.GetFileNameWithoutExtension(Filenames.OrphanOrganisations)}*{Path.GetExtension(Filenames.OrphanOrganisations)}");
-            foreach (string file in files.OrderByDescending(file => file))
-            {
-                string period = Path.GetFileNameWithoutExtension(file).AfterFirst("_");
-                download = new DownloadViewModel.Download {
-                    Type = "Orphan Organisations",
-                    Filepath = file,
-                    Title = $"Orphan Organisations ({period})",
-                    Description = "A list of in-scope organisations who no longer who have any registered or registering users."
-                };
-                download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-                model.Downloads.Add(download);
-            }
-
-            #endregion
-
             #region Registration Addresses
 
             files = await Global.FileRepository.GetFilesAsync(

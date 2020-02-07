@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using CsvHelper;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Database.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +31,42 @@ namespace GenderPayGap.WebUI.Controllers
             return View("Downloads");
         }
         
+        [HttpGet("downloads-new/orphan-organisations")]
+        public FileContentResult DownloadOrphanOrganisations()
+        {
+            DateTime pinExpiresDate = Global.PinExpiresDate;
+
+            List<Organisation> orphanOrganisations = dataRepository.GetAll<Organisation>()
+                .Where(org => org.Status == OrganisationStatuses.Active)
+                .Where(org => org.LatestScope == null ||
+                              org.LatestScope.ScopeStatus == ScopeStatuses.InScope ||
+                              org.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                .Where(org => org.UserOrganisations == null ||
+                              !org.UserOrganisations.Any(uo => uo.PINConfirmedDate != null // Registration complete
+                                                               || uo.Method == RegistrationMethods.Manual // Manual registration
+                                                               || (uo.Method == RegistrationMethods.PinInPost // PITP registration in progress
+                                                               && uo.PINSentDate.HasValue
+                                                               && uo.PINSentDate.Value > pinExpiresDate)))
+                .ToList();
+
+            var records = orphanOrganisations.Select(
+                    org => new {
+                        org.OrganisationId,
+                        org.OrganisationName,
+                        Address = org.GetAddressString(),
+                        Sector = org.SectorType,
+                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                        ScopeStatus = org.GetCurrentScope()?.ScopeStatus,
+                        HasSubmitted = org.LatestReturn?.Status == ReturnStatuses.Submitted
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+
         [HttpGet("downloads-new/user-consent-send-updates")]
         public FileContentResult DownloadUserConsentSendUpdates()
         {
