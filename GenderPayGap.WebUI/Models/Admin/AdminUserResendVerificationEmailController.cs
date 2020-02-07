@@ -41,6 +41,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         }
 
         [HttpPost("user/{id}/resend-verification-email")]
+        [ValidateAntiForgeryToken]
         public IActionResult ResendVerificationEmailPost(long id, AdminResendVerificationEmailViewModel viewModel)
         {
             User user = dataRepository.Get<User>(id);

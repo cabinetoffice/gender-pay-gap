@@ -120,6 +120,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         }
 
         [HttpPost("cancel-person-responsible")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelPersonResponsible(ReturnViewModel postedReturnViewModel)
         {
             postedReturnViewModel.OriginatingAction = "PersonResponsible";

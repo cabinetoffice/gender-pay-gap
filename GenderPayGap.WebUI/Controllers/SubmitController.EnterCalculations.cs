@@ -112,6 +112,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         }
 
         [HttpPost("cancel-enter-calculations")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelEnterCalculations(ReturnViewModel postedReturnViewModel)
         {
             postedReturnViewModel.OriginatingAction = "EnterCalculations";

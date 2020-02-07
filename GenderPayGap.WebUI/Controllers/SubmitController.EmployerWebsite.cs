@@ -118,6 +118,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         }
 
         [HttpPost("cancel-employer-website")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelEmployerWebsite(ReturnViewModel postedReturnViewModel)
         {
             postedReturnViewModel.OriginatingAction = "EmployerWebsite";

@@ -43,6 +43,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
         [HttpPost("submission-complete")]
         [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
         public IActionResult SubmissionCompletePost(string command)
         {
             string doneUrl = Global.DoneUrl ?? Url.Action("Index", "Viewing", null, "https");

@@ -40,6 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("user/{id}/change-contact-preferences")]
+        [ValidateAntiForgeryToken]
         public IActionResult ChangeContactPreferencesPost(long id, AdminChangeUserContactPreferencesViewModel viewModel)
         {
             User user = dataRepository.Get<User>(id);
