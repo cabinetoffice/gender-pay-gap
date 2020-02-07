@@ -28,7 +28,6 @@ namespace GenderPayGap.BusinessLogic
         Task<List<OrganisationsFileModel>> GetOrganisationsFileModelByYearAsync(int year);
 
         string GenerateEmployerReference();
-        Task SetUniqueEmployerReferencesAsync();
         Task SetUniqueEmployerReferenceAsync(Organisation organisation);
 
         string GeneratePINCode(bool isTestUser);
@@ -140,15 +139,6 @@ namespace GenderPayGap.BusinessLogic
 
 
             return records;
-        }
-
-        public virtual async Task SetUniqueEmployerReferencesAsync()
-        {
-            List<Organisation> orgs = await _DataRepository.GetAll<Organisation>().Where(o => o.EmployerReference == null).ToListAsync();
-            foreach (Organisation org in orgs)
-            {
-                await SetUniqueEmployerReferenceAsync(org);
-            }
         }
 
         public virtual async Task SetUniqueEmployerReferenceAsync(Organisation organisation)
