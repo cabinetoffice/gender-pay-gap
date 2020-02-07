@@ -165,6 +165,23 @@
             </div>
         </details>
     </div>
+    
+    <div id="PrivateSectorOrganisationsWithAPublicSectorType">
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                        Loading...
+                    </span>
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <div class="govuk-body">
+                    No organisations
+                </div>
+            </div>
+        </details>
+    </div>
 </section>
 
 <script type="text/javascript">
@@ -198,6 +215,9 @@
         
         loadHtml("@Url.Action("PublicSectorOrganisationsWithoutAPublicSectorTypeAjax", "AdminDatabaseIntegrityChecks")",
          "PublicSectorOrganisationsWithoutAPublicSectorType");
+        
+        loadHtml("@Url.Action("PrivateSectorOrganisationsWithAPublicSectorTypeAjax", "AdminDatabaseIntegrityChecks")",
+                 "PrivateSectorOrganisationsWithAPublicSectorType");
     
     });
 </script>

@@ -207,6 +207,33 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
         }
+        
+        [HttpGet("database-integrity-checks/private-sector-organisations-with-a-public-sector-type-ajax")]
+        public async Task<IActionResult> PrivateSectorOrganisationsWithAPublicSectorTypeAjax()
+        {
+            var privateSectorOrganisationsWithAPublicSectorType = new List<Organisation>();
+            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> activePrivateOrganisations = dataRepository
+                .GetAll<Organisation>()
+                .Where(o => o.SectorType == SectorTypes.Private)
+                .Where(o => o.Status == OrganisationStatuses.Active)
+                .Include(o => o.OrganisationScopes);
+
+            foreach (Organisation organisation in activePrivateOrganisations)
+            {
+                bool isInScope =
+                    organisation.LatestScope.Status == ScopeRowStatuses.Active
+                    && (organisation.LatestScope.ScopeStatus == ScopeStatuses.InScope
+                        || organisation.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope);
+
+
+                if (isInScope && organisation.LatestPublicSectorType != null)
+                {
+                    privateSectorOrganisationsWithAPublicSectorType.Add(organisation);
+                }
+            }
+
+            return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
+        }
 
     }
 }
