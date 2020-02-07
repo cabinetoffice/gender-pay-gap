@@ -1,6 +1,6 @@
 ﻿@using GenderPayGap.Core
-@using GenderPayGap.WebUI.Models.Scope
-@using Microsoft.AspNetCore.Html
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
 @{
     ViewBag.Title = "Your organisation type - Gender pay gap reporting service";
@@ -13,11 +13,11 @@
         {
             @Html.AntiForgeryToken()
 
-            
+
             @Html.HiddenFor(m => m.SearchText)
 
             @await Html.CustomValidationSummaryAsync()
-            
+
             <h1 class="heading-large">
                 Registration options
             </h1>
@@ -32,23 +32,56 @@
                     </legend>
 
                     <div class="multiple-choice">
-                        <input id="private" type="radio" name="SectorType" value="@(SectorTypes.Private)">
-                        <label for="private">
-                            Private limited company,<br/>
-                            Limited liability partnership,<br/>
-                            Charity,<br/>
-                            Public limited company
-                        </label>
-                    </div>
-                    <div class="multiple-choice">
                         <input id="public" type="radio" name="SectorType" value="@(SectorTypes.Public)">
                         <label for="public">
                             Public sector organisation
                         </label>
                     </div>
+                    <div class="multiple-choice">
+                        <input id="private" type="radio" name="SectorType" value="@(SectorTypes.Private)">
+                        <label for="private">
+                            Private limited company
+                        </label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="publicLimitedCompany" type="radio" name="SectorType" value="@(SectorTypes.Private)">
+                        <label for="publicLimitedCompany">
+                            Public limited company
+                        </label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="limitedLiabilityPartnership" type="radio" name="SectorType" value="@(SectorTypes.Private)">
+                        <label for="limitedLiabilityPartnership">
+                            Limited liability partnership
+                        </label>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="charity" type="radio" name="SectorType" value="@(SectorTypes.Private)">
+                        <label for="charity">
+                            Charity
+                        </label>
+                    </div>
+
                 </fieldset>
             </div>
-            <br/>
+            @(Html.GovUkInsetText(new InsetTextViewModel
+            {
+                Html = @<div class="govuk-!-font-size-24">
+                           <p>
+                               If you are not sure what type of organisation you are please read our
+                               <a class="govuk-link" href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview#relevant-employer">
+                                   guidance</a>.
+                           </p>
+
+                           <p>
+                               The full list of organisations required to their report gender pay gap data as a public organisation
+                               can be found in
+                               <a class="govuk-link" href="https://www.legislation.gov.uk/ukdsi/2017/9780111153277/schedule/2">
+                                   Schedule 2 of the The Equality Act 2010 (Specific Duties and Public Authorities) Regulations
+                                   2017</a>.
+                           </p>
+                       </div>
+            }))
 
             <input type="submit" class="button" value="Continue"/>
 
