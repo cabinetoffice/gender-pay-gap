@@ -285,6 +285,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         }
 
         [HttpPost("cancel-check-data")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelCheckData(ReturnViewModel postedReturnViewModel)
         {
             #region Check user, then retrieve model from Session

@@ -44,6 +44,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("organisation/{id}/change-public-sector-classification")]
+        [ValidateAntiForgeryToken]
         public IActionResult ChangePublicSectorClassificationPost(long id, AdminChangePublicSectorClassificationViewModel viewModel)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);

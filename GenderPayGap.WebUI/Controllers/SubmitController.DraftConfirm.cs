@@ -12,6 +12,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         #region private methods
 
         [HttpPost("exit-without-saving")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExitWithoutSaving()
         {
             #region Check user, then retrieve model from Session
@@ -39,6 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         }
 
         [HttpPost("save-draft")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveDraftAsync(ReturnViewModel postedReturnViewModel)
         {
             #region Check user, then retrieve model from Session

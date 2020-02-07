@@ -105,6 +105,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         }
 
         [HttpPost("cancel-organisation-size")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelOrganisationSize(ReturnViewModel postedReturnViewModel)
         {
             postedReturnViewModel.OriginatingAction = "OrganisationSize";
