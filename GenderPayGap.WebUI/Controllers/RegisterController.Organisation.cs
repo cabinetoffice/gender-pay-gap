@@ -1732,7 +1732,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             userOrg.Address = address;
             userOrg.PIN = null;
-            userOrg.PINHash = null;
             userOrg.PINSentDate = null;
 
             #endregion

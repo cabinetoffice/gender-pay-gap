@@ -16,7 +16,6 @@ namespace GenderPayGap.Database
         public long UserId { get; set; }
         public long OrganisationId { get; set; }
         public string PIN { get; set; }
-        public string PINHash { get; set; }
         public DateTime? PINSentDate { get; set; }
         public string PITPNotifyLetterId { get; set; }
         public DateTime? PINConfirmedDate { get; set; }

@@ -504,9 +504,6 @@ namespace GenderPayGap.Database
                     entity.HasIndex(e => e.UserId)
                         .HasName("IX_UserId");
 
-                    entity.Property(e => e.PINHash)
-                        .HasMaxLength(250);
-
                     entity.Property(e => e.Method).HasColumnName("MethodId").HasDefaultValueSql("((0))");
 
                     entity.HasOne(d => d.Address)
