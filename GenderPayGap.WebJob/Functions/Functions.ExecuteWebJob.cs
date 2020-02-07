@@ -44,9 +44,6 @@ namespace GenderPayGap.WebJob
                 case "TakeSnapshot":
                     await TakeSnapshotAsync(log);
                     break;
-                case "FixOrganisationsNames":
-                    await FixOrganisationsNamesAsync(log, parameters["userEmail"], parameters["comment"]);
-                    break;
                 default:
                     throw new Exception("Could not execute webjob:" + queueMessage);
             }
