@@ -135,20 +135,6 @@ namespace GenderPayGap.WebJob
 
                 if (orgs.Any())
                 {
-                    //Remove D&B orgs
-                    string filePath = Path.Combine(Global.DataPath, Filenames.DnBOrganisations);
-                    bool exists = await Global.FileRepository.GetFileExistsAsync(filePath);
-                    if (exists)
-                    {
-                        List<DnBOrgsModel> allDnBOrgs = await Global.FileRepository.ReadCSVAsync<DnBOrgsModel>(filePath);
-                        allDnBOrgs = allDnBOrgs.OrderBy(o => o.OrganisationId).ToList();
-                        orgs.RemoveAll(
-                            o => allDnBOrgs.Any(
-                                dnbo => dnbo.OrganisationId == o.OrganisationId
-                                        || !string.IsNullOrWhiteSpace(dnbo.DUNSNumber) && dnbo.DUNSNumber == o.DUNSNumber));
-                    }
-
-
                     var count = 0;
                     foreach (Organisation org in orgs)
                     {

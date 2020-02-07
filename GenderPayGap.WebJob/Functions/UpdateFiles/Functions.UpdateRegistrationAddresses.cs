@@ -97,18 +97,6 @@ namespace GenderPayGap.WebJob
 
         public async Task<List<RegistrationAddressesFileModel>> GetLatestRegistrationAddressesAsync()
         {
-            // Load the DnBOrgs file from storage"
-            string dnbOrgsPath = Path.Combine(Global.DataPath, Filenames.DnBOrganisations);
-            List<DnBOrgsModel> AllDnBOrgs = await Global.FileRepository.GetFileExistsAsync(dnbOrgsPath)
-                ? await Global.FileRepository.ReadCSVAsync<DnBOrgsModel>(dnbOrgsPath)
-                : new List<DnBOrgsModel>();
-            AllDnBOrgs = AllDnBOrgs.OrderBy(o => o.OrganisationName).ToList();
-
-            // Extract the DUNSNumber, JobTitle and FullName from the DnBOrgs
-            var dnbUserOrgs = AllDnBOrgs
-                .Select(dnbOrg => new {dnbOrg.DUNSNumber, DnBJobTitle = dnbOrg.ContactJobtitle, DnBFullName = dnbOrg.GetContactName()})
-                .ToList();
-
             // Get all the latest verified organisation registrations
             List<Organisation> verifiedOrgs = await _DataRepository.GetEntities<Organisation>()
                 .Where(uo => uo.LatestRegistration != null)
@@ -164,17 +152,6 @@ namespace GenderPayGap.WebJob
                         // Convert two letter country codes to full country names
                         string countryCode = Country.FindTwoLetterCode(latestAddress.Country);
 
-                        // Get the linked dnb record using the DUNSNumber
-                        var dnbOrg = dnbUserOrgs.FirstOrDefault(dnbo => dnbo.DUNSNumber == vo.DUNSNumber);
-
-                        // If (DnBJobTile and DnBFullName) is null or empty then DnbFullName = "Chief Executive"
-                        string dnbJobTitle = dnbOrg?.DnBJobTitle;
-                        string dnbFullName = dnbOrg?.DnBFullName;
-                        if (string.IsNullOrWhiteSpace(dnbJobTitle) && string.IsNullOrWhiteSpace(dnbFullName))
-                        {
-                            dnbFullName = "Chief Executive";
-                        }
-
                         // Retrieve the SectorType reporting snapshot date (d MMMM yyyy)
                         string expires = vo.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy");
 
@@ -184,8 +161,6 @@ namespace GenderPayGap.WebJob
                             DUNSNumber = vo.DUNSNumber,
                             EmployerReference = vo.EmployerReference,
                             Sector = vo.SectorType,
-                            DnBJobTitle = dnbJobTitle,
-                            DnBFullName = dnbFullName,
                             LatestUserJobTitle = latestRegistrationUser.JobTitle,
                             LatestUserFullName = latestRegistrationUser.Fullname,
                             LatestUserStatus = latestRegistrationUser.Status.ToString(),

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -731,23 +731,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 : DateTime.MinValue;
             model.Uploads.Add(upload);
 
-            //Reload D&B
-            await DnBOrgsRepository.ClearAllDnBOrgsAsync();
-            List<DnBOrgsModel> allDnBOrgs = await DnBOrgsRepository.GetAllDnBOrgsAsync();
-            upload = new UploadViewModel.Upload {
-                Type = "DnBOrgs",
-                Filepath = Path.Combine(Global.DataPath, Filenames.DnBOrganisations),
-                Title = "Dun & Bradstreet Organisations",
-                Description = "Latest list of public and private sector organisations from Dun & Bradstreet database.",
-                Count = allDnBOrgs == null
-                    ? "0"
-                    : $"{allDnBOrgs.Count(o => o.ImportedDate != null && (o.StatusCheckedDate == null || o.ImportedDate >= o.StatusCheckedDate))}/{allDnBOrgs.Count.ToString()}"
-            };
-            upload.Modified = await Global.FileRepository.GetFileExistsAsync(upload.Filepath)
-                ? await Global.FileRepository.GetLastWriteTimeAsync(upload.Filepath)
-                : DateTime.MinValue;
-            model.Uploads.Add(upload);
-
             List<ShortCodeModel> allShortCodes = await ShortCodesRepository.GetAllShortCodesAsync();
             upload = new UploadViewModel.Upload {
                 Type = "ShortCodes",
@@ -801,18 +784,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             {
                 await RecheckCompaniesAsync();
             }
-
-            else if (command.EqualsI("Import"))
-            {
-                try
-                {
-                    await DnBOrgsRepository.ImportAsync(DataRepository, CurrentUser);
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $@"Import Error': {ex.Message}");
-                }
-            }
             else if (command.EqualsI("Upload"))
             {
                 IFormFile file = files.FirstOrDefault();
@@ -846,15 +817,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         List<object> records;
                         switch (upload.Type)
                         {
-                            case "DnBOrgs":
-                                List<DnBOrgsModel> dnbOrgs = csvReader.GetRecords<DnBOrgsModel>().ToList();
-                                if (dnbOrgs.Count > 0)
-                                {
-                                    await DnBOrgsRepository.UploadAsync(dnbOrgs);
-                                }
-
-                                records = dnbOrgs.Cast<object>().ToList();
-                                break;
                             case "SicSection":
                                 records = csvReader.GetRecords<SicSection>().Cast<object>().ToList();
                                 break;
@@ -879,9 +841,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         DateTime updateTime = VirtualDateTime.Now.AddMinutes(-2);
                         switch (upload.Type)
                         {
-                            case "DnBOrgs":
-                                await DnBOrgsRepository.ClearAllDnBOrgsAsync();
-                                break;
                             case "SicSection":
                                 await DataMigrations.Update_SICSectionsAsync(
                                     DataRepository,

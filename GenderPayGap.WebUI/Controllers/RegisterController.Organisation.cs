@@ -551,17 +551,6 @@ namespace GenderPayGap.WebUI.Controllers
                 //Make sure the organisation has an address
                 if (employer.SectorType == SectorTypes.Public)
                 {
-                    //Get the email domains from the D&B file
-                    if (string.IsNullOrWhiteSpace(employer.EmailDomains))
-                    {
-                        List<DnBOrgsModel> allDnBOrgs = await DnBOrgsRepository.GetAllDnBOrgsAsync();
-                        DnBOrgsModel dnbOrg = allDnBOrgs?.FirstOrDefault(o => o.EmployerReference == employer.EmployerReference);
-                        if (dnbOrg != null)
-                        {
-                            employer.EmailDomains = dnbOrg.EmailDomains;
-                        }
-                    }
-
                     model.ManualRegistration = false;
                     model.SelectedAuthorised = employer.IsAuthorised(currentUser.EmailAddress);
                     if (!model.SelectedAuthorised || !employer.HasAnyAddress())
@@ -1025,17 +1014,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Make sure the organisation has an address
             if (employer.SectorType == SectorTypes.Public)
             {
-                //Get the email domains from the D&B file
-                if (string.IsNullOrWhiteSpace(employer.EmailDomains))
-                {
-                    List<DnBOrgsModel> allDnBOrgs = await DnBOrgsRepository.GetAllDnBOrgsAsync();
-                    DnBOrgsModel dnbOrg = allDnBOrgs?.FirstOrDefault(o => o.EmployerReference == employer.EmployerReference);
-                    if (dnbOrg != null)
-                    {
-                        employer.EmailDomains = dnbOrg.EmailDomains;
-                    }
-                }
-
                 model.ManualAuthorised = employer.IsAuthorised(currentUser.EmailAddress);
                 if (!model.ManualAuthorised || !employer.HasAnyAddress())
                 {

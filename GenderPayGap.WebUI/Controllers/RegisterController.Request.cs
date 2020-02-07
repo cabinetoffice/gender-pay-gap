@@ -757,14 +757,10 @@ namespace GenderPayGap.WebUI.Controllers
             //Delete the org user
             long orgId = userOrg.OrganisationId;
             string emailAddress = userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress);
-
-            List<DnBOrgsModel> allDnBOrgs = await DnBOrgsRepository.GetAllDnBOrgsAsync();
-
-            //Delete the organisation if it has no returns, no D&B addresses, is not in D&B, is not in scopes table, and is not registered to another user
+            
+            //Delete the organisation if it has no returns, is not in scopes table, and is not registered to another user
             if (userOrg.Organisation != null
                 && !userOrg.Organisation.Returns.Any()
-                && !userOrg.Organisation.OrganisationAddresses.Any(a => a.CreatedByUserId == -1 || a.Source == "D&B")
-                && (allDnBOrgs == null || !allDnBOrgs.Any(o => userOrg.Organisation.DUNSNumber == o.DUNSNumber))
                 && !userOrg.Organisation.OrganisationScopes.Any()
                 && !await DataRepository.GetAll<UserOrganisation>()
                     .AnyAsync(uo => uo.OrganisationId == userOrg.Organisation.OrganisationId && uo.UserId != userOrg.UserId))
