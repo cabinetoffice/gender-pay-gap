@@ -249,28 +249,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
 
         [Test]
         [Ignore("Not Implemented")]
-        [Description("FunctionsUpdateFile_UpdateUsersToContactForFeedback_Shared_Ok")]
-        public async Task FunctionsUpdateFile_UpdateUsersToContactForFeedback_Shared_OkAsync()
-        {
-            //throw new NotImplementedException();
-
-            await _functions.UpdateUsersToContactForFeedbackAsync(string.Empty);
-        }
-
-        [Test]
-        [Ignore("Not Implemented")]
-        [Description("FunctionsUpdateFile_UpdateUsersToContactForFeedback_TimeTrigger_Ok")]
-        public async Task FunctionsUpdateFile_UpdateUsersToContactForFeedback_TimeTrigger_OkAsync()
-        {
-            var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-
-            //throw new NotImplementedException();
-
-            await _functions.UpdateUsersToContactForFeedback(timerInfo);
-        }
-
-        [Test]
-        [Ignore("Not Implemented")]
         [Description("FunctionsUpdateFile_UpdateUsersToSendInfo_Shared_Ok")]
         public void FunctionsUpdateFile_UpdateUsersToSendInfo_Shared_Ok()
         {
