@@ -61,7 +61,12 @@
                             Charity
                         </label>
                     </div>
-
+                    <div class="multiple-choice">
+                        <input id="otherPrivate" type="radio" name="SectorType" value="@(SectorTypes.Private)">
+                        <label for="otherPrivate">
+                            Other private organisation
+                        </label>
+                    </div>
                 </fieldset>
             </div>
             @(Html.GovUkInsetText(new InsetTextViewModel
@@ -74,7 +79,7 @@
                            </p>
 
                            <p>
-                               The full list of organisations required to their report gender pay gap data as a public organisation
+                               The full list of organisations required to report their gender pay gap data as a public sector organisation
                                can be found in
                                <a class="govuk-link" href="https://www.legislation.gov.uk/ukdsi/2017/9780111153277/schedule/2">
                                    Schedule 2 of the The Equality Act 2010 (Specific Duties and Public Authorities) Regulations
