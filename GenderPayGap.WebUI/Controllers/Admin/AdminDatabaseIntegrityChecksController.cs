@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -255,6 +256,56 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
 
             return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
+        }
+        
+        [HttpGet("database-integrity-checks/broken-weblinks-ajax")]
+        public async Task<IActionResult> BrokenWeblinksAjax()
+        {
+            var organisationsWithBrokenLinks = new List<Organisation>();
+            IQueryable<Organisation> organisations = dataRepository
+                .GetAll<Organisation>()
+            
+                .Where(o => o.SectorType == SectorTypes.Private)
+                .Where(o => o.Status == OrganisationStatuses.Active)
+                .Include(o => o.LatestReturn);
+
+            var i = 0;
+            var numberOfOrganisations = organisations.Count();
+            foreach (Organisation organisation in organisations)
+            {
+                Console.WriteLine($@"Organisation {i} of {numberOfOrganisations}");
+                var latestReturn = organisation.LatestReturn;
+                Console.WriteLine(latestReturn);
+                
+                if (latestReturn != null && latestReturn.CompanyLinkToGPGInfo != null)
+                {
+                    var uri = new Uri(latestReturn.CompanyLinkToGPGInfo);
+                    Console.WriteLine(uri);
+                    
+                    HttpWebRequest HttpWReq = 
+                        (HttpWebRequest)WebRequest.Create(uri);
+
+                    try
+                    {
+                        HttpWebResponse HttpWResp = (HttpWebResponse) HttpWReq.GetResponse();
+                        if (HttpWResp.StatusCode != HttpStatusCode.OK)
+                        {
+                            organisationsWithBrokenLinks.Add(organisation);
+                        }
+
+                        HttpWResp.Close();
+                    }
+                    catch (Exception) {
+                        organisationsWithBrokenLinks.Add(organisation);
+                    }
+                    
+                }
+                Console.WriteLine($@"Organisations with broken links {organisationsWithBrokenLinks.Count()}");
+
+                i++;
+            }
+            
+            return PartialView("OrganisationsWithBrokenLinks", organisationsWithBrokenLinks);
         }
 
     }
