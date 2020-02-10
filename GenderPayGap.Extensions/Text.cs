@@ -42,21 +42,6 @@ namespace GenderPayGap.Extensions
             return Regex.IsMatch(input, "^[0-9A-Za-z]{" + minLength + ",8}$");
         }
 
-        public static bool IsDUNSNumber(this string input, int minLength = 9)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return false;
-            }
-
-            if (!input.ContainsNumber())
-            {
-                return false;
-            }
-
-            return Regex.IsMatch(input, "^[0-9]{" + minLength + ",9}$");
-        }
-
         public static string FixCompanyNumber(this string input)
         {
             if (!string.IsNullOrWhiteSpace(input) && input.IsCompanyNumber(6))

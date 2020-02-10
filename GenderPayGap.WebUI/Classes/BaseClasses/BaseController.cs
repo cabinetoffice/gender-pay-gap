@@ -494,8 +494,7 @@ namespace GenderPayGap.WebUI.Classes
                     "Register/ReviewRequest",
                     "Register/ConfirmCancellation",
                     "Register/RequestAccepted",
-                    "Register/RequestCancelled",
-                    "Register/ReviewDUNSNumber"))
+                    "Register/RequestCancelled"))
                 {
                     return null;
                 }
@@ -509,7 +508,6 @@ namespace GenderPayGap.WebUI.Classes
             if (ControllerName.EqualsI("admin")
                 || IsAnyAction(
                     "Register/ReviewRequest",
-                    "Register/ReviewDUNSNumber",
                     "Register /ConfirmCancellation",
                     "Register/RequestAccepted",
                     "Register/RequestCancelled"))

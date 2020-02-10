@@ -150,7 +150,6 @@ namespace GenderPayGap.WebJob
                                     org.OrganisationId,
                                     Address = org.GetAddressString(),
                                     org.EmployerReference,
-                                    org.DUNSNumber,
                                     org.CompanyNumber,
                                     org.OrganisationName,
                                     org.SectorType,

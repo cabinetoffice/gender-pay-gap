@@ -84,7 +84,6 @@ namespace GenderPayGap.WebUI.Classes.Services
 
             var model = new ScopingViewModel {
                 OrganisationId = org.OrganisationId,
-                DUNSNumber = org.DUNSNumber,
                 OrganisationName = org.OrganisationName,
                 OrganisationAddress = org.LatestAddress?.GetAddressString(),
                 AccountingDate = org.SectorType.GetAccountingStartDate()

@@ -11,7 +11,6 @@ namespace GenderPayGap.Core.Models
 
         public Dictionary<string, string> References = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         public long OrganisationId { get; set; }
-        public string DUNSNumber { get; set; }
         public string EmployerReference { get; set; }
         public string CompanyNumber { get; set; }
         public DateTime? DateOfCessation { get; set; }

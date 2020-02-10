@@ -124,32 +124,6 @@
                 <td></td>
             </tr>
         }
-        @if (ViewBag.NoDUNS)
-        {
-            <tr>
-                <td>
-                    DUNS number<span class="optional">(Optional)</span>
-                </td>
-                <td>
-                    @Html.ValidationMessageFor(model => model.DUNSNumber, "", new {id = "DUNSNumberError", @class = "error-message"})
-                    @Html.CustomEditorFor(model => model.DUNSNumber, new {@class = "form-control"})
-                </td>
-                <td></td>
-            </tr>
-        }
-        else
-        {
-            <tr>
-                <td>
-                    DUNS number
-                </td>
-                <td>
-                    @Html.HiddenFor(model => model.DUNSNumber)
-                    @Html.DisplayFor(model => model.DUNSNumber)
-                </td>
-                <td></td>
-            </tr>
-        }
         <tr>
             <td colspan="3">
                 <br>
@@ -192,8 +166,7 @@
                         @{ Dictionary<string, string> references = Model.GetReferences(i); }
                         @foreach (string key in references.Keys)
                         {
-                            if (key.EqualsI("DUNS No") && references[key].EqualsI(Model.DUNSNumber)
-                                || key.EqualsI("Company No") && references[key].EqualsI(Model.CompanyNumber)
+                            if (key.EqualsI("Company No") && references[key].EqualsI(Model.CompanyNumber)
                                 || key.EqualsI("Charity No") && references[key].EqualsI(Model.CharityNumber)
                                 || key.EqualsI("Mutual No") && references[key].EqualsI(Model.MutualNumber)
                                 || key.EqualsI(Model.OtherName) && references[key].EqualsI(Model.OtherValue)

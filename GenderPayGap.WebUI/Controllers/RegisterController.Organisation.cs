@@ -674,9 +674,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Exclude the SIC Codes
             excludes.Add(nameof(model.SicCodeIds));
 
-            //Exclude the SIC Codes
-            excludes.Add(nameof(model.DUNSNumber));
-
             if (model.NoReference)
             {
                 excludes.AddRange(
@@ -804,18 +801,6 @@ namespace GenderPayGap.WebUI.Controllers
 
                 if (!string.IsNullOrWhiteSpace(model.OtherName) && !string.IsNullOrWhiteSpace(model.OtherValue))
                 {
-                    if (model.IsDUNS)
-                    {
-                        results = DataRepository.GetAll<Organisation>()
-                            .Where(r => r.DUNSNumber.ToLower() == model.OtherValue.ToLower())
-                            .Select(r => r.OrganisationId);
-                        if (results.Any())
-                        {
-                            orgIdrefs.Add(nameof(model.OtherName));
-                            orgIds.AddRange(results);
-                        }
-                    }
-
                     results = DataRepository.GetAll<OrganisationReference>()
                         .Where(
                             r => r.ReferenceName.ToLower() == model.OtherName.ToLower()
@@ -1171,7 +1156,6 @@ namespace GenderPayGap.WebUI.Controllers
             model = model.GetClone();
             if (employer != null)
             {
-                model.DUNSNumber = employer.DUNSNumber;
                 model.DateOfCessation = employer.DateOfCessation;
                 model.NameSource = employer.NameSource;
                 ViewBag.LastOrg = model.OrganisationName;

@@ -101,10 +101,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Exclude the SIC Codes
             excludes.Add(nameof(model.SicCodeIds));
-
-            //Exclude the SIC Codes
-            excludes.Add(nameof(model.DUNSNumber));
-
+            
             //Check model is valid
             ModelState.Exclude(excludes.ToArray());
             if (!ModelState.IsValid)
@@ -271,9 +268,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Exclude the SIC Codes
             excludes.Add(nameof(model.SicCodeIds));
 
-            //Exclude the SIC Codes
-            excludes.Add(nameof(model.DUNSNumber));
-
             //Check model is valid
             ModelState.Exclude(excludes.ToArray());
             if (!ModelState.IsValid)
@@ -382,9 +376,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 excludes.Add(nameof(model.SicCodeIds));
             }
-
-            //Exclude the SIC Codes
-            excludes.Add(nameof(model.DUNSNumber));
 
             //Check model is valid
             ModelState.Exclude(excludes.ToArray());

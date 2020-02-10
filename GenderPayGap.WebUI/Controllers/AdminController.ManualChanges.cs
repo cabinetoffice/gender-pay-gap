@@ -137,9 +137,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         case "Set organisation company number":
                             count = await SetOrganisationCompanyNumberAsync(model.Parameters, model.Comment, writer, test);
                             break;
-                        case "Set organisation DUNS number":
-                            count = await SetOrganisationDUNSNumberAsync(model.Parameters, model.Comment, writer, test);
-                            break;
                         case "Set organisation SIC codes":
                             count = await SetOrganisationSicCodesAsync(model.Parameters, model.Comment, writer, test);
                             break;
@@ -1229,124 +1226,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             newValue,
                             comment));
                     await DataRepository.SaveChangesAsync();
-                }
-
-                count++;
-            }
-
-            return count;
-        }
-
-        private async Task<int> SetOrganisationDUNSNumberAsync(string input, string comment, StringWriter writer, bool test)
-        {
-            string methodName = nameof(SetOrganisationDUNSNumberAsync);
-
-            //Split the input into separate action lines
-            string[] lines = input.SplitI(Environment.NewLine);
-            if (lines.Length == 0)
-            {
-                throw new ArgumentException("ERROR: You must supply 1 or more input parameters");
-            }
-
-            //Execute the command for each line
-            var count = 0;
-            var i = 0;
-            var processed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var processedNumbers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (string line in lines)
-            {
-                i++;
-                if (!line.Contains('='))
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{line}' does not contain '=' character");
-                    continue;
-                }
-
-                string employerRef = line.BeforeFirst("=")?.ToUpper();
-                if (string.IsNullOrWhiteSpace(employerRef))
-                {
-                    continue;
-                }
-
-                if (processed.Contains(employerRef))
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' duplicate organisation");
-                    continue;
-                }
-
-                processed.Add(employerRef);
-
-                string newValue = line.AfterFirst("=", includeWhenNoSeparator: false).TrimI()?.ToUpper();
-
-                if (string.IsNullOrWhiteSpace(newValue))
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' must contain a DUNS number");
-                    continue;
-                }
-
-                if (!newValue.IsDUNSNumber())
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' Invalid DUNS number '{newValue}'");
-                    continue;
-                }
-
-                if (processedNumbers.Contains(newValue))
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' duplicate DUNS number '{newValue}'");
-                    continue;
-                }
-
-                processedNumbers.Add(newValue);
-
-                Organisation org = await DataRepository.GetAll<Organisation>()
-                    .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerRef);
-                if (org == null)
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
-                    continue;
-                }
-
-                string oldValue = org.DUNSNumber;
-
-                if (oldValue == newValue)
-                {
-                    writer.WriteLine(
-                        Color.Orange,
-                        $"{i}: WARNING '{employerRef}' '{org.OrganisationName}' DUNS Number='{org.DUNSNumber}' already set to '{newValue}'");
-                }
-                else if (!string.IsNullOrWhiteSpace(oldValue))
-                {
-                    writer.WriteLine(
-                        Color.Orange,
-                        $"{i}: ERROR '{employerRef}' '{org.OrganisationName}' already holds a different DUNS Number='{org.DUNSNumber}'");
-                    continue;
-                }
-                else if (await DataRepository.GetAll<Organisation>()
-                    .AnyAsync(o => o.DUNSNumber == newValue && o.OrganisationId != org.OrganisationId))
-                {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR '{employerRef}' Another organisation exists with this DUNS number");
-                    continue;
-                }
-                else
-                {
-                    //Output the actual execution result
-                    org.DUNSNumber = newValue;
-                    writer.WriteLine($"{i}: {employerRef}: {org.OrganisationName} DUNS Number='{org.DUNSNumber}' set to '{newValue}'");
-                    if (!test)
-                    {
-                        await Global.ManualChangeLog.WriteAsync(
-                            new ManualChangeLogModel(
-                                methodName,
-                                ManualActions.Update,
-                                CurrentUser.EmailAddress,
-                                nameof(Organisation.EmployerReference),
-                                employerRef,
-                                nameof(Organisation.DUNSNumber),
-                                oldValue,
-                                newValue,
-                                comment));
-                        await DataRepository.SaveChangesAsync();
-                    }
                 }
 
                 count++;

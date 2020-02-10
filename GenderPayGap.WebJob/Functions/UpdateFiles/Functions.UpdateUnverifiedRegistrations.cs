@@ -72,7 +72,6 @@ namespace GenderPayGap.WebJob
                 var records = userOrgs.Select(
                         uo => new {
                             uo.Organisation.OrganisationId,
-                            uo.Organisation.DUNSNumber,
                             uo.Organisation.EmployerReference,
                             uo.Organisation.OrganisationName,
                             CompanyNo = uo.Organisation.CompanyNumber,
