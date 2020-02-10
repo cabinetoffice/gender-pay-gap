@@ -61,9 +61,10 @@
                 <p>You can publish your gender pay gap narrative on your organisation's website. This can provide context for your figures.</p>
                 <fieldset>
                     <div class="form-group @Html.SetErrorClass(model => model.CompanyLinkToGPGInfo, "error")">
-                        @Html.LabelFor(model => model.CompanyLinkToGPGInfo, "Enter the web address (URL)", new {@class = "form-label"})
+                        <label class="form-label" for="OtherName">Enter the web address (URL). <br/>
+                            <span class="optional" style="font-size: inherit">This must start with http:// or https://</span></label>
                         @Html.ValidationMessageFor(model => model.CompanyLinkToGPGInfo, "", new {@class = "error-message"})
-                        @Html.TextAreaFor(model => model.CompanyLinkToGPGInfo, 6, 30, new {@class = "form-control form-control-3-4"})
+                        @Html.TextAreaFor(model => model.CompanyLinkToGPGInfo, 6, 30, new {@class = "form-control form-control-3-4", placeholder = "http"})
                     </div>
                 </fieldset>
             </div>
