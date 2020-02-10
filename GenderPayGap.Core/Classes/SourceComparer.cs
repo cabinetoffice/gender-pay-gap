@@ -45,7 +45,7 @@ namespace GenderPayGap.Core.Classes
                 return 2;
             }
 
-            if (IsDnB(source) || source.EqualsI("Manual"))
+            if (source.EqualsI("Manual"))
             {
                 return 1;
             }
@@ -66,11 +66,6 @@ namespace GenderPayGap.Core.Classes
             }
 
             return emailAddress.LikeAny(Global.AdminEmails.SplitI(";"));
-        }
-
-        public static bool IsDnB(string source)
-        {
-            return source.Strip(" ").EqualsI("D&B", "DNB", "dunandbradstreet", "dun&bradstreet");
         }
 
         public static bool IsCoHo(string source)

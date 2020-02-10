@@ -502,7 +502,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     Filepath = file,
                     Title = $"Registered Organisation Addresses ({period})",
                     Description =
-                        $"A list of registered organisation addresses and their associated contact details for {period}. This includes the DnB contact details and the most recently registered user contact details."
+                        $"A list of registered organisation addresses and their associated contact details for {period}. This includes the most recently registered user contact details."
                 };
                 download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
                 model.Downloads.Add(download);

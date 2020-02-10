@@ -89,11 +89,6 @@
                                     {
                                         <input type="file" name="files" style="display: none" onchange="$('#btnUpload').click()"/>
                                         <a onclick="$(this).prevAll(':file').click()" style="font-size: small; cursor: pointer;" class="link-button" title="click here to select a local file to upload and replace this content">Upload</a>
-                                        if (upload.Count != "0" && upload.Type.EqualsI("DnBOrgs"))
-                                        {
-                                            <br/>
-                                            <button type="submit" style="font-size: small; cursor: pointer;" class="link-button" id="btnImport" name="Command" value="Import" title="Imports these records into the database">Import</button>
-                                        }
                                     }
                                 </td>
                             </tr>
