@@ -101,9 +101,6 @@ namespace GenderPayGap.WebUI.Models.Register
         [StringLength(100, MinimumLength = 3)]
         public string MutualNumber { get; set; }
 
-        [DUNSNumber]
-        public string DUNSNumber { get; set; }
-
         [Required(AllowEmptyStrings = false)]
         [StringLength(100, MinimumLength = 3)]
         public string OtherName { get; set; }
@@ -112,18 +109,6 @@ namespace GenderPayGap.WebUI.Models.Register
         [StringLength(100, MinimumLength = 3)]
         public string OtherValue { get; set; }
 
-        public bool IsDUNS =>
-            OtherName.EqualsI(
-                "DUNS",
-                "D-U-N-S",
-                "DUNS no",
-                "D-U-N-S no",
-                "DUNS number",
-                "D-U-N-S number",
-                "DUNS reference",
-                "D-U-N-S reference",
-                "DUNS ref",
-                "D-U-N-S ref");
 
         #endregion
 
@@ -229,11 +214,6 @@ namespace GenderPayGap.WebUI.Models.Register
 
             EmployerRecord employer = ManualEmployers[i];
             var results = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            if (!string.IsNullOrWhiteSpace(employer.DUNSNumber))
-            {
-                results["DUNS No"] = employer.DUNSNumber;
-            }
 
             if (!string.IsNullOrWhiteSpace(employer.CompanyNumber))
             {

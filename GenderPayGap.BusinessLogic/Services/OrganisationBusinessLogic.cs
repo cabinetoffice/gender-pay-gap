@@ -110,7 +110,6 @@ namespace GenderPayGap.BusinessLogic
             {
                 var record = new OrganisationsFileModel {
                     OrganisationId = o.OrganisationId,
-                    DUNSNumber = o.DUNSNumber,
                     EmployerReference = o.EmployerReference,
                     OrganisationName = o.OrganisationName,
                     CompanyNo = o.CompanyNumber,

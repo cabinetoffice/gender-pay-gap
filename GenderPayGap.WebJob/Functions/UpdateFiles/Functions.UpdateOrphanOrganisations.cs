@@ -161,7 +161,6 @@ namespace GenderPayGap.WebJob
                         // Generate csv row
                         return new UnregisteredOrganisationsFileModel {
                             OrganisationId = org.OrganisationId,
-                            DUNSNumber = org.DUNSNumber,
                             EmployerReference = org.EmployerReference,
                             Sector = org.SectorType,
                             Company = org.OrganisationName,

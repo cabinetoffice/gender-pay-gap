@@ -112,7 +112,6 @@ namespace GenderPayGap.BusinessLogic
                         ReturnId = j.r.ReturnId,
                         OrganisationId = j.r.OrganisationId,
                         OrganisationName = j.r.Organisation.OrganisationName,
-                        DUNSNumber = j.r.Organisation.DUNSNumber,
                         EmployerReference = j.r.Organisation.EmployerReference,
                         CompanyNumber = j.r.Organisation.CompanyNumber,
                         SectorType = j.r.Organisation.SectorType,

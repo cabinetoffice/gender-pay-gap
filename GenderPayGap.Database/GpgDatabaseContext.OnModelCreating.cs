@@ -174,11 +174,6 @@ namespace GenderPayGap.Database
                         .IsUnique()
                         .HasFilter("([CompanyNumber] IS NOT NULL)");
 
-                    entity.HasIndex(e => e.DUNSNumber)
-                        .HasName("idx_Organisations_DUNSNumber")
-                        .IsUnique()
-                        .HasFilter("([DUNSNumber] IS NOT NULL)");
-
                     entity.HasIndex(e => e.EmployerReference)
                         .HasName("idx_Organisations_EmployerReference")
                         .IsUnique()
@@ -209,9 +204,6 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.SectorType).HasColumnName("SectorTypeId");
 
                     entity.Property(e => e.CompanyNumber).HasMaxLength(10);
-
-                    entity.Property(e => e.DUNSNumber)
-                        .HasMaxLength(10);
 
                     entity.Property(e => e.EmployerReference).HasMaxLength(10);
 

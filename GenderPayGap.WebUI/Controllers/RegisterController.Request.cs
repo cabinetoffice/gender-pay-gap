@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.Controllers
     public partial class RegisterController : BaseController
     {
 
-        private ActionResult UnwrapRegistrationRequest(OrganisationViewModel model, out UserOrganisation userOrg, bool ignoreDUNS)
+        private ActionResult UnwrapRegistrationRequest(OrganisationViewModel model, out UserOrganisation userOrg)
         {
             userOrg = null;
 
@@ -103,14 +103,6 @@ namespace GenderPayGap.WebUI.Controllers
             model.SectorType = userOrg.Organisation.SectorType;
             model.SicCodes = userOrg.Organisation.GetSicCodes().Select(o => o.SicCode.SicCodeId).ToList();
 
-            // pre populate the DUNSNumber text box
-            if (!ignoreDUNS)
-            {
-                model.DUNSNumber = userOrg.Organisation.DUNSNumber;
-            }
-
-            ViewBag.NoDUNS = string.IsNullOrWhiteSpace(userOrg.Organisation.DUNSNumber);
-
             model.Address1 = userOrg.Address.Address1;
             model.Address2 = userOrg.Address.Address2;
             model.Address3 = userOrg.Address.Address3;
@@ -182,7 +174,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Unwrap code
             UserOrganisation userOrg;
-            ActionResult result = UnwrapRegistrationRequest(model, out userOrg, false);
+            ActionResult result = UnwrapRegistrationRequest(model, out userOrg);
             if (result != null)
             {
                 return result;
@@ -264,17 +256,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (!string.IsNullOrWhiteSpace(model.OtherName) && !string.IsNullOrWhiteSpace(model.OtherValue))
             {
-                if (model.IsDUNS)
-                {
-                    results = DataRepository.GetAll<Organisation>()
-                        .Where(r => r.OrganisationId != userOrg.OrganisationId && r.DUNSNumber.ToLower() == model.OtherValue.ToLower())
-                        .Select(r => r.OrganisationId);
-                    if (results.Any())
-                    {
-                        orgIds.AddRange(results);
-                    }
-                }
-
                 results = DataRepository.GetAll<OrganisationReference>()
                     .Where(
                         r => r.OrganisationId != userOrg.OrganisationId
@@ -367,7 +348,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Unwrap code
             UserOrganisation userOrg;
-            ActionResult result = UnwrapRegistrationRequest(model, out userOrg, true);
+            ActionResult result = UnwrapRegistrationRequest(model, out userOrg);
             if (result != null)
             {
                 return result;
@@ -407,12 +388,6 @@ namespace GenderPayGap.WebUI.Controllers
                 nameof(model.OtherName),
                 nameof(model.OtherValue));
 
-            //Exclude the DUNS number when declining
-            if (command.EqualsI("decline"))
-            {
-                excludes.Add(nameof(model.DUNSNumber));
-            }
-
             ModelState.Exclude(excludes.ToArray());
 
             if (!ModelState.IsValid)
@@ -427,18 +402,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else if (command.EqualsI("approve"))
             {
-                //Check for DUNS number conflicts
                 Organisation conflictOrg = null;
-                if (!string.IsNullOrWhiteSpace(model.DUNSNumber))
-                {
-                    conflictOrg = await DataRepository.GetAll<Organisation>()
-                        .FirstOrDefaultAsync(
-                            o => userOrg.OrganisationId != o.OrganisationId && o.DUNSNumber.ToLower() == model.DUNSNumber.ToLower());
-                    if (conflictOrg != null)
-                    {
-                        ModelState.AddModelError(3030, nameof(model.DUNSNumber));
-                    }
-                }
 
                 //Check for company number conflicts
                 if (!string.IsNullOrWhiteSpace(model.CompanyNumber))
@@ -523,23 +487,6 @@ namespace GenderPayGap.WebUI.Controllers
                     OrganisationStatuses.Active,
                     OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                     "Manually registered");
-
-                // Save the DUNS Number
-                if (string.IsNullOrWhiteSpace(userOrg.Organisation.DUNSNumber) && !string.IsNullOrWhiteSpace(model.DUNSNumber))
-                {
-                    userOrg.Organisation.DUNSNumber = model.DUNSNumber;
-                }
-
-                //Delete the DUNS reference
-                if (model.IsDUNS && userOrg.Organisation.DUNSNumber == model.OtherValue)
-                {
-                    OrganisationReference dunsRef =
-                        userOrg.Organisation.OrganisationReferences.FirstOrDefault(r => r.ReferenceName == nameof(model.OtherName));
-                    if (dunsRef != null)
-                    {
-                        userOrg.Organisation.OrganisationReferences.Remove(dunsRef);
-                    }
-                }
 
                 //Set the latest registration
                 userOrg.Organisation.LatestRegistration = userOrg;
@@ -716,7 +663,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Unwrap code
             UserOrganisation userOrg;
-            ActionResult result = UnwrapRegistrationRequest(model, out userOrg, true);
+            ActionResult result = UnwrapRegistrationRequest(model, out userOrg);
             if (result != null)
             {
                 return result;
@@ -766,7 +713,7 @@ namespace GenderPayGap.WebUI.Controllers
                     .AnyAsync(uo => uo.OrganisationId == userOrg.Organisation.OrganisationId && uo.UserId != userOrg.UserId))
             {
                 _logger.LogInformation(
-                    $"Unused organisation {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}'(DUNS:{userOrg.Organisation.DUNSNumber}) deleted by {(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)} when declining manual registration for {userOrg.User.EmailAddress}");
+                    $"Unused organisation {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}' deleted by {(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)} when declining manual registration for {userOrg.User.EmailAddress}");
                 DataRepository.Delete(userOrg.Organisation);
             }
 
@@ -873,7 +820,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
             {
                 UserOrganisation userOrg;
-                ActionResult result = UnwrapRegistrationRequest(model, out userOrg, true);
+                ActionResult result = UnwrapRegistrationRequest(model, out userOrg);
 
                 ViewBag.TestUrl = Url.Action("Impersonate", "Admin", new {emailAddress = userOrg.User.EmailAddress});
             }

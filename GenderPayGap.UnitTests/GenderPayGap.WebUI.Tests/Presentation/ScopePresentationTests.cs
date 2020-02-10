@@ -324,8 +324,8 @@ namespace GenderPayGap.Tests
 
         [Ignore("Needs fixing/deleting")]
         [Test]
-        [Description("AuthAndCreateViewModel: When Successfull then return DUNS, OrgName and Address")]
-        public async Task AuthAndCreateViewModel_When_Successfull_Then_Return_DUNS_OrgName_AddressAsync()
+        [Description("AuthAndCreateViewModel: When Successfull then return OrgName and Address")]
+        public async Task AuthAndCreateViewModel_When_Successfull_Then_Return_OrgName_AddressAsync()
         {
             // Arrange
             var testEmployerRef = "ABCDEFG";
@@ -338,7 +338,6 @@ namespace GenderPayGap.Tests
             var testCity = "testCity";
             var testPOBox = "testPOBox";
             var testPostalCode = "testPostalCode";
-            var expectedDUNSNumber = "1234567890";
             var expectedOrgName = "Test Org Name";
             string expectedAddress = $"{testAddress1}, {testAddress2}, {testAddress3}, {testCity}, {testPostalCode}, {testPOBox}";
 
@@ -351,7 +350,6 @@ namespace GenderPayGap.Tests
             ScopingViewModel actualModel = await testScopePresentation.CreateScopingViewModelAsync(testModel, testUser);
 
             // Assert
-            Assert.That(actualModel.DUNSNumber == expectedDUNSNumber, $"Expected DunsCode to be {expectedDUNSNumber}");
             Assert.That(actualModel.OrganisationName == expectedOrgName, $"Expected OrgName to be {expectedOrgName}");
             Assert.That(actualModel.OrganisationAddress == expectedAddress, $"Expected OrgAddress to be {expectedAddress}");
             //Assert.That(actualModel.AccountingDate.Year == VirtualDateTime.Now.Year, $"Expected AccountingDate year to be {VirtualDateTime.Now.Year}");

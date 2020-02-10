@@ -712,7 +712,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Mocks
             Mock<IScopePresentation> mockScopePresentation = AutoFacExtensions.ResolveAsMock<IScopePresentation>();
             mockScopePresentation.Setup(x => x.CreateScopingViewModelAsync(It.IsAny<EnterCodesViewModel>(), It.IsAny<User>()))
-                .ReturnsAsync(new ScopingViewModel {IsSecurityCodeExpired = true, DUNSNumber = "1234"});
+                .ReturnsAsync(new ScopingViewModel {IsSecurityCodeExpired = true});
 
             // Act
             var result = await controller.OutOfScope(testPostModel) as ViewResult;
@@ -736,7 +736,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<ScopeController>(0, routeData);
 
             var testScopeModel = new ScopingViewModel {
-                IsOutOfScopeJourney = true, DUNSNumber = "1234", IsChangeJourney = false, LastScope = testLastScopeViewModel
+                IsOutOfScopeJourney = true, IsChangeJourney = false, LastScope = testLastScopeViewModel
             };
 
             var testPostModel = new EnterCodesViewModel {EmployerReference = "AUTH-KEY", SecurityToken = "AUTH-PASS"};
@@ -772,7 +772,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             Mock<IScopePresentation> mockScopePresentation = AutoFacExtensions.ResolveAsMock<IScopePresentation>();
             mockScopePresentation.Setup(x => x.CreateScopingViewModelAsync(It.IsAny<EnterCodesViewModel>(), It.IsAny<User>()))
-                .ReturnsAsync(new ScopingViewModel {DUNSNumber = "1234"});
+                .ReturnsAsync(new ScopingViewModel {});
 
             // Act
             var result = await controller.OutOfScope(testPostModel) as RedirectToActionResult;

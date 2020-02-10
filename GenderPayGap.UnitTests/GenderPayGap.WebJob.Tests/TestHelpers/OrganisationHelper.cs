@@ -17,8 +17,7 @@ namespace GenderPayGap.WebJob.Tests.TestHelpers
                 OrganisationName = $"TestOrg{organisationId:000}",
                 SectorType = organisationId % 2 > 0 ? SectorTypes.Private : SectorTypes.Public,
                 Status = OrganisationStatuses.Active,
-                EmployerReference = $"EMP{organisationId:00000}",
-                DUNSNumber = $"EMP{organisationId:000000000}"
+                EmployerReference = $"EMP{organisationId:00000}"
             };
         }
 

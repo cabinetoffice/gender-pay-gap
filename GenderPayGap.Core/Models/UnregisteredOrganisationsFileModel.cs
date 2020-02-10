@@ -4,7 +4,6 @@
     {
 
         public long OrganisationId { get; set; }
-        public string DUNSNumber { get; set; }
         public string EmployerReference { get; set; }
         public SectorTypes Sector { get; set; }
         public string Company { get; set; }

@@ -124,16 +124,6 @@
                         <td></td>
                     </tr>
                 }
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.DUNSNumber, "DUNS number")
-                    </td>
-                    <td>
-                        @Html.ValidationMessageFor(model => model.DUNSNumber, "", new {id = "DUNSNumberError", @class = "error-message"})
-                        @Html.CustomEditorFor(model => model.DUNSNumber, new {@class = "form-control"})
-                    </td>
-                    <td></td>
-                </tr>
 
                 <tr>
                     <td colspan="3">

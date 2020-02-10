@@ -262,7 +262,6 @@ namespace GenderPayGap.BusinessLogic
                 o => new ScopesFileModel {
                     OrganisationId = o.OrganisationId,
                     OrganisationName = o.Organisation.OrganisationName,
-                    DUNSNumber = o.Organisation.DUNSNumber,
                     EmployerReference = o.Organisation.EmployerReference,
                     OrganisationScopeId = o.OrganisationScopeId,
                     ScopeStatus = o.ScopeStatus,

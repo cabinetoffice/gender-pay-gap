@@ -23,7 +23,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
         private const string AddOrganisationsLatestNameCommand = "Add organisations latest name";
         private const string ResetOrganisationToOnlyOriginalNameCommand = "Reset organisation to only original name";
         private const string SetOrganisationCompanyNumberCommand = "Set organisation company number";
-        private const string SetOrganisationDUNSNumberCommand = "Set organisation DUNS number";
 
         #region Reset organisation to only original name
 
@@ -77,63 +76,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                         actualManualChangesViewModel.Results);
                     Assert.AreEqual(ResetOrganisationToOnlyOriginalNameCommand, actualManualChangesViewModel.LastTestedCommand);
                     Assert.AreEqual("employerreference02=New name to reset ltd", actualManualChangesViewModel.LastTestedInput);
-                    Assert.True(actualManualChangesViewModel.Tested, "Must be tested=true as this case is running in TEST mode");
-                    Assert.IsNull(actualManualChangesViewModel.Comment);
-                });
-        }
-
-        #endregion
-
-        #region Organisation DUNS number
-
-        [Test]
-        public async Task AdminController_ManualChanges_POST_Set_Organisation_DUNS_Number_Works_When_Run_In_Test_Mode_Async()
-        {
-            Organisation orgWhoseDUNSNumberWillBeSet = OrganisationHelper.GetPrivateOrganisation("EmployerReference012");
-
-            #region setting up database and controller 
-
-            User databaseAdminUser = UserHelper.GetDatabaseAdmin();
-            var adminController = UiTestHelper.GetController<AdminController>(databaseAdminUser.UserId, null, null);
-
-            Mock<IDataRepository> configurableDataRepository = AutoFacExtensions.ResolveAsMock<IDataRepository>();
-
-            configurableDataRepository
-                .Setup(x => x.Get<User>(It.IsAny<long>()))
-                .Returns(databaseAdminUser);
-
-            configurableDataRepository
-                .Setup(x => x.GetAll<Organisation>())
-                .Returns(new[] {orgWhoseDUNSNumberWillBeSet}.AsQueryable().BuildMock().Object);
-
-            var manualChangesViewModel = new ManualChangesViewModel {
-                Command = SetOrganisationDUNSNumberCommand, Parameters = $"{orgWhoseDUNSNumberWillBeSet.EmployerReference}=123456789"
-            };
-
-            #endregion
-
-            // Act
-            IActionResult manualChangesResult = await adminController.ManualChanges(manualChangesViewModel);
-
-            // Assert
-            Assert.NotNull(manualChangesResult, "Expected a Result");
-
-            var manualChangesViewResult = manualChangesResult as ViewResult;
-            Assert.NotNull(manualChangesViewResult, "Expected ViewResult");
-
-            var actualManualChangesViewModel = manualChangesViewResult.Model as ManualChangesViewModel;
-            Assert.NotNull(actualManualChangesViewModel, "Expected ManualChangesViewModel");
-
-            Assert.Multiple(
-                () => {
-                    Assert.AreEqual(
-                        "SUCCESSFULLY TESTED 'Set organisation DUNS number': 1 of 1",
-                        actualManualChangesViewModel.SuccessMessage);
-                    Assert.AreEqual(
-                        "1: EMPLOYERREFERENCE012: Org123 DUNS Number='123456789' set to '123456789'\r\n",
-                        actualManualChangesViewModel.Results);
-                    Assert.AreEqual("Set organisation DUNS number", actualManualChangesViewModel.LastTestedCommand);
-                    Assert.AreEqual("EmployerReference012=123456789", actualManualChangesViewModel.LastTestedInput);
                     Assert.True(actualManualChangesViewModel.Tested, "Must be tested=true as this case is running in TEST mode");
                     Assert.IsNull(actualManualChangesViewModel.Comment);
                 });

@@ -29,7 +29,6 @@ namespace GenderPayGap.Database
         public string StatusDetails { get; set; }
         public DateTime Created { get; set; } = VirtualDateTime.Now;
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
-        public string DUNSNumber { get; set; }
         public string EmployerReference { get; set; }
         public DateTime? DateOfCessation { get; set; }
         public long? LatestAddressId { get; set; }

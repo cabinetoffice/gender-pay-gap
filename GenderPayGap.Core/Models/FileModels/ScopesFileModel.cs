@@ -11,7 +11,6 @@ namespace GenderPayGap.Core.Models
 
         public long OrganisationId { get; set; }
         public string OrganisationName { get; set; }
-        public string DUNSNumber { get; set; }
         public string EmployerReference { get; set; }
         public ScopeStatuses ScopeStatus { get; set; }
         public DateTime ScopeStatusDate { get; set; } = VirtualDateTime.Now;
