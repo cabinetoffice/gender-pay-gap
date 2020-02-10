@@ -259,13 +259,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
         
         [HttpGet("database-integrity-checks/broken-weblinks-ajax")]
-        public async Task<IActionResult> BrokenWeblinksAjax()
+        public async Task BrokenWeblinksAjax()
         {
             var organisationsWithBrokenLinks = new List<Organisation>();
             IQueryable<Organisation> organisations = dataRepository
                 .GetAll<Organisation>()
             
-                .Where(o => o.SectorType == SectorTypes.Private)
+//                .Where(o => o.SectorType == SectorTypes.Private)
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Include(o => o.LatestReturn);
 
@@ -275,12 +275,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             {
                 Console.WriteLine($@"Organisation {i} of {numberOfOrganisations}");
                 var latestReturn = organisation.LatestReturn;
-                Console.WriteLine(latestReturn);
                 
-                if (latestReturn != null && latestReturn.CompanyLinkToGPGInfo != null)
+                if (latestReturn != null && latestReturn.Status == ReturnStatuses.Submitted && latestReturn.CompanyLinkToGPGInfo != null)
                 {
                     var uri = new Uri(latestReturn.CompanyLinkToGPGInfo);
-                    Console.WriteLine(uri);
                     
                     HttpWebRequest HttpWReq = 
                         (HttpWebRequest)WebRequest.Create(uri);
@@ -305,7 +303,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 i++;
             }
             
-            return PartialView("OrganisationsWithBrokenLinks", organisationsWithBrokenLinks);
+//            return PartialView("OrganisationsWithBrokenLinks", organisationsWithBrokenLinks);
         }
 
     }
