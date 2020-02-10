@@ -10,8 +10,8 @@ class RecordingSimulation extends Simulation {
 
 	val MAX_NUM_USERS = 1000
 	// Pauses are uniform duration between these two:
-	val PAUSE_MIN_DUR = 10 seconds
-	val PAUSE_MAX_DUR = 50 seconds
+	val PAUSE_MIN_DUR = 1 seconds
+	val PAUSE_MAX_DUR = 10 seconds
 
 	val httpProtocol = http
 		.baseUrl("https://wa-t1pp-gpg.azurewebsites.net")
@@ -45,7 +45,7 @@ class RecordingSimulation extends Simulation {
 		"Pragma" -> "no-cache")
 	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${Random.nextInt(2 * MAX_NUM_USERS) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
-	val usersOrganisationsFeeder = csv("users_organisations.csv").shuffle
+	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
 
 	object HomePage {
 		val visit = exec(http("Visit home page")
@@ -581,5 +581,5 @@ class RecordingSimulation extends Simulation {
 		Feedback.visit,
 		Feedback.submit)
 
-	setUp(scn.inject(rampUsers(30) during (1 minutes))).protocols(httpProtocol)
+	setUp(scn.inject(rampUsers(300) during (10 minutes))).protocols(httpProtocol)
 }
