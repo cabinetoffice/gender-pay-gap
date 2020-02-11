@@ -276,8 +276,14 @@ namespace GenderPayGap.WebUI.Controllers
 
             await SubmissionService.RestartDraftFileAsync(organisationId, reportingStartYear, currentUser.UserId);
 
+            var reportingRequirement =
+                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, reportingStartYear);
+            
+            bool requiredToReport =
+                reportingRequirement == ScopeStatuses.InScope || reportingRequirement == ScopeStatuses.PresumedInScope;
+            
             // When previous reporting year then do late submission flow
-            if (isPrevReportingYear)
+            if (isPrevReportingYear && requiredToReport)
             {
                 // Change an existing late submission
                 if (change)
