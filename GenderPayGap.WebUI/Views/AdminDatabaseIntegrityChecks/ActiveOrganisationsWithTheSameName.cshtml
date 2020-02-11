@@ -1,5 +1,4 @@
-﻿@using GenderPayGap.Database
-@model List<string>
+﻿@model List<string>
 
 <details class="govuk-details" data-module="govuk-details">
     <summary class="govuk-details__summary">
@@ -31,7 +30,10 @@
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
+                                <a href="@(Url.Action("SearchGet", "AdminSearch", new {query = organisationName}))"
+                                   class="govuk-link">
                                     @(organisationName)
+                                </a>
                             </td>
                         </tr>
                     }
