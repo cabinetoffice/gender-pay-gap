@@ -8,18 +8,28 @@
             @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
             Late Submission
         </h1>
-        <p>You are adding or changing a Gender Pay Gap report after the deadline.</p>
-        <p>
-            You will need to provide a reason and your report may be shared with the Equalities and Human Rights Commission if:
+        <p style="margin-top: 35px">You are adding or changing a Gender Pay Gap report after the deadline.</p>
+        <p style="margin-top: 50px">
+            <strong>
+                You will not be asked for a reason and your report will not be treated as late if you are changing:
+            </strong> 
             <ul class="list list-bullet">
-                <li>You are submitting a report for the first time after the deadline</li>
-                <li>You are changing previously reported figures or your Senior Responsible Person after the deadline</li>
+                <li>your Senior Responsible Person</li>
+                <li>your organisation size</li>
+                <li>the link to your organisation's gender pay gap narrative</li>
             </ul>
         </p>
-        <p>
-            The submission date recorded is always the latest date you changed your GPG figures.
+        
+        <p style="margin-top: 50px">
+            <strong>
+                You will be asked for a reason and your information may be shared with the Equalities and Human Rights Commission if you are:
+            </strong>
+            <ul class="list list-bullet">
+                <li>changing previously reported figures</li>
+                <li>reporting for the first time</li>
+            </ul>
         </p>
 
-        <a id="NextStep" href="@Url.Action(Model.ReturnUrl)" class="button">Continue</a>
+        <a id="NextStep" href="@Url.Action(Model.ReturnUrl)" class="button" style="margin-top: 50px">Continue</a>
     </div>
 </div>
