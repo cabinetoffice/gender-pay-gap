@@ -1,0 +1,44 @@
+﻿@model List<string>
+
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                @(Model.Count)
+            </span>
+            duplicate company numbers
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        @if (!Model.Any())
+        {
+            <div class="govuk-body">
+                No duplicate company numbers
+            </div>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Company number</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (string companyNumber in Model)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="@(Url.Action("SearchGet", "AdminSearch", new {query = companyNumber}))"
+                                   class="govuk-link">
+                                    @(companyNumber)
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</details>

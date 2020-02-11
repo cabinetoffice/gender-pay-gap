@@ -31,6 +31,27 @@
 <h1 class="govuk-heading-xl">Database integrity checks</h1>
 
 <section>
+    <h2 class="govuk-heading-l">Company numbers</h2>
+    
+    <div id="ActiveOrganisationsWithTheSameCompanyNumber">
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
+                        Loading...
+                    </span>
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <div class="govuk-body">
+                    No duplicate company numbers
+                </div>
+            </div>
+        </details>
+    </div>
+</section>
+
+<section>
     <h2 class="govuk-heading-l">Organisation Names</h2>
 
     <div id="ActiveOrganisationsWithTheSameName">
@@ -165,7 +186,7 @@
             </div>
         </details>
     </div>
-    
+
     <div id="PrivateSectorOrganisationsWithAPublicSectorType">
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
@@ -197,6 +218,9 @@
     document.addEventListener("DOMContentLoaded", function() { 
         loadHtml("@Url.Action("ActiveOrganisationsWithTheSameNameAjax", "AdminDatabaseIntegrityChecks")",
          "ActiveOrganisationsWithTheSameName");
+        
+        loadHtml("@Url.Action("ActiveOrganisationsWithTheSameCompanyNumberAjax", "AdminDatabaseIntegrityChecks")",
+         "ActiveOrganisationsWithTheSameCompanyNumber");
          
         loadHtml("@Url.Action("OrganisationsWithMultipleActiveAddressesAjax", "AdminDatabaseIntegrityChecks")",
          "OrganisationsWithMultipleActiveAddresses");
