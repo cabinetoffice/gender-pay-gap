@@ -19,7 +19,7 @@
             || WebsiteUrlChanged
             || ShouldProvideLateReason && LateReasonChanged;
 
-        public bool ShouldProvideLateReason => (FiguresChanged || PersonResonsibleChanged) && IsPrevReportingStartYear;
+        public bool ShouldProvideLateReason => FiguresChanged && IsPrevReportingStartYear;
 
         public string Modifications { get; set; }
 
