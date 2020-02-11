@@ -71,6 +71,28 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("ActiveOrganisationsWithTheSameName", activeOrganisationsWithTheSameName);
         }
 
+        [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number-ajax")]
+        public async Task<IActionResult> ActiveOrganisationsWithTheSameCompanyNumberAjax()
+        {
+            var activeOrganisationsWithTheSameCompanyNumber = new List<string>();
+            IQueryable<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
+                .Where(o => o.Status == OrganisationStatuses.Active);
+
+            var duplicateCompanyNumbers = activeOrganisations.GroupBy(x => x.CompanyNumber)
+                .Select(x => new {CompanyNumber = x.Key, Count = x.Count()})
+                .Where(x => x.Count > 1);
+
+            foreach (var duplicate in duplicateCompanyNumbers)
+            {
+                if (duplicate.CompanyNumber != null)
+                {
+                    activeOrganisationsWithTheSameCompanyNumber.Add(duplicate.CompanyNumber);
+                }
+            }
+
+            return PartialView("ActiveOrganisationsWithTheSameCompanyNumber", activeOrganisationsWithTheSameCompanyNumber);
+        }
+
         [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active-ajax")]
         public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActiveAjax()
         {
@@ -207,7 +229,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
         }
-        
+
         [HttpGet("database-integrity-checks/private-sector-organisations-with-a-public-sector-type-ajax")]
         public async Task<IActionResult> PrivateSectorOrganisationsWithAPublicSectorTypeAjax()
         {
