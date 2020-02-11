@@ -1,0 +1,121 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc
+
+@{
+    ViewBag.Title = $"Scope decision - reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100} - SOFTWIRE TECHNOLOGY LIMITED - My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations",
+                Href = Url.Action("MyOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = "SOFTWIRE TECHNOLOGY LIMITED",
+                Href = Url.Action("Organisation", new { id = 123 })
+            },
+            new CrumbViewModel
+            {
+                Text = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100}",
+                Href = Url.Action("OrganisationDetailsForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Scope decision",
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Scope decision
+            <br />
+            <span class="govuk-!-font-size-27">
+                for SOFTWIRE TECHNOLOGY LIMITED
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </span>
+        </h1>
+
+
+        <h2 class="govuk-heading-m">You told us:</h2>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        Where was the headquarters of SOFTWIRE TECHNOLOGY LIMITED on 5 April @(ViewBag.Year)?
+                    </th>
+                    <td class="govuk-table__cell">
+                        England, Scotland or Wales
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        How many employees did SOFTWIRE TECHNOLOGY LIMITED have on 5 April @(ViewBag.Year)?
+                    </th>
+                    <td class="govuk-table__cell">
+                        250 or more
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        Is there any other reason why SOFTWIRE TECHNOLOGY LIMITED is not required to report for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)?
+                    </th>
+                    <td class="govuk-table__cell">
+                        No
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <h2 class="govuk-heading-m">Scope decision</h2>
+
+        <p class="govuk-body">
+            Based on the above information, SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">in scope</span>
+            for reporting year <span class="govuk-!-font-weight-bold">@(ViewBag.Year)-@((ViewBag.Year + 1) % 100)</span>
+        </p>
+        
+
+        <form method="get" action="@(Url.Action("DeclareScopeForYear", new { id = 123, year = ViewBag.Year }))">
+            <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Change these details
+            </button>
+        </form>
+
+        <p class="govuk-body">
+            <a href="@(Url.Action("OrganisationDetailsForYear", new {id = 123, year = ViewBag.Year}))"
+               class="govuk-link">
+                Back to SOFTWIRE TECHNOLOGY LIMITED, reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="@(Url.Action("Organisation", new { id = 123 }))"
+               class="govuk-link">
+                Back to SOFTWIRE TECHNOLOGY LIMITED
+            </a>
+        </p>
+
+
+
+    </div>
+</div>

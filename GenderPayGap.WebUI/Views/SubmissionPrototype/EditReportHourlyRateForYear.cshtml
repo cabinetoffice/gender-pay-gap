@@ -1,0 +1,96 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc
+
+@{
+    ViewBag.Title = $"View report - reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100} - SOFTWIRE TECHNOLOGY LIMITED - My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations",
+                Href = Url.Action("MyOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = "SOFTWIRE TECHNOLOGY LIMITED",
+                Href = Url.Action("Organisation", new { id = 123 })
+            },
+            new CrumbViewModel
+            {
+                Text = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100}",
+                Href = Url.Action("OrganisationDetailsForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Draft report",
+                Href = Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Edit hourly rate",
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Draft a report
+            <br />
+            <span class="govuk-!-font-size-27">
+                for SOFTWIRE TECHNOLOGY LIMITED
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </span>
+        </h1>
+        
+        
+        <h2 class="govuk-heading-m">Hourly rate</h2>
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="width-10">
+                Difference in hourly rate of pay – mean
+            </label>
+            <input class="govuk-input govuk-input--width-10" id="width-10" name="width-10" type="text">
+        </div>
+        
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="width-10">
+                Difference in hourly rate of pay – median
+            </label>
+            <input class="govuk-input govuk-input--width-10" id="width-10" name="width-10" type="text">
+        </div>
+
+
+        <form method="get" action="@(Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year }))">
+            <button class="govuk-button" data-module="govuk-button">
+                Save draft and continue
+            </button>
+        </form>
+
+        <p class="govuk-body">
+            <a href="@(Url.Action("ViewReportForYear", new {id = 123, year = ViewBag.Year}))"
+               class="govuk-link">
+                Back to Draft a report for SOFTWIRE TECHNOLOGY LIMITED
+            </a>
+        </p>
+
+
+    </div>
+</div>

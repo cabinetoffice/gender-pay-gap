@@ -1,0 +1,79 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+
+@{
+    ViewBag.Title = $"My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-xl">
+            My organisations
+        </h1>
+        
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a href="@(Url.Action("Organisation", new { id = 123 }))"
+                           class="govuk-link">
+                            SOFTWIRE TECHNOLOGY LIMITED
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <strong class="govuk-tag" style="border: 2px solid #d4351c; background-color:#d4351c;">
+                            Overdue
+                        </strong>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a href="@(Url.Action("Organisation", new { id = 123 }))"
+                           class="govuk-link">
+                            J SAINSBURY PLC
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <strong class="govuk-tag" style="border: 2px solid #00703c; background-color:#00703c;">
+                            No action required
+                        </strong>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a href="@(Url.Action("Organisation", new { id = 123 }))"
+                           class="govuk-link">
+                            H M Government Cabinet Office
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <strong class="govuk-tag" style="border: 2px solid #1d70b8; background-color:#1d70b8;">
+                            Action required by 30 March 2020
+                        </strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

@@ -1,0 +1,151 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc
+
+@{
+    ViewBag.Title = $"Declare scope - reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100} - SOFTWIRE TECHNOLOGY LIMITED - My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations",
+                Href = Url.Action("MyOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = "SOFTWIRE TECHNOLOGY LIMITED",
+                Href = Url.Action("Organisation", new { id = 123 })
+            },
+            new CrumbViewModel
+            {
+                Text = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100}",
+                Href = Url.Action("OrganisationDetailsForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Declare scope",
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Declare scope
+            <br />
+            <span class="govuk-!-font-size-27">
+                for SOFTWIRE TECHNOLOGY LIMITED
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </span>
+        </h1>
+
+
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        Where was the headquarters of SOFTWIRE TECHNOLOGY LIMITED on 5 April @(ViewBag.Year)?
+                    </h2>
+                </legend>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="where-do-you-live" name="where-do-you-live" type="radio" value="england">
+                        <label class="govuk-label govuk-radios__label" for="where-do-you-live">
+                            England, Scotland or Wales
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="where-do-you-live-4" name="where-do-you-live" type="radio" value="northern-ireland">
+                        <label class="govuk-label govuk-radios__label" for="where-do-you-live-4">
+                            Northern Ireland
+                        </label>
+                    </div>
+                    <div class="govuk-radios__divider">or</div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="where-do-you-live-6" name="where-do-you-live" type="radio" value="abroad">
+                        <label class="govuk-label govuk-radios__label" for="where-do-you-live-6">
+                            another country
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        How many employees did SOFTWIRE TECHNOLOGY LIMITED have on 5 April @(ViewBag.Year)?
+                    </h2>
+                </legend>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="where-do-you-live" name="where-do-you-live" type="radio" value="england">
+                        <label class="govuk-label govuk-radios__label" for="where-do-you-live">
+                            249 or fewer
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="where-do-you-live-4" name="where-do-you-live" type="radio" value="northern-ireland">
+                        <label class="govuk-label govuk-radios__label" for="where-do-you-live-4">
+                            250 or more
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        
+
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="citizenship-conditional-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        Is there any other reason why SOFTWIRE TECHNOLOGY LIMITED is not required to report for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)?
+                    </h2>
+                </legend>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="citizenship-conditional-3" name="citizen" type="checkbox" value="text message" data-aria-controls="conditional-citizenship-conditional-3">
+                        <label class="govuk-label govuk-checkboxes__label" for="citizenship-conditional-3">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-citizenship-conditional-3">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="contact-by-text">
+                                Reason
+                            </label>
+                            <textarea class="govuk-textarea" id="contact-by-text" name="more-detail" rows="5" aria-describedby="more-detail-hint"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        
+        <form method="get" action="@(Url.Action("ScopeDecisionForYear", new { id = 123, year = ViewBag.Year }))">
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+
+
+    </div>
+</div>

@@ -1,0 +1,102 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc
+
+@{
+    ViewBag.Title = $"Review report - reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100} - SOFTWIRE TECHNOLOGY LIMITED - My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations",
+                Href = Url.Action("MyOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = "SOFTWIRE TECHNOLOGY LIMITED",
+                Href = Url.Action("Organisation", new { id = 123 })
+            },
+            new CrumbViewModel
+            {
+                Text = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100}",
+                Href = Url.Action("OrganisationDetailsForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Draft report",
+                Href = Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Review changes",
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Review your report
+            <br />
+            <span class="govuk-!-font-size-27">
+                for SOFTWIRE TECHNOLOGY LIMITED
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </span>
+        </h1>
+
+
+        <h2 class="govuk-heading-m">You changed:</h2>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>Hourly rate</li>
+            <li>Senior responsible officer</li>
+            <li>Link to narrative</li>
+        </ul>
+
+        <p class="govuk-body">
+            These changes are deemed a "material change" to your gender pay gap report.
+        </p>
+
+        <h2 class="govuk-heading-m">Late submission</h2>
+
+        <p class="govuk-body">
+            The deadline for reporting was 4 April @(ViewBag.Year+1).
+            <br/>
+            It is now after the deadline, so this submission will be counted as late.
+            <br/>
+            (Something about the EHRC)
+        </p>
+
+
+        <form method="get" action="@(Url.Action("OrganisationDetailsForYear", new { id = 123, year = ViewBag.Year }))">
+            <button class="govuk-button" data-module="govuk-button">
+                Publish report
+            </button>
+        </form>
+
+        <p class="govuk-body">
+            <a href="@(Url.Action("ViewReportForYear", new {id = 123, year = ViewBag.Year}))"
+               class="govuk-link">
+                Back to Draft a report for SOFTWIRE TECHNOLOGY LIMITED
+            </a>
+        </p>
+
+
+    </div>
+</div>

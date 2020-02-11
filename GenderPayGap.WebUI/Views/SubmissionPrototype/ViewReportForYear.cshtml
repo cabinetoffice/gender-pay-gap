@@ -1,0 +1,180 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc
+
+@{
+    ViewBag.Title = $"View report - reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100} - SOFTWIRE TECHNOLOGY LIMITED - My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations",
+                Href = Url.Action("MyOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = "SOFTWIRE TECHNOLOGY LIMITED",
+                Href = Url.Action("Organisation", new { id = 123 })
+            },
+            new CrumbViewModel
+            {
+                Text = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100}",
+                Href = Url.Action("OrganisationDetailsForYear", new { id = 123, year = ViewBag.Year })
+            },
+            new CrumbViewModel
+            {
+                Text = "Draft report",
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Draft a report
+            <br />
+            <span class="govuk-!-font-size-27">
+                for SOFTWIRE TECHNOLOGY LIMITED
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </span>
+        </h1>
+
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Hourly rate</th>
+                    <th scope="col" class="govuk-table__header">
+                        <a href="@(Url.Action("EditReportHourlyRateForYear", new { id = 123, year = ViewBag.Year }))"
+                           class="govuk-link govuk-!-font-weight-regular">
+                            Edit
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Difference in mean hourly rate of pay
+                    </td>
+                    <td class="govuk-table__cell">
+                        (not entered)
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Difference in median hourly rate of pay
+                    </td>
+                    <td class="govuk-table__cell">
+                        (not entered)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Bonus pay</th>
+                    <th scope="col" class="govuk-table__header">
+                        <a href="@(Url.Action("EditReportHourlyRateForYear", new { id = 123, year = ViewBag.Year }))"
+                           class="govuk-link govuk-!-font-weight-regular">
+                            Edit
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Percentage of employees who received bonus pay
+                    </td>
+                    <td class="govuk-table__cell">
+                        (not entered)
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Difference in mean bonus pay
+                    </td>
+                    <td class="govuk-table__cell">
+                        (not entered)
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Difference in median bonus pay
+                    </td>
+                    <td class="govuk-table__cell">
+                        (not entered)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Link to your gender pay gap information</th>
+                    <th scope="col" class="govuk-table__header">
+                        <a href="@(Url.Action("EditReportHourlyRateForYear", new { id = 123, year = ViewBag.Year }))"
+                           class="govuk-link govuk-!-font-weight-regular">
+                            Edit
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        Link
+                    </td>
+                    <td class="govuk-table__cell">
+                        (not entered)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <form method="get" action="@(Url.Action("EditReportForYearReviewChanges", new { id = 123, year = ViewBag.Year }))">
+            <button class="govuk-button" data-module="govuk-button">
+                Review report
+            </button>
+        </form>
+
+        <p class="govuk-body">
+            <a href="@(Url.Action("OrganisationDetailsForYear", new {id = 123, year = ViewBag.Year}))"
+               class="govuk-link">
+                Back to SOFTWIRE TECHNOLOGY LIMITED, reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            </a>
+        </p>
+        <p class="govuk-body">
+            <a href="@(Url.Action("Organisation", new { id = 123 }))"
+               class="govuk-link">
+                Back to SOFTWIRE TECHNOLOGY LIMITED
+            </a>
+        </p>
+
+
+
+    </div>
+</div>

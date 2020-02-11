@@ -1,0 +1,189 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc
+
+@{
+    ViewBag.Title = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100} - SOFTWIRE TECHNOLOGY LIMITED - My organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "My organisations",
+                Href = Url.Action("MyOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = "SOFTWIRE TECHNOLOGY LIMITED",
+                Href = Url.Action("Organisation", new { id = 123})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Reporting year {ViewBag.Year}-{(ViewBag.Year +1) % 100}",
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-xl">
+            Reporting year @(ViewBag.Year)-@((ViewBag.Year + 1) % 100)
+            <br />
+            <span class="govuk-!-font-size-27">
+                for SOFTWIRE TECHNOLOGY LIMITED
+            </span>
+        </h1>
+
+
+        @if (ViewBag.Year == 2020)
+        {
+            <h2 class="govuk-heading-m">
+                Scope &nbsp; &nbsp;
+                <strong class="govuk-tag" style="border: 2px solid #1d70b8; background-color:#1d70b8;">
+                    Action required by 4 April 2021
+                </strong>
+
+            </h2>
+
+            <p class="govuk-body">
+                You need to tell us whether <span class="govuk-!-font-weight-bold">SOFTWIRE TECHNOLOGY LIMITED</span> is in scope for reporting year <span class="govuk-!-font-weight-bold">2020-21</span>
+            </p>
+
+            <a href="@(Url.Action("DeclareScopeForYear", new { id = 123, year = ViewBag.Year }))"
+               role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+                Start now
+                <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" role="presentation" focusable="false">
+                    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+                </svg>
+            </a>
+        }
+
+        @if (ViewBag.Year == 2017)
+        {
+            <h2 class="govuk-heading-m">
+                Scope
+            </h2>
+
+            <p class="govuk-body">
+                You have told us that SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">out of scope</span> for reporting year <span class="govuk-!-font-weight-bold">2017-18</span>.
+                <br />
+                If you want to check or change this,
+                <a href="@(Url.Action("ScopeDecisionForYear", new { id = 123, year = ViewBag.Year }))" class="govuk-link">
+                    click here
+                </a>
+            </p>
+
+            <h2 class="govuk-heading-m">
+                Report
+            </h2>
+
+            <p class="govuk-body">
+                SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">out of scope</span> for reporting year <span class="govuk-!-font-weight-bold">2017-18</span>,
+                so does not need to report.
+            </p>
+            <p class="govuk-body">
+                If you would like to report voluntarily, you may.
+            </p>
+
+            <form method="get" action="@(Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year }))">
+                <button class="govuk-button" data-module="govuk-button">
+                    Start drafting a voluntary report
+                </button>
+            </form>
+        }
+
+        @if (ViewBag.Year == 2019)
+        {
+            <h2 class="govuk-heading-m">
+                Scope
+            </h2>
+
+            <p class="govuk-body">
+                You have told us that SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">in scope</span> for reporting year <span class="govuk-!-font-weight-bold">2019-20</span>.
+                <br />
+                If you want to check or change this,
+                <a href="@(Url.Action("ScopeDecisionForYear", new { id = 123, year = ViewBag.Year }))" class="govuk-link">
+                    click here
+                </a>
+            </p>
+
+            <h2 class="govuk-heading-m">
+                Report &nbsp; &nbsp;
+                <strong class="govuk-tag" style="border: 2px solid #d4351c; background-color:#d4351c;">
+                    Overdue
+                </strong>
+            </h2>
+
+            <p class="govuk-body">
+                SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">in scope</span> for reporting year <span class="govuk-!-font-weight-bold">2019-20</span>.
+                <br />
+                You must submit a report by <span class="govuk-!-font-weight-bold">4 April 2020</span>.
+                <br />
+                <span class="govuk-!-font-weight-bold">This is now overdue.</span>
+            </p>
+
+            <form method="get" action="@(Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year }))">
+                <button class="govuk-button" data-module="govuk-button">
+                    Start drafting a report
+                </button>
+            </form>
+        }
+
+        @if (ViewBag.Year == 2018)
+        {
+            <h2 class="govuk-heading-m">
+                Scope
+            </h2>
+
+            <p class="govuk-body">
+                You have told us that SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">in scope</span> for reporting year <span class="govuk-!-font-weight-bold">2018-19</span>.
+                <br />
+                If you want to check or change this,
+                <a href="@(Url.Action("ScopeDecisionForYear", new { id = 123, year = ViewBag.Year }))" class="govuk-link">
+                    click here
+                </a>
+            </p>
+
+            <h2 class="govuk-heading-m">
+                Report
+            </h2>
+
+            <p class="govuk-body">
+                SOFTWIRE TECHNOLOGY LIMITED is <span class="govuk-!-font-weight-bold">in scope</span> for reporting year <span class="govuk-!-font-weight-bold">2018-19</span>.
+                <br />
+                <span class="govuk-!-font-weight-bold">You have submitted a report for this year.</span>
+            </p>
+
+            <form method="get" action="@(Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year }))">
+                <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    View published report
+                </button>
+            </form>
+
+            <p class="govuk-body">
+                You have a draft report with un-published changed
+            </p>
+
+            <form method="get" action="@(Url.Action("ViewReportForYear", new { id = 123, year = ViewBag.Year }))">
+                <button class="govuk-button" data-module="govuk-button">
+                    View or edit draft report
+                </button>
+            </form>
+        }
+
+
+
+    </div>
+</div>
