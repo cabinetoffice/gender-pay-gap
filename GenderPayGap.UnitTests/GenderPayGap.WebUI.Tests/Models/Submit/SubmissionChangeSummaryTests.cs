@@ -82,7 +82,7 @@ namespace GenderPayGap.WebUI.Tests.Models.Submit
         #region PersonResonsibleChanged
 
         [Test]
-        public void SubmissionChangeSummary_ShouldProvideLateReason_PersonResponsibleChanged_Returns_True_When_Changed()
+        public void SubmissionChangeSummary_ShouldProvideLateReason_PersonResponsibleChanged_Returns_False_When_Changed()
         {
             // Arrange
             var submissionChangeSummary = new SubmissionChangeSummary {PersonResonsibleChanged = true, IsPrevReportingStartYear = true};
@@ -91,9 +91,9 @@ namespace GenderPayGap.WebUI.Tests.Models.Submit
             bool actual = submissionChangeSummary.ShouldProvideLateReason;
 
             // Assert
-            Assert.True(
+            Assert.False(
                 actual,
-                "When the Person Responsible has changed for a report belonging to the previous year, the user 'ShouldProvideLateReason'");
+                "When the Person Responsible has changed for a report belonging to the previous year, the user does not need to provide a late reason");
         }
 
         [Test]
