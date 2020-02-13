@@ -14,19 +14,19 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)]
         public void FetchCompaniesHouseData([TimerTrigger("*/5 * * * *")] TimerInfo timer)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(FetchCompaniesHouseData), startTime);
+            
             try
             {
-                string runId = Guid.NewGuid().ToString("N").Substring(0, 8);
-                CustomLogger.Information($"Fetch companies house data web job has been started. Run id {runId}");
-
                 UpdateFromCompaniesHouse(runId);
-
-                CustomLogger.Information($"Fetch companies house data web job has been finished. Run id {runId}");
+                
+                LogFunctionEnd(runId, nameof(FetchCompaniesHouseData), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed fetch companies house webjob({nameof(FetchCompaniesHouseData)})";
-                CustomLogger.Error(message, ex);
+                LogFunctionError(runId, nameof(FetchCompaniesHouseData), startTime, ex );
                 throw;
             }
         }
@@ -44,9 +44,9 @@ namespace GenderPayGap.WebJob
                     .Select(org => org.OrganisationId)
                     .FirstOrDefault();
 
-                CustomLogger.Information($"Start update companies house data organisation id {organisationId}. Run id {runId}");
+                CustomLogger.Information($"Start update companies house data organisation id: {organisationId}. Run id: {runId}");
                 _updateFromCompaniesHouseService.UpdateOrganisationDetails(organisationId);
-                CustomLogger.Information($"End update companies house data organisation id {organisationId}. Run id {runId}");
+                CustomLogger.Information($"End update companies house data organisation id: {organisationId}. Run id: {runId}");
             }
         }
 

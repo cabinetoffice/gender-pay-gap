@@ -20,6 +20,10 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(MergeLogs), startTime);
+
             try
             {
                 //Backup the log files first
@@ -67,14 +71,16 @@ namespace GenderPayGap.WebJob
 
                 await Task.WhenAll(actions);
 
-                log.LogDebug($"Executed {nameof(MergeLogs)} successfully");
+                LogFunctionEnd(runId, nameof(MergeLogs), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(MergeLogs)}):{ex.Message}:{ex.GetDetailsText()}";
+                LogFunctionError(runId, nameof(MergeLogs), startTime, ex);
 
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync(
+                    "GPG - WEBJOBS ERROR",
+                    $"Failed webjob ({nameof(MergeLogs)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }

@@ -15,6 +15,9 @@ namespace GenderPayGap.WebJob
 
         public async Task CheckSiteCertAsync([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
         {
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(CheckSiteCertAsync), startTime);
             try
             {
                 if (Global.CertExpiresWarningDays > 0)
@@ -52,14 +55,16 @@ namespace GenderPayGap.WebJob
                     }
                 }
 
-                log.LogDebug($"Executed {nameof(CheckSiteCertAsync)} successfully");
+                LogFunctionEnd(runId, nameof(CheckSiteCertAsync), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(CheckSiteCertAsync)}):{ex.Message}:{ex.GetDetailsText()}";
+                LogFunctionError(runId, nameof(CheckSiteCertAsync), startTime, ex);
 
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync(
+                    "GPG - WEBJOBS ERROR",
+                    $"Failed webjob ({nameof(CheckSiteCertAsync)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
