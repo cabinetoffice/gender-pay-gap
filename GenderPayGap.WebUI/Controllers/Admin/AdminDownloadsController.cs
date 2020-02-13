@@ -114,16 +114,11 @@ namespace GenderPayGap.WebUI.Controllers
             var records = users.Select(
                     u => new
                     {
+                        u.UserId,
                         u.Firstname,
                         u.Lastname,
                         u.JobTitle,
                         u.EmailAddress,
-                        u.ContactFirstName,
-                        u.ContactLastName,
-                        u.ContactJobTitle,
-                        u.ContactEmailAddress,
-                        u.ContactPhoneNumber,
-                        u.ContactOrganisation
                     })
                 .ToList();
 
@@ -144,16 +139,11 @@ namespace GenderPayGap.WebUI.Controllers
             var records = users.Select(
                     u => new
                     {
+                        u.UserId,
                         u.Firstname,
                         u.Lastname,
                         u.JobTitle,
                         u.EmailAddress,
-                        u.ContactFirstName,
-                        u.ContactLastName,
-                        u.ContactJobTitle,
-                        u.ContactEmailAddress,
-                        u.ContactPhoneNumber,
-                        u.ContactOrganisation
                     })
                 .ToList();
 
