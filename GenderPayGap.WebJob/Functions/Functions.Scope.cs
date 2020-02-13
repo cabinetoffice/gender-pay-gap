@@ -18,6 +18,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(SetPresumedScopes), startTime);
             try
             {
                 //Initialise any unknown scope statuses
@@ -32,14 +35,15 @@ namespace GenderPayGap.WebJob
                     await _SearchBusinessLogic.UpdateSearchIndexAsync(changedOrgs.ToArray());
                 }
 
-                log.LogDebug($"Executed {nameof(SetPresumedScopes)} successfully");
+                LogFunctionEnd(runId, nameof(SetPresumedScopes), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(SetPresumedScopes)}):{ex.Message}:{ex.GetDetailsText()}";
+                LogFunctionError(runId, nameof(SetPresumedScopes), startTime, ex );
 
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(SetPresumedScopes)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }

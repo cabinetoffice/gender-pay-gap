@@ -22,14 +22,22 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(UpdateSearchAsync), startTime);
+            
             try
             {
                 await UpdateAllSearchIndexesAsync(log);
+                LogFunctionEnd(runId, nameof(UpdateSearchAsync), startTime);
             }
             catch (Exception ex)
             {
+                LogFunctionError(runId, nameof(UpdateSearchAsync), startTime, ex );
+                
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", ex.Message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                $"Failed webjob ({nameof(UpdateSearchAsync)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
