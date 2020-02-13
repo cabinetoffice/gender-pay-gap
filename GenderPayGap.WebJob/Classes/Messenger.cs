@@ -81,7 +81,7 @@ namespace GenderPayGap.WebJob
                 try
                 {
                     await Email.QuickSendAsync(
-                        subject,
+                        Config.IsProduction() ? subject : $"[{Config.EnvironmentName}] {subject}",
                         SmtpSenderEmail,
                         SmtpSenderName,
                         SmtpReplyEmail,
