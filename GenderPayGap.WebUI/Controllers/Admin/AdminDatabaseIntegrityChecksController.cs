@@ -36,8 +36,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> OrganisationsWithMultipleActiveAddressesAjax()
         {
             var organisationsWithMultipleActiveAddresses = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<OrganisationAddress>> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses);
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses).ToList();
 
             foreach (Organisation organisation in organisations)
             {
@@ -56,8 +56,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> ActiveOrganisationsWithTheSameNameAjax()
         {
             var activeOrganisationsWithTheSameName = new List<string>();
-            IQueryable<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active);
+            List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
+                .Where(o => o.Status == OrganisationStatuses.Active).ToList();
 
             var duplicateNames = activeOrganisations.GroupBy(x => x.OrganisationName)
                 .Select(x => new {Name = x.Key, Count = x.Count()})
@@ -75,8 +75,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> ActiveOrganisationsWithTheSameCompanyNumberAjax()
         {
             var activeOrganisationsWithTheSameCompanyNumber = new List<string>();
-            IQueryable<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active);
+            List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
+                .Where(o => o.Status == OrganisationStatuses.Active).ToList();
 
             var duplicateCompanyNumbers = activeOrganisations.GroupBy(x => x.CompanyNumber)
                 .Select(x => new {CompanyNumber = x.Key, Count = x.Count()})
@@ -97,8 +97,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActiveAjax()
         {
             var organisationsWhereLatestAddressIsNotActive = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<OrganisationAddress>> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses);
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses).ToList();
             foreach (Organisation organisation in organisations)
             {
                 OrganisationAddress latestAddress = organisation.LatestAddress;
@@ -117,8 +117,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYearAjax()
         {
             var organisationsWithMultipleActiveScopesForASingleYear = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes);
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes).ToList();
             foreach (Organisation organisation in organisations)
             {
                 IEnumerable<OrganisationScope> activeScopes = organisation.OrganisationScopes
@@ -141,8 +141,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> OrganisationsWithNoActiveScopeForEveryYearAjax()
         {
             var organisationsWithNoActiveScopeForEveryYear = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes);
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes).ToList();
 
             foreach (Organisation organisation in organisations)
             {
@@ -180,8 +180,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> OrganisationsWithMultipleActiveReturnsForASingleYearAjax()
         {
             var organisationsWithMultipleActiveReturnsForASingleYear = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<Return>> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.Returns);
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.Returns).ToList();
 
             foreach (Organisation organisation in organisations)
             {
@@ -207,11 +207,11 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> PublicSectorOrganisationsWithoutAPublicSectorTypeAjax()
         {
             var publicSectorOrganisationsWithoutAPublicSectorType = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> activePublicOrganisations = dataRepository
+            List<Organisation> activePublicOrganisations = dataRepository
                 .GetAll<Organisation>()
                 .Where(o => o.SectorType == SectorTypes.Public)
                 .Where(o => o.Status == OrganisationStatuses.Active)
-                .Include(o => o.OrganisationScopes);
+                .Include(o => o.OrganisationScopes).ToList();
 
             foreach (Organisation organisation in activePublicOrganisations)
             {
@@ -234,11 +234,11 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public async Task<IActionResult> PrivateSectorOrganisationsWithAPublicSectorTypeAjax()
         {
             var privateSectorOrganisationsWithAPublicSectorType = new List<Organisation>();
-            IIncludableQueryable<Organisation, ICollection<OrganisationScope>> activePrivateOrganisations = dataRepository
+            List<Organisation> activePrivateOrganisations = dataRepository
                 .GetAll<Organisation>()
                 .Where(o => o.SectorType == SectorTypes.Private)
                 .Where(o => o.Status == OrganisationStatuses.Active)
-                .Include(o => o.OrganisationScopes);
+                .Include(o => o.OrganisationScopes).ToList();
 
             foreach (Organisation organisation in activePrivateOrganisations)
             {
