@@ -1,9 +1,10 @@
 ﻿using System;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
-using GenderPayGap.Core.API;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
 
 namespace GenderPayGap.WebJob
@@ -325,6 +326,43 @@ namespace GenderPayGap.WebJob
 
             public MidnightSchedule() : base("00:00:00") { }
 
+        }
+
+        #endregion
+
+        #region Function Logging
+
+        private static string CreateRunId()
+        {
+            return Guid.NewGuid().ToString("N").Substring(0, 8);
+        }
+
+        private static void LogFunctionStart(string runId, string functionName, DateTime startTime)
+        {
+            CustomLogger.Information($"Function started: {functionName}", new {runId, environment = Config.EnvironmentName, startTime});
+        }
+
+        private static void LogFunctionEnd(string runId, string functionName, DateTime startTime)
+        {
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Information(
+                $"Function finished: {functionName}",
+                new {runId, Environment = Config.EnvironmentName, endTime, TimeTakenInSeconds = (endTime - startTime).TotalSeconds});
+        }
+
+        private static void LogFunctionError(string runId, string functionName, DateTime startTime, Exception ex)
+        {
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Error(
+                $"Function failed: {functionName}",
+                new
+                {
+                    runId,
+                    environment = Config.EnvironmentName,
+                    endTime,
+                    TimeTakenToErrorInSeconds = (endTime - startTime).TotalSeconds,
+                    Exception = ex
+                });
         }
 
         #endregion
