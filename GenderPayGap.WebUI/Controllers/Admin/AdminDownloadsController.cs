@@ -45,6 +45,35 @@ namespace GenderPayGap.WebUI.Controllers
             return View("Downloads", viewModel);
         }
         
+        [HttpGet("downloads-new/all-organisations")]
+        public FileContentResult DownloadAllOrganisations()
+        {
+            List<Organisation> allOrganisations = dataRepository.GetAll<Organisation>()
+                .Include(org => org.LatestAddress)
+                .Include(org => org.OrganisationSicCodes)
+                .ToList();
+
+            var records = allOrganisations.Select(
+                    org => new
+                    {
+                        org.OrganisationId,
+                        org.OrganisationName,
+                        org.CompanyNumber,
+                        Sector = org.SectorType,
+                        Status = org.Status,
+                        Address = org.LatestAddress?.GetAddressString(),
+                        SicCodes = org.GetSicCodeIdsString(),
+                        Created = org.Created,
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-AllOrganisations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+
+        
         [HttpGet("downloads-new/orphan-organisations")]
         public FileContentResult DownloadOrphanOrganisations()
         {

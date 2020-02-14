@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -13,7 +12,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +23,6 @@ namespace GenderPayGap.BusinessLogic
 
         // Organisation repo
         Organisation GetOrganisationById(long organisationId);
-        Task<List<OrganisationsFileModel>> GetOrganisationsFileModelByYearAsync(int year);
 
         string GenerateEmployerReference();
         Task SetUniqueEmployerReferenceAsync(Organisation organisation);
@@ -89,56 +86,6 @@ namespace GenderPayGap.BusinessLogic
         }
 
         private IDataRepository _DataRepository { get; }
-
-        /// <summary>
-        ///     Gets a list of organisations with latest returns and scopes for Organisations download file
-        /// </summary>
-        /// <param name="year"></param>
-        /// <returns></returns>
-        public virtual async Task<List<OrganisationsFileModel>> GetOrganisationsFileModelByYearAsync(int year)
-        {
-#if DEBUG
-            IQueryable<Organisation> orgs = Debugger.IsAttached
-                ? _DataRepository.GetAll<Organisation>().Take(100)
-                : _DataRepository.GetAll<Organisation>();
-#else
-            var orgs = _DataRepository.GetAll<Organisation>();
-#endif
-            var records = new List<OrganisationsFileModel>();
-
-            foreach (Organisation o in await orgs.ToListAsync())
-            {
-                var record = new OrganisationsFileModel {
-                    OrganisationId = o.OrganisationId,
-                    EmployerReference = o.EmployerReference,
-                    OrganisationName = o.OrganisationName,
-                    CompanyNo = o.CompanyNumber,
-                    Sector = o.SectorType,
-                    Status = o.Status,
-                    StatusDate = o.StatusDate,
-                    StatusDetails = o.StatusDetails,
-                    Address = o.LatestAddress?.GetAddressString(),
-                    SicCodes = o.GetSicCodeIdsString(),
-                    LatestRegistrationDate = o.LatestRegistration?.PINConfirmedDate,
-                    LatestRegistrationMethod = o.LatestRegistration?.Method,
-                    Created = o.Created,
-                    SecurityCode = o.SecurityCode,
-                    SecurityCodeExpiryDateTime = o.SecurityCodeExpiryDateTime,
-                    SecurityCodeCreatedDateTime = o.SecurityCodeCreatedDateTime
-                };
-
-                Return latestReturn = await _submissionLogic.GetLatestSubmissionBySnapshotYearAsync(o.OrganisationId, year);
-                OrganisationScope latestScope = await _scopeLogic.GetLatestScopeBySnapshotYearAsync(o.OrganisationId, year);
-
-                record.LatestReturn = latestReturn?.Modified;
-                record.ScopeStatus = latestScope?.ScopeStatus;
-                record.ScopeDate = latestScope?.ScopeStatusDate;
-                records.Add(record);
-            }
-
-
-            return records;
-        }
 
         public virtual async Task SetUniqueEmployerReferenceAsync(Organisation organisation)
         {
