@@ -36,9 +36,6 @@ namespace GenderPayGap.WebJob
                 case Filenames.OrganisationScopes:
                     await UpdateScopesAsync(filePath);
                     break;
-                case Filenames.OrganisationSubmissions:
-                    await UpdateSubmissionsAsync(filePath);
-                    break;
             }
         }
 
