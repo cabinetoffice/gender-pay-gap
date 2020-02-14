@@ -367,15 +367,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 model.Downloads.Add(download);
             }
 
-            download = new DownloadViewModel.Download {
-                Type = "Late Submissions",
-                Filepath = Path.Combine(Global.DownloadsPath, Filenames.OrganisationLateSubmissions),
-                Title = "Organisation Late Submissions",
-                Description = "Organisations who reported or changed their submission late the previous snapshot date."
-            };
-            download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-            model.Downloads.Add(download);
-
             #endregion
 
             #region Users
