@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -23,6 +24,9 @@ namespace GenderPayGap.WebJob
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
         public async Task PurgeUsers([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(PurgeUsers), startTime);
             try
             {
                 DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnverifiedUserDays);
@@ -53,14 +57,15 @@ namespace GenderPayGap.WebJob
                     await Global.ManualChangeLog.WriteAsync(logItem);
                 }
 
-                log.LogDebug($"Executed {nameof(PurgeUsers)} successfully");
+                LogFunctionEnd(runId, nameof(PurgeUsers), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(PurgeUsers)}):{ex.Message}:{ex.GetDetailsText()}";
+                LogFunctionError(runId, nameof(PurgeUsers), startTime, ex );
 
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(PurgeUsers)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
@@ -69,6 +74,9 @@ namespace GenderPayGap.WebJob
         //Remove any incomplete registrations
         public async Task PurgeRegistrations([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = DateTime.Now;
+            LogFunctionStart(runId,  nameof(PurgeRegistrations), startTime);
             try
             {
                 DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnconfirmedPinDays);
@@ -101,14 +109,15 @@ namespace GenderPayGap.WebJob
                     await Global.ManualChangeLog.WriteAsync(logItem);
                 }
 
-                log.LogDebug($"Executed {nameof(PurgeRegistrations)} successfully");
+                LogFunctionEnd(runId, nameof(PurgeRegistrations), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(PurgeRegistrations)}):{ex.Message}:{ex.GetDetailsText()}";
-
+                LogFunctionError(runId, nameof(PurgeRegistrations), startTime, ex );
+                
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(PurgeRegistrations)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
@@ -119,6 +128,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = DateTime.Now;
+            LogFunctionStart(runId,  nameof(PurgeOrganisations), startTime);
             try
             {
                 DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnusedOrganisationDays);
@@ -192,15 +204,21 @@ namespace GenderPayGap.WebJob
                         count++;
                     }
 
-                    log.LogDebug($"Executed {nameof(PurgeOrganisations)} successfully: {count} deleted");
+                    CustomLogger.Information($"Executed {nameof(PurgeOrganisations)} successfully: {count} organisations deleted" , new
+                    {
+                        runId,
+                        Environment = Config.EnvironmentName,
+                    });
                 }
+                LogFunctionEnd(runId, nameof(PurgeOrganisations), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(PurgeOrganisations)}):{ex.Message}:{ex.GetDetailsText()}";
-
+                LogFunctionError(runId, nameof(PurgeOrganisations), startTime, ex );
+                
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(PurgeOrganisations)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
@@ -209,6 +227,9 @@ namespace GenderPayGap.WebJob
         //Remove retired copies of GPG data
         public async Task PurgeGPGData([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = DateTime.Now;
+            LogFunctionStart(runId,  nameof(PurgeGPGData), startTime);
             try
             {
                 DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeRetiredReturnDays);
@@ -232,14 +253,15 @@ namespace GenderPayGap.WebJob
                     await Global.ManualChangeLog.WriteAsync(logItem);
                 }
 
-                log.LogDebug($"Executed {nameof(PurgeGPGData)} successfully");
+                LogFunctionEnd(runId, nameof(PurgeGPGData), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob ({nameof(PurgeGPGData)}):{ex.Message}:{ex.GetDetailsText()}";
+                LogFunctionError(runId, nameof(PurgeGPGData), startTime, ex );
 
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(PurgeGPGData)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
@@ -255,18 +277,24 @@ namespace GenderPayGap.WebJob
             {
                 return;
             }
+            
+            var runId = CreateRunId();
+            var startTime = DateTime.Now;
+            LogFunctionStart(runId,  nameof(PurgeTestDataAsync), startTime);
 
             try
             {
                 GpgDatabaseContext.DeleteAllTestRecords(VirtualDateTime.Now.AddDays(-1));
 
-                log.LogDebug($"Executed {nameof(PurgeTestDataAsync)} successfully");
+                LogFunctionEnd(runId, nameof(PurgeTestDataAsync), startTime);
             }
             catch (Exception ex)
             {
+                LogFunctionError(runId, nameof(PurgeTestDataAsync), startTime, ex );
+                
                 //Send Email to GEO reporting errors
-                string message = $"Failed webjob ({nameof(PurgeTestDataAsync)}):{ex.Message}:{ex.GetDetailsText()}";
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(PurgeTestDataAsync)}):{ex.Message}:{ex.GetDetailsText()}");
 
                 //Rethrow the error
                 throw;

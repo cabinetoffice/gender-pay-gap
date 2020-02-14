@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Abstractions;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -23,6 +25,10 @@ namespace GenderPayGap.WebJob
         [Singleton] //Ensures execution on only one instance
         public async Task SendEmail([QueueTrigger(QueueNames.SendEmail)] string queueMessage, ILogger log)
         {
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(SendEmail), startTime);
+
             var wrapper = JsonConvert.DeserializeObject<QueueWrapper>(queueMessage);
             wrapper.Message = Regex.Unescape(wrapper.Message).TrimI("\"");
             Type messageType = typeof(SendGeoMessageModel).Assembly.GetType(wrapper.Type, true);
@@ -33,6 +39,17 @@ namespace GenderPayGap.WebJob
                 var pars = (SendGeoMessageModel) parameters;
                 if (!await _Messenger.SendGeoMessageAsync(pars.subject, pars.message, pars.test))
                 {
+                    DateTime errorEndTime = VirtualDateTime.Now;
+                    CustomLogger.Error(
+                        $"Function failed: {nameof(SendEmail)}. Could not send email message to GEO for queued message: {queueMessage}",
+                        new
+                        {
+                            runId,
+                            environment = Config.EnvironmentName,
+                            errorEndTime,
+                            TimeTakenToErrorInSeconds = (errorEndTime - startTime).TotalSeconds
+                        });
+
                     throw new Exception("Could not send email message to GEO for queued message:" + queueMessage);
                 }
             }
@@ -44,11 +61,25 @@ namespace GenderPayGap.WebJob
                 }
                 catch
                 {
+                    DateTime errorEndTime = VirtualDateTime.Now;
+                    CustomLogger.Error(
+                        $"Function failed: {nameof(SendEmail)}. Could not send email for unknown type '{wrapper.Type}'. Queued message: {queueMessage}",
+                        new
+                        {
+                            runId,
+                            environment = Config.EnvironmentName,
+                            errorEndTime,
+                            TimeTakenToErrorInSeconds = (errorEndTime - startTime).TotalSeconds
+                        });
+
                     throw new Exception($"Could not send email for unknown type '{wrapper.Type}'. Queued message:" + queueMessage);
                 }
             }
 
-            log.LogDebug($"Executed {nameof(SendEmail)}:{wrapper.Type} successfully");
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Information(
+                $"Function finished: {nameof(SendEmail)}. {wrapper.Type} successfully",
+                new {runId, Environment = Config.EnvironmentName, endTime, TimeTakenInSeconds = (endTime - startTime).TotalSeconds});
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -24,6 +25,10 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task LogEvent([QueueTrigger(QueueNames.LogEvent)] string queueMessage, ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(LogEvent), startTime);
+            
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
             if (!string.IsNullOrWhiteSpace(filepath))
@@ -91,7 +96,10 @@ namespace GenderPayGap.WebJob
                 await Global.FileRepository.DeleteFileAsync(filepath);
             }
 
-            log.LogDebug($"Executed {nameof(LogEvent)}:{queueMessage} successfully");
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Information(
+                $"Function finished: {nameof(LogEvent)}. {queueMessage} successfully",
+                new {runId, Environment = Config.EnvironmentName, endTime, TimeTakenInSeconds = (endTime - startTime).TotalSeconds});
         }
 
         public async Task LogEventPoison([QueueTrigger(QueueNames.LogEvent + "-poison")]
@@ -117,6 +125,10 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task LogRecord([QueueTrigger(QueueNames.LogRecord)] string queueMessage, ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(LogRecord), startTime);
+            
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
             if (!string.IsNullOrWhiteSpace(filepath))
@@ -164,7 +176,10 @@ namespace GenderPayGap.WebJob
                 await Global.FileRepository.DeleteFileAsync(filepath);
             }
 
-            log.LogDebug($"Executed {nameof(LogRecord)}:{queueMessage} successfully");
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Information(
+                $"Function finished: {nameof(LogRecord)}. {queueMessage} successfully",
+                new {runId, Environment = Config.EnvironmentName, endTime, TimeTakenInSeconds = (endTime - startTime).TotalSeconds});
         }
 
         public async Task LogRecordPoison([QueueTrigger(QueueNames.LogRecord + "-poison")]

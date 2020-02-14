@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Extensions;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -13,6 +14,7 @@ namespace GenderPayGap.WebJob
 {
     public partial class Functions
     {
+
         /// <summary>
         ///     Handling healthy queued Notify email messages. After 5 failed attempts message is added to poisoned queue.
         /// </summary>
@@ -23,6 +25,10 @@ namespace GenderPayGap.WebJob
             CloudQueueMessage queueMessage,
             ILogger log)
         {
+            string runId = CreateRunId();
+            DateTime startTime = DateTime.Now;
+            LogFunctionStart(runId, nameof(SendNotifyEmail), startTime);
+
             NotifyEmail notifyEmail;
             try
             {
@@ -30,12 +36,32 @@ namespace GenderPayGap.WebJob
             }
             catch (Exception ex)
             {
-                CustomLogger.Error("EMAIL FAILURE: Failed to deserialise Notify email from queue", ex);
+                DateTime errorEndTime = VirtualDateTime.Now;
+                CustomLogger.Error(
+                    $"Function failed: {nameof(SendNotifyEmail)}. Failed to deserialise Notify email from queue",
+                    new
+                    {
+                        runId,
+                        environment = Config.EnvironmentName,
+                        endTime = errorEndTime,
+                        TimeTakenToErrorInSeconds = (errorEndTime - startTime).TotalSeconds,
+                        Exception = ex
+                    });
                 throw;
             }
 
             govNotifyApi.SendEmail(notifyEmail);
-            CustomLogger.Information("Successfully received message from queue and passed to GovNotifyAPI", new {notifyEmail});
+
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Information(
+                $"Function finished: {nameof(SendNotifyEmail)}. Successfully received message from queue and passed to GovNotifyAPI",
+                new {
+                    runId, 
+                    Environment = Config.EnvironmentName, 
+                    endTime, 
+                    TimeTakenInSeconds = (endTime - startTime).TotalSeconds,
+                    notifyEmail
+                });
         }
 
         /// <summary>
