@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
@@ -23,6 +24,10 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(TakeSnapshotAsync), startTime);
+            
             try
             {
                 string azureStorageConnectionString = Config.GetConnectionString("AzureStorage");
@@ -62,15 +67,25 @@ namespace GenderPayGap.WebJob
                         count++;
                     }
                 }
-
-                log.LogDebug($"Executed {nameof(TakeSnapshotAsync)} successfully and deleted {count} stale snapshots");
+                
+                DateTime endTime = VirtualDateTime.Now;
+                CustomLogger.Information(
+                    $"Function finished: {nameof(TakeSnapshotAsync)}. Successfully deleted {count} stale snapshots",
+                    new {
+                        runId,
+                        Environment = Config.EnvironmentName, 
+                        endTime, 
+                        TimeTakenInSeconds = (endTime - startTime).TotalSeconds
+                        
+                    });
             }
             catch (Exception ex)
             {
-                string message = $"Failed webjob:{nameof(TakeSnapshotAsync)}:{ex.Message}";
+                LogFunctionError(runId, nameof(TakeSnapshotAsync), startTime, ex );
 
                 //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
+                    $"Failed webjob ({nameof(TakeSnapshotAsync)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }

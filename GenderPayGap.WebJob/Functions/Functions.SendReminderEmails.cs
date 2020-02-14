@@ -21,13 +21,22 @@ namespace GenderPayGap.WebJob
         // This trigger is set to run every hour, on the hour
         public void SendReminderEmails([TimerTrigger("0 * * * *")] TimerInfo timer)
         {
-            DateTime start = VirtualDateTime.Now;
-            CustomLogger.Information("SendReminderEmails Function started", start);
+            var runId = CreateRunId();
+            var startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId,  nameof(SendReminderEmails), startTime);
             
             List<int> reminderDays = GetReminderEmailDays();
             if (reminderDays.Count == 0)
             {
-                CustomLogger.Information("SendReminderEmails Function finished. No ReminderEmailDays set.");
+                var endTime = VirtualDateTime.Now;
+                CustomLogger.Information($"Function finished: {nameof(SendReminderEmails)}. No ReminderEmailDays set.",
+                    new
+                {
+                    runId,
+                    environment = Config.EnvironmentName,
+                    endTime,
+                    TimeTakenInSeconds = (endTime - startTime).TotalSeconds
+                });
                 return;
             }
 
@@ -35,9 +44,17 @@ namespace GenderPayGap.WebJob
 
             foreach (User user in users)
             {
-                if (VirtualDateTime.Now > start.AddMinutes(59))
+                if (VirtualDateTime.Now > startTime.AddMinutes(59))
                 {
-                    CustomLogger.Information("Hit timeout break");
+                    var endTime = VirtualDateTime.Now;
+                    CustomLogger.Information($"Function finished: {nameof(SendReminderEmails)}. Hit timeout break.",
+                        new
+                        {
+                            runId,
+                            environment = Config.EnvironmentName,
+                            endTime,
+                            TimeTakenInSeconds = (endTime - startTime).TotalSeconds
+                        });
                     break;
                 }
 
@@ -61,7 +78,7 @@ namespace GenderPayGap.WebJob
                 }
             }
             
-            CustomLogger.Information("SendReminderEmails Function finished");
+            LogFunctionEnd(runId, nameof(SendReminderEmails), startTime);
         }
 
         private void SendReminderEmailsForSectorType(
@@ -88,7 +105,7 @@ namespace GenderPayGap.WebJob
                             "Failed whilst sending or saving reminder email",
                             new
                             {
-                                UserId = user.UserId,
+                                user.UserId,
                                 SectorType = sectorType,
                                 OrganisationIds = inScopeOrganisationsThatStillNeedToReport.Select(o => o.OrganisationId),
                                 Exception = ex.Message

@@ -4,7 +4,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -19,6 +21,10 @@ namespace GenderPayGap.WebJob
             string queueMessage,
             ILogger log)
         {
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(ExecuteWebjob), startTime);
+
             var wrapper = JsonConvert.DeserializeObject<QueueWrapper>(queueMessage);
             wrapper.Message = JsonConvert.DeserializeObject<string>(wrapper.Message);
             wrapper.Message = Regex.Unescape(wrapper.Message).TrimI("\"");
@@ -45,10 +51,30 @@ namespace GenderPayGap.WebJob
                     await TakeSnapshotAsync(log);
                     break;
                 default:
+                    DateTime errorEndTime = VirtualDateTime.Now;
+                    CustomLogger.Error(
+                        $"Function failed: {nameof(ExecuteWebjob)}",
+                        new
+                        {
+                            runId,
+                            environment = Config.EnvironmentName,
+                            errorEndTime,
+                            TimeTakenToErrorInSeconds = (errorEndTime - startTime).TotalSeconds,
+                            queueMessage
+                        });
                     throw new Exception("Could not execute webjob:" + queueMessage);
             }
 
-            log.LogDebug($"Executed {nameof(ExecuteWebjob)}:{command} successfully");
+            DateTime endTime = VirtualDateTime.Now;
+            CustomLogger.Information(
+                $"Function finished: {nameof(ExecuteWebjob)}. {command} successfully",
+                new
+                {
+                    runId, 
+                    Environment = Config.EnvironmentName, 
+                    endTime, 
+                    TimeTakenInSeconds = (endTime - startTime).TotalSeconds
+                });
         }
 
         public async Task ExecuteWebjobPoisonAsync([QueueTrigger(QueueNames.ExecuteWebJob + "-poison")]
