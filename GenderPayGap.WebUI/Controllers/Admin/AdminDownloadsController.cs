@@ -10,6 +10,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -50,18 +51,53 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             var records = orphanOrganisations.Select(
-                    org => new {
+                    org => new
+                    {
                         org.OrganisationId,
                         org.OrganisationName,
                         Address = org.GetAddressString(),
                         Sector = org.SectorType,
-                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1),
                         ScopeStatus = org.GetCurrentScope()?.ScopeStatus,
                         HasSubmitted = org.LatestReturn?.Status == ReturnStatuses.Submitted
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrphanOrganisations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+
+        [HttpGet("downloads-new/late-submissions")]
+        public FileContentResult DownloadLateSubmissions()
+        {
+            List<Organisation> organisationsWithLateReturns = dataRepository.GetAll<Organisation>()
+                .Where(org => org.Status == OrganisationStatuses.Active)
+                .Where(
+                    org => org.LatestScope == null
+                           || org.LatestScope.ScopeStatus == ScopeStatuses.InScope
+                           || org.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                .Where(org => org.LatestReturn == null || org.LatestReturn.IsLateSubmission)
+                .Include(org => org.Returns)
+                .ToList();
+
+            var records = organisationsWithLateReturns.Select(
+                    org => new
+                    {
+                        org.OrganisationId,
+                        org.OrganisationName,
+                        org.SectorType,
+                        Submitted = org.LatestReturn != null,
+                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                        SubmittedDate = org.LatestReturn?.Created,
+                        ModifiedDate = org.LatestReturn?.Modified,
+                        org.LatestReturn?.LateReason
+
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-LateSubmissions-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -76,7 +112,8 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             var records = users.Select(
-                    u => new {
+                    u => new
+                    {
                         u.Firstname,
                         u.Lastname,
                         u.JobTitle,
@@ -105,7 +142,8 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             var records = users.Select(
-                    u => new {
+                    u => new
+                    {
                         u.Firstname,
                         u.Lastname,
                         u.JobTitle,
