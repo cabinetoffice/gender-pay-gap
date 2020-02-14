@@ -3,12 +3,6 @@
 @using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
 @{
-    //Required for variables in Sitemap taghelpers
-    ViewBag.EmployerName = Model.OrganisationName;
-    ViewBag.StartYear = Model.AccountingDate.Year;
-    ViewBag.EndYear = (Model.AccountingDate.Year + 1).ToTwoDigitYear();
-
-
     ViewBag.Title = $"{Model.OrganisationName} gender pay gap data for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year - GOV.UK";
     ViewBag.pageDescription = $"View gender pay gap data for {Model.OrganisationName} for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year and compare with other organisations";
     ViewBag.ogTitle = ViewBag.Title;
