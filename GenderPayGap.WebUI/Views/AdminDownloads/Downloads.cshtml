@@ -80,6 +80,23 @@
         
 
         <h2 class="govuk-heading-m">
+            Scopes
+        </h2>
+        
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadOrganisationScopesForYear", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    Organisation Scopes for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                The latest organisation scope statuses for each organisation for @(year)-@((year + 1) % 100)
+            </p>
+        }
+        
+
+        <h2 class="govuk-heading-m">
             Submissions
         </h2>
         
