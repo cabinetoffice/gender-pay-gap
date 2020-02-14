@@ -82,6 +82,40 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
+        [HttpGet("downloads-new/organisation-addresses")]
+        public FileContentResult DownloadOrganisationAddresses()
+        {
+            DateTime pinExpiresDate = Global.PinExpiresDate;
+
+            List<Organisation> organisationAddresses = dataRepository.GetAll<Organisation>()
+                .Where(org => org.Status == OrganisationStatuses.Active)
+                .Where(org => org.LatestAddress != null)
+                .Include(org => org.LatestAddress)
+                .ToList();
+
+            var records = organisationAddresses.Select(
+                    org => new
+                    {
+                        org.OrganisationId,
+                        org.OrganisationName,
+
+                        org.LatestAddress.PoBox,
+                        org.LatestAddress.Address1,
+                        org.LatestAddress.Address2,
+                        org.LatestAddress.Address3,
+                        org.LatestAddress.TownCity,
+                        org.LatestAddress.County,
+                        org.LatestAddress.Country,
+                        org.LatestAddress.PostCode,
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-OrganisationAddresses-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+
         [HttpGet("downloads-new/all-submissions-for-{year}")]
         public FileContentResult DownloadAllSubmissionsForYear(int year)
         {
