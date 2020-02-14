@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using CsvHelper;
@@ -8,6 +9,9 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +33,16 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads-new")]
         public IActionResult Downloads()
         {
-            return View("Downloads");
+            int firstReportingYear = Global.FirstReportingYear;
+            int currentReportingYear = SectorTypes.Public.GetAccountingStartDate().Year;
+            int numberOfYears = currentReportingYear - firstReportingYear + 1;
+
+            var viewModel = new AdminDownloadsViewModel
+            {
+                ReportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList()
+            };
+
+            return View("Downloads", viewModel);
         }
         
         [HttpGet("downloads-new/orphan-organisations")]
@@ -64,6 +77,67 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-OrphanOrganisations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+
+        [HttpGet("downloads-new/all-submissions-for-{year}")]
+        public FileContentResult DownloadAllSubmissionsForYear(int year)
+        {
+            List<Organisation> organisationsWithReturnsForYear = dataRepository.GetAll<Organisation>()
+                .Where(org => org.Status == OrganisationStatuses.Active)
+                .Where(org =>
+                    org.Returns.Any(ret => ret.Status == ReturnStatuses.Submitted
+                                           && ret.AccountingDate.Year == year))
+                .Include(org => org.OrganisationScopes)
+                .Include(org => org.Returns)
+                .ToList();
+
+            var records = organisationsWithReturnsForYear.Select(
+                    org =>
+                    {
+                        OrganisationScope scopeForYear = org.GetScopeForYear(year);
+                        Return returnForYear = org.GetReturn(year);
+
+                        return new
+                        {
+                            org.OrganisationId,
+                            org.OrganisationName,
+                            org.CompanyNumber,
+                            org.SectorType,
+                            ScopeStatus = scopeForYear?.ScopeStatus.ToString() ?? "(no active scope)",
+
+                            SnapshotDate = returnForYear.AccountingDate,
+                            DeadlineDate = returnForYear.AccountingDate.AddYears(1).AddDays(-1),
+                            ModifiedDate = returnForYear.Modified,
+                            returnForYear.IsLateSubmission,
+
+                            returnForYear.DiffMeanHourlyPayPercent,
+                            returnForYear.DiffMedianHourlyPercent,
+
+                            LowerQuartileFemalePercent = returnForYear.FemaleLowerPayBand,
+                            LowerQuartileMalePercent = returnForYear.MaleLowerPayBand,
+                            LowerMiddleQuartileFemalePercent = returnForYear.FemaleMiddlePayBand,
+                            LowerMiddleQuartileMalePercent = returnForYear.MaleMiddlePayBand,
+                            UpperMiddleQuartileFemalePercent = returnForYear.FemaleUpperPayBand,
+                            UpperMiddleQuartileMalePercent = returnForYear.MaleUpperPayBand,
+                            UpperQuartileFemalePercent = returnForYear.FemaleUpperQuartilePayBand,
+                            UpperQuartileMalePercent = returnForYear.MaleUpperQuartilePayBand,
+
+                            PercentPaidBonusFemale = returnForYear.FemaleMedianBonusPayPercent,
+                            PercentPaidBonusMale = returnForYear.MaleMedianBonusPayPercent,
+                            returnForYear.DiffMeanBonusPercent,
+                            returnForYear.DiffMedianBonusPercent,
+
+                            returnForYear.CompanyLinkToGPGInfo,
+                            returnForYear.ResponsiblePerson,
+                            returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
+                        };
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-AllSubmissionsForYear-{year}--{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;

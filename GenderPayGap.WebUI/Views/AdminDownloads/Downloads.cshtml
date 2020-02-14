@@ -1,5 +1,6 @@
 ﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminDownloadsViewModel
 @{
     ViewBag.Title = $"Downloads - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -48,6 +49,23 @@
             <br />
             In-scope organisations who no longer who have any registered or registering users
         </p>
+        
+
+        <h2 class="govuk-heading-m">
+            Submissions
+        </h2>
+        
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadAllSubmissionsForYear", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    All submissions for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                The reported GPG data for all organisations for @(year)-@((year + 1) % 100)
+            </p>
+        }
         
 
         <h2 class="govuk-heading-m">
