@@ -145,6 +145,31 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
+        [HttpGet("downloads-new/organisation-scopes-for-{year}")]
+        public FileContentResult DownloadOrganisationScopesForYear(int year)
+        {
+            List<Organisation> organisationsWithScopesForYear = dataRepository.GetAll<Organisation>()
+                .Where(org => org.Status == OrganisationStatuses.Active)
+                .Where(org => org.OrganisationScopes.Any(scope => scope.SnapshotDate.Year == year && scope.Status == ScopeRowStatuses.Active))
+                .Include(org => org.OrganisationScopes)
+                .ToList();
+
+            var records = organisationsWithScopesForYear.Select(
+                    org => new
+                    {
+                        org.OrganisationId,
+                        org.OrganisationName,
+                        org.GetScopeForYear(year).ScopeStatus,
+                        DateScopeLastChanged = org.GetScopeForYear(year).ScopeStatusDate,
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-OrganisationScopesForYear-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+
         [HttpGet("downloads-new/all-submissions-for-{year}")]
         public FileContentResult DownloadAllSubmissionsForYear(int year)
         {
