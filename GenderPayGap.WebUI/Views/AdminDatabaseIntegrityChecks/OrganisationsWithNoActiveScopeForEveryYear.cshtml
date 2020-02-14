@@ -66,7 +66,7 @@ else
                     <td class="govuk-table__cell">
                         <a href="@(Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId}))"
                            class="govuk-link">
-                            Scope history
+                            Scope history <span class="govuk-visually-hidden">for @(organisation.OrganisationName)</span>
                         </a>
                     </td>
                 </tr>
