@@ -26,9 +26,6 @@ namespace GenderPayGap.WebJob
                 case Filenames.Registrations:
                     await UpdateRegistrationsAsync(filePath);
                     break;
-                case Filenames.RegistrationAddresses:
-                    await UpdateRegistrationAddressesAsync(filePath);
-                    break;
                 case Filenames.UnverifiedRegistrations:
                     await UpdateUnverifiedRegistrationsAsync(filePath);
                     break;

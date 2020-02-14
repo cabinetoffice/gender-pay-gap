@@ -318,7 +318,6 @@ namespace GenderPayGap.Core
         public const string Organisations = "GPG-Organisations.csv";
         public const string Users = "GPG-Users.csv";
         public const string Registrations = "GPG-Registrations.csv";
-        public const string RegistrationAddresses = "GPG-RegistrationAddresses.csv";
         public const string UnverifiedRegistrations = "GPG-UnverifiedRegistrations.csv";
         public const string UnfinishedOrganisations = "GPG-UnfinishedOrgs.csv";
         public const string OrganisationScopes = "GPG-Scopes.csv";
