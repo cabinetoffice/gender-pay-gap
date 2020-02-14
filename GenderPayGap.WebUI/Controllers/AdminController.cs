@@ -470,27 +470,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             #endregion
 
-            #region Registration Addresses
-
-            files = await Global.FileRepository.GetFilesAsync(
-                Global.DownloadsPath,
-                $"{Path.GetFileNameWithoutExtension(Filenames.RegistrationAddresses)}*{Path.GetExtension(Filenames.RegistrationAddresses)}");
-            foreach (string file in files.OrderByDescending(file => file))
-            {
-                string period = Path.GetFileNameWithoutExtension(file).AfterFirst("_");
-                download = new DownloadViewModel.Download {
-                    Type = "Registration Addresses",
-                    Filepath = file,
-                    Title = $"Registered Organisation Addresses ({period})",
-                    Description =
-                        $"A list of registered organisation addresses and their associated contact details for {period}. This includes the most recently registered user contact details."
-                };
-                download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-                model.Downloads.Add(download);
-            }
-
-            #endregion
-
             #region Scopes
 
             files = await Global.FileRepository.GetFilesAsync(
