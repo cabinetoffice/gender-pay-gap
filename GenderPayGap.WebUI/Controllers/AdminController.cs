@@ -513,28 +513,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             #endregion
 
-            #region Submissions
-
-            files = await Global.FileRepository.GetFilesAsync(
-                Global.DownloadsPath,
-                $"{Path.GetFileNameWithoutExtension(Filenames.OrganisationSubmissions)}*{Path.GetExtension(Filenames.OrganisationSubmissions)}");
-            foreach (string file in files.OrderByDescending(file => file))
-            {
-                string period = Path.GetFileNameWithoutExtension(file).AfterFirst("_");
-
-                download = new DownloadViewModel.Download {
-                    Type = "Submissions",
-                    Filepath = file,
-                    Title = $"Organisation Submissions ({period})",
-                    Description = $"The reported GPG data for all organisations for ({period})."
-                };
-
-                download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-                model.Downloads.Add(download);
-            }
-
-            #endregion
-
             #region Users
 
             download = new DownloadViewModel.Download {
