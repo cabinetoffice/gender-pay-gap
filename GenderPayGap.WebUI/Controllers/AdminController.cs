@@ -285,28 +285,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             IEnumerable<string> files = null;
             DownloadViewModel.Download download;
 
-            #region Scopes
-
-            files = await Global.FileRepository.GetFilesAsync(
-                Global.DownloadsPath,
-                $"{Path.GetFileNameWithoutExtension(Filenames.OrganisationScopes)}*{Path.GetExtension(Filenames.OrganisationScopes)}");
-            foreach (string file in files.OrderByDescending(file => file))
-            {
-                string period = Path.GetFileNameWithoutExtension(file).AfterFirst("_");
-
-                download = new DownloadViewModel.Download {
-                    Type = "Scopes",
-                    Filepath = file,
-                    Title = $"Organisation Scopes ({period})",
-                    Description = $"The latest organisation scope statuses for each organisation for ({period})."
-                };
-
-                download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-                model.Downloads.Add(download);
-            }
-
-            #endregion
-
             #region Users
 
             download = new DownloadViewModel.Download {

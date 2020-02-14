@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Models.Scope;
@@ -8,7 +7,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +40,6 @@ namespace GenderPayGap.BusinessLogic
             string comment,
             bool saveToDatabase);
 
-        IEnumerable<ScopesFileModel> GetScopesFileModelByYear(int year);
         Task<HashSet<Organisation>> SetPresumedScopesAsync();
 
         Task<HashSet<OrganisationMissingScope>> FindOrgsWhereScopeNotSetAsync();
@@ -239,38 +236,6 @@ namespace GenderPayGap.BusinessLogic
                 ////Update the search index
                 await _searchBusinessLogic.UpdateSearchIndexAsync(org);
             }
-        }
-
-        public virtual IEnumerable<ScopesFileModel> GetScopesFileModelByYear(int year)
-        {
-            IQueryable<OrganisationScope> scopes = DataRepository.GetAll<OrganisationScope>()
-                .Where(s => s.SnapshotDate.Year == year && s.Status == ScopeRowStatuses.Active);
-
-#if DEBUG
-            if (Debugger.IsAttached)
-            {
-                scopes = scopes.Take(100);
-            }
-#endif
-            IQueryable<ScopesFileModel> records = scopes.Select(
-                o => new ScopesFileModel {
-                    OrganisationId = o.OrganisationId,
-                    OrganisationName = o.Organisation.OrganisationName,
-                    EmployerReference = o.Organisation.EmployerReference,
-                    OrganisationScopeId = o.OrganisationScopeId,
-                    ScopeStatus = o.ScopeStatus,
-                    ScopeStatusDate = o.ScopeStatusDate,
-                    RegisterStatus = o.RegisterStatus,
-                    RegisterStatusDate = o.RegisterStatusDate,
-                    ContactEmailAddress = o.ContactEmailAddress,
-                    ContactFirstname = o.ContactFirstname,
-                    ContactLastname = o.ContactLastname,
-                    ReadGuidance = o.ReadGuidance,
-                    Reason = o.Reason,
-                    CampaignId = o.CampaignId
-                });
-
-            return records;
         }
 
         public async Task<HashSet<Organisation>> SetScopeStatusesAsync()
