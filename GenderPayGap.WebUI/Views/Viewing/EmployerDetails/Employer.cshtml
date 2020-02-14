@@ -4,9 +4,6 @@
 @using GenderPayGap.WebUI.Models.Shared
 @model EmployerDetailsViewModel
 @{
-    //Required for variables in Sitemap taghelpers
-    ViewBag.EmployerName = Model.Organisation.OrganisationName;
-
     Organisation organisation = Model.Organisation;
     ViewBag.Title = $"Gender pay gap for {organisation.OrganisationName} - GOV.UK";
     ViewBag.pageDescription = $"View gender pay gap details for {organisation.OrganisationName} and compare with other organisations";
