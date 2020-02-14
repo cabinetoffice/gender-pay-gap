@@ -1,44 +1,69 @@
-﻿@model List<string>
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model List<string>
+@{
+    ViewBag.Title = "Active organisations with the same company number - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
 
-<details class="govuk-details" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-            <span class="govuk-!-font-weight-bold govuk-!-font-size-36">
-                @(Model.Count)
-            </span>
-            duplicate company numbers
-        </span>
-    </summary>
-    <div class="govuk-details__text">
-        @if (!Model.Any())
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
         {
-            <div class="govuk-body">
-                No duplicate company numbers
-            </div>
-        }
-        else
-        {
-            <table class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Company number</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Database integrity checks",
+                Href = Url.Action("DatabaseIntegrityChecks", "AdminDatabaseIntegrityChecks")
+            },
+            new CrumbViewModel
+            {
+                Text = "Active organisations with the same company number"
+            }
+        };
+    }
 
-                    @foreach (string companyNumber in Model)
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                <a href="@(Url.Action("SearchGet", "AdminSearch", new {query = companyNumber}))"
-                                   class="govuk-link">
-                                    @(companyNumber)
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Database integrity checks</span>
+<h1 class="govuk-heading-xl">Active organisations with the same company number</h1>
+
+@if (!Model.Any())
+{
+    <div class="govuk-body">
+        No duplicate company numbers
     </div>
-</details>
+}
+else
+{
+    <h2 class="govuk-heading-m">@(Model.Count) duplicate company numbers</h2>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Company number</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+
+            @foreach (string companyNumber in Model)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a href="@(Url.Action("SearchGet", "AdminSearch", new {query = companyNumber}))"
+                           class="govuk-link">
+                            @(companyNumber)
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

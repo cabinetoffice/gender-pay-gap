@@ -32,8 +32,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return View("DatabaseIntegrityChecks");
         }
 
-        [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses-ajax")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveAddressesAjax()
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses")]
+        public async Task<IActionResult> OrganisationsWithMultipleActiveAddresses()
         {
             var organisationsWithMultipleActiveAddresses = new List<Organisation>();
             List<Organisation> organisations = dataRepository.GetAll<Organisation>()
@@ -52,8 +52,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
         }
 
-        [HttpGet("database-integrity-checks/active-organisations-with-the-same-name-ajax")]
-        public async Task<IActionResult> ActiveOrganisationsWithTheSameNameAjax()
+        [HttpGet("database-integrity-checks/active-organisations-with-the-same-name")]
+        public async Task<IActionResult> ActiveOrganisationsWithTheSameName()
         {
             var activeOrganisationsWithTheSameName = new List<string>();
             List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
@@ -71,8 +71,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("ActiveOrganisationsWithTheSameName", activeOrganisationsWithTheSameName);
         }
 
-        [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number-ajax")]
-        public async Task<IActionResult> ActiveOrganisationsWithTheSameCompanyNumberAjax()
+        [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number")]
+        public async Task<IActionResult> ActiveOrganisationsWithTheSameCompanyNumber()
         {
             var activeOrganisationsWithTheSameCompanyNumber = new List<string>();
             List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
@@ -93,8 +93,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("ActiveOrganisationsWithTheSameCompanyNumber", activeOrganisationsWithTheSameCompanyNumber);
         }
 
-        [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active-ajax")]
-        public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActiveAjax()
+        [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active")]
+        public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActive()
         {
             var organisationsWhereLatestAddressIsNotActive = new List<Organisation>();
             List<Organisation> organisations = dataRepository.GetAll<Organisation>()
@@ -113,8 +113,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
 
-        [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year-ajax")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYearAjax()
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year")]
+        public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYear()
         {
             var organisationsWithMultipleActiveScopesForASingleYear = new List<Organisation>();
             List<Organisation> organisations = dataRepository.GetAll<Organisation>()
@@ -137,8 +137,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWithMultipleActiveScopesForASingleYear", organisationsWithMultipleActiveScopesForASingleYear);
         }
 
-        [HttpGet("database-integrity-checks/organisations-with-no-active-scope-for-every-year-ajax")]
-        public async Task<IActionResult> OrganisationsWithNoActiveScopeForEveryYearAjax()
+        [HttpGet("database-integrity-checks/organisations-with-no-active-scope-for-every-year")]
+        public async Task<IActionResult> OrganisationsWithNoActiveScopeForEveryYear()
         {
             var organisationsWithNoActiveScopeForEveryYear = new List<Organisation>();
             List<Organisation> organisations = dataRepository.GetAll<Organisation>()
@@ -176,8 +176,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("OrganisationsWithNoActiveScopeForEveryYear", organisationsWithNoActiveScopeForEveryYear);
         }
 
-        [HttpGet("database-integrity-checks/organisations-with-multiple-active-returns-for-a-single-year-ajax")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveReturnsForASingleYearAjax()
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-returns-for-a-single-year")]
+        public async Task<IActionResult> OrganisationsWithMultipleActiveReturnsForASingleYear()
         {
             var organisationsWithMultipleActiveReturnsForASingleYear = new List<Organisation>();
             List<Organisation> organisations = dataRepository.GetAll<Organisation>()
@@ -203,8 +203,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 organisationsWithMultipleActiveReturnsForASingleYear);
         }
 
-        [HttpGet("database-integrity-checks/public-sector-organisations-without-a-public-sector-type-ajax")]
-        public async Task<IActionResult> PublicSectorOrganisationsWithoutAPublicSectorTypeAjax()
+        [HttpGet("database-integrity-checks/public-sector-organisations-without-a-public-sector-type")]
+        public async Task<IActionResult> PublicSectorOrganisationsWithoutAPublicSectorType()
         {
             var publicSectorOrganisationsWithoutAPublicSectorType = new List<Organisation>();
             List<Organisation> activePublicOrganisations = dataRepository
@@ -230,8 +230,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
         }
 
-        [HttpGet("database-integrity-checks/private-sector-organisations-with-a-public-sector-type-ajax")]
-        public async Task<IActionResult> PrivateSectorOrganisationsWithAPublicSectorTypeAjax()
+        [HttpGet("database-integrity-checks/private-sector-organisations-with-a-public-sector-type")]
+        public async Task<IActionResult> PrivateSectorOrganisationsWithAPublicSectorType()
         {
             var privateSectorOrganisationsWithAPublicSectorType = new List<Organisation>();
             List<Organisation> activePrivateOrganisations = dataRepository
