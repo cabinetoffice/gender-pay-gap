@@ -22,9 +22,7 @@ namespace GenderPayGap.BusinessLogic
     {
 
         // Organisation repo
-        Organisation GetOrganisationById(long organisationId);
 
-        string GenerateEmployerReference();
         Task SetUniqueEmployerReferenceAsync(Organisation organisation);
 
         string GeneratePINCode(bool isTestUser);
