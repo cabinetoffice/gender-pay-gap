@@ -15,9 +15,6 @@ namespace GenderPayGap.WebJob
 
             switch (Filenames.GetRootFilename(fileName))
             {
-                case Filenames.Registrations:
-                    await UpdateRegistrationsAsync(filePath);
-                    break;
                 case Filenames.UnverifiedRegistrations:
                     await UpdateUnverifiedRegistrationsAsync(filePath);
                     break;
