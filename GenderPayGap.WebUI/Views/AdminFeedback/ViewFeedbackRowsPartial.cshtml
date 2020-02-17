@@ -1,0 +1,145 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database.Models
+@model GenderPayGap.WebUI.Views.AdminFeedback.ViewFeedbackRowsPartialViewModel
+
+<details class="govuk-details" data-module="govuk-details" @(Model.Open ? Html.Raw("open") : null)>
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            <span class="govuk-!-font-weight-bold govuk-!-font-size-48">
+                @(Model.FeedbackRows.Count)
+            </span>
+            @(Model.FeedbackTitle)
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                @foreach (Feedback feedback in Model.FeedbackRows)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
+                            <span style="white-space: nowrap">
+                                @(feedback.CreatedDate.ToString("d MMM yyyy"))
+                            </span>
+                            <span style="white-space: nowrap">
+                                @(feedback.CreatedDate.ToString("HH:mm"))
+                            </span>
+                        </td>
+                        <th scope="row" class="govuk-table__header">
+                            Difficulty
+                        </th>
+                        <td class="govuk-table__cell">
+                            @(feedback.Difficulty)
+                        </td>
+                        <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
+                            <form method="post"
+                                  action="@(Url.Action())"
+                                  style="display: flex; flex-direction: column; align-items: center;">
+                                <input type="hidden" name="feedbackId" value="@(feedback.FeedbackId)" />
+                                <button class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-bottom-2 govuk-!-width-full @(Model.ButtonClasses)"
+                                        data-module="govuk-button"
+                                        name="status"
+                                        value="@(FeedbackStatus.Spam)">
+                                    Spam
+                                </button>
+                                <button class="govuk-button govuk-!-margin-bottom-0 @(Model.ButtonClasses)"
+                                        data-module="govuk-button"
+                                        name="status"
+                                        value="@(FeedbackStatus.NotSpam)">
+                                    Not spam
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            How did you hear?
+                        </th>
+                        <td class="govuk-table__cell">
+                            @if (feedback.NewsArticle == true)
+                            {<span>News article.</span><br />}
+                            @if (feedback.SocialMedia == true)
+                            {<span>Social media.</span><br />}
+                            @if (feedback.CompanyIntranet == true)
+                            {<span>Company Intranet.</span><br />}
+                            @if (feedback.EmployerUnion == true)
+                            {<span>Employer union.</span><br />}
+                            @if (feedback.InternetSearch == true)
+                            {<span>Internet search for a company.</span><br />}
+                            @if (feedback.Charity == true)
+                            {<span>Charity.</span><br />}
+                            @if (feedback.LobbyGroup == true)
+                            {<span>Lobby group.</span><br />}
+                            @if (feedback.Report == true)
+                            {<span>Report.</span><br />}
+                            @if (feedback.OtherSource == true)
+                            {<span>Other: @(feedback.OtherSourceText)</span><br />}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            Why have you visited?
+                        </th>
+                        <td class="govuk-table__cell">
+                            @if (feedback.FindOutAboutGpg == true)
+                            {<span>I wanted to find out what the gender pay gap is.</span><br />}
+                            @if (feedback.ReportOrganisationGpgData == true)
+                            {<span>I reported my organisation's gender pay gap data.</span><br />}
+                            @if (feedback.CloseOrganisationGpg == true)
+                            {<span>I wanted to understand how I can close my organisation's gender pay gap.</span><br />}
+                            @if (feedback.ViewSpecificOrganisationGpg == true)
+                            {<span>I viewed a specific organisation's gender pay gap.</span><br />}
+                            @if (feedback.ActionsToCloseGpg == true)
+                            {<span>I wanted to know what action other organisations are taking to close the gender pay gap.</span><br />}
+                            @if (feedback.OtherReason == true)
+                            {<span>Other: @(feedback.OtherReasonText)</span><br />}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            Who are you?
+                        </th>
+                        <td class="govuk-table__cell">
+                            @if (feedback.EmployeeInterestedInOrganisationData == true)
+                            {<span>An employee interested in your organisation’s gender pay gap data.</span><br />}
+                            @if (feedback.ManagerInvolvedInGpgReport == true)
+                            {<span>A manager involved in gender pay gap reporting or diversity and inclusion.</span><br />}
+                            @if (feedback.ResponsibleForReportingGpg == true)
+                            {<span>A person responsible for reporting your organisation’s gender pay gap.</span><br />}
+                            @if (feedback.PersonInterestedInGeneralGpg == true)
+                            {<span>A person interested in the gender pay gap generally.</span><br />}
+                            @if (feedback.PersonInterestedInSpecificOrganisationGpg == true)
+                            {<span>A person interested in a specific organisation’s gender pay gap.</span><br />}
+                            @if (feedback.OtherPerson == true)
+                            {<span>Other: @(feedback.OtherPersonText)</span><br />}
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            Email address
+                        </th>
+                        <td class="govuk-table__cell">
+                            @(feedback.EmailAddress)
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            Phone number
+                        </th>
+                        <td class="govuk-table__cell">
+                            @(feedback.PhoneNumber)
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header" style="border-bottom-width: 2px;">
+                            Details
+                        </th>
+                        <td class="govuk-table__cell" style="width: 53%; border-bottom-width: 2px;">
+                            @(feedback.Details)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</details>
