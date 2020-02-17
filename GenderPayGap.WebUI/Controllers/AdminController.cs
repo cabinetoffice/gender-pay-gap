@@ -452,17 +452,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             DownloadViewModel.Download download;
             
             #region Registrations
-
-            download = new DownloadViewModel.Download {
-                Type = "Users",
-                Filepath = Path.Combine(Global.DownloadsPath, Filenames.Registrations),
-                Title = "User Organisation Registrations",
-                Description =
-                    "A list of all organisations that have been registered by a user. This includes all users for each organisation."
-            };
-            download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-            model.Downloads.Add(download);
-
+            
             download = new DownloadViewModel.Download {
                 Type = "Users",
                 Filepath = Path.Combine(Global.DownloadsPath, Filenames.UnverifiedRegistrations),
