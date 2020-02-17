@@ -267,8 +267,6 @@ namespace GenderPayGap.Core
 
     public static class Filenames
     {
-
-        public const string Registrations = "GPG-Registrations.csv";
         public const string UnverifiedRegistrations = "GPG-UnverifiedRegistrations.csv";
         public const string UnfinishedOrganisations = "GPG-UnfinishedOrgs.csv";
         public const string ShortCodes = "GPG-ShortCodes.csv";
