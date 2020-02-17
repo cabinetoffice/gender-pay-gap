@@ -292,6 +292,43 @@ namespace GenderPayGap.WebUI.Controllers
 
             return fileContentResult;
         }
+        
+        [HttpGet("downloads-new/user-organisation-registrations")]
+        public FileContentResult DownloadUserOrganisationRegistrations()
+        {
+            List<UserOrganisation> userOrganisations = dataRepository.GetAll<UserOrganisation>()
+                .Include(uo => uo.Organisation)
+                .Include(uo => uo.User)
+                .ToList();
+
+            var records = userOrganisations.Select(
+                    uo => new
+                    {
+                        uo.OrganisationId,
+                        uo.UserId,
+                        uo.Organisation.OrganisationName,
+                        uo.Organisation.CompanyNumber,
+                        uo.Organisation.SectorType,
+                        uo.Organisation.LatestReturn,
+                        uo.Method,
+                        uo.Organisation.LatestScope.ScopeStatus,
+                        uo.Organisation.LatestScope.ScopeStatusDate,
+                        uo.User.Firstname,
+                        uo.User.Lastname,
+                        uo.User.JobTitle,
+                        uo.User.EmailAddress,
+                        uo.PINSentDate,
+                        uo.PINConfirmedDate,
+                        uo.Created,
+                        uo.Address
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
 
         [HttpGet("downloads-new/user-consent-send-updates")]
         public FileContentResult DownloadUserConsentSendUpdates()
