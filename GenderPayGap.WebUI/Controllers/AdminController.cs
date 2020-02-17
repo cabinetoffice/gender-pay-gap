@@ -284,20 +284,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             var model = new DownloadViewModel();
             IEnumerable<string> files = null;
             DownloadViewModel.Download download;
-
-            #region Users
-
-            download = new DownloadViewModel.Download {
-                Type = "Users",
-                Filepath = Path.Combine(Global.DownloadsPath, Filenames.Users),
-                Title = "All Users Accounts",
-                Description = "A list of all user accounts and their statuses."
-            };
-            download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-            model.Downloads.Add(download);
-
-            #endregion
-
+            
             #region Registrations
 
             download = new DownloadViewModel.Download {
