@@ -197,7 +197,7 @@ namespace GenderPayGap.WebJob
         {
             return GetReminderDates(sectorType)
                 .Where(reminderDate => reminderDate < VirtualDateTime.Now)
-                .OrderBy(reminderDate => reminderDate)
+                .OrderByDescending(reminderDate => reminderDate)
                 .FirstOrDefault();
         }
 
