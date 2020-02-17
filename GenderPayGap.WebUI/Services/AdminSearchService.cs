@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -29,6 +30,7 @@ namespace GenderPayGap.WebUI.Services
         public long UserId { get; set; }
         public string FullName { get; set; }
         public string EmailAddress { get; set; }
+        public UserStatuses Status { get; set; }
     }
 
     public class AdminSearchServiceCacheUpdater : IHostedService, IDisposable
@@ -184,7 +186,8 @@ namespace GenderPayGap.WebUI.Services
                 {
                     UserId = u.UserId,
                     FullName = u.Fullname,
-                    EmailAddress = u.EmailAddress
+                    EmailAddress = u.EmailAddress,
+                    Status = u.Status
                 })
                 .ToList();
         }
@@ -271,7 +274,10 @@ namespace GenderPayGap.WebUI.Services
                         AdminSearchMatchViewModel matchGroupsForEmailAddress = GetMatchGroups(user.EmailAddress, searchTerms);
 
                         return new AdminSearchResultUserViewModel {
-                            UserFullName = matchGroupsForFullName, UserEmailAddress = matchGroupsForEmailAddress, UserId = user.UserId
+                            UserId = user.UserId,
+                            UserFullName = matchGroupsForFullName,
+                            UserEmailAddress = matchGroupsForEmailAddress,
+                            Status = user.Status
                         };
                     })
                 .ToList();
