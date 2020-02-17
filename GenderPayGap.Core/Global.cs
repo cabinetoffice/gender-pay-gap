@@ -55,7 +55,7 @@ namespace GenderPayGap.Core
         // public static bool EnableSubmitAlerts => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean();
         public static bool EncryptEmails => Config.GetAppSetting("EncryptEmails").ToBoolean(true);
         public static bool MaintenanceMode => Config.GetAppSetting("MaintenanceMode").ToBoolean();
-        public static bool StickySessions => Config.GetAppSetting("StickySessions").ToBoolean(false);
+        public static bool StickySessions => Config.GetAppSetting("StickySessions").ToBoolean(true);
         public static int StaticCacheSeconds => Config.GetAppSetting("CacheProfileSettings:StaticDuration").ToInt32(86400);
         public static DateTime PrivacyChangedDate => Config.GetAppSetting("PrivacyChangedDate").ToDateTime();
         public static DateTime PrivateAccountingDate => Config.GetAppSetting("PrivateAccountingDate").ToDateTime();
