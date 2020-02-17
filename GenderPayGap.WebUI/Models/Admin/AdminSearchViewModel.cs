@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GenderPayGap.Core;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
@@ -44,6 +45,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public AdminSearchMatchViewModel UserFullName { get; set; }
         public AdminSearchMatchViewModel UserEmailAddress { get; set; }
         public long UserId { get; set; }
+        public UserStatuses Status { get; set; }
 
     }
 

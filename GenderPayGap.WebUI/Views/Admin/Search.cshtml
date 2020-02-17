@@ -1,3 +1,4 @@
+@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -184,6 +185,12 @@
                                     </a>
                                     <br/>
                                     @(HighlightMatches(user.UserEmailAddress))
+                                    
+                                    @if (user.Status != UserStatuses.Active)
+                                    {
+                                        <br/>
+                                        <span class="govuk-!-font-weight-bold">(@(user.Status))</span>
+                                    }
                                 </td>
                             </tr>
                         }
