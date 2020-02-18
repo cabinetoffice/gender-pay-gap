@@ -510,18 +510,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             string filepath = command.AfterFirst(":");
             command = command.BeforeFirst(":");
 
-            if (command.EqualsI("Send", "Pause", "Update"))
-            {
-                try
-                {
-                    await UpdateFileAsync(filepath, command);
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $@"Error: {ex.Message}");
-                }
-            }
-            else if (command.EqualsI("Recheck"))
+            if (command.EqualsI("Recheck"))
             {
                 await RecheckCompaniesAsync();
             }
