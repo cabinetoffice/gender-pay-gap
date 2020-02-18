@@ -45,7 +45,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View("Downloads", viewModel);
         }
         
-        [HttpGet("downloads-new/all-organisations")]
+        [HttpGet("downloads/all-organisations")]
         public FileContentResult DownloadAllOrganisations()
         {
             List<Organisation> allOrganisations = dataRepository.GetAll<Organisation>()
@@ -309,8 +309,6 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.Organisation.CompanyNumber,
                         uo.Organisation.SectorType,
                         uo.Method,
-                        uo.Organisation.LatestScope.ScopeStatus,
-                        uo.Organisation.LatestScope.ScopeStatusDate,
                         uo.User.Firstname,
                         uo.User.Lastname,
                         uo.User.JobTitle,
@@ -344,8 +342,6 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.Organisation.CompanyNumber,
                         uo.Organisation.SectorType,
                         uo.Method,
-                        uo.Organisation.LatestScope.ScopeStatus,
-                        uo.Organisation.LatestScope.ScopeStatusDate,
                         uo.User.Firstname,
                         uo.User.Lastname,
                         uo.User.JobTitle,
