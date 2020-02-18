@@ -30,7 +30,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
-        [HttpGet("downloads-new")]
+        [HttpGet("downloads")]
         public IActionResult Downloads()
         {
             int firstReportingYear = Global.FirstReportingYear;
@@ -73,8 +73,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        
-        [HttpGet("downloads-new/orphan-organisations")]
+        [HttpGet("downloads/orphan-organisations")]
         public FileContentResult DownloadOrphanOrganisations()
         {
             DateTime pinExpiresDate = Global.PinExpiresDate;
@@ -111,7 +110,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/organisation-addresses")]
+        [HttpGet("downloads/organisation-addresses")]
         public FileContentResult DownloadOrganisationAddresses()
         {
             DateTime pinExpiresDate = Global.PinExpiresDate;
@@ -145,7 +144,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/organisation-scopes-for-{year}")]
+        [HttpGet("downloads/organisation-scopes-for-{year}")]
         public FileContentResult DownloadOrganisationScopesForYear(int year)
         {
             List<Organisation> organisationsWithScopesForYear = dataRepository.GetAll<Organisation>()
@@ -170,7 +169,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/all-submissions-for-{year}")]
+        [HttpGet("downloads/all-submissions-for-{year}")]
         public FileContentResult DownloadAllSubmissionsForYear(int year)
         {
             List<Organisation> organisationsWithReturnsForYear = dataRepository.GetAll<Organisation>()
@@ -231,7 +230,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/late-submissions")]
+        [HttpGet("downloads/late-submissions")]
         public FileContentResult DownloadLateSubmissions()
         {
             List<Organisation> organisationsWithLateReturns = dataRepository.GetAll<Organisation>()
@@ -265,7 +264,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
         
-        [HttpGet("downloads-new/all-users")]
+        [HttpGet("downloads/all-users")]
         public FileContentResult DownloadAllUsers()
         {
             List<User> users = dataRepository.GetAll<User>().ToList();
@@ -293,7 +292,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
         
-        [HttpGet("downloads-new/user-organisation-registrations")]
+        [HttpGet("downloads/user-organisation-registrations")]
         public FileContentResult DownloadUserOrganisationRegistrations()
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetAll<UserOrganisation>()
@@ -328,7 +327,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
         
-        [HttpGet("downloads-new/unverified-user-organisation-registrations")]
+        [HttpGet("downloads/unverified-user-organisation-registrations")]
         public FileContentResult DownloadUnverifiedUserOrganisationRegistrations()
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetEntities<UserOrganisation>() 
@@ -363,7 +362,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/user-consent-send-updates")]
+        [HttpGet("downloads/user-consent-send-updates")]
         public FileContentResult DownloadUserConsentSendUpdates()
         {
             List<User> users = dataRepository.GetAll<User>()
@@ -388,7 +387,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/user-consent-allow-contact-for-feedback")]
+        [HttpGet("downloads/user-consent-allow-contact-for-feedback")]
         public FileContentResult DownloadUserConsentAllowContactForFeedback()
         {
             List<User> users = dataRepository.GetAll<User>()
