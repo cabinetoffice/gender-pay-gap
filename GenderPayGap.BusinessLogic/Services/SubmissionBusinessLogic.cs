@@ -17,7 +17,6 @@ namespace GenderPayGap.BusinessLogic
 
         // Submission
         Task<Return> GetSubmissionByReturnIdAsync(long returnId);
-        Task<Return> GetLatestSubmissionBySnapshotYearAsync(long organisationId, int snapshotYear);
         ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert);
         CustomResult<Return> GetSubmissionByOrganisationAndYear(Organisation organisation, int year);
 
@@ -43,24 +42,7 @@ namespace GenderPayGap.BusinessLogic
             return await DataRepository.GetAll<Return>()
                 .FirstOrDefaultAsync(o => o.ReturnId == returnId);
         }
-
-        /// <summary>
-        ///     Gets the latest submitted return for the specified organisation id and snapshot year
-        /// </summary>
-        /// <param name="organisationId"></param>
-        /// <param name="snapshotYear"></param>
-        /// <returns></returns>
-        public virtual async Task<Return> GetLatestSubmissionBySnapshotYearAsync(long organisationId, int snapshotYear)
-        {
-            Return orgSubmission = await DataRepository.GetAll<Return>()
-                .FirstOrDefaultAsync(
-                    s => s.AccountingDate.Year == snapshotYear
-                         && s.OrganisationId == organisationId
-                         && s.Status == ReturnStatuses.Submitted);
-
-            return orgSubmission;
-        }
-
+        
         public IEnumerable<Return> GetAllSubmissionsByOrganisationIdAndSnapshotYear(long organisationId, int snapshotYear)
         {
             return DataRepository.GetAll<Return>().Where(s => s.OrganisationId == organisationId && s.AccountingDate.Year == snapshotYear);
