@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GenderPayGap.BusinessLogic.Models;
-using GenderPayGap.BusinessLogic.Models.Submit;
+﻿using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Tests.Common.TestHelpers;

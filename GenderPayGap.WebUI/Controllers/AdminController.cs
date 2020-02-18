@@ -12,7 +12,6 @@ using CsvHelper;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Api;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
@@ -439,86 +438,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
 
         #endregion
-
-        #region Downloads Action
-
-        [HttpGet("downloads")]
-        public async Task<IActionResult> Downloads()
-        {
-            await Global.FileRepository.CreateDirectoryAsync(Global.DownloadsPath);
-
-            var model = new DownloadViewModel();
-            IEnumerable<string> files = null;
-            DownloadViewModel.Download download;
-            
-            //Sort by modified date then by descending date
-            model.Downloads.OrderByDescending(d => d.Filename);
-
-            //Get the modified date and record counts
-            bool isSuperAdministrator = IsSuperAdministrator;
-            await model.Downloads.WaitForAllAsync(
-                async d => {
-                    if (await Global.FileRepository.GetFileExistsAsync(d.Filepath))
-                    {
-                        d.Modified = await Global.FileRepository.GetLastWriteTimeAsync(d.Filepath);
-                        IDictionary<string, string> metaData = await Global.FileRepository.LoadMetaDataAsync(d.Filepath);
-
-                        d.Count = metaData != null && metaData.ContainsKey("RecordCount")
-                            ? metaData["RecordCount"].ToInt32().ToString()
-                            : "(unknown)";
-
-                        //Add the shared keys
-                        if (isSuperAdministrator)
-                        {
-                            d.EhrcAccessKey = $"../download?p={d.Filepath}";
-                        }
-                    }
-                });
-
-            this.StashModel(model);
-
-            return View("Downloads", model);
-        }
-
-        [HttpPost("downloads")]
-        [ValidateAntiForgeryToken]
-        [PreventDuplicatePost]
-        public async Task<IActionResult> Downloads(string command)
-        {
-            //Throw error if the user is not a super administrator
-            if (!IsSuperAdministrator)
-            {
-                return new HttpUnauthorizedResult($"User {CurrentUser?.EmailAddress} is not a super administrator");
-            }
-
-            var model = this.UnstashModel<DownloadViewModel>();
-            if (model == null)
-            {
-                return View("CustomError", new ErrorViewModel(1138));
-            }
-
-            string filepath = command.AfterFirst(":");
-            command = command.BeforeFirst(":");
-            try
-            {
-                await UpdateFileAsync(filepath, command);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $@"Error: {ex.Message}");
-            }
-
-            //Return any errors
-            if (!ModelState.IsValid)
-            {
-                return View("Downloads", model);
-            }
-
-            return View("CustomError", new ErrorViewModel(1139));
-        }
-
-        #endregion
-
+        
         #region Uploads Action
 
         [HttpGet("uploads")]
