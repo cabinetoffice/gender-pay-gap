@@ -23,6 +23,7 @@ namespace GenderPayGap.WebUI.Services
         public List<string> OrganisationNames { get; set; } // All names (current and previous)
         public string CompanyNumber { get; set; }
         public string EmployerReference { get; set; }
+        public OrganisationStatuses Status { get; set; }
     }
 
     internal class AdminSearchServiceUser
@@ -173,7 +174,8 @@ namespace GenderPayGap.WebUI.Services
                     OrganisationName = o.OrganisationName,
                     CompanyNumber = o.CompanyNumber,
                     EmployerReference = o.EmployerReference,
-                    OrganisationNames = o.OrganisationNames.Select(on => on.Name).ToList()
+                    OrganisationNames = o.OrganisationNames.Select(on => on.Name).ToList(),
+                    Status = o.Status
                 })
                 .ToList();
         }
@@ -256,7 +258,8 @@ namespace GenderPayGap.WebUI.Services
                             OrganisationPreviousNames = matchGroupsForPreviousNames,
                             EmployerRef = employerRefMatch,
                             CompanyNumber = companyNumberMatch,
-                            OrganisationId = organisation.OrganisationId
+                            OrganisationId = organisation.OrganisationId,
+                            Status = organisation.Status
                         };
                     })
                 .ToList();

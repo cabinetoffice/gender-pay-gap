@@ -152,6 +152,11 @@
                                         <br/>
                                         @:Company number: <b>@(organisation.CompanyNumber)</b>
                                     }
+                                    @if (organisation.Status != OrganisationStatuses.Active)
+                                    {
+                                        <br />
+                                        <span class="govuk-!-font-weight-bold">(@(organisation.Status))</span>
+                                    }
                                 </td>
                             </tr>
                         }

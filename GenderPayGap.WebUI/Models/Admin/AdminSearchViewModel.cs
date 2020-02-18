@@ -36,6 +36,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public long OrganisationId { get; set; }
         public string EmployerRef { get; set; }
         public string CompanyNumber { get; set; }
+        public OrganisationStatuses Status { get; set; }
 
     }
 
