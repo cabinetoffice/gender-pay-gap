@@ -30,7 +30,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
-        [HttpGet("downloads-new")]
+        [HttpGet("downloads")]
         public IActionResult Downloads()
         {
             int firstReportingYear = Global.FirstReportingYear;
@@ -67,13 +67,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-AllOrganisations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-AllOrganisations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/orphan-organisations")]
+        [HttpGet("downloads/orphan-organisations")]
         public FileContentResult DownloadOrphanOrganisations()
         {
             DateTime pinExpiresDate = Global.PinExpiresDate;
@@ -104,13 +104,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-OrphanOrganisations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrphanOrganisations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/organisation-addresses")]
+        [HttpGet("downloads/organisation-addresses")]
         public FileContentResult DownloadOrganisationAddresses()
         {
             DateTime pinExpiresDate = Global.PinExpiresDate;
@@ -138,13 +138,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-OrganisationAddresses-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrganisationAddresses-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/organisation-scopes-for-{year}")]
+        [HttpGet("downloads/organisation-scopes-for-{year}")]
         public FileContentResult DownloadOrganisationScopesForYear(int year)
         {
             List<Organisation> organisationsWithScopesForYear = dataRepository.GetAll<Organisation>()
@@ -163,13 +163,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-OrganisationScopesForYear-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrganisationScopesForYear-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/all-submissions-for-{year}")]
+        [HttpGet("downloads/all-submissions-for-{year}")]
         public FileContentResult DownloadAllSubmissionsForYear(int year)
         {
             List<Organisation> organisationsWithReturnsForYear = dataRepository.GetAll<Organisation>()
@@ -219,18 +219,18 @@ namespace GenderPayGap.WebUI.Controllers
 
                             returnForYear.CompanyLinkToGPGInfo,
                             returnForYear.ResponsiblePerson,
-                            OrganisationSize = returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
+                            returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
                         };
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-AllSubmissionsForYear-{year}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-AllSubmissionsForYear-{year}--{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/late-submissions")]
+        [HttpGet("downloads/late-submissions")]
         public FileContentResult DownloadLateSubmissions()
         {
             List<Organisation> organisationsWithLateReturns = dataRepository.GetAll<Organisation>()
@@ -258,13 +258,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-LateSubmissions-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-LateSubmissions-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
         
-        [HttpGet("downloads-new/all-users")]
+        [HttpGet("downloads/all-users")]
         public FileContentResult DownloadAllUsers()
         {
             List<User> users = dataRepository.GetAll<User>().ToList();
@@ -286,13 +286,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-AllUsers-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-AllUsers-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
         
-        [HttpGet("downloads-new/user-organisation-registrations")]
+        [HttpGet("downloads/user-organisation-registrations")]
         public FileContentResult DownloadUserOrganisationRegistrations()
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetAll<UserOrganisation>()
@@ -309,6 +309,8 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.Organisation.CompanyNumber,
                         uo.Organisation.SectorType,
                         uo.Method,
+                        uo.Organisation.LatestScope.ScopeStatus,
+                        uo.Organisation.LatestScope.ScopeStatusDate,
                         uo.User.Firstname,
                         uo.User.Lastname,
                         uo.User.JobTitle,
@@ -319,13 +321,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
         
-        [HttpGet("downloads-new/unverified-user-organisation-registrations")]
+        [HttpGet("downloads/unverified-user-organisation-registrations")]
         public FileContentResult DownloadUnverifiedUserOrganisationRegistrations()
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetEntities<UserOrganisation>() 
@@ -342,6 +344,8 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.Organisation.CompanyNumber,
                         uo.Organisation.SectorType,
                         uo.Method,
+                        uo.Organisation.LatestScope.ScopeStatus,
+                        uo.Organisation.LatestScope.ScopeStatusDate,
                         uo.User.Firstname,
                         uo.User.Lastname,
                         uo.User.JobTitle,
@@ -352,13 +356,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UnverifiedUserOrganisationRegistrations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UnverifiedUserOrganisationRegistrations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/user-consent-send-updates")]
+        [HttpGet("downloads/user-consent-send-updates")]
         public FileContentResult DownloadUserConsentSendUpdates()
         {
             List<User> users = dataRepository.GetAll<User>()
@@ -377,13 +381,13 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
-        [HttpGet("downloads-new/user-consent-allow-contact-for-feedback")]
+        [HttpGet("downloads/user-consent-allow-contact-for-feedback")]
         public FileContentResult DownloadUserConsentAllowContactForFeedback()
         {
             List<User> users = dataRepository.GetAll<User>()
@@ -402,7 +406,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserConsent-AllowContactForFeedback-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UserConsent-AllowContactForFeedback-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
