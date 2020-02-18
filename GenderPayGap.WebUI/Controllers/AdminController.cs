@@ -285,28 +285,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             IEnumerable<string> files = null;
             DownloadViewModel.Download download;
             
-            #region Registrations
-            
-            download = new DownloadViewModel.Download {
-                Type = "Users",
-                Filepath = Path.Combine(Global.DownloadsPath, Filenames.UnverifiedRegistrations),
-                Title = "Unverified User Organisation Registrations",
-                Description = "A list of all unverified organisations pending verification from a user."
-            };
-            download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-            model.Downloads.Add(download);
-
-            download = new DownloadViewModel.Download {
-                Type = "Users",
-                Filepath = Path.Combine(Global.DownloadsPath, Filenames.UnverifiedRegistrations),
-                Title = "Unverified User Organisation Registrations",
-                Description = "A list of all unverified organisations pending verification from a user."
-            };
-            download.ShowUpdateButton = !await GetFileUpdatingAsync(download.Filepath);
-            model.Downloads.Add(download);
-
-            #endregion
-
             //Sort by modified date then by descending date
             model.Downloads.OrderByDescending(d => d.Filename);
 
