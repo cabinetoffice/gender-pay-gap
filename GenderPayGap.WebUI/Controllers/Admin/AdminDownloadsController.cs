@@ -297,7 +297,7 @@ namespace GenderPayGap.WebUI.Controllers
         public FileContentResult DownloadUserOrganisationRegistrations()
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetAll<UserOrganisation>()
-                .Include(uo => uo.Organisation)
+                .Include(uo => uo.Organisation.LatestScope)
                 .Include(uo => uo.User)
                 .ToList();
 
@@ -309,7 +309,6 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.Organisation.OrganisationName,
                         uo.Organisation.CompanyNumber,
                         uo.Organisation.SectorType,
-                        uo.Organisation.LatestReturn,
                         uo.Method,
                         uo.Organisation.LatestScope.ScopeStatus,
                         uo.Organisation.LatestScope.ScopeStatusDate,
@@ -319,12 +318,46 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.User.EmailAddress,
                         uo.PINSentDate,
                         uo.PINConfirmedDate,
-                        uo.Created,
-                        uo.Address
+                        uo.Created
                     })
                 .ToList();
 
             string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
+        }
+        
+        [HttpGet("downloads-new/unverified-user-organisation-registrations")]
+        public FileContentResult DownloadUnverifiedUserOrganisationRegistrations()
+        {
+            List<UserOrganisation> userOrganisations = dataRepository.GetEntities<UserOrganisation>() 
+                .Where(uo => uo.PINConfirmedDate == null) 
+                .Include(uo => uo.Organisation.LatestScope) 
+                .Include(uo => uo.User) 
+                .ToList(); 
+            var records = userOrganisations.Select(
+                    uo => new
+                    {
+                        uo.OrganisationId,
+                        uo.UserId,
+                        uo.Organisation.OrganisationName,
+                        uo.Organisation.CompanyNumber,
+                        uo.Organisation.SectorType,
+                        uo.Method,
+                        uo.Organisation.LatestScope.ScopeStatus,
+                        uo.Organisation.LatestScope.ScopeStatusDate,
+                        uo.User.Firstname,
+                        uo.User.Lastname,
+                        uo.User.JobTitle,
+                        uo.User.EmailAddress,
+                        uo.PINSentDate,
+                        uo.PINConfirmedDate,
+                        uo.Created
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-UnverifiedUserOrganisationRegistrations-{DateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
