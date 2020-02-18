@@ -9,6 +9,8 @@ namespace GenderPayGap.WebUI.Views.AdminFeedback
         public string ButtonClasses { get; set; }
         public string FeedbackTitle { get; set; }
         public bool Open { get; set; }
+        public bool ShowMarkAsSpamButton { get; set; }
+        public bool ShowMarkAsNotSpamButton { get; set; }
 
     }
 }

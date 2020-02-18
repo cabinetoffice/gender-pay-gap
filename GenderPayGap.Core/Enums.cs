@@ -244,7 +244,7 @@ namespace GenderPayGap.Core
 
     public enum FeedbackStatus
     {
-        Uncategorised = 0,
+        New = 0,
         NotSpam = 1,
         Spam = 2
     }
