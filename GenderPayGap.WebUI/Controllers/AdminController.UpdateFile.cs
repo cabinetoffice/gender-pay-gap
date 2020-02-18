@@ -32,30 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             await Program.MvcApplication.ExecuteWebjobQueue.AddMessageAsync(
                 new QueueWrapper($"command=UpdateFile&filePath={filePath}&action={action}"));
         }
-
-        /// <summary>
-        ///     Checks if a file update has been triggered
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        private async Task<bool> GetFileUpdatingAsync(string filePath)
-        {
-            filePath = filePath.ToLower();
-            DateTime updated = Session[$"FileUpdate:{filePath}"].ToDateTime();
-            if (updated == DateTime.MinValue)
-            {
-                return false;
-            }
-
-            DateTime changed = updated;
-            if (await Global.FileRepository.GetFileExistsAsync(filePath))
-            {
-                changed = await Global.FileRepository.GetLastWriteTimeAsync(filePath);
-            }
-
-            return updated == changed;
-        }
-
+        
         /// <summary>
         ///     Marks a file as triggered for an update
         /// </summary>
