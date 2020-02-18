@@ -36,18 +36,25 @@
                                   action="@(Url.Action())"
                                   style="display: flex; flex-direction: column; align-items: center;">
                                 <input type="hidden" name="feedbackId" value="@(feedback.FeedbackId)" />
-                                <button class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-bottom-2 govuk-!-width-full @(Model.ButtonClasses)"
-                                        data-module="govuk-button"
-                                        name="status"
-                                        value="@(FeedbackStatus.Spam)">
-                                    Spam
-                                </button>
-                                <button class="govuk-button govuk-!-margin-bottom-0 @(Model.ButtonClasses)"
-                                        data-module="govuk-button"
-                                        name="status"
-                                        value="@(FeedbackStatus.NotSpam)">
-                                    Not spam
-                                </button>
+                                
+                                @if (Model.ShowMarkAsSpamButton)
+                                {
+                                    <button class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-bottom-2 govuk-!-width-full @(Model.ButtonClasses)"
+                                            data-module="govuk-button"
+                                            name="status"
+                                            value="@(FeedbackStatus.Spam)">
+                                        Spam
+                                    </button>
+                                }
+                                @if (Model.ShowMarkAsNotSpamButton)
+                                {
+                                    <button class="govuk-button govuk-!-margin-bottom-0 @(Model.ButtonClasses)"
+                                            data-module="govuk-button"
+                                            name="status"
+                                            value="@(FeedbackStatus.NotSpam)">
+                                        Not spam
+                                    </button>
+                                }
                             </form>
                         </td>
                     </tr>
