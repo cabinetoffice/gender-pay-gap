@@ -1,6 +1,4 @@
 ﻿@using GenderPayGap.Core
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
 @{
     ViewBag.Title = "Your organisation type - Gender pay gap reporting service";
@@ -18,16 +16,13 @@
 
             @await Html.CustomValidationSummaryAsync()
 
-            <h1 class="heading-large">
-                Registration options
+            <h1 class="heading-large" style="margin-bottom: 50px;">
+                Select the type of organisation you would like to add
             </h1>
 
             <div id="SectorTypeGroup" class="form-group @Html.SetErrorClass(model => model.SectorType, "error")">
                 <fieldset>
                     <legend>
-                        <h1 class="heading-medium" style="margin-top: 15px">
-                            Select which type of organisation you would like to register
-                        </h1>
                         @Html.ValidationMessageFor(model => model.SectorType, null, new {@class = "error-danger"})
                     </legend>
 
@@ -35,7 +30,7 @@
                         <input id="public" type="radio" name="SectorType" value="@(SectorTypes.Public)">
                         <label for="public">
                             <span class="form-label-bold">Public sector organisation</span>
-                            This includes most government departments, the armed forces, local authorities, NHS bodies, 
+                            This includes most government departments, the armed forces, local authorities, NHS bodies,
                             universities, and most schools (including academies and multi-academy trusts).
                         </label>
                     </div>
@@ -43,27 +38,29 @@
                         <input id="private" type="radio" name="SectorType" value="@(SectorTypes.Private)">
                         <label for="private">
                             <span class="form-label-bold">Private and voluntary sector organisation</span>
-                            This includes private limited companies, public limited companies, limited liability 
+                            This includes private limited companies, public limited companies, limited liability
                             partnerships, charities, independent and private schools, and other private sector organisations.
                         </label>
                     </div>
                 </fieldset>
             </div>
             <div class="panel panel-border-wide">
-                   <p>
-                       If you are not sure what type of organisation you are please read our
-                       <a class="govuk-link" href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview#relevant-employer">
-                           guidance</a>.
-                   </p>
+                <p>
+                    If you are not sure what type of organisation you are please read our
+                    <a class="govuk-link" href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview#relevant-employer">
+                        guidance
+                    </a>.
+                </p>
 
-                   <p>
-                       The full list of organisations required to report their gender pay gap data as a public sector organisation
-                       can be found in
-                       <a class="govuk-link" href="https://www.legislation.gov.uk/ukdsi/2017/9780111153277/schedule/2">
-                           Schedule 2 of the The Equality Act 2010 (Specific Duties and Public Authorities) Regulations
-                           2017</a>.
-                   </p>
-               </div>
+                <p>
+                    The full list of organisations required to report their gender pay gap data as a public sector organisation
+                    can be found in
+                    <a class="govuk-link" href="https://www.legislation.gov.uk/ukdsi/2017/9780111153277/schedule/2">
+                        Schedule 2 of the The Equality Act 2010 (Specific Duties and Public Authorities) Regulations
+                        2017
+                    </a>.
+                </p>
+            </div>
             <input type="submit" class="button" value="Continue"/>
 
             <div>
