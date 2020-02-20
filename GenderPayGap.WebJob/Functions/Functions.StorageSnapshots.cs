@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -244,69 +241,6 @@ namespace GenderPayGap.WebJob
             {
                 byte[] dataToHmac = Encoding.UTF8.GetBytes(canonicalizedString);
                 return Convert.ToBase64String(hmacSha256.ComputeHash(dataToHmac));
-            }
-        }
-
-        public static async Task ArchiveAzureStorageAsync()
-        {
-            const string logZipDir = @"\Archive\";
-
-            //Ensure the archive directory exists
-            if (!await Global.FileRepository.GetDirectoryExistsAsync(logZipDir))
-            {
-                await Global.FileRepository.CreateDirectoryAsync(logZipDir);
-            }
-
-            //Create the zip file path using todays date
-            string logZipFilePath = Path.Combine(logZipDir, $"{VirtualDateTime.Now.ToString("yyyyMMdd")}.zip");
-
-            //Dont zip if we have one for today
-            if (await Global.FileRepository.GetFileExistsAsync(logZipFilePath))
-            {
-                return;
-            }
-
-            string zipDir = Url.UrlToDirSeparator(Path.Combine(Global.FileRepository.RootDir, logZipDir));
-
-            using (var fileStream = new MemoryStream())
-            {
-                var files = 0;
-                using (var zipStream = new ZipArchive(fileStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (string dir in await Global.FileRepository.GetDirectoriesAsync("\\", null, true))
-                    {
-                        if (Url.UrlToDirSeparator($"{dir}\\").StartsWithI(zipDir))
-                        {
-                            continue;
-                        }
-
-                        foreach (string file in await Global.FileRepository.GetFilesAsync(dir, "*.*"))
-                        {
-                            string dirFile = Url.UrlToDirSeparator(file);
-
-                            // prevents stdout_ logs
-                            if (dirFile.ContainsI("stdout_"))
-                            {
-                                continue;
-                            }
-
-                            ZipArchiveEntry entry = zipStream.CreateEntry(dirFile);
-                            using (Stream entryStream = entry.Open())
-                            {
-                                await Global.FileRepository.ReadAsync(dirFile, entryStream);
-                                files++;
-                            }
-                        }
-                    }
-                }
-
-                if (files == 0)
-                {
-                    return;
-                }
-
-                fileStream.Position = 0;
-                await Global.FileRepository.WriteAsync(logZipFilePath, fileStream);
             }
         }
 

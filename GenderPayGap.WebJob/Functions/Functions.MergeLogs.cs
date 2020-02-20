@@ -26,9 +26,6 @@ namespace GenderPayGap.WebJob
 
             try
             {
-                //Backup the log files first
-                await ArchiveAzureStorageAsync();
-
                 var actions = new List<Task>();
 
                 #region WebServer Logs
