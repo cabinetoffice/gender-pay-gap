@@ -123,24 +123,42 @@ namespace GenderPayGap.WebJob
 
         private async Task AddDataToIndexAsync(ILogger log)
         {
-            IQueryable<Organisation> allOrgs = _DataRepository.GetAll<Organisation>();
-            List<Organisation> allOrgsList = await allOrgs.ToListAsync();
+            log.LogInformation($"UpdateSearchAsync: Loading SIC codes from file");
+            List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync(log);
+
+            log.LogInformation($"UpdateSearchAsync: Loading organisations");
+
+            IQueryable<Organisation> organisations = _DataRepository.GetAll<Organisation>()
+                .Where(o => o.Status == OrganisationStatuses.Active)
+                .Where(o => o.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
+                        || o.OrganisationScopes.Any(
+                            sc => sc.Status == ScopeRowStatuses.Active
+                                  && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope)));
 
             //Remove the test organisations
             if (!string.IsNullOrWhiteSpace(Global.TestPrefix))
             {
-                allOrgsList.RemoveAll(o => o.OrganisationName.StartsWithI(Global.TestPrefix));
+                organisations = organisations.Where(o => !o.OrganisationName.StartsWithI(Global.TestPrefix));
             }
 
-            IEnumerable<Organisation> lookupResult = _SearchBusinessLogic.LookupSearchableOrganisations(allOrgsList);
-            List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync(log);
-            IEnumerable<EmployerSearchModel> selection = lookupResult.Select(o => o.ToEmployerSearchResult(false, listOfSicCodeRecords));
-            List<EmployerSearchModel> selectionList = selection.ToList();
+            organisations = organisations
+                .Include(o => o.OrganisationNames)
+                .Include(o => o.OrganisationSicCodes)
+                .Include(o => o.Returns)
+                .Include(o => o.LatestReturn)
+                .Include(o => o.LatestAddress);
 
+            List<Organisation> materialisedOrganisations = organisations.ToList();
+
+            log.LogInformation($"UpdateSearchAsync: Converting organisations to search results");
+            List<EmployerSearchModel> selectionList = materialisedOrganisations.Select(o => o.ToEmployerSearchResult(false, listOfSicCodeRecords)).ToList();
+
+            log.LogInformation($"UpdateSearchAsync: Refreshing index");
             if (selectionList.Any())
             {
                 await Global.SearchRepository.RefreshIndexDataAsync(selectionList);
             }
+            log.LogInformation($"UpdateSearchAsync: done with organisations");
         }
 
         private static async Task<List<SicCodeSearchModel>> GetListOfSicCodeSearchModelsFromFileAsync(ILogger log)
