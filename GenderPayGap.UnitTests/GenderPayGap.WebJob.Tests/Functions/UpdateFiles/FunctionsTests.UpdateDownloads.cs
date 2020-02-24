@@ -52,7 +52,7 @@ namespace GenderPayGap.WebJob.Tests.Functions
                 .ToListAsync();
 
             //ACT
-            await _functions.UpdateDownloadFilesAsync(log.Object, "testadmin@user.com", true);
+            await _functions.UpdateDownloadFilesAsync(log.Object);
 
             //ASSERT
             //Check each return is in the download file
