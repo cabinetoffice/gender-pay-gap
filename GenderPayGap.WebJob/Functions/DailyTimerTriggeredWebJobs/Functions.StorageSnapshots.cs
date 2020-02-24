@@ -88,7 +88,7 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        public async Task TakeSnapshotAsync(ILogger log)
+        private async Task TakeSnapshotAsync(ILogger log)
         {
             try
             {
