@@ -36,8 +36,6 @@ namespace GenderPayGap.WebJob
         private readonly IGovNotifyAPI govNotifyApi;
         private readonly UpdateFromCompaniesHouseService _updateFromCompaniesHouseService;
 
-        private static readonly ConcurrentSet<string> RunningJobs = new ConcurrentSet<string>();
-
         #endregion
 
         #region Function Logging
