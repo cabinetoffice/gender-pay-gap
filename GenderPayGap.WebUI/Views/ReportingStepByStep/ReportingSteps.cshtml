@@ -65,30 +65,31 @@
         },
         new StepViewModel
         {
-            Title = "Create an account or sign in",
+            Title = "Create a user account or sign in",
             StepType = StepType.Number,
             StepNumber = 4,
             Description = new StepDescription
             {
-                Text = "All users must create an account, even if your organisation is already registered."
+                Text = "You will need to create your own user account even if someone else has previously reported your organisation's gender pay gap."
             },
             StepTasks = new List<StepTask>
             {
-                new StepTask {TaskText = "Create an account", TaskUrl = "/Register"},
+                new StepTask {TaskText = "Create your user account", TaskUrl = "/Register"},
                 new StepTask {TaskText = "Sign in to your account", TaskUrl = "/Register"},
             }
         },
         new StepViewModel
         {
-            Title = "Register an organisation",
+            Title = "Add or manage your organisations",
             StepType = StepType.And,
             Description = new StepDescription
             {
-                Text = "This can take up to three weeks to verify. Your must create an account before registering an organisation."
+                Text = "Adding a new organisation can take up to three weeks to verify. You must create your user account before adding an organisation."
             },
             StepTasks = new List<StepTask>
             {
-                new StepTask {TaskText = "Register an organisation", TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")},
+                new StepTask {TaskText = "Add an organisation", TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")},
+                new StepTask {TaskText = "Manage my organisations", TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")},
             }
         },
         new StepViewModel
