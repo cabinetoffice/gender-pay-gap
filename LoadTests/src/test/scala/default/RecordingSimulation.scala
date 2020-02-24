@@ -8,7 +8,7 @@ import io.gatling.http.Predef._
 
 class RecordingSimulation extends Simulation {
 
-	val MAX_NUM_USERS = 1000
+	val MAX_NUM_USERS = 20000
 	// Pauses are uniform duration between these two:
 	val PAUSE_MIN_DUR = 1 seconds
 	val PAUSE_MAX_DUR = 10 seconds
@@ -581,5 +581,7 @@ class RecordingSimulation extends Simulation {
 		Feedback.visit,
 		Feedback.submit)
 
-	setUp(scn.inject(rampUsers(300) during (10 minutes))).protocols(httpProtocol)
+	setUp(scn.inject(
+		constantUsersPerSec(1) during (5 hours)
+	)).protocols(httpProtocol)
 }
