@@ -38,11 +38,6 @@ namespace GenderPayGap.WebJob
         //Update GPG download file
         public async Task UpdateDownloadFilesAsync(ILogger log, string userEmail = null, bool force = false)
         {
-            if (RunningJobs.Contains(nameof(UpdateDownloadFiles)))
-            {
-                return;
-            }
-
             try
             {
                 List<int> returnYears = _DataRepository.GetAll<Return>()
@@ -124,10 +119,6 @@ namespace GenderPayGap.WebJob
                         log.LogError(ex, ex.Message);
                     }
                 }
-            }
-            finally
-            {
-                RunningJobs.Remove(nameof(UpdateDownloadFiles));
             }
         }
 
