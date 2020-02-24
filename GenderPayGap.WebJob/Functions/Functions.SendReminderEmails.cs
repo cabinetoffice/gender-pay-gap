@@ -141,7 +141,7 @@ namespace GenderPayGap.WebJob
         
         private static void SaveReminderEmailRecord(User user, SectorTypes sectorType)
         {
-            var reminderEmailRecord = new ReminderEmail {UserId = user.UserId, SectorType = sectorType, DateSent = VirtualDateTime.Now};
+            var reminderEmailRecord = new ReminderEmail {User = user, SectorType = sectorType, DateChecked = VirtualDateTime.Now};
             var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
             dataRepository.Insert(reminderEmailRecord);
             dataRepository.SaveChangesAsync().Wait();
@@ -170,9 +170,9 @@ namespace GenderPayGap.WebJob
         private bool ReminderEmailWasNotSentAfterLatestReminderDate(User user, SectorTypes sectorType)
         {
             ReminderEmail latestReminderEmail = _DataRepository.GetAll<ReminderEmail>()
-                .Where(re => re.UserId == user.UserId)
+                .Where(re => re.User == user)
                 .Where(re => re.SectorType == sectorType)
-                .OrderByDescending(re => re.DateSent)
+                .OrderByDescending(re => re.DateChecked)
                 .FirstOrDefault();
 
             if (latestReminderEmail == null)
@@ -181,7 +181,7 @@ namespace GenderPayGap.WebJob
             }
 
             DateTime latestReminderEmailDate = GetLatestReminderEmailDate(sectorType);
-            return latestReminderEmail.DateSent <= latestReminderEmailDate;
+            return latestReminderEmail.DateChecked <= latestReminderEmailDate;
         }
 
         private static DateTime GetEarliestReminderDate(SectorTypes sectorType)
