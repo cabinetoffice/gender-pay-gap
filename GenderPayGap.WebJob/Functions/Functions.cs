@@ -5,7 +5,6 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.Azure.WebJobs.Extensions.Timers;
 
 namespace GenderPayGap.WebJob
 {
@@ -38,17 +37,6 @@ namespace GenderPayGap.WebJob
         private readonly UpdateFromCompaniesHouseService _updateFromCompaniesHouseService;
 
         private static readonly ConcurrentSet<string> RunningJobs = new ConcurrentSet<string>();
-
-        #endregion
-
-        #region Timer Trigger Schedules
-
-        public class MidnightSchedule : DailySchedule
-        {
-
-            public MidnightSchedule() : base("00:00:00") { }
-
-        }
 
         #endregion
 
