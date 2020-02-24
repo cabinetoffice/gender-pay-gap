@@ -1,15 +1,15 @@
 DECLARE @STARTING_ID int
-SET @STARTING_ID = 100000000
+SET @STARTING_ID = 300000000
 
 DECLARE @NUM_OF_USERS INT
-SET @NUM_OF_USERS = 1000
+SET @NUM_OF_USERS = 20000
 
 DECLARE @INDEX INT
 SET @INDEX = 1
 
 -- Remove all test entities
 DELETE FROM UserSettings WHERE UserId > @STARTING_ID AND UserId <= @STARTING_ID + @NUM_OF_USERS
-UPDATE Organisations SET LatestRegistration_OrganisationId = null, LatestRegistration_UserId = null WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + @NUM_OF_USERS
+UPDATE Organisations SET LatestRegistration_OrganisationId = null, LatestRegistration_UserId = null WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
 DELETE FROM Users WHERE UserId > @STARTING_ID AND UserId <= @STARTING_ID + @NUM_OF_USERS
 DELETE FROM Organisations WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
 DELETE FROM UserOrganisations WHERE OrganisationId > @STARTING_ID AND OrganisationId <= @STARTING_ID + 2 * @NUM_OF_USERS
@@ -30,7 +30,7 @@ BEGIN
 	INSERT INTO Users 
 	(UserId, FirstName, LastName, JobTitle, StatusId, StatusDate, LoginAttempts, LoginDate, ResetAttempts, VerifyAttempts, Created, Modified, EmailAddress, PasswordHash, Salt, HashingAlgorithm, EmailVerifiedDate)
 	VALUES
-	(@STARTING_ID + @INDEX, 'test', 'test', 'test', 3, '01/10/2019 12:26:44', 0, '01/10/2019 12:26:44', 0, 0, '01/10/2019 12:26:44', '01/10/2019 12:26:44', 'user'+ CAST(@INDEX AS VARCHAR(16)) +'@example.com', 'EsbXTRJaMnDBhGEerRu1eqbMoInXkOz4P5rNZyq1VKU=','9jjDqTsUzGqk/+Rl8JeR4A==', 2, '01/10/2019 12:26:44');
+	(@STARTING_ID + @INDEX, 'test', 'test', 'test', 3, '01/10/2019 12:26:44', 0, '01/10/2019 12:26:44', 0, 0, '01/10/2019 12:26:44', '01/10/2019 12:26:44', 'loadtest'+ CAST(@INDEX AS VARCHAR(16)) +'@example.com', 'EsbXTRJaMnDBhGEerRu1eqbMoInXkOz4P5rNZyq1VKU=','9jjDqTsUzGqk/+Rl8JeR4A==', 2, '01/10/2019 12:26:44');
 	SET IDENTITY_INSERT Users OFF
 	
 	-- Create test organisations that are linked to test users
