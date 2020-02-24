@@ -79,6 +79,7 @@ namespace GenderPayGap.WebJob
         private void CheckUserAndSendReminderEmailsForSectorType(User user, SectorTypes sector)
         {
             List<Organisation> inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
+                .Where(uo => uo.PINConfirmedDate != null)
                 .Select(uo => uo.Organisation)
                 .Where(o => o.SectorType == sector)
                 .Where(
