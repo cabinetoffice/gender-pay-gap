@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Database
@@ -17,6 +18,7 @@ namespace GenderPayGap.Database
             UserSettings = new HashSet<UserSetting>();
             UserStatusesByUser = new HashSet<UserStatus>();
             UserStatuses = new HashSet<UserStatus>();
+            ReminderEmails = new HashSet<ReminderEmail>();
         }
 
         public long UserId { get; set; }
@@ -65,6 +67,7 @@ namespace GenderPayGap.Database
         public virtual ICollection<UserSetting> UserSettings { get; set; }
         public virtual ICollection<UserStatus> UserStatusesByUser { get; set; }
         public virtual ICollection<UserStatus> UserStatuses { get; set; }
+        public virtual ICollection<ReminderEmail> ReminderEmails { get; set; }
 
     }
 }
