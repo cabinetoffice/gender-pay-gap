@@ -64,36 +64,33 @@ namespace GenderPayGap.WebJob
             string userEmail = null,
             bool force = false)
         {
-            try
+            await searchRepositoryToUpdate.CreateIndexIfNotExistsAsync(indexNameToUpdate);
+
+            if (typeof(T) == typeof(EmployerSearchModel))
             {
-                await searchRepositoryToUpdate.CreateIndexIfNotExistsAsync(indexNameToUpdate);
+                await AddDataToIndexAsync(log);
+            }
+            else if (typeof(T) == typeof(SicCodeSearchModel))
+            {
+                await AddDataToSicCodesIndexAsync(log);
+            }
+            else
+            {
+                throw new ArgumentException($"Type {typeof(T)} is not a valid type.");
+            }
 
-                if (typeof(T) == typeof(EmployerSearchModel))
+            if (force && !string.IsNullOrWhiteSpace(userEmail))
+            {
+                try
                 {
-                    await AddDataToIndexAsync(log);
+                    await _Messenger.SendMessageAsync(
+                        "UpdateSearchIndexes complete",
+                        userEmail,
+                        "The update of the search indexes completed successfully.");
                 }
-                else if (typeof(T) == typeof(SicCodeSearchModel))
+                catch (Exception ex)
                 {
-                    await AddDataToSicCodesIndexAsync(log);
-                }
-                else
-                {
-                    throw new ArgumentException($"Type {typeof(T)} is not a valid type.");
-                }
-
-                if (force && !string.IsNullOrWhiteSpace(userEmail))
-                {
-                    try
-                    {
-                        await _Messenger.SendMessageAsync(
-                            "UpdateSearchIndexes complete",
-                            userEmail,
-                            "The update of the search indexes completed successfully.");
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogError(ex, "UpdateSearch: An error occurred trying to send an email");
-                    }
+                    log.LogError(ex, "UpdateSearch: An error occurred trying to send an email");
                 }
             }
         }

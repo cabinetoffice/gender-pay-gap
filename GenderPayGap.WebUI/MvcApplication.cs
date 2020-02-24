@@ -18,7 +18,6 @@ namespace GenderPayGap.WebUI
         ILogger Logger { get; }
         IQueue SendEmailQueue { get; set; }
         IQueue SendNotifyEmailQueue { get; set; }
-        IQueue ExecuteWebjobQueue { get; }
 
         Task InitAsync();
 
@@ -35,8 +34,7 @@ namespace GenderPayGap.WebUI
             ISearchRepository<EmployerSearchModel> searchRepository,
             [KeyFilter(QueueNames.SendEmail)] IQueue sendEmailQueue,
             [KeyFilter(QueueNames.SendNotifyEmail)]
-            IQueue sendNotifyEmailQueue,
-            [KeyFilter(QueueNames.ExecuteWebJob)] IQueue executeWebjobQueue
+            IQueue sendNotifyEmailQueue
         )
         {
             Logger = logger;
@@ -46,13 +44,11 @@ namespace GenderPayGap.WebUI
 
             SendEmailQueue = sendEmailQueue;
             SendNotifyEmailQueue = sendNotifyEmailQueue;
-            ExecuteWebjobQueue = executeWebjobQueue;
         }
 
         public ILogger Logger { get; }
         public IQueue SendEmailQueue { get; set; }
         public IQueue SendNotifyEmailQueue { get; set; }
-        public IQueue ExecuteWebjobQueue { get; }
 
         public double SessionTimeOutMinutes => Config.GetAppSetting("SessionTimeOut").ToInt32(20);
 

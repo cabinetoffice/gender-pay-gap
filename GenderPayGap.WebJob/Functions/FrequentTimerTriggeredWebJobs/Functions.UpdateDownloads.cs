@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,8 +38,6 @@ namespace GenderPayGap.WebJob
         //Update GPG download file
         public async Task UpdateDownloadFilesAsync(ILogger log, string userEmail = null, bool force = false)
         {
-            try
-            {
                 List<int> returnYears = _DataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
                     .Select(r => r.AccountingDate.Year)
@@ -120,7 +118,6 @@ namespace GenderPayGap.WebJob
                     }
                 }
             }
-        }
 
     }
 }
