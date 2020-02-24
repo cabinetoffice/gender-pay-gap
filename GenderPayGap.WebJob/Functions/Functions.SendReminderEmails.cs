@@ -182,23 +182,6 @@ namespace GenderPayGap.WebJob
             return VirtualDateTime.Now > GetEarliestReminderDate(sectorType);
         }
 
-        private bool ReminderEmailWasNotSentAfterLatestReminderDate(User user, SectorTypes sectorType)
-        {
-            ReminderEmail latestReminderEmail = _DataRepository.GetAll<ReminderEmail>()
-                .Where(re => re.User == user)
-                .Where(re => re.SectorType == sectorType)
-                .OrderByDescending(re => re.DateChecked)
-                .FirstOrDefault();
-
-            if (latestReminderEmail == null)
-            {
-                return true;
-            }
-
-            DateTime latestReminderEmailDate = GetLatestReminderEmailDate(sectorType);
-            return latestReminderEmail.DateChecked <= latestReminderEmailDate;
-        }
-
         private static DateTime GetEarliestReminderDate(SectorTypes sectorType)
         {
             List<int> reminderEmailDays = GetReminderEmailDays();
