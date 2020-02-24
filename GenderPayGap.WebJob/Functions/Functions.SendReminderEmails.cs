@@ -150,7 +150,7 @@ namespace GenderPayGap.WebJob
         {
             var reminderEmailRecord = new ReminderEmail
             {
-                User = user,
+                UserId = user.UserId,
                 SectorType = sectorType,
                 DateChecked = VirtualDateTime.Now,
                 EmailSent = wasAnEmailSent
