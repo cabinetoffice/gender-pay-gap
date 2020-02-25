@@ -70,14 +70,16 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.OptedOutFromCompaniesHouseUpdate = false;
             dataRepository.SaveChangesAsync().Wait();
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
+
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeCompaniesHouseOpting,
                 organisation,
                 new {
                     Opt = "In",
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }
@@ -129,14 +131,15 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.OptedOutFromCompaniesHouseUpdate = true;
             dataRepository.SaveChangesAsync().Wait();
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeCompaniesHouseOpting,
                 organisation,
                 new {
                     Opt = "Out",
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }
