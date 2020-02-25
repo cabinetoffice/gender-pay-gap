@@ -124,7 +124,7 @@ namespace GenderPayGap.WebJob
         }
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeOrganisations([TimerTrigger("45 2 * * *" /* 02:45 once per day */, RunOnStartup = true)]
+        public async Task PurgeOrganisations([TimerTrigger("45 2 * * *" /* 02:45 once per day */)]
             TimerInfo timer,
             ILogger log)
         {
@@ -269,7 +269,7 @@ namespace GenderPayGap.WebJob
 
         //Remove test users and organisations
         [Disable(typeof(DisableWebjobProvider))]
-        public async Task PurgeTestDataAsync([TimerTrigger("30 3 * * *" /* 03:30 once per day */, RunOnStartup = true)]
+        public async Task PurgeTestDataAsync([TimerTrigger("30 3 * * *" /* 03:30 once per day */)]
             TimerInfo timer,
             ILogger log)
         {
