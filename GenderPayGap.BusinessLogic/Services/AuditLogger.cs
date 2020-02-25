@@ -7,9 +7,8 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
 
-namespace GenderPayGap.WebUI.Classes
+namespace GenderPayGap.BusinessLogic.Services
 {
     public class AuditLogger
     {
@@ -23,18 +22,18 @@ namespace GenderPayGap.WebUI.Classes
             this.session = session;
         }
 
-        public void AuditChangeToOrganisation(Controller controller, AuditedAction action, Organisation organisation, object anonymousObject)
+        public void AuditChangeToOrganisation(AuditedAction action, Organisation organisation, object anonymousObject, User currentUser)
         {
             Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
 
-            AuditActionToOrganisation(controller, action, organisation.OrganisationId, details);
+            AuditActionToOrganisation(action, organisation.OrganisationId, details, currentUser);
         }
 
-        public void AuditChangeToUser(Controller controller, AuditedAction action, User user, object anonymousObject)
+        public void AuditChangeToUser(AuditedAction action, User user, object anonymousObject, User currentUser)
         {
             Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
 
-            AuditActionToUser(controller, action, user.UserId, details);
+            AuditActionToUser(action, user.UserId, details, currentUser);
         }
 
         private static Dictionary<string, string> ExtractDictionaryOfDetailsFromAnonymousObject(object anonymousObject)
@@ -55,23 +54,19 @@ namespace GenderPayGap.WebUI.Classes
             return details;
         }
 
-        private void AuditActionToOrganisation(Controller controller, AuditedAction action, long organisationId, Dictionary<string, string> details)
+        private void AuditActionToOrganisation(AuditedAction action, long organisationId, Dictionary<string, string> details, User currentUser)
         {
-            if (controller == null)
-            {
-                throw new System.ArgumentNullException(nameof(controller));
-            }
             var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
             var isImpersonating = impersonatedUserId > 0;
             var originalUserId = session["OriginalUser"].ToInt64();
-            var currentUser = controller.User.Identity.IsAuthenticated ? dataRepository.FindUser(controller?.User) : null;
 
             var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : currentUser;
             var impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
             var organisation = dataRepository.Get<Organisation>(organisationId);
 
             dataRepository.Insert(
-                new AuditLog {
+                new AuditLog
+                {
                     Action = action,
                     OriginalUser = originalUser,
                     ImpersonatedUser = impersonatedUser,
@@ -82,17 +77,11 @@ namespace GenderPayGap.WebUI.Classes
             dataRepository.SaveChangesAsync().Wait();
         }
 
-        private void AuditActionToUser(Controller controller, AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details)
+        private void AuditActionToUser(AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details, User currentUser)
         {
-            if (controller == null)
-            {
-                throw new System.ArgumentNullException(nameof(controller));
-            }
-
             var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
             var isImpersonating = impersonatedUserId > 0;
             var originalUserId = session["OriginalUser"].ToInt64();
-            var currentUser = controller.User.Identity.IsAuthenticated ? dataRepository.FindUser(controller?.User) : null;
 
             var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : currentUser;
             var impersonatedUser = dataRepository.Get<User>(actionTakenOnUserId);
@@ -103,7 +92,8 @@ namespace GenderPayGap.WebUI.Classes
             }
 
             dataRepository.Insert(
-                new AuditLog {
+                new AuditLog
+                {
                     Action = action,
                     OriginalUser = originalUser,
                     ImpersonatedUser = impersonatedUser,

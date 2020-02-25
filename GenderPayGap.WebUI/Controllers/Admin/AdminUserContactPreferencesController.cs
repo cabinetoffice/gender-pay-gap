@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core;
+﻿using GenderPayGap.BusinessLogic.Services;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
@@ -55,8 +56,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("ChangeContactPreferences", viewModel);
             }
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
+
             auditLogger.AuditChangeToUser(
-                this,
                 AuditedAction.AdminChangeUserContactPreferences,
                 user,
                 new
@@ -66,7 +68,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     SendUpdates_Old = user.SendUpdates ? "Yes" : "No",
                     SendUpdates_New = viewModel.SendUpdates ? "Yes" : "No",
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
 
             user.AllowContact = viewModel.AllowContact;
             user.SendUpdates = viewModel.SendUpdates;

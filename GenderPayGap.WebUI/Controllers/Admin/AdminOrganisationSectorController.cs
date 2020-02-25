@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -89,8 +90,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             Organisation organisation,
             PublicSectorType newPublicSectorType)
         {
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeOrganisationPublicSectorClassification,
                 organisation,
                 new
@@ -98,7 +99,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     OldClassification = organisation.LatestPublicSectorType?.PublicSectorType?.Description,
                     NewClassification = newPublicSectorType.Description,
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
         }
 
         private void RetireExistingOrganisationPublicSectorTypesForOrganisation(Organisation organisation)

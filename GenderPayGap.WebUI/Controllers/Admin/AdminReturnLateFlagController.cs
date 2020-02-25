@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -61,8 +62,8 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeLateFlag,
                 specifiedReturn.Organisation,
                 new
@@ -70,7 +71,8 @@ namespace GenderPayGap.WebUI.Controllers
                     ReturnId = id,
                     LateFlagChangedTo = viewModel.NewLateFlag,
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = specifiedReturn.OrganisationId});
         }

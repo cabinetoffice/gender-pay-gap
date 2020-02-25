@@ -195,8 +195,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             dataRepository.SaveChangesAsync().Wait();
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeOrganisationName,
                 organisation,
                 new
@@ -206,7 +206,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     NewName = newOrganisationName.Name,
                     NewNameId = newOrganisationName.OrganisationNameId,
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
         }
 
         private OrganisationName CreateOrganisationNameFromViewModel(ChangeOrganisationNameViewModel viewModel)

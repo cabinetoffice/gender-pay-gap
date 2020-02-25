@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -106,15 +107,16 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.LatestScope = newOrganisationScope;
             await dataRepository.SaveChangesAsync();
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeOrganisationScope,
                 organisation,
                 new {
                     PreviousScope = currentOrganisationScope.ScopeStatus.ToString(),
                     NewScope = newScope.ToString(),
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
 
             return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
         }
