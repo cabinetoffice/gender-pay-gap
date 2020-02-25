@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core;
+﻿using GenderPayGap.BusinessLogic.Services;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -61,15 +62,16 @@ namespace GenderPayGap.WebUI.Models.Admin
                 return View("ResendVerificationEmail", viewModel);
             }
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
+
             auditLogger.AuditChangeToUser(
-                this,
                 AuditedAction.AdminResendVerificationEmail,
                 user,
                 new
                 {
                     Reason = viewModel.Reason
-                }
-                );
+                },
+                currentUser);
 
             string verifyCode = Encryption.EncryptQuerystring(user.UserId + ":" + user.Created.ToSmallDateTime());
 

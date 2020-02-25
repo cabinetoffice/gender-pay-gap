@@ -211,8 +211,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             dataRepository.SaveChangesAsync().Wait();
 
+            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
+
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeOrganisationAddress,
                 organisation,
                 new
@@ -222,7 +223,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     NewAddress = newOrganisationAddress.GetAddressString(),
                     NewAddressId = newOrganisationAddress.AddressId,
                     Reason = viewModel.Reason
-                });
+                },
+                currentUser);
         }
 
         private static void RetireOldAddress(Organisation organisation)
