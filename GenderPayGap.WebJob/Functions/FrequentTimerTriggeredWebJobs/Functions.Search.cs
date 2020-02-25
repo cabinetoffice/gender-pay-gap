@@ -18,7 +18,7 @@ namespace GenderPayGap.WebJob
     {
 
         //Update the search indexes
-        public async Task UpdateSearchAsync([TimerTrigger("0 * * * *" /* at 0 minutes past each hour */, RunOnStartup = true)]
+        public async Task UpdateSearchAsync([TimerTrigger("0 * * * *" /* at 0 minutes past each hour */)]
             TimerInfo timer,
             ILogger log)
         {
