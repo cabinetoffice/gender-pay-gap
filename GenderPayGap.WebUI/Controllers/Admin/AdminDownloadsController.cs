@@ -219,7 +219,7 @@ namespace GenderPayGap.WebUI.Controllers
 
                             returnForYear.CompanyLinkToGPGInfo,
                             returnForYear.ResponsiblePerson,
-                            returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
+                            OrganisationSize = returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
                         };
                     })
                 .ToList();
