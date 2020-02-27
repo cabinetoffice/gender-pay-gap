@@ -3,7 +3,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,8 +62,7 @@ namespace GenderPayGap.WebUI.Models.Admin
                 return View("ResendVerificationEmail", viewModel);
             }
 
-            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
-
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToUser(
                 AuditedAction.AdminResendVerificationEmail,
                 user,

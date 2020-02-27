@@ -2,7 +2,7 @@
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
@@ -56,8 +56,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("ChangeContactPreferences", viewModel);
             }
 
-            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
-
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToUser(
                 AuditedAction.AdminChangeUserContactPreferences,
                 user,
