@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Account.Models;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -19,11 +19,13 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
 
     public class UserRepository : IUserRepository
     {
+        private readonly IDataRepository dataRepository;
+        private readonly AuditLogger auditLogger;
 
-        public UserRepository(IDataRepository dataRepository, IUserLogRecord userRecordLog)
+        public UserRepository(IDataRepository dataRepository, AuditLogger auditLogger)
         {
-            DataRepository = dataRepository ?? throw new ArgumentNullException(nameof(dataRepository));
-            UserRecordLog = userRecordLog ?? throw new ArgumentNullException(nameof(userRecordLog));
+            this.dataRepository = dataRepository ?? throw new ArgumentNullException(nameof(dataRepository));
+            this.auditLogger = auditLogger;
         }
 
         public async Task<User> FindBySubjectIdAsync(string subjectId, params UserStatuses[] filterStatuses)
@@ -33,7 +35,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
 
         public async Task<User> FindBySubjectIdAsync(long userId, params UserStatuses[] filterStatuses)
         {
-            return await DataRepository.GetAll<User>()
+            return await dataRepository.GetAll<User>()
                 // filter by user id
                 .Where(x => x.UserId == userId)
                 // skip or filter by user status
@@ -44,7 +46,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
 
         public async Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses)
         {
-            return await DataRepository.GetAll<User>()
+            return await dataRepository.GetAll<User>()
                 // filter by email address
                 .Where(user => user.EmailAddress.ToLower() == email.ToLower())
                 // skip or filter by user status
@@ -57,7 +59,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
         {
             string nameForSearch = name?.ToLower();
 
-            IQueryable<User> foundUsers = DataRepository
+            IQueryable<User> foundUsers = dataRepository
                 .GetAll<User>()
                 .Where(x => x.Fullname.ToLower().Contains(nameForSearch) || x.ContactFullname.ToLower().Contains(nameForSearch));
 
@@ -87,7 +89,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             finally
             {
                 //Save the changes
-                await DataRepository.SaveChangesAsync();
+                await dataRepository.SaveChangesAsync();
             }
         }
 
@@ -117,10 +119,18 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToUpdate.Modified = now;
 
             // save
-            await DataRepository.SaveChangesAsync();
+            await dataRepository.SaveChangesAsync();
 
             // log email change
-            await UserRecordLog.LogEmailChangedAsync(oldEmailAddress, newEmailAddress, userToUpdate, userToUpdate.EmailAddress);
+            auditLogger.AuditChangeToUser(
+                AuditedAction.UserChangeEmailAddress,
+                userToUpdate,
+                new
+                {
+                    OldEmailAddress = oldEmailAddress,
+                    NewEmailAddress = newEmailAddress,
+                },
+                userToUpdate);
         }
 
         public async Task UpdatePasswordAsync(User userToUpdate, string newPassword)
@@ -145,10 +155,14 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToUpdate.Modified = VirtualDateTime.Now;
 
             // save
-            await DataRepository.SaveChangesAsync();
+            await dataRepository.SaveChangesAsync();
 
             // log password changed
-            await UserRecordLog.LogPasswordChangedAsync(userToUpdate, userToUpdate.EmailAddress);
+            auditLogger.AuditChangeToUser(
+                AuditedAction.UserChangePassword,
+                userToUpdate,
+                new { }, // We don't want to save the passwords(!) so there's not really anything else to save here
+                userToUpdate);
         }
 
         public async Task<bool> UpdateDetailsAsync(User userToUpdate, UpdateDetailsModel changeDetails)
@@ -175,6 +189,68 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
                 return false;
             }
 
+            // log details changed
+            if (userToUpdate.Firstname != changeDetails.FirstName ||
+                userToUpdate.Lastname != changeDetails.LastName ||
+                userToUpdate.ContactFirstName != changeDetails.FirstName ||
+                userToUpdate.ContactLastName != changeDetails.LastName)
+            {
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.UserChangeName,
+                    userToUpdate,
+                    new
+                    {
+                        OldFirstName = userToUpdate.Firstname,
+                        OldLastName = userToUpdate.Lastname,
+                        OldContactFirstName = userToUpdate.ContactFirstName,
+                        OldContactLastName = userToUpdate.ContactLastName,
+                        NewFirstName = changeDetails.FirstName,
+                        NewLastName = changeDetails.LastName,
+                    },
+                    userToUpdate);
+            }
+            if (userToUpdate.JobTitle != changeDetails.JobTitle ||
+                userToUpdate.ContactJobTitle != changeDetails.JobTitle)
+            {
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.UserChangeJobTitle,
+                    userToUpdate,
+                    new
+                    {
+                        OldJobTitle = userToUpdate.JobTitle,
+                        OldContactJobTitle = userToUpdate.ContactJobTitle,
+                        NewJobTitle = changeDetails.JobTitle,
+                    },
+                    userToUpdate);
+            }
+            if (userToUpdate.ContactPhoneNumber != changeDetails.ContactPhoneNumber)
+            {
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.UserChangePhoneNumber,
+                    userToUpdate,
+                    new
+                    {
+                        OldContactPhoneNumber = userToUpdate.ContactPhoneNumber,
+                        NewContactPhoneNumber = changeDetails.ContactPhoneNumber,
+                    },
+                    userToUpdate);
+            }
+            if (userToUpdate.SendUpdates != changeDetails.SendUpdates ||
+                userToUpdate.AllowContact != changeDetails.AllowContact)
+            {
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.UserChangeContactPreferences,
+                    userToUpdate,
+                    new
+                    {
+                        OldSendUpdates = userToUpdate.SendUpdates,
+                        OldAllowContactForUserResearch = userToUpdate.AllowContact,
+                        NewSendUpdates = changeDetails.SendUpdates,
+                        NewAllowContactForUserResearch = changeDetails.AllowContact,
+                    },
+                    userToUpdate);
+            }
+
             // update current user with new details
             userToUpdate.Firstname = changeDetails.FirstName;
             userToUpdate.Lastname = changeDetails.LastName;
@@ -188,10 +264,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToUpdate.Modified = VirtualDateTime.Now;
 
             // save
-            await DataRepository.SaveChangesAsync();
-
-            // log details changed
-            await UserRecordLog.LogDetailsChangedAsync(originalDetails, changeDetails, userToUpdate, userToUpdate.EmailAddress);
+            await dataRepository.SaveChangesAsync();
 
             // success
             return true;
@@ -214,10 +287,14 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToRetire.Modified = VirtualDateTime.Now;
 
             // save
-            await DataRepository.SaveChangesAsync();
+            await dataRepository.SaveChangesAsync();
 
             // log status changed
-            await UserRecordLog.LogUserRetiredAsync(userToRetire, userToRetire.EmailAddress);
+            auditLogger.AuditChangeToUser(
+                AuditedAction.UserRetiredThemselves,
+                userToRetire,
+                new { }, // There's no interesting details to include here
+                userToRetire);
         }
 
         public Task<User> AutoProvisionUserAsync(string provider, string providerUserId, List<Claim> list)
@@ -259,32 +336,24 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             user.PasswordHash = Crypto.GetPBKDF2(password, salt);
             user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
 
-            DataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChangesAsync().Wait();
         }
-
-        #region Dependencies
-
-        public IDataRepository DataRepository { get; }
-
-        public IUserLogRecord UserRecordLog { get; }
-
-        #endregion
 
         #region IDataTransaction
 
         public async Task BeginTransactionAsync(Func<Task> delegateAction)
         {
-            await DataRepository.BeginTransactionAsync(delegateAction);
+            await dataRepository.BeginTransactionAsync(delegateAction);
         }
 
         public void CommitTransaction()
         {
-            DataRepository.CommitTransaction();
+            dataRepository.CommitTransaction();
         }
 
         public void RollbackTransaction()
         {
-            DataRepository.RollbackTransaction();
+            dataRepository.RollbackTransaction();
         }
 
         #endregion

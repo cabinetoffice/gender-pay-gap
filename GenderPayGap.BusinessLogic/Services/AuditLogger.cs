@@ -22,18 +22,18 @@ namespace GenderPayGap.BusinessLogic.Services
             this.session = session;
         }
 
-        public void AuditChangeToOrganisation(AuditedAction action, Organisation organisation, object anonymousObject, User currentUser)
+        public void AuditChangeToOrganisation(AuditedAction action, Organisation organisationChanged, object anonymousObject, User userWhoPerformedAction)
         {
             Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
 
-            AuditActionToOrganisation(action, organisation.OrganisationId, details, currentUser);
+            AuditActionToOrganisation(action, organisationChanged.OrganisationId, details, userWhoPerformedAction);
         }
 
-        public void AuditChangeToUser(AuditedAction action, User user, object anonymousObject, User currentUser)
+        public void AuditChangeToUser(AuditedAction action, User userChanged, object anonymousObject, User userWhoPerformedAction)
         {
             Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
 
-            AuditActionToUser(action, user.UserId, details, currentUser);
+            AuditActionToUser(action, userChanged.UserId, details, userWhoPerformedAction);
         }
 
         private static Dictionary<string, string> ExtractDictionaryOfDetailsFromAnonymousObject(object anonymousObject)
@@ -54,13 +54,13 @@ namespace GenderPayGap.BusinessLogic.Services
             return details;
         }
 
-        private void AuditActionToOrganisation(AuditedAction action, long organisationId, Dictionary<string, string> details, User currentUser)
+        private void AuditActionToOrganisation(AuditedAction action, long organisationId, Dictionary<string, string> details, User userWhoPerformedAction)
         {
             var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
             var isImpersonating = impersonatedUserId > 0;
             var originalUserId = session["OriginalUser"].ToInt64();
 
-            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : currentUser;
+            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
             var impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
             var organisation = dataRepository.Get<Organisation>(organisationId);
 
@@ -77,13 +77,13 @@ namespace GenderPayGap.BusinessLogic.Services
             dataRepository.SaveChangesAsync().Wait();
         }
 
-        private void AuditActionToUser(AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details, User currentUser)
+        private void AuditActionToUser(AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details, User userWhoPerformedAction)
         {
             var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
             var isImpersonating = impersonatedUserId > 0;
             var originalUserId = session["OriginalUser"].ToInt64();
 
-            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : currentUser;
+            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
             var impersonatedUser = dataRepository.Get<User>(actionTakenOnUserId);
 
             if (impersonatedUser.UserId == originalUser.UserId)
