@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Account.Models;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -30,15 +30,14 @@ namespace Repositories.UserRepository
             // mock data 
             mockDataRepo = new Mock<IDataRepository>().SetupGetAll(UserHelpers.CreateUsers());
 
-            mockLogRecordLogger = new Mock<IUserLogRecord>();
-
             // service under test
             testUserRepo =
-                new GenderPayGap.BusinessLogic.Account.Repositories.UserRepository(mockDataRepo.Object, mockLogRecordLogger.Object);
+                new GenderPayGap.BusinessLogic.Account.Repositories.UserRepository(
+                    mockDataRepo.Object,
+                    Mock.Of<AuditLogger>());
         }
 
         private Mock<IDataRepository> mockDataRepo;
-        private Mock<IUserLogRecord> mockLogRecordLogger;
         private IUserRepository testUserRepo;
 
         [TestCase]

@@ -214,24 +214,38 @@ namespace GenderPayGap.Core
 
     public enum AuditedAction
     {
-        [Display(Name = "Change late flag")]
+        [Display(Name = "Admin changed late flag")]
         AdminChangeLateFlag = 0,
-        [Display(Name = "Change organisation scope")]
+        [Display(Name = "Admin changed organisation scope")]
         AdminChangeOrganisationScope = 1,
-        [Display(Name = "Change companies house opting")]
+        [Display(Name = "Admin changed companies house opting")]
         AdminChangeCompaniesHouseOpting = 2,
-        [Display(Name = "Change organisation name")]
+        [Display(Name = "Admin changed organisation name")]
         AdminChangeOrganisationName = 3,
-        [Display(Name = "Change organisation address")]
+        [Display(Name = "Admin changed organisation address")]
         AdminChangeOrganisationAddress = 4,
-        [Display(Name = "Change organisation SIC code")]
+        [Display(Name = "Admin changed organisation SIC code")]
         AdminChangeOrganisationSicCode = 5,
-        [Display(Name = "Change user contact preferences")]
+        [Display(Name = "Admin changed user contact preferences")]
         AdminChangeUserContactPreferences = 6,
-        [Display(Name = "Re-send verification email")]
+        [Display(Name = "Admin re-sent verification email")]
         AdminResendVerificationEmail = 7,
-        [Display(Name = "Change organisation public sector classification")]
+        [Display(Name = "Admin changed organisation public sector classification")]
         AdminChangeOrganisationPublicSectorClassification = 8,
+        [Display(Name = "User changed their email address")]
+        UserChangeEmailAddress = 9,
+        [Display(Name = "User changed their password")]
+        UserChangePassword = 10,
+        [Display(Name = "User changed their name")]
+        UserChangeName = 11,
+        [Display(Name = "User changed their job title")]
+        UserChangeJobTitle = 12,
+        [Display(Name = "User changed their phone number")]
+        UserChangePhoneNumber = 13,
+        [Display(Name = "User changed their contact preferences")]
+        UserChangeContactPreferences = 14,
+        [Display(Name = "User retired their account")]
+        UserRetiredThemselves = 15,
     }
 
     public enum HashingAlgorithm
