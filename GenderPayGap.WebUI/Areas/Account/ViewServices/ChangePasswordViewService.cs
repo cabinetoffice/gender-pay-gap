@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             }
 
             // update user password
-            await UserRepository.UpdatePasswordAsync(currentUser, newPassword);
+            UserRepository.UpdatePassword(currentUser, newPassword);
 
             // send password change notification
             await Emails.SendChangePasswordNotificationAsync(currentUser.EmailAddress);

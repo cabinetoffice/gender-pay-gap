@@ -93,7 +93,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             }
         }
 
-        public async Task UpdateEmailAsync(User userToUpdate, string newEmailAddress)
+        public void UpdateEmail(User userToUpdate, string newEmailAddress)
         {
             if (userToUpdate is null)
             {
@@ -119,7 +119,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToUpdate.Modified = now;
 
             // save
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChangesAsync().Wait();
 
             // log email change
             auditLogger.AuditChangeToUser(
@@ -133,7 +133,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
                 userToUpdate);
         }
 
-        public async Task UpdatePasswordAsync(User userToUpdate, string newPassword)
+        public void UpdatePassword(User userToUpdate, string newPassword)
         {
             if (userToUpdate is null)
             {
@@ -155,7 +155,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToUpdate.Modified = VirtualDateTime.Now;
 
             // save
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChangesAsync().Wait();
 
             // log password changed
             auditLogger.AuditChangeToUser(
@@ -165,7 +165,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
                 userToUpdate);
         }
 
-        public async Task<bool> UpdateDetailsAsync(User userToUpdate, UpdateDetailsModel changeDetails)
+        public bool UpdateDetails(User userToUpdate, UpdateDetailsModel changeDetails)
         {
             if (userToUpdate is null)
             {
@@ -264,13 +264,13 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToUpdate.Modified = VirtualDateTime.Now;
 
             // save
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChangesAsync().Wait();
 
             // success
             return true;
         }
 
-        public async Task RetireUserAsync(User userToRetire)
+        public void RetireUser(User userToRetire)
         {
             if (userToRetire is null)
             {
@@ -287,7 +287,7 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
             userToRetire.Modified = VirtualDateTime.Now;
 
             // save
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChangesAsync().Wait();
 
             // log status changed
             auditLogger.AuditChangeToUser(

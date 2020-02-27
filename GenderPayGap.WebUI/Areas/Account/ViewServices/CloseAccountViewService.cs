@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                         await RegistrationRepository.RemoveRetiredUserRegistrationsAsync(userToRetire, actionByUser);
 
                         // retire user
-                        await UserRepository.RetireUserAsync(userToRetire);
+                        UserRepository.RetireUser(userToRetire);
 
                         // commit
                         UserRepository.CommitTransaction();

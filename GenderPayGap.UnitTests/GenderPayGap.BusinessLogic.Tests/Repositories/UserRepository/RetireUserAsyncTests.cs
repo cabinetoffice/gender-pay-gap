@@ -48,7 +48,7 @@ namespace Repositories.UserRepository
                 .Returns(Task.CompletedTask);
 
             // Act
-            await testUserRepo.RetireUserAsync(currentUser);
+            testUserRepo.RetireUser(currentUser);
 
             // Assert
             Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
@@ -68,7 +68,7 @@ namespace Repositories.UserRepository
             currentUser.Status = testStatus;
 
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentException>(async () => await testUserRepo.RetireUserAsync(currentUser));
+            var actualException = Assert.Throws<ArgumentException>(() => testUserRepo.RetireUser(currentUser));
 
             // Assert
             Assert.AreEqual("Can only retire active users. UserId=23322", actualException.Message, "Expected exception message to match");
@@ -79,7 +79,7 @@ namespace Repositories.UserRepository
         public void ThrowsErrorWhenArgumentIsNull(User testUserArg, string expectedErrorMessage)
         {
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentNullException>(async () => await testUserRepo.RetireUserAsync(testUserArg));
+            var actualException = Assert.Throws<ArgumentNullException>(() => testUserRepo.RetireUser(testUserArg));
 
             // Assert
             Assert.AreEqual(expectedErrorMessage, actualException.Message, "Expected exception message to match");
