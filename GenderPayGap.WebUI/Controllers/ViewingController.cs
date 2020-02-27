@@ -133,6 +133,12 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToActionPermanent("Index");
         }
 
+        [HttpGet("azure-uptime-pinger")]
+        public async Task<IActionResult> AzureUptimePingerEndpoint()
+        {
+            return RedirectToActionPermanent("Index");
+        }
+
         #endregion
 
         #region Search
