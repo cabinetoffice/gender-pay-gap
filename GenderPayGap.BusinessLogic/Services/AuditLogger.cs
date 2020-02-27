@@ -86,7 +86,7 @@ namespace GenderPayGap.BusinessLogic.Services
             var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
             var impersonatedUser = dataRepository.Get<User>(actionTakenOnUserId);
 
-            if (impersonatedUser.UserId == originalUser.UserId)
+            if (impersonatedUser?.UserId == originalUser?.UserId)
             {
                 impersonatedUser = null;
             }

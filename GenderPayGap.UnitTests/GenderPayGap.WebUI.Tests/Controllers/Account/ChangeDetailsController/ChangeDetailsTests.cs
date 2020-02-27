@@ -80,7 +80,7 @@ namespace Account.Controllers.ChangeDetailsController
 
             // Act
             controller.ModelState.AddModelError("FirstName", "Required");
-            var viewResult = await controller.ChangeDetails(model) as ViewResult;
+            var viewResult = controller.ChangeDetails(model) as ViewResult;
 
             // Assert
             Assert.NotNull(viewResult);
@@ -92,7 +92,7 @@ namespace Account.Controllers.ChangeDetailsController
         }
 
         [Test]
-        public async Task POST_SavesChangeDetailsModelToUserEntity()
+        public void POST_SavesChangeDetailsModelToUserEntity()
         {
             // Arrange
             User verifiedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
@@ -112,7 +112,7 @@ namespace Account.Controllers.ChangeDetailsController
             };
 
             // Act
-            var redirectToActionResult = await controller.ChangeDetails(testViewModel) as RedirectToActionResult;
+            var redirectToActionResult = controller.ChangeDetails(testViewModel) as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(redirectToActionResult);
