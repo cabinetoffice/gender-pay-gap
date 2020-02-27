@@ -7,9 +7,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Abstractions
 
     public interface IChangeDetailsViewService
     {
-
-        Task<bool> ChangeDetailsAsync(ChangeDetailsViewModel newDetails, User currentUser);
-
+        bool ChangeDetails(ChangeDetailsViewModel newDetails, User currentUser);
     }
 
 }

@@ -61,7 +61,7 @@ namespace Repositories.UserRepository
                 .Returns(Task.CompletedTask);
 
             // Act
-            await testUserRepo.UpdateDetailsAsync(testUserToUpdate, testUserDetails);
+            testUserRepo.UpdateDetails(testUserToUpdate, testUserDetails);
 
             // Assert
             Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
@@ -79,8 +79,8 @@ namespace Repositories.UserRepository
             testUserToUpdate.Status = testStatus;
 
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentException>(
-                async () => await testUserRepo.UpdateDetailsAsync(testUserToUpdate, new UpdateDetailsModel()));
+            var actualException = Assert.Throws<ArgumentException>(
+                () => testUserRepo.UpdateDetails(testUserToUpdate, new UpdateDetailsModel()));
 
             // Assert
             Assert.AreEqual(
@@ -101,8 +101,8 @@ namespace Repositories.UserRepository
             string expectedErrorMessage)
         {
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await testUserRepo.UpdateDetailsAsync(testUserToUpdateArg, testChangeDetailsArg));
+            var actualException = Assert.Throws<ArgumentNullException>(
+                () => testUserRepo.UpdateDetails(testUserToUpdateArg, testChangeDetailsArg));
 
             // Assert
             Assert.AreEqual(expectedErrorMessage, actualException.Message, "Expected exception message to match");

@@ -49,7 +49,7 @@ namespace Repositories.UserRepository
                 .Returns(Task.CompletedTask);
 
             // Act
-            await testUserRepo.UpdatePasswordAsync(testUserToUpdate, testPassword);
+            testUserRepo.UpdatePassword(testUserToUpdate, testPassword);
 
             // Assert
             Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
@@ -72,8 +72,8 @@ namespace Repositories.UserRepository
             testUserToUpdate.Status = testStatus;
 
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentException>(
-                async () => await testUserRepo.UpdatePasswordAsync(testUserToUpdate, "NewPassword123"));
+            var actualException = Assert.Throws<ArgumentException>(
+                () => testUserRepo.UpdatePassword(testUserToUpdate, "NewPassword123"));
 
             // Assert
             Assert.AreEqual(
@@ -95,8 +95,8 @@ namespace Repositories.UserRepository
         public void ThrowsErrorWhenArgumentIsNull(User testUserArg, string testPasswordArg, string expectedErrorMessage)
         {
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await testUserRepo.UpdatePasswordAsync(testUserArg, testPasswordArg));
+            var actualException = Assert.Throws<ArgumentNullException>(
+                () => testUserRepo.UpdatePassword(testUserArg, testPasswordArg));
 
             // Assert
             Assert.AreEqual(expectedErrorMessage, actualException.Message, "Expected exception message to match");

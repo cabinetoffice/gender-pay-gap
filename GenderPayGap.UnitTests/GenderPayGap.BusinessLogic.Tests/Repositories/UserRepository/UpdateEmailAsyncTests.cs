@@ -51,7 +51,7 @@ namespace Repositories.UserRepository
                 .Returns(Task.CompletedTask);
 
             // Act
-            await testUserRepo.UpdateEmailAsync(testUserToUpdate, testNewEmail);
+            testUserRepo.UpdateEmail(testUserToUpdate, testNewEmail);
 
             // Assert
             Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
@@ -75,8 +75,8 @@ namespace Repositories.UserRepository
             testUserToUpdate.EmailVerifiedDate = testEmailVerifiedDate;
 
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentException>(
-                async () => await testUserRepo.UpdateEmailAsync(testUserToUpdate, "change@email.com"));
+            var actualException = Assert.Throws<ArgumentException>(
+                () => testUserRepo.UpdateEmail(testUserToUpdate, "change@email.com"));
 
             // Assert
             Assert.AreEqual(
@@ -104,8 +104,8 @@ namespace Repositories.UserRepository
         public void ThrowsErrorWhenArgumentIsNull(User testUserToUpdateArg, string testNewEmailAddressArg, string expectedErrorMessage)
         {
             // Act
-            var actualException = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await testUserRepo.UpdateEmailAsync(testUserToUpdateArg, testNewEmailAddressArg));
+            var actualException = Assert.Throws<ArgumentNullException>(
+                () => testUserRepo.UpdateEmail(testUserToUpdateArg, testNewEmailAddressArg));
 
             // Assert
             Assert.AreEqual(expectedErrorMessage, actualException.Message, "Expected exception message to match");
