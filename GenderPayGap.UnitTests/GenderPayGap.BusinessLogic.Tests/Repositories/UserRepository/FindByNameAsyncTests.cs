@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using MockQueryable.Moq;
@@ -114,8 +114,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Repositories.UserRepository
                         .Object);
 
             _configuredIUserRepository = new Account.Repositories.UserRepository(
-                configurableDataRepository.Object,
-                Mock.Of<IUserLogRecord>());
+                configurableDataRepository.Object, Mock.Of<AuditLogger>());
         }
 
         private IUserRepository _configuredIUserRepository;

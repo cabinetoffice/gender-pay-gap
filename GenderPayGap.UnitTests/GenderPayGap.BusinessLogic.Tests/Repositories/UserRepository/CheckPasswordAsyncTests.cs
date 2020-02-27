@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -25,7 +25,9 @@ namespace Repositories.UserRepository
 
             // service under test
             testUserRepo =
-                new GenderPayGap.BusinessLogic.Account.Repositories.UserRepository(mockDataRepo.Object, Mock.Of<IUserLogRecord>());
+                new GenderPayGap.BusinessLogic.Account.Repositories.UserRepository(
+                    mockDataRepo.Object,
+                    Mock.Of<AuditLogger>());
         }
 
         private Mock<IDataRepository> mockDataRepo;
