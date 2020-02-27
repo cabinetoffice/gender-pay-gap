@@ -9,7 +9,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
@@ -346,7 +346,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             string newSicCodes = organisation.GetSicCodeIdsString();
 
-            User currentUser = User.Identity.IsAuthenticated ? dataRepository.FindUser(User) : null;
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationSicCode,
                 organisation,
