@@ -96,7 +96,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             string oldEmailAddress = currentUser.EmailAddress;
 
             // update user email
-            await UserRepository.UpdateEmailAsync(currentUser, changeEmailToken.NewEmailAddress);
+            UserRepository.UpdateEmail(currentUser, changeEmailToken.NewEmailAddress);
 
             // notify old email the change is complete
             await SendChangeEmailCompletedAsync(oldEmailAddress, changeEmailToken.NewEmailAddress);

@@ -20,13 +20,13 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 
         private IUserRepository UserRepository { get; }
 
-        public async Task<bool> ChangeDetailsAsync(ChangeDetailsViewModel newDetails, User currentUser)
+        public bool ChangeDetails(ChangeDetailsViewModel newDetails, User currentUser)
         {
             // map to business domain model
             var mappedDetails = Mapper.Map<UpdateDetailsModel>(newDetails);
 
             // execute update details
-            return await UserRepository.UpdateDetailsAsync(currentUser, mappedDetails);
+            return UserRepository.UpdateDetails(currentUser, mappedDetails);
         }
 
     }

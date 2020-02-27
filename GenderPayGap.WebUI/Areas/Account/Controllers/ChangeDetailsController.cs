@@ -56,7 +56,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
         [HttpPost("change-details")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeDetails([FromForm] ChangeDetailsViewModel formData)
+        public IActionResult ChangeDetails([FromForm] ChangeDetailsViewModel formData)
         {
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
             if (checkResult != null)
@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // Execute change details
-            bool success = await ChangeDetailsService.ChangeDetailsAsync(formData, currentUser);
+            bool success = ChangeDetailsService.ChangeDetails(formData, currentUser);
 
             // set success alert flag
             if (success)

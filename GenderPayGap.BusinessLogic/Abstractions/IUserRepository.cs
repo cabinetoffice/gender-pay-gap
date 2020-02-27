@@ -26,13 +26,14 @@ namespace GenderPayGap.BusinessLogic.Account.Abstractions
 
         Task<User> FindByExternalProviderAsync(string provider, string providerUserId);
 
-        Task UpdateEmailAsync(User userToUpdate, string newEmailAddress);
+        void UpdateEmail(User userToUpdate, string newEmailAddress);
 
-        Task UpdatePasswordAsync(User userToUpdate, string newPassword);
+        void UpdatePassword(User userToUpdate, string newPassword);
 
-        Task<bool> UpdateDetailsAsync(User userToUpdate, UpdateDetailsModel changeDetails);
+        bool UpdateDetails(User userToUpdate, UpdateDetailsModel changeDetails);
 
-        Task RetireUserAsync(User userToRetire);
+        void RetireUser(User userToRetire);
+
         void UpdateUserPasswordUsingPBKDF2(User currentUser, string password);
     }
 
