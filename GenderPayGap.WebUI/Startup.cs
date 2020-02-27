@@ -250,7 +250,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterLogRecord(Filenames.SearchLog);
 
             // Register log records (without key filtering)
-            builder.RegisterType<UserLogRecord>().As<IUserLogRecord>().SingleInstance();
             builder.RegisterType<RegistrationLogRecord>().As<IRegistrationLogRecord>().SingleInstance();
 
             // Setup azure search

@@ -39,7 +39,6 @@ namespace GenderPayGap.WebJob
                 actions.Add(MergeCsvLogsAsync<SubmissionLogModel>(log, webServerlogPath, "SubmissionLog"));
                 actions.Add(MergeCsvLogsAsync<RegisterLogModel>(log, webServerlogPath, "RegistrationLog"));
                 actions.Add(MergeCsvLogsAsync<SearchLogModel>(log, webServerlogPath, "SearchLog"));
-                actions.Add(MergeCsvLogsAsync<UserLogModel>(log, webServerlogPath, "UserLog"));
 
                 #endregion
 

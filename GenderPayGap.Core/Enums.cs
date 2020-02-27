@@ -1,10 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Core
 {
@@ -126,17 +122,6 @@ namespace GenderPayGap.Core
         Delete = 4,
         Extend = 5,
         Expire = 6
-
-    }
-
-    public enum UserAction : byte
-    {
-
-        CreatedAccount = 0,
-        ChangedEmail = 1,
-        ChangedPassword = 2,
-        ChangedDetails = 3,
-        Retired = 4
 
     }
 
@@ -294,34 +279,19 @@ namespace GenderPayGap.Core
         public const string EmailSendLog = "EmailSendLog.csv";
         public const string StannpSendLog = "StannpSendLog.csv";
         public const string SearchLog = "searchLog.csv";
-        public const string UserLog = "UserLog.csv";
-        
-        public static string GetRootFilename(string filePath)
-        {
-            string path = Path.GetDirectoryName(filePath);
-            string fileName = Path.GetFileNameWithoutExtension(filePath);
-            string extension = Path.GetExtension(filePath);
-            string prefix = fileName.BeforeFirst("_");
-            return $"{prefix}{extension}";
-        }
-
     }
 
     public static class QueueNames
     {
-
         public const string SendEmail = "send-email";
         public const string SendNotifyEmail = "send-notify-email";
         public const string LogEvent = "log-event";
         public const string LogRecord = "log-record";
-
     }
 
     public static class CookieNames
     {
-
         public const string LastCompareQuery = "compare";
-
     }
 
 }

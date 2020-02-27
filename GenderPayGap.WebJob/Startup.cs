@@ -156,9 +156,6 @@ namespace GenderPayGap.WebJob
             builder.RegisterLogRecord(Filenames.BadSicLog);
 
 
-            // Register record log records (without key filtering)
-            builder.RegisterType<UserLogRecord>().As<IUserLogRecord>().SingleInstance();
-
             // Register email providers
             builder.RegisterType<GovNotifyEmailProvider>().SingleInstance();
             builder.RegisterType<SmtpEmailProvider>().SingleInstance();

@@ -30,7 +30,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 builder.RegisterInstance(Global.SearchLog).Keyed<ILogRecordLogger>(Filenames.SearchLog).SingleInstance();
                 builder.RegisterInstance(Global.EmailSendLog).Keyed<ILogRecordLogger>(Filenames.EmailSendLog).SingleInstance();
 
-                builder.RegisterInstance(Mock.Of<IUserLogRecord>()).SingleInstance();
                 builder.RegisterInstance(Mock.Of<IRegistrationLogRecord>()).SingleInstance();
             }
         }
