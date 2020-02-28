@@ -1,0 +1,157 @@
+﻿@using GenderPayGap.WebUI.Models.AccountCreation
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AccountCreation.CreateUserAccountViewModel
+@{
+    ViewBag.Title = "Create my account - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Create my account</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">
+            You will need to create your account, and then add your organisation(s) to this account.
+        </p>
+        <p class="govuk-body">
+            Once your email address is confirmed you will then be able to report your gender pay gap data.
+        </p>
+        <p class="govuk-body">
+            If you already have a user account, please
+            @Html.ActionLink("sign in", nameof(OrganisationController.ManageOrganisations),
+                "Organisation").
+        </p>
+        <div class="govuk-inset-text">
+            You will need to creeate your own user account even if someone else has previously reported
+            your organisation's gender pay gap.
+        </div>
+
+        <div class="govuk-grid-column-two-thirds">
+            <form method="POST" action="@Url.Action("CreateUserAccountPost", "AccountCreation")">
+                @Html.AntiForgeryToken()
+                <div class="govuk-form-group">
+
+                    @(Html.GovUkErrorSummary(new[]
+                    {
+                        nameof(CreateUserAccountViewModel.EmailAddress),
+                        nameof(CreateUserAccountViewModel.ConfirmEmailAddress)
+                    }))
+
+                    <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
+                        <legend class="govuk-fieldset__legend">
+                            <h2 class="govuk-heading-m">Email address</h2>
+                        </legend>
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.EmailAddress,
+                            new LabelViewModel {Text = "Enter an email address that you can access"},
+                            new HintViewModel {Text = "The service will send you an email to verify your identity"}
+                            ))
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.ConfirmEmailAddress,
+                            new LabelViewModel {Text = "Confirm your email address"}
+                            ))
+
+                    </fieldset>
+
+                    <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
+                        <legend class="govuk-fieldset__legend">
+                            <h2 class="govuk-heading-m">Your details</h2>
+                        </legend>
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.FirstName,
+                            new LabelViewModel {Text = "First name"}
+                            ))
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.LastName,
+                            new LabelViewModel {Text = "Last name"}
+                            ))
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.JobTitle,
+                            new LabelViewModel {Text = "Job title"}
+                            ))
+                    </fieldset>
+
+                    <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
+                        <legend class="govuk-fieldset__legend">
+                            <h2 class="govuk-heading-m">Create a password</h2>
+                        </legend>
+
+                        <p class="govuk-body">
+                            Your password must be at least 8 characters long.
+                        </p>
+                        <p class="govuk-body">
+                            It must also have at least one of each of the following:
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>
+                                    lower-case letter
+                                </li>
+                                <li>
+                                    capital letter and
+                                </li>
+                                <li>
+                                    number
+                                </li>
+
+                            </ul>
+                        </p>
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.Password,
+                            new LabelViewModel {Text = "Password"},
+                            type: "password"
+                            ))
+
+
+
+                        @(Html.GovUkTextInputFor(
+                            m => m.ConfirmPassword,
+                            new LabelViewModel {Text = "Confirm your password"},
+                            type: "password"
+                            ))
+                    </fieldset>
+
+                    <p class="govuk-body">
+                        We will only use your contact details to send you information relating
+                        to gender pay gap reporting and, with your consent, for the following purpose:
+                    </p>
+
+                    @(Html.GovUkCheckboxItemFor(m => m.SendUpdates,
+                        new LabelViewModel {Text = "I would like to receive information about webinars, events, and new guidance"}))
+
+                    @(Html.GovUkCheckboxItemFor(m => m.AllowContact,
+                        new LabelViewModel {Text = "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"}))
+
+
+                    @(Html.GovUkButton(new ButtonViewModel
+                    {
+                        Text = "Continue",
+                        Classes = "govuk-!-margin-top-9"
+                    }))
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+               new ReportingStepsViewModel
+               {
+                   CurrentStep = 3,
+                   CurrentTask = 0
+               }); }
+    </div>
+</div>
