@@ -1,16 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
-using CsvHelper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +65,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-AllOrganisations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -105,7 +102,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-OrphanOrganisations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -139,7 +136,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-OrganisationAddresses-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -164,7 +161,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-OrganisationScopesForYear-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -225,7 +222,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-AllSubmissionsForYear-{year}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -259,7 +256,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-LateSubmissions-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -287,7 +284,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-AllUsers-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -320,7 +317,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -353,7 +350,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-UnverifiedUserOrganisationRegistrations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -378,7 +375,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -403,26 +400,8 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-UserConsent-AllowContactForFeedback-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
-            return fileContentResult;
-        }
-
-        private static FileContentResult CreateCsvDownload(IEnumerable rows, string fileDownloadName)
-        {
-            var memoryStream = new MemoryStream();
-            using (var writer = new StreamWriter(memoryStream))
-            {
-                using (var csv = new CsvWriter(writer))
-                {
-                    csv.WriteRecords(rows);
-                }
-            }
-
-            var fileContentResult = new FileContentResult(memoryStream.GetBuffer(), "text/csv")
-            {
-                FileDownloadName = fileDownloadName
-            };
             return fileContentResult;
         }
 
