@@ -206,10 +206,6 @@ namespace GenderPayGap.WebUI.Controllers
                 //Mark the user as active
                 currentUser.SetStatus(UserStatuses.Active, OriginalUser ?? currentUser, "Email verified");
 
-                //Get any saved fasttrack codes
-                PendingFasttrackCodes = currentUser.GetSetting(UserSettingKeys.PendingFasttrackCodes);
-                currentUser.SetSetting(UserSettingKeys.PendingFasttrackCodes, null);
-
                 currentUser.VerifyAttempts = 0;
 
                 //If not an administrator show confirmation action to choose next step
