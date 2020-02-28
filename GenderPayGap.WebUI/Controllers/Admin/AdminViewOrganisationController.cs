@@ -1,5 +1,10 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +27,18 @@ namespace GenderPayGap.WebUI.Controllers
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
-            return View("../Admin/ViewOrganisation", organisation);
+            int firstReportingYear = Global.FirstReportingYear;
+            int currentReportingYear = SectorTypes.Public.GetAccountingStartDate().Year;
+            int numberOfYears = currentReportingYear - firstReportingYear + 1;
+            List<int> reportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList();
+
+            var viewModel = new AdminViewOrganisationViewModel
+            {
+                Organisation = organisation,
+                ReportingYears = reportingYears
+            };
+
+            return View("../Admin/ViewOrganisation", viewModel);
         }
 
     }
