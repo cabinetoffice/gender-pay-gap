@@ -60,30 +60,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.ClearStash();
 
             var model = new RegisterViewModel();
-
-            //Prepopulate with name and email saved during out-of-scope process
-            string pendingFasttrackCodes = PendingFasttrackCodes;
-            if (pendingFasttrackCodes != null)
-            {
-                string[] args = pendingFasttrackCodes?.SplitI(":");
-                if (args.Length > 2)
-                {
-                    model.FirstName = args[2];
-                }
-
-                if (args.Length > 3)
-                {
-                    model.LastName = args[3];
-                }
-
-                if (args.Length > 4)
-                {
-                    model.EmailAddress = args[4];
-                }
-
-                model.ConfirmEmailAddress = model.EmailAddress;
-            }
-
+            
             //Start new user registration
             return View("AboutYou", model);
         }
@@ -195,18 +172,7 @@ namespace GenderPayGap.WebUI.Controllers
             // save the current user
             DataRepository.Insert(currentUser);
             await DataRepository.SaveChangesAsync();
-
-            //Save pendingFasttrackCodes
-            string pendingFasttrackCodes = PendingFasttrackCodes;
-            if (pendingFasttrackCodes != null)
-            {
-                string[] args = pendingFasttrackCodes?.SplitI(":");
-                pendingFasttrackCodes = $"{args[0]}:{args[1]}";
-                currentUser.SetSetting(UserSettingKeys.PendingFasttrackCodes, pendingFasttrackCodes);
-                await DataRepository.SaveChangesAsync();
-                PendingFasttrackCodes = null;
-            }
-
+            
             //Send the verification code and show confirmation
             this.StashModel(model);
 
