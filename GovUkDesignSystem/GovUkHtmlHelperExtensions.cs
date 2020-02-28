@@ -283,7 +283,8 @@ namespace GovUkDesignSystem
             HintViewModel hintOptions = null,
             FormGroupViewModel formGroupOptions = null,
             string classes = null,
-            TextInputAppendixViewModel textInputAppendix = null)
+            TextInputAppendixViewModel textInputAppendix = null,
+            string type = "text")
             where TModel : GovUkViewModel
         {
             return TextInputHtmlGenerator.GenerateHtml(
@@ -293,7 +294,8 @@ namespace GovUkDesignSystem
                 hintOptions,
                 formGroupOptions,
                 classes,
-                textInputAppendix);
+                textInputAppendix,
+                type);
         }
 
         public static IHtmlContent GovUkTextInputFor<TModel>(

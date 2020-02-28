@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -53,7 +53,7 @@ namespace GovUkDesignSystem
             AddErrorFor(property, errorMessage);
         }
 
-        internal void AddErrorFor(PropertyInfo property, string errorMessage)
+        public void AddErrorFor(PropertyInfo property, string errorMessage)
         {
             errors.Add(property.Name, errorMessage);
         }
