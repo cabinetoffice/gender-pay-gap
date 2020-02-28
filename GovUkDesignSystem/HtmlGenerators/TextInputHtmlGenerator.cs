@@ -18,7 +18,8 @@ namespace GovUkDesignSystem.HtmlGenerators
             HintViewModel hintOptions = null,
             FormGroupViewModel formGroupOptions = null,
             string classes = null,
-            TextInputAppendixViewModel textInputAppendix = null
+            TextInputAppendixViewModel textInputAppendix = null,
+            string type = "text"
         )
             where TModel : GovUkViewModel
         {
@@ -44,7 +45,8 @@ namespace GovUkDesignSystem.HtmlGenerators
                 Hint = hintOptions,
                 FormGroup = formGroupOptions,
                 Classes = classes,
-                TextInputAppendix = textInputAppendix
+                TextInputAppendix = textInputAppendix,
+                Type = type
             };
 
             if (model.HasErrorFor(property))

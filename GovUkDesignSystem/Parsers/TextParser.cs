@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
@@ -32,61 +34,24 @@ namespace GovUkDesignSystem.Parsers
             if (parameterValues.Count > 0)
             {
                 string parameterValue = parameterValues[0];
-
-                if (ExceedsCharacterCount(property, parameterValue))
+                
+                var customAttributes = property
+                    .GetCustomAttributes(typeof(GovUkValidationAttribute))
+                    .Cast<GovUkValidationAttribute>();
+                foreach (var attribute in customAttributes)
                 {
-                    AddExceedsCharacterCountErrorMessage(model, property);
-                    return;
+                    var result = attribute.CheckForValidationErrors(model, property, parameterValue);
+                    if (result == false)
+                    {
+                        return;
+                    }
                 }
-
+                    
                 property.SetValue(model, parameterValue);
             }
 
             model.ValueWasSuccessfullyParsed(property);
         }
-
-        private static void AddExceedsCharacterCountErrorMessage(GovUkViewModel model, PropertyInfo property)
-        {
-            var characterCountAttribute = property.GetSingleCustomAttribute<GovUkValidateCharacterCountAttribute>();
-            var displayNameForErrorsAttribute = property.GetSingleCustomAttribute<GovUkDisplayNameForErrorsAttribute>();
-
-            string errorMessage;
-            if (displayNameForErrorsAttribute != null)
-            {
-                errorMessage = $"{displayNameForErrorsAttribute.NameAtStartOfSentence} must be {characterCountAttribute.MaxCharacters} characters or fewer";
-            }
-            else
-            {
-                errorMessage = $"{property.Name} must be {characterCountAttribute.MaxCharacters} characters or fewer";
-            }
-
-            model.AddErrorFor(property, errorMessage);
-        }
-
-        private static bool ExceedsCharacterCount(PropertyInfo property, string parameterValue)
-        {
-            var characterCountAttribute = property.GetSingleCustomAttribute<GovUkValidateCharacterCountAttribute>();
-
-            bool characterCountInForce = characterCountAttribute != null;
-
-            if (characterCountInForce)
-            {
-                int parameterLength = parameterValue.Length;
-                int maximumLength = characterCountAttribute.MaxCharacters;
-
-                bool exceedsCharacterCount = parameterLength > maximumLength;
-                return exceedsCharacterCount;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        
-
-        
-
 
     }
 }
