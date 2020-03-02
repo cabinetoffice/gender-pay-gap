@@ -51,7 +51,6 @@
       "Scripts/GOVUK/stick-at-top-when-scrolling.js",
       "Scripts/GOVUK/stop-scrolling-at-footer.js",
       // App
-      "Scripts/Application/add-remove-comparison.js",
       "Scripts/Application/Ajaxify.js",
       "Scripts/Application/Collapsible.js",
       "Scripts/Application/Compare.js",
@@ -63,7 +62,6 @@
       "Scripts/Application/ShowHide.js",
       "Scripts/Application/Site.js",
       "Scripts/Application/SuggestEmployer.js",
-      "Scripts/Application/view-comparison.js",
       "Scripts/Application/custom-link-tracker.js",
       "Scripts/Application/details-tracker.js"
     ],
