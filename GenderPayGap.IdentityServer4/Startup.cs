@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Queues;
@@ -175,6 +175,9 @@ namespace GenderPayGap.IdentityServer4
             // Register queues (without key filtering)
             builder.Register(c => new LogEventQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
             builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
+
+            // Register Audit Logger
+            builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
 
             // Register Action helpers
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();
