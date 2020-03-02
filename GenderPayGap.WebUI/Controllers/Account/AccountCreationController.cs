@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
@@ -129,7 +130,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             dataRepository.Insert(newUser);
             dataRepository.SaveChangesAsync().Wait();
 
-            string verificationCode = GenerateVerificationCode(newUser);
+            string verificationCode = Guid.NewGuid().ToString("N");
             string verificationUrl = Url.Action(
                 "VerifyEmail",
                 "AccountCreation",
@@ -139,7 +140,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             try
             {
                 EmailSendingService.PrototypeSendAccountVerificationEmail(viewModel.EmailAddress, verificationUrl);
-                newUser.EmailVerifyHash = Crypto.GetSHA512Checksum(verificationCode);
+                newUser.EmailVerifyHash = verificationCode;
                 newUser.EmailVerifySendDate = VirtualDateTime.Now;
 
                 dataRepository.SaveChangesAsync().Wait();
@@ -157,7 +158,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("/prototype/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
-            User gpgUser = GetGpgUserFromAspNetUser(User, dataRepository);
+            var gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
+
+            if (gpgUser == null)
+            {
+                return View("UserNotFoundErrorPage");
+            }
 
             if (User.Identity.IsAuthenticated || gpgUser.EmailVerifiedDate != null)
             {
@@ -179,14 +185,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 // help user resend email
                 return RedirectToAction("Index", "Viewing");
             }
-
-            if (gpgUser.EmailVerifyHash != Crypto.GetSHA512Checksum(code))
-            {
-                // wrong code
-                // help user resend email
-                return RedirectToAction("Index", "Viewing");
-            }
-
+            
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;
             gpgUser.SetStatus(UserStatuses.Active, gpgUser, "Email verified");
 
@@ -232,21 +231,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             return user;
         }
-
-        private string GenerateVerificationCode(User user)
-        {
-            return Encryption.EncryptQuerystring(user.UserId + ":" + user.Created.ToSmallDateTime());
-        }
-
-        private static User GetGpgUserFromAspNetUser(ClaimsPrincipal user, IDataRepository dataRepository)
-        {
-            if (user != null && user.Identity.IsAuthenticated)
-            {
-                return dataRepository.FindUser(user);
-            }
-
-            return null;
-        }
-
+        
     }
 }

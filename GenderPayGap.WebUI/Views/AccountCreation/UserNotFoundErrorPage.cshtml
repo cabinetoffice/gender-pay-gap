@@ -1,0 +1,38 @@
+﻿@model GenderPayGap.WebUI.Models.AccountCreation.CreateUserAccountViewModel
+@{
+    ViewBag.Title = "User not found - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">User not found</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">
+            No user was found for that verification code.
+        </p>
+        
+        <p class="govuk-body">
+            Please 
+            <a href=@(Url.Action("CreateUserAccountGet", "AccountCreation")) class="govuk-link">create a new account</a>.
+        </p>
+
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+               new ReportingStepsViewModel
+               {
+                   CurrentStep = 3,
+                   CurrentTask = 0
+               }); }
+    </div>
+</div>
