@@ -160,7 +160,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             var gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
 
-            if (gpgUser == null)
+            // TODO when moving from prototype to production code this config value should supersede Global.EmailVerificationExpiryHours
+            // and be shared with the Functions.Purge webjob
+            if (gpgUser == null || gpgUser?.EmailVerifySendDate.Value.AddDays(7) < VirtualDateTime.Now)
             {
                 return View("UserNotFoundErrorPage");
             }
@@ -168,22 +170,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
             if (User.Identity.IsAuthenticated || gpgUser.EmailVerifiedDate != null)
             {
                 return RedirectToAction("ManageOrganisations", "Organisation");
-            }
-
-            if (gpgUser.EmailVerifySendDate == null)
-            {
-                // email not sent
-                // help user resend email
-                return RedirectToAction("Index", "Viewing");
-            }
-
-            // TODO when moving from prototype to production code this config value should supersede Global.EmailVerificationExpiryHours
-            // and be shared with the Functions.Purge webjob
-            if (gpgUser.EmailVerifySendDate.Value.AddDays(7) < VirtualDateTime.Now)
-            {
-                // code expired
-                // help user resend email
-                return RedirectToAction("Index", "Viewing");
             }
             
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;
