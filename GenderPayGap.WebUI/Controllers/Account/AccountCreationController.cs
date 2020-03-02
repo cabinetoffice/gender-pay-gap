@@ -138,7 +138,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             try
             {
-                EmailSendingService.SendAccountVerificationEmail(viewModel.EmailAddress, verificationUrl);
+                EmailSendingService.PrototypeSendAccountVerificationEmail(viewModel.EmailAddress, verificationUrl);
                 newUser.EmailVerifyHash = Crypto.GetSHA512Checksum(verificationCode);
                 newUser.EmailVerifySendDate = VirtualDateTime.Now;
 
@@ -154,7 +154,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
         }
 
-        [HttpGet("verify-email")]
+        [HttpGet("/prototype/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
             User gpgUser = GetGpgUserFromAspNetUser(User, dataRepository);
@@ -171,7 +171,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return RedirectToAction("Index", "Viewing");
             }
 
-            if (gpgUser.EmailVerifySendDate.Value.AddHours(Global.EmailVerificationExpiryHours) < VirtualDateTime.Now)
+            // TODO when moving from prototype to production code this config value should supersede Global.EmailVerificationExpiryHours
+            // and be shared with the Functions.Purge webjob
+            if (gpgUser.EmailVerifySendDate.Value.AddDays(7) < VirtualDateTime.Now)
             {
                 // code expired
                 // help user resend email
