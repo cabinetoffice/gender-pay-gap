@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.WebUI.Models.Admin
+@using GenderPayGap.WebUI.Models.Admin
 @model GenderPayGap.WebUI.Models.Admin.UploadViewModel
 @{
     ViewBag.Title = "Administration: Uploads";
@@ -30,7 +30,7 @@
 
                 <div style="float: right; font-size: smaller;">
                     <span>
-                        <a href="@Url.Action("Uploads", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content">@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
+                        <a href="@Url.Action("Uploads", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content"><span class="visually-hidden">Show more recent content </span>@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
                     </span>
                 </div>
 
@@ -88,7 +88,7 @@
                                     @if (controller.IsSuperAdministrator)
                                     {
                                         <input type="file" name="files" style="display: none" onchange="$('#btnUpload').click()"/>
-                                        <a onclick="$(this).prevAll(':file').click()" style="font-size: small; cursor: pointer;" class="link-button" title="click here to select a local file to upload and replace this content">Upload</a>
+                                        <a onclick="$(this).prevAll(':file').click()" style="font-size: small; cursor: pointer;" class="link-button" title="click here to select a local file to upload and replace this content">Upload <span class="visually-hidden">a local file and replace this content</span></a>
                                     }
                                 </td>
                             </tr>

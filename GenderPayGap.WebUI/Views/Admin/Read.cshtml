@@ -24,10 +24,10 @@
 
             <div style="float:right;font-size:smaller;text-align:right;">
                 <span>
-                    <a href="@Url.Action("Read", "Admin", new {filePath = Context.Request.Query["filePath"], v = Guid.NewGuid().ToShortString()})" title="Show more recent content">@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
+                    <a href="@Url.Action("Read", "Admin", new {filePath = Context.Request.Query["filePath"], v = Guid.NewGuid().ToShortString()})" title="Show more recent content"><span class="visually-hidden">Show more recent content </span>@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
                 </span><br/>
                 <span class="heading-secondary">
-                    <a download="true" href="@Url.Action("Download", new {filePath = Model.Filepath})" target="_blank"title="Download this data in CSV format">Download</a>
+                    <a download="true" href="@Url.Action("Download", new {filePath = Model.Filepath})" target="_blank"title="Download this data in CSV format">Download<span class="visually-hidden"> this data in CSV format</span></a>
                 </span>
             </div>
             <h1 class="heading-large" style="margin-top: 0.3em;">

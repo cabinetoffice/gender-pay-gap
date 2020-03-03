@@ -18,7 +18,7 @@
         <div class="column-full">
             <div style="float:right;font-size:smaller;">
                 <span>
-                    <a href="@Url.Action("History", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content">@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
+                    <a href="@Url.Action("History", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content"><span class="visually-hidden">Show more recent content </span>@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
                 </span>
             </div>
 
