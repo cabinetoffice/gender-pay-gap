@@ -254,7 +254,7 @@
                     <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
                         <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
                            class="govuk-link">
-                            @(returnForYear.AccountingDate.Year)
+                            <span class="visually-hidden">Public page for return year </span>@(returnForYear.AccountingDate.Year)
                         </a>
                     </td>
                 }

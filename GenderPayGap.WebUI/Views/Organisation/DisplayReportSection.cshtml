@@ -28,7 +28,7 @@
         @if (Model.CanChangeScope)
         {
             <div>
-                <a id="ChangeScope@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ChangeOrganisationScope", new {request = scopeRequest}))">Change</a>
+                <a id="ChangeScope@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ChangeOrganisationScope", new {request = scopeRequest}))">Change <span class="visually-hidden">scope</span></a>
             </div>
         }
     </div>
