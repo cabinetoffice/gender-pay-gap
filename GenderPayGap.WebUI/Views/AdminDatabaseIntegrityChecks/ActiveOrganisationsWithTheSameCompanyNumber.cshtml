@@ -59,7 +59,7 @@ else
                     <td class="govuk-table__cell">
                         <a href="@(Url.Action("SearchGet", "AdminSearch", new {query = companyNumber}))"
                            class="govuk-link">
-                            @(companyNumber)
+                            <span class="visually-hidden">Organisation with company number </span>@(companyNumber)
                         </a>
                     </td>
                 </tr>

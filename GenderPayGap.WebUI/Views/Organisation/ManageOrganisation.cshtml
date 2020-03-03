@@ -130,7 +130,7 @@
                             <td style="border: none;" class="org-name">@userFullname</td>
                             <td style="border: none;">
                                 <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = encUserId}))">
-                                    Remove user from reporting
+                                    Remove user <span class="visually-hidden">@userFullname</span> from reporting
                                 </a>
                             </td>
                         </tr>
@@ -142,7 +142,7 @@
                         </td>
                         <td style="border: none;">
                             <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = Encryption.EncryptQuerystring(controller.CurrentUser.UserId.ToString())}))">
-                                Remove user from reporting
+                                Remove user <span class="visually-hidden">@controller.CurrentUser.Fullname (You)</span> from reporting
                             </a>
                         </td>
                     </tr>

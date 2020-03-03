@@ -32,7 +32,7 @@
             <td class="govuk-table__cell">
                 <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrg.GetReviewCode()}))"
                    class="govuk-link">
-                    Review
+                    Review <span class="visually-hidden">registration process for @(userOrg.Organisation.OrganisationName) submitted by @(userOrg.User.ContactFullname.Coalesce(userOrg.User.Fullname))</span>
                 </a>
             </td>
         </tr>

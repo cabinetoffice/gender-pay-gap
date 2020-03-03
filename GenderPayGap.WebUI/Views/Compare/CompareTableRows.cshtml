@@ -14,7 +14,7 @@
             </div>
 
             <div class="RemoveLink no-print">
-                <a href="@Url.Action("RemoveEmployer", "Compare", new {employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl})">Remove</a>
+                <a href="@Url.Action("RemoveEmployer", "Compare", new {employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl})">Remove <span class="visually-hidden">@compareReport.OrganisationName from comparison</span></a>
             </div>
         </td>
 
