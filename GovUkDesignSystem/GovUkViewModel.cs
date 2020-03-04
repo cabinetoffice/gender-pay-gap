@@ -17,7 +17,7 @@ namespace GovUkDesignSystem
         {
             propertiesWithSuccessfullyParsedValues.Add(property.Name);
         }
-
+        
         internal bool HasSuccessfullyParsedValue(PropertyInfo property)
         {
             return propertiesWithSuccessfullyParsedValues.Contains(property.Name);
@@ -44,15 +44,7 @@ namespace GovUkDesignSystem
                 return StringValues.Empty;
             }
         }
-
-        public void AddErrorFor<TModel, TProperty>(
-            Expression<Func<TModel, TProperty>> propertyLambdaExpression, string errorMessage)
-            where TModel : GovUkViewModel
-        {
-            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
-            AddErrorFor(property, errorMessage);
-        }
-
+        
         public void AddErrorFor(PropertyInfo property, string errorMessage)
         {
             errors.Add(property.Name, errorMessage);
@@ -92,6 +84,28 @@ namespace GovUkDesignSystem
         internal string GetErrorFor(PropertyInfo property)
         {
             return errors.ContainsKey(property.Name) ? errors[property.Name] : null;
+        }
+
+    }
+    
+    public static class GovUkViewModelExtensions
+    {
+        public static bool HasSuccessfullyParsedValueFor<TModel, TProperty>(
+            this TModel model,
+            Expression<Func<TModel, TProperty>> propertyLambdaExpression)
+            where TModel : GovUkViewModel
+        {
+            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
+            return model.HasSuccessfullyParsedValue(property);
+        }
+        
+        public static void AddErrorFor<TModel, TProperty>(
+            this TModel model,
+            Expression<Func<TModel, TProperty>> propertyLambdaExpression, string errorMessage)
+            where TModel : GovUkViewModel
+        {
+            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
+            model.AddErrorFor(property, errorMessage);
         }
 
     }
