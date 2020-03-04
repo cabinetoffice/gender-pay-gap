@@ -224,49 +224,6 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        //Remove retired copies of GPG data
-        public async Task PurgeGPGData([TimerTrigger("30 4 * * *" /* 04:30 once per day */)] TimerInfo timer, ILogger log)
-        {
-            var runId = CreateRunId();
-            var startTime = DateTime.Now;
-            LogFunctionStart(runId,  nameof(PurgeGPGData), startTime);
-            try
-            {
-                DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeRetiredReturnDays);
-                List<Return> returns = await _DataRepository.GetAll<Return>()
-                    .Where(r => r.StatusDate < deadline && (r.Status == ReturnStatuses.Retired || r.Status == ReturnStatuses.Deleted))
-                    .ToListAsync();
-
-                foreach (Return @return in returns)
-                {
-                    var logItem = new ManualChangeLogModel(
-                        nameof(PurgeGPGData),
-                        ManualActions.Delete,
-                        AppDomain.CurrentDomain.FriendlyName,
-                        nameof(@return.ReturnId),
-                        @return.ReturnId.ToString(),
-                        null,
-                        JsonConvert.SerializeObject(@return.ToDownloadResult()),
-                        null);
-                    _DataRepository.Delete(@return);
-                    await _DataRepository.SaveChangesAsync();
-                    await Global.ManualChangeLog.WriteAsync(logItem);
-                }
-
-                LogFunctionEnd(runId, nameof(PurgeGPGData), startTime);
-            }
-            catch (Exception ex)
-            {
-                LogFunctionError(runId, nameof(PurgeGPGData), startTime, ex );
-
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
-                    $"Failed webjob ({nameof(PurgeGPGData)}):{ex.Message}:{ex.GetDetailsText()}");
-                //Rethrow the error
-                throw;
-            }
-        }
-
         //Remove test users and organisations
         [Disable(typeof(DisableWebjobProvider))]
         public async Task PurgeTestDataAsync([TimerTrigger("40 4 * * *" /* 04:40 once per day */)]
