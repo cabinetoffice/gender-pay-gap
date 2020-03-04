@@ -77,7 +77,6 @@ namespace GenderPayGap.Core
 
         public static int PinInPostMinRepostDays => Config.GetAppSetting("PinInPostMinRepostDays").ToInt32();
         public static int PINLength => Config.GetAppSetting("PINLength").ToInt32();
-        public static int PurgeRetiredReturnDays => Config.GetAppSetting("PurgeRetiredReturnDays").ToInt32(30);
         public static int PurgeUnusedOrganisationDays => Config.GetAppSetting("PurgeUnusedOrganisationDays").ToInt32(30);
         public static int PurgeUnverifiedUserDays => Config.GetAppSetting("PurgeUnverifiedUserDays").ToInt32(7);
         public static int PurgeUnconfirmedPinDays => PinInPostExpiryDays + Config.GetAppSetting("PurgeUnconfirmedPinDays").ToInt32(14);
