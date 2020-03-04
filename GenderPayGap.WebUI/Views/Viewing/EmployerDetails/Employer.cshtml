@@ -115,7 +115,9 @@
                             {
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
-                                        @Html.ActionLink("View Report", "Report", new {employerIdentifier, year = report.AccountingDate.Year}, new {style = "font-size: 19px!important;"})
+                                        <a style = "font-size: 19px!important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))"> 
+                                            View Report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr>
