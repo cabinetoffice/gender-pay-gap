@@ -17,7 +17,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 {
     public class AccountCreationController : Controller
     {
-
+        
         private readonly IDataRepository dataRepository;
 
         public AccountCreationController(IDataRepository dataRepository)
@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 case HaveYouAlreadyCreatedYourUserAccount.Unspecified:
                     viewModel.AddErrorFor<AlreadyCreatedAnAccountViewModel, HaveYouAlreadyCreatedYourUserAccount?>(
                         m => m.HaveYouAlreadyCreatedYourUserAccount,
-                        "You must select an option before continuing");
+                        "You must select whether you have already created your user account");
                     return View("AlreadyCreatedAnAccountQuestion", viewModel);
 
                 case HaveYouAlreadyCreatedYourUserAccount.Yes:
@@ -59,6 +59,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             }
         }
 
+        // TODO when moving from prototype to production code
+        // When updating this link to remove the /prototype prefix, you must also update
+        // the link in Login.cshtml that points to this action
         [HttpGet("/prototype/create-user-account")]
         public IActionResult CreateUserAccountGet()
         {
@@ -160,7 +163,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             var gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
 
-            // TODO when moving from prototype to production code this config value should supersede Global.EmailVerificationExpiryHours
+            // TODO when moving from prototype to production code
+            // this config value should supersede Global.EmailVerificationExpiryHours
             // and be shared with the Functions.Purge webjob
             if (gpgUser == null || gpgUser?.EmailVerifySendDate.Value.AddDays(7) < VirtualDateTime.Now)
             {
