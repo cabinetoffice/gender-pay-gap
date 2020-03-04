@@ -10,23 +10,26 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">User not found</h1>
+        <h1 class="govuk-heading-xl">We could not confirm your email address</h1>
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">
-            No user was found for that verification code.
+            We could not find a user with that confirmation code.
         </p>
-        
+
         <p class="govuk-body">
-            Please 
+            If you pasted the web address, check you copied the entire address.
+        </p>
+
+        <p class="govuk-body">
+            Or please
             <a href=@(Url.Action("CreateUserAccountGet", "AccountCreation")) class="govuk-link">create a new account</a>.
         </p>
-
     </div>
-
+    
     <div class="govuk-grid-column-one-third">
         @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
                new ReportingStepsViewModel
