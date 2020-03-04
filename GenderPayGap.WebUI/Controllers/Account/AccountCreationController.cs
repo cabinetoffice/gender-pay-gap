@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +15,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 {
     public class AccountCreationController : Controller
     {
-        
+
         private readonly IDataRepository dataRepository;
 
         public AccountCreationController(IDataRepository dataRepository)
@@ -41,21 +39,23 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             switch (viewModel.HaveYouAlreadyCreatedYourUserAccount)
             {
-                case null:
-                    var model = new AlreadyCreatedAnAccountViewModel();
-                    return View("AlreadyCreatedAnAccountQuestion", model);
+                case HaveYouAlreadyCreatedYourUserAccount.Yes:
+                    return RedirectToAction("ManageOrganisations", "Organisation");
+
+                case HaveYouAlreadyCreatedYourUserAccount.No:
+                case HaveYouAlreadyCreatedYourUserAccount.NotSure:
+                    return RedirectToAction("CreateUserAccountGet");
 
                 case HaveYouAlreadyCreatedYourUserAccount.Unspecified:
-                    viewModel.AddErrorFor<AlreadyCreatedAnAccountViewModel, HaveYouAlreadyCreatedYourUserAccount?>(
+                    viewModel.AddErrorFor(
                         m => m.HaveYouAlreadyCreatedYourUserAccount,
                         "You must select whether you have already created your user account");
                     return View("AlreadyCreatedAnAccountQuestion", viewModel);
 
-                case HaveYouAlreadyCreatedYourUserAccount.Yes:
-                    return RedirectToAction("ManageOrganisations", "Organisation");
-
                 default:
-                    return RedirectToAction("CreateUserAccountGet");
+                    // This serves as the initial GET case
+                    var model = new AlreadyCreatedAnAccountViewModel();
+                    return View("AlreadyCreatedAnAccountQuestion", model);
             }
         }
 
@@ -84,49 +84,46 @@ namespace GenderPayGap.WebUI.Controllers.Account
             viewModel.ParseAndValidateParameters(Request, m => m.Password);
             viewModel.ParseAndValidateParameters(Request, m => m.ConfirmPassword);
 
-            if (viewModel.HasAnyErrors())
+            if (viewModel.HasSuccessfullyParsedValueFor(m => m.EmailAddress)
+                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmEmailAddress)
+                && viewModel.EmailAddress != viewModel.ConfirmEmailAddress)
             {
-                return View("CreateUserAccount", viewModel);
-            }
-
-            if (viewModel.EmailAddress != viewModel.ConfirmEmailAddress)
-            {
-                viewModel.AddErrorFor<CreateUserAccountViewModel, string>(
+                viewModel.AddErrorFor(
                     m => m.ConfirmEmailAddress,
                     "The email address and confirmation do not match.");
-
-                return View("CreateUserAccount", viewModel);
             }
 
-            if (viewModel.Password != viewModel.ConfirmPassword)
+            if (viewModel.HasSuccessfullyParsedValueFor(m => m.Password)
+                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmPassword)
+                && viewModel.Password != viewModel.ConfirmPassword)
             {
-                viewModel.AddErrorFor<CreateUserAccountViewModel, string>(
+                viewModel.AddErrorFor(
                     m => m.ConfirmPassword,
                     "The password and confirmation do not match.");
-
-                return View("CreateUserAccount", viewModel);
             }
 
             User existingUser = CheckForExistingUserForGivenEmailAddress(viewModel.EmailAddress);
-
             if (existingUser?.EmailVerifySendDate != null)
             {
                 if (existingUser.EmailVerifiedDate != null)
                 {
-                    viewModel.AddErrorFor<CreateUserAccountViewModel, string>(
+                    viewModel.AddErrorFor(
                         m => m.EmailAddress,
                         "This email address has already been registered. Please sign in or enter a different email "
                         + "address.");
-                    return View("CreateUserAccount", viewModel);
                 }
                 else
                 {
-                    viewModel.AddErrorFor<CreateUserAccountViewModel, string>(
+                    viewModel.AddErrorFor(
                         m => m.EmailAddress,
                         "This email address is awaiting confirmation. Please check you email inbox or enter a different email"
                         + " address");
-                    return View("CreateUserAccount", viewModel);
                 }
+            }
+
+            if (viewModel.HasAnyErrors())
+            {
+                return View("CreateUserAccount", viewModel);
             }
 
             User newUser = CreateNewUser(viewModel);
@@ -161,7 +158,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("/prototype/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
-            var gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
+            User gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
 
             // TODO when moving from prototype to production code
             // this config value should supersede Global.EmailVerificationExpiryHours
@@ -175,7 +172,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 return RedirectToAction("ManageOrganisations", "Organisation");
             }
-            
+
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;
             gpgUser.SetStatus(UserStatuses.Active, gpgUser, "Email verified");
 
@@ -221,6 +218,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             return user;
         }
-        
+
     }
 }
