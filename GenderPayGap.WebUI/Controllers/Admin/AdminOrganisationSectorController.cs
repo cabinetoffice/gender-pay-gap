@@ -7,6 +7,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (!viewModel.SelectedPublicSectorTypeId.HasValue)
             {
-                viewModel.AddErrorFor<AdminChangePublicSectorClassificationViewModel, int?>(
+                viewModel.AddErrorFor(
                     m => m.SelectedPublicSectorTypeId,
                     "Please select a public sector classification");
             }
@@ -98,7 +99,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 {
                     OldClassification = organisation.LatestPublicSectorType?.PublicSectorType?.Description,
                     NewClassification = newPublicSectorType.Description,
-                    Reason = viewModel.Reason
+                    viewModel.Reason
                 },
                 currentUser);
         }

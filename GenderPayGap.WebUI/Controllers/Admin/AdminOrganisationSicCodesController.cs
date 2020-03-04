@@ -11,6 +11,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -241,7 +242,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             SicCode newSicCode = dataRepository.Get<SicCode>(viewModel.SicCodeIdToChange.Value);
             if (newSicCode == null)
             {
-                viewModel.AddErrorFor<ChangeOrganisationSicCodesViewModel, int?>(
+                viewModel.AddErrorFor(
                     m => m.SicCodeIdToChange,
                     "This SIC code is not valid (it is not in our database of SIC codes)");
             }
