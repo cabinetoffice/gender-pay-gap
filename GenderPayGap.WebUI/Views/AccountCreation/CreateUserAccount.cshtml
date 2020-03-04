@@ -43,7 +43,13 @@
                     @(Html.GovUkErrorSummary(new[]
                     {
                         nameof(CreateUserAccountViewModel.EmailAddress),
-                        nameof(CreateUserAccountViewModel.ConfirmEmailAddress)
+                        nameof(CreateUserAccountViewModel.ConfirmEmailAddress),
+                        nameof(CreateUserAccountViewModel.FirstName),
+                        nameof(CreateUserAccountViewModel.LastName),
+                        nameof(CreateUserAccountViewModel.JobTitle),
+                        nameof(CreateUserAccountViewModel.Password),
+                        nameof(CreateUserAccountViewModel.ConfirmPassword),
+                        
                     }))
 
                     <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
@@ -114,8 +120,6 @@
                             new LabelViewModel {Text = "Password"},
                             type: "password"
                             ))
-
-
 
                         @(Html.GovUkTextInputFor(
                             m => m.ConfirmPassword,
