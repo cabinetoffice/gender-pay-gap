@@ -75,16 +75,9 @@
             </th>
             <th class="question" colspan="3">
                 <span class="edit">
-                    @(Html.ActionLink(
-                        "Edit",
-                        "EnterCalculations",
-                        "Submit",
-                        null,
-                        null,
-                        "HourlyPay",
-                        new {returnUrl = "CheckData"},
-                        new {id = "ChangeCalculations"}
-                        ))
+                    <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "HourlyPay")"> 
+                        Edit<span class="visually-hidden"> hourly rate</span>
+                    </a>
                 </span>
             </th>
         </tr>
@@ -137,16 +130,9 @@
             </th>
             <th>
                 <span class="edit">
-                    @(Html.ActionLink(
-                        "Edit",
-                        "EnterCalculations",
-                        "Submit",
-                        null,
-                        null,
-                        "BonusPay",
-                        new {returnUrl = "CheckData"},
-                        new {id = "ChangeCalculations"}
-                        ))
+                    <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "BonusPay")">
+                        Edit<span class="visually-hidden"> bonus pay</span>
+                    </a>
                 </span>
             </th>
         </tr>
@@ -246,16 +232,9 @@
             </th>
             <th>
                 <span class="edit">
-                    @(Html.ActionLink(
-                        "Edit",
-                        "EnterCalculations",
-                        "Submit",
-                        null,
-                        null,
-                        "PayQuartiles",
-                        new {returnUrl = "CheckData"},
-                        new {id = "ChangeCalculations"}
-                        ))
+                    <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "PayQuartiles")">
+                        Edit<span class="visually-hidden"> pay quartiles</span>
+                    </a>
                 </span>
             </th>
         </tr>
@@ -404,7 +383,11 @@
             <tr>
                 <th class="question" colspan="3">
                     Person responsible in your organisation
-                    <span class="edit">@Html.ActionLink("Edit", "PersonResponsible", new {returnUrl = "CheckData"}, new {id = "ChangePersonResponsible"})</span>
+                    <span class="edit">
+                        <a id="ChangePersonResponsible" href="@Url.Action("PersonResponsible", new {returnUrl = "CheckData"})">
+                            Edit<span class="visually-hidden"> person responsible in your organisation</span>
+                        </a>
+                    </span>
                 </th>
             </tr>
             </thead>
@@ -435,7 +418,11 @@
         <tr>
             <th class="question" colspan="3">
                 Size of your organisation
-                <span class="edit">@Html.ActionLink("Edit", "OrganisationSize", new {returnUrl = "CheckData"}, new {id = "ChangeOrganisationSize"})</span>
+                <span class="edit">
+                    <a id="ChangeOrganisationSize" href="@Url.Action("OrganisationSize", new {returnUrl = "CheckData"})">
+                        Edit<span class="visually-hidden"> size of your organisation</span>
+                    </a>
+                </span>
             </th>
         </tr>
         </thead>
@@ -457,7 +444,11 @@
         <tr>
             <th class="question" colspan="3">
                 Link to your gender pay gap information
-                <span class="edit">@Html.ActionLink("Edit", "EmployerWebsite", new {returnUrl = "CheckData"}, new {id = "ChangeEmployerWebsite"})</span>
+                <span class="edit">
+                    <a id="ChangeEmployerWebsite" href="@Url.Action("EmployerWebsite", new {returnUrl = "CheckData"})">
+                        Edit<span class="visually-hidden"> link to your gender pay gap information</span>
+                    </a>
+                </span>
             </th>
         </tr>
         </thead>
