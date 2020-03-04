@@ -24,10 +24,7 @@
 
             <div class="govuk-form-group">
 
-                @(Html.GovUkErrorSummary(new[]
-                {
-                    nameof(AlreadyCreatedAnAccountViewModel.HaveYouAlreadyCreatedYourUserAccount)
-                }))
+                @(Html.GovUkErrorSummary())
 
                 @{
                     string error = Model.GetErrorFor
