@@ -14,7 +14,7 @@ namespace GenderPayGap.Core
 
         public static bool? GetFeatureFlagValue(FeatureFlag featureFlag)
         {
-            string appSettingName = $"FeatureFlag_{featureFlag}";
+            string appSettingName = $"FeatureFlag{featureFlag}";
 
             string appSettingValue = Config.GetAppSetting(appSettingName);
 
