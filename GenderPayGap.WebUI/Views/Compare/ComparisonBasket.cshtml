@@ -38,24 +38,26 @@
                         <a href="@SearchViewService.GetLastSearchUrl()">Add another employer</a>
                     </li>
                 }
-
-                @if (Model.CanClearCompare)
+                @if (compareCount > 0)
                 {
-                    string clearBasketUrl = Url.Action(
-                        nameof(CompareController.ClearEmployers), "Compare",
-                        new {returnUrl = ViewBag.ReturnUrl}
-                        );
-                    <li>
-                        <a href="@clearBasketUrl">Clear list</a>
-                    </li>
-                }
+                    @if (Model.CanClearCompare)
+                    {
+                        string clearBasketUrl = Url.Action(
+                            nameof(CompareController.ClearEmployers), "Compare",
+                            new {returnUrl = ViewBag.ReturnUrl}
+                            );
+                        <li>
+                            <a href="@clearBasketUrl">Clear list</a>
+                        </li>
+                    }
 
-                @if (Model.CanViewCompare && compareCount > 0)
-                {
-                    string viewBasketUrl = Url.Action(nameof(CompareController.CompareEmployers), "Compare");
-                    <li>
-                        <a class="button" href="@viewBasketUrl">View comparison</a>
-                    </li>
+                    @if (Model.CanViewCompare)
+                    {
+                        string viewBasketUrl = Url.Action(nameof(CompareController.CompareEmployers), "Compare");
+                        <li>
+                            <a class="button" href="@viewBasketUrl">View comparison</a>
+                        </li>
+                    }
                 }
             </ul>
         </div>
