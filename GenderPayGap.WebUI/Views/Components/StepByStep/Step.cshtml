@@ -67,6 +67,10 @@
                                 You are currently viewing:
                             </span>
                             @(stepTask.TaskText)
+                            @if (stepTask.OpenInNewTab)
+                            {
+                                <span class="visually-hidden">(opens in a new window)</span>
+                            }
                         </a>
                     </li>
                 }
@@ -78,6 +82,10 @@
                            class="app-step-nav__link govuk-link js-link"
                            data-position="@(position)">
                             @(stepTask.TaskText)
+                            @if (stepTask.OpenInNewTab)
+                            {
+                                <span class="visually-hidden">(opens in a new window)</span>
+                            }
                         </a>
                     </li>
                 }
