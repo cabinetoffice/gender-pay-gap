@@ -175,7 +175,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;
             gpgUser.SetStatus(UserStatuses.Active, gpgUser, "Email verified");
-
+            dataRepository.SaveChangesAsync().Wait();
+            
             return RedirectToAction("AccountCreationConfirmation");
         }
 
