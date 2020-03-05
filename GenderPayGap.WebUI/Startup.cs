@@ -158,7 +158,6 @@ namespace GenderPayGap.WebUI
             Global.BadSicLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.BadSicLog);
             Global.ManualChangeLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
             Global.RegistrationLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.RegistrationLog);
-            Global.SubmissionLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.SubmissionLog);
             Global.SearchLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.SearchLog);
 
             // Create the IServiceProvider based on the container.
@@ -246,7 +245,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterLogRecord(Filenames.BadSicLog);
             builder.RegisterLogRecord(Filenames.ManualChangeLog);
             builder.RegisterLogRecord(Filenames.RegistrationLog);
-            builder.RegisterLogRecord(Filenames.SubmissionLog);
             builder.RegisterLogRecord(Filenames.SearchLog);
 
             // Register log records (without key filtering)
