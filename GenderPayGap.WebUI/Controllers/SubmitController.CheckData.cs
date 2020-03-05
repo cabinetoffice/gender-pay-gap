@@ -213,53 +213,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             await DataRepository.SaveChangesAsync();
 
-            if (!currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                await Global.SubmissionLog.WriteAsync(
-                    new SubmissionLogModel {
-                        StatusDate = VirtualDateTime.Now,
-                        Status = postedReturn.Status,
-                        Details = "",
-                        Sector = postedReturn.Organisation.SectorType,
-                        ReturnId = postedReturn.ReturnId,
-                        AccountingDate = postedReturn.AccountingDate.ToShortDateString(),
-                        OrganisationId = postedReturn.OrganisationId,
-                        EmployerName = postedReturn.Organisation.OrganisationName,
-                        Address = postedReturn.Organisation.LatestAddress?.GetAddressString("," + Environment.NewLine),
-                        CompanyNumber = postedReturn.Organisation.CompanyNumber,
-                        SicCodes = postedReturn.Organisation.GetSicCodeIdsString(postedReturn.StatusDate, "," + Environment.NewLine),
-                        DiffMeanHourlyPayPercent = postedReturn.DiffMeanHourlyPayPercent,
-                        DiffMedianHourlyPercent = postedReturn.DiffMedianHourlyPercent,
-                        DiffMeanBonusPercent = postedReturn.DiffMeanBonusPercent,
-                        DiffMedianBonusPercent = postedReturn.DiffMedianBonusPercent,
-                        MaleMedianBonusPayPercent = postedReturn.MaleMedianBonusPayPercent,
-                        FemaleMedianBonusPayPercent = postedReturn.FemaleMedianBonusPayPercent,
-                        MaleLowerPayBand = postedReturn.MaleLowerPayBand,
-                        FemaleLowerPayBand = postedReturn.FemaleLowerPayBand,
-                        MaleMiddlePayBand = postedReturn.MaleMiddlePayBand,
-                        FemaleMiddlePayBand = postedReturn.FemaleMiddlePayBand,
-                        MaleUpperPayBand = postedReturn.MaleUpperPayBand,
-                        FemaleUpperPayBand = postedReturn.FemaleUpperPayBand,
-                        MaleUpperQuartilePayBand = postedReturn.MaleUpperQuartilePayBand,
-                        FemaleUpperQuartilePayBand = postedReturn.FemaleUpperQuartilePayBand,
-                        CompanyLinkToGPGInfo = postedReturn.CompanyLinkToGPGInfo,
-                        ResponsiblePerson = postedReturn.ResponsiblePerson,
-                        UserFirstname = currentUser.Firstname,
-                        UserLastname = currentUser.Lastname,
-                        UserJobtitle = currentUser.JobTitle,
-                        UserEmail = currentUser.EmailAddress,
-                        ContactFirstName = currentUser.ContactFirstName,
-                        ContactLastName = currentUser.ContactLastName,
-                        ContactJobTitle = currentUser.ContactJobTitle,
-                        ContactOrganisation = currentUser.ContactOrganisation,
-                        ContactPhoneNumber = currentUser.ContactPhoneNumber,
-                        Created = postedReturn.Created,
-                        Modified = postedReturn.Modified,
-                        Browser = HttpContext.GetBrowser() ?? "No browser in the request",
-                        SessionId = Session.SessionID
-                    });
-            }
-
             //This is required for the submission complete page
             postedReturnViewModel.EncryptedOrganisationId = postedReturn.Organisation.GetEncryptedId();
             this.StashModel(postedReturnViewModel);
