@@ -151,7 +151,6 @@ namespace GenderPayGap.WebJob
 
             // Register record log queues
             builder.RegisterLogRecord(Filenames.EmailSendLog);
-            builder.RegisterLogRecord(Filenames.StannpSendLog);
             builder.RegisterLogRecord(Filenames.ManualChangeLog);
             builder.RegisterLogRecord(Filenames.BadSicLog);
 

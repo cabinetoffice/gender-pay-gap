@@ -277,7 +277,6 @@ namespace GenderPayGap.Core
         public const string RegistrationLog = "RegistrationLog.csv";
         public const string SubmissionLog = "SubmissionLog.csv";
         public const string EmailSendLog = "EmailSendLog.csv";
-        public const string StannpSendLog = "StannpSendLog.csv";
         public const string SearchLog = "searchLog.csv";
     }
 
