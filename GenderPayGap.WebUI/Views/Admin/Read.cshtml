@@ -55,7 +55,7 @@
                                     string value = cell.ToString();
                                     if (value.StartsWithI("http://", "https://"))
                                     {
-                                        <td><a href="@value" target="_blank">@value</a>)</td>
+                                        <td><a href="@value" target="_blank">@value<span class="visually-hidden">(opens in a new window)</span></a>)</td>
                                     }
                                     else
                                     {
