@@ -22,7 +22,7 @@ namespace GenderPayGap.WebJob
     {
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeUsers([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
+        public async Task PurgeUsers([TimerTrigger("40 3 * * *" /* 03:40 once per day */)] TimerInfo timer, ILogger log)
         {
             var runId = CreateRunId();
             var startTime = VirtualDateTime.Now;
@@ -72,7 +72,7 @@ namespace GenderPayGap.WebJob
         }
 
         //Remove any incomplete registrations
-        public async Task PurgeRegistrations([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
+        public async Task PurgeRegistrations([TimerTrigger("50 3 * * *" /* 03:50 once per day */)] TimerInfo timer, ILogger log)
         {
             var runId = CreateRunId();
             var startTime = DateTime.Now;
@@ -124,7 +124,7 @@ namespace GenderPayGap.WebJob
         }
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeOrganisations([TimerTrigger("01:00:00:00", RunOnStartup = true)]
+        public async Task PurgeOrganisations([TimerTrigger("20 4 * * *" /* 04:20 once per day */)]
             TimerInfo timer,
             ILogger log)
         {
@@ -225,7 +225,7 @@ namespace GenderPayGap.WebJob
         }
 
         //Remove retired copies of GPG data
-        public async Task PurgeGPGData([TimerTrigger("01:00:00:00")] TimerInfo timer, ILogger log)
+        public async Task PurgeGPGData([TimerTrigger("30 4 * * *" /* 04:30 once per day */)] TimerInfo timer, ILogger log)
         {
             var runId = CreateRunId();
             var startTime = DateTime.Now;
@@ -269,7 +269,7 @@ namespace GenderPayGap.WebJob
 
         //Remove test users and organisations
         [Disable(typeof(DisableWebjobProvider))]
-        public async Task PurgeTestDataAsync([TimerTrigger("00:12:00:00", RunOnStartup = true)]
+        public async Task PurgeTestDataAsync([TimerTrigger("40 4 * * *" /* 04:40 once per day */)]
             TimerInfo timer,
             ILogger log)
         {

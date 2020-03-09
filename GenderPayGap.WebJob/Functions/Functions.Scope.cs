@@ -14,7 +14,7 @@ namespace GenderPayGap.WebJob
     {
 
         //Set presumed scope of previous years and current years
-        public async Task SetPresumedScopes([TimerTrigger("01:00:00:00", RunOnStartup = true)]
+        public async Task SetPresumedScopes([TimerTrigger("50 4 * * *" /* 04:50 once per day */)]
             TimerInfo timer,
             ILogger log)
         {

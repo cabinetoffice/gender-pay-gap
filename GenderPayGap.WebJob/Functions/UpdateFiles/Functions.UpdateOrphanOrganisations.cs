@@ -17,7 +17,7 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task UpdateOrphanOrganisationsAsync([TimerTrigger(typeof(MidnightSchedule), RunOnStartup = true)]
+        public async Task UpdateOrphanOrganisationsAsync([TimerTrigger("30 1 * * *" /* 01:30 once per day */)]
             TimerInfo timer,
             ILogger log)
         {

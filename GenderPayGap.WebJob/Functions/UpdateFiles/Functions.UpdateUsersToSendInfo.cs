@@ -14,7 +14,7 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task UpdateUsersToSendInfo([TimerTrigger(typeof(EveryWorkingHourSchedule), RunOnStartup = true)]
+        public async Task UpdateUsersToSendInfo([TimerTrigger("50 2 * * *" /* 02:50 once per day */)]
             TimerInfo timer,
             ILogger log)
         {

@@ -16,7 +16,7 @@ namespace GenderPayGap.WebJob
     {
 
         //Merge all event log files from all instances into 1 single file per month
-        public async Task MergeLogs([TimerTrigger("01:00:00:00", RunOnStartup = true)]
+        public async Task MergeLogs([TimerTrigger("30 3 * * *" /* 03:30 once per day */)]
             TimerInfo timer,
             ILogger log)
         {

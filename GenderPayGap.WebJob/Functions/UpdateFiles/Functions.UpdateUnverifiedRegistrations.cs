@@ -14,7 +14,7 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task UpdateUnverifiedRegistrations([TimerTrigger(typeof(EveryWorkingHourSchedule), RunOnStartup = true)]
+        public async Task UpdateUnverifiedRegistrations([TimerTrigger("20 2 * * *" /* 02:20 once per day */)]
             TimerInfo timer,
             ILogger log)
         {
