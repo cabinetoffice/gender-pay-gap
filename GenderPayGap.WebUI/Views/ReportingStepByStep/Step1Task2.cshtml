@@ -1,0 +1,47 @@
+﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+@{
+    ViewBag.Title = "Search for an employer's gender pay gap report - GOV.UK";
+    ViewBag.pageDescription = "Search for an employer by name or type to view their gender pay gap data";
+    if (string.IsNullOrWhiteSpace(ViewBag.ReturnUrl))
+    {
+        ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
+    }
+}
+
+@{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml");}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new { id = "FinderForm", @class = "js-live-search-form" }))
+        {
+            <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel" />
+            <div class="grid-row finder">
+                <div class="column-two-thirds">
+                    <partial name="~/Views/Viewing/Finder/Parts/Facets/Keywords.cshtml" model="Model" />
+                </div>
+            </div>
+
+            <div class="grid-row finder">
+                <div class="column-one-third">
+                    <partial name="~/Views/Viewing/Finder/Parts/Filter.cshtml" model="Model" />
+                </div>
+                <div class="column-two-thirds js-live-search-results-block" aria-live="assertive">
+                    <div id="loading"></div>
+                    <div id="main">
+                        <partial name="~/Views/Viewing/Finder/Parts/MainContent.cshtml" model="Model" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+                 new ReportingStepsViewModel
+                 {
+                     CurrentStep = 0,
+                     CurrentTask = 1
+                 }); }
+    </div>
+</div>
