@@ -62,15 +62,12 @@
 
     @RenderSection("Head", false)
 
-    @if (!CookieHelper.HasSeenLatestCookieMessage(Context.Request))
-    {
-        <!--[if !IE 8]><!-->
-        <link href="@(StaticAssetsVersioningHelper.GetAppCssFilename())" rel="stylesheet" />
-        <!--<![endif]-->
-        <!--[if IE 8]>
-            <link href="@(StaticAssetsVersioningHelper.GetAppIe8CssFilename())" rel="stylesheet" />
-        <![endif]-->
-    }
+    <!--[if !IE 8]><!-->
+    <link href="@(StaticAssetsVersioningHelper.GetAppCssFilename())" rel="stylesheet" />
+    <!--<![endif]-->
+    <!--[if IE 8]>
+        <link href="@(StaticAssetsVersioningHelper.GetAppIe8CssFilename())" rel="stylesheet" />
+    <![endif]-->
 </head>
 <body class="@(ViewBag.bodyClasses)">
 @if (!Context.GetBrowser().ContainsI("MSIE 8"))
