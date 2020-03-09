@@ -1,7 +1,7 @@
 ﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
 
 <div>
-    <partial name="Finder/Parts/ResultsInfo" model="Model"/>
+    <partial name="~/Views/Viewing/Finder/Parts/ResultsInfo.cshtml" model="Model"/>
 </div>
 
 @if (Model.Employers.ActualRecordTotal > 1)
@@ -18,10 +18,10 @@
 <div>
     @if (Model.Employers.Results.Count < 1)
     {
-        <partial name="Finder/Parts/NoResults" model="Model"/>
+        <partial name="~/Views/Viewing/Finder/Parts/NoResults.cshtml" model="Model"/>
     }
     else
     {
-        <partial name="Finder/Parts/Results" model="Model"/>
+        <partial name="~/Views/Viewing/Finder/Parts/Results.cshtml" model="Model"/>
     }
 </div>
