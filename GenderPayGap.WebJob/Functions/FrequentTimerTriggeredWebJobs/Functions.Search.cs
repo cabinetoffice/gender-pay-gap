@@ -64,12 +64,6 @@ namespace GenderPayGap.WebJob
             string userEmail = null,
             bool force = false)
         {
-            if (RunningJobs.Contains(nameof(UpdateSearchAsync)))
-            {
-                log.LogInformation("The set of running jobs already contains 'UpdateSearch'");
-                return;
-            }
-
             try
             {
                 await searchRepositoryToUpdate.CreateIndexIfNotExistsAsync(indexNameToUpdate);
@@ -101,10 +95,6 @@ namespace GenderPayGap.WebJob
                         log.LogError(ex, "UpdateSearch: An error occurred trying to send an email");
                     }
                 }
-            }
-            finally
-            {
-                RunningJobs.Remove(nameof(UpdateSearchAsync));
             }
         }
 
