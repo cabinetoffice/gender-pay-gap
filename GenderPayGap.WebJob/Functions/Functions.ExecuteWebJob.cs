@@ -36,9 +36,6 @@ namespace GenderPayGap.WebJob
 
             switch (command)
             {
-                case "UpdateFile":
-                    await UpdateFileAsync(parameters["filePath"], parameters["action"]);
-                    break;
                 case "UpdateSearch":
                     await UpdateSearchAsync(parameters["userEmail"], true);
                     break;
