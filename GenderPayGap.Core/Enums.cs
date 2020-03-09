@@ -283,7 +283,6 @@ namespace GenderPayGap.Core
     public static class QueueNames
     {
 
-        public const string ExecuteWebJob = "execute-webjob";
         public const string SendEmail = "send-email";
         public const string SendNotifyEmail = "send-notify-email";
         public const string LogEvent = "log-event";
