@@ -15,8 +15,6 @@ namespace GenderPayGap.WebJob
             IMessenger messenger,
             IDataRepository dataRepository,
             IScopeBusinessLogic scopeBL,
-            ISubmissionBusinessLogic submissionBL,
-            IOrganisationBusinessLogic orgBL,
             ISearchBusinessLogic searchBusinessLogic,
             IGovNotifyAPI govNotifyApi,
             UpdateFromCompaniesHouseService updateFromCompaniesHouseService)
@@ -24,8 +22,6 @@ namespace GenderPayGap.WebJob
             _Messenger = messenger;
             _DataRepository = dataRepository;
             _ScopeBL = scopeBL;
-            _SubmissionBL = submissionBL;
-            _OrganisationBL = orgBL;
             _SearchBusinessLogic = searchBusinessLogic;
             _updateFromCompaniesHouseService = updateFromCompaniesHouseService;
             this.govNotifyApi = govNotifyApi;
@@ -36,14 +32,11 @@ namespace GenderPayGap.WebJob
         public readonly IMessenger _Messenger;
         public readonly IDataRepository _DataRepository;
         private readonly IScopeBusinessLogic _ScopeBL;
-        private readonly ISubmissionBusinessLogic _SubmissionBL;
-        private readonly IOrganisationBusinessLogic _OrganisationBL;
         private readonly ISearchBusinessLogic _SearchBusinessLogic;
         private readonly IGovNotifyAPI govNotifyApi;
         private readonly UpdateFromCompaniesHouseService _updateFromCompaniesHouseService;
 
         private static readonly ConcurrentSet<string> RunningJobs = new ConcurrentSet<string>();
-        private static readonly ConcurrentSet<string> StartedJobs = new ConcurrentSet<string>();
 
         #endregion
 

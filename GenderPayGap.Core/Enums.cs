@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Core
 {
@@ -280,15 +278,6 @@ namespace GenderPayGap.Core
         public const string SubmissionLog = "SubmissionLog.csv";
         public const string EmailSendLog = "EmailSendLog.csv";
         public const string SearchLog = "searchLog.csv";
-
-        public static string GetRootFilename(string filePath)
-        {
-            string path = Path.GetDirectoryName(filePath);
-            string fileName = Path.GetFileNameWithoutExtension(filePath);
-            string extension = Path.GetExtension(filePath);
-            string prefix = fileName.BeforeFirst("_");
-            return $"{prefix}{extension}";
-        }
     }
 
     public static class QueueNames
