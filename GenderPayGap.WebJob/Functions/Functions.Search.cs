@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,22 +60,19 @@ namespace GenderPayGap.WebJob
             string userEmail = null,
             bool force = false)
         {
-            try
-            {
-                await searchRepositoryToUpdate.CreateIndexIfNotExistsAsync(indexNameToUpdate);
+            await searchRepositoryToUpdate.CreateIndexIfNotExistsAsync(indexNameToUpdate);
 
-                if (typeof(T) == typeof(EmployerSearchModel))
-                {
-                    await AddDataToIndexAsync();
-                }
-                else if (typeof(T) == typeof(SicCodeSearchModel))
-                {
-                    await AddDataToSicCodesIndexAsync();
-                }
-                else
-                {
-                    throw new ArgumentException($"Type {typeof(T)} is not a valid type.");
-                }
+            if (typeof(T) == typeof(EmployerSearchModel))
+            {
+                await AddDataToIndexAsync();
+            }
+            else if (typeof(T) == typeof(SicCodeSearchModel))
+            {
+                await AddDataToSicCodesIndexAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"Type {typeof(T)} is not a valid type.");
             }
         }
 

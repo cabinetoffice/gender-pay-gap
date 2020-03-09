@@ -232,7 +232,6 @@ namespace GenderPayGap.WebUI
             }
 
             // Register queues
-            builder.RegisterAzureQueue(azureStorageConnectionString, QueueNames.ExecuteWebJob);
 
             // Setup azure search
             string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");

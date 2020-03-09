@@ -13,7 +13,6 @@ namespace GenderPayGap.WebUI
     {
 
         double SessionTimeOutMinutes { get; }
-        IQueue ExecuteWebjobQueue { get; }
 
         Task InitAsync();
 
@@ -27,16 +26,11 @@ namespace GenderPayGap.WebUI
         public MvcApplication(
             IFileRepository fileRepository,
             ISearchRepository<EmployerSearchModel> searchRepository,
-            [KeyFilter(QueueNames.ExecuteWebJob)] IQueue executeWebjobQueue
         )
         {
             Global.FileRepository = fileRepository;
             Global.SearchRepository = searchRepository;
-
-            ExecuteWebjobQueue = executeWebjobQueue;
         }
-
-        public IQueue ExecuteWebjobQueue { get; }
 
         public double SessionTimeOutMinutes => Config.GetAppSetting("SessionTimeOut").ToInt32(20);
 

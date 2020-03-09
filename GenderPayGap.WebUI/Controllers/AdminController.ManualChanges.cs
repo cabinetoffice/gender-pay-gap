@@ -24,25 +24,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
     public partial class AdminController : BaseController
     {
 
-        private async Task<long> UpdateSearchIndexesAsync(string parameters, string comment, StringWriter writer, bool test)
-        {
-            if (!string.IsNullOrWhiteSpace(parameters))
-            {
-                throw new ArgumentException("ERROR: parameters must be empty");
-            }
-
-            long count = await AdminService.GetSearchDocumentCountAsync();
-            if (!test)
-            {
-                await Program.MvcApplication.ExecuteWebjobQueue.AddMessageAsync(
-                    new QueueWrapper($"command=UpdateSearch&userEmail={CurrentUser.EmailAddress}&comment={comment}"));
-                writer.WriteLine(
-                    $"An email will be sent to '{CurrentUser.EmailAddress}' when the background task '{nameof(UpdateSearchIndexesAsync)}' has completed");
-            }
-
-            return count;
-        }
-
         public class BulkResult
         {
 
@@ -126,9 +107,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             break;
                         case "Set organisation as in scope":
                             count = await SetOrganisationScopeAsync(model.Parameters, model.Comment, writer, ScopeStatuses.InScope, test);
-                            break;
-                        case "Update search indexes":
-                            count = await UpdateSearchIndexesAsync(model.Parameters, model.Comment, writer, test);
                             break;
                         case "Create security code":
                             count = await SecurityCodeWorkAsync(

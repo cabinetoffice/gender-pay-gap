@@ -318,11 +318,6 @@ namespace GenderPayGap.Core
 
     }
 
-    public static class QueueNames
-    {
-        public const string ExecuteWebJob = "execute-webjob";
-    }
-
     public static class CookieNames
     {
         public const string LastCompareQuery = "compare";
