@@ -1,0 +1,183 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminDownloadsViewModel
+@{
+    ViewBag.Title = $"Downloads - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Downloads"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Downloads
+        </h1>
+        
+
+        <h2 class="govuk-heading-m">
+            Organisations
+        </h2>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadAllOrganisations", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                All Organisations
+            </a>
+            <br />
+            A list of all organisations
+        </p>
+        
+
+        <h2 class="govuk-heading-m">
+            Orphan organisations
+        </h2>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadOrphanOrganisations", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Orphan Organisations
+            </a>
+            <br />
+            In-scope organisations who no longer who have any registered or registering users
+        </p>
+        
+
+        <h2 class="govuk-heading-m">
+            Addresses
+        </h2>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadOrganisationAddresses", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Organisation addresses
+            </a>
+            <br />
+            A list of registered organisation addresses for active organisations
+        </p>
+        
+
+        <h2 class="govuk-heading-m">
+            Scopes
+        </h2>
+        
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadOrganisationScopesForYear", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    Organisation Scopes for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                The latest organisation scope statuses for each organisation for @(year)-@((year + 1) % 100)
+            </p>
+        }
+        
+
+        <h2 class="govuk-heading-m">
+            Submissions
+        </h2>
+        
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadAllSubmissionsForYear", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    All submissions for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                The reported GPG data for all organisations for @(year)-@((year + 1) % 100)
+            </p>
+        }
+        
+
+        <h2 class="govuk-heading-m">
+            Late Submissions
+        </h2>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadLateSubmissions", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Late Submissions
+            </a>
+            <br />
+            Organisations who reported or changed their submission late the previous snapshot date
+        </p>
+        
+        <h2 class="govuk-heading-m">
+            Users
+        </h2>
+                
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadAllUsers", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                All User Accounts
+            </a>
+            <br />
+            A list of all user accounts and their statuses
+        </p>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadUserOrganisationRegistrations", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                User Organisation Registrations
+            </a>
+            <br />
+            A list of all organisations that have been registered by a user. This includes all users for each organisation
+        </p>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadUnverifiedUserOrganisationRegistrations", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Unverified User Organisation Registrations
+            </a>
+            <br />
+            A list of all unverified organisations pending verification from a user
+        </p>
+        
+        <h2 class="govuk-heading-m">
+            User Consent
+        </h2>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadUserConsentSendUpdates", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Users to send updates and info
+            </a>
+            <br />
+            Users who answered "Yes" to "I would like to receive information about webinars, events and new guidance"
+        </p>
+
+        <p class="govuk-body">
+            <a href="@Url.Action("DownloadUserConsentAllowContactForFeedback", "AdminDownloads")"
+               class="govuk-link govuk-!-font-weight-bold">
+                Users to contact for feedback
+            </a>
+            <br />
+            Users who answered "Yes" to "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"
+        </p>
+
+    </div>
+</div>
