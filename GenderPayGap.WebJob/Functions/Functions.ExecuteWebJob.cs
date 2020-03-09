@@ -45,7 +45,7 @@ namespace GenderPayGap.WebJob
                     await UpdateSearchAsync(log, parameters["userEmail"], true);
                     break;
                 case "UpdateDownloadFiles":
-                    await UpdateDownloadFilesAsync(log, parameters["userEmail"], true);
+                    await UpdateDownloadFilesAsync(log);
                     break;
                 default:
                     DateTime errorEndTime = VirtualDateTime.Now;
