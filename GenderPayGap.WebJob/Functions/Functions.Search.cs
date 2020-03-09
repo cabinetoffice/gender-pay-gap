@@ -60,12 +60,6 @@ namespace GenderPayGap.WebJob
             string userEmail = null,
             bool force = false)
         {
-            if (RunningJobs.Contains(nameof(UpdateSearchAsync)))
-            {
-                CustomLogger.Information("The set of running jobs already contains 'UpdateSearch'");
-                return;
-            }
-
             try
             {
                 await searchRepositoryToUpdate.CreateIndexIfNotExistsAsync(indexNameToUpdate);
@@ -82,10 +76,6 @@ namespace GenderPayGap.WebJob
                 {
                     throw new ArgumentException($"Type {typeof(T)} is not a valid type.");
                 }
-            }
-            finally
-            {
-                RunningJobs.Remove(nameof(UpdateSearchAsync));
             }
         }
 

@@ -34,8 +34,6 @@ namespace GenderPayGap.WebJob
         private readonly EmailSendingService emailSendingService;
         private readonly UpdateFromCompaniesHouseService _updateFromCompaniesHouseService;
 
-        private static readonly ConcurrentSet<string> RunningJobs = new ConcurrentSet<string>();
-
         #endregion
 
     }
