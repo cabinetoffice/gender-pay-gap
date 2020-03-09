@@ -12,7 +12,7 @@ namespace GenderPayGap.WebJob
     {
 
         [Singleton(Mode = SingletonMode.Listener)]
-        public void FetchCompaniesHouseData([TimerTrigger("*/5 * * * *")] TimerInfo timer)
+        public void FetchCompaniesHouseData([TimerTrigger("*/5 * * * *" /* evry 5 minutes */)] TimerInfo timer)
         {
             var runId = CreateRunId();
             var startTime = VirtualDateTime.Now;

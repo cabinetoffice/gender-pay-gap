@@ -20,7 +20,7 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task TakeSnapshotAsync([TimerTrigger(typeof(MidnightSchedule))]
+        public async Task TakeSnapshotAsync([TimerTrigger("20 5 * * *" /* 05:20 once per day */)]
             TimerInfo timer,
             ILogger log)
         {

@@ -12,7 +12,7 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task UpdateOrganisationLateSubmissions([TimerTrigger(typeof(EveryWorkingHourSchedule), RunOnStartup = true)]
+        public async Task UpdateOrganisationLateSubmissions([TimerTrigger("5 * * * *" /* once per hour, at 5 minutes past the hour */)]
             TimerInfo timer,
             ILogger log)
         {

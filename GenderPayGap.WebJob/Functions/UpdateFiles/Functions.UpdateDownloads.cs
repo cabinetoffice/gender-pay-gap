@@ -18,7 +18,7 @@ namespace GenderPayGap.WebJob
     {
 
         //Update data for viewing service
-        public async Task UpdateDownloadFiles([TimerTrigger("00:01:00:00", RunOnStartup = true)]
+        public async Task UpdateDownloadFiles([TimerTrigger("0 * * * *" /* once per hour, at 0 minutes past the hour */)]
             TimerInfo timer,
             ILogger log)
         {
