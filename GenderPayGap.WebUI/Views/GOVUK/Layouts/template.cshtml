@@ -211,7 +211,9 @@
 </footer>
 <!--end footer-->
 <div id="global-app-error" class="app-error hidden"></div>
-<script src="@(ViewBag.assetsPath)/javascripts/govuk-template.js?0.13.0" type="text/javascript"></script>
+<script src="public/govuk_template/assets/javascripts/govuk-template.js?0.13.0" type="text/javascript"></script>
+<script src="@(StaticAssetsVersioningHelper.GetAppJsFilename())"></script>
+<script>window.GOVUKFrontend.initAll()</script>
 @RenderSection("BodyEnd", false)
 </body>
 </html>
