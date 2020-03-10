@@ -1,14 +1,11 @@
 @model GenderPayGap.WebUI.Models.Search.SearchViewModel
 <div id="SearchByKeywordsGroup" class="form-group" style="position: relative;">
-
+    <h1 class="heading-large">
+        Search by <span class="visuallyhidden">either employer name or SIC code</span>
+    </h1>
     <fieldset class="inline">
-        <legend class="visually-hidden">Radiobutton selecting a search term</legend>
-        <label for="FinderKeywords">
-            <h1 class="heading-large">
-                Search by <span class="visuallyhidden">“@(Model.search)”</span>
-            </h1>
-        </label>
-
+        <legend class="visually-hidden">Radiobuttons selecting either employer name or SIC code</legend>
+        
         <div class="multiple-choice">
             <input id="rdoEmployerName" type="radio" name="t" value="1" @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
             <label for="rdoEmployerName">Employer name</label>
@@ -28,6 +25,7 @@
         <div class="gov-uk-c-searchbar">
             <div class="gov-uk-l-searchbar__table">
                 <div class="gov-uk-l-searchbar__cell">
+                    <label for="FinderKeywords" class="visuallyhidden">Search query</label>
                     <input class="gov-uk-c-searchbar__input" type="text" autocomplete="off" name="search" id="FinderKeywords">
                 </div>
                 <div class="gov-uk-l-searchbar__cell">
