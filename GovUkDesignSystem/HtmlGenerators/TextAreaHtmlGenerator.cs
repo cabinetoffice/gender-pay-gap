@@ -28,11 +28,16 @@ namespace GovUkDesignSystem.HtmlGenerators
             TModel model = htmlHelper.ViewData.Model;
 
             string currentValue = ExtensionHelpers.GetCurrentValue(model, property, propertyLambdaExpression);
-
-
+            
+            string id = $"GovUk_{propertyName}";
+            if (labelOptions != null)
+            {
+                labelOptions.For = id;
+            }
+            
             var textAreaViewModel = new TextAreaViewModel {
                 Name = $"GovUk_Text_{propertyName}",
-                Id = $"GovUk_{propertyName}",
+                Id = id,
                 Value = currentValue,
                 Rows = rows,
                 Label = labelOptions,
