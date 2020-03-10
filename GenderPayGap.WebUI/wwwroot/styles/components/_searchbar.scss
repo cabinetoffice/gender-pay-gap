@@ -58,58 +58,5 @@
   .gov-uk-c-searchbar__submit--black {
     background-color: govuk-colour("black");
   }
-
-  .suggest-prev-entry {
-    .panel {
-      padding: 0 7.5px;
-      border-left-width: 2px;
-    }
-
-    .bold-small {
-      text-transform: uppercase !important;
-      font-size: initial !important;
-    }
-  }
-
-  .suggest-prevmatching {
-    text-transform: lowercase !important;
-    color: govuk-colour("black");
-  }
-
-  .twitter-typeahead {
-    display: block !important;
-  }
-
-  .tt-menu {
-    margin-top: 15px !important;
-    background-color: govuk-colour("white");
-    z-index: 101 !important;
-    width: 100%;
-    border: 2px solid $govuk-border-colour;
-
-    .tt-cursor {
-      background-color: govuk-colour("light-grey");
-    }
-
-    .tt-suggestion {
-      a {
-        display: block;
-        padding: 7.5px;
-        text-transform: uppercase;
-        line-height: 1.25;
-        margin: 0;
-        @extend .govuk-link;
-
-        strong {
-          text-decoration: underline;
-        }
-
-        &:hover {
-          background-color: govuk-colour("blue");
-          color: govuk-colour("white");
-          cursor: pointer;
-        }
-      }
-    }
-  }
+  
 }
