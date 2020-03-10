@@ -1473,7 +1473,7 @@ input[type=submit] {
 
 @media (max-width: 641px) {
     .label, .label--white, .label--blue, .label--red {
-        font-size: 1.3rem;
+        font-size: 21px;
     }
 }
 
