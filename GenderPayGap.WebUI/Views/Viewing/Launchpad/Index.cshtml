@@ -17,7 +17,7 @@
                     <p>
                         Employers with 250 or more employees have published their figures comparing men and women&rsquo;s average pay across the organisation.
                     </p>
-                    <partial name="Launchpad/Parts/SearchByEmployer"/>
+                    <partial name="Launchpad/Parts/SearchByOrganisation"/>
                 </div>
             </div>
             <div class="grid-row related">
@@ -89,13 +89,11 @@
 </div>
 
 @section Scripts {
-    <script src="~/assets/javascripts/typeahead.bundle.min.js?v=1.2.0"></script>
-    <script>
-        new GOVUK.SuggestEmployer({
-            formId: '',
-            keywordsId: 'SearchEmployers'
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(){
+          generateOrganisationSearchbar('#organisation-search', 'organisation-search');
         });
-
+                
         new GOVUK.analyticsPlugins.downloadLinkTracker({ selector: 'a[rel="download"]' });
     </script>
 }

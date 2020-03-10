@@ -1,0 +1,53 @@
+@import "../../assets/stylesheets/accessible-autocomplete.min.css";
+
+.autocomplete-wrapper {
+  max-width: 20em;
+  margin-bottom: 4rem;
+}
+
+.autocomplete__input {
+  //margin-top: 15px !important;
+  background-color: govuk-colour("white");
+  z-index: 101 !important;
+  width: 100%;
+  height: 50px;
+  border: 2px solid $govuk-border-colour;
+}
+
+.autocomplete__option {
+  display: block;
+  padding: 7.5px;
+  text-transform: uppercase;
+  line-height: 1.25;
+  margin: 0;
+  @extend .govuk-body;
+  
+  .previous-name-marker {
+    color: $govuk-secondary-text-colour;
+    text-transform: lowercase;
+    
+    .previous-name {
+      text-transform: uppercase;
+    }
+  }
+
+  &:hover {
+    background-color: govuk-colour("blue");
+    color: govuk-colour("white");
+    cursor: pointer;
+    
+    .previous-name-marker {
+      color: govuk-colour("white");
+    }
+  }
+}
+
+.autocomplete__option--focused {
+  background-color: govuk-colour("blue");
+  color: govuk-colour("white");
+  cursor: pointer;
+
+  .previous-name-marker {
+    color: govuk-colour("white");
+  }
+}
