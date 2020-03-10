@@ -7,11 +7,11 @@
         <legend class="visually-hidden">Radiobuttons selecting either employer name or SIC code</legend>
         
         <div class="multiple-choice">
-            <input id="rdoEmployerName" type="radio" name="t" value="1" @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
+            <input id="rdoEmployerName" type="radio" name="t" value="1" onclick="handleClick(this.value);" @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
             <label for="rdoEmployerName">Employer name</label>
         </div>
         <div class="multiple-choice">
-            <input id="rdoBySectorType" type="radio" name="t" value="2" @(!string.IsNullOrEmpty(Model.t) && Model.t == "2" ? "checked" : "")/>
+            <input id="rdoBySectorType" type="radio" name="t" value="2" onclick="handleClick(this.value);" @(!string.IsNullOrEmpty(Model.t) && Model.t == "2" ? "checked" : "")/>
             <label for="rdoBySectorType">Employer type or SIC code</label>
         </div>
 
@@ -25,7 +25,7 @@
         <div class="gov-uk-c-searchbar">
             <div class="gov-uk-l-searchbar__table">
                 <div class="gov-uk-l-searchbar__cell">
-                    <label for="FinderKeywords" class="visuallyhidden">Search query</label>
+                    <label id="FinderKeywordsId" for="FinderKeywords" class="visuallyhidden">@(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "Search by employer name" : "Search query")</label>
                     <input class="gov-uk-c-searchbar__input" type="text" autocomplete="off" name="search" id="FinderKeywords">
                 </div>
                 <div class="gov-uk-l-searchbar__cell">
@@ -35,3 +35,15 @@
         </div>
     </fieldset>
 </div>
+
+<script>
+    function handleClick(radioValue) {
+        var element = document.getElementById("FinderKeywordsId");
+        if (radioValue == 1) {
+            element.textContent = "Search by employer name";
+        }
+        if (radioValue == 2) {
+            element.textContent = "Search by employer type or SIC code";
+        }
+    }
+</script>
