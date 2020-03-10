@@ -104,8 +104,8 @@ function compileJs(options) {
     });
 
     var minifyOptions = {
-        //keep_fnames: false,    // This seems to work with keep_fnames and mangle turned on.
-        //mangle: false          // But it might be useful to disable these if we see any errors.
+        keep_fnames: false,
+        mangle: false     
     };
     var minifyResult = UglifyJS.minify(code, minifyOptions);
 
@@ -119,6 +119,8 @@ function compileJs(options) {
         if (options.runningLocally) {
             saveAction(pathToVisualStudioDebugDirectory);
         }
+    } else {
+        console.log("MINIFY ERROR: " + minifyResult.error)
     }
 }
 
