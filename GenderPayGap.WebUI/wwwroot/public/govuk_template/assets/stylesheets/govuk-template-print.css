@@ -8,9 +8,6 @@
 @-o-viewport {
   width: device-width; }
 
-html {
-  font-size: 62.5%; }
-
 /* Global print stylesheet */
 /* reset everything */
 * {

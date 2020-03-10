@@ -148,7 +148,6 @@ a:active {
  *    www.yuiblog.com/blog/2010/10/01/quick-tip-customizing-the-mobile-safari-tap-highlight-color/
  */
 html {
-  font-size: 62.5%;
   /* 1 */
   overflow-y: scroll;
   /* 2 */
@@ -162,7 +161,6 @@ html {
  * 2. Addresses margins handled incorrectly in IE6/7
  */
 body {
-  font-size: 160%;
   /* 1 */
   margin: 0;
   /* 2 */ }
