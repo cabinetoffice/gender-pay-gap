@@ -13,7 +13,7 @@
             <div class="govuk-grid-column-two-thirds">
                 <h1 class="govuk-heading-xl hero-banner-content govuk-!-margin-top-6">Search and compare gender pay gap data</h1>
                 <p class="govuk-body hero-banner-content">Employers with 250 or more employees have published their figures comparing men and women&rsquo;s average pay across the organisation.</p>
-                <partial name="Launchpad/Parts/SearchByEmployer"/>
+                <partial name="Launchpad/Parts/SearchByOrganisation"/>
             </div>
         </div>
         <div class="govuk-grid-row">
@@ -120,11 +120,7 @@
 <partial name="Launchpad/Parts/PrototypeServiceSurveyIntroAndLink"/>
 
 @section AfterLoadedCompiledScripts {
-    <script src="~/assets/javascripts/typeahead.bundle.min.js?v=1.2.0"></script>
-    <script>
-         new GOVUK.SuggestEmployer({
-             formId: '',
-             keywordsId: 'SearchEmployers'
-         });
-</script>
+    <script type="text/javascript">
+            generateOrganisationSearchbar('#organisation-search', 'organisation-search');
+    </script>
 }
