@@ -29,9 +29,9 @@ namespace GovUkDesignSystem.HtmlGenerators
 
             TModel model = htmlHelper.ViewData.Model;
 
-            string id = $"GovUk_{propertyName}";
             string currentValue = ExtensionHelpers.GetCurrentValue(model, property, propertyLambdaExpression);
-
+            
+            string id = $"GovUk_{propertyName}";
             if (labelOptions != null)
             {
                 labelOptions.For = id;
