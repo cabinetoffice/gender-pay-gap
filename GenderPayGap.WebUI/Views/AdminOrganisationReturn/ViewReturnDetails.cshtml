@@ -1,10 +1,10 @@
 ﻿@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.Database.Organisation
+@model GenderPayGap.WebUI.Models.Admin.AdminOrganisationReturnDetailsViewModel
 
 @{
-    ViewBag.Title = $"Return details - {Model.OrganisationName} - Administration - Gender pay gap service";
+    ViewBag.Title = $"Return details - {Model.Organisation.OrganisationName} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -19,14 +19,14 @@
 
         crumbs.Add(new CrumbViewModel
         {
-            Text = Model.OrganisationName,
-            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.OrganisationId })
+            Text = Model.Organisation.OrganisationName,
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
         });
 
         crumbs.Add(new CrumbViewModel
         {
             Text = "Returns",
-            Href = Url.Action("ViewReturns", "AdminOrganisationReturn", new { id = Model.OrganisationId })
+            Href = Url.Action("ViewReturns", "AdminOrganisationReturn", new { id = Model.Organisation.OrganisationId })
         });
 
         crumbs.Add(new CrumbViewModel
@@ -48,56 +48,46 @@
         <h1 class="govuk-heading-xl">
             Return details
             <br />
-            <span class="govuk-!-font-size-27">
-                for @(Model.OrganisationName)
+            <span class="govuk-!-font-size-27" style="display: inline-block; margin-top: 15px;">
+                for @(Model.Organisation.OrganisationName)
+                <br />
+                for reporting year @(Model.Year)-@((Model.Year + 1) % 100)
             </span>
         </h1>
 
         <p class="govuk-body govuk-!-margin-bottom-6">
-            <a href="@Url.Action("DownloadReturnDetailsCsv", "AdminOrganisationReturn", new { id = Model.OrganisationId })"
+            <a href="@Url.Action("DownloadReturnDetailsCsv", "AdminOrganisationReturn", new { id = Model.Organisation.OrganisationId })"
                class="govuk-link">
-                Download CSV of return details <span class="govuk-visually-hidden">for @(Model.OrganisationName)</span>
+                Download CSV of return details <span class="govuk-visually-hidden">for @(Model.Organisation.OrganisationName)</span>
             </a>
         </p>
 
         <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Snapshot date</th>
-                    <th scope="col" class="govuk-table__header">Modified</th>
-                    <th scope="col" class="govuk-table__header">Status</th>
-                    <th scope="col" class="govuk-table__header">Modifications</th>
-                    <th scope="col" class="govuk-table__header">Late</th>
-                    <th scope="col" class="govuk-table__header">Late reason</th>
-                    <th scope="col" class="govuk-table__header">Employees</th>
-                    <th scope="col" class="govuk-table__header">Hourly pay gap (mean)</th>
-                    <th scope="col" class="govuk-table__header">Hourly pay gap (median)</th>
-                    <th scope="col" class="govuk-table__header">Who is paid a bonus</th>
-                    <th scope="col" class="govuk-table__header">Bonus pay gap (mean)</th>
-                    <th scope="col" class="govuk-table__header">Bonus pay gap (median)</th>
-                    <th scope="col" class="govuk-table__header">Highest paid quarter</th>
-                    <th scope="col" class="govuk-table__header">2nd-highest paid quarter</th>
-                    <th scope="col" class="govuk-table__header">2nd-lowest paid quarter</th>
-                    <th scope="col" class="govuk-table__header">Lowest paid quarter</th>
-                    <th scope="col" class="govuk-table__header">Link to company website</th>
-                    <th scope="col" class="govuk-table__header">Senior Responsible Officer</th>
-                </tr>
-            </thead>
             <tbody class="govuk-table__body">
-                @{ var previousAccountingDate = DateTime.MinValue; }
-                @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenByDescending(r => r.StatusDate))
-                {
-                    <tr class="govuk-table__row">
-                        @if (returnForYear.AccountingDate == previousAccountingDate)
-                        {
-                            @* Omit this TD, a TD above has a rowspan that covers this row *@
-                        }
-                        else
-                        {
-                            <th scope="row" class="govuk-table__cell" style="white-space: nowrap" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
-                                @(returnForYear.AccountingDate.ToString("d MMM yyyy"))
-                            </th>
-                        }
+                @{
+                    List<Return> returnsForYear = Model.Organisation.Returns
+                        .Where(r => r.AccountingDate.Year == Model.Year)
+                        .OrderByDescending(r => r.StatusDate)
+                        .ToList();
+                }
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Revision number</th>
+                    @for (int version = returnsForYear.Count; version > 0; version--)
+                    {
+                        <th scope="col" class="govuk-table__header">
+                            version @(version)
+                        </th>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        <span class="govuk-visually-hidden">Date</span>
+                        Modified
+                    </th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap">
                                 @(returnForYear.Modified.ToString("d MMM yyyy"))
@@ -106,41 +96,154 @@
                                 @(returnForYear.Modified.ToString("HH:mm"))
                             </span>
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Status</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">@(returnForYear.Status)</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Modifications</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             @(returnForYear.Modifications != null
                                 ? string.Join(", ", returnForYear.Modifications.Split(",", StringSplitOptions.RemoveEmptyEntries))
                                 : "")
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Late submission</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             @(returnForYear.IsLateSubmission ? "Yes" : "No")
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Reason for late submission</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
-                        <td class="govuk-table__cell">@(returnForYear.MinEmployees)-@(returnForYear.MaxEmployees)</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        <span class="govuk-visually-hidden">Number of</span>
+                        Employees
+                    </th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
+                        <td class="govuk-table__cell">@(returnForYear.MinEmployees) - @(returnForYear.MaxEmployees)</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Hourly pay gap (mean)</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">@(returnForYear.DiffMeanHourlyPayPercent.ToString("0.#"))%</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Hourly pay gap (median)</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">@(returnForYear.DiffMedianHourlyPercent.ToString("0.#"))%</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Who is paid a bonus</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap;">@(returnForYear.MaleMedianBonusPayPercent.ToString("0"))% of men</span>
+                            <br/>
                             <span style="white-space: nowrap;">@(returnForYear.FemaleMedianBonusPayPercent.ToString("0"))% of women</span>
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Bonus pay gap (mean)</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">@(returnForYear.DiffMeanBonusPercent?.ToString("0.##"))%</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Bonus pay gap (median)</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">@(returnForYear.DiffMedianBonusPercent?.ToString("0.##"))%</td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Highest paid quarter</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap;">@(returnForYear.MaleUpperQuartilePayBand.ToString("0"))% male</span>
+                            <br/>
                             <span style="white-space: nowrap;">@(returnForYear.FemaleUpperQuartilePayBand.ToString("0"))% female</span>
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">2nd-highest paid quarter</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap;">@(returnForYear.MaleUpperPayBand.ToString("0"))% male</span>
+                            <br/>
                             <span style="white-space: nowrap;">@(returnForYear.FemaleUpperPayBand.ToString("0"))% female</span>
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">2nd-lowest paid quarter</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap;">@(returnForYear.MaleMiddlePayBand.ToString("0"))% male</span>
+                            <br/>
                             <span style="white-space: nowrap;">@(returnForYear.FemaleMiddlePayBand.ToString("0"))% female</span>
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Lowest paid quarter</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap;">@(returnForYear.MaleLowerPayBand.ToString("0"))% male</span>
+                            <br/>
                             <span style="white-space: nowrap;">@(returnForYear.FemaleLowerPayBand.ToString("0"))% female</span>
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Link to company website</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
                             @if (!string.IsNullOrWhiteSpace(returnForYear.CompanyLinkToGPGInfo))
                             {
@@ -161,12 +264,20 @@
                                 @:No link
                             }
                         </td>
+                    }
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Senior Responsible Officer</th>
+                    @foreach (Return returnForYear in returnsForYear)
+                    {
                         <td class="govuk-table__cell">
-                            @(returnForYear.FirstName) @(returnForYear.LastName) (@(returnForYear.JobTitle))
+                            @(returnForYear.FirstName) @(returnForYear.LastName)
+                            <br />
+                            (@(returnForYear.JobTitle))
                         </td>
-                    </tr>
-                    previousAccountingDate = returnForYear.AccountingDate;
-                }
+                    }
+                </tr>
             </tbody>
         </table>
 
