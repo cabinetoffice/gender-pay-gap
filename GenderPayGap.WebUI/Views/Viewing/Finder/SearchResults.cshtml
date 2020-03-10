@@ -1,4 +1,4 @@
-﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+@model GenderPayGap.WebUI.Models.Search.SearchViewModel
 @{
     ViewBag.Title = "Search for an employer's gender pay gap report - GOV.UK";
     ViewBag.pageDescription = "Search for an employer by name or type to view their gender pay gap data";
@@ -34,16 +34,9 @@
 </div>
 
 @section Scripts {
-    <script src="~/assets/javascripts/typeahead.bundle.min.js" type="text/javascript"></script>
     <script>
         (function () {
             "use strict";
-
-            new GOVUK.SuggestEmployer({
-                formId: "FinderForm",
-                keywordsId: "FinderKeywords",
-                employerType: @(Model.t)
-            });
 
             // bind to the finder filter collapse link (used for mobile)
             GOVUK.Collapsible.bindElements("#ChangeFiltersCollapsible.js-collapsible");
