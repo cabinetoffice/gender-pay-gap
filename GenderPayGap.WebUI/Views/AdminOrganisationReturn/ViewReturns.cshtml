@@ -47,12 +47,6 @@
             </span>
         </h1>
         
-        <p class="govuk-body">
-            <a href="@Url.Action("ViewReturnDetails", "AdminOrganisationReturn", new { id = Model.OrganisationId })"
-               class="govuk-link">
-                View full return details
-            </a>
-        </p>
         <p class="govuk-body govuk-!-margin-bottom-6">
             <a href="@Url.Action("DownloadReturnDetailsCsv", "AdminOrganisationReturn", new { id = Model.OrganisationId })"
                class="govuk-link">
@@ -71,55 +65,73 @@
                     <th scope="col" class="govuk-table__header">Status</th>
                     <th scope="col" class="govuk-table__header">Late</th>
                     <th scope="col" class="govuk-table__header">Late reason</th>
+                    <th scope="col" class="govuk-table__header">Full details</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
                 @{ var previousAccountingDate = DateTime.MinValue; }
                 @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenByDescending(r => r.StatusDate))
                 {
-                    <tr class="govuk-table__row">
-                        @if (returnForYear.AccountingDate == previousAccountingDate)
+                <tr class="govuk-table__row">
+                    @if (returnForYear.AccountingDate == previousAccountingDate)
+                    {
+                        @* Omit this TD, a TD above has a rowspan that covers this row *@
+                    }
+                    else
+                    {
+                        <th scope="row" class="govuk-table__cell" style="white-space: nowrap" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
+                            @(returnForYear.AccountingDate.ToString("d MMM yyyy"))
+                        </th>
+                        <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
+                            <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
+                               class="govuk-link">
+                                <span class="govuk-visually-hidden">Public page for return year </span>@(returnForYear.AccountingDate.Year)
+                            </a>
+                        </td>
+                    }
+                    <td class="govuk-table__cell">
+                        <span style="white-space: nowrap">
+                            @(returnForYear.Modified.ToString("d MMM yyyy"))
+                        </span>
+                        <span style="white-space: nowrap">
+                            @(returnForYear.Modified.ToString("HH:mm"))
+                        </span>
+                    </td>
+                    <td class="govuk-table__cell">@(returnForYear.MinEmployees)-@(returnForYear.MaxEmployees)</td>
+                    <td class="govuk-table__cell">
+                        @(returnForYear.Modifications != null
+                            ? string.Join(", ", returnForYear.Modifications.Split(",", StringSplitOptions.RemoveEmptyEntries))
+                            : "")
+                    </td>
+                    <td class="govuk-table__cell">@(returnForYear.Status)</td>
+                    <td class="govuk-table__cell">
+                        @if (returnForYear.AccountingDate != previousAccountingDate)
                         {
-                            @* Omit this TD, a TD above has a rowspan that covers this row *@
+                            <span>@(returnForYear.IsLateSubmission ? "Yes" : "No") - </span>
+                            <a href="@Url.Action("ChangeLateFlag", "AdminReturnLateFlag", new {id = returnForYear.ReturnId})" class="govuk-link">
+                                Change <span class="govuk-visually-hidden"> late submission status for @(returnForYear.GetReportingPeriod())</span>
+                            </a>
                         }
-                        else
-                        {
-                            <th scope="row" class="govuk-table__cell" style="white-space: nowrap" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
-                                @(returnForYear.AccountingDate.ToString("d MMM yyyy"))
-                            </th>
-                            <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
-                                <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
-                                   class="govuk-link">
-                                    <span class="govuk-visually-hidden">Public page for return year </span>@(returnForYear.AccountingDate.Year)
-                                </a>
-                            </td>
-                        }
-                        <td class="govuk-table__cell">
-                            <span style="white-space: nowrap">
-                                @(returnForYear.Modified.ToString("d MMM yyyy"))
-                            </span>
-                            <span style="white-space: nowrap">
-                                @(returnForYear.Modified.ToString("HH:mm"))
-                            </span>
+                    </td>
+                    <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
+                    @if (returnForYear.AccountingDate == previousAccountingDate)
+                    {
+                        @* Omit this TD, a TD above has a rowspan that covers this row *@
+                    }
+                    else
+                    {
+                        <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
+                            <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn",
+                                         new { id = Model.OrganisationId, year = returnForYear.AccountingDate.Year })"
+                               class="govuk-link">
+                                <span class="govuk-visually-hidden">Full history of returns for @(Model.OrganisationName) for</span>
+                                <span style="white-space: nowrap;">
+                                    @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)
+                                </span>
+                            </a>
                         </td>
-                        <td class="govuk-table__cell">@(returnForYear.MinEmployees)-@(returnForYear.MaxEmployees)</td>
-                        <td class="govuk-table__cell">
-                            @(returnForYear.Modifications != null
-                                ? string.Join(", ", returnForYear.Modifications.Split(",", StringSplitOptions.RemoveEmptyEntries))
-                                : "")
-                        </td>
-                        <td class="govuk-table__cell">@(returnForYear.Status)</td>
-                        <td class="govuk-table__cell">
-                            @if (returnForYear.AccountingDate != previousAccountingDate)
-                            {
-                                <span>@(returnForYear.IsLateSubmission ? "Yes" : "No") - </span>
-                                <a href="@Url.Action("ChangeLateFlag", "AdminReturnLateFlag", new {id = returnForYear.ReturnId})" class="govuk-link">
-                                    Change <span class="govuk-visually-hidden"> late submission status for @(returnForYear.GetReportingPeriod())</span>
-                                </a>
-                            }
-                        </td>
-                        <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
-                    </tr>
+                    }
+                </tr>
                     previousAccountingDate = returnForYear.AccountingDate;
                 }
             </tbody>

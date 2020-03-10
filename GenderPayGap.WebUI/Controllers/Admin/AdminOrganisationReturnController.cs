@@ -5,6 +5,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,12 +31,18 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return View("ViewReturns", organisation);
         }
 
-        [HttpGet("organisation/{id}/returns/details")]
-        public IActionResult ViewReturnDetails(long id)
+        [HttpGet("organisation/{id}/returns/{year}")]
+        public IActionResult ViewReturnDetailsForYear(long id, int year)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
-            return View("ViewReturnDetails", organisation);
+            var viewModel = new AdminOrganisationReturnDetailsViewModel
+            {
+                Organisation = organisation,
+                Year = year
+            };
+
+            return View("ViewReturnDetails", viewModel);
         }
 
         [HttpGet("organisation/{id}/returns/download-details-csv")]
