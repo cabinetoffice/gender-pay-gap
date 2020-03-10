@@ -61,7 +61,6 @@
       "Scripts/Application/PreventDoubleClick.js",
       "Scripts/Application/ShowHide.js",
       "Scripts/Application/Site.js",
-      "Scripts/Application/SuggestEmployer.js",
       "Scripts/Application/custom-link-tracker.js",
       "Scripts/Application/details-tracker.js"
     ],
