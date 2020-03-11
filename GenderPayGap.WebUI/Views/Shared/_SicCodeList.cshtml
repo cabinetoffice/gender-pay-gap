@@ -5,25 +5,29 @@
 @{
     IQueryable<SicCode> sicCodes = DataRepo.GetAll<SicCode>().Where(s => Model.Contains(s.SicCodeId));
 }
-<table class="compact">
+<ul>
     @foreach (SicSection sector in sicCodes.Select(s => s.SicSection).Distinct().OrderBy(s => s.Description))
     {
-        <tr>
-            <td colspan="2" style="padding-top:10px">
-                <b>@sector.Description</b>
-            </td>
-        </tr>
-        if (sector.SicSectionId != "X")
-        {
-            foreach (SicCode sicCode in sicCodes.Where(s => s.SicSectionId == sector.SicSectionId).Distinct().OrderBy(s => s.SicCodeId))
+        <li>
+            <b>@sector.Description</b>
+            
+            @if (sector.SicSectionId != "X")
             {
-                <tr>
-                    <td>
-                        <li style="list-style-position:inside;white-space:nowrap">@sicCode.SicCodeId</li>
-                    </td>
-                    <td>@sicCode.Description</td>
-                </tr>
+                <ul class="list list-bullet">
+                    @foreach (SicCode sicCode in sicCodes.Where(s => s.SicSectionId == sector.SicSectionId).Distinct().OrderBy(s => s.SicCodeId))
+                    {
+                        <li>
+                            <span style="font-weight: bold; margin-right: 5px">
+                                @sicCode.SicCodeId
+                            </span>
+                            <span>
+                                @sicCode.Description
+                            </span>
+                        </li>
+                            
+                    }
+                </ul>
             }
-        }
+        </li>
     }
-</table>
+</ul>
