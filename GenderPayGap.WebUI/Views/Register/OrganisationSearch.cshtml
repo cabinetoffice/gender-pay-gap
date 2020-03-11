@@ -22,15 +22,13 @@
             <div class="column-two-thirds">
                 @await Html.CustomValidationSummaryAsync()
                 <h1 class="heading-large">
-
-                    <span>Find your organisation</span>
+                    <label for="SearchText">Find your organisation</label>
                 </h1>
                 @Html.ValidationMessageFor(model => model.SearchText, null, new {@class = "error-danger"})
 
                 <div class="gov-uk-c-searchbar">
                     <div class="gov-uk-l-searchbar__table">
                         <div class="gov-uk-l-searchbar__cell">
-                            <label for="SearchText" class="visually-hidden">field to search by organisation name</label>
                             @Html.CustomEditorFor(model => model.SearchText, new {@class = "gov-uk-c-searchbar__input", placeholder = Model.SectorType == SectorTypes.Public ? "Organisation name" : "Organisation name or company no"})
                         </div>
                         <div class="gov-uk-l-searchbar__cell">
