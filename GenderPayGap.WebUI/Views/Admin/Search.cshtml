@@ -80,9 +80,16 @@
                 <label class="govuk-label" for="search-query">
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">Search for organisations and users</h1>
                 </label>
-                <p class="govuk-hint govuk-!-margin-top-0">
-                    You can search for organisations by current name, previous name, employer reference, company number. You can also search for users by their name or email address.
-                </p>
+                <div id="search-query-hint" class="govuk-hint govuk-!-margin-top-0">
+                    <ul class="govuk-list govuk-!-margin-bottom-0">
+                        <li class="govuk-hint">
+                            <span class="govuk-!-font-weight-bold">Organisations:</span> search by current name, previous name, employer reference or company number
+                        </li>
+                        <li class="govuk-hint">
+                            <span class="govuk-!-font-weight-bold">Users:</span> search by name or email address
+                        </li>
+                    </ul>
+                </div>
                 @if (Model.Error != null)
                 {
                     <span class="govuk-error-message">
@@ -90,7 +97,12 @@
                     </span>
                 }
                 <div class="admin-search-box">
-                    <input class="govuk-input @(Model.Error != null ? "govuk-input--error" : "") admin-search-input" id="search-query" name="query" type="text" value="@(Model.SearchQuery)">
+                    <input type="text"
+                           name="query"
+                           id="search-query"
+                           class="govuk-input @(Model.Error != null ? "govuk-input--error" : "") admin-search-input"
+                           value="@(Model.SearchQuery)"
+                           aria-describedby="search-query-hint">
                     <input type="submit" value="Search" class="admin-search-button"/>
                 </div>
             </div>
