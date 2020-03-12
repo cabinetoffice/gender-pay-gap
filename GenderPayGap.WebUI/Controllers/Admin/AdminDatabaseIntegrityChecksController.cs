@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,27 +31,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             return View("DatabaseIntegrityChecks");
         }
-
-        [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveAddresses()
-        {
-            var organisationsWithMultipleActiveAddresses = new List<Organisation>();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses).ToList();
-
-            foreach (Organisation organisation in organisations)
-            {
-                int numberOfActiveAddresses = organisation.OrganisationAddresses
-                    .Count(oa => oa.Status == AddressStatuses.Active);
-                if (numberOfActiveAddresses > 2)
-                {
-                    organisationsWithMultipleActiveAddresses.Add(organisation);
-                }
-            }
-
-            return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
-        }
-
+        
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-name")]
         public async Task<IActionResult> ActiveOrganisationsWithTheSameName()
         {
@@ -70,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("ActiveOrganisationsWithTheSameName", activeOrganisationsWithTheSameName);
         }
-
+        
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number")]
         public async Task<IActionResult> ActiveOrganisationsWithTheSameCompanyNumber()
         {
@@ -93,6 +73,45 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("ActiveOrganisationsWithTheSameCompanyNumber", activeOrganisationsWithTheSameCompanyNumber);
         }
 
+        [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses")]
+        public async Task<IActionResult> OrganisationsWithMultipleActiveAddresses()
+        {
+            var organisationsWithMultipleActiveAddresses = new List<Organisation>();
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses).ToList();
+
+            foreach (Organisation organisation in organisations)
+            {
+                int numberOfActiveAddresses = organisation.OrganisationAddresses
+                    .Count(oa => oa.Status == AddressStatuses.Active);
+                if (numberOfActiveAddresses > 2)
+                {
+                    organisationsWithMultipleActiveAddresses.Add(organisation);
+                }
+            }
+
+            return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
+        }
+        
+        [HttpGet("database-integrity-checks/organisations-without-an-active-address")]
+        public async Task<IActionResult> OrganisationsWithoutAnActiveAddress()
+        {
+            var organisationsWithoutAnActiveAddress = new List<Organisation>();
+            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses).ToList();
+            foreach (Organisation organisation in organisations)
+            {
+                IEnumerable<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
+                    .Where(oa => oa.Status == AddressStatuses.Active);
+                if (!activeAddresses.Any())
+                {
+                    organisationsWithoutAnActiveAddress.Add(organisation);
+                }
+            }
+
+            return PartialView("OrganisationsWithoutAnActiveAddress", organisationsWithoutAnActiveAddress);
+        }
+        
         [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active")]
         public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActive()
         {
@@ -112,7 +131,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
-
+        
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year")]
         public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYear()
         {
