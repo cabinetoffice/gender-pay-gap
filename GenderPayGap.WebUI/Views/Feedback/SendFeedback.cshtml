@@ -50,7 +50,8 @@
                             {
                                 HowDidYouHearAboutGpg.Other,
                                 @<text>
-                                    @( Html.GovUkTextInputFor(m => m.OtherSourceText))
+                                    @(Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherSourceText), Text = "Other source description"}))
+                                    @(Html.GovUkTextInputFor(m => m.OtherSourceText))
                                  </text>
                             }
                         };
@@ -81,7 +82,8 @@
                             {
                                 WhyVisitGpgSite.Other,
                                 @<text>
-                                    @( Html.GovUkTextInputFor(m => m.OtherReasonText))
+                                    @(Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherReasonText), Text = "Other reason description"}))
+                                    @(Html.GovUkTextInputFor(m => m.OtherReasonText))
                                  </text>
                             }
                         };
@@ -112,7 +114,8 @@
                             {
                                 WhoAreYou.Other,
                                 @<text>
-                                    @( Html.GovUkTextInputFor(m => m.OtherPersonText))
+                                    @(Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherReasonText), Text = "Other person description"}))
+                                    @(Html.GovUkTextInputFor(m => m.OtherPersonText))
                                  </text>
                             }
                         };
