@@ -37,6 +37,13 @@
 <span class="govuk-caption-xl">Database integrity checks</span>
 <h1 class="govuk-heading-xl">Active private organisations with a public sector type</h1>
 
+<p class="govuk-body">
+    This shows active private organisations, that are either in scope or presumed in scope, with a public sector 
+    type already which should not happen. They need investigating to understand why this has occurred (possibly 
+    because the organisation was incorrectly created as a public one for instance). This needs resolving as otherwise 
+    the management information around deadline will be incorrect.
+</p>
+
 @if (!Model.Any())
 {
     <div class="govuk-body">

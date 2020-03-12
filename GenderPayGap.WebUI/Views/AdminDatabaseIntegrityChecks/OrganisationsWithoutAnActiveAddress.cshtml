@@ -3,7 +3,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model List<GenderPayGap.Database.Organisation>
 @{
-    ViewBag.Title = "Organisations where the latest address is not active - Administration - Gender pay gap service";
+    ViewBag.Title = "Organisations without an active address - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -23,7 +23,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Organisations where the latest address is not active"
+                Text = "Organisations without an active address"
             }
         };
     }
@@ -35,12 +35,12 @@
 }
 
 <span class="govuk-caption-xl">Database integrity checks</span>
-<h1 class="govuk-heading-xl">Organisations where the latest address is not active</h1>
+<h1 class="govuk-heading-xl">Organisations without an active address</h1>
 
 <p class="govuk-body">
-    This shows a list of all organisations where the latest address is not active. This could be investigated to 
-    decide which address should be made active, and retire the other(s). This will not have a significant impact on 
-    the service from a user perspective but it may signify that letters will not reach those organisations.
+    This shows a list of organisations without an active address. This might be because the link to the Companies 
+    House database has broken. This will not have a significant impact on the service from a user's perspective 
+    but it may signify that letters will not reach those organisations.
 </p>
 
 @if (!Model.Any())
@@ -51,12 +51,12 @@
 }
 else
 {
-    <h2 class="govuk-heading-m">@(Model.Count) organisations where the latest address is not active</h2>
+    <h2 class="govuk-heading-m">@(Model.Count) organisations without an active address</h2>
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">Organisation</th>
-                <th scope="col" class="govuk-table__header">Link to address history</th>
+                <th scope="col" class="govuk-table__header">Address history</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
