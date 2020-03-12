@@ -80,6 +80,7 @@
         <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))">
             <div class="govuk-form-group @(Model.Error != null ? "govuk-form-group--error" : "")">
                 <label class="govuk-label" for="search-query">
+                    <span class="govuk-visually-hidden">Search for</span>
                     <b>Organisation:</b> current name, previous name, employer reference, company number
                     <br/>
                     <b>User:</b> name, email address

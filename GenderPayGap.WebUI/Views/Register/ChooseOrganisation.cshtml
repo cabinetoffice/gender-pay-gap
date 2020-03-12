@@ -3,6 +3,7 @@
 }
 
 @using GenderPayGap.Core
+@using GenderPayGap.WebUI.Models.Register
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
 
 <div id="choose-organisation-content">
@@ -21,7 +22,7 @@
             <div class="column-two-thirds">
                 @await Html.CustomValidationSummaryAsync()
                 <h1 class="heading-large">
-                    <span>Choose your organisation</span>
+                    <label for=@(nameof(OrganisationViewModel.SearchText))>Choose your organisation</label>
                 </h1>
                 @Html.ValidationMessageFor(model => model.SearchText, null, new {@class = "error-danger"})
 
