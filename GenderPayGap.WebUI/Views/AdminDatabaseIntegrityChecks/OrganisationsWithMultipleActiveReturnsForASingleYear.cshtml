@@ -37,6 +37,12 @@
 <span class="govuk-caption-xl">Database integrity checks</span>
 <h1 class="govuk-heading-xl">Organisations with multiple active returns for a single year</h1>
 
+<p class="govuk-body">
+    This shows a list of organisations who have multiple active submissions for a reporting year. When a submission 
+    is created then the previous one should be retired. If this has not happened then it may need investigating 
+    to decide which submission is correct and retire the other(s).
+</p>
+
 @if (!Model.Any())
 {
     <div class="govuk-body">

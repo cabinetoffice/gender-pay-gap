@@ -36,6 +36,12 @@
 <span class="govuk-caption-xl">Database integrity checks</span>
 <h1 class="govuk-heading-xl">Active organisations with the same company number</h1>
 
+<p class="govuk-body">
+    This shows a list of all active organisations that have one or more exact matches for their Company House number 
+    in the database. This could be an indication that they are duplicate organisations. NB it will show duplicate 
+    organisations even if one of them is out of scope.
+</p>
+
 @if (!Model.Any())
 {
     <div class="govuk-body">
