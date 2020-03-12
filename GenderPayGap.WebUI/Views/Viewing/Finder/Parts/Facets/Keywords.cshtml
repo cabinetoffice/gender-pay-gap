@@ -1,22 +1,42 @@
-@model GenderPayGap.WebUI.Models.Search.SearchViewModel
+﻿@model GenderPayGap.WebUI.Models.Search.SearchViewModel
 <div id="SearchByKeywordsGroup" class="form-group" style="position: relative;">
     <h1 class="heading-large">
         Search by <span class="visuallyhidden">either employer name or SIC code</span>
     </h1>
     <fieldset class="inline">
-        <legend class="visually-hidden">Radiobuttons selecting either employer name or SIC code</legend>
-        
+        <legend class="visually-hidden">
+            Select how you want to search: either by employer name or by Sector (SIC code)
+        </legend>
+
         <div class="multiple-choice">
-            <input id="rdoEmployerName" type="radio" name="t" value="1" onclick="handleClick(this.value);" @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
+            <input 
+                id="rdoEmployerName"
+                   type="radio" 
+                   name="t" 
+                   value="1" 
+                   onclick="searchTypeRadioButtonClicked(this.value);" 
+                   @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
             <label for="rdoEmployerName">Employer name</label>
         </div>
         <div class="multiple-choice">
-            <input id="rdoBySectorType" type="radio" name="t" value="2" onclick="handleClick(this.value);" @(!string.IsNullOrEmpty(Model.t) && Model.t == "2" ? "checked" : "")/>
+            <input 
+                id="rdoBySectorType" 
+               type="radio" 
+               name="t" 
+               value="2" 
+               onclick="searchTypeRadioButtonClicked(this.value);" 
+               @(!string.IsNullOrEmpty(Model.t) && Model.t == "2" ? "checked" : "")/>
             <label for="rdoBySectorType">Employer type or SIC code</label>
         </div>
 
         <div class="panel panel-border-wide">
-            <div class="font-xsmall">Search by employer or industry type, eg banks, supermarkets, law firms. You can also search by SIC codes which provide an easy way of describing what an employer does. <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank">Find SIC codes<span class="visually-hidden">(opens in a new window)</span></a></div>
+            <div class="font-xsmall">
+                Search by employer or industry type, eg banks, supermarkets, law firms. You can
+                also search by SIC codes which provide an easy way of describing what an employer does.
+                <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank">Find SIC codes
+                    <span class="visually-hidden">(opens in a new window)</span>
+                </a>
+            </div>
         </div>
 
     </fieldset>
@@ -25,20 +45,25 @@
         <div class="gov-uk-c-searchbar">
             <div class="gov-uk-l-searchbar__table">
                 <div class="gov-uk-l-searchbar__cell">
-                    <label id="FinderKeywordsId" for="FinderKeywords" class="visuallyhidden">@(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "Search by employer name" : "Search query")</label>
+                    <label id="SearchInputLabel"for="FinderKeywords" class="visuallyhidden">
+                        @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" 
+                            ? "Search by employer name" : "Search by employer type or SIC code")
+                    </label>
                     <input class="gov-uk-c-searchbar__input" type="text" autocomplete="off" name="search" id="FinderKeywords">
                 </div>
                 <div class="gov-uk-l-searchbar__cell">
-                    <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--blue" id="NextStep" type="submit">Search</button>
+                    <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--blue" id="NextStep" type="submit">
+                        Search
+                    </button>
                 </div>
             </div>
         </div>
     </fieldset>
 </div>
-
+searchby
 <script>
-    function handleClick(radioValue) {
-        var element = document.getElementById("FinderKeywordsId");
+    function searchTypeRadioButtonClicked(radioValue) {
+        var element = document.getElementById("SearchInputLabel");
         if (radioValue == 1) {
             element.textContent = "Search by employer name";
         }
