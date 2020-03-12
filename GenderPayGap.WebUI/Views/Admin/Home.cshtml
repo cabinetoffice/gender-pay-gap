@@ -17,16 +17,14 @@
     </div>
 }
 
-<h2 class="govuk-heading-l">Search</h2>
-
 <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))">
     <div class="govuk-form-group">
         <label class="govuk-label" for="search-query">
-            <span class="govuk-visually-hidden">Search for</span>
-            <b>Organisation:</b> current name, previous name, employer reference, company number
-            <br/>
-            <b>User:</b> name, email address
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-0">Search for organisations and users</h2>
         </label>
+        <p class="govuk-hint govuk-!-margin-top-0">
+            You can search for organisations by current name, previous name, employer reference, company number. You can also search for users by their name or email address.
+        </p>
         <div class="admin-search-box">
             <input class="govuk-input admin-search-input" id="search-query" name="query" type="text">
             <input type="submit" value="Search" class="admin-search-button"/>
@@ -98,9 +96,9 @@
 
 <p class="govuk-body">
     <a href="@Url.Action("ViewFeedback", "AdminFeedback")" class="govuk-link govuk-!-font-weight-bold">View and download feedback</a>
-    <br />
+    <br/>
     View and download feedback submitted through the "Send Feedback" links
-    <br />
+    <br/>
     @if (Model.NewFeedbackCount > 0)
     {
         <span class="govuk-!-font-weight-bold">
@@ -109,7 +107,7 @@
         <br/>
     }
     Total feedback submissions: @(Model.FeedbackCount)
-    <br />
+    <br/>
     Latest feedback received: @(Model.LatestFeedbackDate?.ToString("d MMM yyyy"))
 </p>
 
