@@ -77,14 +77,16 @@ namespace GenderPayGap.WebJob
 
         private void CheckUserAndSendReminderEmailsForSectorType(User user, SectorTypes sector)
         {
-            List<Organisation> inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
+            List<Organisation> inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
                 .Where(uo => uo.PINConfirmedDate != null)
                 .Select(uo => uo.Organisation)
+                .Where(o => o.Status == OrganisationStatuses.Active)
                 .Where(o => o.SectorType == sector)
                 .Where(
                     o =>
+                        o.LatestScope.Status == ScopeRowStatuses.Active && (
                         o.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                        || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                        || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope))
                 .Where(
                     o =>
                         o.LatestReturn == null
@@ -92,7 +94,7 @@ namespace GenderPayGap.WebJob
                         || o.LatestReturn.Status != ReturnStatuses.Submitted)
                 .ToList();
 
-            SendReminderEmailsForSectorType(user, inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport, sector);
+            SendReminderEmailsForSectorType(user, inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport, sector);
         }
 
         private void SendReminderEmailsForSectorType(
