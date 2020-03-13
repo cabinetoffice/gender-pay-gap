@@ -2398,10 +2398,7 @@ h2.type-heading {
   position: absolute;
   text-indent: -5000px;
   color: #fff;
-  background-color: #005ea5;
-  background-image: url("/public/assets/images/search-button.png");
-  background-repeat: no-repeat;
-  background-position: -12.5% 50%;
+  background: #005ea5 url("/assets/images/search-button.svg") no-repeat -12.5% 50%;
   border: none;
 }
 
