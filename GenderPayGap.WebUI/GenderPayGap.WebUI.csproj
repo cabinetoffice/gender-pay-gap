@@ -29,7 +29,6 @@
     <Content Remove="Web.Debug.config" />
     <Content Remove="Web.loadtest.config" />
     <Content Remove="Web.Release.config" />
-    <Content Remove="wwwroot\assets\images\search-button.svg" />
     <None Include="Web.Debug.config" />
     <None Include="Web.loadtest.config" />
     <None Include="Web.Release.config" />
