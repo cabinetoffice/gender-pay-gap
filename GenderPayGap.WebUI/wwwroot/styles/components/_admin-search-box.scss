@@ -11,9 +11,8 @@
         padding: 0;
         width: 40px;
         height: 40px;
-        background-image: url('/assets/images/search-button-white-and-black.png');
-        background-repeat: no-repeat;
-        background-position: 2px 50%;
+        background: #000000 url('/assets/images/search-button.svg') no-repeat -12.5% 50%;
+        background-size: 40px 40px;
         text-indent: -5000px;
         overflow: hidden;
 
