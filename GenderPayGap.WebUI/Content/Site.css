@@ -1004,7 +1004,10 @@ input[type=submit] {
 
 .search-button {
     display: inline-block;
-    background: #005ea5 url(/assets/images/search-button.svg) no-repeat -12.5% 50%;
+    background-color: #005ea5;
+    background-image: url('/assets/images/search-button.svg');
+    background-repeat: no-repeat;
+    background-position: -12.5% 50%;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
