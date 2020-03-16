@@ -212,7 +212,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-FullSubmissionHistoryForYear-{year}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
