@@ -62,7 +62,7 @@
             </a>
         </p>
 
-        <table class="govuk-table">
+        <table class="govuk-table admin-return-details-table">
             <tbody class="govuk-table__body">
                 @{
                     List<Return> returnsForYear = Model.Organisation.Returns
@@ -121,19 +121,33 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Late submission</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            @(returnForYear.IsLateSubmission ? "Yes" : "No")
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.IsLateSubmission != previousVersion.IsLateSubmission);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @(thisVersion.IsLateSubmission ? "Yes" : "No")
                         </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Reason for late submission</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.LateReason != previousVersion.LateReason);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @thisVersion.LateReason
+                        </td>
                     }
                 </tr>
 
@@ -142,121 +156,203 @@
                         <span class="govuk-visually-hidden">Number of</span>
                         Employees
                     </th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.MinEmployees) - @(returnForYear.MaxEmployees)</td>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.MinEmployees != previousVersion.MinEmployees) ||
+                                          (thisVersion.MaxEmployees != previousVersion.MaxEmployees));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @thisVersion.MinEmployees - @thisVersion.MaxEmployees
+                        </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Hourly pay gap (mean)</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.DiffMeanHourlyPayPercent.ToString("0.#"))%</td>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.DiffMeanHourlyPayPercent != previousVersion.DiffMeanHourlyPayPercent);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @(thisVersion.DiffMeanHourlyPayPercent.ToString("0.#"))%
+                        </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Hourly pay gap (median)</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.DiffMedianHourlyPercent.ToString("0.#"))%</td>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.DiffMedianHourlyPercent != previousVersion.DiffMedianHourlyPercent);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @(thisVersion.DiffMedianHourlyPercent.ToString("0.#"))%
+                        </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Who is paid a bonus</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            <span style="white-space: nowrap;">@(returnForYear.MaleMedianBonusPayPercent.ToString("0"))% of men</span>
-                            <br/>
-                            <span style="white-space: nowrap;">@(returnForYear.FemaleMedianBonusPayPercent.ToString("0"))% of women</span>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.MaleMedianBonusPayPercent != previousVersion.MaleMedianBonusPayPercent) ||
+                                          (thisVersion.FemaleMedianBonusPayPercent != previousVersion.FemaleMedianBonusPayPercent));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            <span style="white-space: nowrap;">@(thisVersion.MaleMedianBonusPayPercent.ToString("0"))% of men</span>
+                            <br />
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleMedianBonusPayPercent.ToString("0"))% of women</span>
                         </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Bonus pay gap (mean)</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.DiffMeanBonusPercent?.ToString("0.##"))%</td>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.DiffMeanBonusPercent != previousVersion.DiffMeanBonusPercent);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @(thisVersion.DiffMeanBonusPercent?.ToString("0.##"))%
+                        </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Bonus pay gap (median)</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.DiffMedianBonusPercent?.ToString("0.##"))%</td>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.DiffMedianBonusPercent != previousVersion.DiffMedianBonusPercent);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @(thisVersion.DiffMedianBonusPercent?.ToString("0.##"))%
+                        </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Highest paid quarter</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            <span style="white-space: nowrap;">@(returnForYear.MaleUpperQuartilePayBand.ToString("0"))% male</span>
-                            <br/>
-                            <span style="white-space: nowrap;">@(returnForYear.FemaleUpperQuartilePayBand.ToString("0"))% female</span>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.MaleUpperQuartilePayBand != previousVersion.MaleUpperQuartilePayBand) ||
+                                          (thisVersion.FemaleUpperQuartilePayBand != previousVersion.FemaleUpperQuartilePayBand));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            <span style="white-space: nowrap;">@(thisVersion.MaleUpperQuartilePayBand.ToString("0"))% male</span>
+                            <br />
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleUpperQuartilePayBand.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">2nd-highest paid quarter</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            <span style="white-space: nowrap;">@(returnForYear.MaleUpperPayBand.ToString("0"))% male</span>
-                            <br/>
-                            <span style="white-space: nowrap;">@(returnForYear.FemaleUpperPayBand.ToString("0"))% female</span>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.MaleUpperPayBand != previousVersion.MaleUpperPayBand) ||
+                                          (thisVersion.FemaleUpperPayBand != previousVersion.FemaleUpperPayBand));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            <span style="white-space: nowrap;">@(thisVersion.MaleUpperPayBand.ToString("0"))% male</span>
+                            <br />
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleUpperPayBand.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">2nd-lowest paid quarter</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            <span style="white-space: nowrap;">@(returnForYear.MaleMiddlePayBand.ToString("0"))% male</span>
-                            <br/>
-                            <span style="white-space: nowrap;">@(returnForYear.FemaleMiddlePayBand.ToString("0"))% female</span>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.MaleMiddlePayBand != previousVersion.MaleMiddlePayBand) ||
+                                          (thisVersion.FemaleMiddlePayBand != previousVersion.FemaleMiddlePayBand));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            <span style="white-space: nowrap;">@(thisVersion.MaleMiddlePayBand.ToString("0"))% male</span>
+                            <br />
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleMiddlePayBand.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Lowest paid quarter</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            <span style="white-space: nowrap;">@(returnForYear.MaleLowerPayBand.ToString("0"))% male</span>
-                            <br/>
-                            <span style="white-space: nowrap;">@(returnForYear.FemaleLowerPayBand.ToString("0"))% female</span>
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.MaleLowerPayBand != previousVersion.MaleLowerPayBand) ||
+                                          (thisVersion.FemaleLowerPayBand != previousVersion.FemaleLowerPayBand));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            <span style="white-space: nowrap;">@(thisVersion.MaleLowerPayBand.ToString("0"))% male</span>
+                            <br />
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleLowerPayBand.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Link to company website</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            @if (!string.IsNullOrWhiteSpace(returnForYear.CompanyLinkToGPGInfo))
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         (thisVersion.CompanyLinkToGPGInfo != previousVersion.CompanyLinkToGPGInfo);
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @if (!string.IsNullOrWhiteSpace(thisVersion.CompanyLinkToGPGInfo))
                             {
                                 try
                                 {
-                                    <a href="@(returnForYear.CompanyLinkToGPGInfo)"
+                                    <a href="@(thisVersion.CompanyLinkToGPGInfo)"
                                        class="govuk-link">
                                         Link
                                     </a>
                                 }
                                 catch
                                 {
-                                    @(returnForYear.CompanyLinkToGPGInfo)
+                                    @(thisVersion.CompanyLinkToGPGInfo)
                                 }
                             }
                             else
@@ -269,12 +365,20 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Senior Responsible Officer</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < returnsForYear.Count; i++)
                     {
-                        <td class="govuk-table__cell">
-                            @(returnForYear.FirstName) @(returnForYear.LastName)
+                        Return thisVersion = returnsForYear[i];
+                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+
+                        bool isChanged = previousVersion != null &&
+                                         ((thisVersion.FirstName != previousVersion.FirstName) ||
+                                          (thisVersion.LastName != previousVersion.LastName) ||
+                                          (thisVersion.JobTitle != previousVersion.JobTitle));
+
+                        <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
+                            @(thisVersion.FirstName) @(thisVersion.LastName)
                             <br />
-                            (@(returnForYear.JobTitle))
+                            (@(thisVersion.JobTitle))
                         </td>
                     }
                 </tr>
