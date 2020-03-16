@@ -65,18 +65,27 @@
         <table class="govuk-table admin-return-details-table">
             <tbody class="govuk-table__body">
                 @{
-                    List<Return> returnsForYear = Model.Organisation.Returns
+                    List<Return> returnVersions = Model.Organisation.Returns
                         .Where(r => r.AccountingDate.Year == Model.Year)
                         .OrderByDescending(r => r.StatusDate)
                         .ToList();
+
+                    int numberOfVersions = returnVersions.Count;
+
+                    Func<int, Return> GetVersion = (i => returnVersions[i]);
+                    Func<int, Return> GetPreviousVersion = (i => i < numberOfVersions - 1 ? returnVersions[i + 1] : null);
+                    Func<int, int> GetVersionNumber = (i => returnVersions.Count - i);
                 }
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Revision number</th>
-                    @for (int version = returnsForYear.Count; version > 0; version--)
+
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
+                        int versionNumber = GetVersionNumber(i);
+
                         <th scope="col" class="govuk-table__header">
-                            version @(version)
+                            version @versionNumber
                         </th>
                     }
                 </tr>
@@ -86,14 +95,16 @@
                         <span class="govuk-visually-hidden">Date</span>
                         Modified
                     </th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
+                        Return thisVersion = GetVersion(i);
+
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap">
-                                @(returnForYear.Modified.ToString("d MMM yyyy"))
+                                @(thisVersion.Modified.ToString("d MMM yyyy"))
                             </span>
                             <span style="white-space: nowrap">
-                                @(returnForYear.Modified.ToString("HH:mm"))
+                                @(thisVersion.Modified.ToString("HH:mm"))
                             </span>
                         </td>
                     }
@@ -101,19 +112,23 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Status</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        <td class="govuk-table__cell">@(returnForYear.Status)</td>
+                        Return thisVersion = GetVersion(i);
+
+                        <td class="govuk-table__cell">@(thisVersion.Status)</td>
                     }
                 </tr>
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Modifications</th>
-                    @foreach (Return returnForYear in returnsForYear)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
+                        Return thisVersion = GetVersion(i);
+
                         <td class="govuk-table__cell">
-                            @(returnForYear.Modifications != null
-                                ? string.Join(", ", returnForYear.Modifications.Split(",", StringSplitOptions.RemoveEmptyEntries))
+                            @(thisVersion.Modifications != null
+                                ? string.Join(", ", thisVersion.Modifications.Split(",", StringSplitOptions.RemoveEmptyEntries))
                                 : "")
                         </td>
                     }
@@ -121,10 +136,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Late submission</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.IsLateSubmission != previousVersion.IsLateSubmission);
@@ -137,10 +152,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Reason for late submission</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.LateReason != previousVersion.LateReason);
@@ -156,10 +171,10 @@
                         <span class="govuk-visually-hidden">Number of</span>
                         Employees
                     </th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.MinEmployees != previousVersion.MinEmployees) ||
@@ -173,10 +188,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Hourly pay gap (mean)</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.DiffMeanHourlyPayPercent != previousVersion.DiffMeanHourlyPayPercent);
@@ -189,10 +204,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Hourly pay gap (median)</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.DiffMedianHourlyPercent != previousVersion.DiffMedianHourlyPercent);
@@ -205,10 +220,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Who is paid a bonus</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.MaleMedianBonusPayPercent != previousVersion.MaleMedianBonusPayPercent) ||
@@ -224,10 +239,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Bonus pay gap (mean)</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.DiffMeanBonusPercent != previousVersion.DiffMeanBonusPercent);
@@ -240,10 +255,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Bonus pay gap (median)</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.DiffMedianBonusPercent != previousVersion.DiffMedianBonusPercent);
@@ -256,10 +271,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Highest paid quarter</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.MaleUpperQuartilePayBand != previousVersion.MaleUpperQuartilePayBand) ||
@@ -275,10 +290,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">2nd-highest paid quarter</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.MaleUpperPayBand != previousVersion.MaleUpperPayBand) ||
@@ -294,10 +309,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">2nd-lowest paid quarter</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.MaleMiddlePayBand != previousVersion.MaleMiddlePayBand) ||
@@ -313,10 +328,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Lowest paid quarter</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.MaleLowerPayBand != previousVersion.MaleLowerPayBand) ||
@@ -332,10 +347,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Link to company website</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          (thisVersion.CompanyLinkToGPGInfo != previousVersion.CompanyLinkToGPGInfo);
@@ -365,10 +380,10 @@
 
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Senior Responsible Officer</th>
-                    @for (int i = 0; i < returnsForYear.Count; i++)
+                    @for (int i = 0; i < numberOfVersions; i++)
                     {
-                        Return thisVersion = returnsForYear[i];
-                        Return previousVersion = i < returnsForYear.Count - 1 ? returnsForYear[i + 1] : null;
+                        Return thisVersion = GetVersion(i);
+                        Return previousVersion = GetPreviousVersion(i);
 
                         bool isChanged = previousVersion != null &&
                                          ((thisVersion.FirstName != previousVersion.FirstName) ||
