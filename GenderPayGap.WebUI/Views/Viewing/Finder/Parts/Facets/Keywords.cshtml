@@ -9,23 +9,23 @@
         </legend>
 
         <div class="multiple-choice">
-            <input 
+            <input
                 id="rdoEmployerName"
-                   type="radio" 
-                   name="t" 
-                   value="1" 
-                   onclick="searchTypeRadioButtonClicked(this.value);" 
-                   @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
+                type="radio"
+                name="t"
+                value="1"
+                onclick="searchTypeRadioButtonClicked(this.value);"
+                @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" ? "checked" : "")/>
             <label for="rdoEmployerName">Employer name</label>
         </div>
         <div class="multiple-choice">
-            <input 
-                id="rdoBySectorType" 
-               type="radio" 
-               name="t" 
-               value="2" 
-               onclick="searchTypeRadioButtonClicked(this.value);" 
-               @(!string.IsNullOrEmpty(Model.t) && Model.t == "2" ? "checked" : "")/>
+            <input
+                id="rdoBySectorType"
+                type="radio"
+                name="t"
+                value="2"
+                onclick="searchTypeRadioButtonClicked(this.value);"
+                @(!string.IsNullOrEmpty(Model.t) && Model.t == "2" ? "checked" : "")/>
             <label for="rdoBySectorType">Employer type or SIC code</label>
         </div>
 
@@ -33,7 +33,8 @@
             <div class="font-xsmall">
                 Search by employer or industry type, eg banks, supermarkets, law firms. You can
                 also search by SIC codes which provide an easy way of describing what an employer does.
-                <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank">Find SIC codes
+                <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank">
+                    Find SIC codes
                     <span class="visually-hidden">(opens in a new window)</span>
                 </a>
             </div>
@@ -46,13 +47,16 @@
             <div class="gov-uk-l-searchbar__table">
                 <div class="gov-uk-l-searchbar__cell">
                     <label id="SearchInputLabel"for="FinderKeywords" class="visuallyhidden">
-                        @(!string.IsNullOrEmpty(Model.t) && Model.t == "1" 
+                        @(!string.IsNullOrEmpty(Model.t) && Model.t == "1"
                             ? "Search by employer name" : "Search by employer type or SIC code")
                     </label>
                     <input class="gov-uk-c-searchbar__input" type="text" autocomplete="off" name="search" id="FinderKeywords">
                 </div>
                 <div class="gov-uk-l-searchbar__cell">
                     <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--blue" id="NextStep" type="submit">
+                        <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="4 5 30 30">
+                            <path d="M25.7 24.8L21.9 21c.7-1 1.1-2.2 1.1-3.5 0-3.6-2.9-6.5-6.5-6.5S10 13.9 10 17.5s2.9 6.5 6.5 6.5c1.6 0 3-.6 4.1-1.5l3.7 3.7 1.4-1.4zM12 17.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5-4.5-2-4.5-4.5z"/>
+                        </svg>
                         Search
                     </button>
                 </div>
