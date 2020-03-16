@@ -1,7 +1,6 @@
 ﻿@{
     ViewBag.Title = "Choose your organisation - Gender pay gap reporting service";
 }
-
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Models.Register
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
@@ -32,7 +31,12 @@
                             @Html.CustomEditorFor(model => model.SearchText, new {@class = "gov-uk-c-searchbar__input", placeholder = Model.SectorType == SectorTypes.Public ? "Organisation name" : "Organisation name or company no"})
                         </div>
                         <div class="gov-uk-l-searchbar__cell">
-                            <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--blue" id="NextStep" name="command" value="search" title="Search">Search</button>
+                            <button class="gov-uk-c-searchbar__submit gov-uk-c-searchbar__submit--blue" id="NextStep" name="command" value="search" title="Search">
+                                <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="4 5 30 30">
+                                    <path d="M25.7 24.8L21.9 21c.7-1 1.1-2.2 1.1-3.5 0-3.6-2.9-6.5-6.5-6.5S10 13.9 10 17.5s2.9 6.5 6.5 6.5c1.6 0 3-.6 4.1-1.5l3.7 3.7 1.4-1.4zM12 17.5c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5-2 4.5-4.5 4.5-4.5-2-4.5-4.5z"/>
+                                </svg>
+                                Search
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -72,35 +76,35 @@
                         <table class="search search3" summary="A list organisations that match your search">
                             <caption class="visuallyhidden">Customer and Business search listing</caption>
                             <thead>
-                            <tr>
-                                <th scope="col">Organisation name and registered address</th>
-                                @if (Model.SectorType == SectorTypes.Private)
-                                {
-                                    <th scope="col">Registered number</th>
-                                }
-
-                                <th scope="col">&nbsp;</th>
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @for (var i = 0; i < Model.Employers.Results.Count; i++)
-                            {
-                                <tr style="background-color:@(Model.Employers.Results[i].OrganisationId > 0 ? "inherit" : "#d2e5f5")">
-                                    <td>
-                                        @Model.Employers.Results[i].OrganisationName <span>@Model.Employers.Results[i].GetFullAddress()</span>
-                                    </td>
+                                <tr>
+                                    <th scope="col">Organisation name and registered address</th>
                                     @if (Model.SectorType == SectorTypes.Private)
                                     {
-                                        <td>
-                                            @Model.Employers.Results[i].CompanyNumber
-                                        </td>
+                                        <th scope="col">Registered number</th>
                                     }
-                                    <td>
-                                        <button type="submit" class="link-button" name="command" value="employer_@i">Choose&nbsp;organisation</button>
-                                    </td>
+
+                                    <th scope="col">&nbsp;</th>
+
                                 </tr>
-                            }
+                            </thead>
+                            <tbody>
+                                @for (var i = 0; i < Model.Employers.Results.Count; i++)
+                                {
+                                    <tr style="background-color:@(Model.Employers.Results[i].OrganisationId > 0 ? "inherit" : "#d2e5f5")">
+                                        <td>
+                                            @Model.Employers.Results[i].OrganisationName <span>@Model.Employers.Results[i].GetFullAddress()</span>
+                                        </td>
+                                        @if (Model.SectorType == SectorTypes.Private)
+                                        {
+                                            <td>
+                                                @Model.Employers.Results[i].CompanyNumber
+                                            </td>
+                                        }
+                                        <td>
+                                            <button type="submit" class="link-button" name="command" value="employer_@i">Choose&nbsp;organisation</button>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
 

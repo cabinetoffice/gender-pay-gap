@@ -2396,12 +2396,8 @@ h2.type-heading {
   overflow: visible;
   cursor: pointer;
   position: absolute;
-  text-indent: -5000px;
   color: #fff;
   background-color: #005ea5;
-  background-image: url('/assets/images/search-button.svg');
-  background-repeat: no-repeat;
-  background-position: -12.5% 50%;
   border: none;
 }
 
