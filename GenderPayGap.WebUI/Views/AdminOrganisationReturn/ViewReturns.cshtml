@@ -58,14 +58,14 @@
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Snapshot date</th>
-                    <th scope="col" class="govuk-table__header">Public page</th>
+                    <th scope="col" class="govuk-table__header">Full details</th>
                     <th scope="col" class="govuk-table__header">Modified</th>
                     <th scope="col" class="govuk-table__header">Employees</th>
                     <th scope="col" class="govuk-table__header">Modifications</th>
                     <th scope="col" class="govuk-table__header">Status</th>
                     <th scope="col" class="govuk-table__header">Late</th>
                     <th scope="col" class="govuk-table__header">Late reason</th>
-                    <th scope="col" class="govuk-table__header">Full details</th>
+                    <th scope="col" class="govuk-table__header">Public page</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -83,9 +83,13 @@
                             @(returnForYear.AccountingDate.ToString("d MMM yyyy"))
                         </th>
                         <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
-                            <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
+                            <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn",
+                                         new { id = Model.OrganisationId, year = returnForYear.AccountingDate.Year })"
                                class="govuk-link">
-                                <span class="govuk-visually-hidden">Public page for return year </span>@(returnForYear.AccountingDate.Year)
+                                <span class="govuk-visually-hidden">Full history of returns for @(Model.OrganisationName) for</span>
+                                <span style="white-space: nowrap;">
+                                    @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)
+                                </span>
                             </a>
                         </td>
                     }
@@ -121,13 +125,9 @@
                     else
                     {
                         <td class="govuk-table__cell" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
-                            <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn",
-                                         new { id = Model.OrganisationId, year = returnForYear.AccountingDate.Year })"
+                            <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
                                class="govuk-link">
-                                <span class="govuk-visually-hidden">Full history of returns for @(Model.OrganisationName) for</span>
-                                <span style="white-space: nowrap;">
-                                    @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)
-                                </span>
+                                <span class="govuk-visually-hidden">Public page for return year </span>@(returnForYear.AccountingDate.Year)
                             </a>
                         </td>
                     }
