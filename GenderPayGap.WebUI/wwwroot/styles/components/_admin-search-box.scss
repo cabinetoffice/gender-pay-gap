@@ -4,27 +4,28 @@
 
     .admin-search-button {
         background-color: $govuk-input-border-colour;
-        border: 0;
         border-radius: 0;
         cursor: pointer;
         position: relative;
         padding: 0;
         width: 40px;
         height: 40px;
-        background-color: #000000;
-        background-image: url('/assets/images/search-button.svg');
-        background-repeat: no-repeat;
-        background-position: -12.5% 50%;
-        background-size: 40px 40px;
-        text-indent: -5000px;
+        border-style: solid;
+        border-width: 4px 4px 4px 2px;
+        border-color: govuk-colour("black");
         overflow: hidden;
+
+        .svg {
+            fill: govuk-colour("white");
+        }
 
         &:focus {
             outline: none;
             background-color: $govuk-focus-colour;
-            border: 4px solid $govuk-input-border-colour;
-            background-position: -3px 50%;
-            border-left-width: 2px;
+            
+            .svg {
+                fill: govuk-colour("black");
+            }
         }
 
         &::-moz-focus-inner {
