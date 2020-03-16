@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -92,12 +93,23 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                         SeniorResponsibleOfficer = ret.ResponsiblePerson
                     });
 
-            string fileDownloadName = $"ReturnsForOrganisation-{organisation.OrganisationId}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string sanitisedOrganisationName = SanitiseOrganisationNameForFilename(organisation.OrganisationName);
+            string fileDownloadName = $"ReturnsForOrganisation-{sanitisedOrganisationName}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
             FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
 
+        private static string SanitiseOrganisationNameForFilename(string organisationName)
+        {
+            // Remove characters from organisation name that would be invalid in a file name
+            foreach (char invalidFileNameChar in Path.GetInvalidFileNameChars())
+            {
+                organisationName = organisationName.Replace(invalidFileNameChar.ToString(), "");
+            }
+
+            return organisationName;
+        }
 
     }
 }
