@@ -1373,11 +1373,11 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
 
-//            //If private sector then send the pin
-//            if (model.IsUkAddress.HasValue && model.IsUkAddress.Value)
-//            {
-//                return RedirectToAction("PINSent");
-//            }
+            //If private sector then send the pin, unless Manual Registration feature flag is turned on
+            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) && model.IsUkAddress.HasValue && model.IsUkAddress.Value)
+            {
+                return RedirectToAction("PINSent");
+            }
 
             return RedirectToAction("RequestReceived");
         }
@@ -1701,7 +1701,7 @@ namespace GenderPayGap.WebUI.Controllers
             #region Save the contact details 
 
             var sendRequest = false;
-            if (model.SectorType == SectorTypes.Private 
+            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) 
                 || model.ManualRegistration
                 || model.ManualAddress && (org.SectorType == SectorTypes.Private || !authorised || hasAddress)
                 || !model.IsUkAddress.HasValue
