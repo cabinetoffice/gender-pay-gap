@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -1373,11 +1373,11 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
 
-            //If private sector then send the pin
-            if (model.IsUkAddress.HasValue && model.IsUkAddress.Value)
-            {
-                return RedirectToAction("PINSent");
-            }
+//            //If private sector then send the pin
+//            if (model.IsUkAddress.HasValue && model.IsUkAddress.Value)
+//            {
+//                return RedirectToAction("PINSent");
+//            }
 
             return RedirectToAction("RequestReceived");
         }
@@ -1701,7 +1701,8 @@ namespace GenderPayGap.WebUI.Controllers
             #region Save the contact details 
 
             var sendRequest = false;
-            if (model.ManualRegistration
+            if (model.SectorType == SectorTypes.Private 
+                || model.ManualRegistration
                 || model.ManualAddress && (org.SectorType == SectorTypes.Private || !authorised || hasAddress)
                 || !model.IsUkAddress.HasValue
                 || !model.IsUkAddress.Value)
