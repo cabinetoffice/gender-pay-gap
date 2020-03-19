@@ -114,6 +114,23 @@
         
 
         <h2 class="govuk-heading-m">
+            Full submission history
+        </h2>
+        
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadFullSubmissionHistoryForYear", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    Full submission history for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                The full history of changes each organisation made the their submission for @(year)-@((year + 1) % 100)
+            </p>
+        }
+        
+
+        <h2 class="govuk-heading-m">
             Late Submissions
         </h2>
         
