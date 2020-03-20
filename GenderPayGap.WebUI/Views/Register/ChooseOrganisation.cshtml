@@ -67,7 +67,33 @@
                                     <div class="bold-small">Showing @Model.Employers.VirtualRecordTotal.ToString("N0") of @Model.Employers.ActualRecordTotal.ToString("N0") results. Please refine your search or enter your company number.</div>
                                 </div>
                             }
-                            <p style="width: 66%">Please choose your organisation and we'll send an activation PIN to its registered address. Only organisations registered at Companies House are listed here.</p>
+                            
+                            if(!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration))
+                            {
+                                <div class="column-two-thirds">
+                                    <p>
+                                        Please choose your organisation and we'll send an activation PIN to its 
+                                        registered address. Only organisations registered at Companies House 
+                                        are listed here.
+                                    </p>
+                                </div>
+                            }
+                        }
+                        
+                        if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) 
+                            || Model.SectorType == SectorTypes.Public)
+                        {
+                            <div class="column-two-thirds" style="margin-bottom: 30px;">
+                                <p>
+                                    Once your request to add an organisation to your account has been approved, the
+                                    Government Equalities Office will email you within 5 days to confirm that you are 
+                                    now able to report your gender pay gap data on behalf of that organisation.
+                                </p>
+                                <p>
+                                    You will then be able to sign in and submit your gender pay gap data from your 
+                                    Gender pay gap service account.
+                                </p>
+                            </div>
                         }
                         <table class="search search3" summary="A list organisations that match your search">
                             <caption class="visuallyhidden">Customer and Business search listing</caption>
