@@ -12,11 +12,11 @@
                     <h1 class="bold-medium">
                         We’ve got your details.
                         <br/>
-                        We will review them and get in touch to confirm.
+                        We will review them and email you to confirm.
                     </h1>
                 </div>
                 <div class="bold-small">
-                    What happens next.
+                    What happens next
                 </div>
                 <p>
                     The
@@ -30,19 +30,29 @@
                     {
                         <span>Government Equalities Office</span>
                     }
-                    will review your details and get in touch within 5 working days to confirm your registration.
+                    will review your details. Once your request to add an organisation to your account has been approved, 
+                    we will email you within 5 days to confirm that you are now able to report your gender pay gap 
+                    data on behalf of that organisation. 
                 </p>
-                <p>If we need more information to complete your registration, we will call or email you.</p>
-                <p>If you have not heard from us after 5 working days, please check your junk email folder.</p>
-                <p>For help with your registration, please contact <a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a></p>
+                <p>
+                    You will then be able to sign in and submit your gender pay gap data from your Gender pay gap service
+                    account.
+                </p>
+                <p>If we need more information to complete this process, we will email you.</p>
+                <div class="bold-small">
+                    If you haven’t heard from us after 5 working days
+                </div>
+                
+                <p>Please check your junk email folder. If you are still unable to locate an email from us, you can contact us at this email address:</p>
+                <p><a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a></p>
                 <div class="bold-small">
                     More options
                 </div>
                 <p>
-                    <a href="@Url.Action("OrganisationType")">Add another organisation</a>
+                    <a href="@Url.Action("OrganisationType")">Add another organisation to your account</a>
                 </p>
                 <p>
-                    <a href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Manage Organisations</a>
+                    <a href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Manage my organisations</a>
                 </p>
             </div>
         </div>
