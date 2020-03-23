@@ -1715,7 +1715,7 @@ namespace GenderPayGap.WebUI.Controllers
                 userOrg.Method = RegistrationMethods.Manual;
 
                 //Send request to GEO
-                sendRequest = true;
+                sendRequest = FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.SendRegistrationReviewEmails);
             }
 
             #endregion
