@@ -33,8 +33,7 @@
                             // The HTML / C# below looks a bit odd and oddly-formatted
                             // This is deliberate
                             // We do this because we want to avoid spaces between the text
-                            @(endComment)@(nonBoldText)<b>@(boldText)</b>
-                            @(startComment)
+                            @(endComment)@(nonBoldText)<b>@(boldText)</b>@(startComment)
 
                             previousMatchEnd = matchGroup.Start + matchGroup.Length;
                         }
