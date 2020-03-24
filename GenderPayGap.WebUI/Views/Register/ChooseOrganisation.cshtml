@@ -19,6 +19,11 @@
 
         <input type="submit" style="display:none" name="command" value="search">
         <div class="grid-row">
+            <div class="column-two-thirds" style="margin-top: 15px;"> 
+                <partial name="/Views/Components/CovidMessage.cshtml"/> 
+            </div> 
+        </div>
+        <div class="grid-row">
             <div class="column-two-thirds">
                 @await Html.CustomValidationSummaryAsync()
                 <h1 class="heading-large">
