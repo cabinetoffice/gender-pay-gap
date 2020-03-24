@@ -1,0 +1,9 @@
+﻿.covid-message {
+    border: 5px solid #1d70b8;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.covid-message p {
+    font-weight: bold
+}
