@@ -1,9 +1,14 @@
-﻿@using GenderPayGap.Core
+@using GenderPayGap.Core
 @using GenderPayGap.IdentityServer4.Classes
 @model GenderPayGap.IdentityServer4.Models.Account.LoginViewModel
 @{
     ViewData["PageTitle"] = "Sign in - Gender pay gap reporting service - GOV.UK";
 }
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <partial name="/Views/Shared/CovidMessage.cshtml"/>
+    </div>
+</div>
 
 <div class="grid-row">
 
