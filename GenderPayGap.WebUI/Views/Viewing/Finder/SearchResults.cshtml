@@ -8,15 +8,15 @@
     }
 }
 <div class="grid-row">
-    <div class="column-two-thirds" style="margin-top: 15px;"> 
-        <partial name="/Views/Components/CovidMessage.cshtml"/> 
-    </div> 
-</div>
-<div class="grid-row">
     <div class="column-full">
         @using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new {id = "FinderForm", @class = "js-live-search-form"}))
         {
             <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
+            <div class="grid-row">
+                <div class="column-two-thirds" style="margin-top: 15px;"> 
+                    <partial name="/Views/Components/CovidMessage.cshtml"/> 
+                </div> 
+            </div>
             <div class="grid-row finder">
                 <div class="column-two-thirds">
                     <partial name="Finder/Parts/Facets/Keywords" model="Model"/>
