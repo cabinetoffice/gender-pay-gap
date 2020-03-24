@@ -1,8 +1,13 @@
-﻿@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+<div class="grid-row">
+        <div class="column-two-thirds" style="margin-top: 15px;"> 
+            <partial name="/Views/Components/CovidMessage.cshtml"/> 
+        </div> 
+    </div>
 <div class="grid-row">
 <div class="column-two-thirds">
 @using (Html.BeginForm())

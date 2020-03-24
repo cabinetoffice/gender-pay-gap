@@ -9,7 +9,11 @@
 }
 
 @await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
-
+<div class="grid-row">
+    <div class="column-two-thirds" style="margin-top: 15px;"> 
+        <partial name="/Views/Components/CovidMessage.cshtml"/> 
+    </div> 
+</div>
 <div class="grid-row">
     <div class="column-full">
         <h1 class="heading-large">
