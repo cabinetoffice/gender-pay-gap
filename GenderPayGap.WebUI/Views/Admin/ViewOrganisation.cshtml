@@ -190,11 +190,11 @@
             <th scope="row" class="govuk-table__header">Scope</th>
             <td class="govuk-table__cell">
                 @{
-                    var scopes = Model.Organisation.OrganisationScopes
+                    IOrderedEnumerable<OrganisationScope> scopes = Model.Organisation.OrganisationScopes
                         .Where(s => s.Status == ScopeRowStatuses.Active)
                         .OrderByDescending(s => s.SnapshotDate);
                 }
-                @foreach (var scope in scopes)
+                @foreach (OrganisationScope scope in scopes)
                 {
                     <b>
                         @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year)):
@@ -227,7 +227,8 @@
                     {
                         @(latestReturnForCurrentYear.Status)
                         @(latestReturnForCurrentYear.IsLateSubmission ? " (submitted late)" : null)
-                    } else
+                    }
+                    else
                     {
                         <span>No return for this reporting year</span>
                     }
@@ -346,18 +347,23 @@
                 <td class="govuk-table__cell">
                     @if (userStatus == "REGISTERED")
                     {
-                        <form method="POST" action="@Url.Action("ImpersonatePost", "Admin")">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="emailAddress" value="@(user.EmailAddress)"/>
-                            <input type="submit" class="govuk-button" data-module="govuk-button" value="Impersonate"/>
-                        </form>
+                        <a href="@(Url.Action("ImpersonatePost", "Admin", new {emailAddress = user.EmailAddress}))"
+                           class="govuk-link">
+                            Impersonate <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                        </a>
+                        <br/>
+                        <br/>
+                        <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = user.UserId})"
+                           class="govuk-link">
+                            Remove <span class="govuk-visually-hidden">@(user.Fullname)</span> from the organisation
+                        </a>
                     }
                     else if (userStatus == "AWAITING_PIN")
                     {
                         <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
-                                     new {userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                                     new {userId = user.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
                            class="govuk-link">
-                            Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                            Send PIN <span class="govuk-visually-hidden"> to @(user.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
                         </a>
                     }
                     else
