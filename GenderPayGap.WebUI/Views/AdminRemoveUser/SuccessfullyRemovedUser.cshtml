@@ -1,0 +1,54 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminRemoveUserViewModel
+
+@{
+    ViewBag.Title = $"Removed user - {Model.UserFullName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Remove a user from an organisation"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-7">
+            <h1 class="govuk-panel__title govuk-!-font-size-36">
+                User has been removed from the organisation
+            </h1>
+        </div>
+
+        <p class="govuk-body">
+            Return to
+            <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId}))"
+               class="govuk-link">
+                @(Model.OrganisationName)
+            </a>
+        </p>
+    </div>
+</div>

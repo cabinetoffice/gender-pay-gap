@@ -233,6 +233,8 @@ namespace GenderPayGap.Core
         UserChangeContactPreferences = 14,
         [Display(Name = "User retired their account")]
         UserRetiredThemselves = 15,
+        [Display(Name = "Admin remove a user from an organisation")]
+        AdminRemoveUser = 16,
     }
 
     public enum HashingAlgorithm
