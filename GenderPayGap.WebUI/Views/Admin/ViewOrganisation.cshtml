@@ -353,7 +353,7 @@
                         </a>
                         <br/>
                         <br/>
-                        <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = user.UserId})"
+                        <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = user.UserId, fromViewUserPage = false})"
                            class="govuk-link">
                             Remove <span class="govuk-visually-hidden">@(user.Fullname)</span> from the organisation
                         </a>
