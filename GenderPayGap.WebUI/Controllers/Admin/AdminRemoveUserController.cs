@@ -38,7 +38,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("/remove-user-organisation")]
-        public IActionResult RemoveUserFromAnOrganisation(long orgId, long userId)
+        public IActionResult RemoveUserFromAnOrganisation(long orgId, long userId, bool fromViewUserPage)
         {
             UserOrganisation userOrg = dataRepository.GetAll<UserOrganisation>()
                 .FirstOrDefault(u => u.UserId == userId && u.OrganisationId == orgId);
@@ -50,7 +50,8 @@ namespace GenderPayGap.WebUI.Controllers
                 OrganisationId = userOrg.OrganisationId,
                 OrganisationName = userOrg.Organisation.OrganisationName,
                 UserId = userOrg.UserId,
-                UserFullName = userOrg.User.Fullname
+                UserFullName = userOrg.User.Fullname,
+                FromViewUserPage = fromViewUserPage
             };
             return View("ConfirmRemoving", viewModel);
         }
@@ -64,14 +65,9 @@ namespace GenderPayGap.WebUI.Controllers
             var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
             UserOrganisation userOrg = dataRepository.GetAll<UserOrganisation>()
                 .FirstOrDefault(u => u.UserId == viewModel.UserId && u.OrganisationId == viewModel.OrganisationId);
-
             ValidateUserOrganisationForRemoval(userOrg);
 
             viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            viewModel.OrganisationId = organisation.OrganisationId;
-            viewModel.OrganisationName = organisation.OrganisationName;
-            viewModel.UserId = user.UserId;
-            viewModel.UserFullName = user.Fullname;
 
             if (viewModel.HasAnyErrors())
             {

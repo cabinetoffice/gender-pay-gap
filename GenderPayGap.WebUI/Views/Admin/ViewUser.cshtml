@@ -46,7 +46,7 @@
 <span class="govuk-caption-xl">Administration</span>
 <h1 class="govuk-heading-xl">
     User details
-    <br />
+    <br/>
     <span class="govuk-!-font-size-27">
         for @(Model.Fullname)
     </span>
@@ -75,7 +75,7 @@
             <th scope="row" class="govuk-table__header">Status</th>
             <td class="govuk-table__cell">
                 @(Model.Status)
-                <br />
+                <br/>
                 <span class="govuk-body-s">
                     (since @(Model.StatusDate.ToString("d MMM yyyy")))
                 </span>
@@ -116,40 +116,40 @@
                 <td class="govuk-table__cell"></td>
             </tr>
         }
-    <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Email Verified</th>
-        <td class="govuk-table__cell">
-            @if (Model.EmailVerifiedDate.HasValue)
-            {
-                <span>
-                    Yes
-                    <br />
-                    <span class="govuk-body-s">
-                        (on @(Model.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Email Verified</th>
+            <td class="govuk-table__cell">
+                @if (Model.EmailVerifiedDate.HasValue)
+                {
+                    <span>
+                        Yes
+                        <br/>
+                        <span class="govuk-body-s">
+                            (on @(Model.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
+                        </span>
                     </span>
-                </span>
-            }
-            else
-            {
-                <span class="govuk-!-font-weight-bold">
-                    No
-                </span>
-                <br />
-                <span>
-                    Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy, HH:mm"))
-                </span>
-            }
-        </td>
-        <td class="govuk-table__cell">
-            @if (!Model.EmailVerifiedDate.HasValue)
-            {
-                <a href="@Url.Action("ResendVerificationEmailGet", "AdminUserResendVerificationEmail", new {id = Model.UserId})"
-                   class="govuk-link">
-                    Re-send verification email
-                </a>
-            }
-        </td>
-    </tr>
+                }
+                else
+                {
+                    <span class="govuk-!-font-weight-bold">
+                        No
+                    </span>
+                    <br/>
+                    <span>
+                        Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy, HH:mm"))
+                    </span>
+                }
+            </td>
+            <td class="govuk-table__cell">
+                @if (!Model.EmailVerifiedDate.HasValue)
+                {
+                    <a href="@Url.Action("ResendVerificationEmailGet", "AdminUserResendVerificationEmail", new {id = Model.UserId})"
+                       class="govuk-link">
+                        Re-send verification email
+                    </a>
+                }
+            </td>
+        </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Happy to be contacted</th>
             <td class="govuk-table__cell">@(Model.AllowContact ? "Yes" : "No")</td>
@@ -292,6 +292,13 @@
                                      new {userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
                            class="govuk-link">
                             Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = Model.UserId, fromViewUserPage = true})"
+                           class="govuk-link">
+                            Remove <span class="govuk-visually-hidden">@(Model.Fullname)</span> from the organisation
                         </a>
                     }
                 </td>

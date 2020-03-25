@@ -9,23 +9,32 @@
 
 @section BeforeMain {
     @{
-        var crumbs = new List<CrumbViewModel>
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
         {
-            new CrumbViewModel
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+        if (Model.FromViewUserPage)
+        {
+            crumbs.Add(new CrumbViewModel
             {
-                Text = "Admin",
-                Href = Url.Action("Home", "Admin")
-            },
-            new CrumbViewModel
+                Text = Model.UserFullName,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})
+            });
+        }
+        else
+        {
+            crumbs.Add(new CrumbViewModel
             {
                 Text = Model.OrganisationName,
                 Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = "Remove a user from an organisation"
-            }
-        };
+            });
+        }
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Remove a user from an organisation"
+        });
     }
 
     @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
@@ -57,9 +66,12 @@
                     </tr>
                 </tbody>
             </table>
-            
+
             @(Html.HiddenFor(m => m.OrganisationId))
             @(Html.HiddenFor(m => m.UserId))
+            @(Html.HiddenFor(m => m.OrganisationName))
+            @(Html.HiddenFor(m => m.UserFullName))
+            @(Html.HiddenFor(m => m.FromViewUserPage))
 
             <div class="govuk-form-group">
                 @Html.GovUkTextAreaFor(
@@ -81,10 +93,20 @@
                 }))
 
                 <p class="govuk-body">
-                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
-                       class="govuk-link">
-                        Cancel and return to organisation page
-                    </a>
+                    @if (Model.FromViewUserPage)
+                    {
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})"
+                           class="govuk-link">
+                            Cancel and return to user page
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+                           class="govuk-link">
+                            Cancel and return to organisation page
+                        </a>
+                    }
                 </p>
 
             </div>
