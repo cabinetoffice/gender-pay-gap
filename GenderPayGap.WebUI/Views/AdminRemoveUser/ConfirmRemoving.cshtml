@@ -1,0 +1,93 @@
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminRemoveUserViewModel
+
+@{
+    ViewBag.Title = "Remove a user from an organisation - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Remove a user from an organisation"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Remove a user from an organisation
+</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser")">
+            @(Html.AntiForgeryToken())
+            @(Html.GovUkErrorSummary())
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">User</th>
+                        <td class="govuk-table__cell">@(Model.UserFullName)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Organisation</th>
+                        <td class="govuk-table__cell">@(Model.OrganisationName)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            @(Html.HiddenFor(m => m.OrganisationId))
+            @(Html.HiddenFor(m => m.UserId))
+
+            <div class="govuk-form-group">
+                @Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
+                        Classes = "govuk-!-margin-top-6"
+                    })
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+                       class="govuk-link">
+                        Cancel and return to organisation page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>
