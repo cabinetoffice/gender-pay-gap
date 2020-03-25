@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -283,7 +283,12 @@ namespace GenderPayGap.WebUI.Controllers
                 reportingRequirement == ScopeStatuses.InScope || reportingRequirement == ScopeStatuses.PresumedInScope;
             
             // When previous reporting year then do late submission flow
-            if (isPrevReportingYear && requiredToReport)
+            // unless the reporting year has been excluded from late flag enforcement (eg. 2019/20 due to COVID-19)
+
+            var yearsToExclude = Global.ReportingStartYearsToExcludeFromLateFlagEnforcement;
+            var reportingYearShouldBeExcluded = yearsToExclude.Contains(reportingStartYear);
+            
+            if (isPrevReportingYear && requiredToReport && !reportingYearShouldBeExcluded )
             {
                 // Change an existing late submission
                 if (change)
