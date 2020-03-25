@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -8,6 +9,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Newtonsoft.Json;
 
 namespace GenderPayGap.Core
 {
@@ -127,6 +129,9 @@ namespace GenderPayGap.Core
             get => Config.GetAppSetting("FirstReportingYear").ToInt32(2017);
             set => Config.SetAppSetting("FirstReportingYear", value.ToString());
         }
+
+        public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>
+            JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement"));
 
         public static string GpgReportingEmail => Config.GetAppSetting("GPGReportingEmail");
         public static string DataControllerEmail => Config.GetAppSetting("DataControllerEmail");
