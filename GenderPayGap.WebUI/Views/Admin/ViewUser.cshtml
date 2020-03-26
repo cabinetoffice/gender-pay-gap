@@ -283,7 +283,7 @@
                     {
                         <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
                            class="govuk-link">
-                            Review request
+                            Review user request
                         </a>
                         <br/>
                         <br/>
@@ -300,7 +300,7 @@
                     }
                     <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = Model.UserId, fromViewUserPage = true})"
                        class="govuk-link">
-                        Remove <span class="govuk-visually-hidden">@(Model.Fullname)</span> from the organisation
+                        Remove user <span class="govuk-visually-hidden">@(Model.Fullname)</span> from organisation
                     </a>
                 </td>
             </tr>

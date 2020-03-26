@@ -259,8 +259,7 @@
 <table class="govuk-table">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Name</th>
-            <th scope="col" class="govuk-table__header">Email</th>
+            <th scope="col" class="govuk-table__header">User</th>
             <th scope="col" class="govuk-table__header">Status</th>
             <th scope="col" class="govuk-table__header">Actions</th>
         </tr>
@@ -289,8 +288,9 @@
                        class="govuk-link">
                         @(user.Fullname)
                     </a>
+                    <br/>
+                    @(user.EmailAddress)
                 </td>
-                <td class="govuk-table__cell">@(user.EmailAddress)</td>
                 <td class="govuk-table__cell">
                     @if (userStatus == "AWAITING_PIN")
                     {
@@ -349,7 +349,7 @@
                     {
                         <a href="@(Url.Action("ImpersonatePost", "Admin", new {emailAddress = user.EmailAddress}))"
                            class="govuk-link">
-                            Impersonate <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                            Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
                         </a>
                     }
                     else if (userStatus == "AWAITING_PIN")
@@ -364,14 +364,14 @@
                     {
                         <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
                            class="govuk-link">
-                            Review request
+                            Review user request
                         </a>
                     }
                     <br/>
                     <br/>
                     <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = user.UserId, fromViewUserPage = false})"
                        class="govuk-link">
-                        Remove <span class="govuk-visually-hidden">@(user.Fullname)</span> from the organisation
+                        Remove user <span class="govuk-visually-hidden">@(user.Fullname)</span> from organisation
                     </a>
                 </td>
             </tr>
