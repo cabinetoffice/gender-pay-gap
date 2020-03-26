@@ -351,12 +351,6 @@
                            class="govuk-link">
                             Impersonate <span class="govuk-visually-hidden">@(user.Fullname)</span>
                         </a>
-                        <br/>
-                        <br/>
-                        <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = user.UserId, fromViewUserPage = false})"
-                           class="govuk-link">
-                            Remove <span class="govuk-visually-hidden">@(user.Fullname)</span> from the organisation
-                        </a>
                     }
                     else if (userStatus == "AWAITING_PIN")
                     {
@@ -373,6 +367,12 @@
                             Review request
                         </a>
                     }
+                    <br/>
+                    <br/>
+                    <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = user.UserId, fromViewUserPage = false})"
+                       class="govuk-link">
+                        Remove <span class="govuk-visually-hidden">@(user.Fullname)</span> from the organisation
+                    </a>
                 </td>
             </tr>
         }

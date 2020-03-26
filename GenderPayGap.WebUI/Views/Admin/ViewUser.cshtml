@@ -285,6 +285,8 @@
                            class="govuk-link">
                             Review request
                         </a>
+                        <br/>
+                        <br/>
                     }
                     else if (userStatus == "AWAITING_PIN")
                     {
@@ -293,14 +295,13 @@
                            class="govuk-link">
                             Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
                         </a>
+                        <br/>
+                        <br/>
                     }
-                    else
-                    {
-                        <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = Model.UserId, fromViewUserPage = true})"
-                           class="govuk-link">
-                            Remove <span class="govuk-visually-hidden">@(Model.Fullname)</span> from the organisation
-                        </a>
-                    }
+                    <a href="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser", new {orgId = userOrganisation.Organisation.OrganisationId, userId = Model.UserId, fromViewUserPage = true})"
+                       class="govuk-link">
+                        Remove <span class="govuk-visually-hidden">@(Model.Fullname)</span> from the organisation
+                    </a>
                 </td>
             </tr>
         }
