@@ -65,6 +65,7 @@ namespace GenderPayGap.WebUI.Controllers
             var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
             UserOrganisation userOrg = dataRepository.GetAll<UserOrganisation>()
                 .FirstOrDefault(u => u.UserId == viewModel.UserId && u.OrganisationId == viewModel.OrganisationId);
+
             ValidateUserOrganisationForRemoval(userOrg);
 
             viewModel.ParseAndValidateParameters(Request, m => m.Reason);
@@ -122,12 +123,6 @@ namespace GenderPayGap.WebUI.Controllers
             if (userOrg == null)
             {
                 throw new ArgumentException("There is no association between user and organisation.");
-            }
-
-            if (userOrg.PINConfirmedDate == null)
-            {
-                throw new ArgumentException(
-                    $"User userId = {userOrg.UserId} is not fully registered with organistion organisationId = {userOrg.OrganisationId}");
             }
         }
 
