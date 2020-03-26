@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -116,6 +116,12 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 return new HttpBadRequestResult($"Invalid snapshot year {ReportingOrganisationStartYear.Value}");
             }
 
+            // Don't ask for late reason if the reporting year has been excluded from late flag enforcement (eg. 2019/20 due to COVID-19)
+            if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(stashedReturnViewModel.AccountingDate.Year))
+            {
+                stashedReturnViewModel.ShouldProvideLateReason = false;
+            }
+            
             this.StashModel(stashedReturnViewModel);
             return View("CheckData", stashedReturnViewModel);
         }
@@ -184,6 +190,14 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             {
                 ModelState.Remove(nameof(postedReturnViewModel.LateReason));
                 ModelState.Remove(nameof(postedReturnViewModel.EHRCResponse));
+            }
+            
+            // Don't mark submission as late if the reporting year has been excluded from late flag enforcement (eg. 2019/20 due to COVID-19)
+            if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(stashedReturnViewModel.AccountingDate.Year))
+            {
+                ModelState.Remove(nameof(postedReturnViewModel.LateReason));
+                ModelState.Remove(nameof(postedReturnViewModel.EHRCResponse));
+                postedReturn.IsLateSubmission = false;
             }
 
             ModelState.Remove("ReportInfo.Draft");
