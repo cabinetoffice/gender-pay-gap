@@ -2,6 +2,7 @@
     ViewBag.Title = "Confirm your organisation - Gender pay gap reporting service";
     var controller = ViewData["Controller"] as BaseController;
 }
+@using GenderPayGap.Core
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
 
 <div id="confirm-organisation-content">
@@ -227,7 +228,7 @@
                 </tbody>
             </table>
 
-            @if (!Model.IsUkAddress.HasValue && !Model.ManualRegistration)
+            @if (!Model.IsUkAddress.HasValue && !Model.ManualRegistration && Model.SectorType != SectorTypes.Public)
             {
                 <div class="form-group">
                     <fieldset class="inline">
