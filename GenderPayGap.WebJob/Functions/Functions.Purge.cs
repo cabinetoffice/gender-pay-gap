@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
@@ -52,8 +53,7 @@ namespace GenderPayGap.WebJob
                         null,
                         JsonConvert.SerializeObject(new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname}),
                         null);
-                    _DataRepository.Delete(user);
-                    await _DataRepository.SaveChangesAsync();
+                    DeleteUserAndAuditLogs(user);
                     await Global.ManualChangeLog.WriteAsync(logItem);
                 }
 
@@ -69,6 +69,24 @@ namespace GenderPayGap.WebJob
                 //Rethrow the error
                 throw;
             }
+        }
+
+        private static void DeleteUserAndAuditLogs(User user)
+        {
+            var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
+            
+            List<AuditLog> auditLogs = dataRepository
+                .GetAll<AuditLog>()
+                .Where(log => Equals(log.ImpersonatedUser, user))
+                .Where(log => log.Action == AuditedAction.AdminResendVerificationEmail).ToList();
+            
+            foreach (AuditLog log in auditLogs)
+            {
+                dataRepository.Delete(log);
+            }
+            
+            dataRepository.Delete(user);
+            dataRepository.SaveChangesAsync().Wait();
         }
 
         //Remove any incomplete registrations
