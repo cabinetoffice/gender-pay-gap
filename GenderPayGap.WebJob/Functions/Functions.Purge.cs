@@ -28,47 +28,53 @@ namespace GenderPayGap.WebJob
             var runId = CreateRunId();
             var startTime = VirtualDateTime.Now;
             LogFunctionStart(runId,  nameof(PurgeUsers), startTime);
+            
+            DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnverifiedUserDays);
+            DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
+            
+            List<User> users = _DataRepository.GetAll<User>()
+                .Where(u => u.EmailVerifiedDate == null)
+                .Where(u => (u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline))
+                .Include(u => u.UserOrganisations)
+                .ToList();
+            
+            foreach (User user in users)
+            {
+                PurgeUser(user, pinExpiryDate, runId, startTime);
+            }
+
+            LogFunctionEnd(runId, nameof(PurgeUsers), startTime);
+        }
+
+        private static async void PurgeUser(User user, DateTime pinExpiryDate, string runId, DateTime startTime)
+        {
             try
             {
-                DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnverifiedUserDays);
-                List<User> users = await _DataRepository.GetAll<User>()
-                    .Where(u => u.EmailVerifiedDate == null && (u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline))
-                    .ToListAsync();
-                DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
-                foreach (User user in users)
+                //Ignore if they have verified PIN
+                if (user.UserOrganisations.Any(
+                    uo => uo.PINConfirmedDate != null || (uo.PINSentDate != null && uo.PINSentDate < pinExpiryDate)))
                 {
-                    //Ignore if they have verified PIN
-                    if (user.UserOrganisations.Any(
-                        uo => uo.PINConfirmedDate != null || uo.PINSentDate != null && uo.PINSentDate < pinExpiryDate))
-                    {
-                        continue;
-                    }
-
-                    var logItem = new ManualChangeLogModel(
-                        nameof(PurgeUsers),
-                        ManualActions.Delete,
-                        AppDomain.CurrentDomain.FriendlyName,
-                        nameof(user.UserId),
-                        user.UserId.ToString(),
-                        null,
-                        JsonConvert.SerializeObject(new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname}),
-                        null);
-                    DeleteUserAndAuditLogs(user);
-                    await Global.ManualChangeLog.WriteAsync(logItem);
+                    return;
                 }
 
-                LogFunctionEnd(runId, nameof(PurgeUsers), startTime);
+                var logItem = new ManualChangeLogModel(
+                    nameof(PurgeUsers),
+                    ManualActions.Delete,
+                    AppDomain.CurrentDomain.FriendlyName,
+                    nameof(user.UserId),
+                    user.UserId.ToString(),
+                    null,
+                    JsonConvert.SerializeObject(new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname}),
+                    null);
+            
+                DeleteUserAndAuditLogs(user);
+                await Global.ManualChangeLog.WriteAsync(logItem);
             }
             catch (Exception ex)
             {
                 LogFunctionError(runId, nameof(PurgeUsers), startTime, ex );
-
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
-                    $"Failed webjob ({nameof(PurgeUsers)}):{ex.Message}:{ex.GetDetailsText()}");
-                //Rethrow the error
-                throw;
             }
+
         }
 
         private static void DeleteUserAndAuditLogs(User user)
