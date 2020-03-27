@@ -1,0 +1,153 @@
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeStatusViewModel
+
+@{
+    ViewBag.Title = "Change status - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Status history",
+                Href = Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change status"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Change status
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.OrganisationName)
+    </span>
+</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.OrganisationId})">
+            @(Html.AntiForgeryToken())
+
+            @Html.GovUkErrorSummary(new[]
+            {
+                Model.CurrentStatus == OrganisationStatuses.Active ? nameof(AdminChangeStatusViewModel.NewStatusFromActive) : Model.CurrentStatus == OrganisationStatuses.Retired ? nameof(AdminChangeStatusViewModel.NewStatusFromRetired) : nameof(AdminChangeStatusViewModel.NewStatusFromDeleted),
+                nameof(AdminChangeStatusViewModel.Reason)
+            })
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Organisation name</th>
+                        <td class="govuk-table__cell">@(Model.OrganisationName)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Current status</th>
+                        <td class="govuk-table__cell">@(Model.CurrentStatus)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="govuk-form-group">
+                @Html.HiddenFor(m => m.CurrentStatus)
+                @Html.HiddenFor(m => m.OrganisationId)
+                @Html.HiddenFor(m => m.OrganisationName)
+
+                @if (Model.CurrentStatus == OrganisationStatuses.Active)
+                {
+                    @Html.GovUkRadiosFor(
+                        m => m.NewStatusFromActive,
+                        new FieldsetViewModel
+                        {
+                            Legend = new LegendViewModel
+                            {
+                                Text = "Please select a new status",
+                                Classes = "govuk-fieldset__legend--m"
+                            },
+                            Classes = "govuk-!-margin-top-6"
+                        })
+                }
+                else if (Model.CurrentStatus == OrganisationStatuses.Retired)
+                {
+                    @Html.GovUkRadiosFor(
+                        m => m.NewStatusFromRetired,
+                        new FieldsetViewModel
+                        {
+                            Legend = new LegendViewModel
+                            {
+                                Text = "Please select a new status",
+                                Classes = "govuk-fieldset__legend--m"
+                            },
+                            Classes = "govuk-!-margin-top-6"
+                        })
+                }
+                else
+                {
+                    @Html.GovUkRadiosFor(
+                        m => m.NewStatusFromDeleted,
+                        new FieldsetViewModel
+                        {
+                            Legend = new LegendViewModel
+                            {
+                                Text = "Please select a new status",
+                                Classes = "govuk-fieldset__legend--m"
+                            },
+                            Classes = "govuk-!-margin-top-6"
+                        })
+                }
+
+                @Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
+                        Classes = "govuk-!-margin-top-6"
+                    })
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+                       class="govuk-link">
+                        Cancel and return to organisation page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>
