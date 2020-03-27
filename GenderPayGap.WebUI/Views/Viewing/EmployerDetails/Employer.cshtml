@@ -101,10 +101,17 @@
                             {
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
-                                        @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(report.AccountingDate.Year) 
+                                        @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
+                                            .Contains(report.AccountingDate.Year) 
                                              && report.AccountingDate.Year == 2019)
                                         {
-                                            <span>Not required to report due to COVID-19</span>
+                                            <span>
+                                                The deadline for 2019/20 
+                                                @(report.AccountingDate.Year == Global.CurrentAccountingYear ? "is" : "was")
+                                                @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
+                                                Coronavirus (COVID-19), enforcement of reporting deadlines does not
+                                                apply to organisations in the 2019/20 reporting year.
+                                            </span>
                                         }
                                         else
                                         {
