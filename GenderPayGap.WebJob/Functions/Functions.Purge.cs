@@ -33,12 +33,12 @@ namespace GenderPayGap.WebJob
                 List<User> users = await _DataRepository.GetAll<User>()
                     .Where(u => u.EmailVerifiedDate == null && (u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline))
                     .ToListAsync();
-                DateTime pinExpireyDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
+                DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
                 foreach (User user in users)
                 {
                     //Ignore if they have verified PIN
                     if (user.UserOrganisations.Any(
-                        uo => uo.PINConfirmedDate != null || uo.PINSentDate != null && uo.PINSentDate < pinExpireyDate))
+                        uo => uo.PINConfirmedDate != null || uo.PINSentDate != null && uo.PINSentDate < pinExpiryDate))
                     {
                         continue;
                     }
