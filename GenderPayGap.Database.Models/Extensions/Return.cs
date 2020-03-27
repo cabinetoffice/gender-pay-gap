@@ -102,7 +102,8 @@ namespace GenderPayGap.Database
         {
             return Modified > AccountingDate.AddYears(1)
                    && OrganisationSize != OrganisationSizes.Employees0To249
-                   && GetScopeStatus().IsAny(ScopeStatuses.InScope, ScopeStatuses.PresumedInScope);
+                   && GetScopeStatus().IsAny(ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)
+                   && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(AccountingDate.Year);
         }
 
         public bool IsVoluntarySubmission()

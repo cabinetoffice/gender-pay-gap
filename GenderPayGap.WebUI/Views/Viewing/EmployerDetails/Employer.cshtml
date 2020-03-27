@@ -101,18 +101,27 @@
                             {
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
-                                        @if (organisation.GetIsInscope(report.AccountingDate.Year))
+                                        @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(report.AccountingDate.Year) 
+                                             && report.AccountingDate.Year == 2019)
                                         {
-                                            <span>
-                                                This organisation
-                                                @(report.AccountingDate.Year == Global.CurrentAccountingYear ? "is" : "was")
-                                                required to report by @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy"))
-                                            </span>
+                                            <span>Not required to report due to COVID-19</span>
                                         }
                                         else
                                         {
-                                            <span>Not required to report</span>
+                                            if (organisation.GetIsInscope(report.AccountingDate.Year))
+                                            {
+                                                <span>
+                                                    This organisation
+                                                    @(report.AccountingDate.Year == Global.CurrentAccountingYear ? "is" : "was")
+                                                    required to report by @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy"))
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span>Not required to report</span>
+                                            }
                                         }
+                                        
                                     </td>
                                 </tr>
                             }
