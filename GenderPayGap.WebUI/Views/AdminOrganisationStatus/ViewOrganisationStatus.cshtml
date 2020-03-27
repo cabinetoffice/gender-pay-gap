@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.Database
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -44,11 +45,18 @@
     </span>
 </h1>
 
-@Html.GovUkButton(new ButtonViewModel
+@if (Model.Status == OrganisationStatuses.Retired || Model.Status == OrganisationStatuses.Active || Model.Status != OrganisationStatuses.Deleted)
 {
-    Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
-    Text = "Change status"
-})
+    @Html.GovUkButton(new ButtonViewModel
+    {
+        Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
+        Text = "Change status"
+    })
+}
+else
+{
+    <span class="govuk-body-m govuk-!-margin-bottom-4">You cannot change status of an organisation that is@(Model.Status)</span>
+}
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
