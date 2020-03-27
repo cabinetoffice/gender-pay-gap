@@ -44,6 +44,12 @@
     </span>
 </h1>
 
+@Html.GovUkButton(new ButtonViewModel
+{
+    Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
+    Text = "Change status"
+})
+
 <table class="govuk-table">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
