@@ -18,6 +18,7 @@ namespace GenderPayGap.Database
             OrganisationStatuses = new HashSet<OrganisationStatus>();
             Returns = new HashSet<Return>();
             UserOrganisations = new HashSet<UserOrganisation>();
+            InactiveUserOrganisations = new HashSet<InactiveUserOrganisation>();
         }
 
         public long OrganisationId { get; set; }
@@ -58,6 +59,7 @@ namespace GenderPayGap.Database
         public virtual ICollection<OrganisationStatus> OrganisationStatuses { get; set; }
         public virtual ICollection<Return> Returns { get; set; }
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
+        public virtual ICollection<InactiveUserOrganisation> InactiveUserOrganisations { get; set; }
 
     }
 }

@@ -13,6 +13,7 @@ namespace GenderPayGap.Database
             AddressStatuses = new HashSet<AddressStatus>();
             Organisations = new HashSet<Organisation>();
             UserOrganisations = new HashSet<UserOrganisation>();
+            InactiveUserOrganisations = new HashSet<InactiveUserOrganisation>();
         }
 
         public long AddressId { get; set; }
@@ -39,6 +40,7 @@ namespace GenderPayGap.Database
         public virtual ICollection<AddressStatus> AddressStatuses { get; set; }
         public virtual ICollection<Organisation> Organisations { get; set; }
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
+        public virtual ICollection<InactiveUserOrganisation> InactiveUserOrganisations { get; set; }
 
     }
 }
