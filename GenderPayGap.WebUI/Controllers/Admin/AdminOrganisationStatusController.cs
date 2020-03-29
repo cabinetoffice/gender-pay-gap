@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
@@ -39,14 +39,9 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("organisation/{id}/status/change")]
         public IActionResult ChangeStatusGet(long id)
         {
-            var organisation = dataRepository.Get<Organisation>(id);
+            var viewModel = new AdminChangeStatusViewModel();
 
-            var viewModel = new AdminChangeStatusViewModel
-            {
-                OrganisationName = organisation.OrganisationName,
-                OrganisationId = organisation.OrganisationId,
-                CurrentStatus = organisation.Status
-            };
+            UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
 
             return View("ChangeStatus", viewModel);
         }
@@ -56,7 +51,9 @@ namespace GenderPayGap.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeStatusPost(long id, AdminChangeStatusViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+            UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
+
+            ValidateAdminChangeStatusViewModel(viewModel);
 
             if (viewModel.HasAnyErrors())
             {
@@ -71,16 +68,43 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 ChangeStatusFromRetired(viewModel);
             }
-            else if (viewModel.CurrentStatus == OrganisationStatuses.Deleted)
+            else
             {
                 ChangeStatusFromDeleted(viewModel);
+            }
+
+            return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
+        }
+
+        private void UpdateAdminChangeStatusViewModelFromOrganisation(AdminChangeStatusViewModel viewModel, long organisationId)
+        {
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+
+            viewModel.OrganisationId = organisation.OrganisationId;
+            viewModel.OrganisationName = organisation.OrganisationName;
+            viewModel.CurrentStatus = organisation.Status;
+        }
+
+        private void ValidateAdminChangeStatusViewModel(AdminChangeStatusViewModel viewModel)
+        {
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+
+            if (viewModel.CurrentStatus == OrganisationStatuses.Active)
+            {
+                viewModel.ParseAndValidateParameters(Request, m => m.NewStatusFromActive);
+            }
+            else if (viewModel.CurrentStatus == OrganisationStatuses.Retired)
+            {
+                viewModel.ParseAndValidateParameters(Request, m => m.NewStatusFromRetired);
+            }
+            else if (viewModel.CurrentStatus == OrganisationStatuses.Deleted)
+            {
+                viewModel.ParseAndValidateParameters(Request, m => m.NewStatusFromDeleted);
             }
             else
             {
                 throw new ArgumentOutOfRangeException("Organisation current status is not accepted");
             }
-
-            return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
         }
 
         private void ChangeStatusFromActive(AdminChangeStatusViewModel viewModel)
