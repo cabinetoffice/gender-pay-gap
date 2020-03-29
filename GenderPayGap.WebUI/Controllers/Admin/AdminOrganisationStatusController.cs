@@ -5,6 +5,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
@@ -149,13 +150,63 @@ namespace GenderPayGap.WebUI.Controllers
             }
         }
 
-        private void RetireOrganisation(AdminChangeStatusViewModel viewModel) { }
+        private void RetireOrganisation(AdminChangeStatusViewModel viewModel)
+        {
+            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
-        private void UnRetireOrganisation(AdminChangeStatusViewModel viewModel) { }
+            organisation.SetStatus(
+                OrganisationStatuses.Retired,
+                currentUser.UserId,
+                viewModel.Reason);
+
+            InactivateUsersOfOrganisation(organisation);
+
+            dataRepository.SaveChangesAsync().Wait();
+
+            auditLogger.AuditChangeToOrganisation(AuditedAction.AdminChangeOrganisationStatus,
+                organisation,
+                new
+                {
+                    PreviousStatus = OrganisationStatuses.Active,
+                    NewStatus = OrganisationStatuses.Retired,
+                    Reason = viewModel.Reason
+                },
+                currentUser);
+
+            // No need to update search index because a retired organisation is similar to an active organisation in terms of search
+        }
+
 
         private void DeleteOrganisation(AdminChangeStatusViewModel viewModel) { }
 
         private void UnDeleteOrganisation(AdminChangeStatusViewModel viwModel) { }
 
+        private void InactivateUsersOfOrganisation(Organisation organisation)
+        {
+            foreach (UserOrganisation userOrganisation in organisation.UserOrganisations)
+            {
+                organisation.InactiveUserOrganisations.Add(CreateInactiveUserOrganisationFromUserOrganisation(userOrganisation));
+                dataRepository.Delete(userOrganisation);
+            }
+        }
+
+
+        private InactiveUserOrganisation CreateInactiveUserOrganisationFromUserOrganisation(UserOrganisation userOrganisation)
+        {
+            return new InactiveUserOrganisation
+            {
+                UserId = userOrganisation.UserId,
+                OrganisationId = userOrganisation.OrganisationId,
+                PIN = userOrganisation.PIN,
+                PINSentDate = userOrganisation.PINSentDate,
+                PITPNotifyLetterId = userOrganisation.PITPNotifyLetterId,
+                PINConfirmedDate = userOrganisation.PINConfirmedDate,
+                ConfirmAttemptDate = userOrganisation.ConfirmAttemptDate,
+                ConfirmAttempts = userOrganisation.ConfirmAttempts,
+                AddressId = userOrganisation.AddressId,
+                Method = userOrganisation.Method
+            };
+        }
     }
 }
