@@ -67,17 +67,42 @@ namespace GenderPayGap.WebUI.Controllers
                 return View("ChangeStatus", viewModel);
             }
 
-            if (viewModel.CurrentStatus == OrganisationStatuses.Active)
+            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            OrganisationStatuses previousStatus = organisation.Status;
+            OrganisationStatuses newStatus = FindNewStatus(organisation, viewModel);
+
+            // Update the status
+            organisation.SetStatus(
+                newStatus,
+                currentUser.UserId,
+                viewModel.Reason);
+
+            // [In]Activate users of the organisaton
+            if (newStatus == OrganisationStatuses.Active)
             {
-                ChangeStatusFromActive(viewModel);
+                ActivateUsersOfOrganisation(organisation);
             }
-            else if (viewModel.CurrentStatus == OrganisationStatuses.Retired)
+
+            if (previousStatus == OrganisationStatuses.Active)
             {
-                ChangeStatusFromRetired(viewModel);
+                InactivateUsersOfOrganisation(organisation);
             }
-            else
+
+            dataRepository.SaveChangesAsync().Wait();
+
+            // Audit log
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.AdminChangeOrganisationStatus,
+                organisation,
+                new {PreviousStatus = previousStatus, NewStatus = newStatus, viewModel.Reason},
+                currentUser);
+
+            // Add/remove this organisation to/from the search index when status has bee changed from/to Deleted
+            if (previousStatus == OrganisationStatuses.Deleted || newStatus == OrganisationStatuses.Deleted)
             {
-                ChangeStatusFromDeleted(viewModel);
+                searchBusinessLogic.UpdateSearchIndexAsync(organisation).Wait();
             }
 
             return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
@@ -114,140 +139,25 @@ namespace GenderPayGap.WebUI.Controllers
             }
         }
 
-        private void ChangeStatusFromActive(AdminChangeStatusViewModel viewModel)
+        private OrganisationStatuses FindNewStatus(Organisation organisation, AdminChangeStatusViewModel viewModel)
         {
-            if (viewModel.NewStatusFromActive == NewStatusesFromActive.Retired)
+            switch (organisation.Status)
             {
-                RetireOrganisation(viewModel);
+                case OrganisationStatuses.Active:
+                    return viewModel.NewStatusFromActive == NewStatusesFromActive.Retired
+                        ? OrganisationStatuses.Retired
+                        : OrganisationStatuses.Deleted;
+                case OrganisationStatuses.Retired:
+                    return viewModel.NewStatusFromRetired == NewStatusesFromRetired.Active
+                        ? OrganisationStatuses.Active
+                        : OrganisationStatuses.Deleted;
+                case OrganisationStatuses.Deleted:
+                    return viewModel.NewStatusFromDeleted == NewStatusesFromDeleted.Active
+                        ? OrganisationStatuses.Active
+                        : OrganisationStatuses.Retired;
+                default:
+                    throw new ArgumentException("Organisation current status is not acceptable for this action.");
             }
-            else if (viewModel.NewStatusFromActive == NewStatusesFromActive.Deleted)
-            {
-                DeleteOrganisation(viewModel);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Organisation new status is not accepted");
-            }
-        }
-
-        private void ChangeStatusFromRetired(AdminChangeStatusViewModel viewModel)
-        {
-            if (viewModel.NewStatusFromRetired == NewStatusesFromRetired.Active)
-            {
-                UnRetireOrganisation(viewModel);
-            }
-            else if (viewModel.NewStatusFromRetired == NewStatusesFromRetired.Deleted) { }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Organisation new status is not accepted");
-            }
-        }
-
-        private void ChangeStatusFromDeleted(AdminChangeStatusViewModel viewModel)
-        {
-            if (viewModel.NewStatusFromDeleted == NewStatusesFromDeleted.Active)
-            {
-                UnDeleteOrganisation(viewModel);
-            }
-            else if (viewModel.NewStatusFromDeleted == NewStatusesFromDeleted.Retired) { }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Organisation new status is not accepted");
-            }
-        }
-
-        private void RetireOrganisation(AdminChangeStatusViewModel viewModel)
-        {
-            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-
-            organisation.SetStatus(
-                OrganisationStatuses.Retired,
-                currentUser.UserId,
-                viewModel.Reason);
-
-            InactivateUsersOfOrganisation(organisation);
-
-            dataRepository.SaveChangesAsync().Wait();
-
-            auditLogger.AuditChangeToOrganisation(
-                AuditedAction.AdminChangeOrganisationStatus,
-                organisation,
-                new {PreviousStatus = OrganisationStatuses.Active, NewStatus = OrganisationStatuses.Retired, viewModel.Reason},
-                currentUser);
-
-            // No need to update search index because a retired organisation is similar to an active organisation in terms of search
-        }
-
-        private void UnRetireOrganisation(AdminChangeStatusViewModel viewModel)
-        {
-            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-
-            organisation.SetStatus(
-                OrganisationStatuses.Active,
-                currentUser.UserId,
-                viewModel.Reason);
-
-            ActivateUsersOfOrganisation(organisation);
-
-            dataRepository.SaveChangesAsync().Wait();
-
-            auditLogger.AuditChangeToOrganisation(
-                AuditedAction.AdminChangeOrganisationStatus,
-                organisation,
-                new {PreviousStatus = OrganisationStatuses.Retired, NewStatus = OrganisationStatuses.Active, viewModel.Reason},
-                currentUser);
-
-            // No need to update search index because a retired organisation is similar to an active organisation in terms of search
-        }
-
-        private void DeleteOrganisation(AdminChangeStatusViewModel viewModel)
-        {
-            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-
-            organisation.SetStatus(
-                OrganisationStatuses.Deleted,
-                currentUser.UserId,
-                viewModel.Reason);
-
-            InactivateUsersOfOrganisation(organisation);
-
-            dataRepository.SaveChangesAsync().Wait();
-
-            auditLogger.AuditChangeToOrganisation(
-                AuditedAction.AdminChangeOrganisationStatus,
-                organisation,
-                new {PreviousStatus = OrganisationStatuses.Active, NewStatus = OrganisationStatuses.Deleted, viewModel.Reason},
-                currentUser);
-
-            // Remove this organisation from the search index
-            searchBusinessLogic.UpdateSearchIndexAsync(organisation).Wait();
-        }
-
-        private void UnDeleteOrganisation(AdminChangeStatusViewModel viewModel)
-        {
-            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-
-            organisation.SetStatus(
-                OrganisationStatuses.Active,
-                currentUser.UserId,
-                viewModel.Reason);
-
-            ActivateUsersOfOrganisation(organisation);
-
-            dataRepository.SaveChangesAsync().Wait();
-
-            auditLogger.AuditChangeToOrganisation(
-                AuditedAction.AdminChangeOrganisationStatus,
-                organisation,
-                new {PreviousStatus = OrganisationStatuses.Deleted, NewStatus = OrganisationStatuses.Active, viewModel.Reason},
-                currentUser);
-
-            // Add this organisation to the search index
-            searchBusinessLogic.UpdateSearchIndexAsync(organisation).Wait();
         }
 
         private void InactivateUsersOfOrganisation(Organisation organisation)
