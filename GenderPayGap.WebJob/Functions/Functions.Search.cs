@@ -126,7 +126,7 @@ namespace GenderPayGap.WebJob
             log.LogInformation($"UpdateSearchAsync: Loading organisations");
 
             IQueryable<Organisation> organisations = _DataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active)
+                .Where(o => o.Status == OrganisationStatuses.Active || o.Status == OrganisationStatuses.Retired)
                 .Where(o => o.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
                         || o.OrganisationScopes.Any(
                             sc => sc.Status == ScopeRowStatuses.Active

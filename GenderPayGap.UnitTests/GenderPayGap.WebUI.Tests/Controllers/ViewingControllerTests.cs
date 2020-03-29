@@ -463,7 +463,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [TestCase(OrganisationStatuses.Deleted, "Employer: The status of this organisation is 'Deleted'")]
-        [TestCase(OrganisationStatuses.Retired, "Employer: The status of this organisation is 'Retired'")]
         public void ViewingController_Employer_When_OrganisationStatus_Is_Not_Active_Returns_Gone(OrganisationStatuses orgStatus,
             string expectedDescriptionMessage)
         {
@@ -805,7 +804,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [TestCase(20154, OrganisationStatuses.Deleted)]
-        [TestCase(98754, OrganisationStatuses.Retired)]
         public void ViewingController_Report_Organisation_Status_Not_Active_returns_Gone(int organisationId,
             OrganisationStatuses organisationStatus)
         {

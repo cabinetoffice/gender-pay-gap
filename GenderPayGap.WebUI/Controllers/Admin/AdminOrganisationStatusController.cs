@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
@@ -56,7 +56,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("organisation/{id}/status/change")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeStatusPost(long id, AdminChangeStatusViewModel viewModel)
+        public IActionResult ChangeStatusPost(long id, AdminChangeStatusViewModel viewModel)
         {
             UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
 
