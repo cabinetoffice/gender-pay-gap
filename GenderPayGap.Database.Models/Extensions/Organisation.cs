@@ -584,6 +584,11 @@ namespace GenderPayGap.Database
             return organisationScope;
         }
 
+        public bool IsSearchable()
+        {
+            return Status == Core.OrganisationStatuses.Active || Status == Core.OrganisationStatuses.Retired;
+        }
+
         public bool IsActive()
         {
             return Status == Core.OrganisationStatuses.Active;

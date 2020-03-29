@@ -34,7 +34,7 @@ namespace GenderPayGap.BusinessLogic
         public IEnumerable<Organisation> LookupSearchableOrganisations(IList<Organisation> organisations)
         {
             return organisations.Where(
-                o => o.Status == OrganisationStatuses.Active
+                o => o.Status == OrganisationStatuses.Active || o.Status == OrganisationStatuses.Retired
                      && (o.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
                          || o.OrganisationScopes.Any(
                              sc => sc.Status == ScopeRowStatuses.Active

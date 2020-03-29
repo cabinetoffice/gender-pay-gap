@@ -231,7 +231,7 @@ namespace GenderPayGap.BusinessLogic
         {
             CustomResult<Organisation> result = LoadInfoFromEmployerIdentifier(employerIdentifier);
 
-            if (!result.Failed && !result.Result.IsActive())
+            if (!result.Failed && !result.Result.IsSearchable())
             {
                 return new CustomResult<Organisation>(InternalMessages.HttpGoneCausedByOrganisationBeingInactive(result.Result.Status));
             }
