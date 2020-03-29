@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
@@ -164,19 +164,37 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
 
-            auditLogger.AuditChangeToOrganisation(AuditedAction.AdminChangeOrganisationStatus,
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.AdminChangeOrganisationStatus,
                 organisation,
-                new
-                {
-                    PreviousStatus = OrganisationStatuses.Active,
-                    NewStatus = OrganisationStatuses.Retired,
-                    Reason = viewModel.Reason
-                },
+                new {PreviousStatus = OrganisationStatuses.Active, NewStatus = OrganisationStatuses.Retired, viewModel.Reason},
                 currentUser);
 
             // No need to update search index because a retired organisation is similar to an active organisation in terms of search
         }
 
+        private void UnRetireOrganisation(AdminChangeStatusViewModel viewModel)
+        {
+            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            organisation.SetStatus(
+                OrganisationStatuses.Active,
+                currentUser.UserId,
+                viewModel.Reason);
+
+            ActivateUsersOfOrganisation(organisation);
+
+            dataRepository.SaveChangesAsync().Wait();
+
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.AdminChangeOrganisationStatus,
+                organisation,
+                new {PreviousStatus = OrganisationStatuses.Retired, NewStatus = OrganisationStatuses.Active, viewModel.Reason},
+                currentUser);
+
+            // No need to update search index because a retired organisation is similar to an active organisation in terms of search
+        }
 
         private void DeleteOrganisation(AdminChangeStatusViewModel viewModel) { }
 
@@ -191,6 +209,14 @@ namespace GenderPayGap.WebUI.Controllers
             }
         }
 
+        private void ActivateUsersOfOrganisation(Organisation organisation)
+        {
+            foreach (InactiveUserOrganisation inactiveUserOrganisation in organisation.InactiveUserOrganisations)
+            {
+                organisation.UserOrganisations.Add(CreateUserOrganisationFromInactiveUserOrganisation(inactiveUserOrganisation));
+                dataRepository.Delete(inactiveUserOrganisation);
+            }
+        }
 
         private InactiveUserOrganisation CreateInactiveUserOrganisationFromUserOrganisation(UserOrganisation userOrganisation)
         {
@@ -208,5 +234,23 @@ namespace GenderPayGap.WebUI.Controllers
                 Method = userOrganisation.Method
             };
         }
+
+        private UserOrganisation CreateUserOrganisationFromInactiveUserOrganisation(InactiveUserOrganisation inactiveUserOrganisation)
+        {
+            return new UserOrganisation
+            {
+                UserId = inactiveUserOrganisation.UserId,
+                OrganisationId = inactiveUserOrganisation.OrganisationId,
+                PIN = inactiveUserOrganisation.PIN,
+                PINSentDate = inactiveUserOrganisation.PINSentDate,
+                PITPNotifyLetterId = inactiveUserOrganisation.PITPNotifyLetterId,
+                PINConfirmedDate = inactiveUserOrganisation.PINConfirmedDate,
+                ConfirmAttemptDate = inactiveUserOrganisation.ConfirmAttemptDate,
+                ConfirmAttempts = inactiveUserOrganisation.ConfirmAttempts,
+                AddressId = inactiveUserOrganisation.AddressId,
+                Method = inactiveUserOrganisation.Method
+            };
+        }
+
     }
 }
