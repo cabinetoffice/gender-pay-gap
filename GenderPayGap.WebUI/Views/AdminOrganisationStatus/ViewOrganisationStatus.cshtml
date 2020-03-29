@@ -45,7 +45,7 @@
     </span>
 </h1>
 
-@if (Model.Status == OrganisationStatuses.Retired || Model.Status == OrganisationStatuses.Active || Model.Status != OrganisationStatuses.Deleted)
+@if (Model.Status == OrganisationStatuses.Retired || Model.Status == OrganisationStatuses.Active || Model.Status == OrganisationStatuses.Deleted)
 {
     @Html.GovUkButton(new ButtonViewModel
     {
@@ -55,7 +55,7 @@
 }
 else
 {
-    <span class="govuk-body-m govuk-!-margin-bottom-4">You cannot change status of an organisation that is@(Model.Status)</span>
+    <span class="govuk-body-m govuk-!-margin-bottom-4">You cannot change status of an organisation that is @(Model.Status)</span>
 }
 
 <table class="govuk-table">
