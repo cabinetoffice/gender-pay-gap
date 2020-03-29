@@ -75,10 +75,6 @@
             </table>
 
             <div class="govuk-form-group">
-                @Html.HiddenFor(m => m.CurrentStatus)
-                @Html.HiddenFor(m => m.OrganisationId)
-                @Html.HiddenFor(m => m.OrganisationName)
-
                 @if (Model.CurrentStatus == OrganisationStatuses.Active)
                 {
                     @Html.GovUkRadiosFor(
