@@ -235,6 +235,8 @@ namespace GenderPayGap.Core
         UserRetiredThemselves = 15,
         [Display(Name = "Admin remove a user from an organisation")]
         AdminRemoveUserFromOrganisation = 16,
+        [Display(Name = "Admin changed organisation status")]
+        AdminChangeOrganisationStatus = 17,
     }
 
     public enum HashingAlgorithm
