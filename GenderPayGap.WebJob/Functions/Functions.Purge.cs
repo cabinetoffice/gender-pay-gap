@@ -131,10 +131,7 @@ namespace GenderPayGap.WebJob
             catch (Exception ex)
             {
                 LogFunctionError(runId, nameof(PurgeRegistrations), startTime, ex );
-                
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
-                    $"Failed webjob ({nameof(PurgeRegistrations)}):{ex.Message}:{ex.GetDetailsText()}");
+
                 //Rethrow the error
                 throw;
             }
@@ -233,9 +230,6 @@ namespace GenderPayGap.WebJob
             {
                 LogFunctionError(runId, nameof(PurgeOrganisations), startTime, ex );
                 
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
-                    $"Failed webjob ({nameof(PurgeOrganisations)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
@@ -265,10 +259,6 @@ namespace GenderPayGap.WebJob
             catch (Exception ex)
             {
                 LogFunctionError(runId, nameof(PurgeTestDataAsync), startTime, ex );
-                
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
-                    $"Failed webjob ({nameof(PurgeTestDataAsync)}):{ex.Message}:{ex.GetDetailsText()}");
 
                 //Rethrow the error
                 throw;

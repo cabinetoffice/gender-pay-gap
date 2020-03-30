@@ -60,11 +60,6 @@ namespace GenderPayGap.WebJob
             catch (Exception ex)
             {
                 LogFunctionError(runId, nameof(CheckSiteCertAsync), startTime, ex);
-
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync(
-                    "GPG - WEBJOBS ERROR",
-                    $"Failed webjob ({nameof(CheckSiteCertAsync)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
