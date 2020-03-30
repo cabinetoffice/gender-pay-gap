@@ -23,7 +23,7 @@ namespace GenderPayGap.WebJob
     {
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeUsers([TimerTrigger("*/5 * * * *" /* every 5 minutes */)] TimerInfo timer, ILogger log)
+        public async Task PurgeUsers([TimerTrigger("40 3 * * *" /* 03:40 once per day */)] TimerInfo timer, ILogger log)
         {
             var runId = CreateRunId();
             var startTime = VirtualDateTime.Now;
