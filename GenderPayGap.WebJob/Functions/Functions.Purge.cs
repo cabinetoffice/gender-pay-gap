@@ -50,13 +50,6 @@ namespace GenderPayGap.WebJob
         {
             try
             {
-                //Ignore if they have verified PIN
-                if (user.UserOrganisations.Any(
-                    uo => uo.PINConfirmedDate != null || (uo.PINSentDate != null && uo.PINSentDate < pinExpiryDate)))
-                {
-                    return;
-                }
-
                 var logItem = new ManualChangeLogModel(
                     nameof(PurgeUsers),
                     ManualActions.Delete,
@@ -83,7 +76,7 @@ namespace GenderPayGap.WebJob
             
             List<AuditLog> auditLogs = dataRepository
                 .GetAll<AuditLog>()
-                .Where(log => Equals(log.ImpersonatedUser, user))
+                .Where(log => log.ImpersonatedUser.UserId == user.UserId)
                 .Where(log => log.Action == AuditedAction.AdminResendVerificationEmail).ToList();
             
             foreach (AuditLog log in auditLogs)
