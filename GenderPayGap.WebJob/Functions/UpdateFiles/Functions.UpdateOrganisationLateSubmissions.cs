@@ -16,6 +16,10 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
+            var runId = CreateRunId();
+            var startTime = DateTime.Now;
+            LogFunctionStart(runId,  nameof(UpdateOrganisationLateSubmissions), startTime);
+            
             try
             {
                 string filePath = Path.Combine(Global.DownloadsPath, Filenames.OrganisationLateSubmissions);
@@ -29,14 +33,12 @@ namespace GenderPayGap.WebJob
 
                 await UpdateOrganisationLateSubmissionsAsync(filePath, log);
 
-                log.LogDebug($"Executed {nameof(UpdateOrganisationLateSubmissions)}:successfully");
+                LogFunctionEnd(runId, nameof(UpdateOrganisationLateSubmissions), startTime);
             }
             catch (Exception ex)
             {
-                string message = $"Failed {nameof(UpdateOrganisationLateSubmissions)}:{ex.Message}";
-
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", message);
+                LogFunctionError(runId, nameof(UpdateOrganisationLateSubmissions), startTime, ex );
+                
                 //Rethrow the error
                 throw;
             }

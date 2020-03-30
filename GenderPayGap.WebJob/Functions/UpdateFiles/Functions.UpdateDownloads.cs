@@ -33,8 +33,8 @@ namespace GenderPayGap.WebJob
             }
             catch (Exception ex)
             {
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", ex.Message);
+                LogFunctionError(runId, nameof(UpdateDownloadFiles), startTime, ex );
+          
                 //Rethrow the error
                 throw;
             }
