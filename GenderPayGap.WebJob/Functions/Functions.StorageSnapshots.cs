@@ -80,9 +80,6 @@ namespace GenderPayGap.WebJob
             {
                 LogFunctionError(runId, nameof(TakeSnapshotAsync), startTime, ex );
 
-                //Send Email to GEO reporting errors
-                await _Messenger.SendGeoMessageAsync("GPG - WEBJOBS ERROR", 
-                    $"Failed webjob ({nameof(TakeSnapshotAsync)}):{ex.Message}:{ex.GetDetailsText()}");
                 //Rethrow the error
                 throw;
             }
