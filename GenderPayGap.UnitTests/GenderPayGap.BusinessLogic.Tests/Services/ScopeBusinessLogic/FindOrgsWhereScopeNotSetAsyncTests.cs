@@ -71,8 +71,6 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         }
 
         [TestCase(3, SectorTypes.Private)]
-        [TestCase(3, SectorTypes.Public)]
-        [TestCase(4, SectorTypes.Private)]
         [TestCase(4, SectorTypes.Public)]
         public async Task FindsOrgsWhereScopeIsMissing(int expectedMissingOrgId, SectorTypes testSector)
         {
@@ -80,8 +78,8 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             HashSet<OrganisationMissingScope> actualMissingOrgScopes = await scopeBusinessLogic.FindOrgsWhereScopeNotSetAsync();
 
             // assert
-            OrganisationMissingScope actualMissingEntry = actualMissingOrgScopes.Where(
-                    missing => missing.Organisation.OrganisationId == expectedMissingOrgId)
+            OrganisationMissingScope actualMissingEntry = actualMissingOrgScopes
+                .Where(missing => missing.Organisation.OrganisationId == expectedMissingOrgId)
                 .FirstOrDefault();
 
             Assert.IsNotNull(actualMissingEntry, "Expected to find organisations who have null scopes");
@@ -95,8 +93,6 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         }
 
         [TestCase(5, SectorTypes.Private)]
-        [TestCase(5, SectorTypes.Public)]
-        [TestCase(6, SectorTypes.Private)]
         [TestCase(6, SectorTypes.Public)]
         public async Task FindsOrgsWhereScopeIsUnknown(int expectedUnknownOrgId, SectorTypes testSector)
         {
@@ -125,7 +121,8 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             for (int year = Global.FirstReportingYear; year <= testLastSnapshotDate.Year; year++)
             {
                 mockOrg.OrganisationScopes.Add(
-                    new OrganisationScope {
+                    new OrganisationScope
+                    {
                         OrganisationId = mockOrg.OrganisationId,
                         Organisation = mockOrg,
                         SnapshotDate = new DateTime(year, testLastSnapshotDate.Month, testLastSnapshotDate.Day),
@@ -149,7 +146,8 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             for (int year = Global.FirstReportingYear; year <= testLastSnapshotDate.Year; year++)
             {
                 mockOrg.OrganisationScopes.Add(
-                    new OrganisationScope {
+                    new OrganisationScope
+                    {
                         OrganisationId = mockOrg.OrganisationId,
                         Organisation = mockOrg,
                         SnapshotDate = new DateTime(year, testLastSnapshotDate.Month, testLastSnapshotDate.Day),
