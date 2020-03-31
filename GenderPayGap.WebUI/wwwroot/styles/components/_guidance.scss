@@ -6,7 +6,7 @@
   margin-bottom: 30px;
   
   .govuk-body-s {
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 }
 
@@ -19,4 +19,8 @@
   li {
     margin-bottom: 20px;
   }
+}
+
+.guidance-current-page-link {
+  margin-bottom: 0;
 }
