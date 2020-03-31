@@ -48,26 +48,23 @@
 
         <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-7">
             <h1 class="govuk-panel__title govuk-!-font-size-36">
-                User has been removed from the organisation
+                @(Model.UserFullName) has been removed from @(Model.OrganisationName)
             </h1>
         </div>
 
         <p class="govuk-body">
-            Return to
-            @if (Model.FromViewUserPage)
-            {
-                <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})"
-                   class="govuk-link">
-                    @(Model.UserFullName)
-                </a>
-            }
-            else
-            {
-                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
-                   class="govuk-link">
-                    @(Model.OrganisationName)
-                </a>
-            }
+            Visit
+            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})"
+               class="govuk-link">
+                @(Model.UserFullName)
+            </a>
+        </p>
+        <p class="govuk-body">
+            Visit
+            <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+               class="govuk-link">
+                @(Model.OrganisationName)
+            </a>
         </p>
     </div>
 </div>
