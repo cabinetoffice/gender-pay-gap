@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -9,7 +9,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap")]
         public IActionResult EightWaysToUnderstandYourOrganisationsGpg()
         {
-            return View("EightWaysToUnderstandYourOrganisationsGpg");
+            return View("EightWaysToUnderstandYourOrganisationsGpg/Overview");
         }
 
     }
