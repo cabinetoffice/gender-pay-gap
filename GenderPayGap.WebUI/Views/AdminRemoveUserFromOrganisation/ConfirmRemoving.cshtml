@@ -50,7 +50,10 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("RemoveUserFromAnOrganisation", "AdminRemoveUser")">
+        <form method="POST"
+              action="@(Model.FromViewUserPage ?
+                          Url.Action("RemoveOrganisationFromUserPost", "AdminRemoveUserFromOrganisation", new {userId = Model.UserId, organisationId = Model.OrganisationId}) :
+                          Url.Action("RemoveUserFromOrganisationPost", "AdminRemoveUserFromOrganisation", new {userId = Model.UserId, organisationId = Model.OrganisationId}))">
             @(Html.AntiForgeryToken())
             @(Html.GovUkErrorSummary())
 
@@ -67,12 +70,6 @@
                 </tbody>
             </table>
 
-            @(Html.HiddenFor(m => m.OrganisationId))
-            @(Html.HiddenFor(m => m.UserId))
-            @(Html.HiddenFor(m => m.OrganisationName))
-            @(Html.HiddenFor(m => m.UserFullName))
-            @(Html.HiddenFor(m => m.FromViewUserPage))
-
             <div class="govuk-form-group">
                 @Html.GovUkTextAreaFor(
                     m => m.Reason,
@@ -88,8 +85,8 @@
 
                 @(Html.GovUkButton(new ButtonViewModel
                 {
-                    Text = "Confirm",
-                    Classes = "govuk-!-margin-bottom-4"
+                    Text = "Remove user from organisation",
+                    Classes = "govuk-!-margin-bottom-4 govuk-button--warning"
                 }))
 
                 <p class="govuk-body">
