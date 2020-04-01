@@ -583,6 +583,11 @@ namespace GenderPayGap.WebUI.Classes
                         {
                             return null;
                         }
+                        
+                        if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) )
+                        {
+                            return RedirectToAction("ManageOrganisations", "Organisation");
+                        }
 
                         return RedirectToAction("PINSent", "Register");
                     }

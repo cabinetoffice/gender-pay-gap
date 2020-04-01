@@ -242,6 +242,12 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("request-pin")]
         public async Task<IActionResult> RequestPIN(CompleteViewModel model)
         {
+            
+            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) )
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             //Ensure user has completed the registration process
             User currentUser;
             IActionResult checkResult = CheckUserRegisteredOk(out currentUser);
