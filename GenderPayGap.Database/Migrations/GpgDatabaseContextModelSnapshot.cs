@@ -241,10 +241,6 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.Property<string>("EmployerReference")
                         .HasMaxLength(10);
 
-                    b.Property<long?>("InactiveUserOrganisationOrganisationId");
-
-                    b.Property<long?>("InactiveUserOrganisationUserId");
-
                     b.Property<DateTime?>("LastCheckedAgainstCompaniesHouse");
 
                     b.Property<long?>("LatestAddressId");
@@ -318,8 +314,6 @@ namespace GenderPayGap.Database.Core21.Migrations
 
                     b.HasIndex("Status")
                         .HasName("IX_StatusId");
-
-                    b.HasIndex("InactiveUserOrganisationUserId", "InactiveUserOrganisationOrganisationId");
 
                     b.HasIndex("LatestRegistrationUserId", "LatestRegistrationOrganisationId")
                         .HasName("IX_LatestRegistration_UserId_LatestRegistration_OrganisationId");
@@ -1038,20 +1032,17 @@ namespace GenderPayGap.Database.Core21.Migrations
             modelBuilder.Entity("GenderPayGap.Database.InactiveUserOrganisation", b =>
                 {
                     b.HasOne("GenderPayGap.Database.OrganisationAddress", "Address")
-                        .WithMany("InactiveUserOrganisations")
-                        .HasForeignKey("AddressId")
-                        .HasConstraintName("FK_dbo.InactiveUserOrganisations_dbo.OrganisationAddresses_AddressId");
+                        .WithMany()
+                        .HasForeignKey("AddressId");
 
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
-                        .WithMany("InactiveUserOrganisations")
+                        .WithMany()
                         .HasForeignKey("OrganisationId")
-                        .HasConstraintName("FK_dbo.InactiveUserOrganisations_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GenderPayGap.Database.User", "User")
-                        .WithMany("InactiveUserOrganisations")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_dbo.InactiveUserOrganisations_dbo.Users_UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -1099,10 +1090,6 @@ namespace GenderPayGap.Database.Core21.Migrations
                         .WithMany("Organisations")
                         .HasForeignKey("LatestScopeId")
                         .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationScopes_LatestScopeId");
-
-                    b.HasOne("GenderPayGap.Database.InactiveUserOrganisation")
-                        .WithMany("Organisations")
-                        .HasForeignKey("InactiveUserOrganisationUserId", "InactiveUserOrganisationOrganisationId");
 
                     b.HasOne("GenderPayGap.Database.UserOrganisation", "LatestRegistration")
                         .WithMany("Organisations")

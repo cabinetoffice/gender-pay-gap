@@ -1,3 +1,4 @@
+using System.Linq;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
@@ -124,14 +125,15 @@ namespace GenderPayGap.WebUI.Controllers
         {
             foreach (UserOrganisation userOrganisation in organisation.UserOrganisations)
             {
-                organisation.InactiveUserOrganisations.Add(CreateInactiveUserOrganisationFromUserOrganisation(userOrganisation));
+                dataRepository.Insert(CreateInactiveUserOrganisationFromUserOrganisation(userOrganisation));
                 dataRepository.Delete(userOrganisation);
             }
         }
 
         private void ActivateUsersOfOrganisation(Organisation organisation)
         {
-            foreach (InactiveUserOrganisation inactiveUserOrganisation in organisation.InactiveUserOrganisations)
+            var inactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>().Where(m => m.OrganisationId == organisation.OrganisationId);
+            foreach (InactiveUserOrganisation inactiveUserOrganisation in inactiveUserOrganisations)
             {
                 organisation.UserOrganisations.Add(CreateUserOrganisationFromInactiveUserOrganisation(inactiveUserOrganisation));
                 dataRepository.Delete(inactiveUserOrganisation);
