@@ -20,13 +20,13 @@
             },
             new CrumbViewModel
             {
-                Text = Model.OrganisationName,
-                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
             },
             new CrumbViewModel
             {
                 Text = "Status history",
-                Href = Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = Model.OrganisationId})
+                Href = Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})
             },
             new CrumbViewModel
             {
@@ -51,7 +51,7 @@
 
     foreach (var statusHint in statuses.Zip(hints, (s, h) => new {Status = s, Hint = h}))
     {
-        if (Model.CurrentStatus != statusHint.Status)
+        if (Model.Organisation.Status != statusHint.Status)
         {
             fieldValue = statusHint.Status;
             fieldId = $"{fieldName}_{fieldValue}";
@@ -81,14 +81,17 @@
     Change status
     <br/>
     <span class="govuk-!-font-size-27">
-        for @(Model.OrganisationName)
+        for @(Model.Organisation.OrganisationName)
     </span>
 </h1>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.OrganisationId})">
+        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
             @(Html.AntiForgeryToken())
+
+            @(Html.Hidden(nameof(AdminChangeStatusViewModel.Action),
+                ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason))
 
             @Html.GovUkErrorSummary()
 
@@ -101,11 +104,11 @@
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Organisation name</th>
-                        <td class="govuk-table__cell">@(Model.OrganisationName)</td>
+                        <td class="govuk-table__cell">@(Model.Organisation.OrganisationName)</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Current status</th>
-                        <td class="govuk-table__cell">@(Model.CurrentStatus)</td>
+                        <td class="govuk-table__cell">@(Model.Organisation.Status)</td>
                     </tr>
                 </tbody>
             </table>
@@ -141,12 +144,12 @@
 
                 @(Html.GovUkButton(new ButtonViewModel
                 {
-                    Text = "Confirm",
+                    Text = "Continue",
                     Classes = "govuk-!-margin-bottom-4"
                 }))
 
                 <p class="govuk-body">
-                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
                        class="govuk-link">
                         Cancel and return to organisation page
                     </a>

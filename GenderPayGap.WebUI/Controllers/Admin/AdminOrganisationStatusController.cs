@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
@@ -58,20 +59,47 @@ namespace GenderPayGap.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ChangeStatusPost(long id, AdminChangeStatusViewModel viewModel)
         {
-            UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
+            switch (viewModel.Action)
+            {
+                case ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason:
+                    UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
+                    ValidateAdminChangeStatusViewModel(viewModel);
+                    if (viewModel.HasAnyErrors())
+                    {
+                        return View("ChangeStatus", viewModel);
+                    }
 
+                    return View("ConfirmStatusChange", viewModel);
+
+                case ChangeOrganisationStatusViewModelActions.ConfirmStatusChange:
+                    ChangeStatus(viewModel, id);
+                    return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
+                default:
+                    throw new ArgumentException("Unknown action in AdminOrganisationStatusController.ChangeStatusPost");
+            }
+        }
+
+        private void UpdateAdminChangeStatusViewModelFromOrganisation(AdminChangeStatusViewModel viewModel, long organisationId)
+        {
+            viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
+
+            viewModel.InactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
+                .Where(m => m.OrganisationId == organisationId).ToList();
+        }
+
+        private void ValidateAdminChangeStatusViewModel(AdminChangeStatusViewModel viewModel)
+        {
             if (!viewModel.NewStatus.HasValue)
             {
                 viewModel.AddErrorFor(m => m.NewStatus, "Please select a new status");
             }
+
             viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+        }
 
-            if (viewModel.HasAnyErrors())
-            {
-                return View("ChangeStatus", viewModel);
-            }
-
-            var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
+        private void ChangeStatus(AdminChangeStatusViewModel viewModel, long organisationId)
+        {
+            var organisation = dataRepository.Get<Organisation>(organisationId);
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
             OrganisationStatuses previousStatus = organisation.Status;
@@ -108,17 +136,34 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 searchBusinessLogic.UpdateSearchIndexAsync(organisation).Wait();
             }
-
-            return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
         }
 
-        private void UpdateAdminChangeStatusViewModelFromOrganisation(AdminChangeStatusViewModel viewModel, long organisationId)
+        private void ActivateUsersOfOrganisation(Organisation organisation)
         {
-            var organisation = dataRepository.Get<Organisation>(organisationId);
+            IQueryable<InactiveUserOrganisation> inactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
+                .Where(m => m.OrganisationId == organisation.OrganisationId);
+            foreach (InactiveUserOrganisation inactiveUserOrganisation in inactiveUserOrganisations)
+            {
+                organisation.UserOrganisations.Add(CreateUserOrganisationFromInactiveUserOrganisation(inactiveUserOrganisation));
+                dataRepository.Delete(inactiveUserOrganisation);
+            }
+        }
 
-            viewModel.OrganisationId = organisation.OrganisationId;
-            viewModel.OrganisationName = organisation.OrganisationName;
-            viewModel.CurrentStatus = organisation.Status;
+        private UserOrganisation CreateUserOrganisationFromInactiveUserOrganisation(InactiveUserOrganisation inactiveUserOrganisation)
+        {
+            return new UserOrganisation
+            {
+                UserId = inactiveUserOrganisation.UserId,
+                OrganisationId = inactiveUserOrganisation.OrganisationId,
+                PIN = inactiveUserOrganisation.PIN,
+                PINSentDate = inactiveUserOrganisation.PINSentDate,
+                PITPNotifyLetterId = inactiveUserOrganisation.PITPNotifyLetterId,
+                PINConfirmedDate = inactiveUserOrganisation.PINConfirmedDate,
+                ConfirmAttemptDate = inactiveUserOrganisation.ConfirmAttemptDate,
+                ConfirmAttempts = inactiveUserOrganisation.ConfirmAttempts,
+                AddressId = inactiveUserOrganisation.AddressId,
+                Method = inactiveUserOrganisation.Method
+            };
         }
 
         private void InactivateUsersOfOrganisation(Organisation organisation)
@@ -127,16 +172,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 dataRepository.Insert(CreateInactiveUserOrganisationFromUserOrganisation(userOrganisation));
                 dataRepository.Delete(userOrganisation);
-            }
-        }
-
-        private void ActivateUsersOfOrganisation(Organisation organisation)
-        {
-            var inactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>().Where(m => m.OrganisationId == organisation.OrganisationId);
-            foreach (InactiveUserOrganisation inactiveUserOrganisation in inactiveUserOrganisations)
-            {
-                organisation.UserOrganisations.Add(CreateUserOrganisationFromInactiveUserOrganisation(inactiveUserOrganisation));
-                dataRepository.Delete(inactiveUserOrganisation);
             }
         }
 
@@ -154,23 +189,6 @@ namespace GenderPayGap.WebUI.Controllers
                 ConfirmAttempts = userOrganisation.ConfirmAttempts,
                 AddressId = userOrganisation.AddressId,
                 Method = userOrganisation.Method
-            };
-        }
-
-        private UserOrganisation CreateUserOrganisationFromInactiveUserOrganisation(InactiveUserOrganisation inactiveUserOrganisation)
-        {
-            return new UserOrganisation
-            {
-                UserId = inactiveUserOrganisation.UserId,
-                OrganisationId = inactiveUserOrganisation.OrganisationId,
-                PIN = inactiveUserOrganisation.PIN,
-                PINSentDate = inactiveUserOrganisation.PINSentDate,
-                PITPNotifyLetterId = inactiveUserOrganisation.PITPNotifyLetterId,
-                PINConfirmedDate = inactiveUserOrganisation.PINConfirmedDate,
-                ConfirmAttemptDate = inactiveUserOrganisation.ConfirmAttemptDate,
-                ConfirmAttempts = inactiveUserOrganisation.ConfirmAttempts,
-                AddressId = inactiveUserOrganisation.AddressId,
-                Method = inactiveUserOrganisation.Method
             };
         }
 
