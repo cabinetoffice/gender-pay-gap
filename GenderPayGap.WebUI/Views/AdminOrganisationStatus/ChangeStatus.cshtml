@@ -41,6 +41,41 @@
     }))
 }
 
+@{
+    OrganisationStatuses[] statuses = {OrganisationStatuses.Active, OrganisationStatuses.Retired, OrganisationStatuses.Deleted};
+    string[] hints = {"Active organisation can be searched", "Retired organisation can be searched", "Deleted organisation cannot be searched"};
+
+    var items = new List<ItemViewModel>();
+    OrganisationStatuses fieldValue;
+    string fieldId, fieldName = $"GovUk_Radio_{nameof(AdminChangeStatusViewModel.NewStatus)}";
+
+    foreach (var statusHint in statuses.Zip(hints, (s, h) => new {Status = s, Hint = h}))
+    {
+        if (Model.CurrentStatus != statusHint.Status)
+        {
+            fieldValue = statusHint.Status;
+            fieldId = $"{fieldName}_{fieldValue}";
+            items.Add(new RadioItemViewModel
+            {
+                Name = fieldName,
+                Value = fieldValue.ToString(),
+                Id = fieldId,
+                Checked = Model.NewStatus == fieldValue,
+                Label = new LabelViewModel
+                {
+                    Text = fieldValue.ToString(),
+                    For = fieldId
+                },
+                Hint = new HintViewModel
+                {
+                    Text = statusHint.Hint
+                }
+            });
+        }
+    }
+
+}
+
 <span class="govuk-caption-xl">Administration</span>
 <h1 class="govuk-heading-xl">
     Change status
@@ -55,11 +90,12 @@
         <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.OrganisationId})">
             @(Html.AntiForgeryToken())
 
-            @Html.GovUkErrorSummary(new[]
-            {
-                Model.CurrentStatus == OrganisationStatuses.Active ? nameof(AdminChangeStatusViewModel.NewStatusFromActive) : Model.CurrentStatus == OrganisationStatuses.Retired ? nameof(AdminChangeStatusViewModel.NewStatusFromRetired) : nameof(AdminChangeStatusViewModel.NewStatusFromDeleted),
-                nameof(AdminChangeStatusViewModel.Reason)
-            })
+            @Html.GovUkErrorSummary()
+
+            @{
+                string error = Model.GetErrorFor<AdminChangeStatusViewModel, OrganisationStatuses?>(m => m.NewStatus);
+                ErrorMessageViewModel errorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
+            }
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -75,48 +111,21 @@
             </table>
 
             <div class="govuk-form-group">
-                @if (Model.CurrentStatus == OrganisationStatuses.Active)
+                @Html.GovUkRadios(new RadiosViewModel
                 {
-                    @Html.GovUkRadiosFor(
-                        m => m.NewStatusFromActive,
-                        new FieldsetViewModel
+                    Name = nameof(AdminChangeStatusViewModel.NewStatus),
+                    Fieldset = new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
                         {
-                            Legend = new LegendViewModel
-                            {
-                                Text = "Please select a new status",
-                                Classes = "govuk-fieldset__legend--m"
-                            },
-                            Classes = "govuk-!-margin-top-6"
-                        })
-                }
-                else if (Model.CurrentStatus == OrganisationStatuses.Retired)
-                {
-                    @Html.GovUkRadiosFor(
-                        m => m.NewStatusFromRetired,
-                        new FieldsetViewModel
-                        {
-                            Legend = new LegendViewModel
-                            {
-                                Text = "Please select a new status",
-                                Classes = "govuk-fieldset__legend--m"
-                            },
-                            Classes = "govuk-!-margin-top-6"
-                        })
-                }
-                else
-                {
-                    @Html.GovUkRadiosFor(
-                        m => m.NewStatusFromDeleted,
-                        new FieldsetViewModel
-                        {
-                            Legend = new LegendViewModel
-                            {
-                                Text = "Please select a new status",
-                                Classes = "govuk-fieldset__legend--m"
-                            },
-                            Classes = "govuk-!-margin-top-6"
-                        })
-                }
+                            Text = "Please select a new status",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-!-margin-top-6"
+                    },
+                    Items = items,
+                    ErrorMessage = errorMessageViewModel
+                })
 
                 @Html.GovUkTextAreaFor(
                     m => m.Reason,

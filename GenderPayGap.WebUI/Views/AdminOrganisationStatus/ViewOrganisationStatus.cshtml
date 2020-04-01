@@ -55,7 +55,12 @@
 }
 else
 {
-    <span class="govuk-body-m govuk-!-margin-bottom-4">You cannot change status of an organisation that is @(Model.Status)</span>
+    <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
+        Change status
+    </button>
+    <span class="govuk-hint">
+        You cannot change status of an organisation that is @(Model.Status)
+    </span>
 }
 
 <table class="govuk-table">

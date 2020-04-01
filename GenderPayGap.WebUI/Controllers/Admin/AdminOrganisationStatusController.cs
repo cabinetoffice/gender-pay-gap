@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
@@ -8,6 +6,7 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +59,11 @@ namespace GenderPayGap.WebUI.Controllers
         {
             UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
 
-            ValidateAdminChangeStatusViewModel(viewModel);
+            if (!viewModel.NewStatus.HasValue)
+            {
+                viewModel.AddErrorFor(m => m.NewStatus, "Please select a new status");
+            }
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
 
             if (viewModel.HasAnyErrors())
             {
@@ -71,7 +74,7 @@ namespace GenderPayGap.WebUI.Controllers
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
             OrganisationStatuses previousStatus = organisation.Status;
-            OrganisationStatuses newStatus = FindNewStatus(organisation, viewModel);
+            OrganisationStatuses newStatus = viewModel.NewStatus ?? OrganisationStatuses.Unknown;
 
             // Update the status
             organisation.SetStatus(
@@ -115,49 +118,6 @@ namespace GenderPayGap.WebUI.Controllers
             viewModel.OrganisationId = organisation.OrganisationId;
             viewModel.OrganisationName = organisation.OrganisationName;
             viewModel.CurrentStatus = organisation.Status;
-        }
-
-        private void ValidateAdminChangeStatusViewModel(AdminChangeStatusViewModel viewModel)
-        {
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.CurrentStatus == OrganisationStatuses.Active)
-            {
-                viewModel.ParseAndValidateParameters(Request, m => m.NewStatusFromActive);
-            }
-            else if (viewModel.CurrentStatus == OrganisationStatuses.Retired)
-            {
-                viewModel.ParseAndValidateParameters(Request, m => m.NewStatusFromRetired);
-            }
-            else if (viewModel.CurrentStatus == OrganisationStatuses.Deleted)
-            {
-                viewModel.ParseAndValidateParameters(Request, m => m.NewStatusFromDeleted);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Organisation current status is not accepted");
-            }
-        }
-
-        private OrganisationStatuses FindNewStatus(Organisation organisation, AdminChangeStatusViewModel viewModel)
-        {
-            switch (organisation.Status)
-            {
-                case OrganisationStatuses.Active:
-                    return viewModel.NewStatusFromActive == NewStatusesFromActive.Retired
-                        ? OrganisationStatuses.Retired
-                        : OrganisationStatuses.Deleted;
-                case OrganisationStatuses.Retired:
-                    return viewModel.NewStatusFromRetired == NewStatusesFromRetired.Active
-                        ? OrganisationStatuses.Active
-                        : OrganisationStatuses.Deleted;
-                case OrganisationStatuses.Deleted:
-                    return viewModel.NewStatusFromDeleted == NewStatusesFromDeleted.Active
-                        ? OrganisationStatuses.Active
-                        : OrganisationStatuses.Retired;
-                default:
-                    throw new ArgumentException("Organisation current status is not acceptable for this action.");
-            }
         }
 
         private void InactivateUsersOfOrganisation(Organisation organisation)
