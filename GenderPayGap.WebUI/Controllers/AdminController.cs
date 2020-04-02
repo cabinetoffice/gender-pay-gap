@@ -630,19 +630,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 : DateTime.MinValue;
             model.Uploads.Add(upload);
 
-            List<ShortCodeModel> allShortCodes = await ShortCodesRepository.GetAllShortCodesAsync();
-            upload = new UploadViewModel.Upload {
-                Type = "ShortCodes",
-                Filepath = Path.Combine(Global.DataPath, Filenames.ShortCodes),
-                Title = "Short Codes",
-                Description = "Short codes for tracking and routing users to specific web pages.",
-                Count = allShortCodes == null ? "0" : allShortCodes.Count.ToString()
-            };
-            upload.Modified = await Global.FileRepository.GetFileExistsAsync(upload.Filepath)
-                ? await Global.FileRepository.GetLastWriteTimeAsync(upload.Filepath)
-                : DateTime.MinValue;
-            model.Uploads.Add(upload);
-
             this.StashModel(model);
             return View("Uploads", model);
         }
@@ -722,9 +709,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             case "SicCode":
                                 records = csvReader.GetRecords<SicCode>().Cast<object>().ToList();
                                 break;
-                            case "ShortCodes":
-                                records = csvReader.GetRecords<ShortCodeModel>().Cast<object>().ToList();
-                                break;
                             default:
                                 throw new Exception($"Invalid upload type '{upload.Type}'");
                         }
@@ -755,9 +739,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                     true);
                                 //TODO Recheck remaining companies with no Sic against new SicCodes and then CoHo
                                 await UpdateCompanySicCodesAsync(updateTime);
-                                break;
-                            case "ShortCodes":
-                                await ShortCodesRepository.ClearAllShortCodesAsync();
                                 break;
                         }
                     }
