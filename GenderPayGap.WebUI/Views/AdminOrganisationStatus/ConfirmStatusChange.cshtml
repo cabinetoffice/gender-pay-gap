@@ -61,7 +61,7 @@
             @(Html.HiddenFor(m => m.Reason))
 
             <h2 class="govuk-heading-l">
-                Check the new status and its implication
+                Check the changes
             </h2>
 
             <table class="govuk-table">
@@ -83,7 +83,7 @@
             @if (Model.Organisation.Status == OrganisationStatuses.Active || Model.NewStatus == OrganisationStatuses.Active)
             {
                 <h3 class="govuk-heading-m">
-                    Following users would be
+                    These users will be
                     @if (Model.NewStatus == OrganisationStatuses.Active)
                     {
                         @: readded to 
