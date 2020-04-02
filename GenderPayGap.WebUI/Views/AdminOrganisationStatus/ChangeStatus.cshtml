@@ -42,33 +42,45 @@
 }
 
 @{
-    OrganisationStatuses[] statuses = {OrganisationStatuses.Active, OrganisationStatuses.Retired, OrganisationStatuses.Deleted};
-    string[] hints = {"Active organisation can be searched", "Retired organisation can be searched", "Deleted organisation cannot be searched"};
+    var statusHints = new Dictionary<OrganisationStatuses, string>
+    {
+        {
+            OrganisationStatuses.Active,
+            "An organisation should be Active it is trading"
+        },
+        {
+            OrganisationStatuses.Retired,
+            "An organisation should be Retired if it has ceased trading. It will remain searchable and submissions will remain visible"
+        },
+        {
+            OrganisationStatuses.Deleted,
+            "An organisation should be Deleted if it was created by mistake / there was no reason for it to ever exist in the service"
+        },
+    };
 
     var items = new List<ItemViewModel>();
-    OrganisationStatuses fieldValue;
-    string fieldId, fieldName = $"GovUk_Radio_{nameof(AdminChangeStatusViewModel.NewStatus)}";
 
-    foreach (var statusHint in statuses.Zip(hints, (s, h) => new {Status = s, Hint = h}))
+    foreach ((OrganisationStatuses status, string hint) in statusHints)
     {
-        if (Model.Organisation.Status != statusHint.Status)
+        if (Model.Organisation.Status != status)
         {
-            fieldValue = statusHint.Status;
-            fieldId = $"{fieldName}_{fieldValue}";
+            string fieldName = $"GovUk_Radio_{nameof(AdminChangeStatusViewModel.NewStatus)}";
+            string fieldId = $"{fieldName}_{status}";
+
             items.Add(new RadioItemViewModel
             {
                 Name = fieldName,
-                Value = fieldValue.ToString(),
+                Value = status.ToString(),
                 Id = fieldId,
-                Checked = Model.NewStatus == fieldValue,
+                Checked = Model.NewStatus == status,
                 Label = new LabelViewModel
                 {
-                    Text = fieldValue.ToString(),
+                    Text = status.ToString(),
                     For = fieldId
                 },
                 Hint = new HintViewModel
                 {
-                    Text = statusHint.Hint
+                    Text = hint
                 }
             });
         }
@@ -95,10 +107,6 @@
 
             @Html.GovUkErrorSummary()
 
-            @{
-                string error = Model.GetErrorFor<AdminChangeStatusViewModel, OrganisationStatuses?>(m => m.NewStatus);
-                ErrorMessageViewModel errorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
-            }
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -114,6 +122,10 @@
             </table>
 
             <div class="govuk-form-group">
+                @{
+                    string error = Model.GetErrorFor<AdminChangeStatusViewModel, OrganisationStatuses?>(m => m.NewStatus);
+                    ErrorMessageViewModel radiosErrorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
+                }
                 @Html.GovUkRadios(new RadiosViewModel
                 {
                     Name = nameof(AdminChangeStatusViewModel.NewStatus),
@@ -127,7 +139,7 @@
                         Classes = "govuk-!-margin-top-6"
                     },
                     Items = items,
-                    ErrorMessage = errorMessageViewModel
+                    ErrorMessage = radiosErrorMessageViewModel
                 })
 
                 @Html.GovUkTextAreaFor(
