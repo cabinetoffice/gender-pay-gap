@@ -50,33 +50,6 @@ namespace GenderPayGap.WebUI.Controllers
             return new OkResult(); // OK = 200
         }
 
-        [HttpGet("~/Go/{shortCode?}", Order = 1)]
-        public async Task<IActionResult> Go(string shortCode)
-        {
-            if (!string.IsNullOrWhiteSpace(shortCode))
-            {
-                List<ShortCodeModel> allShortCodes = await ShortCodesRepository.GetAllShortCodesAsync();
-                ShortCodeModel code = allShortCodes?.FirstOrDefault(sc => sc.ShortCode.EqualsI(shortCode));
-
-                if (code != null && !string.IsNullOrWhiteSpace(code.Path))
-                {
-                    if (code.ExpiryDate.HasValue && code.ExpiryDate.Value < VirtualDateTime.Now)
-                    {
-                        return View(
-                            "CustomError",
-                            new ErrorViewModel(1135, new {expiryDate = code.ExpiryDate.Value.ToString("d MMMM yyyy")}));
-                    }
-
-                    await WebTracker.TrackPageViewAsync(this);
-
-                    string url = $"{code.Path.TrimI(@" .~\")}{RequestUrl.Query}";
-                    return new RedirectResult(url);
-                }
-            }
-
-            return View("CustomError", new ErrorViewModel(1136));
-        }
-
         [HttpGet("~/sign-out")]
         public IActionResult SignOut()
         {
