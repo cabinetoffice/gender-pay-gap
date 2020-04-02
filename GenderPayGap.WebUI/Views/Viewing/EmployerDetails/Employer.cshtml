@@ -107,7 +107,7 @@
                                         {
                                             <span>
                                                 The deadline for 2019/20 
-                                                @(report.AccountingDate.Year == Global.CurrentAccountingYear ? "is" : "was")
+                                                @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
                                                 @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
                                                 Coronavirus (COVID-19), enforcement of reporting deadlines does not
                                                 apply to organisations in the 2019/20 reporting year.
@@ -119,7 +119,7 @@
                                             {
                                                 <span>
                                                     This organisation
-                                                    @(report.AccountingDate.Year == Global.CurrentAccountingYear ? "is" : "was")
+                                                    @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
                                                     required to report by @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy"))
                                                 </span>
                                             }
