@@ -1,4 +1,4 @@
-@using GenderPayGap.WebUI.Models.Admin
+﻿@using GenderPayGap.WebUI.Models.Admin
 @model GenderPayGap.WebUI.Models.Admin.DownloadViewModel
 @{
     ViewBag.Title = "Administration: Downloads";
@@ -22,7 +22,7 @@
                 @Html.AntiForgeryToken()
                 <div style="float:right;font-size:smaller;">
                     <span>
-                        <a href="@Url.Action("Downloads", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content">@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
+                        <a href="@Url.Action("Downloads", "Admin", new {v = Guid.NewGuid().ToShortString()})" title="Show more recent content"><span class="visually-hidden">Show more recent content </span>@VirtualDateTime.Now.ToString("d MMM HH:mm")</a>
                     </span>
                 </div>
 
@@ -57,7 +57,7 @@
                                         @if (!string.IsNullOrWhiteSpace(download.EhrcAccessKey))
                                         {
                                             <span>&#9642;</span>
-                                            <a href="@download.EhrcAccessKey" target="_blank" style="white-space:nowrap">EHRC Link</a>
+                                            <a href="@download.EhrcAccessKey" target="_blank" style="white-space:nowrap">EHRC Link<span class="govuk-visually-hidden"> for @download.Title</span></a>
                                         }
                                         @if (download.ShowUpdateButton)
                                         {
