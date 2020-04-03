@@ -370,14 +370,14 @@
                     {
                         <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
                            class="govuk-link">
-                            Review user request
+                            Review user request <span class="govuk-visually-hidden"> for @(user.Fullname)</span>
                         </a>
                     }
                     <br/>
                     <br/>
                     <a href="@Url.Action("RemoveUserFromOrganisationGet", "AdminRemoveUserFromOrganisation", new {organisationId = userOrganisation.Organisation.OrganisationId, userId = user.UserId})"
                        class="govuk-link">
-                        Remove user <span class="govuk-visually-hidden">@(user.Fullname)</span> from organisation
+                        Remove user <span class="govuk-visually-hidden">@(user.Fullname)</span> from organisation <span class="govuk-visually-hidden">@(userOrganisation.Organisation.OrganisationName)</span>
                     </a>
                 </td>
             </tr>

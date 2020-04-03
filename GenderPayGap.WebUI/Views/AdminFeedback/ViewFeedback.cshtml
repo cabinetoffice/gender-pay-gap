@@ -40,14 +40,16 @@
         
         <p class="govuk-body">
             Download
-            <a href="@Url.Action("DownloadFeedback", "AdminFeedback", new{ nonSpamOnly = true })"
+            <a href="@Url.Action("DownloadFeedback", "AdminFeedback", new {nonSpamOnly = true})"
                class="govuk-link">
+                <span class="govuk-visually-hidden">Download CSV of </span>
                 non-spam feedback
             </a>
             <br/>
             Download
             <a href="@Url.Action("DownloadFeedback", "AdminFeedback")"
                class="govuk-link">
+                <span class="govuk-visually-hidden">Download CSV of </span>
                 all feedback (new, non-spam, spam)
             </a>
         </p>

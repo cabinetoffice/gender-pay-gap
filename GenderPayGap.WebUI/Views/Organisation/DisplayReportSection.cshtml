@@ -7,11 +7,12 @@
     int linkId = reportDateFormatter.StartYear;
     long organisationId = Model.OrganisationId;
     string scopeRequest = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString());
+    string year = $"{reportInfoModel.ReportingStartDate.Year}/{(reportInfoModel.ReportingStartDate.Year + 1).ToTwoDigitYear()}";
 }
 <div class="gpg-manage-reports__row">
 
     <div class="gpg-manage-reports__cell gpg-manage-reports__cell--year">
-        @(reportInfoModel.ReportingStartDate.Year)/@((reportInfoModel.ReportingStartDate.Year + 1).ToTwoDigitYear())
+        @year
     </div>
 
     <div class="gpg-manage-reports__cell">
@@ -28,7 +29,9 @@
         @if (Model.CanChangeScope)
         {
             <div>
-                <a id="ChangeScope@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ChangeOrganisationScope", new {request = scopeRequest}))">Change <span class="visually-hidden">scope</span></a>
+                <a id="ChangeScope@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ChangeOrganisationScope", new {request = scopeRequest}))">
+                    Change<span class="visually-hidden"> scope for year @year</span>
+                </a>
             </div>
         }
     </div>
@@ -62,28 +65,28 @@
         @if (!isReportAvailable && !isDraftAvailable)
         {
             <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsNotAvailable}))">
-                <span>Draft report</span>
+                <span>Draft report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
         @if (!isReportAvailable && isDraftAvailable)
         {
             <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
-                <span>Edit draft</span>
+                <span>Edit draft<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
         @if (isReportAvailable && !isDraftAvailable)
         {
             <a id="ChangeReport@(linkId)-@(Model.EncCurrentOrgId)" class="button" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
-                <span>Edit Report</span>
+                <span>Edit Report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
         @if (isReportAvailable && isDraftAvailable)
         {
             <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
-                <span>Edit draft report</span>
+                <span>Edit draft report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
     </div>

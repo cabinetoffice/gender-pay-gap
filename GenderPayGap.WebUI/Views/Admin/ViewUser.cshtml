@@ -145,7 +145,7 @@
                 {
                     <a href="@Url.Action("ResendVerificationEmailGet", "AdminUserResendVerificationEmail", new {id = Model.UserId})"
                        class="govuk-link">
-                        Re-send verification email
+                        Re-send verification email <span class="govuk-visually-hidden">to @(Model.EmailAddress)</span>
                     </a>
                 }
             </td>
@@ -283,7 +283,7 @@
                     {
                         <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
                            class="govuk-link">
-                            Review user request
+                            Review user request<span class="govuk-visually-hidden"> for @(Model.Fullname)</span>
                         </a>
                         <br/>
                         <br/>
@@ -291,16 +291,16 @@
                     else if (userStatus == "AWAITING_PIN")
                     {
                         <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
-                                     new {userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                                     new {userId = Model.UserId, organisationId = organisation.OrganisationId}))"
                            class="govuk-link">
-                            Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                            Send PIN <span class="govuk-visually-hidden"> to @(Model.Fullname) at @(organisation.OrganisationName)</span>
                         </a>
                         <br/>
                         <br/>
                     }
-                    <a href="@Url.Action("RemoveOrganisationFromUserGet", "AdminRemoveUserFromOrganisation", new {organisationId = userOrganisation.Organisation.OrganisationId, userId = Model.UserId})"
+                    <a href="@Url.Action("RemoveOrganisationFromUserGet", "AdminRemoveUserFromOrganisation", new {organisationId = organisation.OrganisationId, userId = Model.UserId})"
                        class="govuk-link">
-                        Remove user <span class="govuk-visually-hidden">@(Model.Fullname)</span> from organisation
+                        Remove user <span class="govuk-visually-hidden">@(Model.Fullname)</span> from organisation <span class="govuk-visually-hidden">@(organisation.OrganisationName)</span>
                     </a>
                 </td>
             </tr>
