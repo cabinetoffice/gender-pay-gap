@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.WebUI.Models.Admin
+@using GenderPayGap.WebUI.Models.Admin
 @model GenderPayGap.WebUI.Models.Admin.DownloadViewModel
 @{
     ViewBag.Title = "Administration: Downloads";
@@ -61,7 +61,9 @@
                                         }
                                         @if (download.ShowUpdateButton)
                                         {
-                                            <button type="submit" style="float:right;cursor: pointer;" class="link-button" id="btnUpdate" name="Command" value="Update:@download.Filepath" title="Updates the data records">Update</button>
+                                            <button type="submit" style="float: right; cursor: pointer;" class="link-button" id="btnUpdate" name="Command" value="Update:@download.Filepath" title="Updates the data records">
+                                                Update<span class="govuk-visually-hidden"> @download.Title</span>
+                                            </button>
                                         }
                                     </div>
                                 }
@@ -74,7 +76,9 @@
                                         &#9642; No files found
                                         @if (download.ShowUpdateButton)
                                         {
-                                            <button type="submit" style="float:right;cursor: pointer;" class="link-button" id="btnUpdate" name="Command" value="Update:@download.Filepath" title="Updates the data records">Update</button>
+                                            <button type="submit" style="float: right; cursor: pointer;" class="link-button" id="btnUpdate" name="Command" value="Update:@download.Filepath" title="Updates the data records">
+                                                Update<span class="govuk-visually-hidden"> @download.Title</span>
+                                            </button>
                                         }
                                     </div>
                                 }

@@ -128,7 +128,9 @@
                                         </td>
                                     }
                                     <td>
-                                        <button type="submit" class="link-button" name="command" value="employer_@i">Choose&nbsp;organisation</button>
+                                        <button type="submit" class="link-button" name="command" value="employer_@i">
+                                            Choose&nbsp;organisation<span class="govuk-visually-hidden"> @Model.Employers.Results[i].OrganisationName</span>
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -141,7 +143,9 @@
                                 <div class="pager-controls">
                                     @if (Model.Employers.CurrentPage > 1)
                                     {
-                                        <button type="submit" class="link-button" name="command" value="pagePrev">Previous</button>
+                                        <button type="submit" class="link-button" name="command" value="pagePrev">
+                                            Previous<span class="govuk-visually-hidden"> page of organisations list</span>
+                                        </button>
                                     }
                                     @if (Model.Employers.PageCount > 1)
                                     {
@@ -157,7 +161,9 @@
                                                 else
                                                 {
                                                     <li>
-                                                        <button type="submit" class="link-button" name="command" value="page_@i">@i</button>
+                                                        <button type="submit" class="link-button" name="command" value="page_@i">
+                                                            @i<span class="govuk-visually-hidden">th page of organisations list</span>
+                                                        </button>
                                                     </li>
                                                 }
                                             }
@@ -165,7 +171,9 @@
                                     }
                                     @if (Model.Employers.CurrentPage < Model.Employers.PageCount)
                                     {
-                                        <button type="submit" class="link-button" name="command" value="pageNext">Next</button>
+                                        <button type="submit" class="link-button" name="command" value="pageNext">
+                                            Next<span class="govuk-visually-hidden"> page of organisations list</span>
+                                        </button>
                                     }
                                 </div>
                                 <div class="pager-summary">Showing @Model.EmployerStartIndex – @Model.EmployerEndIndex of @Model.Employers.VirtualRecordTotal employers</div>
