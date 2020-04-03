@@ -16,6 +16,14 @@
             <tbody class="govuk-table__body">
                 @foreach (Feedback feedback in Model.FeedbackRows)
                 {
+                    <tr class="govuk-table__row govuk-visually-hidden">
+                        <th scope="row" class="govuk-table__header">
+                            Feedback ID
+                        </th>
+                        <td class="govuk-table__cell">
+                            @(feedback.FeedbackId)
+                        </td>
+                    </tr>
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
                             <span style="white-space: nowrap">
@@ -36,14 +44,14 @@
                                   action="@(Url.Action())"
                                   style="display: flex; flex-direction: column; align-items: center;">
                                 <input type="hidden" name="feedbackId" value="@(feedback.FeedbackId)" />
-                                
+
                                 @if (Model.ShowMarkAsSpamButton)
                                 {
                                     <button class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-bottom-2 govuk-!-width-full @(Model.ButtonClasses)"
                                             data-module="govuk-button"
                                             name="status"
                                             value="@(FeedbackStatus.Spam)">
-                                        Spam<span class="govuk-visually-hidden"> feedback created at @(feedback.CreatedDate.ToString("d MMM yyyy HH:mm"))</span>
+                                        <span class="govuk-visually-hidden">Mark feedback ID @(feedback.FeedbackId) as </span>Spam
                                     </button>
                                 }
                                 @if (Model.ShowMarkAsNotSpamButton)
@@ -52,7 +60,7 @@
                                             data-module="govuk-button"
                                             name="status"
                                             value="@(FeedbackStatus.NotSpam)">
-                                        Not spam<span class="govuk-visually-hidden"> feedback created at @(feedback.CreatedDate.ToString("d MMM yyyy HH:mm"))</span>
+                                        <span class="govuk-visually-hidden">Mark feedback ID @(feedback.FeedbackId) as </span>Not spam
                                     </button>
                                 }
                             </form>
