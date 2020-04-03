@@ -24,3 +24,21 @@
 .guidance-current-page-link {
   margin-bottom: 0;
 }
+
+.govuk-warning-text {
+  padding: 30px;
+  background: govuk-colour("light-grey");
+
+  .govuk-warning-text__icon {
+    margin: -5px 0 0 30px;
+    min-width: 35px;
+    min-height: 35px;
+    font-size: 30px;
+    padding: 0;
+    top: auto;
+  }
+
+  .govuk-warning-text__text {
+    margin-bottom: 30px;
+  }
+}
