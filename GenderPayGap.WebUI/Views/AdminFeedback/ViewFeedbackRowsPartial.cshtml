@@ -43,7 +43,7 @@
                                             data-module="govuk-button"
                                             name="status"
                                             value="@(FeedbackStatus.Spam)">
-                                        Spam
+                                        Spam<span class="govuk-visually-hidden"> feedback created at @(feedback.CreatedDate.ToString("d MMM yyyy HH:mm"))</span>
                                     </button>
                                 }
                                 @if (Model.ShowMarkAsNotSpamButton)
@@ -52,7 +52,7 @@
                                             data-module="govuk-button"
                                             name="status"
                                             value="@(FeedbackStatus.NotSpam)">
-                                        Not spam
+                                        Not spam<span class="govuk-visually-hidden"> feedback created at @(feedback.CreatedDate.ToString("d MMM yyyy HH:mm"))</span>
                                     </button>
                                 }
                             </form>

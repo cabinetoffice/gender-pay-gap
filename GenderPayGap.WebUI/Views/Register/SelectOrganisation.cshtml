@@ -57,7 +57,9 @@
                                 }
                             </td>
                             <td>
-                                <button type="submit" class="link-button" name="command" value="employer_@i">Choose&nbsp;organisation</button>
+                                <button type="submit" class="link-button" name="command" value="employer_@i">
+                                    Choose&nbsp;organisation<span class="govuk-visually-hidden"> @Model.ManualEmployers[i].OrganisationName</span>
+                                </button>
                             </td>
                         </tr>
                     }
