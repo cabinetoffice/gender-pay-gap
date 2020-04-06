@@ -32,7 +32,6 @@ namespace GenderPayGap.Database
         public string EmployerReference { get; set; }
         public DateTime? DateOfCessation { get; set; }
         public long? LatestAddressId { get; set; }
-        public long? LatestReturnId { get; set; }
         public long? LatestScopeId { get; set; }
         public long? LatestRegistrationUserId { get; set; }
         public long? LatestRegistrationOrganisationId { get; set; }
@@ -47,7 +46,6 @@ namespace GenderPayGap.Database
 
         public virtual OrganisationAddress LatestAddress { get; set; }
         public virtual UserOrganisation LatestRegistration { get; set; }
-        public virtual Return LatestReturn { get; set; }
         public virtual OrganisationScope LatestScope { get; set; }
         public virtual OrganisationPublicSectorType LatestPublicSectorType { get; set; }
         public virtual ICollection<OrganisationAddress> OrganisationAddresses { get; set; }
