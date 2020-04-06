@@ -497,38 +497,8 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             var count = 0;
 
-            #region Fix latest registrations
-
-            IQueryable<Organisation> orgs = DataRepository.GetAll<Organisation>()
-                .Where(o => o.LatestRegistration == null && o.UserOrganisations.Any(uo => uo.PINConfirmedDate != null));
-            var subCount = 0;
-            foreach (Organisation org in orgs)
-            {
-                UserOrganisation latestReg = org.UserOrganisations.OrderByDescending(o => o.PINConfirmedDate)
-                    .FirstOrDefault(o => o.PINConfirmedDate != null);
-                if (latestReg != null)
-                {
-                    //DOTNETCORE MERGE - latestReg.LatestOrganisation = org;
-                    org.LatestRegistration = latestReg;
-                    subCount++;
-                    writer.WriteLine(
-                        $"{subCount:000}: Organisation '{org.EmployerReference}:{org.OrganisationName}' missing a latest registration {(test ? "will be" : "was successfully")} fixed");
-                }
-            }
-
-            if (!test && subCount > 0)
-            {
-                await DataRepository.SaveChangesAsync();
-            }
-
-            if (subCount == 0)
-            {
-                writer.WriteLine("No organisations missing a latest registration");
-            }
-
-            count += subCount;
-
-            #endregion
+            IQueryable<Organisation> orgs;
+            int subCount;
 
             #region Fix latest scopes
 
