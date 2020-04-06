@@ -329,6 +329,14 @@ namespace GenderPayGap.Database
             return obfuscator.Obfuscate(OrganisationId.ToString());
         }
 
+        public Return GetLatestReturn()
+        {
+            return Returns
+                .Where(r => r.Status == ReturnStatuses.Submitted)
+                .OrderByDescending(r => r.AccountingDate)
+                .FirstOrDefault();
+        }
+
         //Returns the latest return for the specified accounting year or the latest ever if no accounting year is 
         public Return GetReturn(int year = 0)
         {
