@@ -96,8 +96,6 @@ namespace GenderPayGap.WebUI.Controllers
                         Address = org.GetAddressString(),
                         Sector = org.SectorType,
                         ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1),
-                        ScopeStatus = org.GetCurrentScope()?.ScopeStatus,
-                        HasSubmitted = org.LatestReturn?.Status == ReturnStatuses.Submitted
                     })
                 .ToList();
 
@@ -263,16 +261,24 @@ namespace GenderPayGap.WebUI.Controllers
             };
         }
 
-        [HttpGet("downloads-new/late-submissions")]
-        public FileContentResult DownloadLateSubmissions()
+        [HttpGet("downloads-new/late-submissions-for-{year}")]
+        public FileContentResult DownloadLateSubmissions(int year)
         {
             List<Organisation> organisationsWithLateReturns = dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
                 .Where(
-                    org => org.LatestScope == null
-                           || org.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                           || org.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
-                .Where(org => org.LatestReturn == null || org.LatestReturn.IsLateSubmission)
+                    org => org.OrganisationScopes.Any(
+                        s => s.SnapshotDate.Year == year
+                             && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
+                
+                // There might not be a Return for any given year
+                // So we search for organisations that do NOT have a non-late submission
+                .Where(
+                    org => !org.Returns
+                        .Any(
+                            r => r.AccountingDate.Year == year
+                                 && r.Status == ReturnStatuses.Submitted
+                                 && !r.IsLateSubmission))
                 .Include(org => org.Returns)
                 .ToList();
 
@@ -282,11 +288,11 @@ namespace GenderPayGap.WebUI.Controllers
                         org.OrganisationId,
                         org.OrganisationName,
                         org.SectorType,
-                        Submitted = org.LatestReturn != null,
+                        Submitted = org.GetReturn(year) != null,
                         ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
-                        SubmittedDate = org.LatestReturn?.Created,
-                        ModifiedDate = org.LatestReturn?.Modified,
-                        org.LatestReturn?.LateReason
+                        SubmittedDate = org.GetReturn(year)?.Created,
+                        ModifiedDate = org.GetReturn(year)?.Modified,
+                        org.GetReturn(year)?.LateReason
 
                     })
                 .ToList();
