@@ -43,8 +43,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         // presentation
         Task<ReturnViewModel> GetReturnViewModelAsync(long organisationId, int snapshotYear, long userId);
 
-        bool ShouldUpdateLatestReturn(Organisation org, int snapshotYear);
-
         Task<ReportInfoModel> GetReportInfoModelWithLockedDraftAsync(Organisation organisation,
             DateTime? returnModifiedDate,
             int snapshotYear);
@@ -530,11 +528,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         {
             // Get the current reporting period for the sector
             return GetSnapshotDate(sector);
-        }
-
-        public bool ShouldUpdateLatestReturn(Organisation org, int snapshotYear)
-        {
-            return org.LatestReturn == null || org.LatestReturn.AccountingDate.Year <= snapshotYear;
         }
 
         public async Task<List<ReportInfoModel>> GetAllEditableReportsAsync(UserOrganisation userOrg, DateTime currentSnapshotDate)

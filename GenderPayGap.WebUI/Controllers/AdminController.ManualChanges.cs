@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -524,39 +524,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             if (subCount == 0)
             {
                 writer.WriteLine("No organisations missing a latest registration");
-            }
-
-            count += subCount;
-
-            #endregion
-
-            #region Fix latest returns
-
-            orgs = DataRepository.GetAll<Organisation>()
-                .Where(o => o.LatestReturn == null && o.Returns.Any(r => r.Status == ReturnStatuses.Submitted));
-            subCount = 0;
-            foreach (Organisation org in orgs)
-            {
-                Return latestReturn = org.Returns.OrderByDescending(o => o.AccountingDate)
-                    .FirstOrDefault(o => o.Status == ReturnStatuses.Submitted);
-                if (latestReturn != null)
-                {
-                    latestReturn.Organisation = org;
-                    org.LatestReturn = latestReturn;
-                    subCount++;
-                    writer.WriteLine(
-                        $"{subCount:000}: Organisation '{org.EmployerReference}:{org.OrganisationName}' missing a latest return {(test ? "will be" : "was successfully")} fixed");
-                }
-            }
-
-            if (!test && subCount > 0)
-            {
-                await DataRepository.SaveChangesAsync();
-            }
-
-            if (subCount == 0)
-            {
-                writer.WriteLine("No organisations missing a latest return");
             }
 
             count += subCount;
@@ -1295,22 +1262,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 //Output the actual execution result
                 @return.SetStatus(newValue, CurrentUser.UserId, comment);
-                if (@return.Organisation.LatestReturn != null && @return.Organisation.LatestReturn.ReturnId == @return.ReturnId)
-                {
-                    //Get the latest return (if any)
-                    Return latestReturn = @return.Organisation.Returns.OrderByDescending(o => o.AccountingDate)
-                        .FirstOrDefault(o => o.Status == ReturnStatuses.Submitted);
-
-                    //Set the new latest return or the organisation 
-                    @return.Organisation.LatestReturn = latestReturn;
-                    if (latestReturn != null)
-                    {
-                        latestReturn.Organisation = org;
-                    }
-
-                    //Remove the old latest return 
-                    @return.Organisation = null;
-                }
 
                 writer.WriteLine($"{i}: {employerRef}: {org.OrganisationName} Year='{year}' Status='{oldValue}' set to '{newValue}'");
                 if (!test)

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -291,7 +291,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 () => {
                     Assert.AreEqual("SUCCESSFULLY TESTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
                     Assert.AreEqual(
-                        "001: Organisation 'EmployerReference564:Org123' missing a latest registration will be fixed\r\nNo organisations missing a latest return\r\nNo organisations missing a latest scope\r\n",
+                        "001: Organisation 'EmployerReference564:Org123' missing a latest registration will be fixed\r\nNo organisations missing a latest scope\r\n",
                         actualManualChangesViewModel.Results);
                     Assert.AreEqual("Fix database errors", actualManualChangesViewModel.LastTestedCommand);
                     Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
@@ -350,133 +350,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 () => {
                     Assert.AreEqual("SUCCESSFULLY EXECUTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
                     Assert.AreEqual(
-                        "001: Organisation 'EmployerReference96585:Org123' missing a latest registration was successfully fixed\r\nNo organisations missing a latest return\r\nNo organisations missing a latest scope\r\n",
+                        "001: Organisation 'EmployerReference96585:Org123' missing a latest registration was successfully fixed\r\nNo organisations missing a latest scope\r\n",
                         actualManualChangesViewModel.Results);
                     Assert.IsNull(actualManualChangesViewModel.LastTestedCommand);
                     Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
                     Assert.False(actualManualChangesViewModel.Tested, "Must be tested=false as this case is running in LIVE mode");
                     Assert.IsNull(actualManualChangesViewModel.Comment);
                 });
-        }
-
-        [Test]
-        public async Task AdminController_ManualChanges_POST_Fix_Database_Error_Missing_Latest_Return_Works_When_Run_In_Test_Mode_Async()
-        {
-            // Arrange
-            User notAdminUser = UserHelper.GetDatabaseAdmin();
-            var adminController = UiTestHelper.GetController<AdminController>(notAdminUser.UserId, null, null);
-
-            #region Set up organisation missing the latest return link so it's picked up by the test
-
-            Organisation organisation_MissingLatestReturn = OrganisationHelper.GetPrivateOrganisation("EmployerReference985");
-            UserOrganisation userOrganisation_MissingLatestReturn =
-                UserOrganisationHelper.LinkUserWithOrganisation(notAdminUser, organisation_MissingLatestReturn);
-            Return return_MissingLatestReturn = ReturnHelper.GetSubmittedReturnForOrganisationAndYear(
-                userOrganisation_MissingLatestReturn,
-                VirtualDateTime.Now.AddYears(-1).Year);
-            organisation_MissingLatestReturn.Returns.Add(return_MissingLatestReturn); // latest return indeed exists for this organisation
-            organisation_MissingLatestReturn.LatestRegistration = userOrganisation_MissingLatestReturn;
-            organisation_MissingLatestReturn.LatestReturn = null; // missing latest return -link-
-
-            #endregion
-
-            Mock<IDataRepository> configurableDataRepository = AutoFacExtensions.ResolveAsMock<IDataRepository>();
-
-            configurableDataRepository
-                .Setup(x => x.Get<User>(It.IsAny<long>()))
-                .Returns(notAdminUser);
-
-            configurableDataRepository
-                .Setup(x => x.GetAll<Organisation>())
-                .Returns(new[] {organisation_MissingLatestReturn}.AsQueryable());
-
-            var manualChangesViewModel = new ManualChangesViewModel {Command = FixDatabaseErrorsCommand};
-
-            // Act
-            IActionResult manualChangesResult = await adminController.ManualChanges(manualChangesViewModel);
-
-            // Assert
-            Assert.NotNull(manualChangesResult, "Expected a Result");
-
-            var manualChangesViewResult = manualChangesResult as ViewResult;
-            Assert.NotNull(manualChangesViewResult, "Expected ViewResult");
-
-            var actualManualChangesViewModel = manualChangesViewResult.Model as ManualChangesViewModel;
-            Assert.NotNull(actualManualChangesViewModel, "Expected ManualChangesViewModel");
-
-            Assert.Multiple(
-                () => {
-                    Assert.AreEqual("SUCCESSFULLY TESTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
-                    Assert.AreEqual(
-                        "No organisations missing a latest registration\r\n001: Organisation 'EmployerReference985:Org123' missing a latest return will be fixed\r\nNo organisations missing a latest scope\r\n",
-                        actualManualChangesViewModel.Results);
-                    Assert.AreEqual("Fix database errors", actualManualChangesViewModel.LastTestedCommand);
-                    Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
-                    Assert.True(actualManualChangesViewModel.Tested, "Must be tested=true as this case is running in TEST mode");
-                    Assert.IsNull(actualManualChangesViewModel.Comment);
-                });
-        }
-
-        [Test]
-        public async Task AdminController_ManualChanges_POST_Fix_Database_Error_Missing_Latest_Return_Works_When_Run_In_Live_Mode_Async()
-        {
-            // Arrange
-            User notAdminUser = UserHelper.GetDatabaseAdmin();
-            var adminController = UiTestHelper.GetController<AdminController>(notAdminUser.UserId, null, null);
-
-            #region Set up organisation missing the latest return link so it's picked up by the test
-
-            Organisation organisation_MissingLatestReturn = OrganisationHelper.GetPrivateOrganisation("EmployerReference5455");
-            UserOrganisation userOrganisation_MissingLatestReturn =
-                UserOrganisationHelper.LinkUserWithOrganisation(notAdminUser, organisation_MissingLatestReturn);
-            Return return_MissingLatestReturn = ReturnHelper.GetSubmittedReturnForOrganisationAndYear(
-                userOrganisation_MissingLatestReturn,
-                VirtualDateTime.Now.AddYears(-1).Year);
-            organisation_MissingLatestReturn.Returns.Add(return_MissingLatestReturn); // latest return indeed exists for this organisation
-            organisation_MissingLatestReturn.LatestRegistration = userOrganisation_MissingLatestReturn;
-            organisation_MissingLatestReturn.LatestReturn = null; // missing latest return -link-
-
-            #endregion
-
-            Mock<IDataRepository> configurableDataRepository = AutoFacExtensions.ResolveAsMock<IDataRepository>();
-
-            configurableDataRepository
-                .Setup(x => x.Get<User>(It.IsAny<long>()))
-                .Returns(notAdminUser);
-
-            configurableDataRepository
-                .Setup(x => x.GetAll<Organisation>())
-                .Returns(new[] {organisation_MissingLatestReturn}.AsQueryable());
-
-            var manualChangesViewModel = new ManualChangesViewModel {Command = FixDatabaseErrorsCommand};
-
-            /* live */
-            manualChangesViewModel.LastTestedCommand = manualChangesViewModel.Command;
-            manualChangesViewModel.LastTestedInput = null;
-
-            // Act
-            IActionResult manualChangesResult = await adminController.ManualChanges(manualChangesViewModel);
-
-            // Assert
-            Assert.NotNull(manualChangesResult, "Expected a Result");
-
-            var manualChangesViewResult = manualChangesResult as ViewResult;
-            Assert.NotNull(manualChangesViewResult, "Expected ViewResult");
-
-            var actualManualChangesViewModel = manualChangesViewResult.Model as ManualChangesViewModel;
-            Assert.NotNull(actualManualChangesViewModel, "Expected ManualChangesViewModel");
-
-            Assert.AreEqual("SUCCESSFULLY EXECUTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
-            var expectedManualChangesViewModelResults =
-                "No organisations missing a latest registration\r\n001: Organisation 'EmployerReference5455:Org123' missing a latest return was successfully fixed\r\nNo organisations missing a latest scope\r\n";
-            Assert.AreEqual(
-                expectedManualChangesViewModelResults,
-                actualManualChangesViewModel.Results,
-                $"EXPECTED -{expectedManualChangesViewModelResults}- BUT WAS -{actualManualChangesViewModel.Results}-");
-            Assert.IsNull(actualManualChangesViewModel.LastTestedCommand);
-            Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
-            Assert.False(actualManualChangesViewModel.Tested, "Must be tested=false as this case is running in LIVE mode");
-            Assert.IsNull(actualManualChangesViewModel.Comment);
         }
 
         [Test]
@@ -535,7 +415,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 () => {
                     Assert.AreEqual("SUCCESSFULLY TESTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
                     Assert.AreEqual(
-                        "No organisations missing a latest registration\r\nNo organisations missing a latest return\r\n001: Organisation 'EmployerReference444:Org123' missing a latest scope will be fixed\r\n",
+                        "No organisations missing a latest registration\r\n001: Organisation 'EmployerReference444:Org123' missing a latest scope will be fixed\r\n",
                         actualManualChangesViewModel.Results);
                     Assert.AreEqual("Fix database errors", actualManualChangesViewModel.LastTestedCommand);
                     Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
@@ -602,7 +482,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
             Assert.AreEqual("SUCCESSFULLY EXECUTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
             var expectedManualChangesViewModelResults =
-                "No organisations missing a latest registration\r\nNo organisations missing a latest return\r\n001: Organisation 'EmployerReference5487548:Org123' missing a latest scope was successfully fixed\r\n";
+                "No organisations missing a latest registration\r\n001: Organisation 'EmployerReference5487548:Org123' missing a latest scope was successfully fixed\r\n";
             Assert.AreEqual(
                 expectedManualChangesViewModelResults,
                 actualManualChangesViewModel.Results,
