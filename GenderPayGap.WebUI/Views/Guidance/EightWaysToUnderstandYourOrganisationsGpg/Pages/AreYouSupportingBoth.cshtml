@@ -87,22 +87,81 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        <h2 class="govuk-heading-l">Overview</h2>
+        <h2 class="govuk-heading-l">Are you supporting both men and women to take on caring responsibilities?</h2>
         <p class="govuk-body">
-            The gender pay gap (GPG) data that you have reported provides a basic understanding of what the gender 
-            pay balance looks like within your organisation. However, to be able to target resources effectively to 
-            improve your GPG, it is essential to know more about the specific causes of any imbalance.
+            Being able to care for others should be a choice open to both men and women, and is a core issue when it
+            comes to gender equality It is therefore worth reviewing your policies and considering your workplace
+            culture to ensure that employees are supported to take on caring roles and responsibilities if they
+            choose to.
         </p>
+        <h3 class="govuk-heading-s">To assess how well you are doing on this:</h3>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                <strong>
+                    Look at the uptake of flexible working, Shared Parental Leave and paternity leave, including by
+                    gender.
+                </strong>
+                <p class="govuk-body">
+                    If there is low take-up of these policies by men, this suggests that men and women in your
+                    organisation are working in quite different ways, which could contribute to your gender pay gap.
+                </p>
+            </li>
+            <li>
+                <strong>
+                    Use your staff survey to assess your organisational culture and look for differences between genders.
+                </strong>
+                <p class="govuk-body">
+                    For example:
+                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>Do employees feel supported to take up flexible working?</li>
+                    <li>Do employees feel that working flexibly (or part-time) is a barrier to progression?</li>
+                    <li>Do employees know what flexible working and parental leave options are available to them?</li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">If you find a gender imbalance here:</span>
+                If you find a gender imbalance here:
+            </strong>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    <p class="govuk-body">
+                        Raise awareness about your Shared Parental Leave, paternity leave and flexible working offer
+                        by disseminating clear guidance, or launching a campaign
+                    </p>
+                </li>
+                <li>
+                    <p class="govuk-body">
+                        Consider enhancing pay for those on paternity leave and Shared Parental Leave to encourage
+                        male employees to play a role in childcare.
+                    </p>
+                </li>
+                <li>
+                    <p class="govuk-body">
+                        Advertise all jobs as flexible by default, unless there is a strong business case otherwise.
+                    </p>
+                </li>
+            </ul>
+        </div>
+
+        <h3 class="govuk-heading-m">Next steps</h3>
+        <h4 class="govuk-heading-s">Developing an action plan</h4>
         <p class="govuk-body">
-            In this guide, you will find eight key questions to ask that will help you to identify different potential 
-            causes of the GPG. You will need some additional data to be able to be able to answer these questions, but
-            you may already collect this data as part of your human resources processes.
+            Once you have identified where any issues might lie, our Actions to Close the gender pay gap guidance
+            provides more information to help you to develop a robust, evidence‐based Action Plan and ensure you are
+            doing all you can to reduce your organisation’s GPG.
         </p>
-        <p class="govuk-body">
-            As 77% of organisations reporting in 2017/18 have a gender pay gap in favour of men, this guidance mostly 
-            refers to actions to support women. However, the majority of actions could equally be used to support men 
-            where the GPG is in favour of women.
-        </p>
+        <a href="/public/assets/pdf/action-plan-guidance.pdf" rel="download" download="true"
+           class="govuk-link govuk-!-font-weight-bold govuk-body">
+            Find out how to create an action plan to close your gender pay gap
+            <span class="govuk-visually-hidden"> (pdf)</span>
+        </a>
+
+        <hr class="govuk-section-break govuk-section-break--l">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
                 @{ await Html.RenderPartialAsync("/Views/Components/PaginationLink.cshtml",
@@ -115,7 +174,6 @@
                        }); }
             </div>
         </div>
-        
     </div>
     <div class="govuk-grid-column-one-third">
         <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
