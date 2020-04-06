@@ -6,6 +6,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Register;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -53,10 +54,8 @@ namespace GenderPayGap.WebUI.Controllers
             try
             {
                 string verifyCode = Encryption.EncryptQuerystring(currentUser.UserId + ":" + currentUser.Created.ToSmallDateTime());
-                if (!await this.SendVerifyEmailAsync(currentUser.EmailAddress, verifyCode))
-                {
-                    return null;
-                }
+                string verifyUrl = Url.Action("VerifyEmail", "Register", new { code = verifyCode }, "https");
+                EmailSendingService.SendCreateAccountPendingVerificationEmail(currentUser.EmailAddress, verifyUrl);
 
                 currentUser.EmailVerifyHash = Crypto.GetSHA512Checksum(verifyCode);
                 currentUser.EmailVerifySendDate = VirtualDateTime.Now;

@@ -9,17 +9,21 @@ namespace GenderPayGap.WebUI.Services
 {
     public class EmailSendingService
     {
-        
+
         public static async void PrototypeSendAccountVerificationEmail(string emailAddress, string verificationUrl)
         {
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"TimeWithUnits", "7 days"},
-                {"VerificationUrl", verificationUrl}, 
+                {"VerificationUrl", verificationUrl},
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
-                EmailAddress = emailAddress, TemplateId = EmailTemplates.PrototypeAccountVerificationEmail, Personalisation = personalisation
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.PrototypeAccountVerificationEmail,
+                Personalisation = personalisation
             };
 
             await AddEmailToQueue(notifyEmail);
@@ -31,7 +35,8 @@ namespace GenderPayGap.WebUI.Services
             string reportingPeriod,
             string reportLink)
         {
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"OrganisationName", organisationName},
                 {"SubmittedOrUpdated", submittedOrUpdated},
                 {"ReportingPeriod", reportingPeriod},
@@ -39,8 +44,11 @@ namespace GenderPayGap.WebUI.Services
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
-                EmailAddress = emailAddress, TemplateId = EmailTemplates.SendSuccessfulSubmissionEmail, Personalisation = personalisation
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendSuccessfulSubmissionEmail,
+                Personalisation = personalisation
             };
 
             await AddEmailToQueue(notifyEmail);
@@ -48,13 +56,15 @@ namespace GenderPayGap.WebUI.Services
 
         public static async void SendPinEmail(string emailAddress, string pin, string organisationName)
         {
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"PIN", pin},
                 {"OrganisationName", organisationName},
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
+            var notifyEmail = new NotifyEmail
+            {
                 EmailAddress = emailAddress, TemplateId = EmailTemplates.SendPinEmail, Personalisation = personalisation
             };
 
@@ -63,13 +73,15 @@ namespace GenderPayGap.WebUI.Services
 
         public static async void SendUserAddedToOrganisationEmail(string emailAddress, string organisationName, string username)
         {
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"OrganisationName", organisationName},
                 {"Username", username},
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
+            var notifyEmail = new NotifyEmail
+            {
                 EmailAddress = emailAddress, TemplateId = EmailTemplates.UserAddedToOrganisationEmail, Personalisation = personalisation
             };
 
@@ -78,14 +90,18 @@ namespace GenderPayGap.WebUI.Services
 
         public static async void SendRemovedUserFromOrganisationEmail(string emailAddress, string organisationName, string removedUserName)
         {
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"OrganisationName", organisationName},
                 {"RemovedUser", removedUserName},
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
-                EmailAddress = emailAddress, TemplateId = EmailTemplates.RemovedUserFromOrganisationEmail, Personalisation = personalisation
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.RemovedUserFromOrganisationEmail,
+                Personalisation = personalisation
             };
 
             await AddEmailToQueue(notifyEmail);
@@ -93,11 +109,14 @@ namespace GenderPayGap.WebUI.Services
 
         public static async void SendScopeChangeInEmail(string emailAddress, string organisationName)
         {
-            var personalisation = new Dictionary<string, dynamic> {
-                {"OrganisationName", organisationName}, {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"OrganisationName", organisationName},
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
+            var notifyEmail = new NotifyEmail
+            {
                 EmailAddress = emailAddress, TemplateId = EmailTemplates.ScopeChangeInEmail, Personalisation = personalisation
             };
 
@@ -106,12 +125,33 @@ namespace GenderPayGap.WebUI.Services
 
         public static async void SendScopeChangeOutEmail(string emailAddress, string organisationName)
         {
-            var personalisation = new Dictionary<string, dynamic> {
-                {"OrganisationName", organisationName}, {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"OrganisationName", organisationName},
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
-            var notifyEmail = new NotifyEmail {
+            var notifyEmail = new NotifyEmail
+            {
                 EmailAddress = emailAddress, TemplateId = EmailTemplates.ScopeChangeOutEmail, Personalisation = personalisation
+            };
+
+            await AddEmailToQueue(notifyEmail);
+        }
+
+        public static async void SendCreateAccountPendingVerificationEmail(string emailAddress, string url)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"url", url},
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendCreateAccountPendingVerificationEmail,
+                Personalisation = personalisation
             };
 
             await AddEmailToQueue(notifyEmail);
@@ -146,6 +186,7 @@ namespace GenderPayGap.WebUI.Services
         public const string UserAddedToOrganisationEmail = "8513d426-1881-49db-92c2-11dd1fd7a30f";
         public const string SendPinEmail = "c320cf3e-d5a1-434e-95c6-84933063be8a";
         public const string SendSuccessfulSubmissionEmail = "9f690ae4-2913-4e98-b9c9-427080f210de";
+        public const string SendCreateAccountPendingVerificationEmail = "ed3672eb-4a88-4db4-ae80-2884e5e7c68e";
 
     }
 

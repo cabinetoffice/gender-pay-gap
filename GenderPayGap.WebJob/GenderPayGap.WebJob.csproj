@@ -35,7 +35,6 @@
     <None Remove="App_Data\EmailTemplates\ChangeEmailPendingVerificationTemplate.html" />
     <None Remove="App_Data\EmailTemplates\ChangePasswordCompletedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\CloseAccountCompletedTemplate.html" />
-    <None Remove="App_Data\EmailTemplates\CreateAccountPendingVerificationTemplate.html" />
     <None Remove="App_Data\EmailTemplates\GeoOrganisationRegistrationRequestTemplate.html" />
     <None Remove="App_Data\EmailTemplates\OrganisationRegistrationApprovedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\OrganisationRegistrationDeclinedTemplate.html" />
@@ -63,9 +62,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\CloseAccountCompletedTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\EmailTemplates\CreateAccountPendingVerificationTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\GeoOrganisationRegistrationRequestTemplate.html">

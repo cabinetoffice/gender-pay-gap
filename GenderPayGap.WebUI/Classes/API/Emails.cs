@@ -36,15 +36,6 @@ namespace GenderPayGap
             return false;
         }
 
-        public static async Task<bool> SendCreateAccountPendingVerificationAsync(string verifyUrl, string emailAddress)
-        {
-            var createAccountPendingTemplate = new CreateAccountPendingVerificationTemplate {
-                Url = verifyUrl, RecipientEmailAddress = emailAddress, Test = emailAddress.StartsWithI(Global.TestPrefix)
-            };
-
-            return await QueueEmailAsync(createAccountPendingTemplate);
-        }
-
         public static async Task<bool> SendChangeEmailPendingVerificationAsync(string verifyUrl, string emailAddress)
         {
             var changeEmailPendingTemplate = new ChangeEmailPendingVerificationTemplate {

@@ -4,6 +4,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
@@ -81,13 +82,7 @@ namespace GenderPayGap.WebUI.Models.Admin
 
             string verifyUrl = Url.Action("VerifyEmail", "Register", new { code = verifyCode }, "https");
 
-            if (!Emails.SendCreateAccountPendingVerificationAsync(verifyUrl, user.EmailAddress).Result)
-            {
-                viewModel.AddErrorFor(
-                    m => m.OtherErrorMessagePlaceholder,
-                    "Error whilst re-sending verification email. Please try again in a few minutes.");
-                return View("ResendVerificationEmail", viewModel);
-            }
+            EmailSendingService.SendCreateAccountPendingVerificationEmail(user.EmailAddress, verifyUrl);
 
             return View("VerificationEmailSent", user);
         }

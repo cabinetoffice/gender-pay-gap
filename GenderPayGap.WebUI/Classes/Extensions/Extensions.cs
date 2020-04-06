@@ -12,6 +12,7 @@ using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -129,13 +130,7 @@ namespace GenderPayGap.WebUI.Classes
         #endregion
 
         #region Registraion Helpers
-
-        public static async Task<bool> SendVerifyEmailAsync(this Controller controller, string emailAddress, string verifyCode)
-        {
-            string verifyUrl = controller.Url.Action("VerifyEmail", "Register", new {code = verifyCode}, "https");
-            return await Emails.SendCreateAccountPendingVerificationAsync(verifyUrl, emailAddress);
-        }
-
+        
         public static async Task<bool> SendPasswordResetAsync(this Controller controller, string emailAddress, string resetCode)
         {
             string resetUrl = controller.Url.Action("NewPassword", "Register", new {code = resetCode}, "https");

@@ -57,7 +57,6 @@ namespace GenderPayGap.WebJob
             host.RegisterEmailTemplate<ResetPasswordCompletedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<CloseAccountCompletedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<OrphanOrganisationTemplate>(emailTemplatesConfigPath);
-            host.RegisterEmailTemplate<CreateAccountPendingVerificationTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<OrganisationRegistrationApprovedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<OrganisationRegistrationDeclinedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<OrganisationRegistrationRemovedTemplate>(emailTemplatesConfigPath);
