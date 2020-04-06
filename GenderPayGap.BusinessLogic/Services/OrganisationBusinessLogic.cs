@@ -119,8 +119,11 @@ namespace GenderPayGap.BusinessLogic
                     StatusDetails = o.StatusDetails,
                     Address = o.LatestAddress?.GetAddressString(),
                     SicCodes = o.GetSicCodeIdsString(),
-                    LatestRegistrationDate = o.LatestRegistration?.PINConfirmedDate,
-                    LatestRegistrationMethod = o.LatestRegistration?.Method,
+
+                    // Removed on branch - commented for now
+                    //LatestRegistrationDate = o.LatestRegistration?.PINConfirmedDate,
+                    //LatestRegistrationMethod = o.LatestRegistration?.Method,
+
                     Created = o.Created,
                     SecurityCode = o.SecurityCode,
                     SecurityCodeExpiryDateTime = o.SecurityCodeExpiryDateTime,
