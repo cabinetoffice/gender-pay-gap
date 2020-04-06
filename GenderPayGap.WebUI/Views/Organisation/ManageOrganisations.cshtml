@@ -1,10 +1,7 @@
-﻿@using GenderPayGap.Core
-@using GenderPayGap.Core.Classes
-@using GenderPayGap.Database
+﻿@using GenderPayGap.Database
 @model IEnumerable<GenderPayGap.Database.UserOrganisation>
 @{
     ViewBag.Title = "Manage your organisation - Gender pay gap reporting service - GOV.UK";
-    var controller = ViewData["Controller"] as BaseController;
     bool hasRegisteredOrgs = Model.Any();
 }
 
@@ -38,16 +35,7 @@
             <tbody>
             @foreach (UserOrganisation userOrg in Model)
             {
-                // include the currrent user in the count but dont show a count to pending users
-                int assocUserCount = userOrg.GetAssociatedUsers().Count();
-                DateTime accountingDate = userOrg.Organisation.SectorType.GetAccountingStartDate();
-                int accountingStartYear = accountingDate.Year;
-                string accountingEndYear = (accountingDate.Year + 1).ToString();
-
                 string encOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
-                Return latestReturn = userOrg.Organisation.LatestReturn;
-                ScopeStatuses scopeStatus = userOrg.Organisation.GetScopeStatus(accountingDate);
-                string address = userOrg.Organisation.GetAddressString();
 
                 <tr>
                     @if (userOrg.PINSentDate != null && userOrg.PINConfirmedDate == null)
