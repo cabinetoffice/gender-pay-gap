@@ -386,7 +386,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 publicOrganisationWithSubmissionsToBeDeleted,
                 VirtualDateTime.Now.AddYears(-1).Year);
             mockedReturn.Status = ReturnStatuses.Submitted;
-            publicOrganisationWithSubmissionsToBeDeleted.LatestReturn = mockedReturn;
+            publicOrganisationWithSubmissionsToBeDeleted.Returns.Add(mockedReturn);
             mockedReturn.Organisation = publicOrganisationWithSubmissionsToBeDeleted;
 
             var testController = UiTestHelper.GetController<AdminController>(
@@ -434,7 +434,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 publicOrganisationWithSubmissionsToBeDeleted,
                 VirtualDateTime.Now.AddYears(-1).Year);
             mockedReturn.ReturnId = new Random().Next(10000, 99999);
-            publicOrganisationWithSubmissionsToBeDeleted.LatestReturn = mockedReturn;
             publicOrganisationWithSubmissionsToBeDeleted.Returns.Add(mockedReturn);
             mockedReturn.Organisation = publicOrganisationWithSubmissionsToBeDeleted;
 

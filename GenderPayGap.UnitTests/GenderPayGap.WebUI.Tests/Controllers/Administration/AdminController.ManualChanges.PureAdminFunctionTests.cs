@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -378,7 +378,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 userOrganisation_MissingLatestScope,
                 VirtualDateTime.Now.AddYears(-1).Year);
             organisation_MissingLatestScope.Returns.Add(return_MissingLatestScope);
-            organisation_MissingLatestScope.LatestReturn = return_MissingLatestScope;
 
             OrganisationScope scope_MissingLatestScope = ScopeHelper.CreateScope(ScopeStatuses.InScope, VirtualDateTime.Now.AddYears(-1));
             organisation_MissingLatestScope.OrganisationScopes.Add(
@@ -443,7 +442,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 userOrganisation_MissingLatestScope,
                 VirtualDateTime.Now.AddYears(-1).Year);
             organisation_MissingLatestScope.Returns.Add(return_MissingLatestScope);
-            organisation_MissingLatestScope.LatestReturn = return_MissingLatestScope;
 
             OrganisationScope scope_MissingLatestScope = ScopeHelper.CreateScope(ScopeStatuses.InScope, VirtualDateTime.Now.AddYears(-1));
             organisation_MissingLatestScope.OrganisationScopes.Add(
