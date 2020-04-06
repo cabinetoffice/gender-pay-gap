@@ -1,3 +1,4 @@
+@using GenderPayGap.WebUI.Models.Guidance
 @using GenderPayGap.WebUI.Views.Components
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -92,8 +93,42 @@
             levels. This approach allows different organisations to be compared. However, it does not take into account
             your particular organisational structure.
         </p>
+
+        <div class="horizontal-bar-chart__section">
+        <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+                                          {
+                                              Id = "TopQuarter",
+                                              Title = "Top quarter",
+                                              SecondaryTitle = "(highest paid)",
+                                              Female = new decimal(34),
+                                              Male = new decimal(66)
+                                          };}/>
         
-        <img src="/img/guidance/GenderImbalanceByProportionOfWomenInEachQuarter.svg" alt="Image description." />
+        <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+                                          {
+                                              Id = "UpperMiddleQuarter",
+                                              Title = "Upper middle quarter",
+                                              Female = new decimal(45),
+                                              Male = new decimal(55)
+                                          };}/>
+        
+        <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+                                          {
+                                              Id = "BottomMiddleQuarter",
+                                              Title = "Bottom middle quarter",
+                                              Female = new decimal(55),
+                                              Male = new decimal(45)
+                                          };}/>
+        
+        <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+                                          {
+                                              Id = "LowerQuarter",
+                                              Title = "Lower quarter",
+                                              SecondaryTitle = "(lowest paid)",
+                                              Female = new decimal(50),
+                                              Male = new decimal(50)
+                                          };}/>
+                </div>
         
         <hr class="govuk-section-break govuk-section-break--l">
         <div class="govuk-grid-row">
