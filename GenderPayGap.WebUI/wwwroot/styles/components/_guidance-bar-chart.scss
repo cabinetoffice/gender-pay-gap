@@ -1,0 +1,38 @@
+.horizontal-bar-chart__section {
+  margin-top: 50px;
+}
+
+.horizontal-bar-chart__figure {
+  margin: 0;
+  position: relative;
+  
+  .horizontal-bar-chart__title {
+    margin: 10px 0;
+  }
+  
+  .horizontal-bar-chart__bar {
+    height: 2em;
+  }
+  
+  .horizontal-bar-chart__bar--left {
+    background-color:  govuk-colour("blue");
+  }
+
+  .horizontal-bar-chart__bar--right {
+    background-color:  govuk-colour("brown");
+  }
+
+  .horizontal-bar-chart__footer {
+    margin: 10px 0 55px;
+    
+    .horizontal-bar-chart__label--left {
+      position: absolute;
+      left: 0;
+    }
+
+    .horizontal-bar-chart__label--right {
+      position: absolute;
+      right: 0;
+    }
+  }
+}
