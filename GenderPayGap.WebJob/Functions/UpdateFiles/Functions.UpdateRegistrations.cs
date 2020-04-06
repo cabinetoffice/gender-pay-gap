@@ -73,7 +73,7 @@ namespace GenderPayGap.WebJob
                             uo.Organisation.OrganisationName,
                             CompanyNo = uo.Organisation.CompanyNumber,
                             Sector = uo.Organisation.SectorType,
-                            LatestReturn = uo.Organisation?.LatestReturn?.StatusDate,
+                            LatestReturn = uo.Organisation?.GetLatestReturn()?.StatusDate,
                             uo.Method,
                             uo.Organisation.LatestScope?.ScopeStatus,
                             ScopeDate = uo.Organisation.LatestScope?.ScopeStatusDate,

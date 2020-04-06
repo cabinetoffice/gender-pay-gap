@@ -190,7 +190,7 @@ namespace GenderPayGap.Database
                 PartialNameForSuffixSearches = OrganisationName,
                 PartialNameForCompleteTokenSearches = OrganisationName,
                 Abbreviations = abbreviations.ToArray(),
-                Size = LatestReturn == null ? 0 : (int) LatestReturn.OrganisationSize,
+                Size = GetLatestReturn() == null ? 0 : (int)GetLatestReturn().OrganisationSize,
                 SicSectionIds = sicCodes.Select(sic => sic.SicCode.SicSectionId.ToString()).Distinct().ToArray(),
                 SicSectionNames = sicCodes.Select(sic => sic.SicCode.SicSection.Description).Distinct().ToArray(),
                 SicCodeIds = sicCodes.Select(sicCode => sicCode.SicCodeId.ToString()).Distinct().ToArray(),
