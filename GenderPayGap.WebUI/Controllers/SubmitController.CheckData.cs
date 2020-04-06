@@ -220,11 +220,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             organisationFromDatabase.Returns.Add(postedReturn);
 
-            if (submissionService.ShouldUpdateLatestReturn(organisationFromDatabase, ReportingOrganisationStartYear.Value))
-            {
-                organisationFromDatabase.LatestReturn = postedReturn;
-            }
-
             await DataRepository.SaveChangesAsync();
 
             //This is required for the submission complete page
