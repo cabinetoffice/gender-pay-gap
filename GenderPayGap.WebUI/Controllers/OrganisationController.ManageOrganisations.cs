@@ -37,7 +37,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             // Check the user has permission for this organisation
             UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrg == null)
+            if (userOrg == null || userOrg.PINConfirmedDate == null)
             {
                 return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
             }
