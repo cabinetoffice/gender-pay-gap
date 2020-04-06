@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -258,7 +258,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
             UserOrganisation userOrganisation_MissingLatestScope =
                 UserOrganisationHelper.LinkUserWithOrganisation(notAdminUser, organisation_MissingLatestScope);
-            organisation_MissingLatestScope.LatestRegistration = userOrganisation_MissingLatestScope;
 
             Return return_MissingLatestScope = ReturnHelper.GetSubmittedReturnForOrganisationAndYear(
                 userOrganisation_MissingLatestScope,
@@ -300,7 +299,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 () => {
                     Assert.AreEqual("SUCCESSFULLY TESTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
                     Assert.AreEqual(
-                        "No organisations missing a latest registration\r\n001: Organisation 'EmployerReference444:Org123' missing a latest scope will be fixed\r\n",
+                        "001: Organisation 'EmployerReference444:Org123' missing a latest scope will be fixed\r\n",
                         actualManualChangesViewModel.Results);
                     Assert.AreEqual("Fix database errors", actualManualChangesViewModel.LastTestedCommand);
                     Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
@@ -322,7 +321,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
             UserOrganisation userOrganisation_MissingLatestScope =
                 UserOrganisationHelper.LinkUserWithOrganisation(notAdminUser, organisation_MissingLatestScope);
-            organisation_MissingLatestScope.LatestRegistration = userOrganisation_MissingLatestScope;
 
             Return return_MissingLatestScope = ReturnHelper.GetSubmittedReturnForOrganisationAndYear(
                 userOrganisation_MissingLatestScope,
@@ -366,7 +364,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
             Assert.AreEqual("SUCCESSFULLY EXECUTED 'Fix database errors': 1 items", actualManualChangesViewModel.SuccessMessage);
             var expectedManualChangesViewModelResults =
-                "No organisations missing a latest registration\r\n001: Organisation 'EmployerReference5487548:Org123' missing a latest scope was successfully fixed\r\n";
+                "001: Organisation 'EmployerReference5487548:Org123' missing a latest scope was successfully fixed\r\n";
             Assert.AreEqual(
                 expectedManualChangesViewModelResults,
                 actualManualChangesViewModel.Results,
