@@ -10,7 +10,6 @@ namespace GenderPayGap.Database
 
         public Return()
         {
-            Organisations = new HashSet<Organisation>();
             ReturnStatuses = new HashSet<ReturnStatus>();
         }
 
@@ -49,7 +48,6 @@ namespace GenderPayGap.Database
         public bool EHRCResponse { get; set; }
 
         public virtual Organisation Organisation { get; set; }
-        public virtual ICollection<Organisation> Organisations { get; set; }
         public virtual ICollection<ReturnStatus> ReturnStatuses { get; set; }
 
     }
