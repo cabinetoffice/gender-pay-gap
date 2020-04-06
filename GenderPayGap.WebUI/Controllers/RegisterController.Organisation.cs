@@ -1765,11 +1765,6 @@ namespace GenderPayGap.WebUI.Controllers
 
                         ScopeBusinessLogic.FillMissingScopes(tempUserOrg.Organisation);
 
-                        if (tempUserOrg.PINConfirmedDate != null)
-                        {
-                            tempUserOrg.Organisation.LatestRegistration = tempUserOrg;
-                        }
-
                         await DataRepository.SaveChangesAsync();
 
                         if (tempUserOrg.Address.Status == AddressStatuses.Active)

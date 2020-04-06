@@ -488,9 +488,6 @@ namespace GenderPayGap.WebUI.Controllers
                     OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                     "Manually registered");
 
-                //Set the latest registration
-                userOrg.Organisation.LatestRegistration = userOrg;
-
                 // save any sic codes
                 if (!string.IsNullOrEmpty(model.SicCodeIds))
                 {

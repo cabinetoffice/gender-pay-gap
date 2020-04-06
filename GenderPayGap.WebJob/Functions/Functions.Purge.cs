@@ -192,7 +192,6 @@ namespace GenderPayGap.WebJob
                                 try
                                 {
                                     org.LatestAddress = null;
-                                    org.LatestRegistration = null;
                                     org.LatestScope = null;
                                     org.UserOrganisations.ForEach(uo => _DataRepository.Delete(uo));
                                     await _DataRepository.SaveChangesAsync();
