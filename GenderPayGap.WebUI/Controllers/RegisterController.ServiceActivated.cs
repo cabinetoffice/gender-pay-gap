@@ -156,9 +156,6 @@ namespace GenderPayGap.WebUI.Controllers
                     return View("CustomError", new ErrorViewModel(1149));
                 }
 
-                //Set the latest registration
-                userOrg.Organisation.LatestRegistration = userOrg;
-
                 //Retire the old address 
                 if (userOrg.Organisation.LatestAddress != null && userOrg.Organisation.LatestAddress.AddressId != userOrg.Address.AddressId)
                 {

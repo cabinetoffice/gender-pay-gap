@@ -114,7 +114,6 @@ namespace GenderPayGap.WebUI.Controllers
             var organisation = dataRepository.Get<Organisation>(viewModel.OrganisationId);
 
             // Remove user organisation 
-            organisation.LatestRegistration = null;
             UserOrganisation userOrg = dataRepository.GetAll<UserOrganisation>()
                 .FirstOrDefault(u => u.UserId == viewModel.UserId && u.OrganisationId == viewModel.OrganisationId);
             dataRepository.Delete(userOrg);
