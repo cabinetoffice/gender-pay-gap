@@ -104,7 +104,6 @@ namespace GenderPayGap.WebJob
                 .Where(uo => uo.LatestRegistration != null)
                 .Include(uo => uo.LatestRegistration)
                 .Include(uo => uo.LatestAddress)
-                .Include(uo => uo.LatestReturn)
                 .Include(uo => uo.LatestScope)
                 .ToListAsync();
 
