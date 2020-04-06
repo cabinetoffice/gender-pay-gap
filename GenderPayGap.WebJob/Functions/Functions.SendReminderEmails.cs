@@ -89,9 +89,9 @@ namespace GenderPayGap.WebJob
                         || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope))
                 .Where(
                     o =>
-                        o.LatestReturn == null
-                        || o.LatestReturn.AccountingDate != o.SectorType.GetAccountingStartDate()
-                        || o.LatestReturn.Status != ReturnStatuses.Submitted)
+                        !o.Returns.Any(r =>
+                            r.Status == ReturnStatuses.Submitted &&
+                            r.AccountingDate == sector.GetAccountingStartDate()))
                 .ToList();
 
             SendReminderEmailsForSectorType(user, inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport, sector);

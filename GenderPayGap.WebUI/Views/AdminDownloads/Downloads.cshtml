@@ -134,14 +134,17 @@
             Late Submissions
         </h2>
         
-        <p class="govuk-body">
-            <a href="@Url.Action("DownloadLateSubmissions", "AdminDownloads")"
-               class="govuk-link govuk-!-font-weight-bold">
-                Late Submissions
-            </a>
-            <br />
-            Organisations who reported or changed their submission late the previous snapshot date
-        </p>
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadLateSubmissions", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    Late Submissions for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                Organisations who reported or changed their submission late for @(year)-@((year + 1) % 100)
+            </p>
+        }
         
         <h2 class="govuk-heading-m">
             Users
