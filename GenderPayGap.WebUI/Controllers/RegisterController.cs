@@ -357,7 +357,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return View("PasswordResetSent");
             }
 
-            if (!await ResendPasswordResetAsync(currentUser))
+            if (!ResendPasswordReset(currentUser))
             {
                 AddModelError(1122);
                 this.CleanModelErrors<ResetViewModel>();
@@ -382,17 +382,15 @@ namespace GenderPayGap.WebUI.Controllers
             return View("PasswordResetSent");
         }
 
-        private async Task<bool> ResendPasswordResetAsync(User currentUser)
+        private bool ResendPasswordReset(User currentUser)
         {
             //Send a password reset link to the email address
             string resetCode = null;
             try
             {
                 resetCode = Encryption.EncryptQuerystring(currentUser.UserId + ":" + VirtualDateTime.Now.ToSmallDateTime());
-                if (!await this.SendPasswordResetAsync(currentUser.EmailAddress, resetCode))
-                {
-                    return false;
-                }
+                string resetUrl = Url.Action("NewPassword", "Register", new { code = resetCode }, "https");
+                EmailSendingService.SendResetPasswordVerificationEmail(currentUser.EmailAddress, resetUrl);
 
                 _logger.LogInformation(
                     "Password reset sent",
