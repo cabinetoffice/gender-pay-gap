@@ -10,6 +10,7 @@ using GenderPayGap.WebUI.Areas.Account.Controllers;
 using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -48,7 +49,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             }
 
             // send verification email to the new email address
-            await SendChangeEmailPendingVerificationAsync(newEmailAddress, currentUser);
+            SendChangeEmailPendingVerification(newEmailAddress, currentUser);
 
             return errorState;
         }
@@ -104,7 +105,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             return errorState;
         }
 
-        private async Task SendChangeEmailPendingVerificationAsync(string newEmailAddress, User userToVerify)
+        private void SendChangeEmailPendingVerification(string newEmailAddress, User userToVerify)
         {
             // generate verify code
             string code = CreateEmailVerificationCode(newEmailAddress, userToVerify);
@@ -113,7 +114,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             string returnVerifyUrl = GenerateChangeEmailVerificationUrl(code);
 
             // queue email
-            await Emails.SendChangeEmailPendingVerificationAsync(returnVerifyUrl, newEmailAddress);
+            EmailSendingService.SendChangeEmailPendingVerificationEmail(newEmailAddress, returnVerifyUrl);
         }
 
         private async Task SendChangeEmailCompletedAsync(string newOldAddress, string newEmailAddress)
