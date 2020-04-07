@@ -6,6 +6,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI;
+using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -44,7 +45,8 @@ namespace Account.Controllers.ChangeEmailController
             string expectedCurrentEmailAddress = verifiedUser.EmailAddress;
 
             string code = Encryption.EncryptModel(
-                new ChangeEmailVerificationToken {
+                new ChangeEmailVerificationToken
+                {
                     UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now.AddDays(-1)
                 });
 
@@ -79,7 +81,8 @@ namespace Account.Controllers.ChangeEmailController
             string expectedCurrentEmailAddress = verifiedUser.EmailAddress;
 
             string code = Encryption.EncryptModel(
-                new ChangeEmailVerificationToken {
+                new ChangeEmailVerificationToken
+                {
                     UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now
                 });
 
@@ -110,7 +113,8 @@ namespace Account.Controllers.ChangeEmailController
                     verifiedUser);
 
             string code = Encryption.EncryptModel(
-                new ChangeEmailVerificationToken {
+                new ChangeEmailVerificationToken
+                {
                     UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now
                 });
 
@@ -128,7 +132,6 @@ namespace Account.Controllers.ChangeEmailController
         public async Task SendsChangeEmailToOldAndNewEmailAddresses()
         {
             // Arrange
-            var calledSendEmailQueue = false;
             var testNewEmail = "new@testemail.com";
             User verifiedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
             var controller =
@@ -139,35 +142,29 @@ namespace Account.Controllers.ChangeEmailController
             string testOldEmail = verifiedUser.EmailAddress;
 
             string code = Encryption.EncryptModel(
-                new ChangeEmailVerificationToken {
+                new ChangeEmailVerificationToken
+                {
                     UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<QueueWrapper>()))
-                .Callback(
-                    (QueueWrapper inst) => {
-                        calledSendEmailQueue = true;
+            var mockNotifyEmailQueue = new Mock<IQueue>();
+            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
 
-                        if (inst.Type == typeof(ChangeEmailCompletedNotificationTemplate).FullName)
-                        {
-                            Assert.IsTrue(
-                                inst.Message.Contains(testOldEmail),
-                                "Expected the users old email address to be in the email send queue");
-                        }
-                        else
-                        {
-                            Assert.Fail("Expected new and old emails to be queued");
-                        }
-                    });
+            mockNotifyEmailQueue
+                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
 
             // Act
             var viewResult = await controller.CompleteChangeEmailAsync(code) as ViewResult;
 
             // Assert
-            Assert.IsTrue(calledSendEmailQueue, "Expected send email queue to be called");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(
+                    It.Is<NotifyEmail>(
+                        inst => inst.TemplateId.Contains(EmailTemplates.SendChangeEmailPendingVerificationEmail)
+                            ? inst.EmailAddress.Contains(testOldEmail)
+                            : inst.EmailAddress.Contains(testNewEmail))),
+                Times.Once(),
+                "Expected the current user's email address to be in the email send queue");
             Assert.NotNull(viewResult);
             Assert.AreEqual("ChangeEmailCompleted", viewResult.ViewName);
         }

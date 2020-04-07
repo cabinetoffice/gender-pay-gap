@@ -100,7 +100,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             UserRepository.UpdateEmail(currentUser, changeEmailToken.NewEmailAddress);
 
             // notify old email the change is complete
-            await SendChangeEmailCompletedAsync(oldEmailAddress, changeEmailToken.NewEmailAddress);
+            SendChangeEmailCompleted(oldEmailAddress, changeEmailToken.NewEmailAddress);
 
             return errorState;
         }
@@ -117,12 +117,12 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             EmailSendingService.SendChangeEmailPendingVerificationEmail(newEmailAddress, returnVerifyUrl);
         }
 
-        private async Task SendChangeEmailCompletedAsync(string newOldAddress, string newEmailAddress)
+        private void SendChangeEmailCompleted(string newOldAddress, string newEmailAddress)
         {
-            // send to new email
-            await Emails.SendChangeEmailCompletedNotificationAsync(newOldAddress);
-
             // send to old email
+            EmailSendingService.SendChangeEmailCompletedNotificationEmail(newOldAddress);
+
+            // send to new email
             EmailSendingService.SendChangeEmailCompletedVerificationEmail(newEmailAddress);
         }
 
