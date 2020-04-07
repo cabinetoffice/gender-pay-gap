@@ -62,19 +62,7 @@ namespace GenderPayGap
 
             return await QueueEmailAsync(geoOrganisationRegistrationRequest);
         }
-
-        public static async Task<bool> SendRegistrationApprovedAsync(string returnUrl, string emailAddress, bool test = false)
-        {
-            var organisationRegistrationApproved = new OrganisationRegistrationApprovedTemplate {
-                RecipientEmailAddress = emailAddress,
-                Test = emailAddress.StartsWithI(Global.TestPrefix),
-                Simulate = emailAddress.StartsWithI(Global.TestPrefix),
-                Url = returnUrl
-            };
-
-            return await QueueEmailAsync(organisationRegistrationApproved);
-        }
-
+        
         public static async Task<bool> SendRegistrationDeclinedAsync(string emailAddress, string reason)
         {
             var organisationRegistrationDeclined = new OrganisationRegistrationDeclinedTemplate {

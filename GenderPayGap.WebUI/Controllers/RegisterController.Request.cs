@@ -189,7 +189,8 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     AddModelError(
                         3017,
-                        parameters: new {
+                        parameters: new
+                        {
                             approvedUser = firstRegistered.User.EmailAddress,
                             approvedDate = firstRegistered.PINConfirmedDate.Value.ToShortDateString(),
                             approvedAddress = firstRegistered.Address?.GetAddressString()
@@ -495,7 +496,8 @@ namespace GenderPayGap.WebUI.Controllers
                     foreach (int sc in newSicCodes)
                     {
                         userOrg.Organisation.OrganisationSicCodes.Add(
-                            new OrganisationSicCode {
+                            new OrganisationSicCode
+                            {
                                 SicCodeId = sc, OrganisationId = userOrg.OrganisationId, Created = VirtualDateTime.Now
                             });
                     }
@@ -518,20 +520,16 @@ namespace GenderPayGap.WebUI.Controllers
                     "Manually registered");
 
                 //Send the approved email to the applicant
-                if (!await SendRegistrationAcceptedAsync(
+                SendRegistrationAccepted(
                     userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress),
-                    userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix)))
-                {
-                    ModelState.AddModelError(1132);
-                    this.CleanModelErrors<OrganisationViewModel>();
-                    return View("ReviewRequest", model);
-                }
+                    userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix));
 
                 //Log the approval
                 if (!userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
                 {
                     await Global.RegistrationLog.WriteAsync(
-                        new RegisterLogModel {
+                        new RegisterLogModel
+                        {
                             StatusDate = VirtualDateTime.Now,
                             Status = "Manually registered",
                             ActionBy = currentUser.EmailAddress,
@@ -588,7 +586,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         //Send the registration request
-        protected async Task<bool> SendRegistrationAcceptedAsync(string emailAddress, bool test = false)
+        protected void SendRegistrationAccepted(string emailAddress, bool test = false)
         {
             //Always use the administrators email when not on production
             if (!Config.IsProduction())
@@ -598,7 +596,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Send an acceptance link to the email address
             string returnUrl = Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
-            return await Emails.SendRegistrationApprovedAsync(returnUrl, emailAddress, test);
+            EmailSendingService.SendOrganisationRegistrationApprovedEmail(emailAddress, returnUrl);
         }
 
         /// <summary>
@@ -670,7 +668,8 @@ namespace GenderPayGap.WebUI.Controllers
             if (!userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
             {
                 await Global.RegistrationLog.WriteAsync(
-                    new RegisterLogModel {
+                    new RegisterLogModel
+                    {
                         StatusDate = VirtualDateTime.Now,
                         Status = "Manually Rejected",
                         ActionBy = currentUser.EmailAddress,
@@ -701,7 +700,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Delete the org user
             long orgId = userOrg.OrganisationId;
             string emailAddress = userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress);
-            
+
             //Delete the organisation if it has no returns, is not in scopes table, and is not registered to another user
             if (userOrg.Organisation != null
                 && !userOrg.Organisation.Returns.Any()
