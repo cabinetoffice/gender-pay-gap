@@ -1,10 +1,17 @@
-namespace GenderPayGap.WebUI.Views.Components
+namespace GenderPayGap.WebUI.Views.Components.PaginationLinks
 {
+    public class PaginationLinksViewModel
+    {
+        public PaginationLinkViewModel LeftLink { get; set; }
+        public PaginationLinkViewModel RightLink { get; set; }
+    }
+
     public class PaginationLinkViewModel
     {
 
         /// <summary>
         ///     The direction of the arrow.
+        ///     Automatically set by PaginationLinks.cshtml if you are using this as the LeftLink or RightLink on a PaginationLinksViewModel
         /// </summary>
         public ArrowDirection ArrowDirection { get; set; }
 

@@ -1,0 +1,29 @@
+﻿@using GenderPayGap.WebUI.Views.Components.PaginationLinks
+@model GenderPayGap.WebUI.Views.Components.PaginationLinks.PaginationLinksViewModel
+
+<div class="govuk-grid-row pagination-links">
+    <div class="govuk-grid-column-one-half pagination-link-left">
+        @if (Model.LeftLink != null)
+        {
+            Model.LeftLink.ArrowDirection = ArrowDirection.Left;
+            await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLink.cshtml", Model.LeftLink);
+        }
+        else
+        {
+            // This is needed to stop the <div> collapsing
+            @:&nbsp;
+        }
+    </div>
+    <div class="govuk-grid-column-one-half pagination-link-right">
+        @if (Model.RightLink != null)
+        {
+            Model.RightLink.ArrowDirection = ArrowDirection.Right;
+            await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLink.cshtml", Model.RightLink);
+        }
+        else
+        {
+            // This is needed to stop the <div> collapsing
+            @:&nbsp;
+        }
+    </div>
+</div>

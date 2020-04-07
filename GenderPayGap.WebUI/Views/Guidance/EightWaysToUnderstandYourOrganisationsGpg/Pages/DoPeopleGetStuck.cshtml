@@ -1,5 +1,6 @@
 @using GenderPayGap.WebUI.Models.Guidance
 @using GenderPayGap.WebUI.Views.Components
+@using GenderPayGap.WebUI.Views.Components.PaginationLinks
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
@@ -146,28 +147,22 @@
         <partial name="EightWaysToUnderstandYourOrganisationsGpg/Images/GenderImbalanceBySeniorityStructure"/>
 
         <hr class="govuk-section-break govuk-section-break--l">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-half">
-                @{ await Html.RenderPartialAsync("/Views/Components/PaginationLink.cshtml",
-                       new PaginationLinkViewModel
-                       {
-                           ArrowDirection = ArrowDirection.Left,
-                           Title = "Overview",
-                           Text = "",
-                           Url = Url.Action("EightWaysOverview", "Guidance")
-                       }); }
-            </div>
-            <div class="govuk-grid-column-one-half">
-                @{ await Html.RenderPartialAsync("/Views/Components/PaginationLink.cshtml",
-                       new PaginationLinkViewModel
-                       {
-                           ArrowDirection = ArrowDirection.Right,
-                           Title = "Next",
-                           Text = "Is there gender imbalance in your promotions?",
-                           Url = Url.Action("EightWaysIsThereGenderImbalance", "Guidance")
-                       }); }
-            </div>
-        </div>
+
+        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
+           {
+               LeftLink = new PaginationLinkViewModel
+               {
+                   Title = "Overview",
+                   Text = "",
+                   Url = Url.Action("EightWaysOverview", "Guidance")
+               },
+               RightLink = new PaginationLinkViewModel
+               {
+                   Title = "Next",
+                   Text = "Is there gender imbalance in your promotions?",
+                   Url = Url.Action("EightWaysIsThereGenderImbalance", "Guidance")
+               }
+           }); }
 
     </div>
     <div class="govuk-grid-column-one-third">
