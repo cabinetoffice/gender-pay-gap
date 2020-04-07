@@ -46,11 +46,6 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.AddressStatuses)
                         .HasForeignKey(d => d.AddressId)
                         .HasConstraintName("FK_dbo.AddressStatus_dbo.OrganisationAddresses_AddressId");
-
-                    entity.HasOne(d => d.ByUser)
-                        .WithMany(p => p.AddressStatus)
-                        .HasForeignKey(d => d.ByUserId)
-                        .HasConstraintName("FK_dbo.AddressStatus_dbo.Users_ByUserId");
                 });
 
             #endregion
@@ -310,11 +305,6 @@ namespace GenderPayGap.Database
 
                     entity.Property(e => e.StatusDetails).HasMaxLength(255);
 
-                    entity.HasOne(d => d.ByUser)
-                        .WithMany(p => p.OrganisationStatus)
-                        .HasForeignKey(d => d.ByUserId)
-                        .HasConstraintName("FK_dbo.OrganisationStatus_dbo.Users_ByUserId");
-
                     entity.HasOne(d => d.Organisation)
                         .WithMany(p => p.OrganisationStatuses)
                         .HasForeignKey(d => d.OrganisationId)
@@ -385,11 +375,6 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
                     entity.Property(e => e.StatusDetails).HasMaxLength(255);
-
-                    entity.HasOne(d => d.ByUser)
-                        .WithMany(p => p.ReturnStatus)
-                        .HasForeignKey(d => d.ByUserId)
-                        .HasConstraintName("FK_dbo.ReturnStatus_dbo.Users_ByUserId");
 
                     entity.HasOne(d => d.Return)
                         .WithMany(p => p.ReturnStatuses)
@@ -597,12 +582,6 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
                     entity.Property(e => e.StatusDetails).HasMaxLength(255);
-
-                    entity.HasOne(d => d.ByUser)
-                        .WithMany(p => p.UserStatusesByUser)
-                        .HasForeignKey(d => d.ByUserId)
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_dbo.UserStatus_dbo.Users_ByUserId");
 
                     entity.HasOne(d => d.User)
                         .WithMany(p => p.UserStatuses)

@@ -11,12 +11,8 @@ namespace GenderPayGap.Database
 
         public User()
         {
-            AddressStatus = new HashSet<AddressStatus>();
-            OrganisationStatus = new HashSet<OrganisationStatus>();
-            ReturnStatus = new HashSet<ReturnStatus>();
             UserOrganisations = new HashSet<UserOrganisation>();
             UserSettings = new HashSet<UserSetting>();
-            UserStatusesByUser = new HashSet<UserStatus>();
             UserStatuses = new HashSet<UserStatus>();
             ReminderEmails = new HashSet<ReminderEmail>();
         }
@@ -60,12 +56,8 @@ namespace GenderPayGap.Database
         public DateTime Created { get; set; } = VirtualDateTime.Now;
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
 
-        public virtual ICollection<AddressStatus> AddressStatus { get; set; }
-        public virtual ICollection<OrganisationStatus> OrganisationStatus { get; set; }
-        public virtual ICollection<ReturnStatus> ReturnStatus { get; set; }
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
         public virtual ICollection<UserSetting> UserSettings { get; set; }
-        public virtual ICollection<UserStatus> UserStatusesByUser { get; set; }
         public virtual ICollection<UserStatus> UserStatuses { get; set; }
         public virtual ICollection<ReminderEmail> ReminderEmails { get; set; }
 
