@@ -1,142 +1,94 @@
-@using GenderPayGap.WebUI.Views.Components
-@using GenderPayGap.WebUI.Views.Components.PaginationLinks
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
-    ViewBag.Title = "Eight ways to understand your organisation's gender pay gap - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    Layout = "EightWaysToUnderstandYourOrganisationsGpg/EightWaysGuidanceLayout";
 }
 
-@section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Home",
-                Href = Url.Action("Index", "Viewing")
-            },
-            new CrumbViewModel
-            {
-                Text = "Eight ways to understand your organisation's gender pay gap"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
-}
-
-<partial name="EightWaysToUnderstandYourOrganisationsGpg/Header"/>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        <h2 class="govuk-heading-l">Are women more likely to be recruited into lower paid roles in your organisation?</h2>
+<h2 class="govuk-heading-l">Are women more likely to be recruited into lower paid roles in your organisation?</h2>
+<p class="govuk-body">
+    If women tend to enter your organisation at more junior levels, or if women are less likely to be hired
+    when they apply to join your organisation at higher levels, this will impact your gender pay gap.
+</p>
+<h3 class="govuk-heading-s">To work out if this is a problem in your organisation:</h3>
+<ul class="govuk-list govuk-list--bullet">
+    <li>
         <p class="govuk-body">
-            If women tend to enter your organisation at more junior levels, or if women are less likely to be hired 
-            when they apply to join your organisation at higher levels, this will impact your gender pay gap.
+            Look at the proportion of women applying for positions and see if there are gender imbalances
+            at different grades/levels.
         </p>
-        <h3 class="govuk-heading-s">To work out if this is a problem in your organisation:</h3>
+    </li>
+    <li>
+        <p class="govuk-body">
+            For each grade/level, consider the proportion of women:
+        </p>
         <ul class="govuk-list govuk-list--bullet">
             <li>
                 <p class="govuk-body">
-                    Look at the proportion of women applying for positions and see if there are gender imbalances 
-                    at different grades/levels.
+                    applying for positions
                 </p>
             </li>
             <li>
                 <p class="govuk-body">
-                    For each grade/level, consider the proportion of women:
+                    making it through to any assessment stage or shortlist
                 </p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>
-                        <p class="govuk-body">
-                            applying for positions
-                        </p>
-                    </li>
-                    <li>
-                        <p class="govuk-body">
-                            making it through to any assessment stage or shortlist
-                        </p>
-                    </li>
-                    <li>
-                        <p class="govuk-body">
-                            being selected
-                        </p>
-                    </li>
-                    
-                    <li>
-                        <p class="govuk-body">
-                            accepting roles
-                        </p>
-                    </li>
-                    
-                </ul>
             </li>
             <li>
                 <p class="govuk-body">
-                    Is the proportion of women decreasing throughout this process?
+                    being selected
                 </p>
             </li>
-        </ul>
-        
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/Images/GenderImbalanceByRecruitmentProcessBySeniority"/>
-        
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">If you find a gender imbalance in your recruitment process</span>
-                If you find a gender imbalance in your recruitment process
-            </strong>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>
-                    <strong>
-                        Examine your recruitment routes. 
-                    </strong>
-                    <p class="govuk-body">
-                        How transparent are the processes?
-                    </p>
-                </li>
-                <li>
-                    <strong>
-                        Understand how the potential applicant pool in your field or industry compares to your applicants.
-                    </strong>
-                    <p class="govuk-body">
-                        For example, if 45% of people with appropriate qualifications and experience in your industry 
-                        are women, but only 25% of your applicants are women, why might this be?
-                    </p>
-                </li>
-                <li>
-                    <strong>
-                        Look at ways to widen your potential applicant pool by re‐thinking structural issues that can 
-                        have a larger effect in preventing women from doing particular jobs. 
-                    </strong>
-                    <p class="govuk-body">
-                        For example, do these jobs allow flexible working, so that people with caring responsibilities
-                        can do them? Can you help more women to get the required qualifications? If you use recruitment
-                        agencies, ask them to provide you with long‐lists which include a certain minimum number of
-                        women. However, do take legal advice if you are considering positive action to benefit women
-                        (or men), to ensure that there is no unlawful discrimination.
-                    </p>
-                </li>
-            </ul>
-        </div>
-        
-        <hr class="govuk-section-break govuk-section-break--l">
 
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-               GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
-        
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
-    </div>
-</div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/UpdatesRecord"/>
-    </div>
+            <li>
+                <p class="govuk-body">
+                    accepting roles
+                </p>
+            </li>
+
+        </ul>
+    </li>
+    <li>
+        <p class="govuk-body">
+            Is the proportion of women decreasing throughout this process?
+        </p>
+    </li>
+</ul>
+
+<partial name="EightWaysToUnderstandYourOrganisationsGpg/Images/GenderImbalanceByRecruitmentProcessBySeniority"/>
+
+<div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">If you find a gender imbalance in your recruitment process</span>
+        If you find a gender imbalance in your recruitment process
+    </strong>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            <strong>
+                Examine your recruitment routes.
+            </strong>
+            <p class="govuk-body">
+                How transparent are the processes?
+            </p>
+        </li>
+        <li>
+            <strong>
+                Understand how the potential applicant pool in your field or industry compares to your applicants.
+            </strong>
+            <p class="govuk-body">
+                For example, if 45% of people with appropriate qualifications and experience in your industry
+                are women, but only 25% of your applicants are women, why might this be?
+            </p>
+        </li>
+        <li>
+            <strong>
+                Look at ways to widen your potential applicant pool by re‐thinking structural issues that can
+                have a larger effect in preventing women from doing particular jobs.
+            </strong>
+            <p class="govuk-body">
+                For example, do these jobs allow flexible working, so that people with caring responsibilities
+                can do them? Can you help more women to get the required qualifications? If you use recruitment
+                agencies, ask them to provide you with long‐lists which include a certain minimum number of
+                women. However, do take legal advice if you are considering positive action to benefit women
+                (or men), to ensure that there is no unlawful discrimination.
+            </p>
+        </li>
+    </ul>
 </div>

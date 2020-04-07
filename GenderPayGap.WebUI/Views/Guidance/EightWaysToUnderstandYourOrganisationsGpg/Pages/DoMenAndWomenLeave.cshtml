@@ -1,58 +1,27 @@
 @using GenderPayGap.WebUI.Models.Guidance
-@using GenderPayGap.WebUI.Views.Components
-@using GenderPayGap.WebUI.Views.Components.PaginationLinks
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
+
 @{
-    ViewBag.Title = "Eight ways to understand your organisation's gender pay gap - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    Layout = "EightWaysToUnderstandYourOrganisationsGpg/EightWaysGuidanceLayout";
 }
 
-@section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Home",
-                Href = Url.Action("Index", "Viewing")
-            },
-            new CrumbViewModel
-            {
-                Text = "Eight ways to understand your organisation's gender pay gap"
-            }
-        };
-    }
+<h2 class="govuk-heading-l">Do men and women leave your organisation at different rates?</h2>
+<p class="govuk-body">
+    If women are leaving your organisation more quickly than men, this could contribute to your gender pay
+    gap, especially if this is occurring in more highly-paid positions.
+</p>
+<h3 class="govuk-heading-s">To work out if this is a problem in your organisation:</h3>
+<p class="govuk-body">
+    Look at the percentage of women and men leaving your organisation each year, by seniority level. Make
+    sure to look at the proportion of women leaving relative to the proportion of women in that grade.
+</p>
+<p class="govuk-body">
+    For example, you might find that 20% of the women in a particular grade left over the last year, whereas
+    only 10% of men in that grade left over the last year.
+</p>
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
-}
-
-<partial name="EightWaysToUnderstandYourOrganisationsGpg/Header"/>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        <h2 class="govuk-heading-l">Do men and women leave your organisation at different rates?</h2>
-        <p class="govuk-body">
-            If women are leaving your organisation more quickly than men, this could contribute to your gender pay
-            gap, especially if this is occurring in more highly-paid positions.
-        </p>
-        <h3 class="govuk-heading-s">To work out if this is a problem in your organisation:</h3>
-        <p class="govuk-body">
-            Look at the percentage of women and men leaving your organisation each year, by seniority level. Make
-            sure to look at the proportion of women leaving relative to the proportion of women in that grade.
-        </p>
-        <p class="govuk-body">
-            For example, you might find that 20% of the women in a particular grade left over the last year, whereas
-            only 10% of men in that grade left over the last year.
-        </p>
-
-        <div class="horizontal-bar-chart__section">
-            <h3 class="govuk-heading-s">Example of gender imbalance by employee exit rates, and seniority level</h3>
-            <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
+<div class="horizontal-bar-chart__section">
+    <h3 class="govuk-heading-s">Example of gender imbalance by employee exit rates, and seniority level</h3>
+    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
                                                               {
                                                                   Id = "TopLevel",
                                                                   Title = "Top level",
@@ -88,54 +57,38 @@
                 </div>
         
         <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">If you find a gender imbalance in employee exit rates</span>
-                If you find a gender imbalance in employee exit rates
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">If you find a gender imbalance in employee exit rates</span>
+        If you find a gender imbalance in employee exit rates
+    </strong>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            <strong>
+                Conduct a staff survey to identify issues around retention.
             </strong>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>
-                    <strong>
-                        Conduct a staff survey to identify issues around retention.
-                    </strong>
-                    <p class="govuk-body">
-                        Staff suveys can be invaluable in identifying differences in engagement, aspirations to progress
-                        or feelings of belonging, which may impact retention.
+            <p class="govuk-body">
+                Staff suveys can be invaluable in identifying differences in engagement, aspirations to progress
+                or feelings of belonging, which may impact retention.
 
-                    </p>
-                    <p class="govuk-body">
-                        Analyse results by gender, and consider
-                        adding additional questions to help you get to the root of issues. Also, information from exit
-                        interviews – if delivered independently and in confidence – are likely to be useful.
-                    </p>
+            </p>
+            <p class="govuk-body">
+                Analyse results by gender, and consider
+                adding additional questions to help you get to the root of issues. Also, information from exit
+                interviews – if delivered independently and in confidence – are likely to be useful.
+            </p>
 
-                </li>
-                <li>
-                    <strong>
-                        Check whether there are structural issues that may influence people’s perceptions of how
-                        successful they can be at your organisation.
-                    </strong>
-                    <p class="govuk-body">
-                        For example, if senior positions are not offered with flexible working arrangements, people
-                        with caring responsibilities may not feel they can apply. This could result in talented people
-                        feeling that they cannot develop and succeed within your organisation, causing them to leave.
-                    </p>
-                </li>
-            </ul>
-        </div>
-
-        <hr class="govuk-section-break govuk-section-break--l">
-
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-               GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
-
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
-    </div>
-</div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/UpdatesRecord"/>
-    </div>
+        </li>
+        <li>
+            <strong>
+                Check whether there are structural issues that may influence people’s perceptions of how
+                successful they can be at your organisation.
+            </strong>
+            <p class="govuk-body">
+                For example, if senior positions are not offered with flexible working arrangements, people
+                with caring responsibilities may not feel they can apply. This could result in talented people
+                feeling that they cannot develop and succeed within your organisation, causing them to leave.
+            </p>
+        </li>
+    </ul>
 </div>

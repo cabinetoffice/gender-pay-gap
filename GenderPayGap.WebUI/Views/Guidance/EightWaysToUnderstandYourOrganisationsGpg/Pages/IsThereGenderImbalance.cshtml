@@ -1,64 +1,34 @@
 @using GenderPayGap.WebUI.Models.Guidance
-@using GenderPayGap.WebUI.Views.Components.PaginationLinks
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
+
 @{
-    ViewBag.Title = "Eight ways to understand your organisation's gender pay gap - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    Layout = "EightWaysToUnderstandYourOrganisationsGpg/EightWaysGuidanceLayout";
 }
 
-@section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Home",
-                Href = Url.Action("Index", "Viewing")
-            },
-            new CrumbViewModel
-            {
-                Text = "Eight ways to understand your organisation's gender pay gap"
-            }
-        };
-    }
+<h2 class="govuk-heading-l">Is there a gender imbalance in your promotions?</h2>
+<p class="govuk-body">
+    To avoid gender imbalances higher up in your organisation, men and women need to apply for promotion in
+    proportions that match the composition of men and women at grades below. For example, in a particular
+    grade you might have 60% women and 40% men. In that case, the pool of candidates who apply for promotion
+    from that grade to a more senior grade should also be 60% women and 40% men. If, for example, only 20% of
+    the applicants were women, the gender imbalance would be more likely to worsen at the higher grade, meaning
+    fewer women in senior roles and a bigger gender pay gap.
+</p>
+<h3 class="govuk-heading-s">Identifying gender imbalances within your promotion process</h3>
+<p class="govuk-body">
+    To identify whether this is an issue in your organisation, look at the proportion of women from a given
+    grade or role applying for promotions, making it through to any assessment stage or shortlist, and being
+    selected for promotion. Is this proportion lower than you would expect, given the proportion of women at
+    that grade or in that role?
+</p>
+<p class="govuk-body">
+    If you have internal recruitment processes (such as those where employees apply to open vacancies),
+    look at these processes separately to see if there are any imbalances as candidates progress through
+    the stages.
+</p>
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
-}
-
-<partial name="EightWaysToUnderstandYourOrganisationsGpg/Header"/>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        <h2 class="govuk-heading-l">Is there a gender imbalance in your promotions?</h2>
-        <p class="govuk-body">
-            To avoid gender imbalances higher up in your organisation, men and women need to apply for promotion in
-            proportions that match the composition of men and women at grades below. For example, in a particular
-            grade you might have 60% women and 40% men. In that case, the pool of candidates who apply for promotion
-            from that grade to a more senior grade should also be 60% women and 40% men. If, for example, only 20% of
-            the applicants were women, the gender imbalance would be more likely to worsen at the higher grade, meaning
-            fewer women in senior roles and a bigger gender pay gap.
-        </p>
-        <h3 class="govuk-heading-s">Identifying gender imbalances within your promotion process</h3>
-        <p class="govuk-body">
-            To identify whether this is an issue in your organisation, look at the proportion of women from a given
-            grade or role applying for promotions, making it through to any assessment stage or shortlist, and being
-            selected for promotion. Is this proportion lower than you would expect, given the proportion of women at
-            that grade or in that role?
-        </p>
-        <p class="govuk-body">
-            If you have internal recruitment processes (such as those where employees apply to open vacancies),
-            look at these processes separately to see if there are any imbalances as candidates progress through
-            the stages.
-        </p>
-
-        <div class="horizontal-bar-chart__section">
-            <h3 class="govuk-heading-s">Example of gender imbalance in the promotion process, by stage</h3>
-            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
+<div class="horizontal-bar-chart__section">
+    <h3 class="govuk-heading-s">Example of gender imbalance in the promotion process, by stage</h3>
+    <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "ApplicantPool",
                                                           Title = "Applicant pool",
@@ -66,7 +36,7 @@
                                                           Male = new decimal(50)
                                                       }) />
 
-            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
+    <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Applicants",
                                                           Title = "Applicants",
@@ -74,7 +44,7 @@
                                                           Male = new decimal(60)
                                                       }) />
 
-            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
+    <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Assessment",
                                                           Title = "Assessment",
@@ -82,57 +52,41 @@
                                                           Male = new decimal(70)
                                                       }) />
 
-            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
+    <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Selected",
                                                           Title = "Selected",
                                                           Female = new decimal(25),
                                                           Male = new decimal(75)
                                                       }) />
-        </div>
-
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">If you find a gender imbalance in your promotion process</span>
-                If you find a gender imbalance in your promotion process
-            </strong>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>
-                    <p class="govuk-body">
-                        Examine your promotion processes to establish at what stage women are falling out
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body">
-                        Are women not applying for promotion at all? If so, why? Can you improve this, for example by
-                        offering flexible working at higher grades?
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body">
-                        Are women not making it through short-listing processes or assessment rounds? If so, why? Are
-                        your promotion processes clear and transparent so that bias cannot creep in and affect them?
-                        Are senior staff and hiring managers held accountable for hiring decisions by someone whose
-                        responsibility it is to monitor equality and diversity, such as a diversity officer, as well
-                        as by your leadership team?
-                    </p>
-                </li>
-            </ul>
-        </div>
-
-        <hr class="govuk-section-break govuk-section-break--l">
-
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
-
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
-    </div>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/UpdatesRecord"/>
-    </div>
+
+<div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">If you find a gender imbalance in your promotion process</span>
+        If you find a gender imbalance in your promotion process
+    </strong>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            <p class="govuk-body">
+                Examine your promotion processes to establish at what stage women are falling out
+            </p>
+        </li>
+        <li>
+            <p class="govuk-body">
+                Are women not applying for promotion at all? If so, why? Can you improve this, for example by
+                offering flexible working at higher grades?
+            </p>
+        </li>
+        <li>
+            <p class="govuk-body">
+                Are women not making it through short-listing processes or assessment rounds? If so, why? Are
+                your promotion processes clear and transparent so that bias cannot creep in and affect them?
+                Are senior staff and hiring managers held accountable for hiring decisions by someone whose
+                responsibility it is to monitor equality and diversity, such as a diversity officer, as well
+                as by your leadership team?
+            </p>
+        </li>
+    </ul>
 </div>

@@ -1,67 +1,20 @@
-@using GenderPayGap.WebUI.Views.Components
-@using GenderPayGap.WebUI.Views.Components.PaginationLinks
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
-    ViewBag.Title = "Eight ways to understand your organisation's gender pay gap - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    Layout = "EightWaysToUnderstandYourOrganisationsGpg/EightWaysGuidanceLayout";
 }
 
-@section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Home",
-                Href = Url.Action("Index", "Viewing")
-            },
-            new CrumbViewModel
-            {
-                Text = "Eight ways to understand your organisation's gender pay gap"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
-}
-
-<partial name="EightWaysToUnderstandYourOrganisationsGpg/Header"/>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        <h2 class="govuk-heading-l">Overview</h2>
-        <p class="govuk-body">
-            The gender pay gap (GPG) data that you have reported provides a basic understanding of what the gender
-            pay balance looks like within your organisation. However, to be able to target resources effectively to
-            improve your GPG, it is essential to know more about the specific causes of any imbalance.
-        </p>
-        <p class="govuk-body">
-            In this guide, you will find eight key questions to ask that will help you to identify different potential
-            causes of the GPG. You will need some additional data to be able to be able to answer these questions, but
-            you may already collect this data as part of your human resources processes.
-        </p>
-        <p class="govuk-body">
-            As 77% of organisations reporting in 2017/18 have a gender pay gap in favour of men, this guidance mostly
-            refers to actions to support women. However, the majority of actions could equally be used to support men
-            where the GPG is in favour of women.
-        </p>
-        <hr class="govuk-section-break govuk-section-break--l">
-
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
-
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
-    </div>
-</div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/UpdatesRecord"/>
-    </div>
-</div>
+<h2 class="govuk-heading-l">Overview</h2>
+<p class="govuk-body">
+    The gender pay gap (GPG) data that you have reported provides a basic understanding of what the gender
+    pay balance looks like within your organisation. However, to be able to target resources effectively to
+    improve your GPG, it is essential to know more about the specific causes of any imbalance.
+</p>
+<p class="govuk-body">
+    In this guide, you will find eight key questions to ask that will help you to identify different potential
+    causes of the GPG. You will need some additional data to be able to be able to answer these questions, but
+    you may already collect this data as part of your human resources processes.
+</p>
+<p class="govuk-body">
+    As 77% of organisations reporting in 2017/18 have a gender pay gap in favour of men, this guidance mostly
+    refers to actions to support women. However, the majority of actions could equally be used to support men
+    where the GPG is in favour of women.
+</p>

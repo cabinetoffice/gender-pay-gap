@@ -1,125 +1,77 @@
-@using GenderPayGap.WebUI.Views.Components
-@using GenderPayGap.WebUI.Views.Components.PaginationLinks
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
-    ViewBag.Title = "Eight ways to understand your organisation's gender pay gap - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    Layout = "EightWaysToUnderstandYourOrganisationsGpg/EightWaysGuidanceLayout";
 }
 
-@section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Home",
-                Href = Url.Action("Index", "Viewing")
-            },
-            new CrumbViewModel
-            {
-                Text = "Eight ways to understand your organisation's gender pay gap"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
-}
-
-<partial name="EightWaysToUnderstandYourOrganisationsGpg/Header"/>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        <h2 class="govuk-heading-l">Are you supporting both men and women to take on caring responsibilities?</h2>
+<h2 class="govuk-heading-l">Are you supporting both men and women to take on caring responsibilities?</h2>
+<p class="govuk-body">
+    Being able to care for others should be a choice open to both men and women, and is a core issue when it
+    comes to gender equality It is therefore worth reviewing your policies and considering your workplace
+    culture to ensure that employees are supported to take on caring roles and responsibilities if they
+    choose to.
+</p>
+<h3 class="govuk-heading-s">To assess how well you are doing on this:</h3>
+<ul class="govuk-list govuk-list--bullet">
+    <li>
+        <strong>
+            Look at the uptake of flexible working, Shared Parental Leave and paternity leave, including by
+            gender.
+        </strong>
         <p class="govuk-body">
-            Being able to care for others should be a choice open to both men and women, and is a core issue when it
-            comes to gender equality It is therefore worth reviewing your policies and considering your workplace
-            culture to ensure that employees are supported to take on caring roles and responsibilities if they
-            choose to.
+            If there is low take-up of these policies by men, this suggests that men and women in your
+            organisation are working in quite different ways, which could contribute to your gender pay gap.
         </p>
-        <h3 class="govuk-heading-s">To assess how well you are doing on this:</h3>
+    </li>
+    <li>
+        <strong>
+            Use your staff survey to assess your organisational culture and look for differences between genders.
+        </strong>
+        <p class="govuk-body">
+            For example:
+        </p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>
-                <strong>
-                    Look at the uptake of flexible working, Shared Parental Leave and paternity leave, including by
-                    gender.
-                </strong>
-                <p class="govuk-body">
-                    If there is low take-up of these policies by men, this suggests that men and women in your
-                    organisation are working in quite different ways, which could contribute to your gender pay gap.
-                </p>
-            </li>
-            <li>
-                <strong>
-                    Use your staff survey to assess your organisational culture and look for differences between genders.
-                </strong>
-                <p class="govuk-body">
-                    For example:
-                </p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>Do employees feel supported to take up flexible working?</li>
-                    <li>Do employees feel that working flexibly (or part-time) is a barrier to progression?</li>
-                    <li>Do employees know what flexible working and parental leave options are available to them?</li>
-                </ul>
-            </li>
+            <li>Do employees feel supported to take up flexible working?</li>
+            <li>Do employees feel that working flexibly (or part-time) is a barrier to progression?</li>
+            <li>Do employees know what flexible working and parental leave options are available to them?</li>
         </ul>
+    </li>
+</ul>
 
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">If you find a gender imbalance here:</span>
-                If you find a gender imbalance here:
-            </strong>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>
-                    <p class="govuk-body">
-                        Raise awareness about your Shared Parental Leave, paternity leave and flexible working offer
-                        by disseminating clear guidance, or launching a campaign
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body">
-                        Consider enhancing pay for those on paternity leave and Shared Parental Leave to encourage
-                        male employees to play a role in childcare.
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body">
-                        Advertise all jobs as flexible by default, unless there is a strong business case otherwise.
-                    </p>
-                </li>
-            </ul>
-        </div>
-
-        <h3 class="govuk-heading-m">Next steps</h3>
-        <h4 class="govuk-heading-s">Developing an action plan</h4>
-        <p class="govuk-body">
-            Once you have identified where any issues might lie, our Actions to Close the gender pay gap guidance
-            provides more information to help you to develop a robust, evidence‐based Action Plan and ensure you are
-            doing all you can to reduce your organisation’s GPG.
-        </p>
-        <a href="/public/assets/pdf/action-plan-guidance.pdf" rel="download" download="true"
-           class="govuk-link govuk-!-font-weight-bold govuk-body">
-            Find out how to create an action plan to close your gender pay gap
-            <span class="govuk-visually-hidden"> (pdf)</span>
-        </a>
-
-        <hr class="govuk-section-break govuk-section-break--l">
-
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
-
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
-    </div>
+<div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">If you find a gender imbalance here:</span>
+        If you find a gender imbalance here:
+    </strong>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            <p class="govuk-body">
+                Raise awareness about your Shared Parental Leave, paternity leave and flexible working offer
+                by disseminating clear guidance, or launching a campaign
+            </p>
+        </li>
+        <li>
+            <p class="govuk-body">
+                Consider enhancing pay for those on paternity leave and Shared Parental Leave to encourage
+                male employees to play a role in childcare.
+            </p>
+        </li>
+        <li>
+            <p class="govuk-body">
+                Advertise all jobs as flexible by default, unless there is a strong business case otherwise.
+            </p>
+        </li>
+    </ul>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="EightWaysToUnderstandYourOrganisationsGpg/UpdatesRecord"/>
-    </div>
-</div>
+
+<h3 class="govuk-heading-m">Next steps</h3>
+<h4 class="govuk-heading-s">Developing an action plan</h4>
+<p class="govuk-body">
+    Once you have identified where any issues might lie, our Actions to Close the gender pay gap guidance
+    provides more information to help you to develop a robust, evidence‐based Action Plan and ensure you are
+    doing all you can to reduce your organisation’s GPG.
+</p>
+<a href="/public/assets/pdf/action-plan-guidance.pdf" rel="download" download="true"
+   class="govuk-link govuk-!-font-weight-bold govuk-body">
+    Find out how to create an action plan to close your gender pay gap
+    <span class="govuk-visually-hidden"> (pdf)</span>
+</a>
