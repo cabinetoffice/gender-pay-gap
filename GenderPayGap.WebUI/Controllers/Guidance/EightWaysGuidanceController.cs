@@ -5,59 +5,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Guidance
 {
-    [Route("guidance")]
+    [Route("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap")]
     public class EightWaysGuidanceController : Controller
     {
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/1")]
+        [HttpGet("overview")]
         public IActionResult EightWaysOverview()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/Overview");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/2")]
+        [HttpGet("1")]
         public IActionResult EightWaysDoPeopleGetStuck()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoPeopleGetStuck");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/3")]
+        [HttpGet("2")]
         public IActionResult EightWaysIsThereGenderImbalance()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/IsThereGenderImbalance");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/4")]
+        [HttpGet("3")]
         public IActionResult EightWaysAreWomenMoreLikely()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/AreWomenMoreLikely");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/5")]
+        [HttpGet("4")]
         public IActionResult EightWaysDoMenAndWomenLeave()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoMenAndWomenLeave");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/6")]
+        [HttpGet("5")]
         public IActionResult EightWaysDoParticularAspectsOfPay()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoParticularAspectsOfPay");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/7")]
+        [HttpGet("6")]
         public IActionResult EightWaysDoMenAndWomenReceive()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoMenAndWomenReceive");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/8")]
+        [HttpGet("7")]
         public IActionResult EightWaysAreYouDoingAllThatYouCan()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/AreYouDoingAllThatYouCan");
         }
 
-        [HttpGet("eight-ways-to-understand-your-organisations-gender-pay-gap/9")]
+        [HttpGet("8")]
         public IActionResult EightWaysAreYouSupportingBoth()
         {
             return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/AreYouSupportingBoth");
