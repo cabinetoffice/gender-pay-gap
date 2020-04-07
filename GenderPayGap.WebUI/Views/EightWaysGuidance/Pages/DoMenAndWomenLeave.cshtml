@@ -1,7 +1,7 @@
 @using GenderPayGap.WebUI.Models.Guidance
 
 @{
-    Layout = "EightWaysToUnderstandYourOrganisationsGpg/EightWaysGuidanceLayout";
+    Layout = "EightWaysGuidanceLayout";
 }
 
 <h2 class="govuk-heading-l">Do men and women leave your organisation at different rates?</h2>
@@ -21,42 +21,46 @@
 
 <div class="horizontal-bar-chart__section">
     <h3 class="govuk-heading-s">Example of gender imbalance by employee exit rates, and seniority level</h3>
-    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
-                                                              {
-                                                                  Id = "TopLevel",
-                                                                  Title = "Top level",
-                                                                  SecondaryTitle = "(highest paid)",
-                                                                  Female = new decimal(43),
-                                                                  Male = new decimal(25)
-                                                              })/>
+    <partial name="../Guidance/MenWomenSeparatedBarChart"
+             model=@( new GuidanceBarChartViewModel
+                   {
+                       Id = "TopLevel",
+                       Title = "Top level",
+                       SecondaryTitle = "(highest paid)",
+                       Female = new decimal(43),
+                       Male = new decimal(25)
+                   }) />
+
+    <partial name="../Guidance/MenWomenSeparatedBarChart"
+             model=@( new GuidanceBarChartViewModel
+                   {
+                       Id = "UpperMiddleLevel",
+                       Title = "Upper middle level",
+                       Female = new decimal(25),
+                       Male = new decimal(25)
+                   }) />
+
+    <partial name="../Guidance/MenWomenSeparatedBarChart"
+             model=@( new GuidanceBarChartViewModel
+                   {
+                       Id = "BottomMiddleLevel",
+                       Title = "Bottom middle level",
+                       Female = new decimal(12),
+                       Male = new decimal(20)
+                   }) />
+
+    <partial name="../Guidance/MenWomenSeparatedBarChart"
+             model=@( new GuidanceBarChartViewModel
+                   {
+                       Id = "LowerLevel",
+                       Title = "Lower level",
+                       SecondaryTitle = "(lowest paid)",
+                       Female = new decimal(10),
+                       Male = new decimal(12)
+                   }) />
+</div>
         
-                    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
-                                                              {
-                                                                  Id = "UpperMiddleLevel",
-                                                                  Title = "Upper middle level",
-                                                                  Female = new decimal(25),
-                                                                  Male = new decimal(25)
-                                                              })/>
-        
-                    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
-                                                              {
-                                                                  Id = "BottomMiddleLevel",
-                                                                  Title = "Bottom middle level",
-                                                                  Female = new decimal(12),
-                                                                  Male = new decimal(20)
-                                                              })/>
-        
-                    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
-                                                              {
-                                                                  Id = "LowerLevel",
-                                                                  Title = "Lower level",
-                                                                  SecondaryTitle = "(lowest paid)",
-                                                                  Female = new decimal(10),
-                                                                  Male = new decimal(12)
-                                                              })/>
-                </div>
-        
-        <div class="govuk-warning-text">
+<div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
         <span class="govuk-warning-text__assistive">If you find a gender imbalance in employee exit rates</span>

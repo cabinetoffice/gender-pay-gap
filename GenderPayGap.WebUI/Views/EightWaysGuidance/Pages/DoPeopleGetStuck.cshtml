@@ -1,0 +1,67 @@
+@using GenderPayGap.WebUI.Models.Guidance
+
+@{
+    Layout = "EightWaysGuidanceLayout";
+}
+
+<h2 class="govuk-heading-l">Do people get ‘stuck’ at certain levels within your organisation?</h2>
+<p class="govuk-body">
+    The quartile breakdowns required under GPG reporting show the proportion of women and men at different pay
+    levels. This approach allows different organisations to be compared. However, it does not take into account
+    your particular organisational structure.
+</p>
+
+        <div class="horizontal-bar-chart__section">
+            <h3 class="govuk-heading-s">An example showing gender imbalance by the proportion of women in each quarter</h3>
+            <partial name="../Guidance/MenWomenBarChart"
+                     model=@( new GuidanceBarChartViewModel
+                           {
+                               Id = "TopQuarter",
+                               Title = "Top quarter",
+                               SecondaryTitle = "(highest paid)",
+                               Female = new decimal(34),
+                               Male = new decimal(66)
+                           })/>
+
+            <partial name="../Guidance/MenWomenBarChart"
+                     model=@( new GuidanceBarChartViewModel
+                           {
+                               Id = "UpperMiddleQuarter",
+                               Title = "Upper middle quarter",
+                               Female = new decimal(45),
+                               Male = new decimal(55)
+                           })/>
+
+            <partial name="../Guidance/MenWomenBarChart"
+                     model=@( new GuidanceBarChartViewModel
+                           {
+                               Id = "BottomMiddleQuarter",
+                               Title = "Bottom middle quarter",
+                               Female = new decimal(55),
+                               Male = new decimal(45)
+                           })/>
+
+            <partial name="../Guidance/MenWomenBarChart"
+                     model=@( new GuidanceBarChartViewModel
+                           {
+                               Id = "LowerQuarter",
+                               Title = "Lower quarter",
+                               SecondaryTitle = "(lowest paid)",
+                               Female = new decimal(50),
+                               Male = new decimal(50)
+                           })/>
+        </div>
+        
+        <div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Examine gender balance by your seniority structure</span>
+        Examine gender balance by your seniority structure
+    </strong>
+    <p class="govuk-body">
+        You should examine the gender balance in your organisation using your own seniority structure,
+        and ideally also your job types and departments.
+    </p>
+</div>
+
+<partial name="Images/GenderImbalanceBySeniorityStructure"/>

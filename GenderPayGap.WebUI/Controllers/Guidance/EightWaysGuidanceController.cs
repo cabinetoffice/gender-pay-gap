@@ -12,55 +12,55 @@ namespace GenderPayGap.WebUI.Controllers.Guidance
         [HttpGet("overview")]
         public IActionResult EightWaysOverview()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/Overview");
+            return View("Pages/Overview");
         }
 
         [HttpGet("1")]
         public IActionResult EightWaysDoPeopleGetStuck()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoPeopleGetStuck");
+            return View("Pages/DoPeopleGetStuck");
         }
 
         [HttpGet("2")]
         public IActionResult EightWaysIsThereGenderImbalance()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/IsThereGenderImbalance");
+            return View("Pages/IsThereGenderImbalance");
         }
 
         [HttpGet("3")]
         public IActionResult EightWaysAreWomenMoreLikely()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/AreWomenMoreLikely");
+            return View("Pages/AreWomenMoreLikely");
         }
 
         [HttpGet("4")]
         public IActionResult EightWaysDoMenAndWomenLeave()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoMenAndWomenLeave");
+            return View("Pages/DoMenAndWomenLeave");
         }
 
         [HttpGet("5")]
         public IActionResult EightWaysDoParticularAspectsOfPay()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoParticularAspectsOfPay");
+            return View("Pages/DoParticularAspectsOfPay");
         }
 
         [HttpGet("6")]
         public IActionResult EightWaysDoMenAndWomenReceive()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/DoMenAndWomenReceive");
+            return View("Pages/DoMenAndWomenReceive");
         }
 
         [HttpGet("7")]
         public IActionResult EightWaysAreYouDoingAllThatYouCan()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/AreYouDoingAllThatYouCan");
+            return View("Pages/AreYouDoingAllThatYouCan");
         }
 
         [HttpGet("8")]
         public IActionResult EightWaysAreYouSupportingBoth()
         {
-            return View("../Guidance/EightWaysToUnderstandYourOrganisationsGpg/Pages/AreYouSupportingBoth");
+            return View("Pages/AreYouSupportingBoth");
         }
 
         public static PaginationPages GetPagesInThisGuidance(IUrlHelper helper, HttpRequest Request)
