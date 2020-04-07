@@ -525,7 +525,7 @@ namespace GenderPayGap.WebUI.Controllers
             await DataRepository.SaveChangesAsync();
 
             //Send completed notification email
-            await Emails.SendResetPasswordCompletedAsync(currentUser.EmailAddress);
+            EmailSendingService.SendResetPasswordCompletedEmail(currentUser.EmailAddress);
 
             //Send the verification code and showconfirmation
             return View("CustomError", new ErrorViewModel(1127));
