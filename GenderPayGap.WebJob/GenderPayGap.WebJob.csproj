@@ -31,7 +31,6 @@
     <None Remove="AppSettings.secret.json" />
     <None Remove="appsettings.TEST.json" />
     <None Remove="App_Data\EmailTemplates\GeoOrganisationRegistrationRequestTemplate.html" />
-    <None Remove="App_Data\EmailTemplates\OrganisationRegistrationApprovedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\OrganisationRegistrationDeclinedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\OrganisationRegistrationRemovedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\OrphanOrganisationTemplate.html" />
@@ -49,9 +48,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\OrganisationRegistrationDeclinedTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\EmailTemplates\OrganisationRegistrationApprovedTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\SendEmailTemplate.html">
