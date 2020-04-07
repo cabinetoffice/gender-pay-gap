@@ -9,6 +9,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -86,11 +87,11 @@ namespace Account.Controllers.ChangePasswordController
                     verifiedUser.UserId,
                     mockRouteData,
                     verifiedUser);
-
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<QueueWrapper>()));
+            
+            var mockNotifyEmailQueue = new Mock<IQueue>();
+            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
+            mockNotifyEmailQueue
+                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
 
             var model = new ChangePasswordViewModel {
                 CurrentPassword = testOldPassword, NewPassword = testNewPassword, ConfirmNewPassword = testNewPassword
@@ -100,13 +101,15 @@ namespace Account.Controllers.ChangePasswordController
             var redirectToActionResult = await controller.ChangePassword(model) as RedirectToActionResult;
 
             // Assert
-            mockEmailQueue.Verify(
+            mockNotifyEmailQueue.Verify(
                 x => x.AddMessageAsync(
-                    It.Is<QueueWrapper>(
-                        inst => inst.Message.Contains(verifiedUser.EmailAddress)
-                                && inst.Type == typeof(ChangePasswordCompletedTemplate).FullName)),
+                    It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendChangePasswordCompletedEmail))),
                 Times.Once(),
-                $"Expected the users email address using {nameof(ChangePasswordCompletedTemplate)} to be in the email send queue");
+                $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendChangePasswordCompletedEmail}");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(verifiedUser.EmailAddress))),
+                Times.Once(),
+                "Expected the current user's email address to be in the email send queue");
 
             Assert.NotNull(redirectToActionResult);
             Assert.AreEqual(

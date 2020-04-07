@@ -209,6 +209,23 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
+        public static async void SendChangePasswordCompletedEmail(string emailAddress)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendChangePasswordCompletedEmail,
+                Personalisation = personalisation
+            };
+
+            await AddEmailToQueue(notifyEmail);
+        }
+
         private static async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
         {
             try
@@ -242,6 +259,7 @@ namespace GenderPayGap.WebUI.Services
         public const string SendChangeEmailPendingVerificationEmail = "1ca62b42-d9aa-4f63-823b-971d8831cbc1";
         public const string SendChangeEmailCompletedVerificationEmail = "9d772c11-101a-4eb4-85cf-7b1f575770eb";
         public const string SendChangeEmailCompletedNotificationEmail = "be9cbf1a-1af1-47d8-bcd1-f1821ab61b14";
+        public const string SendChangePasswordCompletedEmail = "190bb5a5-ff34-4b15-b164-20f8442289bf";
 
     }
 

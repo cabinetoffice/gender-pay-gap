@@ -5,6 +5,7 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Areas.Account.ViewServices
@@ -43,7 +44,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             UserRepository.UpdatePassword(currentUser, newPassword);
 
             // send password change notification
-            await Emails.SendChangePasswordNotificationAsync(currentUser.EmailAddress);
+            EmailSendingService.SendChangePasswordCompletedEmail(currentUser.EmailAddress);
 
             return errorState;
         }
