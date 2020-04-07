@@ -114,19 +114,16 @@ namespace GenderPayGap.WebUI.Controllers
                 },
             };
 
-            int currentPageIndex = pages.FindIndex(
-                page =>
-                {
-                    string currentRelativeUrl = $"{Request.PathBase}{Request.Path}{Request.QueryString}";
-                    string currentFullUrl = $"{Request.Scheme}://{Request.Host}{currentRelativeUrl}";
-                    bool isCurrentPage = (page.Url == currentFullUrl) || (page.Url == currentRelativeUrl);
-                    return isCurrentPage;
-                });
+            foreach (PaginationPage page in pages)
+            {
+                string currentRelativeUrl = $"{Request.PathBase}{Request.Path}{Request.QueryString}";
+                string currentFullUrl = $"{Request.Scheme}://{Request.Host}{currentRelativeUrl}";
+                page.IsCurrentPage = (page.Url == currentFullUrl) || (page.Url == currentRelativeUrl);
+            }
 
             return new PaginationPages
             {
-                Pages = pages,
-                CurrentPageIndex = currentPageIndex
+                Pages = pages
             };
         }
 

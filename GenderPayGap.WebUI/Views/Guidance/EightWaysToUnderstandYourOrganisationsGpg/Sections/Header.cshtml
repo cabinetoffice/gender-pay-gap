@@ -1,6 +1,4 @@
-﻿@using GenderPayGap.WebUI.Views.Components.PaginationLinks
-
-<div class="govuk-grid-row">
+﻿<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Guidance</span>
         <h1 class="govuk-heading-xl">Eight ways to understand your organisation's gender pay gap</h1>
@@ -30,36 +28,5 @@
                 </a>
             </p>
         </div>
-    </div>
-</div>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h3 class="govuk-heading-m">Contents</h3>
-
-        <ul class="govuk-list govuk-list--bullet">
-            @foreach (PaginationPage page in GuidanceController.GetPagesInThisGuidance(Url, Context.Request).Pages)
-            {
-                <li>
-                    @{
-                        string currentFullUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}{Context.Request.Path}{Context.Request.QueryString}";
-                        string currentRelativeUrl = $"{Context.Request.PathBase}{Context.Request.Path}{Context.Request.QueryString}";
-                        bool isCurrentPage = (page.Url == currentFullUrl) || (page.Url == currentRelativeUrl);
-                    }
-                    @if (isCurrentPage)
-                    {
-                        <p class="govuk-body guidance-current-page-link">
-                            @(page.Title)
-                        </p>
-                    }
-                    else
-                    {
-                        <a href="@(page.Url)" class="govuk-link">
-                            @(page.Title)
-                        </a>
-                    }
-                </li>
-            }
-        </ul>
     </div>
 </div>

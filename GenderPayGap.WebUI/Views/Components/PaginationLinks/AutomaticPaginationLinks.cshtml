@@ -3,12 +3,12 @@
 
 @{
 
-    if (Model.CurrentPageIndex != -1)
+    if (Model.GetCurrentPageIndex() != -1)
     {
         PaginationLinkViewModel leftLink = null;
-        if (Model.CurrentPageIndex - 1 >= 0)
+        if (Model.GetCurrentPageIndex() - 1 >= 0)
         {
-            PaginationPage leftPage = Model.Pages[Model.CurrentPageIndex - 1];
+            PaginationPage leftPage = Model.Pages[Model.GetCurrentPageIndex() - 1];
             leftLink = new PaginationLinkViewModel
             {
                 Title = "Previous",
@@ -18,9 +18,9 @@
         }
 
         PaginationLinkViewModel rightLink = null;
-        if (Model.CurrentPageIndex + 1 < Model.Pages.Count)
+        if (Model.GetCurrentPageIndex() + 1 < Model.Pages.Count)
         {
-            PaginationPage rightPage = Model.Pages[Model.CurrentPageIndex + 1];
+            PaginationPage rightPage = Model.Pages[Model.GetCurrentPageIndex() + 1];
             rightLink = new PaginationLinkViewModel
             {
                 Title = "Next",
