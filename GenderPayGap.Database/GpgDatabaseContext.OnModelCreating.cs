@@ -194,19 +194,12 @@ namespace GenderPayGap.Database
                     entity.HasIndex(e => e.Status)
                         .HasName("IX_StatusId");
 
-                    entity.HasIndex(e => new {e.LatestRegistrationUserId, e.LatestRegistrationOrganisationId})
-                        .HasName("IX_LatestRegistration_UserId_LatestRegistration_OrganisationId");
-
                     entity.Property(e => e.Status).HasColumnName("StatusId");
                     entity.Property(e => e.SectorType).HasColumnName("SectorTypeId");
 
                     entity.Property(e => e.CompanyNumber).HasMaxLength(10);
 
                     entity.Property(e => e.EmployerReference).HasMaxLength(10);
-
-                    entity.Property(e => e.LatestRegistrationOrganisationId).HasColumnName("LatestRegistration_OrganisationId");
-
-                    entity.Property(e => e.LatestRegistrationUserId).HasColumnName("LatestRegistration_UserId");
 
                     entity.Property(e => e.OrganisationName)
                         .IsRequired()
@@ -223,12 +216,6 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.Organisations)
                         .HasForeignKey(d => d.LatestScopeId)
                         .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationScopes_LatestScopeId");
-
-                    entity.HasOne(d => d.LatestRegistration)
-                        .WithMany(p => p.Organisations)
-                        .HasForeignKey(d => new {d.LatestRegistrationUserId, d.LatestRegistrationOrganisationId})
-                        .HasConstraintName(
-                            "FK_dbo.Organisations_dbo.UserOrganisations_LatestRegistration_UserId_LatestRegistration_OrganisationId");
 
                     entity.HasOne(d => d.LatestPublicSectorType)
                         .WithMany(x => x.Organisations)
