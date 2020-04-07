@@ -157,9 +157,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         case "Update GPG download data files":
                             count = await UpdateDownloadFilesAsync(model.Parameters, model.Comment, writer, test);
                             break;
-                        case "Fix database errors":
-                            count = await FixDatabaseErrorsAsync(model.Parameters, model.Comment, writer, test);
-                            break;
                         case "Create security code":
                             count = await SecurityCodeWorkAsync(
                                 model.Parameters,
@@ -484,54 +481,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 await SearchBusinessLogic.UpdateSearchIndexAsync(listOfModifiedOrgs.ToArray());
                 //todo: writer.WriteLine(Color.Green, $"INFO: Search index updated successfully.");
             }
-
-            return count;
-        }
-
-        private async Task<long> FixDatabaseErrorsAsync(string parameters, string comment, StringWriter writer, bool test)
-        {
-            if (!string.IsNullOrWhiteSpace(parameters))
-            {
-                throw new ArgumentException("ERROR: parameters must be empty");
-            }
-
-            var count = 0;
-
-            IQueryable<Organisation> orgs;
-            int subCount;
-
-            #region Fix latest scopes
-
-            orgs = DataRepository.GetAll<Organisation>()
-                .Where(o => o.LatestScope == null && o.OrganisationScopes.Any(s => s.ScopeStatus != ScopeStatuses.Unknown));
-            subCount = 0;
-            foreach (Organisation org in orgs)
-            {
-                OrganisationScope latestScope = org.OrganisationScopes.OrderByDescending(o => o.SnapshotDate)
-                    .FirstOrDefault(o => o.ScopeStatus != ScopeStatuses.Unknown);
-                if (latestScope != null)
-                {
-                    //DOTNETCORE MERGE - latestScope.LatestOrganisation = org;
-                    org.LatestScope = latestScope;
-                    subCount++;
-                    writer.WriteLine(
-                        $"{subCount:000}: Organisation '{org.EmployerReference}:{org.OrganisationName}' missing a latest scope {(test ? "will be" : "was successfully")} fixed");
-                }
-            }
-
-            if (!test && subCount > 0)
-            {
-                await DataRepository.SaveChangesAsync();
-            }
-
-            if (subCount == 0)
-            {
-                writer.WriteLine("No organisations missing a latest scope");
-            }
-
-            count += subCount;
-
-            #endregion
 
             return count;
         }
