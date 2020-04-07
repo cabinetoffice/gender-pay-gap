@@ -11,15 +11,20 @@
   }
   
   .horizontal-bar-chart__bar {
-    height: 2em;
+    height: 30px;
   }
   
-  .horizontal-bar-chart__bar--left {
+  .horizontal-bar-chart__bar--women {
     background-color:  govuk-colour("blue");
   }
 
-  .horizontal-bar-chart__bar--right {
+  .horizontal-bar-chart__bar--men {
     background-color:  govuk-colour("brown");
+  }
+
+  .horizontal-bar-chart__bar--empty {
+    height: 34px;
+    border: 2px govuk-colour("dark-grey") solid;
   }
 
   .horizontal-bar-chart__footer {
@@ -34,5 +39,13 @@
       position: absolute;
       right: 0;
     }
+  }
+  
+  .horizontal-bar-chart__footer--separated-women {
+    margin-bottom: 50px;
+  }
+
+  .horizontal-bar-chart__footer--separated-men {
+    margin-bottom: 70px;
   }
 }
