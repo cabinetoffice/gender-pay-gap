@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
@@ -44,7 +44,8 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 
             // aggregated save
             await UserRepository.BeginTransactionAsync(
-                async () => {
+                async () =>
+                {
                     try
                     {
                         // update retired user registrations 
@@ -68,20 +69,18 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                     }
                 });
 
-            if (!userToRetire.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                // Create the close account notification to user
-                var sendEmails = new List<Task>();
-                bool testEmail = !Config.IsProduction();
-                sendEmails.Add(Emails.SendAccountClosedNotificationAsync(userToRetire.EmailAddress, testEmail));
+            // Create the close account notification to user
+            EmailSendingService.SendCloseAccountCompletedEmail(userToRetire.EmailAddress);
 
-                //Create the notification to GEO for each newly orphaned organisation
-                userOrgs.Where(org => org.GetIsOrphan())
-                    .ForEach(org => sendEmails.Add(Emails.SendGEOOrphanOrganisationNotificationAsync(org.OrganisationName, testEmail)));
+            var sendEmails = new List<Task>();
+            bool testEmail = !Config.IsProduction();
 
-                //Send all the notifications in parallel
-                await Task.WhenAll(sendEmails);
-            }
+            //Create the notification to GEO for each newly orphaned organisation
+            userOrgs.Where(org => org.GetIsOrphan())
+                .ForEach(org => sendEmails.Add(Emails.SendGEOOrphanOrganisationNotificationAsync(org.OrganisationName, testEmail)));
+
+            //Send all the notifications in parallel
+            await Task.WhenAll(sendEmails);
 
             return errorState;
         }
