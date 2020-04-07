@@ -35,13 +35,6 @@ namespace GenderPayGap
 
             return false;
         }
-        
-        public static async Task<bool> SendAccountClosedNotificationAsync(string emailAddress, bool test)
-        {
-            var closeAccountCompleted = new CloseAccountCompletedTemplate {RecipientEmailAddress = emailAddress, Test = test};
-
-            return await QueueEmailAsync(closeAccountCompleted);
-        }
 
         public static async Task<bool> SendGEOOrphanOrganisationNotificationAsync(string organisationName, bool test)
         {
