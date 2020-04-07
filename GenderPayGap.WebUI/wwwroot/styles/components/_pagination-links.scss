@@ -1,0 +1,22 @@
+﻿.pagination-links {
+    .pagination-link-left, .pagination-link-right {
+        margin-bottom: govuk-spacing(5);
+    }
+
+    .pagination-link-right {
+        @media only screen and (min-width: map-get($govuk-breakpoints, 'tablet')) {
+            text-align: right;
+        }
+    }
+
+    .pagination-link-title {
+        display: inline-block;
+        margin-bottom: 8px;
+        font-size: 19px;
+        font-weight: bold;
+
+        .pagination-link-icon {
+            margin-right: 15px;
+        }
+    }
+}
