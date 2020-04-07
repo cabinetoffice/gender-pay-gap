@@ -107,8 +107,6 @@ namespace GenderPayGap.WebJob
             List<Organisation> unregisteredOrgs = await _DataRepository.GetEntities<Organisation>()
                 .Where(
                     o => o.Status == OrganisationStatuses.Active
-                         && (o.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                             || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
                          && (o.UserOrganisations == null
                              || !o.UserOrganisations.Any(
                                  uo => uo.PINConfirmedDate != null

@@ -77,9 +77,10 @@ namespace GenderPayGap.WebUI.Controllers
 
             List<Organisation> orphanOrganisations = dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
-                .Where(org => org.LatestScope == null ||
-                              org.LatestScope.ScopeStatus == ScopeStatuses.InScope ||
-                              org.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                .Where(org =>
+                    org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active) == null ||
+                    org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.InScope ||
+                    org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.PresumedInScope)
                 .Where(org => org.UserOrganisations == null ||
                               !org.UserOrganisations.Any(uo => uo.PINConfirmedDate != null // Registration complete
                                                                || uo.Method == RegistrationMethods.Manual // Manual registration
@@ -335,7 +336,6 @@ namespace GenderPayGap.WebUI.Controllers
         public FileContentResult DownloadUserOrganisationRegistrations()
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetAll<UserOrganisation>()
-                .Include(uo => uo.Organisation.LatestScope)
                 .Include(uo => uo.User)
                 .ToList();
 
@@ -369,7 +369,6 @@ namespace GenderPayGap.WebUI.Controllers
         {
             List<UserOrganisation> userOrganisations = dataRepository.GetEntities<UserOrganisation>() 
                 .Where(uo => uo.PINConfirmedDate == null) 
-                .Include(uo => uo.Organisation.LatestScope) 
                 .Include(uo => uo.User) 
                 .ToList(); 
             var records = userOrganisations.Select(

@@ -139,7 +139,7 @@ namespace GenderPayGap.Database
         {
             DateTime pinExpiresDate = Global.PinExpiresDate;
             return Status == Core.OrganisationStatuses.Active
-                   && (LatestScope.ScopeStatus == ScopeStatuses.InScope || LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope)
+                   && (GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope)
                    && (UserOrganisations == null
                        || !UserOrganisations.Any(
                            uo => uo.PINConfirmedDate != null
