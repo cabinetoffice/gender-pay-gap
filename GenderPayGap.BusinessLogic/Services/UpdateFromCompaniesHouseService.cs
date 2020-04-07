@@ -137,7 +137,6 @@ namespace GenderPayGap.BusinessLogic.Services
 
             newOrganisationAddressFromCompaniesHouse.OrganisationId = organisation.OrganisationId;
             organisation.OrganisationAddresses.Add(newOrganisationAddressFromCompaniesHouse);
-            organisation.LatestAddress = newOrganisationAddressFromCompaniesHouse;
 
             oldOrganisationAddress.Status = AddressStatuses.Retired;
             oldOrganisationAddress.StatusDate = VirtualDateTime.Now;

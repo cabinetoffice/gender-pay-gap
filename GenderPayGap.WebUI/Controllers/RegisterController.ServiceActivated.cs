@@ -157,9 +157,10 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 //Retire the old address 
-                if (userOrg.Organisation.LatestAddress != null && userOrg.Organisation.LatestAddress.AddressId != userOrg.Address.AddressId)
+                OrganisationAddress latestAddress = userOrg.Organisation.GetAddress();
+                if (latestAddress != null && latestAddress.AddressId != userOrg.Address.AddressId)
                 {
-                    userOrg.Organisation.LatestAddress.SetStatus(
+                    latestAddress.SetStatus(
                         AddressStatuses.Retired,
                         OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                         "Replaced by PIN in post");
@@ -171,7 +172,6 @@ namespace GenderPayGap.WebUI.Controllers
                     AddressStatuses.Active,
                     OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                     "PIN Confirmed");
-                userOrg.Organisation.LatestAddress = userOrg.Address;
                 userOrg.ConfirmAttempts = 0;
 
                 model.AccountingDate = userOrg.Organisation.SectorType.GetAccountingStartDate();

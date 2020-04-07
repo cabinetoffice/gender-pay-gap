@@ -907,7 +907,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 }
 
                 // add new address
-                OrganisationAddress prevAddress = org.LatestAddress;
+                OrganisationAddress prevAddress = org.GetAddress();
                 var newAddress = new OrganisationAddress {
                     OrganisationId = org.OrganisationId,
                     Address1 = address1,
@@ -926,8 +926,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     prevAddress.SetStatus(AddressStatuses.Retired, CurrentUser.UserId, $"Replaced by {newAddress.Source}");
                 }
 
-                org.LatestAddress = newAddress;
-
                 DataRepository.Insert(newAddress);
                 org.OrganisationAddresses.Add(newAddress);
 
@@ -945,7 +943,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             CurrentUser.EmailAddress,
                             nameof(Organisation.EmployerReference),
                             employerRef,
-                            nameof(Organisation.LatestAddress),
+                            "LatestAddress",
                             oldValue,
                             newValue,
                             comment));
