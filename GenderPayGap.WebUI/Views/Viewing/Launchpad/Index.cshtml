@@ -1,4 +1,5 @@
 @using GenderPayGap.Core
+@using GenderPayGap.WebUI.Controllers.Guidance
 @{
     ViewBag.Title = "Search and compare gender pay gap data - GOV.UK";
     ViewBag.pageDescription = "Find and compare gender pay gap information reported by employers. Learn more about the gender pay gap and how to close it.";
@@ -54,7 +55,7 @@
     <div class="column-three-thirds">
         <div class="column-one-third">
             <div class="heading-small">
-                <a href="@(Url.Action(nameof(GuidanceController.EightWaysOverview), "Guidance"))">
+                <a href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">
                     Eight ways to understand your organisation’s gender pay gap
                 </a>
             </div>

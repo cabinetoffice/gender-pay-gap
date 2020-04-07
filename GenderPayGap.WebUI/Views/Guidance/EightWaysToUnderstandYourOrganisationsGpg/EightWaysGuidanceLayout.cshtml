@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.WebUI.Views.Components.PaginationLinks
+﻿@using GenderPayGap.WebUI.Controllers.Guidance
+@using GenderPayGap.WebUI.Views.Components.PaginationLinks
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
@@ -35,7 +36,7 @@
         <h3 class="govuk-heading-m">Contents</h3>
 
         <ul class="govuk-list govuk-list--bullet">
-            @foreach (PaginationPage page in GuidanceController.GetPagesInThisGuidance(Url, Context.Request).Pages)
+            @foreach (PaginationPage page in EightWaysGuidanceController.GetPagesInThisGuidance(Url, Context.Request).Pages)
             {
                 <li>
                     @if (page.IsCurrentPage)
@@ -66,7 +67,7 @@
         <hr class="govuk-section-break govuk-section-break--l">
 
         @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-               GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
+               EightWaysGuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
 
     </div>
 
