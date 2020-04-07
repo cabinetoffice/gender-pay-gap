@@ -499,14 +499,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration.ManualChanges
 
             Organisation org1 = thisTestAdminController.DataRepository.GetAll<Organisation>()
                 .SingleOrDefault(x => x.EmployerReference == "6B2LF57C");
-            Assert.AreEqual("Some House, 1 Some Street, Some Town, PC1 11RT", org1.LatestAddress.GetAddressString());
+            Assert.AreEqual("Some House, 1 Some Street, Some Town, PC1 11RT", org1.GetAddress().GetAddressString());
             Assert.AreEqual(
                 "1: 6B2LF57C: Address=No previous address has been set to Some House,1 Some Street,,Some Town,,,PC1 11RT",
                 actualResults[0]);
 
             Organisation org2 = thisTestAdminController.DataRepository.GetAll<Organisation>()
                 .SingleOrDefault(x => x.EmployerReference == "D43TYU76");
-            Assert.AreEqual("PO BOX 12, Another Town, PC2 55RT", org2.LatestAddress.GetAddressString());
+            Assert.AreEqual("PO BOX 12, Another Town, PC2 55RT", org2.GetAddress().GetAddressString());
             Assert.AreEqual(
                 "2: D43TYU76: Address=No previous address has been set to PO BOX 12,,,Another Town,,,PC2 55RT",
                 actualResults[1]);
@@ -525,10 +525,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration.ManualChanges
                 County = "Previous County",
                 Country = "Previous Country",
                 PostCode = "Previous PostCode",
-                Status = AddressStatuses.Active
+                Status = AddressStatuses.Active,
             };
+            var adressStatus = new AddressStatus
+            {
+                Address = existingAddressExpectedToBeRetired,
+                Status = AddressStatuses.Active,
+            };
+            existingAddressExpectedToBeRetired.AddressStatuses.Add(adressStatus);
             Organisation privateOrgWhoseAddressWillBeChanged = OrganisationHelper.GetPrivateOrganisation("Employer_Reference_989898");
-            privateOrgWhoseAddressWillBeChanged.LatestAddress = existingAddressExpectedToBeRetired;
+            privateOrgWhoseAddressWillBeChanged.OrganisationAddresses.Add(existingAddressExpectedToBeRetired);
 
             #region setting up database and controller 
 

@@ -439,7 +439,11 @@ namespace GenderPayGap.Tests
         [Description("CreateViewModelFromUserOrganisation: When HasPrevScope then PrevOrgScopeId is set")]
         public void CreateViewModelFromUserOrganisation_When_HasPrevScope_then_PrevOrgScope_is_set()
         {
-            var testOrg = new Organisation {SectorType = SectorTypes.Private, LatestAddress = new OrganisationAddress()};
+            var testOrg = new Organisation
+            {
+                SectorType = SectorTypes.Private,
+                OrganisationAddresses = new List<OrganisationAddress> { new OrganisationAddress() }
+            };
 
             var testLatestScope = new OrganisationScope {
                 OrganisationScopeId = 123, ScopeStatus = ScopeStatuses.OutOfScope, Organisation = testOrg

@@ -90,7 +90,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(result.ActionName == "ServiceActivated", "Expected redirect to ServiceActivated");
             Assert.That(userOrg.PINConfirmedDate > DateTime.MinValue);
             Assert.That(userOrg.Organisation.Status == OrganisationStatuses.Active);
-            Assert.That(userOrg.Organisation.LatestAddress.AddressId == address.AddressId);
+            Assert.That(userOrg.Organisation.GetAddress().AddressId == address.AddressId);
             Assert.That(controller.ReportingOrganisationId == org.OrganisationId);
             Assert.That(address.Status == AddressStatuses.Active);
             Assert.That(orgScope.RegisterStatus == RegisterStatuses.RegisterComplete);
@@ -1493,7 +1493,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //1.Arrange the test setup variables
             var user = new User() { UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
             var address = new OrganisationAddress() { AddressId = 1, OrganisationId = 1, Address1 = "Address line 1", PostCode = "PC1", Status = AddressStatuses.Active, Source = "CoHo" };
-            var org = new Organisation() { OrganisationId = 1, CompanyNumber = "11223344", SectorType = SectorTypes.Private, OrganisationName = "ORIGINAL NAME", LatestAddress = address, Status= OrganisationStatuses.Active };
+            var addressStatus = new AddressStatus { Address = address, Status = AddressStatuses.Active };
+            address.AddressStatuses.Add(addressStatus);
+            var org = new Organisation()
+            {
+                OrganisationId = 1,
+                CompanyNumber = "11223344",
+                SectorType = SectorTypes.Private,
+                OrganisationName = "ORIGINAL NAME",
+                OrganisationAddresses = new List<OrganisationAddress> { address },
+                Status = OrganisationStatuses.Active
+            };
 
             //Set user email address verified code and expired sent date
             var routeData = new RouteData();
@@ -1574,7 +1584,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.NotNull(result, "Expected RedirectToActionResult");
 
             //4.Check that the redirection went to the right url step.
-            Assert.That(result.ActionName.ToString() == nameof(RegisterController.ConfirmOrganisation), "Redirected to the wrong view");
+            Assert.AreEqual(result.ActionName.ToString(), nameof(RegisterController.ConfirmOrganisation), "Redirected to the wrong view");
 
             //5.If the redirection successfull retrieve the model stash sent with the redirect.
             var unstashedModel = controller.UnstashModel<OrganisationViewModel>();
@@ -1691,9 +1701,22 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //1.Arrange the test setup variables
             var user = new User() { UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
             var address1 = new OrganisationAddress() { AddressId = 1, OrganisationId = 1, Address1 = "Address line 1", PostCode = "PC1", Status = AddressStatuses.Active, Source = "CoHo" };
-            var org1 = new Organisation() { OrganisationId = 1, CompanyNumber = "11223344", SectorType = SectorTypes.Private, OrganisationName = "ORIGINAL NAME", LatestAddress = address1 };
+            var org1 = new Organisation()
+            {
+                OrganisationId = 1,
+                CompanyNumber = "11223344",
+                SectorType = SectorTypes.Private,
+                OrganisationName = "ORIGINAL NAME",
+                OrganisationAddresses = new List<OrganisationAddress> { address1 }
+            };
             var address2 = new OrganisationAddress() { AddressId = 2, OrganisationId = 2, Address1 = "Address line 1a", PostCode = "PC1a", Status = AddressStatuses.Active, Source = "CoHo" };
-            var org2 = new Organisation() { OrganisationId = 2, SectorType = SectorTypes.Private, OrganisationName = "ORIGINAL NAMEa", LatestAddress = address2 };
+            var org2 = new Organisation()
+            {
+                OrganisationId = 2,
+                SectorType = SectorTypes.Private,
+                OrganisationName = "ORIGINAL NAMEa",
+                OrganisationAddresses = new List<OrganisationAddress> { address2 }
+            };
             var reference = new OrganisationReference() {
                 OrganisationReferenceId = 1,
                 OrganisationId = 2,
@@ -1887,7 +1910,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 };
                 if (!string.IsNullOrWhiteSpace(address.GetAddressString()))
                 {
-                    org.LatestAddress = address;
                     addresses.Add(address);
                 }
 
@@ -2000,7 +2022,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 };
                 if (!string.IsNullOrWhiteSpace(address.GetAddressString()))
                 {
-                    org1.LatestAddress = address;
                     addresses.Add(address);
                 }
                 orgs.Add(org1);
@@ -2113,7 +2134,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 };
                 if (!string.IsNullOrWhiteSpace(address.GetAddressString()))
                 {
-                    org.LatestAddress = address;
                     addresses.Add(address);
                 }
                 orgs.Add(org);
@@ -2225,7 +2245,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 };
                 if (!string.IsNullOrWhiteSpace(address.GetAddressString()))
                 {
-                    org.LatestAddress = address;
                     addresses.Add(address);
                 }
                 orgs.Add(org);
@@ -2805,7 +2824,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.GetManualEmployer().AddressSource, "Wrong address source");
-            Assert.IsNull(org.LatestAddress, "Wrong latest address");
+            Assert.IsNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.IsTrue(!Text.IsAllNullOrWhiteSpace(user.ContactEmailAddress, user.ContactFirstName, user.ContactLastName, user.ContactPhoneNumber), "Contact info must be empty");
@@ -2845,9 +2864,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
+            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
+            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId="A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationId = 1,
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Private,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -2983,7 +3012,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Active, "Wrong address status");
             Assert.That(address.Source == stashedModel.GetManualEmployer().AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.LatestAddress, "Wrong latest address");
+            Assert.IsNotNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.IsTrue(!Text.IsAllNullOrWhiteSpace(user.ContactEmailAddress, user.ContactFirstName, user.ContactLastName, user.ContactPhoneNumber), "Contact info must be empty");
@@ -3024,9 +3053,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
+            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
+            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Public, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationId = 1,
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Public,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -3146,7 +3185,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Active, "Wrong address status");
             Assert.That(address.Source == stashedModel.GetManualEmployer().AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.LatestAddress, "Wrong latest address");
+            Assert.IsNotNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.IsTrue(!Text.IsAllNullOrWhiteSpace(user.ContactEmailAddress, user.ContactFirstName, user.ContactLastName, user.ContactPhoneNumber), "Contact info must be empty");
@@ -3187,9 +3226,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
+            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
+            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationId = 1,
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Private,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -3318,8 +3367,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.LatestAddress, "Wrong latest address");
-            Assert.That(org.LatestAddress.AddressId != address.AddressId, "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
@@ -3364,9 +3411,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
+            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
+            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Public, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationId = 1,
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Public,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -3495,8 +3552,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.LatestAddress, "Wrong latest address");
-            Assert.That(org.LatestAddress.AddressId != address.AddressId, "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
@@ -3541,9 +3596,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
+            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
+            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Public, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationId = 1,
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Public,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -3666,8 +3731,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.LatestAddress, "Wrong latest address");
-            Assert.That(org.LatestAddress.AddressId != address.AddressId, "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
@@ -3839,8 +3902,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Active, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.LatestAddress, "Wrong latest address");
-            Assert.That(org.LatestAddress.AddressId == address.AddressId, "Wrong latest address");
+            Assert.IsNotNull(org.GetAddress(), "Wrong latest address");
+            Assert.That(org.GetAddress().AddressId == address.AddressId, "Wrong latest address");
             Assert.That(org.Status == OrganisationStatuses.Active, "Wrong organisation status");
 
             //Check contact info
@@ -3888,7 +3951,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
             var sicCode3 = new SicCode() { SicCodeId = 10910, Description = "Desc3", SicSection = new SicSection() { SicSectionId = "C", Description = "Section3" } };
             var sicCode4 = new SicCode() { SicCodeId = 11060, Description = "Desc4", SicSection = new SicSection() { SicSectionId = "D", Description = "Section4" } };
-            var org0 = new Organisation() { OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Private,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -4011,7 +4081,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNull(org.LatestAddress, "Wrong latest address");
+            Assert.IsNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
@@ -4058,7 +4128,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSection = new SicSection() { SicSectionId = "C", Description = "Section2" } };
             var sicCode3 = new SicCode() { SicCodeId = 10910, Description = "Desc3", SicSection = new SicSection() { SicSectionId = "D", Description = "Section3" } };
             var sicCode4 = new SicCode() { SicCodeId = 11060, Description = "Desc4", SicSection = new SicSection() { SicSectionId = "E", Description = "Section4" } };
-            var org0 = new Organisation() { OrganisationName = "Company1", SectorType = SectorTypes.Public, Status = OrganisationStatuses.Active, CompanyNumber = "12345678", LatestAddress = address0 };
+            var org0 = new Organisation()
+            {
+                OrganisationName = "Company1",
+                SectorType = SectorTypes.Public,
+                Status = OrganisationStatuses.Active,
+                CompanyNumber = "12345678",
+                OrganisationAddresses = new List<OrganisationAddress> { address0 }
+            };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -4181,7 +4258,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNull(org.LatestAddress, "Wrong latest address");
+            Assert.IsNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
@@ -4352,7 +4429,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Address should still be pending");
             Assert.That(address.Source == selectedEmployer.AddressSource, "Wrong address source");
-            Assert.IsNull(org.LatestAddress, "Organisation latest address should still be empty");
 
             //Check sic codes
             Assert.That(org.OrganisationSicCodes != null && org.OrganisationSicCodes.Count == 2, "There should only be 2 SicCodes");
@@ -4520,7 +4596,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Address should still be pending");
             Assert.That(address.Source == selectedEmployer.AddressSource, "Wrong address source");
-            Assert.IsNull(org.LatestAddress, "Organisation latest address should still be empty");
 
             //Check sic codes
             Assert.That(org.OrganisationSicCodes != null && org.OrganisationSicCodes.Count == 4, "There should now be 4 SicCodes");

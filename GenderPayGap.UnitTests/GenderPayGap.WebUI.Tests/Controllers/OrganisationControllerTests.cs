@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -35,13 +36,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 new Organisation {
                     OrganisationId = 123,
                     OrganisationName = "Org123",
-                    LatestAddress = new OrganisationAddress(),
+                    OrganisationAddresses = new List<OrganisationAddress>{ new OrganisationAddress() },
                     SectorType = SectorTypes.Private
                 },
                 new Organisation {
                     OrganisationId = 456,
                     OrganisationName = "Org456",
-                    LatestAddress = new OrganisationAddress(),
+                    OrganisationAddresses = new List<OrganisationAddress>{ new OrganisationAddress() },
                     SectorType = SectorTypes.Private
                 }
             };
@@ -74,7 +75,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         private static UserOrganisation CreateUserOrganisation(Organisation org, long userId, DateTime? pinConfirmedDate)
         {
             return new UserOrganisation {
-                Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.LatestAddress
+                Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.GetAddress()
             };
         }
 
