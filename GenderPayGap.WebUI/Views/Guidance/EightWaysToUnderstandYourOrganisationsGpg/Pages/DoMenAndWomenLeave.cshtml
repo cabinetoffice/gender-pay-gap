@@ -105,39 +105,39 @@
 
         <div class="horizontal-bar-chart__section">
             <h3 class="govuk-heading-s">Example of gender imbalance by employee exit rates, and seniority level</h3>
-            <partial name="MenWomenSeparatedBarChart" model=@{ new GuidanceBarChartViewModel
+            <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
                                                               {
                                                                   Id = "TopLevel",
                                                                   Title = "Top level",
                                                                   SecondaryTitle = "(highest paid)",
                                                                   Female = new decimal(43),
                                                                   Male = new decimal(25)
-                                                              }; }/>
+                                                              })/>
         
-                    <partial name="MenWomenSeparatedBarChart" model=@{ new GuidanceBarChartViewModel
+                    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
                                                               {
                                                                   Id = "UpperMiddleLevel",
                                                                   Title = "Upper middle level",
                                                                   Female = new decimal(25),
                                                                   Male = new decimal(25)
-                                                              }; }/>
+                                                              })/>
         
-                    <partial name="MenWomenSeparatedBarChart" model=@{ new GuidanceBarChartViewModel
+                    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
                                                               {
                                                                   Id = "BottomMiddleLevel",
                                                                   Title = "Bottom middle level",
                                                                   Female = new decimal(12),
                                                                   Male = new decimal(20)
-                                                              }; }/>
+                                                              })/>
         
-                    <partial name="MenWomenSeparatedBarChart" model=@{ new GuidanceBarChartViewModel
+                    <partial name="MenWomenSeparatedBarChart" model=@( new GuidanceBarChartViewModel
                                                               {
                                                                   Id = "LowerLevel",
                                                                   Title = "Lower level",
                                                                   SecondaryTitle = "(lowest paid)",
                                                                   Female = new decimal(10),
                                                                   Male = new decimal(12)
-                                                              }; }/>
+                                                              })/>
                 </div>
         
         <div class="govuk-warning-text">

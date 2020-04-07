@@ -110,37 +110,37 @@
         
         <div class="horizontal-bar-chart__section">
             <h3 class="govuk-heading-s">Example of gender imbalance in the promotion process, by stage</h3>
-            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
+            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "ApplicantPool",
                                                           Title = "Applicant pool",
                                                           Female = new decimal(50),
                                                           Male = new decimal(50)
-                                                      }; }/>
+                                                      })/>
 
-            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
+            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Applicants",
                                                           Title = "Applicants",
                                                           Female = new decimal(40),
                                                           Male = new decimal(60)
-                                                      }; }/>
+                                                      })/>
 
-            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
+            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Assessment",
                                                           Title = "Assessment",
                                                           Female = new decimal(30),
                                                           Male = new decimal(70)
-                                                      }; }/>
+                                                      })/>
 
-            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
+            <partial name="MenWomenBarChart" model=@( new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Selected",
                                                           Title = "Selected",
                                                           Female = new decimal(25),
                                                           Male = new decimal(75)
-                                                      }; }/>
+                                                      })/>
         </div>
         
         <div class="govuk-warning-text">
