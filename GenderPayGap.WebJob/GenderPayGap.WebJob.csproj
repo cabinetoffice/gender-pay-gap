@@ -37,7 +37,6 @@
     <None Remove="App_Data\EmailTemplates\OrganisationRegistrationRemovedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\OrphanOrganisationTemplate.html" />
     <None Remove="App_Data\EmailTemplates\ResetPasswordCompletedTemplate.html" />
-    <None Remove="App_Data\EmailTemplates\ResetPasswordVerificationTemplate.html" />
     <None Remove="App_Data\EmailTemplates\SendEmailTemplate.html" />
   </ItemGroup>
 
@@ -58,9 +57,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\OrganisationRegistrationDeclinedTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\EmailTemplates\ResetPasswordVerificationTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\OrganisationRegistrationApprovedTemplate.html">

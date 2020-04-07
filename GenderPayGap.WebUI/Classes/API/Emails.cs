@@ -35,18 +35,6 @@ namespace GenderPayGap
 
             return false;
         }
-        
-        public static async Task<bool> SendResetPasswordNotificationAsync(string resetUrl, string emailAddress)
-        {
-            var resetPasswordVerification = new ResetPasswordVerificationTemplate {
-                Url = resetUrl,
-                RecipientEmailAddress = emailAddress,
-                Test = emailAddress.StartsWithI(Global.TestPrefix),
-                Simulate = emailAddress.StartsWithI(Global.TestPrefix)
-            };
-
-            return await QueueEmailAsync(resetPasswordVerification);
-        }
 
         public static async Task<bool> SendResetPasswordCompletedAsync(string emailAddress)
         {

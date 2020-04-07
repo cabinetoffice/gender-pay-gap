@@ -49,7 +49,6 @@ namespace GenderPayGap.WebJob
             // Register email templates
             var emailTemplatesConfigPath = "Email:Templates";
             // Gpg templates
-            host.RegisterEmailTemplate<ResetPasswordVerificationTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<ResetPasswordCompletedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<CloseAccountCompletedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<OrphanOrganisationTemplate>(emailTemplatesConfigPath);

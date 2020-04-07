@@ -128,17 +128,7 @@ namespace GenderPayGap.WebUI.Classes
         }
 
         #endregion
-
-        #region Registraion Helpers
         
-        public static async Task<bool> SendPasswordResetAsync(this Controller controller, string emailAddress, string resetCode)
-        {
-            string resetUrl = controller.Url.Action("NewPassword", "Register", new {code = resetCode}, "https");
-            return await Emails.SendResetPasswordNotificationAsync(resetUrl, emailAddress);
-        }
-
-        #endregion
-
         #region Session Handling
 
         public static void StashModel<T>(this BaseController controller, T model)
