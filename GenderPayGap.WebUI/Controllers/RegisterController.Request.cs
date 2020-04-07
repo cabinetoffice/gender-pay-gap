@@ -717,16 +717,11 @@ namespace GenderPayGap.WebUI.Controllers
             DataRepository.Delete(userOrg);
 
             //Send the declined email to the applicant
-            if (!await SendRegistrationDeclinedAsync(
+            SendRegistrationDeclined(
                 emailAddress,
                 string.IsNullOrWhiteSpace(model.CancellationReason)
                     ? "We haven't been able to verify your employer's identity. So we have declined your application."
-                    : model.CancellationReason))
-            {
-                ModelState.AddModelError(1131);
-                this.CleanModelErrors<OrganisationViewModel>();
-                return View("ConfirmCancellation", model);
-            }
+                    : model.CancellationReason);
 
             //Save the changes and redirect
             await DataRepository.SaveChangesAsync();
@@ -743,7 +738,7 @@ namespace GenderPayGap.WebUI.Controllers
 
 
         //Send the registration request
-        protected async Task<bool> SendRegistrationDeclinedAsync(string emailAddress, string reason)
+        protected void SendRegistrationDeclined(string emailAddress, string reason)
         {
             //Always use the administrators email when not on production
             if (!Config.IsProduction())
@@ -752,7 +747,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Send a verification link to the email address
-            return await Emails.SendRegistrationDeclinedAsync(emailAddress, reason);
+            EmailSendingService.SendOrganisationRegistrationDeclinedEmail(emailAddress, reason);
         }
 
         /// <summary>

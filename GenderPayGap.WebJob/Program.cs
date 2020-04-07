@@ -50,7 +50,6 @@ namespace GenderPayGap.WebJob
             var emailTemplatesConfigPath = "Email:Templates";
             // Gpg templates
             host.RegisterEmailTemplate<OrphanOrganisationTemplate>(emailTemplatesConfigPath);
-            host.RegisterEmailTemplate<OrganisationRegistrationDeclinedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<OrganisationRegistrationRemovedTemplate>(emailTemplatesConfigPath);
             host.RegisterEmailTemplate<GeoOrganisationRegistrationRequestTemplate>(emailTemplatesConfigPath);
 

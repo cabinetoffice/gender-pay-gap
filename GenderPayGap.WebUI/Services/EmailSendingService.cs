@@ -296,6 +296,24 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
+        public static async void SendOrganisationRegistrationDeclinedEmail(string emailAddress, string reason)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"reason", reason},
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendOrganisationRegistrationDeclinedEmail,
+                Personalisation = personalisation
+            };
+
+            await AddEmailToQueue(notifyEmail);
+        }
+
         private static async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
         {
             try
@@ -334,6 +352,7 @@ namespace GenderPayGap.WebUI.Services
         public const string SendResetPasswordCompletedEmail = "81a83348-a653-4e0c-80e2-b741ecb27cd2";
         public const string SendCloseAccountCompletedEmail = "75caab84-b95a-4991-87fe-c29af3f9e096";
         public const string SendOrganisationRegistrationApprovedEmail = "a349aa87-787d-4fa8-9ce4-f8e5a1b8209e";
+        public const string SendOrganisationRegistrationDeclinedEmail = "43d16081-b789-4426-9b00-13f3d9f6dbea";
 
     }
 
