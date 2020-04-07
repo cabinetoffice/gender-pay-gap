@@ -16,8 +16,7 @@
   }
   
   .pagination-link-label {
-    margin-left: 22px;
-    display: inline-block;
+    display: block;
     margin-top: .1em;
     text-decoration: underline;
   }
@@ -25,15 +24,24 @@
   .pagination-link-icon {
     margin-right: 15px;
   }
+  
+  .pagination-link-wrapper {
+    background-color: inherit;
+    margin-bottom: 25px;
+  }
+  
 }
 
-.pagination-link.right-arrow {
-  .pagination-link-title {
-    text-align: right;
-  }
+@media only screen and (min-width: 700px) {
+  .pagination-link.right-arrow {
+    .pagination-link-title {
+      text-align: right;
+    }
 
-  .pagination-link-label {
-    text-align: right;
+    .pagination-link-label {
+      text-align: right;
+      margin-left: 22px;
+    }
   }
 }
 
