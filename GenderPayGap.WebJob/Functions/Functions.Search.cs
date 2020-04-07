@@ -142,7 +142,7 @@ namespace GenderPayGap.WebJob
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.OrganisationSicCodes)
                 .Include(o => o.Returns)
-                .Include(o => o.LatestAddress);
+                .Include(o => o.OrganisationAddresses);
 
             List<Organisation> materialisedOrganisations = organisations.ToList();
 

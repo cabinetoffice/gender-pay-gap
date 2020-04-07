@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <dt style="font-weight: lighter; font-size: 0.8em; color: gray;">
-                        @Html.Raw(currentOrg.LatestAddress.GetAddressString("&#44;<br/>"))
+                        @Html.Raw(currentOrg.GetAddress().GetAddressString("&#44;<br/>"))
                     </dt>
                 </div>
             </dl>

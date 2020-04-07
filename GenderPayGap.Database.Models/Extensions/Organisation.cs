@@ -78,7 +78,7 @@ namespace GenderPayGap.Database
 
             if (address == null)
             {
-                address = LatestAddress;
+                address = GetAddress();
             }
 
             if (address == null)
@@ -194,7 +194,7 @@ namespace GenderPayGap.Database
                 SicSectionIds = sicCodes.Select(sic => sic.SicCode.SicSectionId.ToString()).Distinct().ToArray(),
                 SicSectionNames = sicCodes.Select(sic => sic.SicCode.SicSection.Description).Distinct().ToArray(),
                 SicCodeIds = sicCodes.Select(sicCode => sicCode.SicCodeId.ToString()).Distinct().ToArray(),
-                Address = LatestAddress?.GetAddressString(),
+                Address = GetAddress()?.GetAddressString(),
                 LatestReportedDate = submittedReports.Select(x => x.Created).FirstOrDefault(),
                 ReportedYears = submittedReports.Select(x => x.AccountingDate.Year.ToString()).ToArray(),
                 ReportedLateYears =
@@ -419,11 +419,6 @@ namespace GenderPayGap.Database
                 maxDate = SectorType.GetAccountingStartDate().AddYears(1);
             }
 
-            if (status == AddressStatuses.Active && LatestAddress != null && maxDate == SectorType.GetAccountingStartDate().AddYears(1))
-            {
-                return LatestAddress;
-            }
-
             AddressStatus addressStatus = OrganisationAddresses
                 .SelectMany(a => a.AddressStatuses.Where(s => s.Status == status && s.StatusDate < maxDate.Value))
                 .OrderByDescending(s => s.StatusDate)
@@ -432,11 +427,6 @@ namespace GenderPayGap.Database
             if (addressStatus != null && addressStatus.Address.Status == status)
             {
                 return addressStatus.Address;
-            }
-
-            if (LatestAddress != null && LatestAddress.Status == status)
-            {
-                return LatestAddress;
             }
 
             return null;
