@@ -110,7 +110,7 @@
         
         <div class="horizontal-bar-chart__section">
             <h3 class="govuk-heading-s">Example of gender imbalance in the promotion process, by stage</h3>
-            <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
                                                       {
                                                           Id = "ApplicantPool",
                                                           Title = "Applicant pool",
@@ -118,7 +118,7 @@
                                                           Male = new decimal(50)
                                                       }; }/>
 
-            <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Applicants",
                                                           Title = "Applicants",
@@ -126,7 +126,7 @@
                                                           Male = new decimal(60)
                                                       }; }/>
 
-            <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Assessment",
                                                           Title = "Assessment",
@@ -134,7 +134,7 @@
                                                           Male = new decimal(70)
                                                       }; }/>
 
-            <partial name="MenWomenBarChart" model=@{ new MenWomenBarChartViewModel
+            <partial name="MenWomenBarChart" model=@{ new GuidanceBarChartViewModel
                                                       {
                                                           Id = "Selected",
                                                           Title = "Selected",

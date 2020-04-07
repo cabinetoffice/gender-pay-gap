@@ -1,6 +1,6 @@
 ﻿namespace GenderPayGap.WebUI.Models.Guidance
 {
-    public class MenWomenBarChartViewModel
+    public class GuidanceBarChartViewModel
     {
 
         public string Id { get; set; }

@@ -8,20 +8,27 @@
         }
     </figcaption>
 
-    <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--men">
+    <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--empty">
         <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--women"
              style="width: @(Math.Round(Model.Female))%">
         </div>
     </div>
-
-    <div class="horizontal-bar-chart__footer">
+    <div class="horizontal-bar-chart__footer horizontal-bar-chart__footer--separated-women">
         <div class="horizontal-bar-chart__label horizontal-bar-chart__label--left">
             <span class="govuk-body govuk-!-font-weight-bold">
                 @(Model.FemaleFormatted)% women
                 <span class="govuk-visually-hidden"> of the @Model.Title.ToLower() are women</span>
             </span>
         </div>
-        <div class="horizontal-bar-chart__label horizontal-bar-chart__label--right">
+    </div>
+    
+    <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--empty">
+        <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--men"
+             style="width: @(Math.Round(Model.Male))%">
+        </div>
+    </div>
+    <div class="horizontal-bar-chart__footer horizontal-bar-chart__footer--separated-men">
+        <div class="horizontal-bar-chart__label horizontal-bar-chart__label--left">
             <span class="govuk-body govuk-!-font-weight-bold">
                 @(Model.MaleFormatted)% men
                 <span class="govuk-visually-hidden"> of the @Model.Title.ToLower() are men</span>
