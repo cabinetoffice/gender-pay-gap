@@ -65,7 +65,6 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
             // assert current year is presumed in scope
             Assert.AreEqual(ScopeStatuses.PresumedInScope, actualScopesArray[actualScopesArray.Length - 1].ScopeStatus);
-            Assert.NotNull(testOrg.LatestScope, "Expected latest scope to be set");
         }
 
         [TestCase(SectorTypes.Private)]
@@ -94,8 +93,6 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
                 OrganisationScope scope = actualScopesArray[i];
                 Assert.AreEqual(ScopeStatuses.PresumedInScope, scope.ScopeStatus);
             }
-
-            Assert.NotNull(testOrg.LatestScope, "Expected latest scope to be set");
         }
 
         [TestCase(SectorTypes.Private, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
@@ -115,8 +112,6 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
             // assert
             Assert.IsTrue(actualChanged, "Expected change to be true for missing scopes");
-            Assert.NotNull(testOrg.LatestScope, "Expected latest scope to be set");
-            Assert.AreEqual(expectedPresumedScopeStatus, testOrg.LatestScope.ScopeStatus, "Expected latest scope to be PresumedOutOfScope");
         }
 
         [TestCase(SectorTypes.Private, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]

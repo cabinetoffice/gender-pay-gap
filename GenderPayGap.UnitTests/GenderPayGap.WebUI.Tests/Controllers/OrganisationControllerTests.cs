@@ -480,11 +480,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Expect(oldScope.ScopeStatus == mockLastScope.ScopeStatus, "Expected old scope to be presumed scope");
             Expect(oldScope.ScopeStatusDate < newScope.ScopeStatusDate, "Expected oldscope status to be older than new scope");
             Expect(oldScope.OrganisationScopeId == mockLastScope.OrganisationScopeId, "Expected old scope to be same original");
-
-            //Check the latest org scope is correct
-            Expect(
-                oldScope.Organisation.LatestScope.OrganisationScopeId == newScope.OrganisationScopeId,
-                "Expected latest organisation scope to be updated");
         }
 
         [Test]
@@ -696,7 +691,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 organisation,
                 userOrganisation);
 
-            organisation.LatestScope = new OrganisationScope {ScopeStatus = ScopeStatuses.InScope};
+            organisation.OrganisationScopes.Add(new OrganisationScope
+            {
+                Status = ScopeRowStatuses.Active,
+                ScopeStatus = ScopeStatuses.InScope,
+                SnapshotDate = SectorTypes.Private.GetAccountingStartDate()
+            });
 
             var mockNotifyEmailQueue = new Mock<IQueue>();
             Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
@@ -765,7 +765,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 userOrganisation1,
                 userOrganisation2);
 
-            organisation.LatestScope = new OrganisationScope {ScopeStatus = ScopeStatuses.InScope};
+            organisation.OrganisationScopes.Add(new OrganisationScope
+            {
+                Status = ScopeRowStatuses.Active,
+                ScopeStatus = ScopeStatuses.InScope,
+                SnapshotDate = SectorTypes.Private.GetAccountingStartDate()
+            });
 
             var mockNotifyEmailQueue = new Mock<IQueue>();
             Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;

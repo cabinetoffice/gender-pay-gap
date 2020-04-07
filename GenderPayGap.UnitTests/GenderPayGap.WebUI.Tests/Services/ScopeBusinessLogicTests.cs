@@ -194,7 +194,6 @@ namespace GenderPayGap.Tests
             // Assert
             Expect(saveChangesCalled, "Expected SaveChanges() to be called");
             Expect(testOrg.OrganisationScopes.Contains(testNewScope), "Expected org.OrganisationScopes to contain new scope");
-            Expect(testOrg.LatestScope == testNewScope, "Expected org.latestscope to be the new scope");
 
             // ensure only one submitted record for the current snapshot year
             Expect(testNewScope.Status == ScopeRowStatuses.Active, "Expected new scope status to be submitted");
