@@ -234,11 +234,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             foreach (Organisation organisation in activePublicOrganisations)
             {
-                bool isInScope =
-                    organisation.LatestScope.Status == ScopeRowStatuses.Active
-                    && (organisation.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                        || organisation.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope);
-
+                bool isInScope = organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope ||
+                                 organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope;
 
                 if (isInScope && organisation.LatestPublicSectorType == null)
                 {
@@ -261,11 +258,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             foreach (Organisation organisation in activePrivateOrganisations)
             {
-                bool isInScope =
-                    organisation.LatestScope.Status == ScopeRowStatuses.Active
-                    && (organisation.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                        || organisation.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope);
-
+                bool isInScope = organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope ||
+                                 organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope;
 
                 if (isInScope && organisation.LatestPublicSectorType != null)
                 {

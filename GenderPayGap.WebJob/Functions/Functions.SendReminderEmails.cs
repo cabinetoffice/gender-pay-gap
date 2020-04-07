@@ -82,11 +82,10 @@ namespace GenderPayGap.WebJob
                 .Select(uo => uo.Organisation)
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Where(o => o.SectorType == sector)
-                .Where(
-                    o =>
-                        o.LatestScope.Status == ScopeRowStatuses.Active && (
-                        o.LatestScope.ScopeStatus == ScopeStatuses.InScope
-                        || o.LatestScope.ScopeStatus == ScopeStatuses.PresumedInScope))
+                .Where(o => o.OrganisationScopes.Any(
+                    s => s.Status == ScopeRowStatuses.Active &&
+                         s.SnapshotDate == sector.GetAccountingStartDate() &&
+                         (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
                 .Where(
                     o =>
                         !o.Returns.Any(r =>

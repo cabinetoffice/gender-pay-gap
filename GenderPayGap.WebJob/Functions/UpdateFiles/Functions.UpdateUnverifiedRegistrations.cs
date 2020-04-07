@@ -68,7 +68,7 @@ namespace GenderPayGap.WebJob
                 List<UserOrganisation> userOrgs = _DataRepository.GetEntities<UserOrganisation>()
                     .Where(uo => uo.PINConfirmedDate == null)
                     .OrderBy(uo => uo.Organisation.OrganisationName)
-                    .Include(uo => uo.Organisation.LatestScope)
+                    .Include(uo => uo.Organisation.OrganisationScopes)
                     .Include(uo => uo.User)
                     .ToList();
                 var records = userOrgs.Select(
@@ -80,8 +80,8 @@ namespace GenderPayGap.WebJob
                             Sector = uo.Organisation.SectorType,
                             LatestReturn = uo.Organisation?.GetLatestReturn()?.StatusDate,
                             uo.Method,
-                            uo.Organisation.LatestScope?.ScopeStatus,
-                            ScopeDate = uo.Organisation.LatestScope?.ScopeStatusDate,
+                            uo.Organisation.GetCurrentScope()?.ScopeStatus,
+                            ScopeDate = uo.Organisation.GetCurrentScope()?.ScopeStatusDate,
                             uo.User.Fullname,
                             uo.User.JobTitle,
                             uo.User.EmailAddress,
