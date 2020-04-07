@@ -8,11 +8,6 @@ namespace GenderPayGap.Database
     public class OrganisationScope
     {
 
-        public OrganisationScope()
-        {
-            Organisations = new HashSet<Organisation>();
-        }
-
         public long OrganisationScopeId { get; set; }
         public long OrganisationId { get; set; }
         public ScopeStatuses ScopeStatus { get; set; }
@@ -31,7 +26,6 @@ namespace GenderPayGap.Database
         public string StatusDetails { get; set; }
 
         public virtual Organisation Organisation { get; set; }
-        public virtual ICollection<Organisation> Organisations { get; set; }
 
     }
 }
