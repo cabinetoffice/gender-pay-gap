@@ -273,10 +273,12 @@ namespace GenderPayGap.WebUI.Controllers
             List<Organisation> organisationsWithLateReturns = dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
                 .Where(
-                    org => org.OrganisationScopes.Any(
-                        s => s.SnapshotDate.Year == year
-                             && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
-                
+                    org => !org.OrganisationScopes.Any(s => s.SnapshotDate.Year == year) ||
+                           org.OrganisationScopes.Any(
+                               s => s.SnapshotDate.Year == year &&
+                                    (s.ScopeStatus == ScopeStatuses.InScope ||
+                                     s.ScopeStatus == ScopeStatuses.PresumedInScope)))
+
                 // There might not be a Return for any given year
                 // So we search for organisations that do NOT have a non-late submission
                 .Where(
