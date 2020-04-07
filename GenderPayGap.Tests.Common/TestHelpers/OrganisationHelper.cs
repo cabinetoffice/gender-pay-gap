@@ -73,7 +73,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
 
             OrganisationScope organisationScope = OrganisationScopeHelper.GetOrgScopeWithThisScope(snapshotYear, org.SectorType, scope);
             org.OrganisationScopes.Add(organisationScope);
-            org.LatestScope = organisationScope;
             return org;
         }
 
@@ -86,7 +85,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
         public static void LinkOrganisationAndScope(Organisation org, OrganisationScope scope, bool isLatestScope)
         {
             org.OrganisationScopes.Add(scope);
-            org.LatestScope = isLatestScope ? scope : org.LatestScope;
             scope.Organisation = org;
         }
 

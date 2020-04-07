@@ -888,7 +888,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // saved scope
             Assert.That(testOrgs[0].OrganisationScopes.Count == 1, "OrganisationScopes should contain 1 result");
 
-            OrganisationScope savedScope = testOrgs[0].LatestScope;
+            OrganisationScope savedScope = testOrgs[0].OrganisationScopes.First();
             Assert.That(savedScope.OrganisationId == testOrgs[0].OrganisationId, "SavedScope OrganisationId does not match");
             Assert.That(savedScope.CampaignId == testStateModel.CampaignId, "SavedScope CampaignId does not match");
             Assert.That(
@@ -955,7 +955,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // saved scope
             Assert.That(testOrgs[0].OrganisationScopes.Count == 1, "OrganisationScopes should contain 1 result");
 
-            OrganisationScope savedScope = testOrgs[0].LatestScope;
+            OrganisationScope savedScope = testOrgs[0].OrganisationScopes.First();
             Assert.That(savedScope.OrganisationId == testOrgs[0].OrganisationId, "SavedScope OrganisationId does not match");
             Assert.That(savedScope.CampaignId == testStateModel.CampaignId, "SavedScope CampaignId does not match");
             Assert.That(
