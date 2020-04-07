@@ -4,14 +4,16 @@ using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GenderPayGap.Database.Core21.Migrations
 {
     [DbContext(typeof(GpgDatabaseContext))]
-    partial class GpgDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200407122545_RemoveUnusedRelations")]
+    partial class RemoveUnusedRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1001,7 +1003,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.InactiveUserOrganisation", b =>
@@ -1116,7 +1118,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationStatuses")
@@ -1139,7 +1141,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GenderPayGap.Database.Return", "Return")
                         .WithMany("ReturnStatuses")
@@ -1190,7 +1192,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GenderPayGap.Database.User", "User")
                         .WithMany("UserStatuses")
