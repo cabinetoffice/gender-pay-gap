@@ -179,9 +179,6 @@ namespace GenderPayGap.Database
                         .IsUnique()
                         .HasFilter("([EmployerReference] IS NOT NULL)");
 
-                    entity.HasIndex(e => e.LatestAddressId)
-                        .HasName("IX_LatestAddressId");
-
                     entity.HasIndex(e => e.OrganisationName)
                         .HasName("IX_OrganisationName");
 
@@ -203,11 +200,6 @@ namespace GenderPayGap.Database
                         .HasMaxLength(100);
 
                     entity.Property(e => e.StatusDetails).HasMaxLength(255);
-
-                    entity.HasOne(d => d.LatestAddress)
-                        .WithMany(p => p.Organisations)
-                        .HasForeignKey(d => d.LatestAddressId)
-                        .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationAddresses_LatestAddressId");
 
                     entity.HasOne(d => d.LatestPublicSectorType)
                         .WithMany(x => x.Organisations)
