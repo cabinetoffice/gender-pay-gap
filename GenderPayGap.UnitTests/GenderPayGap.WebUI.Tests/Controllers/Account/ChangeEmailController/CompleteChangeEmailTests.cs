@@ -157,12 +157,6 @@ namespace Account.Controllers.ChangeEmailController
                                 inst.Message.Contains(testOldEmail),
                                 "Expected the users old email address to be in the email send queue");
                         }
-                        else if (inst.Type == typeof(ChangeEmailCompletedVerificationTemplate).FullName)
-                        {
-                            Assert.IsTrue(
-                                inst.Message.Contains(testNewEmail),
-                                "Expected the users new email address to be in the email send queue");
-                        }
                         else
                         {
                             Assert.Fail("Expected new and old emails to be queued");
