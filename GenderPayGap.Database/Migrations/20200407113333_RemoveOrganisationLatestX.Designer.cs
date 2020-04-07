@@ -4,14 +4,16 @@ using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GenderPayGap.Database.Core21.Migrations
 {
     [DbContext(typeof(GpgDatabaseContext))]
-    partial class GpgDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200407113333_RemoveOrganisationLatestX")]
+    partial class RemoveOrganisationLatestX
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
