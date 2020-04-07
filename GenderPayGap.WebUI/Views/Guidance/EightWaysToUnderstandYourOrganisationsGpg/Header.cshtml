@@ -38,7 +38,7 @@
         <h3 class="govuk-heading-m">Contents</h3>
 
         <ul class="govuk-list govuk-list--bullet">
-            @foreach (PaginationPage page in GuidanceController.GetPagesInThisGuidance(Url).Pages)
+            @foreach (PaginationPage page in GuidanceController.GetPagesInThisGuidance(Url, Context.Request).Pages)
             {
                 <li>
                     @{

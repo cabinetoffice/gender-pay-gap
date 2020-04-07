@@ -36,7 +36,7 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <h2 class="govuk-heading-l">Do men and women receive different performance scores on average?</h2>
         <p class="govuk-body">
-            Performance management scores can give you an indication of whether women and men are performing 
+            Performance management scores can give you an indication of whether women and men are performing
             differently or being assessed differently. If there is a difference between performance scores,
             this can impact progression.
         </p>
@@ -47,29 +47,29 @@
                     Look at the difference between the performance scores of men and women.
                 </strong>
                 <p class="govuk-body">
-                    If possible, break them down by grade and job, particularly if performance management approaches 
+                    If possible, break them down by grade and job, particularly if performance management approaches
                     vary between these groups.
                 </p>
             </li>
             <li>
                 <strong>
-                    If your organisation asks employees to provide a self-assessment of their performance, examine it 
+                    If your organisation asks employees to provide a self-assessment of their performance, examine it
                     separately to look for imbalances.
                 </strong>
                 <p class="govuk-body">
-                    Some research suggests that women tend to rate themselves lower than men and that men are 
+                    Some research suggests that women tend to rate themselves lower than men and that men are
                     overconfident in their self-ratings.
                 </p>
             </li>
         </ul>
-        
+
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">If you find a gender imbalance in performance scores</span>
                 If you find a gender imbalance in performance scores
             </strong>
-            <p class="govuk-body">    
+            <p class="govuk-body">
                 Encourage managers to monitor the following things:
             </p>
             <ul class="govuk-list govuk-list--bullet">
@@ -95,40 +95,27 @@
                         Are men and women being given equal professional support?
                     </strong>
                     <p class="govuk-body">
-                        For example, do they have equal frequency and quality of performance feedback or career 
+                        For example, do they have equal frequency and quality of performance feedback or career
                         conversations?
                     </p>
                     <strong>
                         If you find that there are gender imbalances arising from self-assessments:
                     </strong>
-                    <p class="govuk-body">    
+                    <p class="govuk-body">
                         Consider removing self-assessments from the performance management processes. If you are unable
-                        to do this, ensure that managers do not see their employee’s self-assessment before assigning 
-                        a final performance score. This makes sure their score isn’t influenced by the employee’s 
+                        to do this, ensure that managers do not see their employee’s self-assessment before assigning
+                        a final performance score. This makes sure their score isn’t influenced by the employee’s
                         self-assessment score.
                     </p>
                 </li>
             </ul>
         </div>
-        
+
         <hr class="govuk-section-break govuk-section-break--l">
 
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
-           {
-               LeftLink = new PaginationLinkViewModel
-               {
-                   Title = "Previous",
-                   Text = "Do particular aspects of pay (such as starting salaries and bonuses) differ by gender?",
-                   Url = Url.Action("EightWaysDoParticularAspectsOfPay", "Guidance")
-               },
-               RightLink = new PaginationLinkViewModel
-               {
-                   Title = "Next",
-                   Text = "Are you doing all that you can to support part-time employees to progress?",
-                   Url = Url.Action("EightWaysAreYouDoingAllThatYouCan", "Guidance")
-               }
-           }); }
-        
+        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
+                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
+
     </div>
     <div class="govuk-grid-column-one-third">
         <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>
