@@ -1,0 +1,39 @@
+﻿@using GenderPayGap.WebUI.Views.Components.PaginationLinks
+@model GenderPayGap.WebUI.Views.Components.PaginationLinks.PaginationPages
+
+@{
+
+    if (Model.CurrentPageIndex != -1)
+    {
+        PaginationLinkViewModel leftLink = null;
+        if (Model.CurrentPageIndex - 1 >= 0)
+        {
+            PaginationPage leftPage = Model.Pages[Model.CurrentPageIndex - 1];
+            leftLink = new PaginationLinkViewModel
+            {
+                Title = "Previous",
+                Text = leftPage.Title,
+                Url = leftPage.Url
+            };
+        }
+
+        PaginationLinkViewModel rightLink = null;
+        if (Model.CurrentPageIndex + 1 < Model.Pages.Count)
+        {
+            PaginationPage rightPage = Model.Pages[Model.CurrentPageIndex + 1];
+            rightLink = new PaginationLinkViewModel
+            {
+                Title = "Next",
+                Text = rightPage.Title,
+                Url = rightPage.Url
+            };
+        }
+
+        await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
+        {
+            LeftLink = leftLink,
+            RightLink = rightLink
+        });
+    }
+
+}

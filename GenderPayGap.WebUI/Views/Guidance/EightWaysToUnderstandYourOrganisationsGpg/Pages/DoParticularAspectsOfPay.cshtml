@@ -39,7 +39,7 @@
         <p class="govuk-body">
             As part of gender pay gap reporting, you need to report information about the proportion of men and women 
             receiving bonuses. Under the Equality Act 2010, employers must also ensure they are providing equal 
-            compensation for equal work. Analysing information about equal pay and bonuses can help you identify 
+            compensation for equal work. Analysing information about equal pay and bonuses can help you identify
             whether particular aspects of pay might be contributing to your gender pay gap.
         </p>
         <div class="govuk-inset-text">
@@ -51,16 +51,16 @@
         <p class="govuk-body">
             Another aspect of pay that can contribute to the gender pay gap is women having lower starting salaries
             than men doing similar jobs. This may be a problem for you if you allow negotiation of starting salaries, 
-            as some research has found that women are less likely to negotiate their pay than men, and that when women 
+            as some research has found that women are less likely to negotiate their pay than men, and that when women
             do negotiate their pay, they can be judged more harshly than men for doing so. These things mean that
             women’s starting salaries might end up being lower than that of men doing the same job.
         </p>
         <div class="govuk-inset-text">
-            To check whether this is a problem in your organisation, compare starting salaries by gender within 
+            To check whether this is a problem in your organisation, compare starting salaries by gender within
             comparable roles.
         </div>
         <div class="govuk-warning-text">
-          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">If you find a gender imbalance associated with pay</span>
                 If you find a gender imbalance associated with pay
@@ -78,34 +78,21 @@
                 </li>
                 <li>
                     <strong>
-                    Review how the different aspects of pay are allocated with your organisation.     
+                        Review how the different aspects of pay are allocated with your organisation.
                     </strong>
                     <p class="govuk-body">
-                       Consider if your
-                       processes clear and transparent. And if people being held accountable when allocating them.
+                        Consider if your
+                        processes clear and transparent. And if people being held accountable when allocating them.
                     </p>
                 </li>
             </ul>
         </div>
-        
+
         <hr class="govuk-section-break govuk-section-break--l">
 
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
-           {
-               LeftLink = new PaginationLinkViewModel
-               {
-                   Title = "Previous",
-                   Text = "Do men and women leave your organisation at different rates?",
-                   Url = Url.Action("EightWaysDoMenAndWomenLeave", "Guidance")
-               },
-               RightLink = new PaginationLinkViewModel
-               {
-                   Title = "Next",
-                   Text = "Do men and women receive different performance scores on average?",
-                   Url = Url.Action("EightWaysDoMenAndWomenReceive", "Guidance")
-               }
-           }); }
-        
+        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
+                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
+
     </div>
     <div class="govuk-grid-column-one-third">
         <partial name="EightWaysToUnderstandYourOrganisationsGpg/RelatedContent"/>

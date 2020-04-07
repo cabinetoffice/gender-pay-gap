@@ -126,21 +126,8 @@
 
         <hr class="govuk-section-break govuk-section-break--l">
 
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
-            {
-                LeftLink = new PaginationLinkViewModel
-                {
-                    Title = "Previous",
-                    Text = "Are women more likely to be recruited into lower paid roles in your organisation??",
-                    Url = Url.Action("EightWaysAreWomenMoreLikely", "Guidance")
-                },
-                RightLink = new PaginationLinkViewModel
-                {
-                    Title = "Next",
-                    Text = "Do particular aspects of pay (such as starting salaries and bonuses) differ by gender?",
-                    Url = Url.Action("EightWaysDoParticularAspectsOfPay", "Guidance")
-                }
-            }); }
+        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
+               GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
 
     </div>
     <div class="govuk-grid-column-one-third">

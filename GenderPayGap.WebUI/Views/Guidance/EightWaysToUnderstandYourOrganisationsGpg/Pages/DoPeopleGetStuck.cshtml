@@ -90,26 +90,13 @@
                 and ideally also your job types and departments.
             </p>
         </div>
-        
+
         <partial name="EightWaysToUnderstandYourOrganisationsGpg/Images/GenderImbalanceBySeniorityStructure"/>
 
         <hr class="govuk-section-break govuk-section-break--l">
 
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
-           {
-               LeftLink = new PaginationLinkViewModel
-               {
-                   Title = "Overview",
-                   Text = "",
-                   Url = Url.Action("EightWaysOverview", "Guidance")
-               },
-               RightLink = new PaginationLinkViewModel
-               {
-                   Title = "Next",
-                   Text = "Is there gender imbalance in your promotions?",
-                   Url = Url.Action("EightWaysIsThereGenderImbalance", "Guidance")
-               }
-           }); }
+        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
+                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
 
     </div>
     <div class="govuk-grid-column-one-third">

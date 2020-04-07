@@ -110,16 +110,8 @@
 
         <hr class="govuk-section-break govuk-section-break--l">
 
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
-           {
-               LeftLink = new PaginationLinkViewModel
-               {
-                   Title = "Previous",
-                   Text = "Are you doing all that you can to support part-time employees to progress?",
-                   Url = Url.Action("EightWaysAreYouDoingAllThatYouCan", "Guidance")
-               },
-               RightLink = null
-           }); }
+        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
+                GuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
 
     </div>
     <div class="govuk-grid-column-one-third">
