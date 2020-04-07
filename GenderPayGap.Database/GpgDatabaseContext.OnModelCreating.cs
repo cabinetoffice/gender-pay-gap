@@ -182,9 +182,6 @@ namespace GenderPayGap.Database
                     entity.HasIndex(e => e.LatestAddressId)
                         .HasName("IX_LatestAddressId");
 
-                    entity.HasIndex(e => e.LatestScopeId)
-                        .HasName("IX_LatestScopeId");
-
                     entity.HasIndex(e => e.OrganisationName)
                         .HasName("IX_OrganisationName");
 
@@ -211,11 +208,6 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.Organisations)
                         .HasForeignKey(d => d.LatestAddressId)
                         .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationAddresses_LatestAddressId");
-
-                    entity.HasOne(d => d.LatestScope)
-                        .WithMany(p => p.Organisations)
-                        .HasForeignKey(d => d.LatestScopeId)
-                        .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationScopes_LatestScopeId");
 
                     entity.HasOne(d => d.LatestPublicSectorType)
                         .WithMany(x => x.Organisations)
