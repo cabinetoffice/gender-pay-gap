@@ -31,7 +31,6 @@
     <None Remove="AppSettings.secret.json" />
     <None Remove="appsettings.TEST.json" />
     <None Remove="App_Data\EmailTemplates\ChangeEmailCompletedNotificationTemplate.html" />
-    <None Remove="App_Data\EmailTemplates\ChangeEmailCompletedVerificationTemplate.html" />
     <None Remove="App_Data\EmailTemplates\ChangePasswordCompletedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\CloseAccountCompletedTemplate.html" />
     <None Remove="App_Data\EmailTemplates\GeoOrganisationRegistrationRequestTemplate.html" />
@@ -46,9 +45,6 @@
 
   <ItemGroup>
     <Content Include="App_Data\EmailTemplates\ChangeEmailCompletedNotificationTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="App_Data\EmailTemplates\ChangeEmailCompletedVerificationTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="App_Data\EmailTemplates\ChangePasswordCompletedTemplate.html">

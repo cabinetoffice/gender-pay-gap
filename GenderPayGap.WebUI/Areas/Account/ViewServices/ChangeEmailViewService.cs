@@ -123,7 +123,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             await Emails.SendChangeEmailCompletedNotificationAsync(newOldAddress);
 
             // send to old email
-            await Emails.SendChangeEmailCompletedVerificationAsync(newEmailAddress);
+            EmailSendingService.SendChangeEmailCompletedVerificationEmail(newEmailAddress);
         }
 
         private string CreateEmailVerificationCode(string newEmailAddress, User user)
