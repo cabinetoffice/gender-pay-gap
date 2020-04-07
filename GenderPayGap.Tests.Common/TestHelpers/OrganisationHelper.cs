@@ -25,7 +25,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 EmployerReference = employerRef,
                 //OrganisationId = 123,
                 OrganisationName = organisationName,
-                LatestAddress = new OrganisationAddress(),
+                OrganisationAddresses = new List<OrganisationAddress> { new OrganisationAddress() },
                 SectorType = SectorTypes.Private,
                 Status = organisationStatus,
                 OrganisationStatuses = organisationStatuses ?? new List<OrganisationStatus>()

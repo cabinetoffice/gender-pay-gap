@@ -65,7 +65,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(result.ActionName == "ServiceActivated", "Expected redirect to ServiceActivated");
             Assert.That(userOrg.PINConfirmedDate > DateTime.MinValue);
             Assert.That(userOrg.Organisation.Status == OrganisationStatuses.Active);
-            Assert.That(userOrg.Organisation.LatestAddress.AddressId == address.AddressId);
+            Assert.That(userOrg.Organisation.GetAddress().AddressId == address.AddressId);
             Assert.That(address.Status == AddressStatuses.Active);
 
             //Check the organisation exists in search
