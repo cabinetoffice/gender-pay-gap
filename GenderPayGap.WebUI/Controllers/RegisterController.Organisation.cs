@@ -1736,9 +1736,10 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.Method == RegistrationMethods.Fasttrack ? "Fasttrack" : "Email Domain");
 
                 //Retire the old address 
-                if (userOrg.Organisation.LatestAddress != null && userOrg.Organisation.LatestAddress.AddressId != userOrg.Address.AddressId)
+                OrganisationAddress latestAddress = userOrg.Organisation.GetAddress();
+                if (latestAddress != null && latestAddress.AddressId != userOrg.Address.AddressId)
                 {
-                    userOrg.Organisation.LatestAddress.SetStatus(
+                    latestAddress.SetStatus(
                         AddressStatuses.Retired,
                         OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                         "Replaced by PIN in post");
@@ -1764,13 +1765,6 @@ namespace GenderPayGap.WebUI.Controllers
                         await DataRepository.SaveChangesAsync();
 
                         ScopeBusinessLogic.FillMissingScopes(tempUserOrg.Organisation);
-
-                        await DataRepository.SaveChangesAsync();
-
-                        if (tempUserOrg.Address.Status == AddressStatuses.Active)
-                        {
-                            tempUserOrg.Organisation.LatestAddress = tempUserOrg.Address;
-                        }
 
                         await DataRepository.SaveChangesAsync();
 

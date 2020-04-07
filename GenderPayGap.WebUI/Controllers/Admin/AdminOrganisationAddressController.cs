@@ -265,7 +265,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             organisationAddress.OrganisationId = organisation.OrganisationId;
             organisation.OrganisationAddresses.Add(organisationAddress);
-            organisation.LatestAddress = organisationAddress;
 
             dataRepository.Insert(organisationAddress);
         }

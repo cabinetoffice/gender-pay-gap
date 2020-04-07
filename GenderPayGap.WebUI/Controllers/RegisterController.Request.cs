@@ -111,7 +111,7 @@ namespace GenderPayGap.WebUI.Controllers
             model.PoBox = userOrg.Address.PoBox;
 
             model.RegisteredAddress = userOrg.Address.Status == AddressStatuses.Pending
-                ? userOrg.Organisation.LatestAddress?.GetAddressString()
+                ? userOrg.Organisation.GetAddress()?.GetAddressString()
                 : null;
 
             model.CharityNumber = userOrg.Organisation.OrganisationReferences
@@ -502,9 +502,10 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 //Retire the old address 
-                if (userOrg.Organisation.LatestAddress != null && userOrg.Organisation.LatestAddress.AddressId != userOrg.Address.AddressId)
+                OrganisationAddress latestAddress = userOrg.Organisation.GetAddress();
+                if (latestAddress != null && latestAddress.AddressId != userOrg.Address.AddressId)
                 {
-                    userOrg.Organisation.LatestAddress.SetStatus(
+                    latestAddress.SetStatus(
                         AddressStatuses.Retired,
                         OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                         "Replaced by Manual registration");
@@ -515,7 +516,6 @@ namespace GenderPayGap.WebUI.Controllers
                     AddressStatuses.Active,
                     OriginalUser == null ? currentUser.UserId : OriginalUser.UserId,
                     "Manually registered");
-                userOrg.Organisation.LatestAddress = userOrg.Address;
 
                 //Send the approved email to the applicant
                 if (!await SendRegistrationAcceptedAsync(
