@@ -114,13 +114,13 @@ namespace GenderPayGap.WebJob
                                        || uo.Method == RegistrationMethods.PinInPost
                                        && uo.PINSentDate.HasValue
                                        && uo.PINSentDate.Value > pinExpiresDate)))
-                .Include(o => o.LatestAddress)
+                .Include(o => o.OrganisationAddresses)
                 .ToListAsync();
 
             return unregisteredOrgs.Select(
                     org => {
                         // Read the latest address for the organisation
-                        OrganisationAddress latestAddress = org.LatestAddress;
+                        OrganisationAddress latestAddress = org.GetAddress();
                         if (latestAddress == null)
                         {
                             throw new ArgumentException($"Organisation {org.OrganisationId} has no latest address associated");

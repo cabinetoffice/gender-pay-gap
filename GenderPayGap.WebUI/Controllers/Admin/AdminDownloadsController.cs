@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers
         public FileContentResult DownloadAllOrganisations()
         {
             List<Organisation> allOrganisations = dataRepository.GetAll<Organisation>()
-                .Include(org => org.LatestAddress)
+                .Include(org => org.OrganisationAddresses)
                 .Include(org => org.OrganisationSicCodes)
                 .ToList();
 
@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers
                         org.CompanyNumber,
                         Sector = org.SectorType,
                         Status = org.Status,
-                        Address = org.LatestAddress?.GetAddressString(),
+                        Address = org.GetAddress()?.GetAddressString(),
                         SicCodes = org.GetSicCodeIdsString(),
                         Created = org.Created,
                     })
@@ -109,28 +109,33 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads-new/organisation-addresses")]
         public FileContentResult DownloadOrganisationAddresses()
         {
-            DateTime pinExpiresDate = Global.PinExpiresDate;
-
             List<Organisation> organisationAddresses = dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
-                .Where(org => org.LatestAddress != null)
-                .Include(org => org.LatestAddress)
+                .Include(org => org.OrganisationAddresses)
+                // This .ToList() materialises the collection (i.e. runs the SQL query)
+                .ToList()
+                // We only want organisations with valid addresses
+                // The following filter only works in code (cannot be converted to SQL) so must be done after the first .ToList()
+                .Where(org => org.GetAddress() != null)
                 .ToList();
 
             var records = organisationAddresses.Select(
-                    org => new
+                    org =>
                     {
-                        org.OrganisationId,
-                        org.OrganisationName,
-
-                        org.LatestAddress.PoBox,
-                        org.LatestAddress.Address1,
-                        org.LatestAddress.Address2,
-                        org.LatestAddress.Address3,
-                        org.LatestAddress.TownCity,
-                        org.LatestAddress.County,
-                        org.LatestAddress.Country,
-                        org.LatestAddress.PostCode,
+                        OrganisationAddress address = org.GetAddress();
+                        return new
+                        {
+                            org.OrganisationId,
+                            org.OrganisationName,
+                            address.PoBox,
+                            address.Address1,
+                            address.Address2,
+                            address.Address3,
+                            address.TownCity,
+                            address.County,
+                            address.Country,
+                            address.PostCode,
+                        };
                     })
                 .ToList();
 

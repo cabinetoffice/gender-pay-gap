@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,8 +64,11 @@ namespace GenderPayGap
                 {
                     orgs = await _DataRepository.GetAll<Organisation>()
                         .Where(
-                            o => o.SectorType == SectorTypes.Private && o.Status == OrganisationStatuses.Active && o.LatestAddress != null)
+                            o => o.SectorType == SectorTypes.Private &&
+                                 o.Status == OrganisationStatuses.Active &&
+                                o.OrganisationAddresses.Count > 0)
                         .ToListAsync();
+
                     if (searchText.IsCompanyNumber())
                     {
                         localResults = orgs.Where(o => o.CompanyNumber.EqualsI(searchText)).OrderBy(o => o.OrganisationName).ToList();
