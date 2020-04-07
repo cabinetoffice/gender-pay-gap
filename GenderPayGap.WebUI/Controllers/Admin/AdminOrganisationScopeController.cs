@@ -105,9 +105,6 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository.Insert(newOrganisationScope);
             await dataRepository.SaveChangesAsync();
 
-            organisation.LatestScope = newOrganisationScope;
-            await dataRepository.SaveChangesAsync();
-
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationScope,

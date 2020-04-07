@@ -230,12 +230,6 @@ namespace GenderPayGap.BusinessLogic
                 // add the new scope
                 newScope.Status = ScopeRowStatuses.Active;
                 org.OrganisationScopes.Add(newScope);
-                if (org.LatestScope == null
-                    || newScope.SnapshotDate > org.LatestScope.SnapshotDate
-                    || newScope.SnapshotDate == org.LatestScope.SnapshotDate && newScope.ScopeStatusDate >= org.LatestScope.ScopeStatusDate)
-                {
-                    org.LatestScope = newScope;
-                }
             }
 
             // save to db
@@ -396,13 +390,6 @@ namespace GenderPayGap.BusinessLogic
                 // update the scope status
                 SetPresumedScope(org, prevYearScope, snapshotDate);
 
-                changed = true;
-            }
-
-            // set the latest scope if not set
-            if (org.LatestScope == null)
-            {
-                org.LatestScope = org.GetCurrentScope();
                 changed = true;
             }
 
