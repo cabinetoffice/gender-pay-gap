@@ -647,14 +647,6 @@ namespace GenderPayGap.Database
             return SecurityCodeExpiryDateTime < VirtualDateTime.Now;
         }
 
-        public UserOrganisation GetLatestRegistration()
-        {
-            return UserOrganisations
-                .Where(uo => uo.PINConfirmedDate != null)
-                .OrderByDescending(uo => uo.PINConfirmedDate)
-                .FirstOrDefault();
-        }
-
         public override string ToString()
         {
             return $"ref:{EmployerReference}, name:{OrganisationName}";
