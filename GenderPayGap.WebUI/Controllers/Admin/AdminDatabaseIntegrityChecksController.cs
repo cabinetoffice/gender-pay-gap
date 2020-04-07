@@ -234,8 +234,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             foreach (Organisation organisation in activePublicOrganisations)
             {
-                bool isInScope = organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope ||
-                                 organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope;
+                bool isInScope = organisation.GetCurrentScope() != null &&
+                                 (organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope ||
+                                  organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope);
 
                 if (isInScope && organisation.LatestPublicSectorType == null)
                 {
@@ -254,12 +255,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 .GetAll<Organisation>()
                 .Where(o => o.SectorType == SectorTypes.Private)
                 .Where(o => o.Status == OrganisationStatuses.Active)
-                .Include(o => o.OrganisationScopes).ToList();
+                .Include(o => o.OrganisationScopes)
+                .ToList();
 
             foreach (Organisation organisation in activePrivateOrganisations)
             {
-                bool isInScope = organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope ||
-                                 organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope;
+                bool isInScope = organisation.GetCurrentScope() != null &&
+                                 (organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || 
+                                  organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope);
 
                 if (isInScope && organisation.LatestPublicSectorType != null)
                 {
