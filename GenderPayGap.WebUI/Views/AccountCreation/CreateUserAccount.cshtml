@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.WebUI.Models.AccountCreation
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Models.AccountCreation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AccountCreation.CreateUserAccountViewModel
@@ -7,8 +8,11 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@section BeforeMain {
-    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+    @section BeforeMain {
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    }   
 }
 
 <div class="govuk-grid-row">
@@ -19,24 +23,21 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-inset-text">
+            You will need to create your own user account even if someone else has previously reported
+            your organisation's gender pay gap.
+        </div>
         <p class="govuk-body">
-            You will need to create your account, and then add your organisation(s) to this account.
-        </p>
-        <p class="govuk-body">
-            Once your email address is confirmed you will then be able to report your gender pay gap data.
+            Once your email address is confirmed you will then be able to sign-in and add an organisation(s) to your
+            account and report your gender pay gap data.
         </p>
         <p class="govuk-body">
             If you already have a user account, please
             @Html.ActionLink("sign in", nameof(OrganisationController.ManageOrganisations),
                 "Organisation").
         </p>
-        <div class="govuk-inset-text">
-            You will need to create your own user account even if someone else has previously reported
-            your organisation's gender pay gap.
-        </div>
-
-        <div class="govuk-grid-column-two-thirds">
-            <form method="POST" action="@Url.Action("CreateUserAccountPost", "AccountCreation")">
+        
+        <form method="POST" action="@Url.Action("CreateUserAccountPost", "AccountCreation")" class="govuk-!-margin-top-8">
                 @Html.AntiForgeryToken()
                 <div class="govuk-form-group">
 
@@ -60,12 +61,14 @@
                         @(Html.GovUkTextInputFor(
                             m => m.EmailAddress,
                             new LabelViewModel {Text = "Enter an email address that you can access"},
-                            new HintViewModel {Text = "The service will send you an email to verify your identity"}
+                            new HintViewModel {Text = "The service will send you an email to verify your identity"},
+                            classes: "govuk-input--width-20"
                             ))
 
                         @(Html.GovUkTextInputFor(
                             m => m.ConfirmEmailAddress,
-                            new LabelViewModel {Text = "Confirm your email address"}
+                            new LabelViewModel {Text = "Confirm your email address"},
+                            classes: "govuk-input--width-20"
                             ))
 
                     </fieldset>
@@ -77,17 +80,20 @@
 
                         @(Html.GovUkTextInputFor(
                             m => m.FirstName,
-                            new LabelViewModel {Text = "First name"}
+                            new LabelViewModel {Text = "First name"},
+                            classes: "govuk-input--width-20"
                             ))
 
                         @(Html.GovUkTextInputFor(
                             m => m.LastName,
-                            new LabelViewModel {Text = "Last name"}
+                            new LabelViewModel {Text = "Last name"},
+                            classes: "govuk-input--width-20"
                             ))
 
                         @(Html.GovUkTextInputFor(
                             m => m.JobTitle,
-                            new LabelViewModel {Text = "Job title"}
+                            new LabelViewModel {Text = "Job title"},
+                            classes: "govuk-input--width-20"
                             ))
                     </fieldset>
 
@@ -118,13 +124,15 @@
                         @(Html.GovUkTextInputFor(
                             m => m.Password,
                             new LabelViewModel {Text = "Password"},
-                            type: "password"
+                            type: "password",
+                            classes: "govuk-input--width-20"
                             ))
 
                         @(Html.GovUkTextInputFor(
                             m => m.ConfirmPassword,
                             new LabelViewModel {Text = "Confirm your password"},
-                            type: "password"
+                            type: "password",
+                            classes: "govuk-input--width-20"
                             ))
                     </fieldset>
 
@@ -148,14 +156,16 @@
 
                 </div>
             </form>
+    </div>
+    @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+        <div class="govuk-grid-column-one-third">
+            @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+                   new ReportingStepsViewModel
+                   {
+                       CurrentStep = 3,
+                       CurrentTask = 0
+                   }); }
         </div>
-    </div>
-    <div class="govuk-grid-column-one-third">
-        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
-               new ReportingStepsViewModel
-               {
-                   CurrentStep = 3,
-                   CurrentTask = 0
-               }); }
-    </div>
+    }
 </div>
