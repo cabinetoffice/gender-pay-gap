@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using GenderPayGap.BusinessLogic.Classes;
 using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
+using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Submit;
 using GenderPayGap.WebUI.Services;
@@ -51,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                     .Except(new[] {postedReturn})
                     .Where(r => r.AccountingDate == postedReturn.AccountingDate)
                     .ToList();
-            
+
             return otherReturns.Count > 0 ? "updated" : "submitted";
         }
 
@@ -121,7 +119,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             {
                 stashedReturnViewModel.ShouldProvideLateReason = false;
             }
-            
+
             this.StashModel(stashedReturnViewModel);
             return View("CheckData", stashedReturnViewModel);
         }
@@ -191,7 +189,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 ModelState.Remove(nameof(postedReturnViewModel.LateReason));
                 ModelState.Remove(nameof(postedReturnViewModel.EHRCResponse));
             }
-            
+
             // Don't mark submission as late if the reporting year has been excluded from late flag enforcement (eg. 2019/20 due to COVID-19)
             if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(stashedReturnViewModel.AccountingDate.Year))
             {
@@ -228,12 +226,18 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             if (Global.EnableSubmitAlerts
                 && postedReturn.Organisation.Returns.Count(r => r.AccountingDate == postedReturn.AccountingDate) == 1
-                && !currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
+                && Config.IsProduction())
             {
-                await Emails.SendGeoMessageAsync(
-                    "GPG Data Submission Notification",
-                    $"GPG data was submitted for first time in {postedReturn.AccountingDate.Year} by '{postedReturn.Organisation.OrganisationName}' on {postedReturn.StatusDate.ToShortDateString()}\n\n See {Url.Action("Report", "Viewing", new {employerIdentifier = postedReturnViewModel.EncryptedOrganisationId, year = postedReturn.AccountingDate.Year}, "https")}",
-                    currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                EmailSendingService.SendGeoFirstTimeDataSubmissionEmail(
+                    Config.GetAppSetting("GEODistributionList"),
+                    postedReturn.AccountingDate.Year.ToString(),
+                    postedReturn.Organisation.OrganisationName,
+                    postedReturn.StatusDate.ToShortDateString(),
+                    Url.Action(
+                        "Report",
+                        "Viewing",
+                        new {employerIdentifier = postedReturnViewModel.EncryptedOrganisationId, year = postedReturn.AccountingDate.Year},
+                        "https"));
             }
 
             EmailSendingServiceHelpers.SendSuccessfulSubmissionEmailToRegisteredUsers(
