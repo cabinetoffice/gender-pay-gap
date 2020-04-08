@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -193,18 +192,12 @@ namespace Account.Controllers.CloseAccountController
             mockNotifyEmailQueue
                 .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<QueueWrapper>()));
-
             // Act
             await controller.CloseAccount(new CloseAccountViewModel {EnterPassword = testPassword});
 
             // Assert
             mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(
-                    It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
                 Times.Once(),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendCloseAccountCompletedEmail}");
             mockNotifyEmailQueue.Verify(
@@ -213,12 +206,14 @@ namespace Account.Controllers.CloseAccountController
                 "Expected the current user's email address to be in the email send queue");
 
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(
-                    It.Is<QueueWrapper>(
-                        inst => inst.Message.Contains(geoDistributionList) && inst.Type == typeof(OrphanOrganisationTemplate).FullName)),
-                Times.Never,
-                $"Didnt expect the GEO Email addresses using {nameof(OrphanOrganisationTemplate)} to be in the email send queue");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendOrphanOrganisationEmail))),
+                Times.Never(),
+                $"Didnt expect the GEO Email addresses using {EmailTemplates.SendOrphanOrganisationEmail} to be in the email send queue");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+                Times.Never(),
+                "Didnt expect the GEO Email addresses to be in the email send queue");
         }
 
         [Test]
@@ -233,7 +228,7 @@ namespace Account.Controllers.CloseAccountController
                     mockRouteData,
                     registrations);
             var verifiedUser = controller.DataRepository.Get<User>((long) 23322);
-            
+
             var mockNotifyEmailQueue = new Mock<IQueue>();
             Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
             mockNotifyEmailQueue
@@ -249,8 +244,7 @@ namespace Account.Controllers.CloseAccountController
 
             // Assert
             mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(
-                    It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
                 Times.Once(),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendCloseAccountCompletedEmail}");
             mockNotifyEmailQueue.Verify(
@@ -259,12 +253,14 @@ namespace Account.Controllers.CloseAccountController
                 "Expected the current user's email address to be in the email send queue");
 
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(
-                    It.Is<QueueWrapper>(
-                        inst => inst.Message.Contains(geoDistributionList) && inst.Type == typeof(OrphanOrganisationTemplate).FullName)),
-                Times.Once(),
-                $"Expected the GEO Email addresses using {nameof(OrphanOrganisationTemplate)} to be in the email send queue");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendOrphanOrganisationEmail))),
+                Times.Never(),
+                $"Didnt expect the GEO Email addresses using {EmailTemplates.SendOrphanOrganisationEmail} to be in the email send queue");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+                Times.Never(),
+                "Didnt expect the GEO Email addresses to be in the email send queue");
         }
 
         [Test]

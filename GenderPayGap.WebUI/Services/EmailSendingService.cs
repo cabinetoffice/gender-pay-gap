@@ -314,6 +314,23 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
+        public static async void SendOrphanOrganisationEmail(string emailAddress, string organisationName)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"OrganisationName", organisationName}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendOrphanOrganisationEmail,
+                Personalisation = personalisation
+            };
+
+            await AddEmailToQueue(notifyEmail);
+        }
+
         private static async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
         {
             try
@@ -353,6 +370,7 @@ namespace GenderPayGap.WebUI.Services
         public const string SendCloseAccountCompletedEmail = "75caab84-b95a-4991-87fe-c29af3f9e096";
         public const string SendOrganisationRegistrationApprovedEmail = "a349aa87-787d-4fa8-9ce4-f8e5a1b8209e";
         public const string SendOrganisationRegistrationDeclinedEmail = "43d16081-b789-4426-9b00-13f3d9f6dbea";
+        public const string SendOrphanOrganisationEmail = "34ca9b32-09d2-4604-80e6-4afdd019d7d2";
 
     }
 

@@ -72,15 +72,15 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             // Create the close account notification to user
             EmailSendingService.SendCloseAccountCompletedEmail(userToRetire.EmailAddress);
 
-            var sendEmails = new List<Task>();
-            bool testEmail = !Config.IsProduction();
-
-            //Create the notification to GEO for each newly orphaned organisation
-            userOrgs.Where(org => org.GetIsOrphan())
-                .ForEach(org => sendEmails.Add(Emails.SendGEOOrphanOrganisationNotificationAsync(org.OrganisationName, testEmail)));
-
-            //Send all the notifications in parallel
-            await Task.WhenAll(sendEmails);
+            if (Config.IsProduction())
+            {
+                //Create the notification to GEO for each newly orphaned organisation
+                userOrgs.Where(org => org.GetIsOrphan())
+                    .ForEach(
+                        org => EmailSendingService.SendOrphanOrganisationEmail(
+                            Config.GetAppSetting("GEODistributionList"),
+                            org.OrganisationName));
+            }
 
             return errorState;
         }

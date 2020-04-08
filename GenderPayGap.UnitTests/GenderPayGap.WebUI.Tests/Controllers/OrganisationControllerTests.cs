@@ -7,7 +7,6 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -32,14 +31,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         [SetUp]
         public void BeforeEach()
         {
-            MockOrganisations = new[] {
-                new Organisation {
+            MockOrganisations = new[]
+            {
+                new Organisation
+                {
                     OrganisationId = 123,
                     OrganisationName = "Org123",
                     OrganisationAddresses = new List<OrganisationAddress>{ new OrganisationAddress() },
                     SectorType = SectorTypes.Private
                 },
-                new Organisation {
+                new Organisation
+                {
                     OrganisationId = 456,
                     OrganisationName = "Org456",
                     OrganisationAddresses = new List<OrganisationAddress>{ new OrganisationAddress() },
@@ -47,7 +49,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 }
             };
 
-            MockUsers = new[] {
+            MockUsers = new[]
+            {
                 CreateUser(1, "mockuser1@test.com"),
                 CreateUser(2, "mockuser2@test.com"),
                 CreateUser(3, "mockuser3@test.com"),
@@ -58,7 +61,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Organisation org123 = Array.Find(MockOrganisations, x => x.OrganisationId == 123);
             Organisation org456 = Array.Find(MockOrganisations, x => x.OrganisationId == 456);
 
-            MockUserOrganisations = new[] {
+            MockUserOrganisations = new[]
+            {
                 CreateUserOrganisation(org123, 1, VirtualDateTime.Now),
                 CreateUserOrganisation(org123, 2, VirtualDateTime.Now),
                 CreateUserOrganisation(org123, 3, null),
@@ -74,14 +78,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         private static UserOrganisation CreateUserOrganisation(Organisation org, long userId, DateTime? pinConfirmedDate)
         {
-            return new UserOrganisation {
+            return new UserOrganisation
+            {
                 Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.GetAddress()
             };
         }
 
         private static Organisation createPrivateOrganisation(long organistationId, string organisationName, int companyNumber)
         {
-            return new Organisation {
+            return new Organisation
+            {
                 OrganisationId = organistationId,
                 OrganisationName = organisationName,
                 SectorType = SectorTypes.Private,
@@ -92,7 +98,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         private static User CreateUser(long userId, string emailAddress)
         {
-            return new User {
+            return new User
+            {
                 UserId = userId,
                 EmailAddress = emailAddress,
                 EmailAddressDB = emailAddress,
@@ -200,7 +207,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             DateTime lastSnapshotDate = SectorTypes.Private.GetAccountingStartDate().AddYears(-1);
 
-            var mockLastScope = new OrganisationScope {
+            var mockLastScope = new OrganisationScope
+            {
                 OrganisationId = testOrgId,
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.InScope,
@@ -245,7 +253,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             DateTime lastSnapshotDate = SectorTypes.Private.GetAccountingStartDate().AddYears(-1);
 
-            var mockLastScope = new OrganisationScope {
+            var mockLastScope = new OrganisationScope
+            {
                 OrganisationId = testOrgId,
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.InScope,
@@ -291,7 +300,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             DateTime lastSnapshotDate = SectorTypes.Private.GetAccountingStartDate().AddYears(-1);
 
-            var mockLastScope = new OrganisationScope {
+            var mockLastScope = new OrganisationScope
+            {
                 OrganisationId = testOrgId,
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.OutOfScope,
@@ -423,14 +433,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             DateTime thisSnapshotDate = SectorTypes.Private.GetAccountingStartDate();
             DateTime lastSnapshotDate = thisSnapshotDate.AddYears(-1);
 
-            var mockLastScope = new OrganisationScope {
+            var mockLastScope = new OrganisationScope
+            {
                 OrganisationId = testOrgId,
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.PresumedInScope,
                 SnapshotDate = lastSnapshotDate
             };
 
-            var mockThisScope = new OrganisationScope {
+            var mockThisScope = new OrganisationScope
+            {
                 OrganisationId = testOrgId,
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.OutOfScope,
@@ -680,7 +692,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             routeData.Values.Add("Action", "RemoveOrganisation");
             routeData.Values.Add("Controller", "Organisation");
 
-            var testModel = new RemoveOrganisationModel {
+            var testModel = new RemoveOrganisationModel
+            {
                 EncOrganisationId = Encryption.EncryptQuerystring(organisation.OrganisationId.ToString()),
                 EncUserId = Encryption.EncryptQuerystring(user.UserId.ToString())
             };
@@ -701,14 +714,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var mockNotifyEmailQueue = new Mock<IQueue>();
             Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendEmailQueue = mockEmailQueue.Object;
-
             mockNotifyEmailQueue
                 .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<QueueWrapper>()));
 
             // Act
             var result = await controller.RemoveOrganisation(testModel) as RedirectToActionResult;
@@ -723,15 +730,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                     It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.RemovedUserFromOrganisationEmail))),
                 Times.Exactly(1),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.RemovedUserFromOrganisationEmail}");
-
-            string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(
-                    It.Is<QueueWrapper>(
-                        inst => inst.Message.Contains(geoDistributionList)
-                                && inst.Type == typeof(OrphanOrganisationTemplate).FullName)),
-                Times.Once(),
-                $"Expected the GEO Email addresses using {nameof(OrphanOrganisationTemplate)} to be in the email send queue");
 
             Assert.NotNull(result, "redirectResult should not be null");
             Assert.AreEqual("RemoveOrganisationCompleted", result.ActionName, "Expected the ViewName to be 'RemoveOrganisationCompleted'");
@@ -752,7 +750,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             routeData.Values.Add("Action", "RemoveOrganisation");
             routeData.Values.Add("Controller", "Organisation");
 
-            var testModel = new RemoveOrganisationModel {
+            var testModel = new RemoveOrganisationModel
+            {
                 EncOrganisationId = Encryption.EncryptQuerystring(organisation.OrganisationId.ToString()),
                 EncUserId = Encryption.EncryptQuerystring(user1.UserId.ToString())
             };
@@ -775,14 +774,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var mockNotifyEmailQueue = new Mock<IQueue>();
             Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendEmailQueue = mockEmailQueue.Object;
-
             mockNotifyEmailQueue
                 .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<QueueWrapper>()));
 
             // Act
             var result = await controller.RemoveOrganisation(testModel) as RedirectToActionResult;
@@ -803,13 +796,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 "Expected the other user of the same organisation's email address to be in the email send queue");
 
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(
-                    It.Is<QueueWrapper>(
-                        inst => inst.Message.Contains(geoDistributionList)
-                                && inst.Type == typeof(OrphanOrganisationTemplate).FullName)),
-                Times.Never,
-                $"Didnt expect the GEO Email addresses using {nameof(OrphanOrganisationTemplate)} to be in the email send queue");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendOrphanOrganisationEmail))),
+                Times.Never(),
+                $"Didnt expect the GEO Email addresses using {EmailTemplates.SendOrphanOrganisationEmail} to be in the email send queue");
+            mockNotifyEmailQueue.Verify(
+                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+                Times.Never(),
+                "Didnt expect the GEO Email addresses to be in the email send queue");
 
             Assert.NotNull(result, "redirectResult should not be null");
             Assert.AreEqual("RemoveOrganisationCompleted", result.ActionName, "Expected the ViewName to be 'RemoveOrganisationCompleted'");
