@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using GenderPayGap.Core.Abstractions;
 using GenderPayGap.Core.Interfaces;
@@ -16,9 +16,8 @@ namespace GenderPayGap.Core.Classes
         public GpgEmailProvider(
             GovNotifyEmailProvider govNotifyEmailProvider,
             SmtpEmailProvider smtpEmailProvider,
-            IEmailTemplateRepository emailTemplateRepo,
             IOptions<GpgEmailOptions> gpgEmailOptions,
-            ILogger<GpgEmailProvider> logger) : base(emailTemplateRepo, logger)
+            ILogger<GpgEmailProvider> logger) : base(logger)
         {
             GovNotifyEmailProvider = govNotifyEmailProvider ?? throw new ArgumentNullException(nameof(govNotifyEmailProvider));
             SmtpEmailProvider = smtpEmailProvider ?? throw new ArgumentNullException(nameof(smtpEmailProvider));
@@ -78,13 +77,13 @@ namespace GenderPayGap.Core.Classes
                     emailAddress);
 
                 // send failure email to GEO using smtp email provider
-                await SmtpEmailProvider.SendEmailTemplateAsync(
-                    new SendEmailTemplate {
-                        RecipientEmailAddress = Options.Value.GEODistributionList,
-                        Subject = "GPG - GOV NOTIFY ERROR",
-                        MessageBody =
-                            $"Could not send email to Gov Notify using {emailAddress} due to following error:\n\n{ex.GetDetailsText()}.\n\nWill attempting to resend email using SMTP."
-                    });
+                //await SmtpEmailProvider.SendEmailTemplateAsync(
+                //    new SendEmailTemplate {
+                //        RecipientEmailAddress = Options.Value.GEODistributionList,
+                //        Subject = "GPG - GOV NOTIFY ERROR",
+                //        MessageBody =
+                //            $"Could not send email to Gov Notify using {emailAddress} due to following error:\n\n{ex.GetDetailsText()}.\n\nWill attempting to resend email using SMTP."
+                //    });
             }
 
             return null;

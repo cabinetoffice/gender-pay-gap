@@ -8,7 +8,6 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using GenderPayGap.Core.Abstractions;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -21,10 +20,9 @@ namespace GenderPayGap.Core.Classes
     public class SmtpEmailProvider : AEmailProvider
     {
 
-        public SmtpEmailProvider(IEmailTemplateRepository emailTemplateRepo,
-            IOptions<SmtpEmailOptions> smtpEmailOptions,
+        public SmtpEmailProvider(IOptions<SmtpEmailOptions> smtpEmailOptions,
             ILogger<SmtpEmailProvider> logger)
-            : base(emailTemplateRepo, logger)
+            : base(logger)
         {
             Options = smtpEmailOptions ?? throw new ArgumentNullException(nameof(smtpEmailOptions));
             //TODO ensure smtp config is present (when enabled)
@@ -43,7 +41,7 @@ namespace GenderPayGap.Core.Classes
             mergeParameters["Environment"] = Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] ";
 
             // get template
-            EmailTemplateInfo emailTemplateInfo = EmailTemplateRepo.GetByTemplateId(templateId);
+            EmailTemplateInfo emailTemplateInfo = null; //EmailTemplateRepo.GetByTemplateId(templateId);
             string htmlContent = File.ReadAllText(emailTemplateInfo.FilePath);
 
             // parse html
@@ -71,7 +69,7 @@ namespace GenderPayGap.Core.Classes
             }
 
             string smtpServer = Options.Value.Server2 ?? Options.Value.Server;
-            int smtpServerPort = (Options.Value.Port2 ?? Options.Value.Port).ToInt32(25);
+            var smtpServerPort = (Options.Value.Port2 ?? Options.Value.Port).ToInt32(25);
             string smtpUsername = Options.Value.Username2 ?? Options.Value.Username;
 
             await Email.QuickSendAsync(
@@ -87,7 +85,8 @@ namespace GenderPayGap.Core.Classes
                 smtpServerPort,
                 test: test);
 
-            return new SendEmailResult {
+            return new SendEmailResult
+            {
                 Status = "sent",
                 Server = $"{smtpServer}:{smtpServerPort}",
                 ServerUsername = smtpUsername,
