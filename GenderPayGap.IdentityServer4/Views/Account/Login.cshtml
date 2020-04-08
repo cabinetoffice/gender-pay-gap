@@ -21,43 +21,21 @@
                 @await Html.CustomValidationSummaryAsync(validationSummaryMessage: "There’s a problem with your email address or password")
             }
             
-            @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.AccountCreationPrototype))
-            {
-                <h1 class="heading-large">
-                    Sign in
-                </h1>
-                <p>
-                    If you have a user account, enter your email address and password. After signing into your 
-                    account you can add an organisation or manage your existing organisations.
-                </p>
-                <p class="notice">
-                    <i class="icon icon-important">
-                        <span class="visually-hidden">Warning</span>
-                    </i>
-                    <strong class="bold-small">
-                        If you add an organisation to your account it may take up to three weeks to verify
-                    </strong>
-                </p>   
-            }
-            else
-            {
-                <h1 class="heading-large">
-                    Sign in
-                </h1>
-                <p>
-                    If you have an account, enter your email address and password. <br/>
-                    After signing into your account you can register a new organisation or manage your existing organisations.
-                </p>
-                <p class="notice">
-                    <i class="icon icon-important">
-                        <span class="visually-hidden">Warning</span>
-                    </i>
-                    <strong class="bold-small">
-                        It may take up to a week to register your organisation
-                    </strong>
-                </p>   
-            }
-
+            <h1 class="heading-large">
+                Sign in
+            </h1>
+            <p>
+                If you have a user account, enter your email address and password. After signing into your 
+                account you can add an organisation or manage your existing organisations.
+            </p>
+            <p class="notice">
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <strong class="bold-small">
+                    If you add an organisation to your account it may take up to three weeks to verify
+                </strong>
+            </p>   
 
             <form asp-route="Login">
                 <input type="hidden" asp-for="ReturnUrl"/>
@@ -79,42 +57,24 @@
                 </fieldset>
             </form>
             
-            @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.AccountCreationPrototype))
-            {
-                <a id="forgotten-password" href="/Register/password-reset">Reset your password</a>
-                
-                <h2 class="heading-medium">
-                    Don't have a user account?
-                </h2>
-                <p>If you're new to the service you will need to create an account. This will allow you to add 
-                    organisations or manage existing ones. 
-                </p>
-                
-                <div class="panel panel-border-wide">
-                    <p>
-                        You will need to create your own user account even if someone else has previously reported your
-                        organisation's gender pay gap.
-                    </p>
-                </div>
-                <a href="/prototype/create-user-account">Create a user account</a>
-            }
-            else
-            {
-                <h2>Problems with your password?</h2>
-                <a id="forgotten-password" href="/Register/password-reset">Reset your password</a>
-
-                <h2 class="heading-medium">
-                    No account yet?
-                </h2>
-                <p>
-                    If you're new to the service you will need to create an account. This will allow you to register organisations and report their gender pay gap data.
-                    <br/>
-                    <a href="/Register">Create an account</a>
-                </p>   
-            }
+            <a id="forgotten-password" href="/Register/password-reset">Reset your password</a>
             
-
+            <h2 class="heading-medium">
+                Don't have a user account?
+            </h2>
+            <p>If you're new to the service you will need to create an account. This will allow you to add 
+                organisations or manage existing ones. 
+            </p>
+            <p>
+                <a href="/create-user-account">Create a user account</a>
+            </p>
+            
+            <div class="panel panel-border-wide">
+                <p>
+                    You will need to create your own user account even if someone else has previously reported your
+                    organisation's gender pay gap.
+                </p>
+            </div>
         </div>
     }
-
 </div>
