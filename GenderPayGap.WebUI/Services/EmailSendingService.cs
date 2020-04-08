@@ -356,47 +356,6 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
-        public static async void SendGeoCompaniesHouseSicCodesErrorEmail(string emailAddress,
-            string organisationName,
-            string companyNumber,
-            string error)
-        {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"organisationName", organisationName},
-                {"companyNumber", companyNumber},
-                {"error", error}
-            };
-
-            var notifyEmail = new NotifyEmail
-            {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendGeoCompaniesHouseSicCodesErrorEmail,
-                Personalisation = personalisation
-            };
-
-            await AddEmailToQueue(notifyEmail);
-        }
-
-        public static async void SendGeoCompaniesHouseSearchErrorEmail(string emailAddress, string searchText, string error)
-        {
-
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"searchText", searchText},
-                {"error", error}
-            };
-
-            var notifyEmail = new NotifyEmail
-            {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendGeoCompaniesHouseSearchErrorEmail,
-                Personalisation = personalisation
-            };
-
-            await AddEmailToQueue(notifyEmail);
-        }
-        
         public static async void SendGeoFirstTimeDataSubmissionEmail(string emailAddress, string year, string organisationName, string postedDate, string url)
         {
 
@@ -459,8 +418,6 @@ namespace GenderPayGap.WebUI.Services
         public const string SendOrganisationRegistrationDeclinedEmail = "43d16081-b789-4426-9b00-13f3d9f6dbea";
         public const string SendGeoOrphanOrganisationEmail = "34ca9b32-09d2-4604-80e6-4afdd019d7d2";
         public const string SendGeoOrganisationRegistrationRequestEmail = "3683b65f-9f50-44b8-ae4b-4ae1e84f1a1f";
-        public const string SendGeoCompaniesHouseSicCodesErrorEmail = "604f52dd-91d6-497f-90f5-50a6299b68a5";
-        public const string SendGeoCompaniesHouseSearchErrorEmail = "0919f7dd-eb14-400e-a2a6-1316b86c4036";
         public const string SendGeoFirstTimeDataSubmissionEmail = "fecf5ef0-9ecf-494d-891d-8e00847bff31";
 
     }

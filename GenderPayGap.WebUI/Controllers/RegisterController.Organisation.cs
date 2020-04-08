@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Api;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
@@ -200,13 +201,10 @@ namespace GenderPayGap.WebUI.Controllers
                             return View(model);
                         }
 
-                        if (Config.IsProduction())
-                        {
-                            EmailSendingService.SendGeoCompaniesHouseSearchErrorEmail(
-                                Config.GetAppSetting("GEODistributionList"),
-                                model.SearchText,
-                                ex.Message);
-                        }
+                        DateTime time = VirtualDateTime.Now;
+                        CustomLogger.Error(
+                            $"Companies House failed: {nameof(OrganisationSearch)}",
+                            new {environment = Config.EnvironmentName, time, Exception = ex, model.SearchText});
 
                         return View("CustomError", new ErrorViewModel(1140));
                     }
@@ -430,13 +428,10 @@ namespace GenderPayGap.WebUI.Controllers
                                 return View(model);
                             }
 
-                            if (Config.IsProduction())
-                            {
-                                EmailSendingService.SendGeoCompaniesHouseSearchErrorEmail(
-                                    Config.GetAppSetting("GEODistributionList"),
-                                    model.SearchText,
-                                    ex.Message);
-                            }
+                            DateTime time = VirtualDateTime.Now;
+                            CustomLogger.Error(
+                                $"Companies House failed: {nameof(ChooseOrganisation)}",
+                                new {environment = Config.EnvironmentName, time, Exception = ex, model.SearchText});
 
                             return View("CustomError", new ErrorViewModel(1140));
                         }
@@ -1119,14 +1114,17 @@ namespace GenderPayGap.WebUI.Controllers
                                 return View(model);
                             }
 
-                            if (Config.IsProduction())
-                            {
-                                EmailSendingService.SendGeoCompaniesHouseSicCodesErrorEmail(
-                                    Config.GetAppSetting("GEODistributionList"),
+                            DateTime time = VirtualDateTime.Now;
+                            CustomLogger.Error(
+                                $"Companies House failed: {nameof(ConfirmOrganisation)}",
+                                new
+                                {
+                                    environment = Config.EnvironmentName,
+                                    time,
+                                    Exception = ex,
                                     employer.OrganisationName,
-                                    employer.CompanyNumber,
-                                    ex.Message);
-                            }
+                                    employer.CompanyNumber
+                                });
 
                             return View("CustomError", new ErrorViewModel(1140));
                         }
