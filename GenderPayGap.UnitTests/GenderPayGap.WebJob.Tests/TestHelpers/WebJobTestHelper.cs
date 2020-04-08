@@ -59,7 +59,6 @@ namespace GenderPayGap.WebJob.Tests.TestHelpers
             builder.RegisterType<InternalObfuscator>().As<IObfuscator>().SingleInstance();
             builder.RegisterType<EncryptionHandler>().As<IEncryptionHandler>().SingleInstance();
 
-            builder.Register(c => Mock.Of<IMessenger>()).As<IMessenger>().SingleInstance();
             builder.Register(c => Mock.Of<IGovNotifyAPI>()).As<IGovNotifyAPI>().SingleInstance();
 
             builder.RegisterInstance(new NullLoggerFactory()).As<ILoggerFactory>().SingleInstance();

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
@@ -13,7 +14,9 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task CheckSiteCertAsync([TimerTrigger("20 3 * * *" /* 03:20 once per day */)] TimerInfo timer, ILogger log)
+        public async Task CheckSiteCertAsync([TimerTrigger("20 3 * * *" /* 03:20 once per day */)]
+            TimerInfo timer,
+            ILogger log)
         {
             string runId = CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -34,12 +37,13 @@ namespace GenderPayGap.WebJob
                         //Load the cert from the thumprint
                         X509Certificate2 cert = HttpsCertificate.LoadCertificateFromThumbprint(certThumprint);
 
-                        DateTime expires = cert.GetExpirationDateString().ToDateTime();
+                        var expires = cert.GetExpirationDateString().ToDateTime();
+                        DateTime time = VirtualDateTime.Now;
                         if (expires < VirtualDateTime.UtcNow)
                         {
-                            await _Messenger.SendGeoMessageAsync(
-                                "GPG - WEBSITE CERTIFICATE EXPIRED",
-                                $"The website certificate for '{Global.ExternalHost}' expired on {expires.ToFriendlyDate()} and needs replacing immediately.");
+                            CustomLogger.Error(
+                                $"The website certificate for '{Global.ExternalHost}' expired on {expires.ToFriendlyDate()} and needs replacing immediately.",
+                                new {environment = Config.EnvironmentName, time});
                         }
                         else
                         {
@@ -47,9 +51,9 @@ namespace GenderPayGap.WebJob
 
                             if (expires < VirtualDateTime.UtcNow.AddDays(Global.CertExpiresWarningDays))
                             {
-                                await _Messenger.SendGeoMessageAsync(
-                                    "GPG - WEBSITE CERTIFICATE EXPIRING",
-                                    $"The website certificate for '{Global.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.");
+                                CustomLogger.Error(
+                                    $"The website certificate for '{Global.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.",
+                                    new {environment = Config.EnvironmentName, time});
                             }
                         }
                     }

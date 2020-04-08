@@ -80,33 +80,6 @@ namespace GenderPayGap.Extensions
         {
             return list.ToList().FindIndex(l => l.EqualsI(text));
         }
-        
-        public static bool ContainsAllEmails(this IEnumerable<string> inputEmails)
-        {
-            var found = false;
-            foreach (string email in inputEmails)
-            {
-                if (string.IsNullOrWhiteSpace(email))
-                {
-                    continue;
-                }
-
-                string address = email.GetEmailAddress();
-                if (string.IsNullOrWhiteSpace(address))
-                {
-                    return false;
-                }
-
-                if (!address.IsEmailAddress())
-                {
-                    return false;
-                }
-
-                found = true;
-            }
-
-            return found;
-        }
 
         public static string ToQueryString(this NameValueCollection collection, bool allowDuplicateKeys = false)
         {
@@ -317,25 +290,6 @@ namespace GenderPayGap.Extensions
             {
                 targetCollection.Add(item);
             }
-        }
-
-        public static List<string> RemoveI(this List<string> source, params string[] collection)
-        {
-            foreach (string item in collection)
-            {
-                if (string.IsNullOrWhiteSpace(item))
-                {
-                    continue;
-                }
-
-                int i = source.IndexOfI(item);
-                if (i > -1)
-                {
-                    source.RemoveAt(i);
-                }
-            }
-
-            return source;
         }
 
         public static DataTable ToDataTable<T>(this IEnumerable<T> list, string tableName = null)

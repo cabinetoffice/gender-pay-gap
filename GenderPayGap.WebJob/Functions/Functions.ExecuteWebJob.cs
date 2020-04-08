@@ -65,13 +65,7 @@ namespace GenderPayGap.WebJob
             DateTime endTime = VirtualDateTime.Now;
             CustomLogger.Information(
                 $"Function finished: {nameof(ExecuteWebjob)}. {command} successfully",
-                new
-                {
-                    runId, 
-                    Environment = Config.EnvironmentName, 
-                    endTime, 
-                    TimeTakenInSeconds = (endTime - startTime).TotalSeconds
-                });
+                new {runId, Environment = Config.EnvironmentName, endTime, TimeTakenInSeconds = (endTime - startTime).TotalSeconds});
         }
 
         public async Task ExecuteWebjobPoisonAsync([QueueTrigger(QueueNames.ExecuteWebJob + "-poison")]
@@ -80,8 +74,10 @@ namespace GenderPayGap.WebJob
         {
             log.LogError($"Could not execute Webjob, Details: {queueMessage}");
 
-            //Send Email to GEO reporting errors
-            await _Messenger.SendGeoMessageAsync("GPG - GOV WEBJOBS ERROR", "Could not execute Webjob:" + queueMessage);
+            DateTime time = VirtualDateTime.Now;
+            CustomLogger.Error(
+                $"Function failed: {nameof(ExecuteWebjobPoisonAsync)}",
+                new {environment = Config.EnvironmentName, time, queueMessage});
         }
 
     }

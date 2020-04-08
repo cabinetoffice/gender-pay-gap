@@ -22,10 +22,10 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            var runId = CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(UpdateSearchAsync), startTime);
-            
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(UpdateSearchAsync), startTime);
+
             try
             {
                 await UpdateAllSearchIndexesAsync(log);
@@ -33,8 +33,8 @@ namespace GenderPayGap.WebJob
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(UpdateSearchAsync), startTime, ex );
-                
+                LogFunctionError(runId, nameof(UpdateSearchAsync), startTime, ex);
+
                 //Rethrow the error
                 throw;
             }
@@ -83,21 +83,6 @@ namespace GenderPayGap.WebJob
                 {
                     throw new ArgumentException($"Type {typeof(T)} is not a valid type.");
                 }
-
-                if (force && !string.IsNullOrWhiteSpace(userEmail))
-                {
-                    try
-                    {
-                        await _Messenger.SendMessageAsync(
-                            "UpdateSearchIndexes complete",
-                            userEmail,
-                            "The update of the search indexes completed successfully.");
-                    }
-                    catch (Exception ex)
-                    {
-                        log.LogError(ex, "UpdateSearch: An error occurred trying to send an email");
-                    }
-                }
             }
             finally
             {
@@ -120,17 +105,18 @@ namespace GenderPayGap.WebJob
 
         private async Task AddDataToIndexAsync(ILogger log)
         {
-            log.LogInformation($"UpdateSearchAsync: Loading SIC codes from file");
+            log.LogInformation("UpdateSearchAsync: Loading SIC codes from file");
             List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync(log);
 
-            log.LogInformation($"UpdateSearchAsync: Loading organisations");
+            log.LogInformation("UpdateSearchAsync: Loading organisations");
 
             IQueryable<Organisation> organisations = _DataRepository.GetAll<Organisation>()
                 .Where(o => o.Status == OrganisationStatuses.Active || o.Status == OrganisationStatuses.Retired)
-                .Where(o => o.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
-                        || o.OrganisationScopes.Any(
-                            sc => sc.Status == ScopeRowStatuses.Active
-                                  && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope)));
+                .Where(
+                    o => o.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
+                         || o.OrganisationScopes.Any(
+                             sc => sc.Status == ScopeRowStatuses.Active
+                                   && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope)));
 
             //Remove the test organisations
             if (!string.IsNullOrWhiteSpace(Global.TestPrefix))
@@ -146,15 +132,17 @@ namespace GenderPayGap.WebJob
 
             List<Organisation> materialisedOrganisations = organisations.ToList();
 
-            log.LogInformation($"UpdateSearchAsync: Converting organisations to search results");
-            List<EmployerSearchModel> selectionList = materialisedOrganisations.Select(o => o.ToEmployerSearchResult(false, listOfSicCodeRecords)).ToList();
+            log.LogInformation("UpdateSearchAsync: Converting organisations to search results");
+            List<EmployerSearchModel> selectionList =
+                materialisedOrganisations.Select(o => o.ToEmployerSearchResult(false, listOfSicCodeRecords)).ToList();
 
-            log.LogInformation($"UpdateSearchAsync: Refreshing index");
+            log.LogInformation("UpdateSearchAsync: Refreshing index");
             if (selectionList.Any())
             {
                 await Global.SearchRepository.RefreshIndexDataAsync(selectionList);
             }
-            log.LogInformation($"UpdateSearchAsync: done with organisations");
+
+            log.LogInformation("UpdateSearchAsync: done with organisations");
         }
 
         private static async Task<List<SicCodeSearchModel>> GetListOfSicCodeSearchModelsFromFileAsync(ILogger log)

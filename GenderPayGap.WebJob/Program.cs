@@ -52,7 +52,6 @@ namespace GenderPayGap.WebJob
             Global.SicCodeSearchRepository = ContainerIOC.Resolve<ISearchRepository<SicCodeSearchModel>>();
 
             //Register log to Global
-            Global.EmailSendLog = ContainerIOC.ResolveKeyed<ILogRecordLogger>(Filenames.EmailSendLog);
             Global.ManualChangeLog = ContainerIOC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
             Global.BadSicLog = ContainerIOC.ResolveKeyed<ILogRecordLogger>(Filenames.BadSicLog);
             
