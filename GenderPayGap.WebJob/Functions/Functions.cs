@@ -12,7 +12,6 @@ namespace GenderPayGap.WebJob
     {
 
         public Functions(
-            IMessenger messenger,
             IDataRepository dataRepository,
             IScopeBusinessLogic scopeBL,
             ISubmissionBusinessLogic submissionBL,
@@ -21,7 +20,6 @@ namespace GenderPayGap.WebJob
             IGovNotifyAPI govNotifyApi,
             UpdateFromCompaniesHouseService updateFromCompaniesHouseService)
         {
-            _Messenger = messenger;
             _DataRepository = dataRepository;
             _ScopeBL = scopeBL;
             _SubmissionBL = submissionBL;
@@ -33,7 +31,6 @@ namespace GenderPayGap.WebJob
 
         #region Properties
 
-        public readonly IMessenger _Messenger;
         public readonly IDataRepository _DataRepository;
         private readonly IScopeBusinessLogic _ScopeBL;
         private readonly ISubmissionBusinessLogic _SubmissionBL;

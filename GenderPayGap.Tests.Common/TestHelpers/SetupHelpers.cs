@@ -18,7 +18,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             Global.ManualChangeLog = new Mock<ILogRecordLogger>().Object;
             Global.RegistrationLog = new Mock<ILogRecordLogger>().Object;
             Global.SearchLog = new Mock<ILogRecordLogger>().Object;
-            Global.EmailSendLog = new Mock<ILogRecordLogger>().Object;
 
             if (builder != null)
             {
@@ -26,7 +25,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 builder.RegisterInstance(Global.ManualChangeLog).Keyed<ILogRecordLogger>(Filenames.ManualChangeLog).SingleInstance();
                 builder.RegisterInstance(Global.RegistrationLog).Keyed<ILogRecordLogger>(Filenames.RegistrationLog).SingleInstance();
                 builder.RegisterInstance(Global.SearchLog).Keyed<ILogRecordLogger>(Filenames.SearchLog).SingleInstance();
-                builder.RegisterInstance(Global.EmailSendLog).Keyed<ILogRecordLogger>(Filenames.EmailSendLog).SingleInstance();
 
                 builder.RegisterInstance(Mock.Of<IRegistrationLogRecord>()).SingleInstance();
             }

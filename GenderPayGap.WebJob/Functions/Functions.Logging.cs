@@ -25,10 +25,10 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task LogEvent([QueueTrigger(QueueNames.LogEvent)] string queueMessage, ILogger log)
         {
-            var runId = CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(LogEvent), startTime);
-            
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(LogEvent), startTime);
+
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
             if (!string.IsNullOrWhiteSpace(filepath))
@@ -118,17 +118,19 @@ namespace GenderPayGap.WebJob
 
             log.LogError($"Could not log event, Details: {queueMessage}");
 
-            //Send Email to GEO reporting errors
-            await _Messenger.SendGeoMessageAsync("GPG - GOV WEBJOBS ERROR", "Could not log event:" + queueMessage);
+            DateTime time = VirtualDateTime.Now;
+            CustomLogger.Error(
+                $"Function failed: {nameof(LogEventPoison)}",
+                new {environment = Config.EnvironmentName, time, queueMessage});
         }
 
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task LogRecord([QueueTrigger(QueueNames.LogRecord)] string queueMessage, ILogger log)
         {
-            var runId = CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(LogRecord), startTime);
-            
+            string runId = CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
+            LogFunctionStart(runId, nameof(LogRecord), startTime);
+
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
             if (!string.IsNullOrWhiteSpace(filepath))
@@ -198,8 +200,10 @@ namespace GenderPayGap.WebJob
 
             log.LogError($"Could not log record: Details:{queueMessage}");
 
-            //Send Email to GEO reporting errors
-            await _Messenger.SendGeoMessageAsync("GPG - GOV WEBJOBS ERROR", "Could not log record:" + queueMessage);
+            DateTime time = VirtualDateTime.Now;
+            CustomLogger.Error(
+                $"Function failed: {nameof(LogRecordPoison)}",
+                new {environment = Config.EnvironmentName, time, queueMessage});
         }
 
         private static string GetLargeQueueFilepath(string queueMessage)

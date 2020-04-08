@@ -38,8 +38,6 @@ namespace GenderPayGap.WebJob
 
             // setup email configuration
             services.Configure<GovNotifyOptions>(Config.Configuration.GetSection("Email:Providers:GovNotify"));
-            services.Configure<SmtpEmailOptions>(Config.Configuration.GetSection("Email:Providers:Smtp"));
-            services.Configure<GpgEmailOptions>(Config.Configuration);
 
             //Create the Autofac inversion of control container
             var builder = new ContainerBuilder();
@@ -105,7 +103,6 @@ namespace GenderPayGap.WebJob
                 builder.Register(c => new SystemFileRepository(localStorageRoot)).As<IFileRepository>().SingleInstance();
             }
 
-            builder.RegisterType<Messenger>().As<IMessenger>().SingleInstance();
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
 
             // Setup azure search
@@ -147,15 +144,12 @@ namespace GenderPayGap.WebJob
             builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
 
             // Register record log queues
-            builder.RegisterLogRecord(Filenames.EmailSendLog);
             builder.RegisterLogRecord(Filenames.ManualChangeLog);
             builder.RegisterLogRecord(Filenames.BadSicLog);
 
 
             // Register email providers
             builder.RegisterType<GovNotifyEmailProvider>().SingleInstance();
-            builder.RegisterType<SmtpEmailProvider>().SingleInstance();
-            builder.RegisterType<GpgEmailProvider>().SingleInstance();
         }
 
     }

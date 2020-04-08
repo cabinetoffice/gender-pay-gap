@@ -179,9 +179,6 @@ namespace GenderPayGap.Core
         public static ILogRecordLogger RegistrationLog { get; set; }
         public static ILogRecordLogger SearchLog { get; set; }
 
-        // Webjobs
-        public static ILogRecordLogger EmailSendLog { get; set; }
-
         #endregion
 
     }
