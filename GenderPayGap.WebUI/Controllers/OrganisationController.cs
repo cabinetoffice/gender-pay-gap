@@ -529,7 +529,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Send the notification to GEO for each newly orphaned organisation
             if (orgToRemove.GetIsOrphan() && Config.IsProduction())
             {
-                EmailSendingService.SendOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), orgToRemove.OrganisationName);
+                EmailSendingService.SendGeoOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), orgToRemove.OrganisationName);
             }
 
             //Make sure this organisation is no longer selected
