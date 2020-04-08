@@ -22,14 +22,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             this.dataRepository = dataRepository;
         }
-
-        [HttpGet("/prototype/start-page")]
-        public IActionResult StartPage()
-        {
-            return View("StartPagePrototype");
-        }
-
-        [HttpGet("/prototype/already-created-an-account-question")]
+        
+        [HttpGet("/already-created-an-account-question")]
         public IActionResult AlreadyCreatedAnAccountQuestionGet(AlreadyCreatedAnAccountViewModel viewModel)
         {
             if (User.Identity.IsAuthenticated)
@@ -58,11 +52,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     return View("AlreadyCreatedAnAccountQuestion", model);
             }
         }
-
-        // TODO when moving from prototype to production code
-        // When updating this link to remove the /prototype prefix, you must also update
-        // the link in Login.cshtml that points to this action
-        [HttpGet("/prototype/create-user-account")]
+        
+        [HttpGet("/create-user-account")]
         public IActionResult CreateUserAccountGet()
         {
             if (User.Identity.IsAuthenticated)
@@ -73,7 +64,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("CreateUserAccount", new CreateUserAccountViewModel());
         }
 
-        [HttpPost("/prototype/create-user-account")]
+        [HttpPost("/create-user-account")]
         public IActionResult CreateUserAccountPost(CreateUserAccountViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
@@ -155,7 +146,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
         }
 
-        [HttpGet("/prototype/verify-email")]
+        [HttpGet("/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
             User gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
