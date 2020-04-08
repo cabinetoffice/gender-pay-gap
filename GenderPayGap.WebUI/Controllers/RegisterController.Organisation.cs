@@ -76,7 +76,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //TODO validate the submitted fields
             ModelState.Clear();
-            
+
             if (!model.SectorType.EqualsI(SectorTypes.Private, SectorTypes.Public))
             {
                 AddModelError(3005, "SectorType");
@@ -200,10 +200,14 @@ namespace GenderPayGap.WebUI.Controllers
                             return View(model);
                         }
 
-                        await Emails.SendGeoMessageAsync(
-                            "GPG - COMPANIES HOUSE ERROR",
-                            $"Cant search using Companies House API for query '{model.SearchText}' page:'1' due to following error:\n\n{ex.GetDetailsText()}",
-                            currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                        if (Config.IsProduction())
+                        {
+                            EmailSendingService.SendGeoCompaniesHouseSearchErrorEmail(
+                                Config.GetAppSetting("GEODistributionList"),
+                                model.SearchText,
+                                ex.Message);
+                        }
+
                         return View("CustomError", new ErrorViewModel(1140));
                     }
 
@@ -387,7 +391,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else if (command.StartsWithI("page_"))
             {
-                int page = command.AfterFirst("page_").ToInt32();
+                var page = command.AfterFirst("page_").ToInt32();
                 if (page < 1 || page > model.Employers.PageCount)
                 {
                     throw new Exception("Invalid page selected");
@@ -426,10 +430,14 @@ namespace GenderPayGap.WebUI.Controllers
                                 return View(model);
                             }
 
-                            await Emails.SendGeoMessageAsync(
-                                "GPG - COMPANIES HOUSE ERROR",
-                                $"Cant search using Companies House API for query '{model.SearchText}' page:'1' due to following error:\n\n{ex.GetDetailsText()}",
-                                currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                            if (Config.IsProduction())
+                            {
+                                EmailSendingService.SendGeoCompaniesHouseSearchErrorEmail(
+                                    Config.GetAppSetting("GEODistributionList"),
+                                    model.SearchText,
+                                    ex.Message);
+                            }
+
                             return View("CustomError", new ErrorViewModel(1140));
                         }
 
@@ -476,7 +484,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (command.StartsWithI("employer_"))
             {
-                int employerIndex = command.AfterFirst("employer_").ToInt32();
+                var employerIndex = command.AfterFirst("employer_").ToInt32();
                 EmployerRecord employer = model.Employers.Results[employerIndex];
 
                 //Ensure employers from companies house have a sector
@@ -942,7 +950,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return RedirectToAction("AddAddress", "Register");
             }
 
-            int employerIndex = command.AfterFirst("employer_").ToInt32();
+            var employerIndex = command.AfterFirst("employer_").ToInt32();
 
             return await SelectOrganisation(currentUser, model, employerIndex, nameof(SelectOrganisation));
         }
@@ -1074,7 +1082,7 @@ namespace GenderPayGap.WebUI.Controllers
                 employer = model.GetManualEmployer() ?? model.GetSelectedEmployer();
             }
 
-            #region  Get the sic codes if there isnt any
+            #region Get the sic codes if there isnt any
 
             if (employer != null)
             {
@@ -1111,10 +1119,15 @@ namespace GenderPayGap.WebUI.Controllers
                                 return View(model);
                             }
 
-                            await Emails.SendGeoMessageAsync(
-                                "GPG - COMPANIES HOUSE ERROR",
-                                $"Cant get SIC Codes from Companies House API for company {employer.OrganisationName} No:{employer.CompanyNumber} due to following error:\n\n{ex.Message}",
-                                currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                            if (Config.IsProduction())
+                            {
+                                EmailSendingService.SendGeoCompaniesHouseSicCodesErrorEmail(
+                                    Config.GetAppSetting("GEODistributionList"),
+                                    employer.OrganisationName,
+                                    employer.CompanyNumber,
+                                    ex.Message);
+                            }
+
                             return View("CustomError", new ErrorViewModel(1140));
                         }
 
@@ -1336,7 +1349,8 @@ namespace GenderPayGap.WebUI.Controllers
                 if (!userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
                 {
                     await Global.RegistrationLog.WriteAsync(
-                        new RegisterLogModel {
+                        new RegisterLogModel
+                        {
                             StatusDate = VirtualDateTime.Now,
                             Status = "Public sector email confirmed",
                             ActionBy = currentUser.EmailAddress,
@@ -1365,7 +1379,8 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 this.StashModel(
-                    new CompleteViewModel {
+                    new CompleteViewModel
+                    {
                         OrganisationId = userOrg.OrganisationId, AccountingDate = sector.Value.GetAccountingStartDate()
                     });
 
@@ -1375,7 +1390,9 @@ namespace GenderPayGap.WebUI.Controllers
 
 
             //If private sector then send the pin, unless Manual Registration feature flag is turned on
-            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) && model.IsUkAddress.HasValue && model.IsUkAddress.Value)
+            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration)
+                && model.IsUkAddress.HasValue
+                && model.IsUkAddress.Value)
             {
                 return RedirectToAction("PINSent");
             }
@@ -1435,7 +1452,8 @@ namespace GenderPayGap.WebUI.Controllers
                 org.Status = OrganisationStatuses.New;
 
                 //Create a presumed in-scope for current year
-                var newScope = new OrganisationScope {
+                var newScope = new OrganisationScope
+                {
                     Organisation = org,
                     ScopeStatus = ScopeStatuses.PresumedInScope,
                     ScopeStatusDate = now,
@@ -1447,7 +1465,8 @@ namespace GenderPayGap.WebUI.Controllers
                 org.OrganisationScopes.Add(newScope);
 
                 //Create a presumed out-of-scope for previous year
-                var oldScope = new OrganisationScope {
+                var oldScope = new OrganisationScope
+                {
                     Organisation = org,
                     ScopeStatus = ScopeStatuses.PresumedOutOfScope,
                     ScopeStatusDate = now,
@@ -1464,7 +1483,8 @@ namespace GenderPayGap.WebUI.Controllers
                     //Add the charity number
                     if (!string.IsNullOrWhiteSpace(model.CharityNumber))
                     {
-                        reference = new OrganisationReference {
+                        reference = new OrganisationReference
+                        {
                             ReferenceName = nameof(model.CharityNumber), ReferenceValue = model.CharityNumber, Organisation = org
                         };
                         DataRepository.Insert(reference);
@@ -1474,7 +1494,8 @@ namespace GenderPayGap.WebUI.Controllers
                     //Add the mutual number
                     if (!string.IsNullOrWhiteSpace(model.MutualNumber))
                     {
-                        reference = new OrganisationReference {
+                        reference = new OrganisationReference
+                        {
                             ReferenceName = nameof(model.MutualNumber), ReferenceValue = model.MutualNumber, Organisation = org
                         };
                         DataRepository.Insert(reference);
@@ -1484,7 +1505,8 @@ namespace GenderPayGap.WebUI.Controllers
                     //Add the other reference 
                     if (!string.IsNullOrWhiteSpace(model.OtherName) && !string.IsNullOrWhiteSpace(model.OtherValue))
                     {
-                        reference = new OrganisationReference {
+                        reference = new OrganisationReference
+                        {
                             ReferenceName = model.OtherName, ReferenceValue = model.OtherValue, Organisation = org
                         };
                         DataRepository.Insert(reference);
@@ -1699,10 +1721,10 @@ namespace GenderPayGap.WebUI.Controllers
 
             #endregion
 
-            #region Save the contact details 
+            #region Save the contact details
 
             var sendRequest = false;
-            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) 
+            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration)
                 || model.ManualRegistration
                 || model.ManualAddress && (org.SectorType == SectorTypes.Private || !authorised || hasAddress)
                 || !model.IsUkAddress.HasValue
@@ -1760,7 +1782,8 @@ namespace GenderPayGap.WebUI.Controllers
             var saved = false;
             UserOrganisation tempUserOrg = userOrg; // Need to use a temporary UserOrg inside a lambda expression for out parameters
             await DataRepository.BeginTransactionAsync(
-                async () => {
+                async () =>
+                {
                     try
                     {
                         await DataRepository.SaveChangesAsync();
@@ -1806,7 +1829,8 @@ namespace GenderPayGap.WebUI.Controllers
                 badSicCodes.ForEach(
                     code => badSicLoggingtasks.Add(
                         Global.BadSicLog.WriteAsync(
-                            new BadSicLogModel {
+                            new BadSicLogModel
+                            {
                                 OrganisationId = org.OrganisationId,
                                 OrganisationName = org.OrganisationName,
                                 SicCode = code,
@@ -1862,7 +1886,12 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (Config.IsProduction())
             {
-                EmailSendingService.SendGeoOrganisationRegistrationRequestEmail(Config.GetAppSetting("GEODistributionList"), contactName, reportingOrg, reportingAddress, reviewUrl);
+                EmailSendingService.SendGeoOrganisationRegistrationRequestEmail(
+                    Config.GetAppSetting("GEODistributionList"),
+                    contactName,
+                    reportingOrg,
+                    reportingAddress,
+                    reviewUrl);
             }
         }
 
