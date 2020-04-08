@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                 //Create the notification to GEO for each newly orphaned organisation
                 userOrgs.Where(org => org.GetIsOrphan())
                     .ForEach(
-                        org => EmailSendingService.SendOrphanOrganisationEmail(
+                        org => EmailSendingService.SendGeoOrphanOrganisationEmail(
                             Config.GetAppSetting("GEODistributionList"),
                             org.OrganisationName));
             }

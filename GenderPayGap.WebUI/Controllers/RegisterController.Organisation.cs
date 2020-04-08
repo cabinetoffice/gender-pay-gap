@@ -9,6 +9,7 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Services;
@@ -1859,7 +1860,10 @@ namespace GenderPayGap.WebUI.Controllers
                 return;
             }
 
-            await Emails.SendGEORegistrationRequestAsync(reviewUrl, contactName, reportingOrg, reportingAddress, test);
+            if (Config.IsProduction())
+            {
+                EmailSendingService.SendGeoOrganisationRegistrationRequestEmail(Config.GetAppSetting("GEODistributionList"), contactName, reportingOrg, reportingAddress, reviewUrl);
+            }
         }
 
 

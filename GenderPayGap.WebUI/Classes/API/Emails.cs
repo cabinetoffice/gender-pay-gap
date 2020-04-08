@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Abstractions;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
-using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI;
 using Microsoft.Extensions.Logging;
 
@@ -35,40 +32,6 @@ namespace GenderPayGap
 
             return false;
         }
-
-        public static async Task<bool> SendGEORegistrationRequestAsync(string reviewUrl,
-            string contactName,
-            string reportingOrg,
-            string reportingAddress,
-            bool test = false)
-        {
-            var geoOrganisationRegistrationRequest = new GeoOrganisationRegistrationRequestTemplate {
-                RecipientEmailAddress = Config.GetAppSetting("GEODistributionList"),
-                Test = test,
-                Name = contactName,
-                Org2 = reportingOrg,
-                Address = reportingAddress,
-                Url = reviewUrl
-            };
-
-            return await QueueEmailAsync(geoOrganisationRegistrationRequest);
-        }
-
-        private static async Task<bool> QueueEmailAsync<TTemplate>(TTemplate emailTemplate) where TTemplate : AEmailTemplate
-        {
-            try
-            {
-                await Program.MvcApplication.SendEmailQueue.AddMessageAsync(new QueueWrapper(emailTemplate));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Program.MvcApplication.Logger.LogError(ex, ex.Message);
-            }
-
-            return false;
-        }
-
     }
 
 }

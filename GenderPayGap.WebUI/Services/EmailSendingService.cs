@@ -127,7 +127,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"OrganisationName", organisationName},
+                {"OrganisationName", organisationName}, 
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
@@ -143,7 +143,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"url", url},
+                {"url", url}, 
                 {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
             };
 
@@ -225,7 +225,7 @@ namespace GenderPayGap.WebUI.Services
 
             await AddEmailToQueue(notifyEmail);
         }
-        
+
         public static async void SendResetPasswordVerificationEmail(string emailAddress, string url)
         {
             var personalisation = new Dictionary<string, dynamic>
@@ -314,7 +314,7 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
-        public static async void SendOrphanOrganisationEmail(string emailAddress, string organisationName)
+        public static async void SendGeoOrphanOrganisationEmail(string emailAddress, string organisationName)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
@@ -324,7 +324,32 @@ namespace GenderPayGap.WebUI.Services
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendOrphanOrganisationEmail,
+                TemplateId = EmailTemplates.SendGeoOrphanOrganisationEmail,
+                Personalisation = personalisation
+            };
+
+            await AddEmailToQueue(notifyEmail);
+        }
+
+        public static async void SendGeoOrganisationRegistrationRequestEmail(string emailAddress,
+            string contactName,
+            string reportingOrg,
+            string reportingAddress,
+            string url)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"name", contactName},
+                {"org2", reportingOrg},
+                {"address", reportingAddress},
+                {"url", url},
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendGeoOrganisationRegistrationRequestEmail,
                 Personalisation = personalisation
             };
 
@@ -370,7 +395,8 @@ namespace GenderPayGap.WebUI.Services
         public const string SendCloseAccountCompletedEmail = "75caab84-b95a-4991-87fe-c29af3f9e096";
         public const string SendOrganisationRegistrationApprovedEmail = "a349aa87-787d-4fa8-9ce4-f8e5a1b8209e";
         public const string SendOrganisationRegistrationDeclinedEmail = "43d16081-b789-4426-9b00-13f3d9f6dbea";
-        public const string SendOrphanOrganisationEmail = "34ca9b32-09d2-4604-80e6-4afdd019d7d2";
+        public const string SendGeoOrphanOrganisationEmail = "34ca9b32-09d2-4604-80e6-4afdd019d7d2";
+        public const string SendGeoOrganisationRegistrationRequestEmail = "3683b65f-9f50-44b8-ae4b-4ae1e84f1a1f";
 
     }
 
