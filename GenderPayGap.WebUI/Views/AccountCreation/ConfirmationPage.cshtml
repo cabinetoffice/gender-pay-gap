@@ -1,11 +1,15 @@
+@using GenderPayGap.Core
 @model GenderPayGap.WebUI.Models.AccountCreation.ConfirmEmailAddressViewModel
 @{
     ViewBag.Title = "You've confirmed your email address - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@section BeforeMain {
-    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+    @section BeforeMain {
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    }   
 }
 
 <div class="govuk-grid-row">
@@ -28,13 +32,13 @@
         <h2 class="govuk-heading-m">Editing your contact details or closing your account</h2>
         
         <p class="govuk-body">
-                    You can edit your contact details within Manage My Account.
+            You can edit your contact details within Manage My Account.
         </p>
         <p class="govuk-body">
             You will need to close your user account if:      
             <ul class="govuk-list govuk-list--bullet">
-              <li>You created a user account by mistake</li>
-              <li>You no longer work for, or manage the gender pay gap reporting for the organisation(s) added to your account</li>
+                <li>You created a user account by mistake</li>
+                <li>You no longer work for, or manage the gender pay gap reporting for the organisation added to your account</li>
             </ul>
         </p>
         <p class="govuk-body">
@@ -44,6 +48,8 @@
         <a class="govuk-button" href="/manage-organisations" role="button">Sign In</a>
         
     </div>
+    @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
         <div class="govuk-grid-column-one-third">
             @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
                    new ReportingStepsViewModel
@@ -52,4 +58,5 @@
                        CurrentTask = 0
                    }); }
         </div>
+    }
 </div>
