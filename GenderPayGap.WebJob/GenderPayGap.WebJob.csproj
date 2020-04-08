@@ -30,13 +30,9 @@
     <None Remove="appsettings.PROD.json" />
     <None Remove="AppSettings.secret.json" />
     <None Remove="appsettings.TEST.json" />
-    <None Remove="App_Data\EmailTemplates\SendEmailTemplate.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="App_Data\EmailTemplates\SendEmailTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="run.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

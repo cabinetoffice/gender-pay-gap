@@ -21,10 +21,9 @@ namespace GenderPayGap.Core.Classes
 
         public GovNotifyEmailProvider(
             IHttpClientFactory httpClientFactory,
-            IEmailTemplateRepository emailTemplateRepo,
             IOptions<GovNotifyOptions> govNotifyOptions,
             ILogger<GovNotifyEmailProvider> logger)
-            : base(emailTemplateRepo, logger)
+            : base(logger)
         {
             Options = govNotifyOptions
                       ?? throw new ArgumentNullException("You must provide the gov notify email options", nameof(govNotifyOptions));

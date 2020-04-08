@@ -18,9 +18,7 @@ namespace GenderPayGap.WebJob
         Task<bool> SendGeoMessageAsync(string subject, string message, bool test = false);
 
         Task<bool> SendMessageAsync(string subject, string recipients, string message, bool test = false);
-
-        Task SendEmailTemplateAsync<TTemplate>(TTemplate parameters) where TTemplate : AEmailTemplate;
-
+        
     }
 
     public class Messenger : IMessenger
@@ -161,11 +159,6 @@ namespace GenderPayGap.WebJob
             }
 
             return successCount == emailAddresses.Count;
-        }
-
-        public async Task SendEmailTemplateAsync<TTemplate>(TTemplate parameters) where TTemplate : AEmailTemplate
-        {
-            await GpgEmailProvider.SendEmailTemplateAsync(parameters);
         }
 
         #endregion

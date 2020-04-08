@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -127,9 +127,6 @@ namespace GenderPayGap.WebJob
                 .SingleInstance()
                 .WithParameter("serviceName", azureSearchServiceName)
                 .WithParameter("adminApiKey", azureSearchAdminKey);
-            builder.RegisterInstance(new EmailTemplateRepository(FileSystem.ExpandLocalPath("~/App_Data/EmailTemplates")))
-                .As<IEmailTemplateRepository>()
-                .SingleInstance();
 
             // BL Services
             builder.RegisterInstance(Config.Configuration).SingleInstance();

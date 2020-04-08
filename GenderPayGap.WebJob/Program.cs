@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -45,13 +45,7 @@ namespace GenderPayGap.WebJob
 
             //Build the webjob host and services
             IHost host = BuildJobHost(args);
-
-            // Register email templates
-            var emailTemplatesConfigPath = "Email:Templates";
-
-            // system templates
-            host.RegisterEmailTemplate<SendEmailTemplate>(emailTemplatesConfigPath);
-
+            
             //Initialise the global file and search repositories
             Global.FileRepository = ContainerIOC.Resolve<IFileRepository>();
             Global.SearchRepository = ContainerIOC.Resolve<ISearchRepository<EmployerSearchModel>>();

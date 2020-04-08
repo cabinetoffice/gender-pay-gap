@@ -29,7 +29,6 @@ namespace GenderPayGap.Core.Tests.Email.GovNotifyEmailProvider
             mockHttpClientFactory = new Mock<IHttpClientFactory>();
             mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
-            mockEmailTemplateRepo = new Mock<IEmailTemplateRepository>();
             mockGovNotifyOptions = new Mock<IOptions<GovNotifyOptions>>();
             mockLogger = new Mock<ILogger<Core.Classes.GovNotifyEmailProvider>>();
 
@@ -48,7 +47,6 @@ namespace GenderPayGap.Core.Tests.Email.GovNotifyEmailProvider
             // service under test
             testNotifyEmailProvider = new Core.Classes.GovNotifyEmailProvider(
                 mockHttpClientFactory.Object,
-                mockEmailTemplateRepo.Object,
                 mockGovNotifyOptions.Object,
                 mockLogger.Object);
         }
@@ -66,7 +64,6 @@ namespace GenderPayGap.Core.Tests.Email.GovNotifyEmailProvider
         private const string TestServiceId = "33333333-3333-3333-3333-333333333333";
         private const string TestApiKey = "44444444-4444-4444-4444-444444444444";
 
-        private Mock<IEmailTemplateRepository> mockEmailTemplateRepo;
         private Mock<IOptions<GovNotifyOptions>> mockGovNotifyOptions;
         private Mock<ILogger<Core.Classes.GovNotifyEmailProvider>> mockLogger;
 
