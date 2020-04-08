@@ -1,4 +1,5 @@
-﻿using GenderPayGap.BusinessLogic.Services;
+﻿using System;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -73,16 +74,27 @@ namespace GenderPayGap.WebUI.Models.Admin
                     viewModel.Reason
                 },
                 currentUser);
+            
+            string verificationCode = Guid.NewGuid().ToString("N");
+            string verificationUrl = Url.Action(
+                "VerifyEmail",
+                "AccountCreation",
+                new {code = verificationCode},
+                "https");
 
-            string verifyCode = Encryption.EncryptQuerystring(user.UserId + ":" + user.Created.ToSmallDateTime());
+            try
+            {
+                EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
+                user.EmailVerifyHash = verificationCode;
+                user.EmailVerifySendDate = VirtualDateTime.Now;
 
-            user.EmailVerifyHash = Crypto.GetSHA512Checksum(verifyCode);
-            user.EmailVerifySendDate = VirtualDateTime.Now;
-            dataRepository.SaveChangesAsync().Wait();
-
-            string verifyUrl = Url.Action("VerifyEmail", "Register", new { code = verifyCode }, "https");
-
-            EmailSendingService.SendCreateAccountPendingVerificationEmail(user.EmailAddress, verifyUrl);
+                dataRepository.SaveChangesAsync().Wait();
+            }
+            catch
+            {
+                // help user resend email
+                throw new Exception("Failed to send verification email. Please try again");
+            }
 
             return View("VerificationEmailSent", user);
         }
