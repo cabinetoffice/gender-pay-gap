@@ -36,15 +36,6 @@ namespace GenderPayGap
             return false;
         }
 
-        public static async Task<bool> SendGEOOrphanOrganisationNotificationAsync(string organisationName, bool test)
-        {
-            var orphanOrganisationTemplate = new OrphanOrganisationTemplate {
-                RecipientEmailAddress = Config.GetAppSetting("GEODistributionList"), OrganisationName = organisationName, Test = test
-            };
-
-            return await QueueEmailAsync(orphanOrganisationTemplate);
-        }
-
         public static async Task<bool> SendGEORegistrationRequestAsync(string reviewUrl,
             string contactName,
             string reportingOrg,

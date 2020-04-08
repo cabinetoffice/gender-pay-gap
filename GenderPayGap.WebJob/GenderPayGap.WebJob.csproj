@@ -31,14 +31,10 @@
     <None Remove="AppSettings.secret.json" />
     <None Remove="appsettings.TEST.json" />
     <None Remove="App_Data\EmailTemplates\GeoOrganisationRegistrationRequestTemplate.html" />
-    <None Remove="App_Data\EmailTemplates\OrphanOrganisationTemplate.html" />
     <None Remove="App_Data\EmailTemplates\SendEmailTemplate.html" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="App_Data\EmailTemplates\OrphanOrganisationTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="App_Data\EmailTemplates\GeoOrganisationRegistrationRequestTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
