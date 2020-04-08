@@ -449,7 +449,7 @@ namespace GenderPayGap.WebUI.Classes
                 }
 
                 //If verification code has expired
-                if (currentUser.EmailVerifySendDate.Value.AddHours(Global.EmailVerificationExpiryHours) < VirtualDateTime.Now)
+                if (currentUser.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
                 {
                     if (IsAnyAction("Register/VerifyEmail"))
                     {

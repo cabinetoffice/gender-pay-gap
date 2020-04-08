@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             var changeEmailToken = Encryption.DecryptModel<ChangeEmailVerificationToken>(code);
 
             // ensure token hasn't expired
-            DateTime verifyExpiryDate = changeEmailToken.TokenTimestamp.AddHours(Global.EmailVerificationExpiryHours);
+            DateTime verifyExpiryDate = changeEmailToken.TokenTimestamp.AddDays(Global.EmailVerificationExpiryDays);
             if (verifyExpiryDate < VirtualDateTime.Now)
             {
                 errorState.AddModelError(
