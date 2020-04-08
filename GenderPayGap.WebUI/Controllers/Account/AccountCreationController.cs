@@ -130,7 +130,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             try
             {
-                EmailSendingService.PrototypeSendAccountVerificationEmail(viewModel.EmailAddress, verificationUrl);
+                EmailSendingService.SendAccountVerificationEmail(viewModel.EmailAddress, verificationUrl);
                 newUser.EmailVerifyHash = verificationCode;
                 newUser.EmailVerifySendDate = VirtualDateTime.Now;
 

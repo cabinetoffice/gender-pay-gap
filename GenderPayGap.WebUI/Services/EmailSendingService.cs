@@ -10,7 +10,7 @@ namespace GenderPayGap.WebUI.Services
     public class EmailSendingService
     {
 
-        public static async void PrototypeSendAccountVerificationEmail(string emailAddress, string verificationUrl)
+        public static async void SendAccountVerificationEmail(string emailAddress, string verificationUrl)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.Services
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.PrototypeAccountVerificationEmail,
+                TemplateId = EmailTemplates.AccountVerificationEmail,
                 Personalisation = personalisation
             };
 
@@ -399,7 +399,7 @@ namespace GenderPayGap.WebUI.Services
     public static class EmailTemplates
     {
 
-        public const string PrototypeAccountVerificationEmail = "ab3b8a9b-4327-41d5-9dc1-9694ff088345";
+        public const string AccountVerificationEmail = "ab3b8a9b-4327-41d5-9dc1-9694ff088345";
         public const string ScopeChangeOutEmail = "a5e14ca4-9fe7-484d-a239-fc57f0324c19";
         public const string ScopeChangeInEmail = "a54efa64-33d6-4150-9484-669ff8a6c764";
         public const string RemovedUserFromOrganisationEmail = "65ecaa57-e794-4075-9c00-f13b3cb33446";
