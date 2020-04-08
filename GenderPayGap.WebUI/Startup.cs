@@ -234,7 +234,6 @@ namespace GenderPayGap.WebUI
             }
 
             // Register queues
-            builder.RegisterAzureQueue(azureStorageConnectionString, QueueNames.SendEmail);
             builder.RegisterAzureQueue(azureStorageConnectionString, QueueNames.SendNotifyEmail);
             builder.RegisterAzureQueue(azureStorageConnectionString, QueueNames.ExecuteWebJob);
 

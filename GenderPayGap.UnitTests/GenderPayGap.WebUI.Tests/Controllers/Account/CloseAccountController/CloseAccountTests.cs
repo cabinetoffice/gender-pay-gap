@@ -234,11 +234,6 @@ namespace Account.Controllers.CloseAccountController
             mockNotifyEmailQueue
                 .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<QueueWrapper>()));
-
             // Act
             await controller.CloseAccount(new CloseAccountViewModel {EnterPassword = "ad5bda75-e514-491b-b74d-4672542cbd15"});
 
