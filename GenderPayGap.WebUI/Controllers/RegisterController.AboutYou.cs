@@ -116,7 +116,7 @@ namespace GenderPayGap.WebUI.Controllers
                         return View("AboutYou", model);
                     }
 
-                    remainingTime = currentUser.EmailVerifySendDate.Value.AddHours(Global.EmailVerificationExpiryHours)
+                    remainingTime = currentUser.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays)
                                     - VirtualDateTime.Now;
                     if (remainingTime > TimeSpan.Zero)
                     {

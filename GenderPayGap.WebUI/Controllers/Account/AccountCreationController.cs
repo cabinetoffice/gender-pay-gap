@@ -150,11 +150,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         public IActionResult VerifyEmail(string code)
         {
             User gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
-
-            // TODO when moving from prototype to production code
-            // this config value should supersede Global.EmailVerificationExpiryHours
-            // and be shared with the Functions.Purge webjob
-            if (gpgUser == null || gpgUser?.EmailVerifySendDate.Value.AddDays(7) < VirtualDateTime.Now)
+            
+            if (gpgUser == null || gpgUser?.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
             {
                 return View("UserNotFoundErrorPage");
             }

@@ -62,7 +62,7 @@ namespace GenderPayGap.Core
         public static DateTime PrivacyChangedDate => Config.GetAppSetting("PrivacyChangedDate").ToDateTime();
         public static DateTime PrivateAccountingDate => Config.GetAppSetting("PrivateAccountingDate").ToDateTime();
         public static DateTime PublicAccountingDate => Config.GetAppSetting("PublicAccountingDate").ToDateTime();
-        public static int EmailVerificationExpiryHours => Config.GetAppSetting("EmailVerificationExpiryHours").ToInt32();
+        public static int EmailVerificationExpiryDays => Config.GetAppSetting("EmailVerificationExpiryDays").ToInt32(7);
         public static int EmailVerificationMinResendHours => Config.GetAppSetting("EmailVerificationMinResendHours").ToInt32();
         public static int EmployerCodeLength => Config.GetAppSetting("EmployerCodeLength").ToInt32();
         public static int EmployerPageSize => Config.GetAppSetting("EmployerPageSize").ToInt32();
@@ -80,7 +80,6 @@ namespace GenderPayGap.Core
         public static int PinInPostMinRepostDays => Config.GetAppSetting("PinInPostMinRepostDays").ToInt32();
         public static int PINLength => Config.GetAppSetting("PINLength").ToInt32();
         public static int PurgeUnusedOrganisationDays => Config.GetAppSetting("PurgeUnusedOrganisationDays").ToInt32(30);
-        public static int PurgeUnverifiedUserDays => Config.GetAppSetting("PurgeUnverifiedUserDays").ToInt32(7);
         public static int PurgeUnconfirmedPinDays => PinInPostExpiryDays + Config.GetAppSetting("PurgeUnconfirmedPinDays").ToInt32(14);
         public static int SecurityCodeExpiryDays => Config.GetAppSetting("SecurityCodeExpiryDays").ToInt32(90);
         public static int SecurityCodeLength => Config.GetAppSetting("SecurityCodeLength").ToInt32();

@@ -29,7 +29,7 @@ namespace GenderPayGap.WebJob
             var startTime = VirtualDateTime.Now;
             LogFunctionStart(runId,  nameof(PurgeUsers), startTime);
             
-            DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnverifiedUserDays);
+            DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.EmailVerificationExpiryDays);
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
             
             List<User> users = _DataRepository.GetAll<User>()

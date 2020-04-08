@@ -137,7 +137,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //If verification code has expired
-            if (currentUser.EmailVerifySendDate.Value.AddHours(Global.EmailVerificationExpiryHours) < VirtualDateTime.Now)
+            if (currentUser.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
             {
                 AddModelError(3016);
 
