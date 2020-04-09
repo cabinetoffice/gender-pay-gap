@@ -14,6 +14,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Infrastructure.AzureQueues.Extensions;
+using GenderPayGap.WebJob.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
@@ -98,6 +99,7 @@ namespace GenderPayGap.WebJob
             }
 
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
+            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();
 
             // Setup azure search
             string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");

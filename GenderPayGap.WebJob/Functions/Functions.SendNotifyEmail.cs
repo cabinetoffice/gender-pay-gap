@@ -50,7 +50,7 @@ namespace GenderPayGap.WebJob
                 throw;
             }
 
-            govNotifyApi.SendEmail(notifyEmail);
+            emailSendingService.SendEmailFromQueue(notifyEmail);
 
             DateTime endTime = VirtualDateTime.Now;
             CustomLogger.Information(
