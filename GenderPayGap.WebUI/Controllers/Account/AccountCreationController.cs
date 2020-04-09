@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -146,15 +147,50 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
         }
 
+
+        public IActionResult ResendVerificationEmailPost(long userId)
+        {
+            User user = dataRepository.Get<User>(userId);
+            
+            string verificationCode = Guid.NewGuid().ToString("N");
+            string verificationUrl = Url.Action(
+                "VerifyEmail",
+                "AccountCreation",
+                new {code = verificationCode},
+                "https");
+
+            try
+            {
+                EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
+                user.EmailVerifyHash = verificationCode;
+                user.EmailVerifySendDate = VirtualDateTime.Now;
+
+                dataRepository.SaveChangesAsync().Wait();
+            }
+            catch
+            {
+                // help user resend email
+                throw new Exception("Failed to send verification email. Please try again");
+            }
+
+            return View("ResentVerificationCode");
+        }
+
         [HttpGet("/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
             User gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
             
-            if (gpgUser == null || gpgUser?.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
+            if (gpgUser == null)
             {
                 return View("UserNotFoundErrorPage");
             }
+            
+            if (gpgUser?.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
+            {
+                return View("VerificationCodeExpiredPage", gpgUser);
+            }
+            
 
             if (User.Identity.IsAuthenticated || gpgUser.EmailVerifiedDate != null)
             {

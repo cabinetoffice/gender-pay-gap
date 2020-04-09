@@ -1,0 +1,53 @@
+﻿@using GenderPayGap.Core
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.Database.User
+@{
+    ViewBag.Title = "Verification code expired - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+    @section BeforeMain {
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    }   
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Your email verification code has expired</h1>
+    </div>
+</div>
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <form method="POST" action="@Url.Action("ResendVerificationEmailPost", "AccountCreation")">
+                @(Html.AntiForgeryToken())
+                <input type="hidden" name="userId" value="@(Model.UserId)">
+            <p class="govuk-body">
+                To send another verification email click the button below.
+            </p>
+            
+            @(Html.GovUkButton(new ButtonViewModel
+                    {
+                        Text = "Resend verification email"
+                    }))
+            </form>
+        </div>
+        
+        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+        {
+            <div class="govuk-grid-column-one-third">
+                @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+                       new ReportingStepsViewModel
+                       {
+                           CurrentStep = 3,
+                           CurrentTask = 0
+                       }); }
+            </div>
+        }
+    </div>
+
+

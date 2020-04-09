@@ -1,0 +1,58 @@
+﻿@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.AccountCreation.ConfirmEmailAddressViewModel
+@{
+    ViewBag.Title = "Confirm your email address - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+{
+    @section BeforeMain {
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    }   
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Confirm your email address</h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <p class="govuk-body">
+            We have sent you a new confirmation email.
+        </p>
+
+        <p class="govuk-body">
+            Follow the instructions in the email to confirm your user account.
+        </p>
+        <h2 class="govuk-heading-m">What's next?</h2>
+        <p class="govuk-body">
+            Once your email address is confirmed you will then be able to add your organisation(s) to your account and 
+            report your gender pay gap data.
+        </p>
+        <h2 class="govuk-heading-m">No email yet?</h2>
+        <p class="govuk-body">
+            Our email can take a few minutes to arrive. If you can't see it in a few minutes please check your junk mail 
+            folder.
+        </p>
+        <p class="govuk-body">
+            If you are still unable to access the service, please email 
+            <a href="mailto:gpg.reporting@cabinetoffice.gov.uk">gpg.reporting@cabinetoffice.gov.uk</a>
+        </p>
+        
+    </div>
+    @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+        <div class="govuk-grid-column-one-third">
+            @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+                   new ReportingStepsViewModel
+                   {
+                       CurrentStep = 3,
+                       CurrentTask = 0
+                   }); }
+        </div>
+    }
+</div>
