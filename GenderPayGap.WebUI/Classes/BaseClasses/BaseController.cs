@@ -398,12 +398,7 @@ namespace GenderPayGap.WebUI.Classes
             //Ensure user is logged in submit or rest of registration
             if (!User.Identity.IsAuthenticated)
             {
-                //Allow anonymous users when starting registration
-                if (IsAnyAction("Register/AboutYou", "Register/VerifyEmail"))
-                {
-                    return null;
-                }
-
+                
                 //Allow anonymous users when resetting password
                 if (IsAnyAction("Register/PasswordReset", "Register/NewPassword"))
                 {
@@ -439,11 +434,7 @@ namespace GenderPayGap.WebUI.Classes
                 //If email not sent
                 if (currentUser.EmailVerifySendDate.EqualsI(null, DateTime.MinValue))
                 {
-                    if (IsAnyAction("Register/VerifyEmail"))
-                    {
-                        return null;
-                    }
-
+                    
                     //Tell them to verify email
                     return View("CustomError", new ErrorViewModel(1100));
                 }
@@ -451,11 +442,7 @@ namespace GenderPayGap.WebUI.Classes
                 //If verification code has expired
                 if (currentUser.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
                 {
-                    if (IsAnyAction("Register/VerifyEmail"))
-                    {
-                        return null;
-                    }
-
+                    
                     //prompt user to click to request a new one
                     return View("CustomError", new ErrorViewModel(1101));
                 }
@@ -465,22 +452,12 @@ namespace GenderPayGap.WebUI.Classes
                                          - VirtualDateTime.Now;
                 if (remainingTime > TimeSpan.Zero)
                 {
-                    //Process the code if there is one
-                    if (IsAnyAction("Register/VerifyEmail") && !string.IsNullOrWhiteSpace(Request.Query["code"]))
-                    {
-                        return null;
-                    }
-
+                    
                     //tell them to wait
                     return View("CustomError", new ErrorViewModel(1102, new {remainingTime = remainingTime.ToFriendly(maxParts: 2)}));
                 }
 
-                //if the code is still valid but min sent time has elapsed
-                if (IsAnyAction("Register/VerifyEmail", "Register/EmailConfirmed"))
-                {
-                    return null;
-                }
-
+                
                 //Prompt user to request a new verification code
                 return View("CustomError", new ErrorViewModel(1103));
             }
@@ -489,8 +466,6 @@ namespace GenderPayGap.WebUI.Classes
             if (currentUser.IsAdministrator())
             {
                 if (IsAnyAction(
-                    "Register/VerifyEmail",
-                    "Register/EmailConfirmed",
                     "Register/ReviewRequest",
                     "Register/ConfirmCancellation",
                     "Register/RequestAccepted",
@@ -508,7 +483,7 @@ namespace GenderPayGap.WebUI.Classes
             if (ControllerName.EqualsI("admin")
                 || IsAnyAction(
                     "Register/ReviewRequest",
-                    "Register /ConfirmCancellation",
+                    "Register/ConfirmCancellation",
                     "Register/RequestAccepted",
                     "Register/RequestCancelled"))
             {
@@ -517,7 +492,6 @@ namespace GenderPayGap.WebUI.Classes
 
             //Allow all steps from email confirmed to organisation chosen
             if (IsAnyAction(
-                "Register/EmailConfirmed",
                 "Register/OrganisationType",
                 "Register/OrganisationSearch",
                 "Register/ChooseOrganisation",
