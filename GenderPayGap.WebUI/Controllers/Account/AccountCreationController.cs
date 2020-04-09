@@ -122,26 +122,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             dataRepository.Insert(newUser);
             dataRepository.SaveChangesAsync().Wait();
 
-            string verificationCode = Guid.NewGuid().ToString("N");
-            string verificationUrl = Url.Action(
-                "VerifyEmail",
-                "AccountCreation",
-                new {code = verificationCode},
-                "https");
-
-            try
-            {
-                EmailSendingService.SendAccountVerificationEmail(viewModel.EmailAddress, verificationUrl);
-                newUser.EmailVerifyHash = verificationCode;
-                newUser.EmailVerifySendDate = VirtualDateTime.Now;
-
-                dataRepository.SaveChangesAsync().Wait();
-            }
-            catch
-            {
-                // help user resend email
-                throw new Exception("Failed to send verification email. Please try again");
-            }
+            GenerateAndSendAccountVerificationEmail(newUser);
 
             var confirmEmailAddressViewModel = new ConfirmEmailAddressViewModel {EmailAddress = viewModel.EmailAddress};
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
@@ -151,30 +132,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
         public IActionResult ResendVerificationEmailPost(long userId)
         {
             User user = dataRepository.Get<User>(userId);
-            
-            string verificationCode = Guid.NewGuid().ToString("N");
-            string verificationUrl = Url.Action(
-                "VerifyEmail",
-                "AccountCreation",
-                new {code = verificationCode},
-                "https");
-
-            try
-            {
-                EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
-                user.EmailVerifyHash = verificationCode;
-                user.EmailVerifySendDate = VirtualDateTime.Now;
-
-                dataRepository.SaveChangesAsync().Wait();
-            }
-            catch
-            {
-                // help user resend email
-                throw new Exception("Failed to send verification email. Please try again");
-            }
-
+            GenerateAndSendAccountVerificationEmail(user);
             return View("ResentVerificationCode");
         }
+        
+        
 
         [HttpGet("/verify-email")]
         public IActionResult VerifyEmail(string code)
@@ -242,6 +204,30 @@ namespace GenderPayGap.WebUI.Controllers.Account
             user.Status = UserStatuses.New;
 
             return user;
+        }
+
+        private void GenerateAndSendAccountVerificationEmail(User user)
+        {
+            string verificationCode = Guid.NewGuid().ToString("N");
+            string verificationUrl = Url.Action(
+                "VerifyEmail",
+                "AccountCreation",
+                new {code = verificationCode},
+                "https");
+
+            try
+            {
+                EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
+                user.EmailVerifyHash = verificationCode;
+                user.EmailVerifySendDate = VirtualDateTime.Now;
+
+                dataRepository.SaveChangesAsync().Wait();
+            }
+            catch
+            {
+                // help user resend email
+                throw new Exception("Failed to send verification email. Please try again");
+            }
         }
 
     }
