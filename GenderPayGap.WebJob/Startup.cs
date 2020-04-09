@@ -3,7 +3,6 @@ using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.BusinessLogic;
-using GenderPayGap.BusinessLogic.LogRecords;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.API;
@@ -33,11 +32,6 @@ namespace GenderPayGap.WebJob
             services.AddHttpClient<ICompaniesHouseAPI, CompaniesHouseAPI>(nameof(ICompaniesHouseAPI), CompaniesHouseAPI.SetupHttpClient)
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(CompaniesHouseAPI.GetRetryPolicy());
-
-            services.AddHttpClient<GovNotifyEmailProvider>(nameof(GovNotifyEmailProvider));
-
-            // setup email configuration
-            services.Configure<GovNotifyOptions>(Config.Configuration.GetSection("Email:Providers:GovNotify"));
 
             //Create the Autofac inversion of control container
             var builder = new ContainerBuilder();
@@ -146,10 +140,6 @@ namespace GenderPayGap.WebJob
             // Register record log queues
             builder.RegisterLogRecord(Filenames.ManualChangeLog);
             builder.RegisterLogRecord(Filenames.BadSicLog);
-
-
-            // Register email providers
-            builder.RegisterType<GovNotifyEmailProvider>().SingleInstance();
         }
 
     }
