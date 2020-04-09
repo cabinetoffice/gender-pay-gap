@@ -190,7 +190,7 @@ namespace GenderPayGap.Database
                 return null;
             }
 
-            string verifyCode = Encryption.EncryptQuerystring(UserId + ":" + Created.ToSmallDateTime());
+            string verifyCode = Guid.NewGuid().ToString("N");
             string verifyUrl = $"/register/verify-email?code={verifyCode}";
             return verifyUrl;
         }
