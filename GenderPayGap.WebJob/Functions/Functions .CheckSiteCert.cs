@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -44,6 +46,10 @@ namespace GenderPayGap.WebJob
                             CustomLogger.Error(
                                 $"The website certificate for '{Global.ExternalHost}' expired on {expires.ToFriendlyDate()} and needs replacing immediately.",
                                 new {environment = Config.EnvironmentName, time});
+                            SendGeoSiteCertificateExpiredEmail(
+                                Config.GetAppSetting("GEODistributionList"),
+                                Global.ExternalHost,
+                                expires.ToFriendlyDate());
                         }
                         else
                         {
@@ -54,6 +60,11 @@ namespace GenderPayGap.WebJob
                                 CustomLogger.Error(
                                     $"The website certificate for '{Global.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.",
                                     new {environment = Config.EnvironmentName, time});
+                                SendGeoSiteCertificateSoonToExpireEmail(
+                                    Config.GetAppSetting("GEODistributionList"),
+                                    Global.ExternalHost,
+                                    expires.ToFriendlyDate(),
+                                    remainingTime.ToFriendly(maxParts: 2));
                             }
                         }
                     }
@@ -67,6 +78,39 @@ namespace GenderPayGap.WebJob
                 //Rethrow the error
                 throw;
             }
+        }
+
+        private void SendGeoSiteCertificateSoonToExpireEmail(string emailAddress, string host, string expiryDate, string remainingDays)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"host", host},
+                {"expiryDate", expiryDate},
+                {"remainingDays", remainingDays},
+                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress, TemplateId = "f05abb4f-55b3-472c-8c18-b568b6f2b4c8", Personalisation = personalisation
+            };
+
+            govNotifyApi.SendEmail(notifyEmail);
+        }
+
+        private void SendGeoSiteCertificateExpiredEmail(string emailAddress, string host, string expiryDate)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"host", host}, {"expiryDate", expiryDate}, {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress, TemplateId = "a928f9e7-962c-447f-a19e-466cfbe61740", Personalisation = personalisation
+            };
+
+            govNotifyApi.SendEmail(notifyEmail);
         }
 
     }
