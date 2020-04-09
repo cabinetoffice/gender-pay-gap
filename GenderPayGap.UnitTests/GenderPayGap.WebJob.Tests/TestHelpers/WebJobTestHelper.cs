@@ -10,6 +10,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.Mocks;
 using GenderPayGap.Tests.Common.TestHelpers;
+using GenderPayGap.WebJob.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -60,6 +61,7 @@ namespace GenderPayGap.WebJob.Tests.TestHelpers
             builder.RegisterType<EncryptionHandler>().As<IEncryptionHandler>().SingleInstance();
 
             builder.Register(c => Mock.Of<IGovNotifyAPI>()).As<IGovNotifyAPI>().SingleInstance();
+            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();
 
             builder.RegisterInstance(new NullLoggerFactory()).As<ILoggerFactory>().SingleInstance();
 
