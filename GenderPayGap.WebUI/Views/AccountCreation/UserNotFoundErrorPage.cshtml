@@ -1,11 +1,14 @@
-﻿@model GenderPayGap.WebUI.Models.AccountCreation.CreateUserAccountViewModel
+﻿@using GenderPayGap.Core
 @{
     ViewBag.Title = "User not found - Gender pay gap reporting service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@section BeforeMain {
-    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+    @section BeforeMain {
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    }   
 }
 
 <div class="govuk-grid-row">
@@ -29,13 +32,15 @@
             <a href=@(Url.Action("CreateUserAccountGet", "AccountCreation")) class="govuk-link">create a new account</a>.
         </p>
     </div>
-    
-    <div class="govuk-grid-column-one-third">
-        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
-               new ReportingStepsViewModel
-               {
-                   CurrentStep = 3,
-                   CurrentTask = 0
-               }); }
-    </div>
+    @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+    {
+        <div class="govuk-grid-column-one-third">
+            @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
+                   new ReportingStepsViewModel
+                   {
+                       CurrentStep = 3,
+                       CurrentTask = 0
+                   }); }
+        </div>
+    }
 </div>
