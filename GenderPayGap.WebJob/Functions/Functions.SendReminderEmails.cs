@@ -128,25 +128,16 @@ namespace GenderPayGap.WebJob
             SectorTypes sectorType,
             List<Organisation> organisations)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"DeadlineDate", sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy")},
-                {"DaysUntilDeadline", sectorType.GetAccountingStartDate().AddYears(1).Subtract(VirtualDateTime.Now).Days},
-                {"OrganisationNames", GetOrganisationNameString(organisations)},
-                {"OrganisationIsSingular", organisations.Count == 1},
-                {"OrganisationIsPlural", organisations.Count > 1},
-                {"SectorType", sectorType.ToString().ToLower()},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
-            };
-
-            var notifyEmail = new NotifyEmail
-            {
-                EmailAddress = user.EmailAddress, TemplateId = "db15432c-9eda-4df4-ac67-290c7232c546", Personalisation = personalisation
-            };
-            
-            govNotifyApi.SendEmail(notifyEmail);
+            emailSendingService.SendReminderEmail(
+                emailAddress: user.EmailAddress,
+                deadlineDate: sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                daysUntilDeadline: sectorType.GetAccountingStartDate().AddYears(1).Subtract(VirtualDateTime.Now).Days,
+                organisationNames: GetOrganisationNameString(organisations),
+                organisationIsSingular: organisations.Count == 1,
+                organisationIsPlural: organisations.Count > 1,
+                sectorType: sectorType.ToString().ToLower());
         }
-        
+
         private static void SaveReminderEmailRecord(User user, SectorTypes sectorType, bool wasAnEmailSent)
         {
             var reminderEmailRecord = new ReminderEmail

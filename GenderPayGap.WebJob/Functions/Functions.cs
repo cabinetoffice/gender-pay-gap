@@ -5,6 +5,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebJob.Services;
 
 namespace GenderPayGap.WebJob
 {
@@ -17,7 +18,7 @@ namespace GenderPayGap.WebJob
             ISubmissionBusinessLogic submissionBL,
             IOrganisationBusinessLogic orgBL,
             ISearchBusinessLogic searchBusinessLogic,
-            IGovNotifyAPI govNotifyApi,
+            EmailSendingService emailSendingService,
             UpdateFromCompaniesHouseService updateFromCompaniesHouseService)
         {
             _DataRepository = dataRepository;
@@ -26,7 +27,7 @@ namespace GenderPayGap.WebJob
             _OrganisationBL = orgBL;
             _SearchBusinessLogic = searchBusinessLogic;
             _updateFromCompaniesHouseService = updateFromCompaniesHouseService;
-            this.govNotifyApi = govNotifyApi;
+            this.emailSendingService = emailSendingService;
         }
 
         #region Properties
@@ -36,7 +37,7 @@ namespace GenderPayGap.WebJob
         private readonly ISubmissionBusinessLogic _SubmissionBL;
         private readonly IOrganisationBusinessLogic _OrganisationBL;
         private readonly ISearchBusinessLogic _SearchBusinessLogic;
-        private readonly IGovNotifyAPI govNotifyApi;
+        private readonly EmailSendingService emailSendingService;
         private readonly UpdateFromCompaniesHouseService _updateFromCompaniesHouseService;
 
         private static readonly ConcurrentSet<string> RunningJobs = new ConcurrentSet<string>();
