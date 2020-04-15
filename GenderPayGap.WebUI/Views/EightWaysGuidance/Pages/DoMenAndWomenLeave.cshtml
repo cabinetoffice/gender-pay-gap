@@ -5,6 +5,7 @@
 }
 
 <h2 class="govuk-heading-l">Do men and women leave your organisation at different rates?</h2>
+
 <p class="govuk-body">
     If women are leaving your organisation more quickly than men, this could contribute to your gender pay
     gap, especially if this is occurring in more highly-paid positions.
@@ -39,7 +40,7 @@
                }) />
 
 <partial name="../Guidance/MenWomenSeparatedBarChart"
-             model=@( new GuidanceBarChartViewModel
+         model=@( new GuidanceBarChartViewModel
                {
                    Id = "UpperMiddleLevel",
                    Title = "Upper middle level",
@@ -48,25 +49,25 @@
                }) />
 
 <partial name="../Guidance/MenWomenSeparatedBarChart"
-             model=@( new GuidanceBarChartViewModel
-                   {
-                       Id = "BottomMiddleLevel",
-                       Title = "Bottom middle level",
+         model=@( new GuidanceBarChartViewModel
+               {
+                   Id = "BottomMiddleLevel",
+                   Title = "Bottom middle level",
                    Female = 12,
                    Male = 20
-                   }) />
+               }) />
 
-    <partial name="../Guidance/MenWomenSeparatedBarChart"
-             model=@( new GuidanceBarChartViewModel
-                   {
-                       Id = "LowerLevel",
+<partial name="../Guidance/MenWomenSeparatedBarChart"
+         model=@( new GuidanceBarChartViewModel
+               {
+                   Id = "LowerLevel",
                    Title = "Lower level (lowest paid)",
                    Female = 10,
                    Male = 12
-                   }) />
+               }) />
 
 <hr class="govuk-section-break govuk-section-break--xl" />
-        
+
 <div class="guidance-warning-text">
     <span class="guidance-warning-text__icon" aria-hidden="true">!</span>
     <strong class="guidance-warning-text__text">
