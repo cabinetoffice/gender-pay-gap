@@ -26,15 +26,19 @@
     the stages.
 </p>
 
-<div class="horizontal-bar-chart__section">
-    <h3 class="govuk-heading-s">Example of gender imbalance in the promotion process, by stage</h3>
+<hr class="govuk-section-break govuk-section-break--xl" />
+
+<p class="govuk-body govuk-!-font-weight-bold">
+    Example of gender imbalance in the promotion process, by stage
+</p>
+
     <partial name="../Guidance/MenWomenBarChart"
              model=@( new GuidanceBarChartViewModel
                    {
                        Id = "ApplicantPool",
                        Title = "Applicant pool",
-                       Female = new decimal(50),
-                       Male = new decimal(50)
+                   Female = 50,
+                   Male = 50
                    }) />
 
     <partial name="../Guidance/MenWomenBarChart"
@@ -42,8 +46,8 @@
                    {
                        Id = "Applicants",
                        Title = "Applicants",
-                       Female = new decimal(40),
-                       Male = new decimal(60)
+                   Female = 40,
+                   Male = 60
                    }) />
 
     <partial name="../Guidance/MenWomenBarChart"
@@ -51,8 +55,8 @@
                    {
                        Id = "Assessment",
                        Title = "Assessment",
-                       Female = new decimal(30),
-                       Male = new decimal(70)
+                   Female = 30,
+                   Male = 70
                    }) />
 
     <partial name="../Guidance/MenWomenBarChart"
@@ -60,10 +64,9 @@
                    {
                        Id = "Selected",
                        Title = "Selected",
-                       Female = new decimal(25),
-                       Male = new decimal(75)
+                   Female = 25,
+                   Male = 75
                    }) />
-</div>
 
 <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>

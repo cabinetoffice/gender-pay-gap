@@ -11,46 +11,43 @@
     your particular organisational structure.
 </p>
 
-        <div class="horizontal-bar-chart__section">
-            <h3 class="govuk-heading-s">An example showing gender imbalance by the proportion of women in each quarter</h3>
-            <partial name="../Guidance/MenWomenBarChart"
-                     model=@( new GuidanceBarChartViewModel
-                           {
-                               Id = "TopQuarter",
-                               Title = "Top quarter",
-                               SecondaryTitle = "(highest paid)",
-                               Female = new decimal(34),
-                               Male = new decimal(66)
-                           })/>
+<hr class="govuk-section-break govuk-section-break--xl" />
+
+<p class="govuk-body govuk-!-font-weight-bold">
+    An example showing gender imbalance by the proportion of women in each quarter
+</p>
 
             <partial name="../Guidance/MenWomenBarChart"
                      model=@( new GuidanceBarChartViewModel
                            {
-                               Id = "UpperMiddleQuarter",
+                   Title = "Top quarter (highest paid)",
+                   Female = 34,
+                   Male = 66
+               }) />
+
+            <partial name="../Guidance/MenWomenBarChart"
+                     model=@( new GuidanceBarChartViewModel
+                           {
                                Title = "Upper middle quarter",
-                               Female = new decimal(45),
-                               Male = new decimal(55)
-                           })/>
+                   Female = 45,
+                   Male = 55
+               }) />
 
             <partial name="../Guidance/MenWomenBarChart"
                      model=@( new GuidanceBarChartViewModel
                            {
-                               Id = "BottomMiddleQuarter",
                                Title = "Bottom middle quarter",
-                               Female = new decimal(55),
-                               Male = new decimal(45)
-                           })/>
+                   Female = 55,
+                   Male = 45
+               }) />
 
             <partial name="../Guidance/MenWomenBarChart"
                      model=@( new GuidanceBarChartViewModel
                            {
-                               Id = "LowerQuarter",
-                               Title = "Lower quarter",
-                               SecondaryTitle = "(lowest paid)",
-                               Female = new decimal(50),
-                               Male = new decimal(50)
-                           })/>
-        </div>
+                   Title = "Lower quarter (lowest paid)",
+                   Female = 50,
+                   Male = 50
+               }) />
         
         <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
