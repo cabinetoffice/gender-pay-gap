@@ -1,4 +1,4 @@
-﻿.section-break__guidance-update-details {
+.section-break__guidance-update-details {
   margin-bottom: 10px;
 }
 
@@ -25,20 +25,31 @@
   margin-bottom: 0;
 }
 
-.govuk-warning-text {
+.guidance-warning-text {
+    @extend .govuk-warning-text;
   padding: 30px;
   background: govuk-colour("light-grey");
 
-  .govuk-warning-text__icon {
+    .guidance-warning-text__icon {
+        @extend .govuk-warning-text__icon;
     margin: -5px 0 0 30px;
     min-width: 35px;
     min-height: 35px;
     font-size: 30px;
     padding: 0;
-    top: auto;
-  }
+        top: auto;
+    }
 
-  .govuk-warning-text__text {
-    margin-bottom: 30px;
-  }
+    .guidance-warning-text__text {
+        @extend .govuk-warning-text__text;
+        margin-bottom: 20px;
+
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+            margin-bottom: 30px;
+        }
+    }
+
+    :last-child {
+        margin-bottom: 0;
+    }
 }

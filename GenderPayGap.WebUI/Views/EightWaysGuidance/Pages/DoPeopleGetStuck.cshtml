@@ -17,42 +17,43 @@
     An example showing gender imbalance by the proportion of women in each quarter
 </p>
 
-            <partial name="../Guidance/MenWomenBarChart"
-                     model=@( new GuidanceBarChartViewModel
-                           {
+<partial name="../Guidance/MenWomenBarChart"
+         model=@( new GuidanceBarChartViewModel
+               {
                    Title = "Top quarter (highest paid)",
                    Female = 34,
                    Male = 66
                }) />
 
-            <partial name="../Guidance/MenWomenBarChart"
-                     model=@( new GuidanceBarChartViewModel
-                           {
-                               Title = "Upper middle quarter",
+<partial name="../Guidance/MenWomenBarChart"
+         model=@( new GuidanceBarChartViewModel
+               {
+                   Title = "Upper middle quarter",
                    Female = 45,
                    Male = 55
                }) />
 
-            <partial name="../Guidance/MenWomenBarChart"
-                     model=@( new GuidanceBarChartViewModel
-                           {
-                               Title = "Bottom middle quarter",
+<partial name="../Guidance/MenWomenBarChart"
+         model=@( new GuidanceBarChartViewModel
+               {
+                   Title = "Bottom middle quarter",
                    Female = 55,
                    Male = 45
                }) />
 
-            <partial name="../Guidance/MenWomenBarChart"
-                     model=@( new GuidanceBarChartViewModel
-                           {
+<partial name="../Guidance/MenWomenBarChart"
+         model=@( new GuidanceBarChartViewModel
+               {
                    Title = "Lower quarter (lowest paid)",
                    Female = 50,
                    Male = 50
                }) />
-        
-        <div class="govuk-warning-text">
-    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-    <strong class="govuk-warning-text__text">
-        <span class="govuk-warning-text__assistive">Examine gender balance by your seniority structure</span>
+
+<hr class="govuk-section-break govuk-section-break--xl" />
+
+<div class="guidance-warning-text">
+    <span class="guidance-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="guidance-warning-text__text">
         Examine gender balance by your seniority structure
     </strong>
     <p class="govuk-body">
