@@ -1,51 +1,36 @@
-.horizontal-bar-chart__section {
-  margin: 50px 0 100px;
-}
+.horizontal-bar-chart {
+    .horizontal-bar-chart__bar--wide {
+        height: 20px;
 
-.horizontal-bar-chart__figure {
-  margin: 0;
-  position: relative;
-  
-  .horizontal-bar-chart__title {
-    margin: 10px 0;
-  }
-  
-  .horizontal-bar-chart__bar {
-    height: 30px;
-  }
-  
-  .horizontal-bar-chart__bar--women {
-    background-color:  govuk-colour("blue");
-  }
-
-  .horizontal-bar-chart__bar--men {
-    background-color:  govuk-colour("brown");
-  }
-
-  .horizontal-bar-chart__bar--empty {
-    height: 34px;
-    border: 2px govuk-colour("dark-grey") solid;
-  }
-
-  .horizontal-bar-chart__footer {
-    margin: 10px 0 55px;
-    
-    .horizontal-bar-chart__label--left {
-      position: absolute;
-      left: 0;
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+            height: 25px;
+        }
     }
 
-    .horizontal-bar-chart__label--right {
-      position: absolute;
-      right: 0;
-    }
-  }
-  
-  .horizontal-bar-chart__footer--separated-women {
-    margin-bottom: 50px;
-  }
+    .horizontal-bar-chart__bar--narrow {
+        box-sizing: content-box;
+        height: 15px;
 
-  .horizontal-bar-chart__footer--separated-men {
-    margin-bottom: 70px;
-  }
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+            height: 20px;
+        }
+    }
+
+    .horizontal-bar-chart__bar {
+        .horizontal-bar-chart__bar {
+            height: 100%;
+        }
+    }
+
+    .horizontal-bar-chart__bar--women {
+        background-color: govuk-colour("blue");
+    }
+
+    .horizontal-bar-chart__bar--men {
+        background-color: govuk-colour("brown");
+    }
+
+    .horizontal-bar-chart__bar--empty {
+        border: 2px govuk-colour("dark-grey") solid;
+    }
 }

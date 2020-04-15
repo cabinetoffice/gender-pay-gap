@@ -1,31 +1,26 @@
 ﻿@model GenderPayGap.WebUI.Models.Guidance.GuidanceBarChartViewModel
-<figure id="@Model.Id" class="horizontal-bar-chart__figure">
-    <figcaption class="horizontal-bar-chart__title govuk-body ">
-        @Model.Title
-        @if (string.IsNullOrEmpty(Model.SecondaryTitle) == false)
-        {
-            <span class="secondary-text"> @(Model.SecondaryTitle)</span>
-        }
-    </figcaption>
 
-    <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--men">
+<div class="horizontal-bar-chart">
+    <p class="govuk-body govuk-!-margin-bottom-2">
+        @Model.Title
+    </p>
+
+    <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--wide horizontal-bar-chart__bar--men">
         <div class="horizontal-bar-chart__bar horizontal-bar-chart__bar--women"
              style="width: @(Math.Round(Model.Female))%">
         </div>
     </div>
-
-    <div class="horizontal-bar-chart__footer">
-        <div class="horizontal-bar-chart__label horizontal-bar-chart__label--left">
-            <span class="govuk-body govuk-!-font-weight-bold">
-                @(Model.FemaleFormatted)% women
-                <span class="govuk-visually-hidden"> of the @Model.Title.ToLower() are women</span>
-            </span>
-        </div>
-        <div class="horizontal-bar-chart__label horizontal-bar-chart__label--right">
-            <span class="govuk-body govuk-!-font-weight-bold">
-                @(Model.MaleFormatted)% men
-                <span class="govuk-visually-hidden"> of the @Model.Title.ToLower() are men</span>
-            </span>
-        </div>
-    </div>
-</figure> 
+    
+    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-1">
+        <span>
+            @(Model.FemaleFormatted)%
+            <span class="govuk-visually-hidden"> of the @Model.Title.ToLower() are </span>
+            women
+        </span>
+        <span style="float: right">
+            @(Model.MaleFormatted)%
+            <span class="govuk-visually-hidden"> of the @Model.Title.ToLower() are </span>
+            men
+        </span>
+    </p>
+</div>
