@@ -407,6 +407,13 @@ namespace GenderPayGap.Database
             return OrganisationNames.Where(n => n.Created < maxDate.Value).OrderByDescending(n => n.Created).FirstOrDefault();
         }
 
+        public OrganisationAddress GetLatestAddress()
+        {
+            return OrganisationAddresses
+                .OrderByDescending(add => add.Created)
+                .FirstOrDefault();
+        }
+
         /// <summary>
         ///     Returns the latest address before specified date/time
         /// </summary>

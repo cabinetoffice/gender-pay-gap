@@ -120,7 +120,7 @@ namespace GenderPayGap.WebJob
             return unregisteredOrgs.Select(
                     org => {
                         // Read the latest address for the organisation
-                        OrganisationAddress latestAddress = org.GetAddress();
+                        OrganisationAddress latestAddress = org.GetLatestAddress();
                         if (latestAddress == null)
                         {
                             throw new ArgumentException($"Organisation {org.OrganisationId} has no latest address associated");
