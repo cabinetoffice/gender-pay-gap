@@ -6,7 +6,7 @@ namespace GenderPayGap.WebUI.Models.Admin
 {
     public class AdminDeleteReturnViewModel : GovUkViewModel
     {
-        public List<long> ReturnsId { get; set; }
+        public List<long> ReturnIds { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
         public string Reason { get; set; }

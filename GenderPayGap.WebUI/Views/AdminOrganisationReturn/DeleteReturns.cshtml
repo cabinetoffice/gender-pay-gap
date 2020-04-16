@@ -53,7 +53,7 @@
         </h1>
 
         <h2 class="govuk-body-m">
-            You are about to delete <b>@(Model.ReturnsId.Count)</b> return@(Model.ReturnsId.Count != 1 ? "s" : null)
+            You are about to delete <b>@(Model.ReturnIds.Count)</b> return@(Model.ReturnIds.Count != 1 ? "s" : null)
             <br />
             for @(Model.Organisation.OrganisationName)
             <br />
@@ -64,9 +64,9 @@
 
         <form method="POST" action="@Url.Action("DeleteReturnsPost", "AdminOrganisationReturn", new {id = Model.Organisation.OrganisationId, year = Model.Year})">
             @(Html.AntiForgeryToken())
-            @for(int i = 0; i < Model.ReturnsId.Count; i++)
+            @for(int i = 0; i < Model.ReturnIds.Count; i++)
             {
-                @Html.HiddenFor(model => Model.ReturnsId[i])
+                @Html.HiddenFor(model => Model.ReturnIds[i])
             }
             <div class="govuk-form-group">
 

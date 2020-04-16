@@ -124,7 +124,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             var organisation = dataRepository.Get<Organisation>(id);
             List<long> returnsId = organisation.Returns.Where(r => r.AccountingDate.Year == year).Select(r => r.ReturnId).ToList();
 
-            var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnsId = returnsId, Year = year};
+            var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnIds = returnsId, Year = year};
 
             return View("DeleteReturns", viewModel);
         }
@@ -133,11 +133,11 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public IActionResult DeleteReturnGet(long id, int year, long returnId)
         {
             var organisation = dataRepository.Get<Organisation>(id);
-            List<long> returnsId = organisation.Returns.Where(r => r.AccountingDate.Year == year && r.ReturnId == returnId)
+            List<long> returnIds = organisation.Returns.Where(r => r.AccountingDate.Year == year && r.ReturnId == returnId)
                 .Select(r => r.ReturnId)
                 .ToList();
 
-            var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnsId = returnsId, Year = year};
+            var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnIds = returnIds, Year = year};
 
             return View("DeleteReturns", viewModel);
         }
@@ -158,7 +158,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("DeleteReturns", viewModel);
             }
 
-            foreach (long returnId in viewModel.ReturnsId)
+            foreach (long returnId in viewModel.ReturnIds)
             {
                 dataRepository.Get<Return>(returnId).SetStatus(ReturnStatuses.Deleted, currentUser.UserId, viewModel.Reason);
             }
@@ -167,7 +167,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminDeleteReturn,
                 organisation,
-                new {year, viewModel.ReturnsId, viewModel.Reason},
+                new {year, viewModel.ReturnIds, viewModel.Reason},
                 currentUser);
 
             return RedirectToAction("ViewReturns", "AdminOrganisationReturn", new {id});
