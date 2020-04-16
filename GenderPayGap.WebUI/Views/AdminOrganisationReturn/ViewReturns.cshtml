@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.Database
+@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -57,13 +57,14 @@
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Snapshot</th>
+                    <th scope="col" class="govuk-table__header">Reporting year</th>
+                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions that apply to all Returns for this reporting year</span></th>
                     <th scope="col" class="govuk-table__header">Modified</th>
                     <th scope="col" class="govuk-table__header">Modifications</th>
                     <th scope="col" class="govuk-table__header">Status</th>
                     <th scope="col" class="govuk-table__header">Late</th>
                     <th scope="col" class="govuk-table__header">Late reason</th>
-                    <th scope="col" class="govuk-table__header">Action</th>
+                    <th scope="col" class="govuk-table__header">Action <span class="govuk-visually-hidden">that apply to individual versions of a Return</span></th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -77,25 +78,33 @@
                         }
                         else
                         {
-                            <th scope="row" class="govuk-table__cell" style="white-space: nowrap" rowspan="@(Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate))">
-                                @(returnForYear.AccountingDate.ToString("d MMM yyyy"))
-                                <br/>
-                                <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn",
-                                             new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
-                                   class="govuk-link" style="font-weight: normal">
-                                    Full history of returns for @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)
-                                </a>
-                                <br/>
-                                <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
-                                   class="govuk-link" style="font-weight: normal">
-                                    Public page for return year @(returnForYear.AccountingDate.Year)
-                                </a>
-                                <br/>
-                                <a href="@Url.Action("DeleteReturnsOfAYearGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
-                                   class="govuk-link" style="font-weight: normal">
-                                    Delete returns of year @(returnForYear.AccountingDate.Year)
-                                </a>
+                            int versionsForThisReportingYear = Model.Returns.Count(s => s.AccountingDate == returnForYear.AccountingDate);
+
+                            <th scope="row" class="govuk-table__cell" style="white-space: nowrap" rowspan="@(versionsForThisReportingYear)">
+                                @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)
                             </th>
+                            <td class="govuk-table__cell" rowspan="@(versionsForThisReportingYear)">
+                                <span style="line-height: 1.7;">
+                                    <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn",
+                                                 new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
+                                       class="govuk-link" style="font-weight: normal">
+                                        <span style="white-space: nowrap">Full history</span>
+                                        <span class="govuk-visually-hidden">of returns for reporting year @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)</span>
+                                    </a>
+                                    <br/>
+                                    <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
+                                       class="govuk-link" style="font-weight: normal">
+                                        <span style="white-space: nowrap">Public page</span>
+                                        <span class="govuk-visually-hidden">for reporting year @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)</span>
+                                    </a>
+                                    <br/>
+                                    <a href="@Url.Action("DeleteReturnsOfAYearGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
+                                       class="govuk-link" style="font-weight: normal">
+                                        <span style="white-space: nowrap">Delete returns</span>
+                                        <span class="govuk-visually-hidden">for reporting year @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)</span>
+                                    </a>
+                                </span>
+                            </td>
                         }
                         <td class="govuk-table__cell">
                             <span style="white-space: nowrap">
