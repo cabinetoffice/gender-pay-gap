@@ -81,20 +81,12 @@ namespace GenderPayGap.WebUI.Models.Admin
                 "AccountCreation",
                 new {code = verificationCode},
                 "https");
+            
+            EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
+            user.EmailVerifyHash = verificationCode;
+            user.EmailVerifySendDate = VirtualDateTime.Now;
 
-            try
-            {
-                EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
-                user.EmailVerifyHash = verificationCode;
-                user.EmailVerifySendDate = VirtualDateTime.Now;
-
-                dataRepository.SaveChangesAsync().Wait();
-            }
-            catch
-            {
-                // help user resend email
-                throw new Exception("Failed to send verification email. Please try again");
-            }
+            dataRepository.SaveChangesAsync().Wait();
 
             return View("VerificationEmailSent", user);
         }
