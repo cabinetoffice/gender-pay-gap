@@ -233,11 +233,11 @@ namespace GenderPayGap.Core
         UserChangeContactPreferences = 14,
         [Display(Name = "User retired their account")]
         UserRetiredThemselves = 15,
-        [Display(Name = "Admin remove a user from an organisation")]
+        [Display(Name = "Admin removed a user from an organisation")]
         AdminRemoveUserFromOrganisation = 16,
         [Display(Name = "Admin changed organisation status")]
         AdminChangeOrganisationStatus = 17,
-        [Display(Name = "Admin delete return")]
+        [Display(Name = "Admin deleted return")]
         AdminDeleteReturn = 18,
     }
 
