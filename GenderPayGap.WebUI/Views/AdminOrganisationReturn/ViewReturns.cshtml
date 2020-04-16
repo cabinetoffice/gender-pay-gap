@@ -1,4 +1,4 @@
-@using GenderPayGap.Database
+﻿@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -69,7 +69,7 @@
             </thead>
             <tbody class="govuk-table__body">
                 @{ var previousAccountingDate = DateTime.MinValue; }
-                @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenByDescending(r => r.StatusDate))
+                @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenByDescending(r => r.Modified))
                 {
                     <tr class="govuk-table__row">
                         @if (returnForYear.AccountingDate == previousAccountingDate)

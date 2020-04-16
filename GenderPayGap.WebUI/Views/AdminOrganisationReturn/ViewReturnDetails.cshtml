@@ -67,7 +67,7 @@
                 @{
                     List<Return> returnVersions = Model.Organisation.Returns
                         .Where(r => r.AccountingDate.Year == Model.Year)
-                        .OrderByDescending(r => r.StatusDate)
+                        .OrderByDescending(r => r.Modified)
                         .ToList();
 
                     int numberOfVersions = returnVersions.Count;

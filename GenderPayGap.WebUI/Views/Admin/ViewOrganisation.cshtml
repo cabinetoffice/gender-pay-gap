@@ -223,7 +223,7 @@
                 {
                     Return latestReturnForCurrentYear = Model.Organisation.Returns
                         .Where(r => r.AccountingDate.Year == year)
-                        .OrderByDescending(r => r.StatusDate)
+                        .OrderByDescending(r => r.Modified)
                         .FirstOrDefault();
 
                     <b>
