@@ -20,16 +20,21 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">
-            We could not find a user with that confirmation code.
+            We were unable to find your details.
         </p>
-
-        <p class="govuk-body">
-            If you pasted the web address, check you copied the entire address.
+        <p class="govuk-body govuk-!-font-weight-bold">
+            Please try checking:
         </p>
-
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                If you pasted the web address to your browser window, check you copied the entire address.
+            </li>
+        </ul>
         <p class="govuk-body">
-            Or please
-            <a href=@(Url.Action("CreateUserAccountGet", "AccountCreation")) class="govuk-link">create a new account</a>.
+            If you created your account over 7 days ago, you will need to create a new account.
+        </p>
+        <p class="govuk-body">
+            <a href=@(Url.Action("CreateUserAccountGet", "AccountCreation")) class="govuk-link">Create a new account</a>
         </p>
     </div>
     @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
