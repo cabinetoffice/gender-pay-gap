@@ -1,0 +1,92 @@
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminDeleteReturnViewModel
+
+@{
+    ViewBag.Title = "Delete returns - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Delete returns"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Delete returns
+            <br />
+            <span class="govuk-!-font-size-27">
+                from @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+
+        <h2 class="govuk-body-m">
+            You are about to delete <b>@(Model.ReturnsId.Count())</b> return(s) for year @(Model.Year) from @Model.Organisation.OrganisationName .
+        </h2>
+
+        @(Html.GovUkErrorSummary())
+
+        <form method="POST" action="@Url.Action("DeleteReturnsPost", "AdminOrganisationReturn", new {id = Model.Organisation.OrganisationId, year = Model.Year})">
+            @(Html.AntiForgeryToken())
+            @for(int i = 0; i < Model.ReturnsId.Count; i++)
+            {
+                @Html.HiddenFor(model => Model.ReturnsId[i])
+            }
+            <div class="govuk-form-group">
+
+                @Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
+                        Classes = "govuk-!-margin-top-6"
+                    })
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
+                       class="govuk-link">
+                        Cancel and return to organisation page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>
