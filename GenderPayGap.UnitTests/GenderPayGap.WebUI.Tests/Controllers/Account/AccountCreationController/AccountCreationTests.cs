@@ -65,32 +65,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
         }
         
         [Test]
-        [Description("GET: Clicking expired link takes user to expired link screen")]
-        public void GET_Clicking_Expired_Link_Takes_User_To_Expired_Link_Screen()
-        {
-            // Arrange
-            var user = new User
-            {
-                UserId = 1,
-                EmailAddress = "test@example.com",
-                Firstname = "Test",
-                Lastname = "Example",
-                EmailVerifySendDate = VirtualDateTime.Now.AddYears(-1),
-                EmailVerifyHash = Guid.NewGuid().ToString("N"),
-                Status = UserStatuses.New
-            };
-
-            var controller = NewUiTestHelper.GetController<WebUI.Controllers.Account.AccountCreationController>(dbObjects: user);
-
-            // Act
-            var response = (ViewResult) controller.VerifyEmail(user.EmailVerifyHash);
-
-            // Assert
-            Assert.AreEqual("VerificationCodeExpiredPage", response.ViewName);
-            Assert.AreEqual(user.Status, UserStatuses.New);
-        }
-
-        [Test]
         [Description("GET: Clicking link in verification email confirms user")]
         public void GET_Clicking_Link_In_Verification_Email_Confirms_User()
         {
