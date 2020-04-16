@@ -397,6 +397,20 @@
                         </td>
                     }
                 </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Action</th>
+                    @for (int i = 0; i < numberOfVersions; i++)
+                    {
+                        Return thisVersion = GetVersion(i);
+                        <td class="govuk-table__cell">
+                            <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.Organisation.OrganisationId, year = thisVersion.AccountingDate.Year, returnId = thisVersion.ReturnId})"
+                               class="govuk-link">
+                                Delete
+                            </a>
+                        </td>
+                    }
+                </tr>
             </tbody>
         </table>
 
