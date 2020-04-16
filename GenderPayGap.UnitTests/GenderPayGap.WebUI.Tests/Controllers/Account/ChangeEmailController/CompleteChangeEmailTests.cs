@@ -47,7 +47,7 @@ namespace Account.Controllers.ChangeEmailController
             string code = Encryption.EncryptModel(
                 new ChangeEmailVerificationToken
                 {
-                    UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now.AddDays(-1)
+                    UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now.AddDays(-8)
                 });
 
             // Act
