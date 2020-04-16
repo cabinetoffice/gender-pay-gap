@@ -167,7 +167,12 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminDeleteReturn,
                 organisation,
-                new {year, viewModel.ReturnIds, viewModel.Reason},
+                new
+                {
+                    ReportingYear= year,
+                    ReturnIds = string.Join(", ", viewModel.ReturnIds),
+                    Reason = viewModel.Reason
+                },
                 currentUser);
 
             return RedirectToAction("ViewReturns", "AdminOrganisationReturn", new {id});
