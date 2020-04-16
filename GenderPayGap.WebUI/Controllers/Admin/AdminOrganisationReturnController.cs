@@ -1,12 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using GenderPayGap.BusinessLogic.Services;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +21,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     public class AdminOrganisationReturnController : Controller
     {
 
+        private readonly AuditLogger auditLogger;
+
         private readonly IDataRepository dataRepository;
 
-        public AdminOrganisationReturnController(IDataRepository dataRepository)
+        public AdminOrganisationReturnController(IDataRepository dataRepository, AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
+            this.auditLogger = auditLogger;
         }
 
         [HttpGet("organisation/{id}/returns")]
@@ -109,6 +116,61 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
 
             return organisationName;
+        }
+
+        [HttpGet("organisation/{id}/returns/{year}/delete")]
+        public IActionResult DeleteReturnsOfAYearGet(long id, int year)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+            List<long> returnsId = organisation.Returns.Where(r => r.AccountingDate.Year == year).Select(r => r.ReturnId).ToList();
+
+            var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnsId = returnsId, Year = year};
+
+            return View("DeleteReturns", viewModel);
+        }
+
+        [HttpGet("organisation/{id}/returns/{year}/delete/{returnId}")]
+        public IActionResult DeleteReturnGet(long id, int year, long returnId)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+            List<long> returnsId = organisation.Returns.Where(r => r.AccountingDate.Year == year && r.ReturnId == returnId)
+                .Select(r => r.ReturnId)
+                .ToList();
+
+            var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnsId = returnsId, Year = year};
+
+            return View("DeleteReturns", viewModel);
+        }
+
+        [HttpPost("organisation/{id}/returns/{year}/delete")]
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteReturnsPost(long id, int year, AdminDeleteReturnViewModel viewModel)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+            if (viewModel.HasAnyErrors())
+            {
+                viewModel.Organisation = organisation;
+                viewModel.Year = year;
+                return View("DeleteReturns", viewModel);
+            }
+
+            foreach (long returnId in viewModel.ReturnsId)
+            {
+                dataRepository.Get<Return>(returnId).SetStatus(ReturnStatuses.Deleted, currentUser.UserId, viewModel.Reason);
+            }
+
+            // Audit log
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.AdminDeleteReturn,
+                organisation,
+                new {year, viewModel.ReturnsId, viewModel.Reason},
+                currentUser);
+
+            return RedirectToAction("ViewReturns", "AdminOrganisationReturn", new {id});
         }
 
     }
