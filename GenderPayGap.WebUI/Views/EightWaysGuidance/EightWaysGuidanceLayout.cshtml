@@ -35,7 +35,7 @@
     <div class="govuk-grid-column-two-thirds">
         <h3 class="govuk-heading-m">Contents</h3>
 
-        <ul class="govuk-list govuk-list--bullet">
+        <ul class="govuk-list guidance-list-with-dashes">
             @foreach (PaginationPage page in EightWaysGuidanceController.GetPagesInThisGuidance(Url, Context.Request).Pages)
             {
                 <li>
