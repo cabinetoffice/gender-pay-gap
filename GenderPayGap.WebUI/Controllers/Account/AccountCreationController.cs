@@ -127,17 +127,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             var confirmEmailAddressViewModel = new ConfirmEmailAddressViewModel {EmailAddress = viewModel.EmailAddress};
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
         }
-
-
-        public IActionResult ResendVerificationEmailPost(long userId)
-        {
-            User user = dataRepository.Get<User>(userId);
-            GenerateAndSendAccountVerificationEmail(user);
-            return View("ResentVerificationCode");
-        }
         
-        
-
         [HttpGet("/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
@@ -148,12 +138,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return View("UserNotFoundErrorPage");
             }
             
-            if (gpgUser?.EmailVerifySendDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
-            {
-                return View("VerificationCodeExpiredPage", gpgUser);
-            }
-            
-
             if (User.Identity.IsAuthenticated || gpgUser.EmailVerifiedDate != null)
             {
                 return RedirectToAction("ManageOrganisations", "Organisation");
