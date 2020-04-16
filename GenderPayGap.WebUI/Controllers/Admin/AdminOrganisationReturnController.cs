@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -133,9 +134,12 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public IActionResult DeleteReturnGet(long id, int year, long returnId)
         {
             var organisation = dataRepository.Get<Organisation>(id);
-            List<long> returnIds = organisation.Returns.Where(r => r.AccountingDate.Year == year && r.ReturnId == returnId)
-                .Select(r => r.ReturnId)
-                .ToList();
+
+            if (!organisation.Returns.Select(r => r.ReturnId).Contains(returnId))
+            {
+                throw new Exception("The ReturnID that the user requested to be deleted does not belong to this Organisation");
+            }
+            var returnIds = new List<long>{ returnId };
 
             var viewModel = new AdminDeleteReturnViewModel {Organisation = organisation, ReturnIds = returnIds, Year = year};
 
@@ -158,6 +162,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("DeleteReturns", viewModel);
             }
 
+            foreach (long returnId in viewModel.ReturnIds)
+            {
+                if (!organisation.Returns.Select(r => r.ReturnId).Contains(returnId))
+                {
+                    throw new Exception("The ReturnID that the user requested to be deleted does not belong to this Organisation");
+                }
+            }
             foreach (long returnId in viewModel.ReturnIds)
             {
                 dataRepository.Get<Return>(returnId).SetStatus(ReturnStatuses.Deleted, currentUser.UserId, viewModel.Reason);
