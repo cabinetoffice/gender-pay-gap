@@ -45,3 +45,18 @@
         margin-bottom: 0;
     }
 }
+
+.guidance-list-with-dashes {
+    li {
+        position: relative;
+        padding-left: 20px;
+
+        &:before {
+            content: "–";
+            position: absolute;
+            left: 0;
+            width: 20px;
+            overflow: hidden;
+        }
+    }
+}
