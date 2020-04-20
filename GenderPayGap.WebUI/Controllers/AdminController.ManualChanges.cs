@@ -141,12 +141,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             count = await SetPublicSectorTypeAsync(model.Parameters, model.Comment, writer, test);
                             break;
                         case "Set organisation as out of scope":
-                            count = await SetOrganisationScopeAsync(
-                                model.Parameters,
-                                model.Comment,
-                                writer,
-                                ScopeStatuses.OutOfScope,
-                                test);
+                            count = await SetOrganisationScopeAsync(model.Parameters, model.Comment, writer, ScopeStatuses.OutOfScope, test);
                             break;
                         case "Set organisation as in scope":
                             count = await SetOrganisationScopeAsync(model.Parameters, model.Comment, writer, ScopeStatuses.InScope, test);
@@ -452,16 +447,15 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         $"{i}: {employerRef}: {hasBeenWillBe} set as '{outOfScopeOutcome.Result.ScopeStatus}' for snapshotYear '{outOfScopeOutcome.Result.SnapshotDate.Year}' with comment '{outOfScopeOutcome.Result.Reason}'");
                     if (!test)
                     {
-                        await Global.ManualChangeLog.WriteAsync(
-                            new ManualChangeLogModel {
-                                MethodName = $"SetOrg{scopeStatus.ToString()}",
-                                Action = ManualActions.Update,
-                                Source = CurrentUser.EmailAddress,
-                                Comment = comment,
-                                ReferenceName = nameof(Organisation.EmployerReference),
-                                ReferenceValue = employerRef,
-                                TargetName = nameof(Organisation.OrganisationScopes)
-                            });
+                        auditLogger.AuditChangeToOrganisation(
+                            AuditedAction.ExecuteManualChangeSetOrganisationScope,
+                            DataRepository.GetAll<Organisation>().FirstOrDefault(o => o.EmployerReference == employerRef),
+                            new
+                            {
+                                NewScope = scopeStatus.ToString(),
+                                Reason = comment,
+                            },
+                            CurrentUser);
                     }
                 }
                 catch (Exception ex)
@@ -580,18 +574,18 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         $"{i}: {employerRef}: {org.OrganisationName} Company Number='{org.CompanyNumber}' set to '{newValue}'");
                     if (!test)
                     {
-                        await Global.ManualChangeLog.WriteAsync(
-                            new ManualChangeLogModel(
-                                methodName,
-                                ManualActions.Update,
-                                CurrentUser.EmailAddress,
-                                nameof(Organisation.EmployerReference),
-                                employerRef,
-                                nameof(Organisation.CompanyNumber),
-                                oldValue,
-                                newValue,
-                                comment));
                         await DataRepository.SaveChangesAsync();
+
+                        auditLogger.AuditChangeToOrganisation(
+                            AuditedAction.ExecuteManualChangeSetOrganisationCompanyNumber,
+                            org,
+                            new
+                            {
+                                OldCompanyNumber = oldValue,
+                                NewCompanyNumber = newValue,
+                                Reason = comment,
+                            },
+                            CurrentUser);
                     }
                 }
 
@@ -728,18 +722,18 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 writer.WriteLine($"{i}: {employerRef}:{org.OrganisationName} SIC codes={oldValue} {hasBeenWillBe} set to {newValue}");
                 if (!test)
                 {
-                    await Global.ManualChangeLog.WriteAsync(
-                        new ManualChangeLogModel(
-                            methodName,
-                            ManualActions.Update,
-                            CurrentUser.EmailAddress,
-                            nameof(Organisation.EmployerReference),
-                            employerRef,
-                            nameof(Organisation.OrganisationSicCodes),
-                            oldValue,
-                            newValue,
-                            comment));
                     await DataRepository.SaveChangesAsync();
+
+                    auditLogger.AuditChangeToOrganisation(
+                        AuditedAction.ExecuteManualChangeSetOrganisationSicCodes,
+                        org,
+                        new
+                        {
+                            OldSicCodes = oldValue,
+                            NewSicCodes = newValue,
+                            Reason = comment,
+                        },
+                        CurrentUser);
                 }
 
                 count++;
@@ -936,18 +930,18 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 writer.WriteLine($"{i}: {employerRef}:{org.OrganisationName} Address={oldValue} {hasBeenWillBe} set to {newValue}");
                 if (!test)
                 {
-                    await Global.ManualChangeLog.WriteAsync(
-                        new ManualChangeLogModel(
-                            methodName,
-                            ManualActions.Update,
-                            CurrentUser.EmailAddress,
-                            nameof(Organisation.EmployerReference),
-                            employerRef,
-                            "LatestAddress",
-                            oldValue,
-                            newValue,
-                            comment));
                     await DataRepository.SaveChangesAsync();
+
+                    auditLogger.AuditChangeToOrganisation(
+                        AuditedAction.ExecuteManualChangeSetOrganisationAddresses,
+                        org,
+                        new
+                        {
+                            OldAddress = oldValue,
+                            NewAddress = newValue,
+                            Reason = comment,
+                        },
+                        CurrentUser);
                 }
 
                 count++;
@@ -1092,18 +1086,18 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     $"{i}: {employerRef}:{org.OrganisationName} public sector type={oldValue} {hasBeenWillBe} set to {newValue}");
                 if (!test)
                 {
-                    await Global.ManualChangeLog.WriteAsync(
-                        new ManualChangeLogModel(
-                            methodName,
-                            ManualActions.Update,
-                            CurrentUser.EmailAddress,
-                            nameof(Organisation.EmployerReference),
-                            employerRef,
-                            nameof(Organisation.LatestPublicSectorType),
-                            oldValue,
-                            newValue,
-                            comment));
                     await DataRepository.SaveChangesAsync();
+
+                    auditLogger.AuditChangeToOrganisation(
+                        AuditedAction.ExecuteManualChangeSetPublicSectorType,
+                        org,
+                        new
+                        {
+                            OldPublicSectorType = oldValue,
+                            NewPublicSectorType = newValue,
+                            Reason = comment,
+                        },
+                        CurrentUser);
                 }
 
                 count++;
@@ -1183,19 +1177,19 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 writer.WriteLine($"{i}: {employerRef}: {org.OrganisationName} Year='{year}' Status='{oldValue}' set to '{newValue}'");
                 if (!test)
                 {
-                    await Global.ManualChangeLog.WriteAsync(
-                        new ManualChangeLogModel(
-                            methodName,
-                            ManualActions.Update,
-                            CurrentUser.EmailAddress,
-                            nameof(Return.ReturnId),
-                            @return.ReturnId.ToString(),
-                            nameof(Return.Status),
-                            oldValue.ToString(),
-                            newValue.ToString(),
-                            comment,
-                            $"Year={year} Employer='{employerRef}'"));
                     await DataRepository.SaveChangesAsync();
+
+                    auditLogger.AuditChangeToOrganisation(
+                        AuditedAction.ExecuteManualChangeDeleteSubmissions,
+                        org,
+                        new
+                        {
+                            ReturnId = @return.ReturnId,
+                            OldReturnStatus = oldValue,
+                            ReportingYear = year,
+                            Reason = comment,
+                        },
+                        CurrentUser);
                 }
 
                 count++;
@@ -1298,17 +1292,14 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         org.SectorType = newSector;
                         if (!test)
                         {
-                            await Global.ManualChangeLog.WriteAsync(
-                                new ManualChangeLogModel(
-                                    methodName,
-                                    ManualActions.Update,
-                                    CurrentUser.EmailAddress,
-                                    nameof(Organisation.EmployerReference),
-                                    employerRef,
-                                    nameof(Organisation.SectorType),
-                                    oldSector.ToString(),
-                                    newSector.ToString(),
-                                    comment));
+                            auditLogger.AuditChangeToOrganisation(
+                                AuditedAction.ExecuteManualChangeConvertPrivateToPublic,
+                                org,
+                                new
+                                {
+                                    Reason = comment,
+                                },
+                                CurrentUser);
                         }
                     }
 
@@ -1324,17 +1315,16 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             });
                         if (!test)
                         {
-                            await Global.ManualChangeLog.WriteAsync(
-                                new ManualChangeLogModel(
-                                    methodName,
-                                    ManualActions.Create,
-                                    CurrentUser.EmailAddress,
-                                    nameof(Organisation.EmployerReference),
-                                    employerRef,
-                                    nameof(OrganisationSicCode),
-                                    null,
-                                    "1",
-                                    comment));
+                            auditLogger.AuditChangeToOrganisation(
+                                AuditedAction.ExecuteManualChangeSetOrganisationSicCodes,
+                                org,
+                                new
+                                {
+                                    OldSicCodes = "(converted from private sector)",
+                                    NewSicCodes = "1",
+                                    Reason = comment,
+                                },
+                                CurrentUser);
                         }
                     }
 
@@ -1353,17 +1343,17 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             @return.AccountingDate = newDate;
                             if (!test)
                             {
-                                await Global.ManualChangeLog.WriteAsync(
-                                    new ManualChangeLogModel(
-                                        methodName,
-                                        ManualActions.Update,
-                                        CurrentUser.EmailAddress,
-                                        nameof(@return.ReturnId),
-                                        @return.ReturnId.ToString(),
-                                        nameof(Return.AccountingDate),
-                                        oldDate.ToString(),
-                                        newDate.ToString(),
-                                        comment));
+                                auditLogger.AuditChangeToOrganisation(
+                                    AuditedAction.ExecuteManualChangeConvertSectorSetAccountingDate,
+                                    org,
+                                    new
+                                    {
+                                        ReturnId = @return.ReturnId,
+                                        OldDate = oldDate,
+                                        NewDate = newDate,
+                                        Reason = comment,
+                                    },
+                                    CurrentUser);
                             }
                         }
                     }
@@ -1383,17 +1373,17 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             scope.SnapshotDate = newDate;
                             if (!test)
                             {
-                                await Global.ManualChangeLog.WriteAsync(
-                                    new ManualChangeLogModel(
-                                        methodName,
-                                        ManualActions.Update,
-                                        CurrentUser.EmailAddress,
-                                        nameof(scope.OrganisationScopeId),
-                                        scope.OrganisationScopeId.ToString(),
-                                        nameof(scope.SnapshotDate),
-                                        oldDate.ToString(),
-                                        newDate.ToString(),
-                                        comment));
+                                auditLogger.AuditChangeToOrganisation(
+                                    AuditedAction.ExecuteManualChangeConvertSectorSetAccountingDate,
+                                    org,
+                                    new
+                                    {
+                                        ScopeId = scope.OrganisationScopeId,
+                                        OldDate = oldDate,
+                                        NewDate = newDate,
+                                        Reason = comment,
+                                    },
+                                    CurrentUser);
                             }
                         }
                     }
@@ -1505,17 +1495,14 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         org.SectorType = newSector;
                         if (!test)
                         {
-                            await Global.ManualChangeLog.WriteAsync(
-                                new ManualChangeLogModel(
-                                    methodName,
-                                    ManualActions.Update,
-                                    CurrentUser.EmailAddress,
-                                    nameof(Organisation.EmployerReference),
-                                    employerRef,
-                                    nameof(Organisation.SectorType),
-                                    oldSector.ToString(),
-                                    newSector.ToString(),
-                                    comment));
+                            auditLogger.AuditChangeToOrganisation(
+                                AuditedAction.ExecuteManualChangeConvertPublicToPrivate,
+                                org,
+                                new
+                                {
+                                    Reason = comment,
+                                },
+                                CurrentUser);
                         }
                     }
 
@@ -1531,25 +1518,20 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                             if (!test)
                             {
-                                await Global.ManualChangeLog.WriteAsync(
-                                    new ManualChangeLogModel(
-                                        methodName,
-                                        ManualActions.Delete,
-                                        CurrentUser.EmailAddress,
-                                        nameof(Organisation.EmployerReference),
-                                        employerRef,
-                                        nameof(OrganisationSicCode),
-                                        JsonConvert.SerializeObject(
-                                            new {
-                                                sic.OrganisationSicCodeId,
-                                                sic.SicCodeId,
-                                                sic.OrganisationId,
-                                                sic.Source,
-                                                sic.Created,
-                                                sic.Retired
-                                            }),
-                                        null,
-                                        comment));
+                                auditLogger.AuditChangeToOrganisation(
+                                    AuditedAction.ExecuteManualChangeSetOrganisationSicCodes,
+                                    org,
+                                    new
+                                    {
+                                        OldSicCodes = "(converted from public sector, so deleting SIC code 1)",
+                                        OldSicCode_OrganisationSicCodeId = sic.OrganisationSicCodeId,
+                                        OldSicCode_SicCodeId = sic.SicCodeId,
+                                        OldSicCode_Source = sic.Source,
+                                        OldSicCode_Created = sic.Created,
+                                        OldSicCode_Retired = sic.Retired,
+                                        Reason = comment,
+                                    },
+                                    CurrentUser);
                             }
 
                             DataRepository.Delete(sic);
@@ -1571,17 +1553,17 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             @return.AccountingDate = newDate;
                             if (!test)
                             {
-                                await Global.ManualChangeLog.WriteAsync(
-                                    new ManualChangeLogModel(
-                                        methodName,
-                                        ManualActions.Update,
-                                        CurrentUser.EmailAddress,
-                                        nameof(@return.ReturnId),
-                                        @return.ReturnId.ToString(),
-                                        nameof(Return.AccountingDate),
-                                        oldDate.ToString(),
-                                        newDate.ToString(),
-                                        comment));
+                                auditLogger.AuditChangeToOrganisation(
+                                    AuditedAction.ExecuteManualChangeConvertSectorSetAccountingDate,
+                                    org,
+                                    new
+                                    {
+                                        ReturnId = @return.ReturnId,
+                                        OldDate = oldDate,
+                                        NewDate = newDate,
+                                        Reason = comment,
+                                    },
+                                    CurrentUser);
                             }
 
                             if (string.IsNullOrWhiteSpace(@return.ResponsiblePerson))
@@ -1608,17 +1590,17 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             scope.SnapshotDate = newDate;
                             if (!test)
                             {
-                                await Global.ManualChangeLog.WriteAsync(
-                                    new ManualChangeLogModel(
-                                        methodName,
-                                        ManualActions.Update,
-                                        CurrentUser.EmailAddress,
-                                        nameof(scope.OrganisationScopeId),
-                                        scope.OrganisationScopeId.ToString(),
-                                        nameof(scope.SnapshotDate),
-                                        oldDate.ToString(),
-                                        newDate.ToString(),
-                                        comment));
+                                auditLogger.AuditChangeToOrganisation(
+                                    AuditedAction.ExecuteManualChangeConvertSectorSetAccountingDate,
+                                    org,
+                                    new
+                                    {
+                                        ScopeId = scope.OrganisationScopeId,
+                                        OldDate = oldDate,
+                                        NewDate = newDate,
+                                        Reason = comment,
+                                    },
+                                    CurrentUser);
                             }
                         }
                     }
@@ -1706,35 +1688,19 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 {
                     //Output the actual execution result
                     org.OrganisationName = newValue;
-                    if (!test)
-                    {
-                        await Global.ManualChangeLog.WriteAsync(
-                            new ManualChangeLogModel(
-                                methodName,
-                                ManualActions.Update,
-                                CurrentUser.EmailAddress,
-                                nameof(Organisation.EmployerReference),
-                                employerRef,
-                                nameof(Organisation.OrganisationName),
-                                oldValue,
-                                newValue,
-                                comment));
-                    }
-
                     org.OrganisationNames.Add(new OrganisationName {Organisation = org, Source = "Manual", Name = newValue});
                     if (!test)
                     {
-                        await Global.ManualChangeLog.WriteAsync(
-                            new ManualChangeLogModel(
-                                methodName,
-                                ManualActions.Create,
-                                CurrentUser.EmailAddress,
-                                nameof(Organisation.EmployerReference),
-                                employerRef,
-                                nameof(Organisation.OrganisationName),
-                                oldValue,
-                                newValue,
-                                comment));
+                        auditLogger.AuditChangeToOrganisation(
+                            AuditedAction.ExecuteManualChangeAddOrganisationsLatestName,
+                            org,
+                            new
+                            {
+                                OldName = oldValue,
+                                NewName = newValue,
+                                Reason = comment,
+                            },
+                            CurrentUser);
                     }
 
                     writer.WriteLine($"{i}: {employerRef}: '{oldValue}' set to '{newValue}'");
@@ -1824,17 +1790,16 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         org.OrganisationName = newValue;
                         if (!test)
                         {
-                            await Global.ManualChangeLog.WriteAsync(
-                                new ManualChangeLogModel(
-                                    methodName,
-                                    ManualActions.Update,
-                                    CurrentUser.EmailAddress,
-                                    nameof(Organisation.EmployerReference),
-                                    employerRef,
-                                    nameof(Organisation.OrganisationName),
-                                    oldValue,
-                                    newValue,
-                                    comment));
+                            auditLogger.AuditChangeToOrganisation(
+                                AuditedAction.ExecuteManualChangeResetOrganisationToOnlyOriginalName,
+                                org,
+                                new
+                                {
+                                    OldName = oldValue,
+                                    NewName = newValue,
+                                    Reason = comment,
+                                },
+                                CurrentUser);
                         }
                     }
 
@@ -1844,24 +1809,18 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                         {
                             if (!test)
                             {
-                                await Global.ManualChangeLog.WriteAsync(
-                                    new ManualChangeLogModel(
-                                        methodName,
-                                        ManualActions.Delete,
-                                        CurrentUser.EmailAddress,
-                                        nameof(Organisation.EmployerReference),
-                                        employerRef,
-                                        nameof(OrganisationName),
-                                        JsonConvert.SerializeObject(
-                                            new {
-                                                name.OrganisationNameId,
-                                                name.OrganisationId,
-                                                name.Name,
-                                                name.Created,
-                                                name.Source
-                                            }),
-                                        null,
-                                        comment));
+                                auditLogger.AuditChangeToOrganisation(
+                                    AuditedAction.ExecuteManualChangeResetOrganisationToOnlyOriginalName,
+                                    org,
+                                    new
+                                    {
+                                        OldNameBeingRemoved_NameId = name.OrganisationNameId,
+                                        OldNameBeingRemoved_Name = name.Name,
+                                        OldNameBeingRemoved_Created = name.Created,
+                                        OldNameBeingRemoved_Source = name.Source,
+                                        Reason = comment,
+                                    },
+                                    CurrentUser);
                             }
 
                             DataRepository.Delete(name);
@@ -1869,20 +1828,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                         org.OrganisationNames.Add(
                             new OrganisationName {Organisation = org, Source = "Manual", Name = newValue, Created = org.Created});
-                        if (!test)
-                        {
-                            await Global.ManualChangeLog.WriteAsync(
-                                new ManualChangeLogModel(
-                                    methodName,
-                                    ManualActions.Create,
-                                    CurrentUser.EmailAddress,
-                                    nameof(Organisation.EmployerReference),
-                                    employerRef,
-                                    nameof(Organisation.OrganisationName),
-                                    oldValue,
-                                    newValue,
-                                    comment));
-                        }
                     }
 
                     writer.WriteLine($"{i}: {employerRef}: '{oldValue}' set to '{newValue}'");
@@ -1981,25 +1926,18 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                     if (!test)
                     {
-                        string serialisedInfo = JsonConvert.SerializeObject(
-                            new {
-                                securityCodeWorksOutcome.Result.SecurityCode,
-                                securityCodeWorksOutcome.Result.SecurityCodeExpiryDateTime,
-                                securityCodeWorksOutcome.Result.SecurityCodeCreatedDateTime,
-                                CurrentUser.EmailAddress
-                            });
-
-                        await Global.ManualChangeLog.WriteAsync(
-                            new ManualChangeLogModel {
-                                MethodName = $"{manualAction.ToString()}SecurityCode",
-                                Action = manualAction,
-                                Source = CurrentUser.EmailAddress,
-                                Comment = comment,
-                                ReferenceName = nameof(Organisation.EmployerReference),
-                                ReferenceValue = employerRef,
-                                TargetName = nameof(Organisation.SecurityCode),
-                                TargetNewValue = serialisedInfo
-                            });
+                        auditLogger.AuditChangeToOrganisation(
+                            AuditedAction.ExecuteManualChangeCreateOrExtendSecurityCode,
+                            DataRepository.GetAll<Organisation>().FirstOrDefault(o => o.EmployerReference == employerRef),
+                            new
+                            {
+                                CreateOrExtend = manualAction.ToString(),
+                                SecurityCode = securityCodeWorksOutcome.Result.SecurityCode,
+                                SecurityCodeExpiryDateTime = securityCodeWorksOutcome.Result.SecurityCodeExpiryDateTime,
+                                SecurityCodeCreatedDateTime = securityCodeWorksOutcome.Result.SecurityCodeCreatedDateTime,
+                                Reason = comment,
+                            },
+                            CurrentUser);
                     }
                 }
                 catch (Exception ex)
@@ -2091,27 +2029,19 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                     if (!test)
                     {
-                        string serialisedInfo = JsonConvert.SerializeObject(
-                            new {
-                                securityCodeWorksOutcome.Result.SecurityCode,
-                                securityCodeWorksOutcome.Result.SecurityCodeExpiryDateTime,
-                                securityCodeWorksOutcome.Result.SecurityCodeCreatedDateTime,
-                                CurrentUser.EmailAddress
-                            });
-
                         if (!test)
                         {
-                            await Global.ManualChangeLog.WriteAsync(
-                                new ManualChangeLogModel {
-                                    MethodName = methodName,
-                                    Action = manualAction,
-                                    Source = CurrentUser.EmailAddress,
-                                    Comment = comment,
-                                    ReferenceName = nameof(Organisation.EmployerReference),
-                                    ReferenceValue = employerRef,
-                                    TargetName = nameof(Organisation.SecurityCode),
-                                    TargetNewValue = serialisedInfo
-                                });
+                            auditLogger.AuditChangeToOrganisation(
+                                AuditedAction.ExecuteManualChangeExpireSecurityCode,
+                                DataRepository.GetAll<Organisation>().FirstOrDefault(o => o.EmployerReference == employerRef),
+                                new
+                                {
+                                    SecurityCode = securityCodeWorksOutcome.Result.SecurityCode,
+                                    SecurityCodeExpiryDateTime = securityCodeWorksOutcome.Result.SecurityCodeExpiryDateTime,
+                                    SecurityCodeCreatedDateTime = securityCodeWorksOutcome.Result.SecurityCodeCreatedDateTime,
+                                    Reason = comment,
+                                },
+                                CurrentUser);
                         }
                     }
                 }
@@ -2214,15 +2144,16 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 if (!test)
                 {
-                    await Global.ManualChangeLog.WriteAsync(
-                        new ManualChangeLogModel {
-                            MethodName = methodName,
-                            Action = manualAction,
-                            Source = CurrentUser.EmailAddress,
-                            Comment = comment,
-                            TargetName = nameof(Organisation.SecurityCode),
-                            TargetNewValue = $"{failureMessage}{successMessage}"
-                        });
+                    auditLogger.AuditGeneralAction(
+                        AuditedAction.ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs,
+                        new
+                        {
+                            CreateOrExtend = manualAction.ToString(),
+                            SuccessMessage = successMessage,
+                            FailureMessage = failureMessage,
+                            Reason = comment,
+                        },
+                        CurrentUser);
                 }
 
                 if (!test && securityCodeBulkWorkOutcome.ConcurrentBagOfSuccesses.Count > 0)
@@ -2307,15 +2238,16 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 if (!test)
                 {
-                    await Global.ManualChangeLog.WriteAsync(
-                        new ManualChangeLogModel {
-                            MethodName = methodName,
-                            Action = manualAction,
-                            Source = CurrentUser.EmailAddress,
-                            Comment = comment,
-                            TargetName = nameof(Organisation.SecurityCode),
-                            TargetNewValue = $"{failureMessage}{successMessage}"
-                        });
+                    auditLogger.AuditGeneralAction(
+                        AuditedAction.ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs,
+                        new
+                        {
+                            CreateOrExtend = manualAction.ToString(),
+                            SuccessMessage = successMessage,
+                            FailureMessage = failureMessage,
+                            Reason = comment,
+                        },
+                        CurrentUser);
                 }
 
                 if (!test && securityCodeBulkWorkOutcome.ConcurrentBagOfSuccesses.Count > 0)

@@ -239,6 +239,37 @@ namespace GenderPayGap.Core
         AdminChangeOrganisationStatus = 17,
         [Display(Name = "Admin deleted return")]
         AdminDeleteReturn = 18,
+
+        [Display(Name = "Execute Manual Change: Convert public to private")]
+        ExecuteManualChangeConvertPublicToPrivate = 19,
+        [Display(Name = "Execute Manual Change: Convert private to public")]
+        ExecuteManualChangeConvertPrivateToPublic = 20,
+        [Display(Name = "Execute Manual Change: Convert sector: set accounting date")]
+        ExecuteManualChangeConvertSectorSetAccountingDate = 21,
+        [Display(Name = "Execute Manual Change: Delete submissions")]
+        ExecuteManualChangeDeleteSubmissions = 22,
+        [Display(Name = "Execute Manual Change: Add organisations latest name")]
+        ExecuteManualChangeAddOrganisationsLatestName = 23,
+        [Display(Name = "Execute Manual Change: Reset organisation to only original name")]
+        ExecuteManualChangeResetOrganisationToOnlyOriginalName = 24,
+        [Display(Name = "Execute Manual Change: Set organisation company number")]
+        ExecuteManualChangeSetOrganisationCompanyNumber = 25,
+        [Display(Name = "Execute Manual Change: Set organisation SIC codes")]
+        ExecuteManualChangeSetOrganisationSicCodes = 26,
+        [Display(Name = "Execute Manual Change: Set organisation addresses")]
+        ExecuteManualChangeSetOrganisationAddresses = 27,
+        [Display(Name = "Execute Manual Change: Set public sector type")]
+        ExecuteManualChangeSetPublicSectorType = 28,
+        [Display(Name = "Execute Manual Change: Set organisation scope")]
+        ExecuteManualChangeSetOrganisationScope = 29,
+        [Display(Name = "Execute Manual Change: Create security code")]
+        ExecuteManualChangeCreateOrExtendSecurityCode = 30,
+        [Display(Name = "Execute Manual Change: Extend security code")]
+        ExecuteManualChangeExpireSecurityCode = 31,
+        [Display(Name = "Execute Manual Change: Create security codes for all active and pending orgs")]
+        ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs = 32,
+        [Display(Name = "Execute Manual Change: Expire security codes for all active and pending orgs")]
+        ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs = 33,
     }
 
     public enum HashingAlgorithm

@@ -11,6 +11,7 @@ using Autofac.Features.AttributeFilters;
 using CsvHelper;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Api;
 using GenderPayGap.Core.Classes;
@@ -53,7 +54,8 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             IDataRepository dataRepository,
             IWebTracker webTracker,
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
-            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository
+            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository,
+            AuditLogger auditLogger
         ) : base(logger, cache, session, dataRepository, webTracker)
         {
             HostingEnvironment = hostingEnvironment;
@@ -63,6 +65,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             UserRepository = userRepository;
             PrivateSectorRepository = privateSectorRepository;
             PublicSectorRepository = publicSectorRepository;
+            this.auditLogger = auditLogger;
         }
 
         #endregion
@@ -324,6 +327,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         #region Dependencies
 
         private readonly IHostingEnvironment HostingEnvironment;
+        private readonly AuditLogger auditLogger;
 
         public IAdminService AdminService { get; }
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
