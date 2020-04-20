@@ -250,12 +250,12 @@ namespace Account.Controllers.CloseAccountController
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
             mockNotifyEmailQueue.Verify(
                 x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
-                Times.Never(),
-                $"Didnt expect the GEO Email addresses using {EmailTemplates.SendGeoOrphanOrganisationEmail} to be in the email send queue");
+                Times.Once,
+                $"Expect the GEO Email addresses using {EmailTemplates.SendGeoOrphanOrganisationEmail} to be in the email send queue");
             mockNotifyEmailQueue.Verify(
                 x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
-                Times.Never(),
-                "Didnt expect the GEO Email addresses to be in the email send queue");
+                Times.Once,
+                "Expected the GEO Email addresses to be in the email send queue");
         }
 
         [Test]
