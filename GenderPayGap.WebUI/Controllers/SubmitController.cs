@@ -51,11 +51,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         [Route("Init")]
         public IActionResult Init()
         {
-            if (!Config.IsProduction())
-            {
-                _logger.LogInformation("Submit Controller Initialised");
-            }
-
             return new EmptyResult();
         }
 

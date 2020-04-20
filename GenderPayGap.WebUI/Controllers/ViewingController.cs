@@ -100,11 +100,6 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("Init")]
         public IActionResult Init()
         {
-            if (!Config.IsProduction())
-            {
-                _logger.LogInformation("Viewing Controller Initialised");
-            }
-
             return new EmptyResult();
         }
 
