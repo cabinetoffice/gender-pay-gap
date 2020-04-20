@@ -32,7 +32,7 @@ namespace GenderPayGap.WebJob.Services
                 {"OrganisationIsSingular", organisationIsSingular},
                 {"OrganisationIsPlural", organisationIsPlural},
                 {"SectorType", sectorType},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -52,7 +52,7 @@ namespace GenderPayGap.WebJob.Services
                 {"host", host},
                 {"expiryDate", expiryDate},
                 {"remainingDays", remainingDays},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -69,7 +69,9 @@ namespace GenderPayGap.WebJob.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"host", host}, {"expiryDate", expiryDate}, {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"host", host},
+                {"expiryDate", expiryDate},
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -90,6 +92,11 @@ namespace GenderPayGap.WebJob.Services
         private void SendEmail(NotifyEmail notifyEmail)
         {
             govNotifyApi.SendEmail(notifyEmail);
+        }
+
+        private static string GetEnvironmentNameForTestEnvironments()
+        {
+            return Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] ";
         }
 
     }
