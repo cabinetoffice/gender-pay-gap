@@ -1882,15 +1882,12 @@ namespace GenderPayGap.WebUI.Controllers
                 return;
             }
 
-            if (Config.IsProduction())
-            {
-                EmailSendingService.SendGeoOrganisationRegistrationRequestEmail(
-                    Config.GetAppSetting("GEODistributionList"),
-                    contactName,
-                    reportingOrg,
-                    reportingAddress,
-                    reviewUrl);
-            }
+            EmailSendingService.SendGeoOrganisationRegistrationRequestEmail(
+                Config.GetAppSetting("GEODistributionList"),
+                contactName,
+                reportingOrg,
+                reportingAddress,
+                reviewUrl);
         }
 
 
