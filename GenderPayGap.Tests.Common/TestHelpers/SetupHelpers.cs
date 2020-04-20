@@ -17,14 +17,12 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             Global.BadSicLog = new Mock<ILogRecordLogger>().Object;
             Global.ManualChangeLog = new Mock<ILogRecordLogger>().Object;
             Global.RegistrationLog = new Mock<ILogRecordLogger>().Object;
-            Global.SearchLog = new Mock<ILogRecordLogger>().Object;
 
             if (builder != null)
             {
                 builder.RegisterInstance(Global.BadSicLog).Keyed<ILogRecordLogger>(Filenames.BadSicLog).SingleInstance();
                 builder.RegisterInstance(Global.ManualChangeLog).Keyed<ILogRecordLogger>(Filenames.ManualChangeLog).SingleInstance();
                 builder.RegisterInstance(Global.RegistrationLog).Keyed<ILogRecordLogger>(Filenames.RegistrationLog).SingleInstance();
-                builder.RegisterInstance(Global.SearchLog).Keyed<ILogRecordLogger>(Filenames.SearchLog).SingleInstance();
 
                 builder.RegisterInstance(Mock.Of<IRegistrationLogRecord>()).SingleInstance();
             }

@@ -176,7 +176,6 @@ namespace GenderPayGap.Core
         public static ILogRecordLogger BadSicLog { get; set; }
         public static ILogRecordLogger ManualChangeLog { get; set; }
         public static ILogRecordLogger RegistrationLog { get; set; }
-        public static ILogRecordLogger SearchLog { get; set; }
 
         #endregion
 
