@@ -155,7 +155,6 @@ namespace GenderPayGap.WebUI
             //Create Inversion of Control container
             MvcApplication.ContainerIoC = BuildContainerIoC(services);
 
-            Global.ManualChangeLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
             Global.RegistrationLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.RegistrationLog);
 
             // Create the IServiceProvider based on the container.

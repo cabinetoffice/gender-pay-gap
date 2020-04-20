@@ -22,6 +22,13 @@ namespace GenderPayGap.BusinessLogic.Services
             this.session = session;
         }
 
+        public void AuditGeneralAction(AuditedAction action, object anonymousObject, User userWhoPerformedAction)
+        {
+            Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
+
+            AuditGeneralAction(action, details, userWhoPerformedAction);
+        }
+
         public void AuditChangeToOrganisation(AuditedAction action, Organisation organisationChanged, object anonymousObject, User userWhoPerformedAction)
         {
             Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
@@ -52,6 +59,28 @@ namespace GenderPayGap.BusinessLogic.Services
             }
 
             return details;
+        }
+
+        private void AuditGeneralAction(AuditedAction action, Dictionary<string, string> details, User userWhoPerformedAction)
+        {
+            var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
+            var isImpersonating = impersonatedUserId > 0;
+            var originalUserId = session["OriginalUser"].ToInt64();
+
+            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
+            var impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
+
+            dataRepository.Insert(
+                new AuditLog
+                {
+                    Action = action,
+                    OriginalUser = originalUser,
+                    ImpersonatedUser = impersonatedUser,
+                    Organisation = null,
+                    Details = details
+                });
+
+            dataRepository.SaveChangesAsync().Wait();
         }
 
         private void AuditActionToOrganisation(AuditedAction action, long organisationId, Dictionary<string, string> details, User userWhoPerformedAction)
