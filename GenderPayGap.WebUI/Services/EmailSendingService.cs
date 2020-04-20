@@ -16,7 +16,7 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"TimeWithUnits", "7 days"},
                 {"VerificationUrl", verificationUrl},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Services
                 {"SubmittedOrUpdated", submittedOrUpdated},
                 {"ReportingPeriod", reportingPeriod},
                 {"ReportLink", reportLink},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"PIN", pin},
                 {"OrganisationName", organisationName},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"OrganisationName", organisationName},
                 {"Username", username},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"OrganisationName", organisationName},
                 {"RemovedUser", removedUserName},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"OrganisationName", organisationName},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -128,7 +128,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"OrganisationName", organisationName}, 
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -144,7 +144,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url}, 
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -162,7 +162,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -179,7 +179,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -196,7 +196,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -213,7 +213,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -231,7 +231,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -248,7 +248,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -265,7 +265,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -283,7 +283,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -301,7 +301,7 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"reason", reason},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -343,7 +343,7 @@ namespace GenderPayGap.WebUI.Services
                 {"org2", reportingOrg},
                 {"address", reportingAddress},
                 {"url", url},
-                {"Environment", Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] "}
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -392,6 +392,11 @@ namespace GenderPayGap.WebUI.Services
             }
 
             return false;
+        }
+
+        private static string GetEnvironmentNameForTestEnvironments()
+        {
+            return Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] ";
         }
 
     }
