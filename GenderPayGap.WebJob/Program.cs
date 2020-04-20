@@ -53,7 +53,6 @@ namespace GenderPayGap.WebJob
 
             //Register log to Global
             Global.ManualChangeLog = ContainerIOC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
-            Global.BadSicLog = ContainerIOC.ResolveKeyed<ILogRecordLogger>(Filenames.BadSicLog);
             
             //Leave this check here to ensure function dependencies resolve on startup rather than when each function method is invoked
             var functions = ContainerIOC.Resolve<Functions>();

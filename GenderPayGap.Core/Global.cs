@@ -173,7 +173,6 @@ namespace GenderPayGap.Core
         #region Log Declarations
 
         // WebUI
-        public static ILogRecordLogger BadSicLog { get; set; }
         public static ILogRecordLogger ManualChangeLog { get; set; }
         public static ILogRecordLogger RegistrationLog { get; set; }
 

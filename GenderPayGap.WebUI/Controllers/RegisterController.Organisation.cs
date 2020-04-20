@@ -1823,20 +1823,17 @@ namespace GenderPayGap.WebUI.Controllers
             if (badSicCodes.Count > 0)
             {
                 //Create the logging tasks
-                var badSicLoggingtasks = new List<Task>();
-                badSicCodes.ForEach(
-                    code => badSicLoggingtasks.Add(
-                        Global.BadSicLog.WriteAsync(
-                            new BadSicLogModel
-                            {
-                                OrganisationId = org.OrganisationId,
-                                OrganisationName = org.OrganisationName,
-                                SicCode = code,
-                                Source = "CoHo"
-                            })));
-
-                //Wait for all the logging tasks to complete
-                await Task.WhenAll(badSicLoggingtasks);
+                foreach (int code in badSicCodes)
+                {
+                    CustomLogger.Warning("Bad SIC code",
+                        new
+                        {
+                            OrganisationId = org.OrganisationId,
+                            OrganisationName = org.OrganisationName,
+                            SicCode = code,
+                            Source = "CoHo"
+                        });
+                }
             }
 
             //Send request to GEO

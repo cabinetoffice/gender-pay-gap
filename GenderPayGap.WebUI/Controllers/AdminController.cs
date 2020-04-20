@@ -14,6 +14,7 @@ using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Api;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -855,9 +856,12 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             continue;
                         }
 
-                        await Global.BadSicLog.WriteAsync(
-                            new BadSicLogModel {
-                                OrganisationId = org.OrganisationId, OrganisationName = org.OrganisationName, SicCode = code
+                        CustomLogger.Warning("Bad SIC code",
+                            new
+                            {
+                                OrganisationId = org.OrganisationId,
+                                OrganisationName = org.OrganisationName,
+                                SicCode = code
                             });
                     }
                 }

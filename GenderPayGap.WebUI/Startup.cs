@@ -155,7 +155,6 @@ namespace GenderPayGap.WebUI
             //Create Inversion of Control container
             MvcApplication.ContainerIoC = BuildContainerIoC(services);
 
-            Global.BadSicLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.BadSicLog);
             Global.ManualChangeLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
             Global.RegistrationLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.RegistrationLog);
 
@@ -241,7 +240,6 @@ namespace GenderPayGap.WebUI
             builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
 
             // Register record loggers
-            builder.RegisterLogRecord(Filenames.BadSicLog);
             builder.RegisterLogRecord(Filenames.ManualChangeLog);
             builder.RegisterLogRecord(Filenames.RegistrationLog);
 
