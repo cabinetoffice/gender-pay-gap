@@ -75,11 +75,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         [HttpGet("Init")]
         public IActionResult Init()
         {
-            if (!Config.IsProduction())
-            {
-                _logger.LogInformation("Admin Controller Initialised");
-            }
-
             return new EmptyResult();
         }
 
