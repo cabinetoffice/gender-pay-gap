@@ -292,7 +292,6 @@ namespace GenderPayGap.Core
         public const string SicSectorSynonyms = "GPG-SicSectorSynonyms.csv";
 
         // Record logs
-        public const string BadSicLog = "BadSicLog.csv";
         public const string ManualChangeLog = "ManualChangeLog.csv";
         public const string RegistrationLog = "RegistrationLog.csv";
         public const string SearchLog = "searchLog.csv";
