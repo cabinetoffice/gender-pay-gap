@@ -225,8 +225,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             this.StashModel(postedReturnViewModel);
 
             if (Global.EnableSubmitAlerts
-                && postedReturn.Organisation.Returns.Count(r => r.AccountingDate == postedReturn.AccountingDate) == 1
-                && Config.IsProduction())
+                && postedReturn.Organisation.Returns.Count(r => r.AccountingDate == postedReturn.AccountingDate) == 1)
             {
                 EmailSendingService.SendGeoFirstTimeDataSubmissionEmail(
                     Config.GetAppSetting("GEODistributionList"),
