@@ -412,22 +412,6 @@ namespace GenderPayGap.Core.Classes
             //Return the total records
             long totalRecords = results.Count.Value;
 
-            /* There are too many empty searches being executed (about 1200). This needs further investigation to see if/how they can be reduced */
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                var telemetryProperties = new Dictionary<string, string> {
-                    {"TimeStamp", VirtualDateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")},
-                    {"QueryTerms", searchText},
-                    {"ResultCount", totalRecords.ToString()},
-                    {"SearchType", searchType.ToString()},
-                    {"SearchParameters", HttpUtility.UrlDecode(sp.ToString())}
-                };
-
-                _telemetryClient?.TrackEvent("Gpg_Search", telemetryProperties);
-
-                await Global.SearchLog.WriteAsync(telemetryProperties);
-            }
-
             //Return the facet results
             if (sp.Facets != null && sp.Facets.Any())
             {

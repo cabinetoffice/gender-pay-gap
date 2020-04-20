@@ -78,27 +78,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                     await GetListOfSicCodeSuggestionsFromIndexAsync(searchParams.Keywords);
                 searchParams.FilterCodeIds = list.Select(x => int.Parse(x.Value.SicCodeId));
 
-                #region Log the search
-
-                if (!string.IsNullOrEmpty(searchParams.Keywords))
-                {
-                    string detailedListOfReturnedSearchTerms = string.Join(", ", list.Take(5).Select(x => x.Value.ToLogFriendlyString()));
-
-                    var telemetryProperties = new Dictionary<string, string> {
-                        {"TimeStamp", VirtualDateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")},
-                        {"QueryTerms", searchParams.Keywords},
-                        {"ResultCount", list.Count().ToString()},
-                        {"SearchType", searchParams.SearchType.ToString()},
-                        {"SampleOfResultsReturned", detailedListOfReturnedSearchTerms}
-                    };
-
-                    //Global.AppInsightsClient?.TrackEvent("Gpg_SicCode_Suggest", telemetryProperties);
-
-                    await Global.SearchLog.WriteAsync(telemetryProperties);
-                }
-
-                #endregion
-
                 searchParams.SearchFields =
                     $"{nameof(EmployerSearchModel.SicCodeIds)};{nameof(EmployerSearchModel.SicCodeListOfSynonyms)}";
                 searchParams.Keywords = "*"; // searchTermModified

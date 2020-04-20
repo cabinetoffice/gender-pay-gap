@@ -295,7 +295,6 @@ namespace GenderPayGap.Core
         public const string BadSicLog = "BadSicLog.csv";
         public const string ManualChangeLog = "ManualChangeLog.csv";
         public const string RegistrationLog = "RegistrationLog.csv";
-        public const string SearchLog = "searchLog.csv";
 
         public static string GetRootFilename(string filePath)
         {
