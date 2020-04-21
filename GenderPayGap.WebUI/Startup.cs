@@ -28,6 +28,7 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Options;
+using GenderPayGap.WebUI.ScheduledJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -148,6 +149,8 @@ namespace GenderPayGap.WebUI
                 BackChannelHandler);
 
             services.AddHostedService<AdminSearchServiceCacheUpdater>();
+
+            HangfireConfigurationHelper.ConfigureServices(services);
 
             //Override any test services
             ConfigureTestServices?.Invoke(services);
@@ -417,6 +420,8 @@ namespace GenderPayGap.WebUI
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
             app.UseMvCApplication(); //Creates the global instance of Program.MvcApplication (equavalent in old Global.asax.cs)
             app.UseMvcWithDefaultRoute();
+
+            HangfireConfigurationHelper.ConfigureApp(app);
 
             lifetime.ApplicationStarted.Register(
                 async () => {
