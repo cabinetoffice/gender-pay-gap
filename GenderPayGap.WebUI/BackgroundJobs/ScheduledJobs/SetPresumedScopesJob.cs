@@ -6,7 +6,7 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 
-namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
+namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
 
     public class SetPresumedScopesJob

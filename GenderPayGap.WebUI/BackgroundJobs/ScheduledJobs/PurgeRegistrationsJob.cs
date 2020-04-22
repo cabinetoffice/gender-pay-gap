@@ -10,7 +10,7 @@ using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
+namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class PurgeRegistrationsJob
     {

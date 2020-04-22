@@ -12,7 +12,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
+namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class UpdatePublicFacingDownloadFilesJob
     {
