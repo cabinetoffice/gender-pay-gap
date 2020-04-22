@@ -1,4 +1,4 @@
-﻿@model GenderPayGap.WebUI.Models.Admin.AdminHomepageViewModel
+@model GenderPayGap.WebUI.Models.Admin.AdminHomepageViewModel
 @{
     ViewBag.Title = "Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -139,3 +139,13 @@
     <br/>
     System error, warning and information log files from identity server.
 </p>
+
+
+<h2 class="govuk-heading-l">Background Jobs</h2>
+
+<p class="govuk-body">
+    <a href="/admin/hangfire" class="govuk-link govuk-!-font-weight-bold">Background Jobs dashboard (Hangfire)</a>
+    <br />
+    A technical dashboard showing background jobs that are queued / running / succeeded / failed.
+</p>
+
