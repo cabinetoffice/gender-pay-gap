@@ -44,7 +44,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 
         private void UpdateFromCompaniesHouse(string runId)
         {
-            int maxNumCallCompaniesHouseApi = Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(500);
+            int maxNumCallCompaniesHouseApi = Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
 
             for (var i = 0; i < maxNumCallCompaniesHouseApi; i++)
             {
