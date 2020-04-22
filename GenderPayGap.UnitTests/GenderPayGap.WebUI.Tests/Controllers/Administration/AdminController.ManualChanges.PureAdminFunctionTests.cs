@@ -27,58 +27,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
     {
 
         private const string UpdateSearchIndexesCommand = "Update search indexes";
-        private const string UpdateGPGDownloadDataFilesCommand = "Update GPG download data files";
-
-        #region "Update GPG download data files"
-
-        [Test]
-        public async Task AdminController_ManualChanges_POST_Update_GPG_Download_Data_Files_Works_When_Run_In_Test_Mode_Async()
-        {
-            // Arrange
-            User notAdminUser = UserHelper.GetDatabaseAdmin();
-            var adminController = UiTestHelper.GetController<AdminController>(notAdminUser.UserId, null, null);
-
-            Mock<IDataRepository> configurableDataRepository = AutoFacExtensions.ResolveAsMock<IDataRepository>();
-
-            configurableDataRepository
-                .Setup(x => x.Get<User>(It.IsAny<long>()))
-                .Returns(notAdminUser);
-
-            Mock<IAdminService> configurableAdmin = AutoFacExtensions.ResolveAsMock<IAdminService>();
-
-            configurableAdmin
-                .Setup(x => x.GetSearchDocumentCountAsync())
-                .ReturnsAsync(21212L);
-
-
-            var manualChangesViewModel = new ManualChangesViewModel {Command = UpdateGPGDownloadDataFilesCommand};
-
-            // Act
-            IActionResult manualChangesResult = await adminController.ManualChanges(manualChangesViewModel);
-
-            // Assert
-            Assert.NotNull(manualChangesResult, "Expected a Result");
-
-            var manualChangesViewResult = manualChangesResult as ViewResult;
-            Assert.NotNull(manualChangesViewResult, "Expected ViewResult");
-
-            var actualManualChangesViewModel = manualChangesViewResult.Model as ManualChangesViewModel;
-            Assert.NotNull(actualManualChangesViewModel, "Expected ManualChangesViewModel");
-
-            Assert.Multiple(
-                () => {
-                    Assert.AreEqual(
-                        "SUCCESSFULLY TESTED 'Update GPG download data files': 21212 items",
-                        actualManualChangesViewModel.SuccessMessage);
-                    Assert.AreEqual("", actualManualChangesViewModel.Results);
-                    Assert.AreEqual("Update GPG download data files", actualManualChangesViewModel.LastTestedCommand);
-                    Assert.IsNull(actualManualChangesViewModel.LastTestedInput);
-                    Assert.True(actualManualChangesViewModel.Tested, "Must be tested=true as this case is running in TEST mode");
-                    Assert.IsNull(actualManualChangesViewModel.Comment);
-                });
-        }
-
-        #endregion
 
         #region "Update search indexes"
 
