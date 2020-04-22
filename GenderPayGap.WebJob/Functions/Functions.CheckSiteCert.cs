@@ -18,9 +18,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(CheckSiteCertAsync), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(CheckSiteCertAsync), startTime);
             try
             {
                 if (Global.CertExpiresWarningDays > 0)
@@ -70,11 +70,11 @@ namespace GenderPayGap.WebJob
                     }
                 }
 
-                LogFunctionEnd(runId, nameof(CheckSiteCertAsync), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(CheckSiteCertAsync), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(CheckSiteCertAsync), startTime, ex);
+                JobHelpers.LogFunctionError(runId, nameof(CheckSiteCertAsync), startTime, ex);
                 //Rethrow the error
                 throw;
             }

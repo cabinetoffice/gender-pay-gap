@@ -18,9 +18,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(SetPresumedScopes), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(SetPresumedScopes), startTime);
             try
             {
                 //Initialise any unknown scope statuses
@@ -35,11 +35,11 @@ namespace GenderPayGap.WebJob
                     await _SearchBusinessLogic.UpdateSearchIndexAsync(changedOrgs.ToArray());
                 }
 
-                LogFunctionEnd(runId, nameof(SetPresumedScopes), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(SetPresumedScopes), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(SetPresumedScopes), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(SetPresumedScopes), startTime, ex );
 
                 //Rethrow the error
                 throw;

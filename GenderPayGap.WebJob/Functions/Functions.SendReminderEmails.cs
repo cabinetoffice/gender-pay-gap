@@ -20,9 +20,9 @@ namespace GenderPayGap.WebJob
 
         public void SendReminderEmails([TimerTrigger("25 * * * *" /* once per hour, at 25 minutes past the hour */)] TimerInfo timer)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(SendReminderEmails), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(SendReminderEmails), startTime);
             
             List<int> reminderDays = GetReminderEmailDays();
             if (reminderDays.Count == 0)
@@ -42,7 +42,7 @@ namespace GenderPayGap.WebJob
             SendReminderEmailsForSectorType(SectorTypes.Private, runId, startTime);
             SendReminderEmailsForSectorType(SectorTypes.Public, runId, startTime);
 
-            LogFunctionEnd(runId, nameof(SendReminderEmails), startTime);
+            JobHelpers.LogFunctionEnd(runId, nameof(SendReminderEmails), startTime);
         }
 
         private void SendReminderEmailsForSectorType(SectorTypes sector, string runId, DateTime startTime)

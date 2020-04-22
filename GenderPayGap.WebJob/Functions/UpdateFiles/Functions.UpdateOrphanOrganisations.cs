@@ -23,9 +23,9 @@ namespace GenderPayGap.WebJob
         {
             string funcName = nameof(UpdateOrphanOrganisationsAsync);
             
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
-            LogFunctionStart(runId,  nameof(UpdateOrphanOrganisationsAsync), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(UpdateOrphanOrganisationsAsync), startTime);
 
             try
             {
@@ -43,11 +43,11 @@ namespace GenderPayGap.WebJob
 
                 await UpdateOrphanOrganisationsAsync(filePath, log);
 
-                LogFunctionEnd(runId, nameof(UpdateOrphanOrganisationsAsync), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(UpdateOrphanOrganisationsAsync), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(UpdateOrphanOrganisationsAsync), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(UpdateOrphanOrganisationsAsync), startTime, ex );
                 
                 //Rethrow the error
                 throw;

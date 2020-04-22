@@ -20,9 +20,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(MergeLogs), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(MergeLogs), startTime);
 
             try
             {
@@ -65,11 +65,11 @@ namespace GenderPayGap.WebJob
 
                 await Task.WhenAll(actions);
 
-                LogFunctionEnd(runId, nameof(MergeLogs), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(MergeLogs), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(MergeLogs), startTime, ex);
+                JobHelpers.LogFunctionError(runId, nameof(MergeLogs), startTime, ex);
 
                 //Rethrow the error
                 throw;

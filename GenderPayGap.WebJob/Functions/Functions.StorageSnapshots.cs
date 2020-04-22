@@ -21,9 +21,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(TakeSnapshotAsync), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(TakeSnapshotAsync), startTime);
             
             try
             {
@@ -78,7 +78,7 @@ namespace GenderPayGap.WebJob
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(TakeSnapshotAsync), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(TakeSnapshotAsync), startTime, ex );
 
                 //Rethrow the error
                 throw;

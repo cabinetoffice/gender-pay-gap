@@ -25,9 +25,9 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task LogEvent([QueueTrigger(QueueNames.LogEvent)] string queueMessage, ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(LogEvent), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(LogEvent), startTime);
 
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
@@ -127,9 +127,9 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task LogRecord([QueueTrigger(QueueNames.LogRecord)] string queueMessage, ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(LogRecord), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(LogRecord), startTime);
 
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);

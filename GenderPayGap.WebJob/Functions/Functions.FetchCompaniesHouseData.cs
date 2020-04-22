@@ -14,19 +14,19 @@ namespace GenderPayGap.WebJob
         [Singleton(Mode = SingletonMode.Listener)]
         public void FetchCompaniesHouseData([TimerTrigger("*/5 * * * *" /* evry 5 minutes */)] TimerInfo timer)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId,  nameof(FetchCompaniesHouseData), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(FetchCompaniesHouseData), startTime);
             
             try
             {
                 UpdateFromCompaniesHouse(runId);
-                
-                LogFunctionEnd(runId, nameof(FetchCompaniesHouseData), startTime);
+
+                JobHelpers.LogFunctionEnd(runId, nameof(FetchCompaniesHouseData), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(FetchCompaniesHouseData), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(FetchCompaniesHouseData), startTime, ex );
                 throw;
             }
         }

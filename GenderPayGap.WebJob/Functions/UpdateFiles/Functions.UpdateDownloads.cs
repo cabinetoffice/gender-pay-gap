@@ -23,9 +23,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(UpdateDownloadFiles), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(UpdateDownloadFiles), startTime);
 
             try
             {
@@ -33,13 +33,13 @@ namespace GenderPayGap.WebJob
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(UpdateDownloadFiles), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(UpdateDownloadFiles), startTime, ex );
           
                 //Rethrow the error
                 throw;
             }
 
-            LogFunctionEnd(runId, nameof(UpdateDownloadFiles), startTime);
+            JobHelpers.LogFunctionEnd(runId, nameof(UpdateDownloadFiles), startTime);
         }
 
         //Update GPG download file

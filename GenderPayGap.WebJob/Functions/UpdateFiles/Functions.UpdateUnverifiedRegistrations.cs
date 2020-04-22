@@ -18,9 +18,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
-            LogFunctionStart(runId,  nameof(UpdateUnverifiedRegistrations), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(UpdateUnverifiedRegistrations), startTime);
             
             try
             {
@@ -34,11 +34,11 @@ namespace GenderPayGap.WebJob
                 }
 
                 await UpdateUnverifiedRegistrationsAsync(log, filePath);
-                LogFunctionEnd(runId, nameof(UpdateUnverifiedRegistrations), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(UpdateUnverifiedRegistrations), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(UpdateUnverifiedRegistrations), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(UpdateUnverifiedRegistrations), startTime, ex );
                 
                 //Rethrow the error
                 throw;
