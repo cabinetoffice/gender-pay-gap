@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GenderPayGap.BusinessLogic;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.Azure.WebJobs;
@@ -10,8 +11,19 @@ using Microsoft.Extensions.Logging;
 namespace GenderPayGap.WebJob
 {
 
-    public partial class Functions
+    public class SetPresumedScopesJob
     {
+        private readonly IScopeBusinessLogic scopeBusinessLogic;
+        private readonly ISearchBusinessLogic searchBusinessLogic;
+
+        public SetPresumedScopesJob(
+            IScopeBusinessLogic scopeBusinessLogic,
+            ISearchBusinessLogic searchBusinessLogic)
+        {
+            this.scopeBusinessLogic = scopeBusinessLogic;
+            this.searchBusinessLogic = searchBusinessLogic;
+        }
+
 
         //Set presumed scope of previous years and current years
         public async Task SetPresumedScopes([TimerTrigger("50 4 * * *" /* 04:50 once per day */)]
@@ -24,15 +36,15 @@ namespace GenderPayGap.WebJob
             try
             {
                 //Initialise any unknown scope statuses
-                HashSet<Organisation> changedOrgs = await _ScopeBL.SetScopeStatusesAsync();
+                HashSet<Organisation> changedOrgs = await scopeBusinessLogic.SetScopeStatusesAsync();
 
                 //Initialise the presumed scoped
-                changedOrgs.AddRange(await _ScopeBL.SetPresumedScopesAsync());
+                changedOrgs.AddRange(await scopeBusinessLogic.SetPresumedScopesAsync());
 
                 //Update the search indexes
                 if (changedOrgs.Count > 0)
                 {
-                    await _SearchBusinessLogic.UpdateSearchIndexAsync(changedOrgs.ToArray());
+                    await searchBusinessLogic.UpdateSearchIndexAsync(changedOrgs.ToArray());
                 }
 
                 JobHelpers.LogFunctionEnd(runId, nameof(SetPresumedScopes), startTime);

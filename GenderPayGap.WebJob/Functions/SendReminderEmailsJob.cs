@@ -10,13 +10,25 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebJob.Services;
 using Microsoft.Azure.WebJobs;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebJob
 {
-    public partial class Functions
+    public class SendReminderEMailsJob
     {
+        private readonly IDataRepository dataRepository;
+        private readonly EmailSendingService emailSendingService;
+
+        public SendReminderEMailsJob(
+            IDataRepository dataRepository,
+            EmailSendingService emailSendingService)
+        {
+            this.dataRepository = dataRepository;
+            this.emailSendingService = emailSendingService;
+        }
+
 
         public void SendReminderEmails([TimerTrigger("25 * * * *" /* once per hour, at 25 minutes past the hour */)] TimerInfo timer)
         {
@@ -51,7 +63,7 @@ namespace GenderPayGap.WebJob
             {
                 DateTime latestReminderEmailDate = GetLatestReminderEmailDate(sector);
 
-                IEnumerable<User> usersUncheckedSinceLatestReminderDate = _DataRepository.GetAll<User>()
+                IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
                     .Where(user => !user.ReminderEmails.Any(re => re.SectorType == sector && re.DateChecked > latestReminderEmailDate));
 
                 foreach (User user in usersUncheckedSinceLatestReminderDate)

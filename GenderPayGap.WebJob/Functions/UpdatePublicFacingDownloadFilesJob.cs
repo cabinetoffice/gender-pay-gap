@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -15,8 +16,15 @@ using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
-    public partial class Functions
+    public class UpdatePublicFacingDownloadFilesJob
     {
+        private readonly IDataRepository dataRepository;
+
+        public UpdatePublicFacingDownloadFilesJob(IDataRepository dataRepository)
+        {
+            this.dataRepository = dataRepository;
+        }
+
 
         //Update data for viewing service
         public async Task UpdateDownloadFiles([TimerTrigger("0 * * * *" /* once per hour, at 0 minutes past the hour */)]
@@ -56,14 +64,14 @@ namespace GenderPayGap.WebJob
             }
 
             CustomLogger.Information("UpdateDownloadFiles: Getting return years");
-            List<int> returnYears = _DataRepository.GetAll<Return>()
+            List<int> returnYears = dataRepository.GetAll<Return>()
                 .Where(r => r.Status == ReturnStatuses.Submitted)
                 .Select(r => r.AccountingDate.Year)
                 .Distinct()
                 .ToList();
 
             CustomLogger.Information($"UpdateDownloadFiles: - Loading Returns");
-            List<Organisation> activeOrganisations = _DataRepository.GetAll<Organisation>()
+            List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.OrganisationAddresses)
