@@ -147,17 +147,15 @@ namespace Account.Controllers.ChangeEmailController
                     UserId = verifiedUser.UserId, NewEmailAddress = testNewEmail, TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var viewResult = await controller.CompleteChangeEmailAsync(code) as ViewResult;
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(
                     It.Is<NotifyEmail>(
                         inst => inst.TemplateId.Contains(EmailTemplates.SendChangeEmailPendingVerificationEmail)
                             ? inst.EmailAddress.Contains(testOldEmail)

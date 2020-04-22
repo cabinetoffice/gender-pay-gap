@@ -379,29 +379,27 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             controller.StashModel(scopingViewModel);
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var result = await controller.ConfirmInScope(string.Empty) as RedirectToActionResult;
 
             // Assert
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.ScopeChangeInEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.ScopeChangeInEmail))),
                 Times.Exactly(2),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.ScopeChangeInEmail}");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
                 Times.Once(),
                 "Expected the other user of the same organisation's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
                 Times.Never,
                 "Do not expect users of other organisations to be in the email send queue");
         }
@@ -447,25 +445,23 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             controller.StashModel(scopingViewModel);
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var result = await controller.ConfirmInScope(string.Empty) as RedirectToActionResult;
 
             // Assert
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
                 Times.Never(),
                 "Do not expect the current user's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
                 Times.Never(),
                 "Do not expect the other user of the same organisation's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
                 Times.Never,
                 "Do not expect users of other organisations to be in the email send queue");
         }
@@ -1188,29 +1184,27 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             controller.StashModel(scopingViewModel);
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var result = await controller.ConfirmOutOfScopeAnswers(string.Empty) as RedirectToActionResult;
 
             // Assert
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.ScopeChangeOutEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.ScopeChangeOutEmail))),
                 Times.Exactly(2),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.ScopeChangeOutEmail}");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
                 Times.Once(),
                 "Expected the other user of the same organisation's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
                 Times.Never,
                 "Do not expect users of other organisations to be in the email send queue");
         }
@@ -1257,25 +1251,23 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             controller.StashModel(scopingViewModel);
 
-            var mockEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockEmailQueue.Object;
-            mockEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var result = await controller.ConfirmOutOfScopeAnswers(string.Empty) as RedirectToActionResult;
 
             // Assert
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
                 Times.Never(),
                 "Do not expect the current user's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
                 Times.Never(),
                 "Do not expect the other user of the same organisation's email address to be in the email send queue");
-            mockEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user3.EmailAddress))),
                 Times.Never,
                 "Do not expect users of other organisations to be in the email send queue");
         }

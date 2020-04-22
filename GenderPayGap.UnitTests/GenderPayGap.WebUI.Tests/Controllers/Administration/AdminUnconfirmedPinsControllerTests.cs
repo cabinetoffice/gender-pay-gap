@@ -83,22 +83,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 userOrganisation,
                 govEqualitiesOfficeUser);
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             await controller.SendPin(user.UserId, organisationId);
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user.EmailAddress))),
                 Times.Once(),
                 "Expected the user's email address to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendPinEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendPinEmail))),
                 Times.Once,
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendPinEmail}");
 
@@ -139,22 +136,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 userOrganisation,
                 govEqualitiesOfficeUser);
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             await controller.SendPin(user.UserId, organisationId);
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user.EmailAddress))),
                 Times.Once(),
                 "Expected the user's email address to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendPinEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendPinEmail))),
                 Times.Once,
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendPinEmail}");
 

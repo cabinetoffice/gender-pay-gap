@@ -1,10 +1,13 @@
 ﻿using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
+using GenderPayGap.WebUI.BackgroundJobs;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
@@ -29,8 +32,12 @@ namespace Account.ViewServices
             mockUserRepo = new Mock<IUserRepository>();
             mockUrlHelper = new Mock<IUrlHelper>();
 
+            var emailSendingService = new EmailSendingService(
+                new Mock<IGovNotifyAPI>().Object,
+                new Mock<IBackgroundJobsApi>().Object);
+
             // service under test
-            testChangeEmailService = new ChangeEmailViewService(mockUserRepo.Object, mockUrlHelper.Object);
+            testChangeEmailService = new ChangeEmailViewService(mockUserRepo.Object, mockUrlHelper.Object, emailSendingService);
         }
 
         [Test]

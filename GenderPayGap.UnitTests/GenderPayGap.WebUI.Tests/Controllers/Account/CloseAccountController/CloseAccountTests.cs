@@ -187,31 +187,29 @@ namespace Account.Controllers.CloseAccountController
                     mockRouteData,
                     verifiedUser);
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             await controller.CloseAccount(new CloseAccountViewModel {EnterPassword = testPassword});
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
                 Times.Once(),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendCloseAccountCompletedEmail}");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(verifiedUser.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(verifiedUser.EmailAddress))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
 
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
                 Times.Never(),
                 $"Didnt expect the GEO Email addresses using {EmailTemplates.SendGeoOrphanOrganisationEmail} to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
                 Times.Never(),
                 "Didnt expect the GEO Email addresses to be in the email send queue");
         }
@@ -229,31 +227,29 @@ namespace Account.Controllers.CloseAccountController
                     registrations);
             var verifiedUser = controller.DataRepository.Get<User>((long) 23322);
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             await controller.CloseAccount(new CloseAccountViewModel {EnterPassword = "ad5bda75-e514-491b-b74d-4672542cbd15"});
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendCloseAccountCompletedEmail))),
                 Times.Once(),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendCloseAccountCompletedEmail}");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(verifiedUser.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(verifiedUser.EmailAddress))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
 
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
                 Times.Once,
                 $"Expect the GEO Email addresses using {EmailTemplates.SendGeoOrphanOrganisationEmail} to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
                 Times.Once,
                 "Expected the GEO Email addresses to be in the email send queue");
         }

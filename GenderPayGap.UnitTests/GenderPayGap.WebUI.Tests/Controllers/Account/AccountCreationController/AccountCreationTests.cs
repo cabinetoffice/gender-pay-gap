@@ -42,10 +42,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             // Required to mock out the Url object when creating the verification URL
             controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            NewUiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var response = (ViewResult) controller.CreateUserAccountPost(new CreateUserAccountViewModel());
@@ -53,13 +51,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             // Assert
             Assert.AreEqual("ConfirmEmailAddress", response.ViewName);
 
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains("test@example.com"))),
+            NewUiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains("test@example.com"))),
                 Times.Once(),
                 "Expected the existingUser1's email address to be in the email send queue");
 
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.AccountVerificationEmail))),
+            NewUiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.AccountVerificationEmail))),
                 Times.Exactly(1),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.AccountVerificationEmail}");
         }
