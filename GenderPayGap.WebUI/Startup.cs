@@ -302,6 +302,7 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<EncryptionHandler>().As<IEncryptionHandler>().SingleInstance();
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
+            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();
 
 
             //Register HttpCache and HttpSession
