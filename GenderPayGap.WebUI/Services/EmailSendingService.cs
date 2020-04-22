@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
 
 namespace GenderPayGap.WebUI.Services
 {
     public class EmailSendingService
     {
+        private readonly IGovNotifyAPI govNotifyApi;
+
+        public EmailSendingService(IGovNotifyAPI govNotifyApi)
+        {
+            this.govNotifyApi = govNotifyApi;
+        }
+
 
         public static async void SendAccountVerificationEmail(string emailAddress, string verificationUrl)
         {
@@ -377,6 +385,36 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
+        public void SendReminderEmail(
+            string emailAddress,
+            string deadlineDate,
+            int daysUntilDeadline,
+            string organisationNames,
+            bool organisationIsSingular,
+            bool organisationIsPlural,
+            string sectorType)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"DeadlineDate", deadlineDate},
+                {"DaysUntilDeadline", daysUntilDeadline},
+                {"OrganisationNames", organisationNames},
+                {"OrganisationIsSingular", organisationIsSingular},
+                {"OrganisationIsPlural", organisationIsPlural},
+                {"SectorType", sectorType},
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.ReminderEmail,
+                Personalisation = personalisation
+            };
+
+            SendEmailDirectly(notifyEmail);
+        }
+
         private static async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
         {
             try
@@ -392,6 +430,11 @@ namespace GenderPayGap.WebUI.Services
             }
 
             return false;
+        }
+
+        private void SendEmailDirectly(NotifyEmail notifyEmail)
+        {
+            govNotifyApi.SendEmail(notifyEmail);
         }
 
         private static string GetEnvironmentNameForTestEnvironments()
@@ -424,6 +467,7 @@ namespace GenderPayGap.WebUI.Services
         public const string SendGeoOrphanOrganisationEmail = "34ca9b32-09d2-4604-80e6-4afdd019d7d2";
         public const string SendGeoOrganisationRegistrationRequestEmail = "3683b65f-9f50-44b8-ae4b-4ae1e84f1a1f";
         public const string SendGeoFirstTimeDataSubmissionEmail = "fecf5ef0-9ecf-494d-891d-8e00847bff31";
+        public const string ReminderEmail = "db15432c-9eda-4df4-ac67-290c7232c546";
 
     }
 

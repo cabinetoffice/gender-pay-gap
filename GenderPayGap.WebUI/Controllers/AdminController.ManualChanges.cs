@@ -43,25 +43,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             return count;
         }
 
-        private async Task<long> UpdateDownloadFilesAsync(string parameters, string comment, StringWriter writer, bool test)
-        {
-            if (!string.IsNullOrWhiteSpace(parameters))
-            {
-                throw new ArgumentException("ERROR: parameters must be empty");
-            }
-
-            long count = await AdminService.GetSearchDocumentCountAsync();
-            if (!test)
-            {
-                await Program.MvcApplication.ExecuteWebjobQueue.AddMessageAsync(
-                    new QueueWrapper($"command=UpdateDownloadFiles&userEmail={CurrentUser.EmailAddress}&comment={comment}"));
-                writer.WriteLine(
-                    $"An email will be sent to '{CurrentUser.EmailAddress}' when the background task '{nameof(UpdateDownloadFilesAsync)}' has completed");
-            }
-
-            return count;
-        }
-        
         public class BulkResult
         {
 
@@ -148,9 +129,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             break;
                         case "Update search indexes":
                             count = await UpdateSearchIndexesAsync(model.Parameters, model.Comment, writer, test);
-                            break;
-                        case "Update GPG download data files":
-                            count = await UpdateDownloadFilesAsync(model.Parameters, model.Comment, writer, test);
                             break;
                         case "Create security code":
                             count = await SecurityCodeWorkAsync(
