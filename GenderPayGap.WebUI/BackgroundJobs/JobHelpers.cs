@@ -3,7 +3,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 
-namespace GenderPayGap.WebUI.BackgroundJobs.Jobs {
+namespace GenderPayGap.WebUI.BackgroundJobs {
 
     internal static class JobHelpers {
 

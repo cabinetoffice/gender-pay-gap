@@ -13,7 +13,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Services;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
+namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class SendReminderEmailsJob
     {
