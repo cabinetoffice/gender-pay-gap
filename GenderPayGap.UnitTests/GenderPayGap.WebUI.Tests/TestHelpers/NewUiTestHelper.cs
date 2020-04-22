@@ -25,10 +25,12 @@ using GenderPayGap.Tests.Common.Mocks;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
+using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.Options;
+using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -54,7 +56,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
     {
         
         public static IContainer DIContainer;
-        
+        public static Mock<IBackgroundJobsApi> MockBackgroundJobsApi;
+
         private const string Url = "https://localhost/";
         public static Uri Uri => new Uri(Url, UriKind.Absolute);
 
@@ -253,7 +256,10 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();
             builder.Register(c => Mock.Of<IUrlHelper>()).SingleInstance();
 
-            //builder.Register(c => new Mock()).As<IFileRepository>();
+            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();
+
+            MockBackgroundJobsApi = new Mock<IBackgroundJobsApi>();
+            builder.Register(c => MockBackgroundJobsApi.Object).As<IBackgroundJobsApi>().InstancePerLifetimeScope();
 
             var environmentMock = new Mock<IHostingEnvironment>();
             environmentMock.SetupGet(m => m.WebRootPath).Returns(Environment.CurrentDirectory);

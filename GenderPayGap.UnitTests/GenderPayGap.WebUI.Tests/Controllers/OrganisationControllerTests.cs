@@ -712,21 +712,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 SnapshotDate = SectorTypes.Private.GetAccountingStartDate()
             });
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var result = await controller.RemoveOrganisation(testModel) as RedirectToActionResult;
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user.EmailAddress))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(
                     It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.RemovedUserFromOrganisationEmail))),
                 Times.Exactly(1),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.RemovedUserFromOrganisationEmail}");
@@ -772,36 +770,34 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 SnapshotDate = SectorTypes.Private.GetAccountingStartDate()
             });
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var result = await controller.RemoveOrganisation(testModel) as RedirectToActionResult;
 
             // Assert$
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user1.EmailAddress))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(
                     It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.RemovedUserFromOrganisationEmail))),
                 Times.Exactly(2),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.RemovedUserFromOrganisationEmail}");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(user2.EmailAddress))),
                 Times.Once(),
                 "Expected the other user of the same organisation's email address to be in the email send queue");
 
             string geoDistributionList = Config.GetAppSetting("GEODistributionList");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
                 Times.Never(),
                 $"Didnt expect the GEO Email addresses using {EmailTemplates.SendGeoOrphanOrganisationEmail} to be in the email send queue");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
                 Times.Never(),
                 "Didnt expect the GEO Email addresses to be in the email send queue");
 

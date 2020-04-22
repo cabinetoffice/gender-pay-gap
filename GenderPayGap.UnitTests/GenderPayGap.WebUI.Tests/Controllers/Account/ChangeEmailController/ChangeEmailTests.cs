@@ -78,10 +78,8 @@ namespace Account.Controllers.ChangeEmailController
                     mockRouteData,
                     verifiedUser);
 
-            var mockNotifyEmailQueue = new Mock<IQueue>();
-            Program.MvcApplication.SendNotifyEmailQueue = mockNotifyEmailQueue.Object;
-            mockNotifyEmailQueue
-                .Setup(q => q.AddMessageAsync(It.IsAny<NotifyEmail>()));
+            UiTestHelper.MockBackgroundJobsApi
+                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             var model = new ChangeEmailViewModel {EmailAddress = testNewEmail, ConfirmEmailAddress = testNewEmail};
 
@@ -89,13 +87,13 @@ namespace Account.Controllers.ChangeEmailController
             var redirectToActionResult = await controller.ChangeEmail(model) as RedirectToActionResult;
 
             // Assert
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(
                     It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendChangeEmailPendingVerificationEmail))),
                 Times.Once(),
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendChangeEmailPendingVerificationEmail}");
-            mockNotifyEmailQueue.Verify(
-                x => x.AddMessageAsync(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(testNewEmail))),
+            UiTestHelper.MockBackgroundJobsApi.Verify(
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(testNewEmail))),
                 Times.Once(),
                 "Expected the current user's email address to be in the email send queue");
 
