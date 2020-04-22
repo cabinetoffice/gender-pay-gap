@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
 
     public class SetPresumedScopesJob
@@ -26,9 +24,7 @@ namespace GenderPayGap.WebJob
 
 
         //Set presumed scope of previous years and current years
-        public async Task SetPresumedScopes([TimerTrigger("50 4 * * *" /* 04:50 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+        public async Task SetPresumedScopes()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;

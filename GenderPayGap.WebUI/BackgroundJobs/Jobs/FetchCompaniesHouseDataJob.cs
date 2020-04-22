@@ -6,9 +6,8 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.Azure.WebJobs;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
     public class FetchCompaniesHouseDataJob
     {
@@ -24,8 +23,7 @@ namespace GenderPayGap.WebJob
         }
 
 
-        [Singleton(Mode = SingletonMode.Listener)]
-        public void FetchCompaniesHouseData([TimerTrigger("*/5 * * * *" /* evry 5 minutes */)] TimerInfo timer)
+        public void FetchCompaniesHouseData()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;

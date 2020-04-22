@@ -7,12 +7,10 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
     public class PurgeRegistrationsJob
     {
@@ -26,7 +24,7 @@ namespace GenderPayGap.WebJob
 
 
         //Remove any incomplete registrations
-        public async Task PurgeRegistrations([TimerTrigger("50 3 * * *" /* 03:50 once per day */)] TimerInfo timer, ILogger log)
+        public async Task PurgeRegistrations()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;

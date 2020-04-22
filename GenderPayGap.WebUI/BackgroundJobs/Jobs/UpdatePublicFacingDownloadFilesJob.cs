@@ -10,11 +10,9 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
     public class UpdatePublicFacingDownloadFilesJob
     {
@@ -27,9 +25,7 @@ namespace GenderPayGap.WebJob
 
 
         //Update data for viewing service
-        public async Task UpdateDownloadFiles([TimerTrigger("0 * * * *" /* once per hour, at 0 minutes past the hour */)]
-            TimerInfo timer,
-            ILogger log)
+        public async Task UpdateDownloadFiles()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
@@ -37,7 +33,7 @@ namespace GenderPayGap.WebJob
 
             try
             {
-                await UpdateDownloadFilesAsync(log);
+                await UpdateDownloadFilesAsync();
             }
             catch (Exception ex)
             {
@@ -51,7 +47,7 @@ namespace GenderPayGap.WebJob
         }
 
         //Update GPG download file
-        public async Task UpdateDownloadFilesAsync(ILogger log)
+        public async Task UpdateDownloadFilesAsync()
         {
             CustomLogger.Information("UpdateDownloadFiles: Checking there is a directory");
             //Get the downloads location
@@ -117,7 +113,7 @@ namespace GenderPayGap.WebJob
                 }
                 catch (Exception ex)
                 {
-                    log.LogError(ex, ex.Message);
+                    CustomLogger.Error(ex.Message, new {Error = ex});
                 }
                 CustomLogger.Information($"UpdateDownloadFiles: Done for year {year}");
             }

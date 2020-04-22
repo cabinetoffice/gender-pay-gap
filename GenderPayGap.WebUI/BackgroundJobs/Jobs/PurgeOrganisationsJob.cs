@@ -9,12 +9,10 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
     public class PurgeOrganisationsJob
     {
@@ -28,9 +26,7 @@ namespace GenderPayGap.WebJob
 
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeOrganisations([TimerTrigger("20 4 * * *" /* 04:20 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+        public async Task PurgeOrganisations()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
@@ -93,9 +89,13 @@ namespace GenderPayGap.WebJob
                                 catch (Exception ex)
                                 {
                                     dataRepository.RollbackTransaction();
-                                    log.LogError(
-                                        ex,
-                                        $"{nameof(PurgeOrganisations)}: Failed to purge organisation {org.OrganisationId} '{org.OrganisationName}' ERROR: {ex.Message}:{ex.GetDetailsText()}");
+                                    CustomLogger.Error(
+                                        $"{nameof(PurgeOrganisations)}: Failed to purge organisation {org.OrganisationId} '{org.OrganisationName}' "
+                                        + $"ERROR: {ex.Message}:{ex.GetDetailsText()}",
+                                        new
+                                        {
+                                            Error = ex
+                                        });
                                 }
                             });
                         //Remove this organisation from the search index

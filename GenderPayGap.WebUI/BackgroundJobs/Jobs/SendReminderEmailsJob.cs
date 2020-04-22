@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
@@ -10,18 +9,17 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebJob.Services;
-using Microsoft.Azure.WebJobs;
+using GenderPayGap.WebUI.Services;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
-    public class SendReminderEMailsJob
+    public class SendReminderEmailsJob
     {
         private readonly IDataRepository dataRepository;
         private readonly EmailSendingService emailSendingService;
 
-        public SendReminderEMailsJob(
+        public SendReminderEmailsJob(
             IDataRepository dataRepository,
             EmailSendingService emailSendingService)
         {
@@ -30,7 +28,7 @@ namespace GenderPayGap.WebJob
         }
 
 
-        public void SendReminderEmails([TimerTrigger("25 * * * *" /* once per hour, at 25 minutes past the hour */)] TimerInfo timer)
+        public void SendReminderEmails()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;

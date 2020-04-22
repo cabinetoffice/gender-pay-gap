@@ -9,12 +9,10 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.WebJob
+namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
 {
     public class PurgeUsersJob
     {
@@ -27,7 +25,7 @@ namespace GenderPayGap.WebJob
 
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeUsers([TimerTrigger("40 3 * * *" /* 03:40 once per day */)] TimerInfo timer, ILogger log)
+        public async Task PurgeUsers()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
@@ -76,7 +74,7 @@ namespace GenderPayGap.WebJob
 
         private static void DeleteUserAndAuditLogs(User user)
         {
-            var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
+            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
 
             List<AuditLog> auditLogs = dataRepository
                 .GetAll<AuditLog>()
