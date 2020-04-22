@@ -22,18 +22,18 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(UpdateSearchAsync), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(UpdateSearchAsync), startTime);
 
             try
             {
                 await UpdateAllSearchIndexesAsync(log);
-                LogFunctionEnd(runId, nameof(UpdateSearchAsync), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(UpdateSearchAsync), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(UpdateSearchAsync), startTime, ex);
+                JobHelpers.LogFunctionError(runId, nameof(UpdateSearchAsync), startTime, ex);
 
                 //Rethrow the error
                 throw;

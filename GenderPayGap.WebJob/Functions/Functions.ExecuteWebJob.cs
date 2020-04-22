@@ -21,9 +21,9 @@ namespace GenderPayGap.WebJob
             string queueMessage,
             ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
-            LogFunctionStart(runId, nameof(ExecuteWebjob), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(ExecuteWebjob), startTime);
 
             var wrapper = JsonConvert.DeserializeObject<QueueWrapper>(queueMessage);
             wrapper.Message = JsonConvert.DeserializeObject<string>(wrapper.Message);

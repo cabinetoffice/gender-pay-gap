@@ -18,9 +18,9 @@ namespace GenderPayGap.WebJob
             TimerInfo timer,
             ILogger log)
         {
-            var runId = CreateRunId();
+            var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
-            LogFunctionStart(runId,  nameof(UpdateUsersToSendInfo), startTime);
+            JobHelpers.LogFunctionStart(runId,  nameof(UpdateUsersToSendInfo), startTime);
             
             try
             {
@@ -33,11 +33,11 @@ namespace GenderPayGap.WebJob
                 }
 
                 await UpdateUsersToSendInfoAsync(filePath);
-                LogFunctionEnd(runId, nameof(UpdateUsersToSendInfo), startTime);
+                JobHelpers.LogFunctionEnd(runId, nameof(UpdateUsersToSendInfo), startTime);
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, nameof(UpdateUsersToSendInfo), startTime, ex );
+                JobHelpers.LogFunctionError(runId, nameof(UpdateUsersToSendInfo), startTime, ex );
                 
                 //Rethrow the error
                 throw;

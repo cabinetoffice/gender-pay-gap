@@ -25,9 +25,9 @@ namespace GenderPayGap.WebJob
             CloudQueueMessage queueMessage,
             ILogger log)
         {
-            string runId = CreateRunId();
+            string runId = JobHelpers.CreateRunId();
             DateTime startTime = DateTime.Now;
-            LogFunctionStart(runId, nameof(SendNotifyEmail), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(SendNotifyEmail), startTime);
 
             NotifyEmail notifyEmail;
             try
