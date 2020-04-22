@@ -19,11 +19,16 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 
     public class ChangeEmailViewService : IChangeEmailViewService
     {
+        private readonly EmailSendingService emailSendingService;
 
-        public ChangeEmailViewService(IUserRepository userRepo, IUrlHelper urlHelper)
+        public ChangeEmailViewService(
+            IUserRepository userRepo,
+            IUrlHelper urlHelper,
+            EmailSendingService emailSendingService)
         {
             UserRepository = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
             UrlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
+            this.emailSendingService = emailSendingService;
         }
 
         public async Task<ModelStateDictionary> InitiateChangeEmailAsync(string newEmailAddress, User currentUser)
@@ -114,16 +119,16 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             string returnVerifyUrl = GenerateChangeEmailVerificationUrl(code);
 
             // queue email
-            EmailSendingService.SendChangeEmailPendingVerificationEmail(newEmailAddress, returnVerifyUrl);
+            emailSendingService.SendChangeEmailPendingVerificationEmail(newEmailAddress, returnVerifyUrl);
         }
 
         private void SendChangeEmailCompleted(string newOldAddress, string newEmailAddress)
         {
             // send to old email
-            EmailSendingService.SendChangeEmailCompletedNotificationEmail(newOldAddress);
+            emailSendingService.SendChangeEmailCompletedNotificationEmail(newOldAddress);
 
             // send to new email
-            EmailSendingService.SendChangeEmailCompletedVerificationEmail(newEmailAddress);
+            emailSendingService.SendChangeEmailCompletedVerificationEmail(newEmailAddress);
         }
 
         private string CreateEmailVerificationCode(string newEmailAddress, User user)

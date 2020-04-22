@@ -28,6 +28,7 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         private readonly PinInThePostService pinInThePostService;
+        private readonly EmailSendingService emailSendingService;
 
         #region Constructors
 
@@ -43,8 +44,10 @@ namespace GenderPayGap.WebUI.Controllers
             IDataRepository dataRepository,
             IWebTracker webTracker,
             PinInThePostService pinInThePostService,
+            EmailSendingService emailSendingService,
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
-            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository) : base(
+            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository)
+            : base(
             logger,
             cache,
             session,
@@ -59,6 +62,7 @@ namespace GenderPayGap.WebUI.Controllers
             PublicSectorRepository = publicSectorRepository;
             UserRepository = userRepository;
             this.pinInThePostService = pinInThePostService;
+            this.emailSendingService = emailSendingService;
         }
 
         #endregion
@@ -390,7 +394,7 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 resetCode = Encryption.EncryptQuerystring(currentUser.UserId + ":" + VirtualDateTime.Now.ToSmallDateTime());
                 string resetUrl = Url.Action("NewPassword", "Register", new { code = resetCode }, "https");
-                EmailSendingService.SendResetPasswordVerificationEmail(currentUser.EmailAddress, resetUrl);
+                emailSendingService.SendResetPasswordVerificationEmail(currentUser.EmailAddress, resetUrl);
 
                 _logger.LogInformation(
                     "Password reset sent",
@@ -525,7 +529,7 @@ namespace GenderPayGap.WebUI.Controllers
             await DataRepository.SaveChangesAsync();
 
             //Send completed notification email
-            EmailSendingService.SendResetPasswordCompletedEmail(currentUser.EmailAddress);
+            emailSendingService.SendResetPasswordCompletedEmail(currentUser.EmailAddress);
 
             //Send the verification code and showconfirmation
             return View("CustomError", new ErrorViewModel(1127));

@@ -24,11 +24,16 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly AuditLogger auditLogger;
         private readonly IDataRepository dataRepository;
+        private readonly EmailSendingService emailSendingService;
 
-        public AdminRemoveUserFromOrganisationController(IDataRepository dataRepository, AuditLogger auditLogger)
+        public AdminRemoveUserFromOrganisationController(
+            IDataRepository dataRepository,
+            AuditLogger auditLogger,
+            EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
+            this.emailSendingService = emailSendingService;
         }
 
         // When coming from the Organisation page
@@ -121,7 +126,7 @@ namespace GenderPayGap.WebUI.Controllers
             await dataRepository.SaveChangesAsync();
 
             // Email user that has been unregistered
-            EmailSendingService.SendRemovedUserFromOrganisationEmail(
+            emailSendingService.SendRemovedUserFromOrganisationEmail(
                 user.EmailAddress,
                 organisation.OrganisationName,
                 user.Fullname);
@@ -130,7 +135,7 @@ namespace GenderPayGap.WebUI.Controllers
             IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations.Select(uo => uo.User.EmailAddress);
             foreach (string emailAddress in emailAddressesForOrganisation)
             {
-                EmailSendingService.SendRemovedUserFromOrganisationEmail(
+                emailSendingService.SendRemovedUserFromOrganisationEmail(
                     emailAddress,
                     organisation.OrganisationName,
                     user.Fullname);
@@ -139,7 +144,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Send the notification to GEO for each newly orphaned organisation
             if (organisation.GetIsOrphan())
             {
-                EmailSendingService.SendGeoOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), organisation.OrganisationName);
+                emailSendingService.SendGeoOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), organisation.OrganisationName);
             }
 
             // Audit log

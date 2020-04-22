@@ -1373,7 +1373,7 @@ namespace GenderPayGap.WebUI.Controllers
                 if (model.IsFastTrackAuthorised)
                 {
                     //Send notification email to existing users
-                    EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User);
+                    EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User, emailSendingService);
                 }
 
                 this.StashModel(
@@ -1879,7 +1879,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return;
             }
 
-            EmailSendingService.SendGeoOrganisationRegistrationRequestEmail(
+            emailSendingService.SendGeoOrganisationRegistrationRequestEmail(
                 Config.GetAppSetting("GEODistributionList"),
                 contactName,
                 reportingOrg,

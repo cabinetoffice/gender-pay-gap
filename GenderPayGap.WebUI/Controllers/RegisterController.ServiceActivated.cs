@@ -181,7 +181,7 @@ namespace GenderPayGap.WebUI.Controllers
                 result1 = RedirectToAction("ServiceActivated");
 
                 //Send notification email to existing users 
-                EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User);
+                EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User, emailSendingService);
             }
             else
             {

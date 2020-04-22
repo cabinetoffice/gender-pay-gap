@@ -20,11 +20,16 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         private readonly IDataRepository dataRepository;
         private readonly AuditLogger auditLogger;
+        private readonly EmailSendingService emailSendingService;
 
-        public AdminUserResendVerificationEmailController(IDataRepository dataRepository, AuditLogger auditLogger)
+        public AdminUserResendVerificationEmailController(
+            IDataRepository dataRepository,
+            AuditLogger auditLogger,
+            EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
+            this.emailSendingService = emailSendingService;
         }
 
         [HttpGet("user/{id}/resend-verification-email")]
@@ -82,7 +87,7 @@ namespace GenderPayGap.WebUI.Models.Admin
                 new {code = verificationCode},
                 "https");
             
-            EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
+            emailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
             user.EmailVerifyHash = verificationCode;
             user.EmailVerifySendDate = VirtualDateTime.Now;
 

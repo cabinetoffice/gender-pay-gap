@@ -22,14 +22,17 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private readonly IDataRepository dataRepository;
         private readonly IOrganisationBusinessLogic organisationBusinessLogic;
+        private readonly EmailSendingService emailSendingService;
 
         public AdminUnconfirmedPinsController(
             IDataRepository dataRepository,
-            IOrganisationBusinessLogic organisationBusinessLogic
+            IOrganisationBusinessLogic organisationBusinessLogic,
+            EmailSendingService emailSendingService
         )
         {
             this.dataRepository = dataRepository;
             this.organisationBusinessLogic = organisationBusinessLogic;
+            this.emailSendingService = emailSendingService;
         }
 
         [HttpGet("unconfirmed-pins")]
@@ -70,7 +73,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             userOrganisation.PINSentDate = VirtualDateTime.Now;
             await dataRepository.SaveChangesAsync();
 
-            EmailSendingService.SendPinEmail(
+            emailSendingService.SendPinEmail(
                 userOrganisation.User.EmailAddress,
                 userOrganisation.PIN,
                 userOrganisation.Organisation.OrganisationName);

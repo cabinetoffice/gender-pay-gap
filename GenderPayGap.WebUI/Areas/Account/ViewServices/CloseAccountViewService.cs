@@ -18,13 +18,17 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
     public class CloseAccountViewService : ICloseAccountViewService
     {
 
+        private readonly EmailSendingService emailSendingService;
+
         public CloseAccountViewService(IUserRepository userRepository,
             IRegistrationRepository registrationRepository,
-            ILogger<CloseAccountViewService> logger)
+            ILogger<CloseAccountViewService> logger,
+            EmailSendingService emailSendingService)
         {
             UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             RegistrationRepository = registrationRepository ?? throw new ArgumentNullException(nameof(registrationRepository));
             Logger = logger;
+            this.emailSendingService = emailSendingService;
         }
 
         public async Task<ModelStateDictionary> CloseAccountAsync(User userToRetire, string currentPassword, User actionByUser)
@@ -70,12 +74,12 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                 });
 
             // Create the close account notification to user
-            EmailSendingService.SendCloseAccountCompletedEmail(userToRetire.EmailAddress);
+            emailSendingService.SendCloseAccountCompletedEmail(userToRetire.EmailAddress);
 
             //Create the notification to GEO for each newly orphaned organisation
             userOrgs.Where(org => org.GetIsOrphan())
                 .ForEach(
-                    org => EmailSendingService.SendGeoOrphanOrganisationEmail(
+                    org => emailSendingService.SendGeoOrphanOrganisationEmail(
                         Config.GetAppSetting("GEODistributionList"),
                         org.OrganisationName));
 

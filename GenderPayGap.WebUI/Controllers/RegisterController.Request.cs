@@ -568,7 +568,7 @@ namespace GenderPayGap.WebUI.Controllers
             await DataRepository.SaveChangesAsync();
 
             //Send notification email to existing users 
-            EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User);
+            EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User, emailSendingService);
 
             //Ensure the organisation has an employer reference
             if (userOrg.PINConfirmedDate.HasValue && string.IsNullOrWhiteSpace(userOrg.Organisation.EmployerReference))
@@ -596,7 +596,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Send an acceptance link to the email address
             string returnUrl = Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
-            EmailSendingService.SendOrganisationRegistrationApprovedEmail(emailAddress, returnUrl);
+            emailSendingService.SendOrganisationRegistrationApprovedEmail(emailAddress, returnUrl);
         }
 
         /// <summary>
@@ -747,7 +747,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Send a verification link to the email address
-            EmailSendingService.SendOrganisationRegistrationDeclinedEmail(emailAddress, reason);
+            emailSendingService.SendOrganisationRegistrationDeclinedEmail(emailAddress, reason);
         }
 
         /// <summary>

@@ -18,10 +18,14 @@ namespace GenderPayGap.WebUI.Controllers.Account
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly EmailSendingService emailSendingService;
 
-        public AccountCreationController(IDataRepository dataRepository)
+        public AccountCreationController(
+            IDataRepository dataRepository,
+            EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
+            this.emailSendingService = emailSendingService;
         }
         
         [HttpGet("/already-created-an-account-question")]
@@ -201,7 +205,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             try
             {
-                EmailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
+                emailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
                 user.EmailVerifyHash = verificationCode;
                 user.EmailVerifySendDate = VirtualDateTime.Now;
 

@@ -27,6 +27,8 @@ namespace GenderPayGap.WebUI.Controllers
     public partial class OrganisationController : BaseController
     {
 
+        private readonly EmailSendingService emailSendingService;
+
         #region Constructors
 
         public OrganisationController(
@@ -40,6 +42,7 @@ namespace GenderPayGap.WebUI.Controllers
             IDataRepository dataRepository,
             IRegistrationRepository registrationRepository,
             IWebTracker webTracker,
+            EmailSendingService emailSendingService,
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
             [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository) : base(
             logger,
@@ -55,6 +58,7 @@ namespace GenderPayGap.WebUI.Controllers
             PrivateSectorRepository = privateSectorRepository;
             PublicSectorRepository = publicSectorRepository;
             RegistrationRepository = registrationRepository;
+            this.emailSendingService = emailSendingService;
         }
 
         #endregion
@@ -511,7 +515,7 @@ namespace GenderPayGap.WebUI.Controllers
             await RegistrationRepository.RemoveRegistrationAsync(userOrgToUnregister, actionByUser);
 
             // Email user that has been unregistered
-            EmailSendingService.SendRemovedUserFromOrganisationEmail(
+            emailSendingService.SendRemovedUserFromOrganisationEmail(
                 userToUnregister.EmailAddress,
                 orgToRemove.OrganisationName,
                 userToUnregister.Fullname);
@@ -520,7 +524,7 @@ namespace GenderPayGap.WebUI.Controllers
             IEnumerable<string> emailAddressesForOrganisation = orgToRemove.UserOrganisations.Select(uo => uo.User.EmailAddress);
             foreach (string emailAddress in emailAddressesForOrganisation)
             {
-                EmailSendingService.SendRemovedUserFromOrganisationEmail(
+                emailSendingService.SendRemovedUserFromOrganisationEmail(
                     emailAddress,
                     orgToRemove.OrganisationName,
                     userToUnregister.Fullname);
@@ -529,7 +533,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Send the notification to GEO for each newly orphaned organisation
             if (orgToRemove.GetIsOrphan())
             {
-                EmailSendingService.SendGeoOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), orgToRemove.OrganisationName);
+                emailSendingService.SendGeoOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), orgToRemove.OrganisationName);
             }
 
             //Make sure this organisation is no longer selected
