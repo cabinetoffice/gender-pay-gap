@@ -1,4 +1,6 @@
-﻿using GenderPayGap.WebUI.BackgroundJobs.Jobs;
+﻿using GenderPayGap.Core.Classes;
+using GenderPayGap.WebUI.BackgroundJobs.QueueBasedJobs;
+using GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs;
 using Hangfire;
 
 namespace GenderPayGap.WebUI.BackgroundJobs
@@ -47,6 +49,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs
                 "50 4 * * *" /* 04:50 once per day */);
         }
 
+        public static void AddEmailToQueue(NotifyEmail notifyEmail)
+        {
+            BackgroundJob.Enqueue<SendNotifyEmailJob>(
+                j => j.SendNotifyEmail(notifyEmail));
+        }
     }
 
     internal class ScheduledJobIds

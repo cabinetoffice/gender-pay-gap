@@ -5,6 +5,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.BackgroundJobs;
 
 namespace GenderPayGap.WebUI.Services
 {
@@ -385,6 +386,24 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
+        private static async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
+        {
+            try
+            {
+                BackgroundJobsApi.AddEmailToQueue(notifyEmail);
+
+                CustomLogger.Information("Successfully queued Notify email", new {notifyEmail});
+                return true;
+            }
+            catch (Exception ex)
+            {
+                CustomLogger.Error("Failed to queue Notify email", new {Exception = ex});
+            }
+
+            return false;
+        }
+
+
         public void SendReminderEmail(
             string emailAddress,
             string deadlineDate,
@@ -415,21 +434,9 @@ namespace GenderPayGap.WebUI.Services
             SendEmailDirectly(notifyEmail);
         }
 
-        private static async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
+        public void SendEmailFromQueue(NotifyEmail notifyEmail)
         {
-            try
-            {
-                await Program.MvcApplication.SendNotifyEmailQueue.AddMessageAsync(notifyEmail);
-
-                CustomLogger.Information("Successfully added message to SendNotifyEmail Queue", new {notifyEmail});
-                return true;
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error("Failed to add message to SendNotifyEmail Queue", new {Exception = ex});
-            }
-
-            return false;
+            SendEmailDirectly(notifyEmail);
         }
 
         private void SendEmailDirectly(NotifyEmail notifyEmail)
