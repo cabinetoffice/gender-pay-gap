@@ -58,7 +58,6 @@ namespace GenderPayGap.WebJob
         {
             // Need to register webJob class in Autofac as well
             builder.RegisterType<Functions>().InstancePerDependency();
-            builder.RegisterType<DisableWebjobProvider>().SingleInstance();
 
             builder.Register(c => new SqlRepository(new GpgDatabaseContext(Global.DatabaseConnectionString)))
                 .As<IDataRepository>()

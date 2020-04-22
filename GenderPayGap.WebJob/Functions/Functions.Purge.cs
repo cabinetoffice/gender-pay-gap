@@ -232,36 +232,6 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        //Remove test users and organisations
-        [Disable(typeof(DisableWebjobProvider))]
-        public async Task PurgeTestDataAsync([TimerTrigger("40 4 * * *" /* 04:40 once per day */)]
-            TimerInfo timer,
-            ILogger log)
-        {
-            if (Config.IsProduction())
-            {
-                return;
-            }
-            
-            var runId = JobHelpers.CreateRunId();
-            var startTime = DateTime.Now;
-            JobHelpers.LogFunctionStart(runId,  nameof(PurgeTestDataAsync), startTime);
-
-            try
-            {
-                GpgDatabaseContext.DeleteAllTestRecords(VirtualDateTime.Now.AddDays(-1));
-
-                JobHelpers.LogFunctionEnd(runId, nameof(PurgeTestDataAsync), startTime);
-            }
-            catch (Exception ex)
-            {
-                JobHelpers.LogFunctionError(runId, nameof(PurgeTestDataAsync), startTime, ex );
-
-                //Rethrow the error
-                throw;
-            }
-        }
-
     }
 
 }
