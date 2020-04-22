@@ -1,9 +1,10 @@
-﻿using GenderPayGap.Core;
+﻿using Autofac;
+using GenderPayGap.Core;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GenderPayGap.WebUI.ScheduledJobs.HangfireConfiguration
+namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
 {
     public static class HangfireConfigurationHelper
     {
@@ -14,11 +15,18 @@ namespace GenderPayGap.WebUI.ScheduledJobs.HangfireConfiguration
             services.AddHangfireServer();
         }
 
+        public static void ConfigureIOC(IContainer container)
+        {
+            GlobalConfiguration.Configuration.UseAutofacActivator(container);
+        }
+
         public static void ConfigureApp(IApplicationBuilder app)
         {
             app.UseHangfireDashboard(
                 "/admin/hangfire",
                 new DashboardOptions {Authorization = new[] {new HangfireAuthorisationFilter()}, AppPath = "/admin"});
+
+            BackgroundJobsApi.InitialiseScheduledJobs();
         }
 
     }

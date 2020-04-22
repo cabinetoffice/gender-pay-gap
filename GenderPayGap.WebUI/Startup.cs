@@ -24,11 +24,11 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Infrastructure.AzureQueues.Extensions;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
+using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Options;
-using GenderPayGap.WebUI.ScheduledJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -354,6 +354,8 @@ namespace GenderPayGap.WebUI
                         AutoMapperInitialised = true;
                     });
             }
+
+            HangfireConfigurationHelper.ConfigureIOC(container);
 
             return container;
         }
