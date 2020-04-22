@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using Hangfire.Dashboard;
 
-namespace GenderPayGap.WebUI.ScheduledJobs.HangfireConfiguration
+namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
 {
     public class HangfireAuthorisationFilter : IDashboardAuthorizationFilter
     {
