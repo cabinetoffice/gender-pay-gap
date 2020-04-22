@@ -5,6 +5,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebJob.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -12,8 +13,15 @@ using Newtonsoft.Json;
 
 namespace GenderPayGap.WebJob
 {
-    public partial class Functions
+    public class SendNotifyEmailJob
     {
+        private readonly EmailSendingService emailSendingService;
+
+        public SendNotifyEmailJob(EmailSendingService emailSendingService)
+        {
+            this.emailSendingService = emailSendingService;
+        }
+
 
         /// <summary>
         ///     Handling healthy queued Notify email messages. After 5 failed attempts message is added to poisoned queue.
