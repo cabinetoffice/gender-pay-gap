@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
@@ -158,7 +159,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.Jobs
                 EmailSent = wasAnEmailSent
             };
 
-            var dataRepository = Program.ContainerIOC.Resolve<IDataRepository>();
+            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
             dataRepository.Insert(reminderEmailRecord);
             dataRepository.SaveChangesAsync().Wait();
         }
