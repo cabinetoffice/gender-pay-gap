@@ -227,7 +227,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             if (Global.EnableSubmitAlerts
                 && postedReturn.Organisation.Returns.Count(r => r.AccountingDate == postedReturn.AccountingDate) == 1)
             {
-                EmailSendingService.SendGeoFirstTimeDataSubmissionEmail(
+                emailSendingService.SendGeoFirstTimeDataSubmissionEmail(
                     Config.GetAppSetting("GEODistributionList"),
                     postedReturn.AccountingDate.Year.ToString(),
                     postedReturn.Organisation.OrganisationName,
@@ -242,7 +242,8 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             EmailSendingServiceHelpers.SendSuccessfulSubmissionEmailToRegisteredUsers(
                 postedReturn,
                 GetReportLink(postedReturn),
-                GetSubmittedOrUpdated(postedReturn));
+                GetSubmittedOrUpdated(postedReturn),
+                emailSendingService);
 
             await submissionService.DiscardDraftFileAsync(postedReturnViewModel);
 

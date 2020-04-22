@@ -14,9 +14,14 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
     public class ChangePasswordViewService : IChangePasswordViewService
     {
 
-        public ChangePasswordViewService(IUserRepository userRepo)
+        private readonly EmailSendingService emailSendingService;
+
+        public ChangePasswordViewService(
+            IUserRepository userRepo,
+            EmailSendingService emailSendingService)
         {
             UserRepository = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
+            this.emailSendingService = emailSendingService;
         }
 
         private IUserRepository UserRepository { get; }
@@ -44,7 +49,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             UserRepository.UpdatePassword(currentUser, newPassword);
 
             // send password change notification
-            EmailSendingService.SendChangePasswordCompletedEmail(currentUser.EmailAddress);
+            emailSendingService.SendChangePasswordCompletedEmail(currentUser.EmailAddress);
 
             return errorState;
         }

@@ -23,6 +23,7 @@ namespace GenderPayGap.WebUI.Controllers
     [Route("scope")]
     public class ScopeController : BaseController
     {
+        private readonly EmailSendingService emailSendingService;
 
         #region Constructors
 
@@ -32,9 +33,12 @@ namespace GenderPayGap.WebUI.Controllers
             IHttpSession session,
             IScopePresentation scopeUI,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker)
+            IWebTracker webTracker,
+            EmailSendingService emailSendingService)
+            : base(logger, cache, session, dataRepository, webTracker)
         {
             ScopePresentation = scopeUI;
+            this.emailSendingService = emailSendingService;
         }
 
         #endregion
@@ -215,7 +219,7 @@ namespace GenderPayGap.WebUI.Controllers
                 IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations.Select(uo => uo.User.EmailAddress);
                 foreach (string emailAddress in emailAddressesForOrganisation)
                 {
-                    EmailSendingService.SendScopeChangeInEmail(emailAddress, organisation.OrganisationName);
+                    emailSendingService.SendScopeChangeInEmail(emailAddress, organisation.OrganisationName);
                 }
             }
 
@@ -385,7 +389,7 @@ namespace GenderPayGap.WebUI.Controllers
                 IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations.Select(uo => uo.User.EmailAddress);
                 foreach (string emailAddress in emailAddressesForOrganisation)
                 {
-                    EmailSendingService.SendScopeChangeOutEmail(emailAddress, organisation.OrganisationName);
+                    emailSendingService.SendScopeChangeOutEmail(emailAddress, organisation.OrganisationName);
                 }
             }
 

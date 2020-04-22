@@ -24,6 +24,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Infrastructure.AzureQueues.Extensions;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
+using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
@@ -301,8 +302,9 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<InternalObfuscator>().As<IObfuscator>().SingleInstance();
             builder.RegisterType<EncryptionHandler>().As<IEncryptionHandler>().SingleInstance();
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
-            builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
-            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();
+            builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();
+            builder.RegisterType<BackgroundJobsApi>().As<IBackgroundJobsApi>().InstancePerLifetimeScope();
 
 
             //Register HttpCache and HttpSession

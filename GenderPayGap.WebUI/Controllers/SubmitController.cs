@@ -7,6 +7,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Services;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,17 +22,10 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         public delegate bool IsPageChanged(ReturnViewModel postedReturnViewModel, ReturnViewModel stashedReturnViewModel);
 
         public readonly ISubmissionService submissionService;
-        //public ISubmissionBusinessLogic _submissionBusinessLogic;
-        //public IFileRepository _fileRepository;
+
+        private readonly EmailSendingService emailSendingService;
 
         #region Initialisation
-
-        //public SubmitController(ISubmissionService submitService, IFileRepository fileRepository, ISubmissionBusinessLogic submissionBusinessLogic)
-        //{
-        //    submissionService = submitService;
-        //    //_fileRepository = fileRepository;
-        //    //_submissionBusinessLogic = submissionBusinessLogic;
-        //}
 
         #region Constructors
 
@@ -41,9 +35,12 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             IHttpSession session,
             ISubmissionService submitService,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker)
+            IWebTracker webTracker,
+            EmailSendingService emailSendingService)
+            : base(logger, cache, session, dataRepository, webTracker)
         {
             submissionService = submitService;
+            this.emailSendingService = emailSendingService;
         }
 
         #endregion
