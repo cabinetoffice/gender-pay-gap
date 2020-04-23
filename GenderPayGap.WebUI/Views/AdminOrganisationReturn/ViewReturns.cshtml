@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.Database
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -58,7 +59,9 @@
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Reporting year</th>
-                    <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions that apply to all Returns for this reporting year</span></th>
+                    <th scope="col" class="govuk-table__header">
+                        <span class="govuk-visually-hidden">Actions that apply to all Returns for this reporting year</span>
+                    </th>
                     <th scope="col" class="govuk-table__header">Modified</th>
                     <th scope="col" class="govuk-table__header">Modifications</th>
                     <th scope="col" class="govuk-table__header">Status</th>
@@ -97,12 +100,15 @@
                                         <span style="white-space: nowrap">Public page</span>
                                         <span class="govuk-visually-hidden">for reporting year @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)</span>
                                     </a>
-                                    <br/>
-                                    <a href="@Url.Action("DeleteReturnsOfAYearGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
-                                       class="govuk-link" style="font-weight: normal">
-                                        <span style="white-space: nowrap">Delete returns</span>
-                                        <span class="govuk-visually-hidden">for reporting year @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)</span>
-                                    </a>
+                                    @if (Model.Returns.Any(r => r.Status != ReturnStatuses.Deleted))
+                                    {
+                                        <br/>
+                                        <a href="@Url.Action("DeleteReturnsOfAYearGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
+                                           class="govuk-link" style="font-weight: normal">
+                                            <span style="white-space: nowrap">Delete returns</span>
+                                            <span class="govuk-visually-hidden">for reporting year @(returnForYear.AccountingDate.Year)-@((returnForYear.AccountingDate.Year + 1) % 100)</span>
+                                        </a>
+                                    }
                                 </span>
                             </td>
                         }
@@ -131,10 +137,13 @@
                         </td>
                         <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
                         <td class="govuk-table__cell">
-                            <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year, returnId = returnForYear.ReturnId})"
-                               class="govuk-link">
-                                Delete
-                            </a>
+                            @if (returnForYear.Status != ReturnStatuses.Deleted)
+                            {
+                                <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year, returnId = returnForYear.ReturnId})"
+                                   class="govuk-link">
+                                    Delete
+                                </a>
+                            }
                         </td>
                     </tr>
                     previousAccountingDate = returnForYear.AccountingDate;
