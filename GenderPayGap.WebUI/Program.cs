@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using Autofac;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore;
@@ -33,6 +36,9 @@ namespace GenderPayGap.WebUI
 
             //Show thread availability
             Console.WriteLine(Extensions.AspNetCore.Extensions.GetThreadCount());
+
+            //Register log to Global
+            Global.ManualChangeLog = WebUI.MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
 
             //Run the webhost
             host.Run();
