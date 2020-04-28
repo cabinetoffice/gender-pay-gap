@@ -39,7 +39,7 @@ namespace GenderPayGap.IdentityServer4.Controllers
     ///     The interaction service provides a way for the UI to communicate with identityserver for validation and context
     ///     retrieval
     /// </summary>
-    public class AccountController
+    public class AccountController : Controller
     {
 
         private readonly IClientStore _clientStore;
@@ -90,12 +90,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
 
             // build a model so we know what to show on the login page
             LoginViewModel vm = await BuildLoginViewModelAsync(returnUrl);
-
-            if (vm.IsExternalLoginOnly)
-            {
-                // we only have one option for logging in and it's an external provider
-                return await ExternalLogin(vm.ExternalLoginScheme, returnUrl);
-            }
 
             // Check if we are verifying a email change request
             AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
@@ -337,48 +331,10 @@ namespace GenderPayGap.IdentityServer4.Controllers
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null)
-            {
-                // this is meant to short circuit the UI and only trigger the one external IdP
-                return new LoginViewModel {
-                    EnableLocalLogin = false,
-                    ReturnUrl = returnUrl,
-                    Username = context?.LoginHint,
-                    ExternalProviders = new[] {new ExternalProvider {AuthenticationScheme = context.IdP}}
-                };
-            }
-
-            IEnumerable<AuthenticationScheme> schemes = await _schemeProvider.GetAllSchemesAsync();
-
-            List<ExternalProvider> providers = schemes
-                .Where(
-                    x => x.DisplayName != null
-                         || x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
-                .Select(x => new ExternalProvider {DisplayName = x.DisplayName, AuthenticationScheme = x.Name})
-                .ToList();
-
-            var allowLocal = true;
-            if (context?.ClientId != null)
-            {
-                Client client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
-                if (client != null)
-                {
-                    allowLocal = client.EnableLocalLogin;
-
-                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
-                    {
-                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme))
-                            .ToList();
-                    }
-                }
-            }
 
             return new LoginViewModel {
-                AllowRememberLogin = AccountOptions.AllowRememberLogin,
-                EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
             };
         }
 
