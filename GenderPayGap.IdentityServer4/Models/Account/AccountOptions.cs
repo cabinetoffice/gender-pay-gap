@@ -12,7 +12,6 @@ namespace GenderPayGap.IdentityServer4.Models.Account
         public static bool AllowRememberLogin = false;
         public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(7);
 
-        public static bool ShowLogoutPrompt = false;
         public static bool AutomaticRedirectAfterSignOut = false;
 
         public static string TooManySigninAttemptsErrorMessage = "Too many failed sign in attempts.";
