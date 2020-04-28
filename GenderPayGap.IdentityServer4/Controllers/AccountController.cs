@@ -168,16 +168,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
                     {
                         await _events.RaiseAsync(new UserLoginSuccessEvent(user.EmailAddress, user.UserId.ToString(), user.Fullname));
 
-                        // only set explicit expiration here if user chooses "remember me". 
-                        // otherwise we rely upon expiration configured in cookie middleware.
-                        AuthenticationProperties props = null;
-                        if (AccountOptions.AllowRememberLogin && model.RememberLogin)
-                        {
-                            props = new AuthenticationProperties {
-                                IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.Add(AccountOptions.RememberMeLoginDuration)
-                            };
-                        }
-
                         // set the user role
                         var claims = new List<Claim>();
 
@@ -190,6 +180,7 @@ namespace GenderPayGap.IdentityServer4.Controllers
                         }
 
                         // issue authentication cookie with subject ID and username
+                        AuthenticationProperties props = null;
                         await HttpContext.SignInAsync(user.UserId.ToString(), user.EmailAddress, props, claims.ToArray());
 
                         // make sure the returnUrl is still valid, and if so redirect back to authorize endpoint or a local page
