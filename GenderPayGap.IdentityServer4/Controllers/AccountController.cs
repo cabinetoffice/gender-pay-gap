@@ -79,7 +79,10 @@ namespace GenderPayGap.IdentityServer4.Controllers
             }
 
             // build a model so we know what to show on the login page
-            LoginViewModel vm = await BuildLoginViewModelAsync(returnUrl);
+            LoginInputModel vm = new LoginInputModel
+            {
+                ReturnUrl = returnUrl,
+            };
 
             // Check if we are verifying a email change request
             AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
@@ -234,8 +237,7 @@ namespace GenderPayGap.IdentityServer4.Controllers
             }
 
             // something went wrong, show form with error
-            LoginViewModel vm = await BuildLoginViewModelAsync(model);
-            return View(vm);
+            return View(model);
         }
 
         /// <summary>
@@ -251,12 +253,9 @@ namespace GenderPayGap.IdentityServer4.Controllers
                 return Redirect(Startup.SiteAuthority + "sign-out");
             }
 
-            // build a model so the logout page knows what to display
-            LogoutViewModel vm = await BuildLogoutViewModelAsync(logoutId);
-
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
-            return await Logout(vm);
+            return await LogoutPost(logoutId);
         }
 
         /// <summary>
@@ -265,10 +264,10 @@ namespace GenderPayGap.IdentityServer4.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("~/sign-out")]
-        public async Task<IActionResult> Logout(LogoutInputModel model)
+        public async Task<IActionResult> LogoutPost(string logoutId)
         {
             // build a model so the logged out page knows what to display
-            LoggedOutViewModel vm = await BuildLoggedOutViewModelAsync(model.LogoutId);
+            LoggedOutViewModel vm = await BuildLoggedOutViewModelAsync(logoutId);
 
             if (User?.Identity.IsAuthenticated == true)
             {
@@ -313,50 +312,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
-        private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
-        {
-            AuthorizationRequest context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-
-            return new LoginViewModel {
-                ReturnUrl = returnUrl,
-                Username = context?.LoginHint,
-            };
-        }
-
-        private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
-        {
-            LoginViewModel vm = await BuildLoginViewModelAsync(model.ReturnUrl);
-            vm.Username = model.Username;
-            vm.RememberLogin = model.RememberLogin;
-            return vm;
-        }
-
-        private async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
-        {
-            // get context information (client name, post logout redirect URI and iframe for federated signout)
-            LogoutRequest logout = await _interaction.GetLogoutContextAsync(logoutId);
-
-            var vm = new LogoutViewModel {
-                ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
-                LogoutId = logoutId
-            };
-
-            if (User?.Identity.IsAuthenticated != true)
-            {
-                // if the user is not authenticated, then just show logged out page
-                return vm;
-            }
-
-            if (logout?.ShowSignoutPrompt == false)
-            {
-                // it's safe to automatically sign-out
-                return vm;
-            }
-
-            // show the logout prompt. this prevents attacks where the user
-            // is automatically signed out by another malicious web page.
-            return vm;
-        }
 
         private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
         {
