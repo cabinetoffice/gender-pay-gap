@@ -2,15 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System;
-
 namespace GenderPayGap.IdentityServer4.Models.Account
 {
     public class AccountOptions
     {
-
-        public static bool AllowRememberLogin = false;
-        public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(7);
 
         public static bool AutomaticRedirectAfterSignOut = false;
 
