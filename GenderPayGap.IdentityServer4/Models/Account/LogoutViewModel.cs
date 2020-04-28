@@ -11,7 +11,6 @@ namespace GenderPayGap.IdentityServer4.Models.Account
     public class LogoutViewModel : LogoutInputModel
     {
 
-        public bool ShowLogoutPrompt { get; set; }
         public string ClientName { get; set; }
 
         public Client Client

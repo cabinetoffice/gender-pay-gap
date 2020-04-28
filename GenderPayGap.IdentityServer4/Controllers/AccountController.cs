@@ -254,14 +254,9 @@ namespace GenderPayGap.IdentityServer4.Controllers
             // build a model so the logout page knows what to display
             LogoutViewModel vm = await BuildLogoutViewModelAsync(logoutId);
 
-            if (vm.ShowLogoutPrompt == false)
-            {
-                // if the request for logout was properly authenticated from IdentityServer, then
-                // we don't need to show the prompt and can just log the user out directly.
-                return await Logout(vm);
-            }
-
-            return View(vm);
+            // if the request for logout was properly authenticated from IdentityServer, then
+            // we don't need to show the prompt and can just log the user out directly.
+            return await Logout(vm);
         }
 
         /// <summary>
@@ -342,27 +337,19 @@ namespace GenderPayGap.IdentityServer4.Controllers
             LogoutRequest logout = await _interaction.GetLogoutContextAsync(logoutId);
 
             var vm = new LogoutViewModel {
-                ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt,
                 ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
                 LogoutId = logoutId
             };
 
-            if (vm.Client.Properties.ContainsKey("ShowLogoutPrompt"))
-            {
-                vm.ShowLogoutPrompt = vm.Client.Properties["ShowLogoutPrompt"].ToBoolean(AccountOptions.ShowLogoutPrompt);
-            }
-
             if (User?.Identity.IsAuthenticated != true)
             {
                 // if the user is not authenticated, then just show logged out page
-                vm.ShowLogoutPrompt = false;
                 return vm;
             }
 
             if (logout?.ShowSignoutPrompt == false)
             {
                 // it's safe to automatically sign-out
-                vm.ShowLogoutPrompt = false;
                 return vm;
             }
 
