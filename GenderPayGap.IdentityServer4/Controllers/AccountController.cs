@@ -279,18 +279,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
                 await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
             }
 
-            // check if we need to trigger sign-out at an upstream identity provider
-            if (vm.TriggerExternalSignout)
-            {
-                // build a return URL so the upstream provider will redirect back
-                // to us after the user has logged out. this allows us to then
-                // complete our single sign-out processing.
-                string url = Url.Action("Logout", new {logoutId = vm.LogoutId});
-
-                // this triggers a redirect to the external provider for sign-out
-                return SignOut(new AuthenticationProperties {RedirectUri = url}, vm.ExternalAuthenticationScheme);
-            }
-
             //Automatically redirect
             if (vm.AutomaticRedirectAfterSignOut && !string.IsNullOrWhiteSpace(vm.PostLogoutRedirectUri))
             {
@@ -322,27 +310,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
             {
                 vm.AutomaticRedirectAfterSignOut = vm.Client.Properties["AutomaticRedirectAfterSignOut"]
                     .ToBoolean(AccountOptions.AutomaticRedirectAfterSignOut);
-            }
-
-            if (User?.Identity.IsAuthenticated == true)
-            {
-                string idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-                if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
-                {
-                    bool providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
-                    if (providerSupportsSignout)
-                    {
-                        if (vm.LogoutId == null)
-                        {
-                            // if there's no current logout context, we need to create one
-                            // this captures necessary info from the current logged in user
-                            // before we signout and redirect away to the external IdP for signout
-                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
-                        }
-
-                        vm.ExternalAuthenticationScheme = idp;
-                    }
-                }
             }
 
             return vm;
