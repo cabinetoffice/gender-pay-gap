@@ -39,13 +39,17 @@ namespace GenderPayGap.IdentityServer4.Controllers
     ///     The interaction service provides a way for the UI to communicate with identityserver for validation and context
     ///     retrieval
     /// </summary>
-    public class AccountController : BaseController
+    public class AccountController
     {
 
         private readonly IClientStore _clientStore;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IUserRepository _userRepository;
+        protected readonly IDistributedCache _cache;
+        protected readonly IEventService _events;
+        protected readonly ILogger _Logger;
+
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -54,12 +58,15 @@ namespace GenderPayGap.IdentityServer4.Controllers
             IUserRepository userRepository,
             IEventService events,
             IDistributedCache cache,
-            ILogger<AccountController> logger) : base(events, cache, logger)
+            ILogger<AccountController> logger)
         {
             _userRepository = userRepository;
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
+            _events = events;
+            _cache = cache;
+            _Logger = logger;
         }
 
 
@@ -471,104 +478,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
             return vm;
         }
 
-        private async Task<IActionResult> ProcessWindowsLoginAsync(string returnUrl)
-        {
-            // see if windows auth has already been requested and succeeded
-            AuthenticateResult result = await HttpContext.AuthenticateAsync(AccountOptions.WindowsAuthenticationSchemeName);
-            if (result?.Principal is WindowsPrincipal wp)
-            {
-                // we will issue the external cookie and then redirect the
-                // user back to the external callback, in essence, tresting windows
-                // auth the same as any other external authentication mechanism
-                var props = new AuthenticationProperties {
-                    RedirectUri = Url.Action("ExternalLoginCallback"),
-                    Items = {{"returnUrl", returnUrl}, {"scheme", AccountOptions.WindowsAuthenticationSchemeName}}
-                };
-
-                var id = new ClaimsIdentity(AccountOptions.WindowsAuthenticationSchemeName);
-                id.AddClaim(new Claim(JwtClaimTypes.Subject, wp.Identity.Name));
-                id.AddClaim(new Claim(JwtClaimTypes.Name, wp.Identity.Name));
-
-                // add the groups as claims -- be careful if the number of groups is too large
-                if (AccountOptions.IncludeWindowsGroups)
-                {
-                    var wi = wp.Identity as WindowsIdentity;
-                    IdentityReferenceCollection groups = wi.Groups.Translate(typeof(NTAccount));
-                    IEnumerable<Claim> roles = groups.Select(x => new Claim(JwtClaimTypes.Role, x.Value));
-                    id.AddClaims(roles);
-                }
-
-                await HttpContext.SignInAsync(
-                    IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                    new ClaimsPrincipal(id),
-                    props);
-                return Redirect(props.RedirectUri);
-            }
-
-            // trigger windows auth
-            // since windows auth don't support the redirect uri,
-            // this URL is re-triggered when we call challenge
-            return Challenge(AccountOptions.WindowsAuthenticationSchemeName);
-        }
-
-        private async Task<(User user, string provider, string providerUserId, IEnumerable<Claim> claims)>
-            FindUserFromExternalProviderAsync(AuthenticateResult result)
-        {
-            ClaimsPrincipal externalUser = result.Principal;
-
-            // try to determine the unique id of the external user (issued by the provider)
-            // the most common claim type for that are the sub claim and the NameIdentifier
-            // depending on the external provider, some other claim type might be used
-            Claim userIdClaim = externalUser.FindFirst(JwtClaimTypes.Subject)
-                                ?? externalUser.FindFirst(ClaimTypes.NameIdentifier) ?? throw new Exception("Unknown userid");
-
-            // remove the user id claim so we don't include it as an extra claim if/when we provision the user
-            List<Claim> claims = externalUser.Claims.ToList();
-            claims.Remove(userIdClaim);
-
-            string provider = result.Properties.Items["scheme"];
-            string providerUserId = userIdClaim.Value;
-
-            // find external user
-            User user = await _userRepository.FindByExternalProviderAsync(provider, providerUserId);
-
-            return (user, provider, providerUserId, claims);
-        }
-
-        private async Task<User> AutoProvisionUserAsync(string provider, string providerUserId, IEnumerable<Claim> claims)
-        {
-            User user = await _userRepository.AutoProvisionUserAsync(provider, providerUserId, claims.ToList());
-            return user;
-        }
-
-        private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult,
-            List<Claim> localClaims,
-            AuthenticationProperties localSignInProps)
-        {
-            // if the external system sent a session id claim, copy it over
-            // so we can use it for single sign-out
-            Claim sid = externalResult.Principal.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
-            if (sid != null)
-            {
-                localClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
-            }
-
-            // if the external provider issued an id_token, we'll keep it for signout
-            string id_token = externalResult.Properties.GetTokenValue("id_token");
-            if (id_token != null)
-            {
-                localSignInProps.StoreTokens(new[] {new AuthenticationToken {Name = "id_token", Value = id_token}});
-            }
-        }
-
-        private void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult,
-            List<Claim> localClaims,
-            AuthenticationProperties localSignInProps) { }
-
-        private void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult,
-            List<Claim> localClaims,
-            AuthenticationProperties localSignInProps) { }
-
         private bool IsReferrerChangeEmailVerification(AuthorizationRequest authRequest, out ChangeEmailVerificationToken changeEmailToken)
         {
             // Check if the referring url is an email change verification
@@ -586,86 +495,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
             changeEmailToken = null;
             return false;
         }
-
-        #region External Login
-
-        /// <summary>
-        ///     initiate roundtrip to external authentication provider
-        /// </summary>
-        [HttpGet]
-        [Route("~/external-login")]
-        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl)
-        {
-            if (AccountOptions.WindowsAuthenticationSchemeName == provider)
-            {
-                // windows authentication needs special handling
-                return await ProcessWindowsLoginAsync(returnUrl);
-            }
-
-            // start challenge and roundtrip the return URL and 
-            var props = new AuthenticationProperties {
-                RedirectUri = Url.Action("ExternalLoginCallback"), Items = {{"returnUrl", returnUrl}, {"scheme", provider}}
-            };
-            return Challenge(props, provider);
-        }
-
-        /// <summary>
-        ///     Post processing of external authentication
-        /// </summary>
-        [HttpGet]
-        [Route("~/external-login-callback")]
-        public async Task<IActionResult> ExternalLoginCallback()
-        {
-            // read external identity from the temporary cookie
-            AuthenticateResult result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            if (result?.Succeeded != true)
-            {
-                throw new Exception("External authentication error");
-            }
-
-            // lookup our user and external provider info
-            (User user, string provider, string providerUserId, IEnumerable<Claim> claims) =
-                await FindUserFromExternalProviderAsync(result);
-            if (user == null)
-            {
-                // this might be where you might initiate a custom workflow for user registration
-                // in this sample we don't show how that would be done, as our sample implementation
-                // simply auto-provisions new external user
-                user = await AutoProvisionUserAsync(provider, providerUserId, claims);
-            }
-
-            // this allows us to collect any additonal claims or properties
-            // for the specific prtotocols used and store them in the local auth cookie.
-            // this is typically used to store data needed for signout from those protocols.
-            var additionalLocalClaims = new List<Claim>();
-            var localSignInProps = new AuthenticationProperties();
-            ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
-            ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
-            ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
-
-            // issue authentication cookie for user
-            await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.UserId.ToString(), user.Fullname));
-            await HttpContext.SignInAsync(
-                user.UserId.ToString(),
-                user.EmailAddress,
-                provider,
-                localSignInProps,
-                additionalLocalClaims.ToArray());
-
-            // delete temporary cookie used during external authentication
-            await HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-
-            // validate return URL and redirect back to authorization endpoint or a local page
-            string returnUrl = result.Properties.Items["returnUrl"];
-            if (_interaction.IsValidReturnUrl(returnUrl) || Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-
-            return Redirect("~/");
-        }
-
-        #endregion
 
     }
 

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GenderPayGap.IdentityServer4.Classes
@@ -17,13 +15,6 @@ namespace GenderPayGap.IdentityServer4.Classes
         {
             return new HtmlString(
                 $"Date:{VirtualDateTime.Now}, Version:{Global.Version}, File Date:{Global.AssemblyDate.ToLocalTime()}, Environment:{Config.EnvironmentName}, Machine:{Environment.MachineName}, Instance:{Global.AzureInstanceId}, {Global.AssemblyCopyright}");
-        }
-
-        public static string CurrentView(this IHtmlHelper html)
-        {
-            string path = ((RazorView) html.ViewContext.View).Path;
-            path = path.RemoveStartI("~/Views/").TrimStartI(@"~/\").RemoveEndI(Path.GetExtension(path));
-            return path;
         }
 
         #region Validation messages
