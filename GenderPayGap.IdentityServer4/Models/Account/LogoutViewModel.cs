@@ -12,8 +12,6 @@ namespace GenderPayGap.IdentityServer4.Models.Account
     {
 
         public bool ShowLogoutPrompt { get; set; }
-        public bool AutomaticRedirectAfterSignOut { get; set; }
-        public string PostLogoutRedirectUri { get; set; }
         public string ClientName { get; set; }
 
         public Client Client
