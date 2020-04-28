@@ -5,9 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
@@ -15,7 +13,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.IdentityServer4.Classes;
 using GenderPayGap.IdentityServer4.Models.Account;
 using IdentityModel;
 using IdentityServer4;
@@ -23,7 +20,6 @@ using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,9 +38,7 @@ namespace GenderPayGap.IdentityServer4.Controllers
     public class AccountController : Controller
     {
 
-        private readonly IClientStore _clientStore;
         private readonly IIdentityServerInteractionService _interaction;
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IUserRepository _userRepository;
         protected readonly IDistributedCache _cache;
         protected readonly IEventService _events;
@@ -53,8 +47,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
 
         public AccountController(
             IIdentityServerInteractionService interaction,
-            IClientStore clientStore,
-            IAuthenticationSchemeProvider schemeProvider,
             IUserRepository userRepository,
             IEventService events,
             IDistributedCache cache,
@@ -62,8 +54,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
         {
             _userRepository = userRepository;
             _interaction = interaction;
-            _clientStore = clientStore;
-            _schemeProvider = schemeProvider;
             _events = events;
             _cache = cache;
             _Logger = logger;
@@ -353,18 +343,9 @@ namespace GenderPayGap.IdentityServer4.Controllers
 
             var vm = new LogoutViewModel {
                 ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt,
-                AutomaticRedirectAfterSignOut = AccountOptions.AutomaticRedirectAfterSignOut,
-                PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
                 ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
                 LogoutId = logoutId
             };
-
-            //Get the logout properties per client 
-            if (vm.Client.Properties.ContainsKey("AutomaticRedirectAfterSignOut"))
-            {
-                vm.AutomaticRedirectAfterSignOut = vm.Client.Properties["AutomaticRedirectAfterSignOut"]
-                    .ToBoolean(AccountOptions.AutomaticRedirectAfterSignOut);
-            }
 
             if (vm.Client.Properties.ContainsKey("ShowLogoutPrompt"))
             {
