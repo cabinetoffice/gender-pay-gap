@@ -414,31 +414,6 @@ namespace GenderPayGap.Database
                 .FirstOrDefault();
         }
 
-        /// <summary>
-        ///     Returns the latest address before specified date/time
-        /// </summary>
-        /// <param name="maxDate">Ignore address changes after this date/time - if empty returns the latest address</param>
-        /// <returns>The address of the organisation</returns>
-        public OrganisationAddress GetAddress(DateTime? maxDate = null, AddressStatuses status = AddressStatuses.Active)
-        {
-            if (maxDate == null || maxDate.Value == DateTime.MinValue)
-            {
-                maxDate = SectorType.GetAccountingStartDate().AddYears(1);
-            }
-
-            AddressStatus addressStatus = OrganisationAddresses
-                .SelectMany(a => a.AddressStatuses.Where(s => s.Status == status && s.StatusDate < maxDate.Value))
-                .OrderByDescending(s => s.StatusDate)
-                .FirstOrDefault();
-
-            if (addressStatus != null && addressStatus.Address.Status == status)
-            {
-                return addressStatus.Address;
-            }
-
-            return null;
-        }
-
         public OrganisationAddress FindAddress(AddressModel address, AddressStatuses status = AddressStatuses.Active)
         {
             return OrganisationAddresses.FirstOrDefault(a => a.Status == status && a.Equals(address));
