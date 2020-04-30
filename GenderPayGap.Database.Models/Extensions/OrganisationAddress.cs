@@ -130,14 +130,6 @@ namespace GenderPayGap.Database
                 statusDate = VirtualDateTime.Now;
             }
 
-            AddressStatuses.Add(
-                new AddressStatus {
-                    AddressId = AddressId,
-                    Status = status,
-                    StatusDate = statusDate.Value,
-                    StatusDetails = details,
-                    ByUserId = byUserId
-                });
             Status = status;
             StatusDate = statusDate.Value;
             StatusDetails = details;
