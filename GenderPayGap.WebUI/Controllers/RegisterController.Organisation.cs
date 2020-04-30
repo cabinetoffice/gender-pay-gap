@@ -1623,7 +1623,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             #region Set the organisation address
 
-            OrganisationAddress oldAddress = org.GetAddress();
+            OrganisationAddress oldAddress = org.GetLatestAddress();
             AddressModel oldAddressModel = oldAddress?.GetAddressModel();
 
             AddressModel newAddressModel = null;

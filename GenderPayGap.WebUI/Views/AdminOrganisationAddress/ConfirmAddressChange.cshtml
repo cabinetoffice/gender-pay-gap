@@ -73,7 +73,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">PO Box</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().PoBox)
+                            @(Model.Organisation.GetLatestAddress().PoBox)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.PoBox)
@@ -83,7 +83,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Address 1</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().Address1)
+                            @(Model.Organisation.GetLatestAddress().Address1)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.Address1)
@@ -93,7 +93,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Address 2</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().Address2)
+                            @(Model.Organisation.GetLatestAddress().Address2)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.Address2)
@@ -103,7 +103,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Address 3</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().Address3)
+                            @(Model.Organisation.GetLatestAddress().Address3)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.Address3)
@@ -113,7 +113,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Town / city</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().TownCity)
+                            @(Model.Organisation.GetLatestAddress().TownCity)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.TownCity)
@@ -123,7 +123,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">County</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().County)
+                            @(Model.Organisation.GetLatestAddress().County)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.County)
@@ -133,7 +133,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Country</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().Country)
+                            @(Model.Organisation.GetLatestAddress().Country)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.Country)
@@ -143,7 +143,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Post code</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetAddress().PostCode)
+                            @(Model.Organisation.GetLatestAddress().PostCode)
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.PostCode)

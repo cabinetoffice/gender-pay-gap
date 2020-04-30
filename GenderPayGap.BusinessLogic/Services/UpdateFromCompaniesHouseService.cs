@@ -128,7 +128,7 @@ namespace GenderPayGap.BusinessLogic.Services
             CompaniesHouseAddress companiesHouseAddress = organisationFromCompaniesHouse.RegisteredOfficeAddress;
             OrganisationAddress newOrganisationAddressFromCompaniesHouse =
                 CreateOrganisationAddressFromCompaniesHouseAddress(companiesHouseAddress);
-            OrganisationAddress oldOrganisationAddress = organisation.GetAddress();
+            OrganisationAddress oldOrganisationAddress = organisation.GetLatestAddress();
             if (oldOrganisationAddress.AddressMatches(newOrganisationAddressFromCompaniesHouse)
                 || IsNewOrganisationAddressNullOrEmpty(newOrganisationAddressFromCompaniesHouse))
             {

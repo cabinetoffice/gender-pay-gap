@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                         UpdateFromCompaniesHouseService.CreateOrganisationAddressFromCompaniesHouseAddress(
                         organisationFromCompaniesHouse.RegisteredOfficeAddress);
 
-                    if (!organisation.GetAddress().AddressMatches(addressFromCompaniesHouse))
+                    if (!organisation.GetLatestAddress().AddressMatches(addressFromCompaniesHouse))
                     {
                         return OfferNewCompaniesHouseAddress(organisation, addressFromCompaniesHouse);
                     }
@@ -228,7 +228,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private static void RetireOldAddress(Organisation organisation)
         {
-            OrganisationAddress oldOrganisationAddress = organisation.GetAddress();
+            OrganisationAddress oldOrganisationAddress = organisation.GetLatestAddress();
             oldOrganisationAddress.Status = AddressStatuses.Retired;
             oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
             oldOrganisationAddress.Modified = VirtualDateTime.Now;
