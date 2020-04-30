@@ -174,7 +174,7 @@ namespace GenderPayGap.WebJob
                             JsonConvert.SerializeObject(
                                 new {
                                     org.OrganisationId,
-                                    Address = org.GetAddressString(),
+                                    Address = org.GetLatestAddress()?.GetAddressString(),
                                     org.EmployerReference,
                                     org.CompanyNumber,
                                     org.OrganisationName,

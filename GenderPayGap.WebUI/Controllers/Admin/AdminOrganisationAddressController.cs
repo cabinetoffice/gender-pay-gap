@@ -202,7 +202,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private void SaveChangesAndAuditAction(ChangeOrganisationAddressViewModel viewModel, Organisation organisation)
         {
-            string oldAddressString = organisation.GetAddressString();
+            string oldAddressString = organisation.GetLatestAddress().GetAddressString();
 
             RetireOldAddress(organisation);
 
