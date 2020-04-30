@@ -528,12 +528,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration.ManualChanges
                 Status = AddressStatuses.Active,
                 Created = DateTime.Today
             };
-            var adressStatus = new AddressStatus
-            {
-                Address = existingAddressExpectedToBeRetired,
-                Status = AddressStatuses.Active,
-            };
-            existingAddressExpectedToBeRetired.AddressStatuses.Add(adressStatus);
             Organisation privateOrgWhoseAddressWillBeChanged = OrganisationHelper.GetPrivateOrganisation("Employer_Reference_989898");
             privateOrgWhoseAddressWillBeChanged.OrganisationAddresses.Add(existingAddressExpectedToBeRetired);
 

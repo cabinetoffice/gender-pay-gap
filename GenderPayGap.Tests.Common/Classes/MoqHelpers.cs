@@ -20,7 +20,6 @@ namespace GenderPayGap.Tests.Common.Classes
 
         public static void SetupEmptyDataRepository(this Mock<IDataRepository> mockDataRepo)
         {
-            mockDataRepo.SetupGetAllItemsOfType(new AddressStatus[] { });
             mockDataRepo.SetupGetAllItemsOfType(new Organisation[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationAddress[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationName[] { });
@@ -68,7 +67,6 @@ namespace GenderPayGap.Tests.Common.Classes
 
         private static void SetupGetAll(this Mock<IDataRepository> mockDataRepo, IEnumerable<object> items)
         {
-            mockDataRepo.SetupGetAllItemsOfType(items.OfType<AddressStatus>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<Organisation>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationAddress>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationName>());

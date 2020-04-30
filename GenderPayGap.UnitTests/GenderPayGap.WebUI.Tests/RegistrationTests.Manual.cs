@@ -1493,8 +1493,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //1.Arrange the test setup variables
             var user = new User() { UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
             var address = new OrganisationAddress() { AddressId = 1, OrganisationId = 1, Address1 = "Address line 1", PostCode = "PC1", Status = AddressStatuses.Active, Source = "CoHo" };
-            var addressStatus = new AddressStatus { Address = address, Status = AddressStatuses.Active };
-            address.AddressStatuses.Add(addressStatus);
             var org = new Organisation()
             {
                 OrganisationId = 1,
@@ -2863,8 +2861,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
-            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
-            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId="A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
             var org0 = new Organisation()
@@ -3052,8 +3048,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
-            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
-            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
             var org0 = new Organisation()
@@ -3225,8 +3219,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
-            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
-            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
             var org0 = new Organisation()
@@ -3410,8 +3402,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
-            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
-            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
             var org0 = new Organisation()
@@ -3595,8 +3585,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PoBox = "PoBox 12",
                 PostCode = "W1 5qr",
             };
-            var addressStatus = new AddressStatus { Address = address0, Status = AddressStatuses.Active };
-            address0.AddressStatuses.Add(addressStatus);
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
             var org0 = new Organisation()
