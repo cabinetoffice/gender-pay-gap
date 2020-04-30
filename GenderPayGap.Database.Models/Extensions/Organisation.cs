@@ -444,25 +444,6 @@ namespace GenderPayGap.Database
             return OrganisationAddresses.FirstOrDefault(a => a.Status == status && a.Equals(address));
         }
 
-        /// <summary>
-        ///     Returns the latest organisation name before specified date/time
-        /// </summary>
-        /// <param name="maxDate">Ignore name changes after this date/time - if empty returns the latest name</param>
-        /// <returns>The name of the organisation</returns>
-        public string GetAddressString(DateTime? maxDate = null, AddressStatuses status = AddressStatuses.Active, string delimiter = ", ")
-        {
-            OrganisationAddress address = GetAddress(maxDate, status);
-
-            return address?.GetAddressString(delimiter);
-        }
-
-        public AddressModel GetAddressModel(DateTime? maxDate = null, AddressStatuses status = AddressStatuses.Active)
-        {
-            OrganisationAddress address = GetAddress(maxDate, status);
-
-            return address?.GetAddressModel();
-        }
-
         public bool GetIsDissolved()
         {
             return DateOfCessation != null && DateOfCessation < SectorType.GetAccountingStartDate();
