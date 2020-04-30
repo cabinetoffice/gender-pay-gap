@@ -901,7 +901,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 }
 
                 // add new address
-                OrganisationAddress prevAddress = org.GetAddress();
+                OrganisationAddress prevAddress = org.GetLatestAddress();
                 var newAddress = new OrganisationAddress {
                     OrganisationId = org.OrganisationId,
                     Address1 = address1,

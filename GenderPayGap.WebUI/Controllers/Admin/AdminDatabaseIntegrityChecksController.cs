@@ -120,7 +120,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 .Include(o => o.OrganisationAddresses).ToList();
             foreach (Organisation organisation in organisations)
             {
-                OrganisationAddress latestAddress = organisation.GetAddress();
+                OrganisationAddress latestAddress = organisation.GetLatestAddress();
                 IEnumerable<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
                     .Where(oa => oa.Status == AddressStatuses.Active);
                 if (!activeAddresses.Contains(latestAddress))

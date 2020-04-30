@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers
                         org.CompanyNumber,
                         Sector = org.SectorType,
                         Status = org.Status,
-                        Address = org.GetAddress()?.GetAddressString(),
+                        Address = org.GetLatestAddress()?.GetAddressString(),
                         SicCodes = org.GetSicCodeIdsString(),
                         Created = org.Created,
                     })
@@ -116,13 +116,13 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList()
                 // We only want organisations with valid addresses
                 // The following filter only works in code (cannot be converted to SQL) so must be done after the first .ToList()
-                .Where(org => org.GetAddress() != null)
+                .Where(org => org.GetLatestAddress() != null)
                 .ToList();
 
             var records = organisationAddresses.Select(
                     org =>
                     {
-                        OrganisationAddress address = org.GetAddress();
+                        OrganisationAddress address = org.GetLatestAddress();
                         return new
                         {
                             org.OrganisationId,

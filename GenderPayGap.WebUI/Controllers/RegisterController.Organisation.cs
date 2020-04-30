@@ -1757,7 +1757,7 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.Method == RegistrationMethods.Fasttrack ? "Fasttrack" : "Email Domain");
 
                 //Retire the old address 
-                OrganisationAddress latestAddress = userOrg.Organisation.GetAddress();
+                OrganisationAddress latestAddress = userOrg.Organisation.GetLatestAddress();
                 if (latestAddress != null && latestAddress.AddressId != userOrg.Address.AddressId)
                 {
                     latestAddress.SetStatus(

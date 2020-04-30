@@ -111,7 +111,7 @@ namespace GenderPayGap.WebUI.Controllers
             model.PoBox = userOrg.Address.PoBox;
 
             model.RegisteredAddress = userOrg.Address.Status == AddressStatuses.Pending
-                ? userOrg.Organisation.GetAddress()?.GetAddressString()
+                ? userOrg.Organisation.GetLatestAddress()?.GetAddressString()
                 : null;
 
             model.CharityNumber = userOrg.Organisation.OrganisationReferences
@@ -504,7 +504,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 //Retire the old address 
-                OrganisationAddress latestAddress = userOrg.Organisation.GetAddress();
+                OrganisationAddress latestAddress = userOrg.Organisation.GetLatestAddress();
                 if (latestAddress != null && latestAddress.AddressId != userOrg.Address.AddressId)
                 {
                     latestAddress.SetStatus(

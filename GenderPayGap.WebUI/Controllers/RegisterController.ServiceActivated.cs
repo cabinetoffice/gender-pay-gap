@@ -157,7 +157,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 //Retire the old address 
-                OrganisationAddress latestAddress = userOrg.Organisation.GetAddress();
+                OrganisationAddress latestAddress = userOrg.Organisation.GetLatestAddress();
                 if (latestAddress != null && latestAddress.AddressId != userOrg.Address.AddressId)
                 {
                     latestAddress.SetStatus(

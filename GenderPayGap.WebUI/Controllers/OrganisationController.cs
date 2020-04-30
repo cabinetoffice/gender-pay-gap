@@ -449,7 +449,7 @@ namespace GenderPayGap.WebUI.Controllers
                 EncOrganisationId = orgId,
                 EncUserId = userId,
                 OrganisationName = userOrg.Organisation.OrganisationName,
-                OrganisationAddress = userOrg.Organisation.GetAddressString(),
+                OrganisationAddress = userOrg.Organisation.GetLatestAddress()?.GetAddressString(),
                 UserName = userToRemove.Fullname
             };
 

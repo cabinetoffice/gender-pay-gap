@@ -78,7 +78,7 @@ namespace GenderPayGap.Database
 
             if (address == null)
             {
-                address = GetAddress();
+                address = GetLatestAddress();
             }
 
             if (address == null)
@@ -194,7 +194,7 @@ namespace GenderPayGap.Database
                 SicSectionIds = sicCodes.Select(sic => sic.SicCode.SicSectionId.ToString()).Distinct().ToArray(),
                 SicSectionNames = sicCodes.Select(sic => sic.SicCode.SicSection.Description).Distinct().ToArray(),
                 SicCodeIds = sicCodes.Select(sicCode => sicCode.SicCodeId.ToString()).Distinct().ToArray(),
-                Address = GetAddress()?.GetAddressString(),
+                Address = GetLatestAddress()?.GetAddressString(),
                 LatestReportedDate = submittedReports.Select(x => x.Created).FirstOrDefault(),
                 ReportedYears = submittedReports.Select(x => x.AccountingDate.Year.ToString()).ToArray(),
                 ReportedLateYears =

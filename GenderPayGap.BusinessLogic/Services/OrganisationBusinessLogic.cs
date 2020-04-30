@@ -117,7 +117,7 @@ namespace GenderPayGap.BusinessLogic
                     Status = o.Status,
                     StatusDate = o.StatusDate,
                     StatusDetails = o.StatusDetails,
-                    Address = o.GetAddress()?.GetAddressString(),
+                    Address = o.GetLatestAddress()?.GetAddressString(),
                     SicCodes = o.GetSicCodeIdsString(),
 
                     // Removed on branch - commented for now

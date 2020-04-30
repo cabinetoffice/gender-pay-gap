@@ -93,7 +93,7 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header govuk-!-width-one-third">New address</th>
                     @{ OrganisationAddress addressFromCoHo = UpdateFromCompaniesHouseService.CreateOrganisationAddressFromCompaniesHouseAddress(Model.CompaniesHouseCompany.RegisteredOfficeAddress); }
-                    <td class="govuk-table__cell">@(UpdateFromCompaniesHouseService.AddressMatches(addressFromCoHo, Model.Organisation.GetAddress()) ? "(Not changed)" : addressFromCoHo.GetAddressString())</td>
+                    <td class="govuk-table__cell">@(UpdateFromCompaniesHouseService.AddressMatches(addressFromCoHo, Model.Organisation.GetLatestAddress()) ? "(Not changed)" : addressFromCoHo.GetAddressString())</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header govuk-!-width-one-third">New SIC codes</th>
