@@ -99,7 +99,7 @@ namespace GenderPayGap.Tests
             Expect(result.ActionName == "ServiceActivated", "Expected redirect to ServiceActivated");
             Expect(userOrg.PINConfirmedDate > DateTime.MinValue);
             Expect(userOrg.Organisation.Status == OrganisationStatuses.Active);
-            Expect(userOrg.Organisation.GetAddress().AddressId == address.AddressId);
+            Expect(userOrg.Organisation.GetLatestAddress().AddressId == address.AddressId);
             Expect(address.Status == AddressStatuses.Active);
         }
 
@@ -497,7 +497,7 @@ namespace GenderPayGap.Tests
             Expect(result.ActionName == "ServiceActivated", "Expected redirect to ServiceActivated");
             Expect(userOrg.PINConfirmedDate > DateTime.MinValue);
             Expect(userOrg.Organisation.Status == OrganisationStatuses.Active);
-            Expect(userOrg.Organisation.GetAddress().AddressId == address.AddressId);
+            Expect(userOrg.Organisation.GetLatestAddress().AddressId == address.AddressId);
             Expect(controller.ReportingOrganisationId == org.OrganisationId);
             Expect(address.Status == AddressStatuses.Active);
             Expect(orgScope.RegisterStatus == RegisterStatuses.RegisterComplete);

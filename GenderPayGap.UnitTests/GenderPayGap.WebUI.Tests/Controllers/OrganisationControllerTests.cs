@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             return new UserOrganisation
             {
-                Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.GetAddress()
+                Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.GetLatestAddress()
             };
         }
 

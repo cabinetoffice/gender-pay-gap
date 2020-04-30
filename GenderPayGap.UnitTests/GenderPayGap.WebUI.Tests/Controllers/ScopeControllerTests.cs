@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         private static UserOrganisation CreateUserOrganisation(Organisation org, long userId, DateTime? pinConfirmedDate)
         {
             return new UserOrganisation {
-                Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.GetAddress()
+                Organisation = org, UserId = userId, PINConfirmedDate = pinConfirmedDate, Address = org.GetLatestAddress()
             };
         }
 

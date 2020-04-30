@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(result.ActionName == "RequestAccepted", "Expected redirect to RequestAccepted");
             Assert.That(userOrg.PINConfirmedDate > DateTime.MinValue);
             Assert.That(userOrg.Organisation.Status == OrganisationStatuses.Active);
-            Assert.That(userOrg.Organisation.GetAddress().AddressId == address.AddressId);
+            Assert.That(userOrg.Organisation.GetLatestAddress().AddressId == address.AddressId);
             Assert.That(!string.IsNullOrWhiteSpace(userOrg.Organisation.EmployerReference));
             Assert.That(address.Status == AddressStatuses.Active);
 

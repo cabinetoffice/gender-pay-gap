@@ -90,7 +90,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(result.ActionName == "ServiceActivated", "Expected redirect to ServiceActivated");
             Assert.That(userOrg.PINConfirmedDate > DateTime.MinValue);
             Assert.That(userOrg.Organisation.Status == OrganisationStatuses.Active);
-            Assert.That(userOrg.Organisation.GetAddress().AddressId == address.AddressId);
+            Assert.That(userOrg.Organisation.GetLatestAddress().AddressId == address.AddressId);
             Assert.That(controller.ReportingOrganisationId == org.OrganisationId);
             Assert.That(address.Status == AddressStatuses.Active);
             Assert.That(orgScope.RegisterStatus == RegisterStatuses.RegisterComplete);
@@ -2824,7 +2824,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.GetManualEmployer().AddressSource, "Wrong address source");
-            Assert.IsNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.IsTrue(!Text.IsAllNullOrWhiteSpace(user.ContactEmailAddress, user.ContactFirstName, user.ContactLastName, user.ContactPhoneNumber), "Contact info must be empty");
@@ -3012,7 +3011,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Active, "Wrong address status");
             Assert.That(address.Source == stashedModel.GetManualEmployer().AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.GetAddress(), "Wrong latest address");
+            Assert.IsNotNull(org.GetLatestAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.IsTrue(!Text.IsAllNullOrWhiteSpace(user.ContactEmailAddress, user.ContactFirstName, user.ContactLastName, user.ContactPhoneNumber), "Contact info must be empty");
@@ -3185,7 +3184,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Active, "Wrong address status");
             Assert.That(address.Source == stashedModel.GetManualEmployer().AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.GetAddress(), "Wrong latest address");
+            Assert.IsNotNull(org.GetLatestAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.IsTrue(!Text.IsAllNullOrWhiteSpace(user.ContactEmailAddress, user.ContactFirstName, user.ContactLastName, user.ContactPhoneNumber), "Contact info must be empty");
@@ -3902,8 +3901,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Active, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNotNull(org.GetAddress(), "Wrong latest address");
-            Assert.That(org.GetAddress().AddressId == address.AddressId, "Wrong latest address");
+            Assert.IsNotNull(org.GetLatestAddress(), "Wrong latest address");
+            Assert.That(org.GetLatestAddress().AddressId == address.AddressId, "Wrong latest address");
             Assert.That(org.Status == OrganisationStatuses.Active, "Wrong organisation status");
 
             //Check contact info
@@ -4081,7 +4080,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
@@ -4258,7 +4256,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNotNull(address, "Address not saved");
             Assert.That(address.Status == AddressStatuses.Pending, "Wrong address status");
             Assert.That(address.Source == stashedModel.AddressSource, "Wrong address source");
-            Assert.IsNull(org.GetAddress(), "Wrong latest address");
 
             //Check contact info
             Assert.That(user.ContactEmailAddress == stashedModel.ContactEmailAddress, "Wrong contact email");
