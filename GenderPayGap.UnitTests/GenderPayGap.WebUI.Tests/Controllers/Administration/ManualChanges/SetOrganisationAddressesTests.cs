@@ -526,6 +526,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration.ManualChanges
                 Country = "Previous Country",
                 PostCode = "Previous PostCode",
                 Status = AddressStatuses.Active,
+                Created = DateTime.Today
             };
             var adressStatus = new AddressStatus
             {

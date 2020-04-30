@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
@@ -57,20 +58,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //1.Arrange the test setup variables
             var user = new User {UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now};
 
-            var address0 = new OrganisationAddress {
-                AddressId = 1,
-                Status = AddressStatuses.Active,
-                Source = "CoHo",
-                Address1 = "123",
-                Address2 = "evergreen terrace",
-                Address3 = "Westminster",
-                TownCity = "City1",
-                County = "County1",
-                Country = "United Kingdom",
-                PoBox = "PoBox 12",
-                PostCode = "W1 5qr"
-            };
-
             var sicCode1 = new SicCode {
                 SicCodeId = 2100, Description = "Desc1", SicSection = new SicSection {SicSectionId = "4321", Description = "Section1"}
             };
@@ -84,7 +71,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678"
             };
-            org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName {
                 OrganisationNameId = 1,
                 Name = org0.OrganisationName,
@@ -115,7 +101,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             routeData.Values.Add("Action", nameof(RegisterController.AddAddress));
             routeData.Values.Add("Controller", "Register");
 
-            var controller = UiTestHelper.GetController<RegisterController>(user.UserId, routeData, user, org0, address0, name, sic1, sic2);
+            var controller = UiTestHelper.GetController<RegisterController>(user.UserId, routeData, user, org0, name, sic1, sic2);
 
             var employerResult = new PagedResult<EmployerRecord>();
             employerResult.Results = new List<EmployerRecord> {org0.ToEmployerRecord()};
@@ -162,7 +148,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.NotNull(result, "Expected RedirectToActionResult");
 
             //4.Check that the redirection went to the right url step.
-            Assert.That(result.ActionName == nameof(RegisterController.ConfirmOrganisation), "Redirected to the wrong view");
+            Assert.AreEqual(nameof(RegisterController.ConfirmOrganisation), result.ActionName, "Redirected to the wrong view");
 
             //5.If the redirection successfull retrieve the model stash sent with the redirect.
             var unstashedModel = controller.UnstashModel<OrganisationViewModel>();
