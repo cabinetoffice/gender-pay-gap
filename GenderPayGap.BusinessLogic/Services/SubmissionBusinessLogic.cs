@@ -254,7 +254,7 @@ namespace GenderPayGap.BusinessLogic
                 LastName = reportToConvert.LastName,
                 CompanyLinkToGPGInfo = reportToConvert.CompanyLinkToGPGInfo,
                 AccountingDate = reportToConvert.AccountingDate,
-                Address = reportToConvert.Organisation.GetAddressString(reportToConvert.StatusDate),
+                Address = reportToConvert.Organisation.GetLatestAddress().GetAddressString(),
                 LatestAddress = reportToConvert.Organisation.GetLatestAddress()?.GetAddressString(),
                 EHRCResponse = reportToConvert.EHRCResponse.ToString(),
                 IsVoluntarySubmission = reportToConvert.IsVoluntarySubmission(),

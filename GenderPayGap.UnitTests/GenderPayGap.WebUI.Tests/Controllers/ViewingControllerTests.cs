@@ -1030,7 +1030,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             expectedModel.CompanyLinkToGPGInfo = report.CompanyLinkToGPGInfo;
             expectedModel.AccountingDate = report.AccountingDate;
 
-            expectedModel.Address = report.Organisation.GetAddressString(report.StatusDate);
+            expectedModel.Address = report.Organisation.GetLatestAddress().GetAddressString();
             expectedModel.LatestAddress = report.Organisation.GetAddress()?.GetAddressString();
             if (expectedModel.Address.EqualsI(expectedModel.LatestAddress))
             {
