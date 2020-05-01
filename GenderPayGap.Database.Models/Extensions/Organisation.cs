@@ -414,11 +414,6 @@ namespace GenderPayGap.Database
                 .FirstOrDefault();
         }
 
-        public OrganisationAddress FindAddress(AddressModel address, AddressStatuses status = AddressStatuses.Active)
-        {
-            return OrganisationAddresses.FirstOrDefault(a => a.Status == status && a.Equals(address));
-        }
-
         public bool GetIsDissolved()
         {
             return DateOfCessation != null && DateOfCessation < SectorType.GetAccountingStartDate();
