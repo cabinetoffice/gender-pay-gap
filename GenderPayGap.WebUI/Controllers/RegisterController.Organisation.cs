@@ -1627,7 +1627,6 @@ namespace GenderPayGap.WebUI.Controllers
             AddressModel oldAddressModel = oldAddress?.GetAddressModel();
 
             AddressModel newAddressModel = null;
-            string oldAddressSource = oldAddress?.Source;
             string newAddressSource = null;
 
             if (model.ManualRegistration || model.ManualAddress)
@@ -1645,17 +1644,6 @@ namespace GenderPayGap.WebUI.Controllers
             if (newAddressModel == null || newAddressModel.IsEmpty())
             {
                 throw new Exception("Cannot save a registration with no address");
-            }
-
-            if (oldAddressModel == null || !oldAddressModel.Equals(newAddressModel))
-            {
-                OrganisationAddress pendingAddress = org.FindAddress(newAddressModel, AddressStatuses.Pending);
-                if (pendingAddress != null)
-                {
-                    oldAddress = pendingAddress;
-                    oldAddressModel = pendingAddress.GetAddressModel();
-                    oldAddressSource = pendingAddress.Source;
-                }
             }
 
 
