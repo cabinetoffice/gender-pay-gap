@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
@@ -35,7 +35,10 @@ namespace GenderPayGap.Database
         public bool? IsUkAddress { get; set; }
 
         public virtual Organisation Organisation { get; set; }
+
+        [Obsolete("DO NOT USE: OrganisationAddress.AddressStatuses will be deleted soon")]
         public virtual ICollection<AddressStatus> AddressStatuses { get; set; }
+
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
 
     }
