@@ -32,9 +32,7 @@ namespace GenderPayGap.WebUI.Services
 
             List<string> address = GetAddressInFourLineFormat(userOrganisation.Organisation);
 
-            string postCode = userOrganisation.Organisation.OrganisationAddresses.OrderByDescending(a => a.Modified)
-                .FirstOrDefault()
-                .PostCode;
+            string postCode = userOrganisation.Organisation.GetLatestAddress().PostCode;
 
             string returnUrl = controller.Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);
@@ -80,7 +78,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var address = new List<string>();
 
-            OrganisationAddress latestAddress = organisation.OrganisationAddresses.OrderByDescending(a => a.Modified).FirstOrDefault();
+            OrganisationAddress latestAddress = organisation.GetLatestAddress();
 
             if (!string.IsNullOrWhiteSpace(latestAddress.PoBox))
             {
