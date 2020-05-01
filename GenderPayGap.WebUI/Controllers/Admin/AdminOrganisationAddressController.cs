@@ -231,7 +231,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             OrganisationAddress oldOrganisationAddress = organisation.GetLatestAddress();
             oldOrganisationAddress.Status = AddressStatuses.Retired;
             oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
-            oldOrganisationAddress.Modified = VirtualDateTime.Now;
         }
 
         private OrganisationAddress CreateOrganisationAddressFromViewModel(ChangeOrganisationAddressViewModel viewModel)
@@ -248,7 +247,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 Status = AddressStatuses.Active,
                 StatusDate = VirtualDateTime.Now,
                 StatusDetails = viewModel.Reason,
-                Modified = VirtualDateTime.Now,
                 Created = VirtualDateTime.Now,
                 Source = "Service Desk",
             };

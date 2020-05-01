@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
@@ -28,7 +28,10 @@ namespace GenderPayGap.Database
         public DateTime StatusDate { get; set; } = VirtualDateTime.Now;
         public string StatusDetails { get; set; }
         public DateTime Created { get; set; }
+
+        [Obsolete("DO NOT USE: OrganisationAddress.Modified will be deleted soon")]
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
+
         public long OrganisationId { get; set; }
         public string Source { get; set; }
 

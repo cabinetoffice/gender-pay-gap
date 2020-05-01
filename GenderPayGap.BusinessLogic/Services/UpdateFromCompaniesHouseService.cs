@@ -140,7 +140,6 @@ namespace GenderPayGap.BusinessLogic.Services
 
             oldOrganisationAddress.Status = AddressStatuses.Retired;
             oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
-            oldOrganisationAddress.Modified = VirtualDateTime.Now;
 
             _DataRepository.Insert(newOrganisationAddressFromCompaniesHouse);
         }
@@ -189,7 +188,6 @@ namespace GenderPayGap.BusinessLogic.Services
                 Status = AddressStatuses.Active,
                 StatusDate = VirtualDateTime.Now,
                 StatusDetails = DetailsOfChange,
-                Modified = VirtualDateTime.Now,
                 Created = VirtualDateTime.Now,
                 Source = SourceOfChange,
                 IsUkAddress = isUkAddress
