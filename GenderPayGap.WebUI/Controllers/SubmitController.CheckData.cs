@@ -7,7 +7,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Submit;
 using GenderPayGap.WebUI.Services;
@@ -228,7 +227,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 && postedReturn.Organisation.Returns.Count(r => r.AccountingDate == postedReturn.AccountingDate) == 1)
             {
                 emailSendingService.SendGeoFirstTimeDataSubmissionEmail(
-                    Config.GetAppSetting("GEODistributionList"),
                     postedReturn.AccountingDate.Year.ToString(),
                     postedReturn.Organisation.OrganisationName,
                     postedReturn.StatusDate.ToShortDateString(),

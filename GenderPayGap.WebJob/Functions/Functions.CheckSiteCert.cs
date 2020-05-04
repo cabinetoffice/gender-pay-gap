@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -46,26 +47,21 @@ namespace GenderPayGap.WebJob
                                 new {environment = Config.EnvironmentName, time});
 
                             emailSendingService.SendGeoSiteCertificateExpiredEmail(
-                                Config.GetAppSetting("GEODistributionList"),
                                 Global.ExternalHost,
                                 expires.ToFriendlyDate());
                         }
-                        else
+                        else if (expires < VirtualDateTime.UtcNow.AddDays(Global.CertExpiresWarningDays))
                         {
                             TimeSpan remainingTime = expires - VirtualDateTime.Now;
 
-                            if (expires < VirtualDateTime.UtcNow.AddDays(Global.CertExpiresWarningDays))
-                            {
-                                CustomLogger.Error(
-                                    $"The website certificate for '{Global.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.",
-                                    new {environment = Config.EnvironmentName, time});
+                            CustomLogger.Error(
+                                $"The website certificate for '{Global.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.",
+                                new {environment = Config.EnvironmentName, time});
 
-                                emailSendingService.SendGeoSiteCertificateSoonToExpireEmail(
-                                    Config.GetAppSetting("GEODistributionList"),
-                                    Global.ExternalHost,
-                                    expires.ToFriendlyDate(),
-                                    remainingTime.ToFriendly(maxParts: 2));
-                            }
+                            emailSendingService.SendGeoSiteCertificateSoonToExpireEmail(
+                                Global.ExternalHost,
+                                expires.ToFriendlyDate(),
+                                remainingTime.ToFriendly(maxParts: 2));
                         }
                     }
                 }

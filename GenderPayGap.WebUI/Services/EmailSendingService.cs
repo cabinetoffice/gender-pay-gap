@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
@@ -327,28 +328,27 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
-        public async void SendGeoOrphanOrganisationEmail(string emailAddress, string organisationName)
+        public async void SendGeoOrphanOrganisationEmail(string organisationName)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"OrganisationName", organisationName}
             };
 
-            var notifyEmail = new NotifyEmail
+            foreach (string emailAddress in Global.GeoDistributionList)
             {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendGeoOrphanOrganisationEmail,
-                Personalisation = personalisation
-            };
+                var notifyEmail = new NotifyEmail
+                {
+                    EmailAddress = emailAddress,
+                    TemplateId = EmailTemplates.SendGeoOrphanOrganisationEmail,
+                    Personalisation = personalisation
+                };
 
-            await AddEmailToQueue(notifyEmail);
+                await AddEmailToQueue(notifyEmail);
+            }
         }
 
-        public async void SendGeoOrganisationRegistrationRequestEmail(string emailAddress,
-            string contactName,
-            string reportingOrg,
-            string reportingAddress,
-            string url)
+        public async void SendGeoOrganisationRegistrationRequestEmail(string contactName, string reportingOrg, string reportingAddress, string url)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
@@ -359,19 +359,21 @@ namespace GenderPayGap.WebUI.Services
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
-            var notifyEmail = new NotifyEmail
+            foreach (string emailAddress in Global.GeoDistributionList)
             {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendGeoOrganisationRegistrationRequestEmail,
-                Personalisation = personalisation
-            };
+                var notifyEmail = new NotifyEmail
+                {
+                    EmailAddress = emailAddress,
+                    TemplateId = EmailTemplates.SendGeoOrganisationRegistrationRequestEmail,
+                    Personalisation = personalisation
+                };
 
-            await AddEmailToQueue(notifyEmail);
+                await AddEmailToQueue(notifyEmail);
+            }
         }
 
-        public async void SendGeoFirstTimeDataSubmissionEmail(string emailAddress, string year, string organisationName, string postedDate, string url)
+        public async void SendGeoFirstTimeDataSubmissionEmail(string year, string organisationName, string postedDate, string url)
         {
-
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"year", year},
@@ -380,14 +382,17 @@ namespace GenderPayGap.WebUI.Services
                 {"url", url},
             };
 
-            var notifyEmail = new NotifyEmail
+            foreach (string emailAddress in Global.GeoDistributionList)
             {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendGeoFirstTimeDataSubmissionEmail,
-                Personalisation = personalisation
-            };
+                var notifyEmail = new NotifyEmail
+                {
+                    EmailAddress = emailAddress,
+                    TemplateId = EmailTemplates.SendGeoFirstTimeDataSubmissionEmail,
+                    Personalisation = personalisation
+                };
 
-            await AddEmailToQueue(notifyEmail);
+                await AddEmailToQueue(notifyEmail);
+            }
         }
 
         private async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
