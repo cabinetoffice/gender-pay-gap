@@ -80,7 +80,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                 column: "ByUserId",
                 principalTable: "Users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_OrganisationStatus_Users_ByUserId",
@@ -88,7 +88,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                 column: "ByUserId",
                 principalTable: "Users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ReturnStatus_Users_ByUserId",
@@ -96,7 +96,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                 column: "ByUserId",
                 principalTable: "Users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserStatus_Users_ByUserId",
@@ -104,7 +104,7 @@ namespace GenderPayGap.Database.Core21.Migrations
                 column: "ByUserId",
                 principalTable: "Users",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
