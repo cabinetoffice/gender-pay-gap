@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
@@ -15,7 +16,7 @@ namespace GenderPayGap.WebJob.Services
             this.govNotifyApi = govNotifyApi;
         }
 
-        public void SendGeoSiteCertificateSoonToExpireEmail(string emailAddress, string host, string expiryDate, string remainingDays)
+        public void SendGeoSiteCertificateSoonToExpireEmail(string host, string expiryDate, string remainingDays)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
@@ -25,17 +26,20 @@ namespace GenderPayGap.WebJob.Services
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
-            var notifyEmail = new NotifyEmail
+            foreach (string emailAddress in Global.GeoDistributionList)
             {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.GeoSiteCertificateSoonToExpireEmail,
-                Personalisation = personalisation
-            };
+                var notifyEmail = new NotifyEmail
+                {
+                    EmailAddress = emailAddress,
+                    TemplateId = EmailTemplates.GeoSiteCertificateSoonToExpireEmail,
+                    Personalisation = personalisation
+                };
 
-            SendEmail(notifyEmail);
+                SendEmail(notifyEmail);
+            }
         }
 
-        public void SendGeoSiteCertificateExpiredEmail(string emailAddress, string host, string expiryDate)
+        public void SendGeoSiteCertificateExpiredEmail(string host, string expiryDate)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
@@ -44,14 +48,17 @@ namespace GenderPayGap.WebJob.Services
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
-            var notifyEmail = new NotifyEmail
+            foreach (string emailAddress in Global.GeoDistributionList)
             {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.GeoSiteCertificateExpiredEmail,
-                Personalisation = personalisation
-            };
+                var notifyEmail = new NotifyEmail
+                {
+                    EmailAddress = emailAddress,
+                    TemplateId = EmailTemplates.GeoSiteCertificateExpiredEmail,
+                    Personalisation = personalisation
+                };
 
-            SendEmail(notifyEmail);
+                SendEmail(notifyEmail);
+            }
         }
 
         public void SendEmailFromQueue(NotifyEmail notifyEmail)

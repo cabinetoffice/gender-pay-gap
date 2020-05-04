@@ -144,6 +144,8 @@ namespace GenderPayGap.Core
 
         public static string AzureInstanceId => Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
 
+        public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+
         public static void SetupAppInsights()
         {
             if (AppInsightsSetupComplete)

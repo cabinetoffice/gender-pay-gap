@@ -6,7 +6,6 @@ using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
@@ -144,7 +143,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Send the notification to GEO for each newly orphaned organisation
             if (organisation.GetIsOrphan())
             {
-                emailSendingService.SendGeoOrphanOrganisationEmail(Config.GetAppSetting("GEODistributionList"), organisation.OrganisationName);
+                emailSendingService.SendGeoOrphanOrganisationEmail(organisation.OrganisationName);
             }
 
             // Audit log

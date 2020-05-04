@@ -1868,7 +1868,6 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             emailSendingService.SendGeoOrganisationRegistrationRequestEmail(
-                Config.GetAppSetting("GEODistributionList"),
                 contactName,
                 reportingOrg,
                 reportingAddress,
