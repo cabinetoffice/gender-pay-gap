@@ -242,7 +242,6 @@ namespace GenderPayGap.WebUI
             builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
 
             // Register record loggers
-            builder.RegisterLogRecord(Filenames.ManualChangeLog);
             builder.RegisterLogRecord(Filenames.RegistrationLog);
 
             // Register log records (without key filtering)

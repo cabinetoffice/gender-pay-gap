@@ -2,32 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class PurgeRegistrationsJob
     {
 
+        private readonly AuditLogger auditLogger;
+
         private readonly IDataRepository dataRepository;
 
-        public PurgeRegistrationsJob(IDataRepository dataRepository)
+        public PurgeRegistrationsJob(IDataRepository dataRepository, AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
+            this.auditLogger = auditLogger;
         }
 
 
         //Remove any incomplete registrations
         public async Task PurgeRegistrations()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = DateTime.Now;
+            string runId = JobHelpers.CreateRunId();
+            DateTime startTime = DateTime.Now;
             JobHelpers.LogFunctionStart(runId, nameof(PurgeRegistrations), startTime);
             try
             {
@@ -37,29 +39,23 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     .ToListAsync();
                 foreach (UserOrganisation registration in registrations)
                 {
-                    var logItem = new ManualChangeLogModel(
-                        nameof(PurgeRegistrations),
-                        ManualActions.Delete,
-                        AppDomain.CurrentDomain.FriendlyName,
-                        $"{nameof(UserOrganisation.OrganisationId)}:{nameof(UserOrganisation.UserId)}",
-                        $"{registration.OrganisationId}:{registration.UserId}",
-                        null,
-                        JsonConvert.SerializeObject(
-                            new
-                            {
-                                registration.UserId,
-                                registration.User.EmailAddress,
-                                registration.OrganisationId,
-                                registration.Organisation.EmployerReference,
-                                registration.Organisation.OrganisationName,
-                                registration.Method,
-                                registration.PINSentDate,
-                                registration.PINConfirmedDate
-                            }),
+                    auditLogger.AuditChangeToUser(
+                        AuditedAction.PurgeRegistration,
+                        registration.User,
+                        new
+                        {
+                            registration.UserId,
+                            registration.User.EmailAddress,
+                            registration.OrganisationId,
+                            registration.Organisation.EmployerReference,
+                            registration.Organisation.OrganisationName,
+                            registration.Method,
+                            registration.PINSentDate,
+                            registration.PINConfirmedDate
+                        },
                         null);
                     dataRepository.Delete(registration);
                     await dataRepository.SaveChangesAsync();
-                    await Global.ManualChangeLog.WriteAsync(logItem);
                 }
 
                 JobHelpers.LogFunctionEnd(runId, nameof(PurgeRegistrations), startTime);

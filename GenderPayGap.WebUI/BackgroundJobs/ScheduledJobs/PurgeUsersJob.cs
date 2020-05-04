@@ -3,32 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class PurgeUsersJob
     {
+
+        private readonly AuditLogger auditLogger;
         private readonly IDataRepository dataRepository;
 
-        public PurgeUsersJob(IDataRepository dataRepository)
+        public PurgeUsersJob(IDataRepository dataRepository, AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
+            this.auditLogger = auditLogger;
         }
 
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
         public async Task PurgeUsers()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = VirtualDateTime.Now;
+            string runId = JobHelpers.CreateRunId();
+            DateTime startTime = VirtualDateTime.Now;
             JobHelpers.LogFunctionStart(runId, nameof(PurgeUsers), startTime);
 
             DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.EmailVerificationExpiryDays);
@@ -36,7 +38,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             List<User> users = dataRepository.GetAll<User>()
                 .Where(u => u.EmailVerifiedDate == null)
-                .Where(u => (u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline))
+                .Where(u => u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline)
                 .Include(u => u.UserOrganisations)
                 .ToList();
 
@@ -48,28 +50,22 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             JobHelpers.LogFunctionEnd(runId, nameof(PurgeUsers), startTime);
         }
 
-        private static async void PurgeUser(User user, DateTime pinExpiryDate, string runId, DateTime startTime)
+        private void PurgeUser(User user, DateTime pinExpiryDate, string runId, DateTime startTime)
         {
             try
             {
-                var logItem = new ManualChangeLogModel(
-                    nameof(PurgeUsers),
-                    ManualActions.Delete,
-                    AppDomain.CurrentDomain.FriendlyName,
-                    nameof(user.UserId),
-                    user.UserId.ToString(),
-                    null,
-                    JsonConvert.SerializeObject(new { user.UserId, user.EmailAddress, user.JobTitle, user.Fullname }),
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.PurgeUser,
+                    user,
+                    new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname},
                     null);
 
                 DeleteUserAndAuditLogs(user);
-                await Global.ManualChangeLog.WriteAsync(logItem);
             }
             catch (Exception ex)
             {
                 JobHelpers.LogFunctionError(runId, nameof(PurgeUsers), startTime, ex);
             }
-
         }
 
         private static void DeleteUserAndAuditLogs(User user)
@@ -79,7 +75,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             List<AuditLog> auditLogs = dataRepository
                 .GetAll<AuditLog>()
                 .Where(log => log.ImpersonatedUser.UserId == user.UserId)
-                .Where(log => log.Action == AuditedAction.AdminResendVerificationEmail).ToList();
+                .Where(log => log.Action == AuditedAction.AdminResendVerificationEmail)
+                .ToList();
 
             foreach (AuditLog log in auditLogs)
             {
@@ -89,7 +86,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             dataRepository.Delete(user);
             dataRepository.SaveChangesAsync().Wait();
         }
-
 
     }
 }
