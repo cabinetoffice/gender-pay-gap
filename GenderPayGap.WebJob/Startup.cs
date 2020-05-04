@@ -137,9 +137,6 @@ namespace GenderPayGap.WebJob
             // Register queues (without key filtering)
             builder.Register(c => new LogEventQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
             builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
-
-            // Register record log queues
-            builder.RegisterLogRecord(Filenames.ManualChangeLog);
         }
 
     }

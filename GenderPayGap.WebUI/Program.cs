@@ -37,9 +37,6 @@ namespace GenderPayGap.WebUI
             //Show thread availability
             Console.WriteLine(Extensions.AspNetCore.Extensions.GetThreadCount());
 
-            //Register log to Global
-            Global.ManualChangeLog = WebUI.MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
-
             //Run the webhost
             host.Run();
         }

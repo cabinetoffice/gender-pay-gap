@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
@@ -10,26 +11,28 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class PurgeOrganisationsJob
     {
 
+        private readonly AuditLogger auditLogger;
+
         private readonly IDataRepository dataRepository;
 
-        public PurgeOrganisationsJob(IDataRepository dataRepository)
+        public PurgeOrganisationsJob(IDataRepository dataRepository, AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
+            this.auditLogger = auditLogger;
         }
 
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
         public async Task PurgeOrganisations()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = DateTime.Now;
+            string runId = JobHelpers.CreateRunId();
+            DateTime startTime = DateTime.Now;
             JobHelpers.LogFunctionStart(runId, nameof(PurgeOrganisations), startTime);
             try
             {
@@ -50,32 +53,29 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     var count = 0;
                     foreach (Organisation org in orgs)
                     {
-                        var logItem = new ManualChangeLogModel(
-                            nameof(PurgeOrganisations),
-                            ManualActions.Delete,
-                            AppDomain.CurrentDomain.FriendlyName,
-                            nameof(org.OrganisationId),
-                            org.OrganisationId.ToString(),
-                            null,
-                            JsonConvert.SerializeObject(
-                                new
-                                {
-                                    org.OrganisationId,
-                                    Address = org.GetLatestAddress()?.GetAddressString(),
-                                    org.EmployerReference,
-                                    org.CompanyNumber,
-                                    org.OrganisationName,
-                                    org.SectorType,
-                                    org.Status,
-                                    SicCodes = org.GetSicSectionIdsString(),
-                                    SicSource = org.GetSicSource(),
-                                    org.DateOfCessation
-                                }),
-                            null);
                         EmployerSearchModel searchRecord = org.ToEmployerSearchResult(true);
 
+                        auditLogger.AuditChangeToOrganisation(
+                            AuditedAction.PurgeOrganisation,
+                            org,
+                            new
+                            {
+                                org.OrganisationId,
+                                Address = org.GetLatestAddress()?.GetAddressString(),
+                                org.EmployerReference,
+                                org.CompanyNumber,
+                                org.OrganisationName,
+                                org.SectorType,
+                                org.Status,
+                                SicCodes = org.GetSicSectionIdsString(),
+                                SicSource = org.GetSicSource(),
+                                org.DateOfCessation
+                            },
+                            null);
+
                         await dataRepository.BeginTransactionAsync(
-                            async () => {
+                            async () =>
+                            {
                                 try
                                 {
                                     org.UserOrganisations.ForEach(uo => dataRepository.Delete(uo));
@@ -92,24 +92,18 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                                     CustomLogger.Error(
                                         $"{nameof(PurgeOrganisations)}: Failed to purge organisation {org.OrganisationId} '{org.OrganisationName}' "
                                         + $"ERROR: {ex.Message}:{ex.GetDetailsText()}",
-                                        new
-                                        {
-                                            Error = ex
-                                        });
+                                        new {Error = ex});
                                 }
                             });
                         //Remove this organisation from the search index
-                        await Global.SearchRepository.RemoveFromIndexAsync(new[] { searchRecord });
+                        await Global.SearchRepository.RemoveFromIndexAsync(new[] {searchRecord});
 
-                        await Global.ManualChangeLog.WriteAsync(logItem);
                         count++;
                     }
 
-                    CustomLogger.Information($"Executed {nameof(PurgeOrganisations)} successfully: {count} organisations deleted", new
-                    {
-                        runId,
-                        Environment = Config.EnvironmentName,
-                    });
+                    CustomLogger.Information(
+                        $"Executed {nameof(PurgeOrganisations)} successfully: {count} organisations deleted",
+                        new {runId, Environment = Config.EnvironmentName});
                 }
 
                 JobHelpers.LogFunctionEnd(runId, nameof(PurgeOrganisations), startTime);

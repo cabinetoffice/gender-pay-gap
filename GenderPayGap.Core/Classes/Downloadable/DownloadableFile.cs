@@ -47,11 +47,6 @@ namespace GenderPayGap.Core.Classes.Downloadable
                     return "Bad SIC Codes Log";
                 }
 
-                if (Name.Contains("ManualChangeLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Manual Changes Log";
-                }
-
                 if (Name.Contains("RegistrationLog", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Registration History";
@@ -120,11 +115,6 @@ namespace GenderPayGap.Core.Classes.Downloadable
                     return "Bad SIC Codes Logs";
                 }
 
-                if (Name.Contains("ManualChangeLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Manual Changes Log";
-                }
-
                 if (Name.Contains("RegistrationLog", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Registration History";
@@ -191,11 +181,6 @@ namespace GenderPayGap.Core.Classes.Downloadable
                 if (Name.Contains("BadSicLog", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Companies and their unknown SIC Codes from Companies House.";
-                }
-
-                if (Name.Contains("ManualChangeLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Manual change history.";
                 }
 
                 if (Name.Contains("RegistrationLog", StringComparison.OrdinalIgnoreCase))

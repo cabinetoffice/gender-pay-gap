@@ -14,12 +14,10 @@ namespace GenderPayGap.Tests.Common.TestHelpers
         public static void SetupMockLogRecordGlobals(ContainerBuilder builder = null)
         {
             // Used by WebUI
-            Global.ManualChangeLog = new Mock<ILogRecordLogger>().Object;
             Global.RegistrationLog = new Mock<ILogRecordLogger>().Object;
 
             if (builder != null)
             {
-                builder.RegisterInstance(Global.ManualChangeLog).Keyed<ILogRecordLogger>(Filenames.ManualChangeLog).SingleInstance();
                 builder.RegisterInstance(Global.RegistrationLog).Keyed<ILogRecordLogger>(Filenames.RegistrationLog).SingleInstance();
 
                 builder.RegisterInstance(Mock.Of<IRegistrationLogRecord>()).SingleInstance();

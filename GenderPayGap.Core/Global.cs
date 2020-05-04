@@ -175,7 +175,6 @@ namespace GenderPayGap.Core
         #region Log Declarations
 
         // WebUI
-        public static ILogRecordLogger ManualChangeLog { get; set; }
         public static ILogRecordLogger RegistrationLog { get; set; }
 
         #endregion
