@@ -34,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core21\Migrations" />
     <Folder Include="Models\" />
   </ItemGroup>
 
