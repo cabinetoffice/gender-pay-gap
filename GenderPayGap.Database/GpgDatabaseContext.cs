@@ -38,6 +38,21 @@ namespace GenderPayGap.Database
                 EnsureMigrated();
             }
         }
+        
+        private static bool MigrationEnsured;
+
+        private void EnsureMigrated()
+        {
+            if (MigrationEnsured)
+            {
+                //This static variable is a temporary measure otherwise each request for a Database context takes a few seconds to
+                //check for migrations or if the database exists
+                return; 
+            }
+            
+            Database.Migrate();
+            MigrationEnsured = true;
+        }
 
 
         public virtual DbSet<AddressStatus> AddressStatus { get; set; }
