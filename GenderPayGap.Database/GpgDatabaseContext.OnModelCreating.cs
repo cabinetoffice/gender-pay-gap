@@ -48,6 +48,10 @@ namespace GenderPayGap.Database
                         .HasConstraintName("FK_dbo.AddressStatus_dbo.OrganisationAddresses_AddressId")
                         .OnDelete(DeleteBehavior.Restrict);
                         
+                    entity.HasOne(d => d.ByUser)
+                        .WithMany()
+                        .HasForeignKey(d => d.ByUserId)
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             #endregion
@@ -312,6 +316,11 @@ namespace GenderPayGap.Database
                         .HasForeignKey(d => d.OrganisationId)
                         .HasConstraintName("FK_dbo.OrganisationStatus_dbo.Organisations_OrganisationId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne(d => d.ByUser)
+                        .WithMany()
+                        .HasForeignKey(d => d.ByUserId)
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             #endregion
@@ -383,6 +392,11 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.ReturnStatuses)
                         .HasForeignKey(d => d.ReturnId)
                         .HasConstraintName("FK_dbo.ReturnStatus_dbo.Returns_ReturnId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne(d => d.ByUser)
+                        .WithMany()
+                        .HasForeignKey(d => d.ByUserId)
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -591,6 +605,11 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.UserStatuses)
                         .HasForeignKey(d => d.UserId)
                         .HasConstraintName("FK_dbo.UserStatus_dbo.Users_UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne(d => d.ByUser)
+                        .WithMany()
+                        .HasForeignKey(d => d.ByUserId)
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
