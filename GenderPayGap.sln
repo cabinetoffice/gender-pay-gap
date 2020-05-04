@@ -46,7 +46,28 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.Integration.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovUkDesignSystem", "GovUkDesignSystem\GovUkDesignSystem.csproj", "{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarmUp", "WarmUp\WarmUp.csproj", "{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarmUp", "WarmUp\WarmUp.csproj", "{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{72B53450-285C-4716-8BF6-5885E53E617F}"
+	ProjectSection(SolutionItems) = preProject
+		Infrastructure\Conduit.sh = Infrastructure\Conduit.sh
+		Infrastructure\ConnectToPaas_Dev.sh = Infrastructure\ConnectToPaas_Dev.sh
+		Infrastructure\ConnectToPaas_PreProd.sh = Infrastructure\ConnectToPaas_PreProd.sh
+		Infrastructure\ConnectToPaas_Prod.sh = Infrastructure\ConnectToPaas_Prod.sh
+		Infrastructure\ConnectToPaas_Test.sh = Infrastructure\ConnectToPaas_Test.sh
+		Infrastructure\CreateEnvironment.sh = Infrastructure\CreateEnvironment.sh
+		Infrastructure\DeleteEnvironment.sh = Infrastructure\DeleteEnvironment.sh
+		Infrastructure\LoginToGovPaas.sh = Infrastructure\LoginToGovPaas.sh
+		Infrastructure\LoginToGovPaasTemplate.sh = Infrastructure\LoginToGovPaasTemplate.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{9AB0CA8E-5650-4A4E-9DFF-254E8A14F9C8}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
