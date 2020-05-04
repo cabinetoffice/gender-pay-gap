@@ -50,9 +50,6 @@ namespace GenderPayGap.WebJob
             Global.FileRepository = ContainerIOC.Resolve<IFileRepository>();
             Global.SearchRepository = ContainerIOC.Resolve<ISearchRepository<EmployerSearchModel>>();
             Global.SicCodeSearchRepository = ContainerIOC.Resolve<ISearchRepository<SicCodeSearchModel>>();
-
-            //Register log to Global
-            Global.ManualChangeLog = ContainerIOC.ResolveKeyed<ILogRecordLogger>(Filenames.ManualChangeLog);
             
             //Leave this check here to ensure function dependencies resolve on startup rather than when each function method is invoked
             var functions = ContainerIOC.Resolve<Functions>();

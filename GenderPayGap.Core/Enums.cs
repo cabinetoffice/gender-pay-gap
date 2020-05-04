@@ -270,6 +270,13 @@ namespace GenderPayGap.Core
         ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs = 32,
         [Display(Name = "Execute Manual Change: Expire security codes for all active and pending orgs")]
         ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs = 33,
+
+        [Display(Name = "Purge organisation")]
+        PurgeOrganisation = 34,
+        [Display(Name = "Purge registration")]
+        PurgeRegistration = 35,
+        [Display(Name = "Purge user")]
+        PurgeUser = 36,
     }
 
     public enum HashingAlgorithm
@@ -323,7 +330,6 @@ namespace GenderPayGap.Core
         public const string SicSectorSynonyms = "GPG-SicSectorSynonyms.csv";
 
         // Record logs
-        public const string ManualChangeLog = "ManualChangeLog.csv";
         public const string RegistrationLog = "RegistrationLog.csv";
 
         public static string GetRootFilename(string filePath)
