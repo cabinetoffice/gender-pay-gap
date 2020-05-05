@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -18,8 +18,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task UpdateOrphanOrganisationsAsync([TimerTrigger("30 1 * * *" /* 01:30 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             string funcName = nameof(UpdateOrphanOrganisationsAsync);
             
@@ -34,14 +33,14 @@ namespace GenderPayGap.WebJob
                 //Dont execute on startup if file already exists
                 if (!StartedJobs.Contains(funcName) && await Global.FileRepository.GetFileExistsAsync(filePath))
                 {
-                    log.LogDebug($"Skipped {funcName} at start up.");
+                    CustomLogger.Debug($"Skipped {funcName} at start up.");
                     return;
                 }
 
                 // Flag the UpdateUnregisteredOrganisations web job as started
                 StartedJobs.Add(funcName);
 
-                await UpdateOrphanOrganisationsAsync(filePath, log);
+                await UpdateOrphanOrganisationsAsync(filePath);
 
                 JobHelpers.LogFunctionEnd(runId, nameof(UpdateOrphanOrganisationsAsync), startTime);
             }
@@ -54,14 +53,14 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        public async Task UpdateOrphanOrganisationsAsync(string filePath, ILogger log)
+        public async Task UpdateOrphanOrganisationsAsync(string filePath)
         {
             string funcName = nameof(UpdateOrphanOrganisationsAsync);
 
             // Ensure the UpdateUnregisteredOrganisations web job is not already running
             if (RunningJobs.Contains(funcName))
             {
-                log.LogDebug($"Skipped {funcName} because already running.");
+                CustomLogger.Debug($"Skipped {funcName} because already running.");
                 return;
             }
 

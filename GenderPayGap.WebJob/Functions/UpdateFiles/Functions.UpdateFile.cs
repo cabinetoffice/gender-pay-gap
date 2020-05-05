@@ -12,7 +12,7 @@ namespace GenderPayGap.WebJob
     public partial class Functions
     {
 
-        public async Task UpdateFileAsync(ILogger log, string filePath, string action)
+        public async Task UpdateFileAsync(string filePath, string action)
         {
             string fileName = Path.GetFileName(filePath);
 
@@ -25,13 +25,13 @@ namespace GenderPayGap.WebJob
                     await UpdateUsersAsync(filePath);
                     break;
                 case Filenames.Registrations:
-                    await UpdateRegistrationsAsync(log, filePath);
+                    await UpdateRegistrationsAsync(filePath);
                     break;
                 case Filenames.RegistrationAddresses:
-                    await UpdateRegistrationAddressesAsync(filePath, log);
+                    await UpdateRegistrationAddressesAsync(filePath);
                     break;
                 case Filenames.UnverifiedRegistrations:
-                    await UpdateUnverifiedRegistrationsAsync(log, filePath);
+                    await UpdateUnverifiedRegistrationsAsync(filePath);
                     break;
                 case Filenames.SendInfo:
                     await UpdateUsersToSendInfoAsync(filePath);
@@ -46,10 +46,10 @@ namespace GenderPayGap.WebJob
                     await UpdateSubmissionsAsync(filePath);
                     break;
                 case Filenames.OrganisationLateSubmissions:
-                    await UpdateOrganisationLateSubmissionsAsync(filePath, log);
+                    await UpdateOrganisationLateSubmissionsAsync(filePath);
                     break;
                 case Filenames.OrphanOrganisations:
-                    await UpdateOrphanOrganisationsAsync(filePath, log);
+                    await UpdateOrphanOrganisationsAsync(filePath);
                     break;
             }
         }

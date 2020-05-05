@@ -7,6 +7,7 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
@@ -20,7 +21,6 @@ using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -35,7 +35,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public RegisterController(
-            ILogger<RegisterController> logger,
             IHttpCache cache,
             IHttpSession session,
             IScopePresentation scopePresentation,
@@ -51,7 +50,6 @@ namespace GenderPayGap.WebUI.Controllers
             [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository,
             AuditLogger auditLogger)
             : base(
-            logger,
             cache,
             session,
             dataRepository,
@@ -185,13 +183,13 @@ namespace GenderPayGap.WebUI.Controllers
                         }
                     }
 
-                    _logger.LogInformation(
+                    CustomLogger.Information(
                         "Send Pin-in-post",
                         $"Name {currentUser.Fullname}, Email:{currentUser.EmailAddress}, IP:{UserHostAddress}, Address:{userOrg?.Address.GetAddressString()}");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, ex.Message);
+                    CustomLogger.Error(ex.Message, ex);
                     // TODO: maybe change this?
                     return View("CustomError", new ErrorViewModel(3014));
                 }
@@ -359,7 +357,7 @@ namespace GenderPayGap.WebUI.Controllers
             currentUser = await UserRepository.FindByEmailAsync(model.EmailAddress, UserStatuses.Active);
             if (currentUser == null)
             {
-                _logger.LogWarning(
+                CustomLogger.Warning(
                     "Password reset requested for unknown email address",
                     $"Email:{model.EmailAddress}, IP:{UserHostAddress}");
                 return View("PasswordResetSent");
@@ -400,14 +398,14 @@ namespace GenderPayGap.WebUI.Controllers
                 string resetUrl = Url.Action("NewPassword", "Register", new { code = resetCode }, "https");
                 emailSendingService.SendResetPasswordVerificationEmail(currentUser.EmailAddress, resetUrl);
 
-                _logger.LogInformation(
+                CustomLogger.Information(
                     "Password reset sent",
                     $"Name {currentUser.Fullname}, Email:{currentUser.EmailAddress}, IP:{UserHostAddress}");
             }
             catch (Exception ex)
             {
                 //Log the exception
-                _logger.LogError(ex, ex.Message);
+                CustomLogger.Error(ex.Message, ex);
                 return false;
             }
 

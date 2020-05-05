@@ -31,7 +31,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers.Administration
 {
@@ -43,7 +42,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         #region Constructors
 
         public AdminController(
-            ILogger<ErrorController> logger,
             IHttpCache cache,
             IHttpSession session,
             IHostingEnvironment hostingEnvironment,
@@ -56,7 +54,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
             [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository,
             AuditLogger auditLogger
-        ) : base(logger, cache, session, dataRepository, webTracker)
+        ) : base(cache, session, dataRepository, webTracker)
         {
             HostingEnvironment = hostingEnvironment;
             AdminService = adminService;
@@ -812,12 +810,12 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     int httpCode = hex.StatusCode;
                     if (httpCode.IsAny(429, (int) HttpStatusCode.NotFound))
                     {
-                        _logger.LogError(hex, hex.Message);
+                        CustomLogger.Error(hex.Message, hex);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, ex.Message);
+                    CustomLogger.Error(ex.Message, ex);
                 }
             }
 

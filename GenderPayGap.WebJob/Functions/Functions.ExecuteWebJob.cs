@@ -18,8 +18,7 @@ namespace GenderPayGap.WebJob
 
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
         public async Task ExecuteWebjob([QueueTrigger(QueueNames.ExecuteWebJob)]
-            string queueMessage,
-            ILogger log)
+            string queueMessage)
         {
             string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -39,10 +38,10 @@ namespace GenderPayGap.WebJob
             switch (command)
             {
                 case "UpdateFile":
-                    await UpdateFileAsync(log, parameters["filePath"], parameters["action"]);
+                    await UpdateFileAsync(parameters["filePath"], parameters["action"]);
                     break;
                 case "UpdateSearch":
-                    await UpdateSearchAsync(log, parameters["userEmail"], true);
+                    await UpdateSearchAsync(parameters["userEmail"], true);
                     break;
                 default:
                     DateTime errorEndTime = VirtualDateTime.Now;
@@ -66,10 +65,9 @@ namespace GenderPayGap.WebJob
         }
 
         public async Task ExecuteWebjobPoisonAsync([QueueTrigger(QueueNames.ExecuteWebJob + "-poison")]
-            string queueMessage,
-            ILogger log)
+            string queueMessage)
         {
-            log.LogError($"Could not execute Webjob, Details: {queueMessage}");
+            CustomLogger.Error($"Could not execute Webjob, Details: {queueMessage}");
 
             DateTime time = VirtualDateTime.Now;
             CustomLogger.Error(

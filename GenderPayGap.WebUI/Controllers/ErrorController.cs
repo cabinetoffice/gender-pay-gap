@@ -1,11 +1,11 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -16,11 +16,10 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ErrorController(
-            ILogger<ErrorController> logger,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker) { }
+            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker) { }
 
         #endregion
 
@@ -53,11 +52,11 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     if (errorCode == 404 || errorCode == 405)
                     {
-                        _logger.LogWarning($"HttpStatusCode {errorCode}, Path: {statusCodeData.OriginalPath}");
+                        CustomLogger.Warning($"HttpStatusCode {errorCode}, Path: {statusCodeData.OriginalPath}");
                     }
                     else if (errorCode >= 400)
                     {
-                        _logger.LogError($"HttpStatusCode {errorCode}, Path: {statusCodeData.OriginalPath}");
+                        CustomLogger.Error($"HttpStatusCode {errorCode}, Path: {statusCodeData.OriginalPath}");
                     }
                 }
             }

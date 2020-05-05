@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Filters;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Interfaces.Downloadable;
@@ -11,7 +12,6 @@ using GenderPayGap.Core.Models.Downloadable;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers.Administration
 {
@@ -24,12 +24,11 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
         #region Constructors
 
-        public DownloadableFileController(ILogger<DownloadableFileController> logger,
-            IHttpCache cache,
+        public DownloadableFileController(IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
             IWebTracker webTracker,
-            IDownloadableFileBusinessLogic downloadableFileBusinessLogic) : base(logger, cache, session, dataRepository, webTracker)
+            IDownloadableFileBusinessLogic downloadableFileBusinessLogic) : base(cache, session, dataRepository, webTracker)
         {
             _downloadableFileBusinessLogic = downloadableFileBusinessLogic;
         }
@@ -53,17 +52,17 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             catch (ArgumentException argumentException)
             {
                 result = BadRequest();
-                _logger.LogError(argumentException, argumentException.Message);
+                CustomLogger.Error(argumentException.Message, argumentException);
             }
             catch (FileNotFoundException fileNotFoundException)
             {
                 result = NotFound();
-                _logger.LogError(fileNotFoundException, fileNotFoundException.Message);
+                CustomLogger.Error(fileNotFoundException.Message, fileNotFoundException);
             }
             catch (DirectoryNotFoundException directoryNotFoundException)
             {
                 result = NotFound();
-                _logger.LogError(directoryNotFoundException, directoryNotFoundException.Message);
+                CustomLogger.Error(directoryNotFoundException.Message, directoryNotFoundException);
             }
 
             return result;

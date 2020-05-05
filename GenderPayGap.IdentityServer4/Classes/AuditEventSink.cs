@@ -1,19 +1,12 @@
 ﻿using System.Threading.Tasks;
+using GenderPayGap.Core.Classes.Logger;
 using IdentityServer4.Events;
 using IdentityServer4.Services;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.IdentityServer4.Classes
 {
     public class AuditEventSink : IEventSink
     {
-
-        private readonly ILogger Logger;
-
-        public AuditEventSink(ILogger<AuditEventSink> logger)
-        {
-            Logger = logger;
-        }
 
         public Task PersistAsync(Event evt)
         {
@@ -23,17 +16,17 @@ namespace GenderPayGap.IdentityServer4.Classes
 
             if (loginSuccessEvent != null)
             {
-                Logger.LogInformation(
+                CustomLogger.Information(
                     $"{loginSuccessEvent.Name}:{loginSuccessEvent.Message}: Name:{loginSuccessEvent.DisplayName}; Username:{loginSuccessEvent.Username}; IPAddress:{loginSuccessEvent.RemoteIpAddress};");
             }
             else if (loginFailureEvent != null)
             {
-                Logger.LogWarning(
+                CustomLogger.Warning(
                     $"{loginFailureEvent.Name}:{loginFailureEvent.Message}: Username:{loginFailureEvent.Username}; IPAddress:{loginFailureEvent.RemoteIpAddress};");
             }
             else if (logoutSuccessEvent != null)
             {
-                Logger.LogInformation(
+                CustomLogger.Information(
                     $"{logoutSuccessEvent.Name}:{logoutSuccessEvent.Message}: Username:{logoutSuccessEvent.DisplayName}; IPAddress:{logoutSuccessEvent.RemoteIpAddress};");
             }
             else

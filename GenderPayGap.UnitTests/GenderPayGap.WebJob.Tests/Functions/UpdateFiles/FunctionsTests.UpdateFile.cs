@@ -9,7 +9,6 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebJob.Tests.TestHelpers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -35,9 +34,7 @@ namespace GenderPayGap.WebJob.Tests.Functions
         [Description("FunctionsUpdateFile_UpdateFile_Shared_Ok")]
         public async Task FunctionsUpdateFile_UpdateFile_Shared_OkAsync()
         {
-            var log = new Mock<ILogger>();
-
-            await _functions.UpdateFileAsync(log.Object, string.Empty, string.Empty);
+            await _functions.UpdateFileAsync(string.Empty, string.Empty);
 
             throw new NotImplementedException();
         }
@@ -48,7 +45,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateOrganisationLateSubmissions_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 
@@ -115,7 +111,7 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public async Task FunctionsUpdateFile_UpdateOrganisations_TimeTrigger_OkAsync()
         {
             var ti = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            await _functions.UpdateOrganisationsAsync(ti, null);
+            await _functions.UpdateOrganisationsAsync(ti);
             throw new NotImplementedException();
         }
 
@@ -124,8 +120,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         [Description("FunctionsUpdateFile_UpdateRegistrationAddresses_Shared_Ok")]
         public void FunctionsUpdateFile_UpdateRegistrationAddresses_Shared_Ok()
         {
-            var log = new Mock<ILogger>();
-
             throw new NotImplementedException();
 
             //_functions.UpdateRegistrationAddressesAsync(filePath: string.Empty,log: log.Object);
@@ -137,7 +131,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateRegistrationAddresses_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 
@@ -149,8 +142,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         [Description("FunctionsUpdateFile_UpdateRegistrations_Shared_Ok")]
         public void FunctionsUpdateFile_UpdateRegistrations_Shared_Ok()
         {
-            var log = new Mock<ILogger>();
-
             throw new NotImplementedException();
 
             //_functions.UpdateRegistrations(filePath: string.Empty, log: log.Object);
@@ -162,7 +153,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateRegistrations_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 
@@ -185,7 +175,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateScopes_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 
@@ -208,7 +197,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateSubmissions_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 
@@ -220,8 +208,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         [Description("FunctionsUpdateFile_UpdateUnverifiedRegistrations_Shared_Ok")]
         public void FunctionsUpdateFile_UpdateUnverifiedRegistrations_Shared_Ok()
         {
-            var log = new Mock<ILogger>();
-
             throw new NotImplementedException();
 
             //_functions.UpdateUnverifiedRegistrations(filePath: string.Empty,log: log.Object);
@@ -233,7 +219,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateUnverifiedRegistrations_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 
@@ -256,8 +241,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateUsers_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
-
 
             throw new NotImplementedException();
 
@@ -280,11 +263,10 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public async Task FunctionsUpdateFile_UpdateUsersToContactForFeedback_TimeTrigger_OkAsync()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             //throw new NotImplementedException();
 
-            await _functions.UpdateUsersToContactForFeedback(timerInfo, log.Object);
+            await _functions.UpdateUsersToContactForFeedback(timerInfo);
         }
 
         [Test]
@@ -303,7 +285,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public void FunctionsUpdateFile_UpdateUsersToSendInfo_TimeTrigger_Ok()
         {
             var timerInfo = new TimerInfo(new DailySchedule(), new ScheduleStatus());
-            var log = new Mock<ILogger>();
 
             throw new NotImplementedException();
 

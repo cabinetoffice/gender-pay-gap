@@ -13,10 +13,8 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Services;
-using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Views.Home;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -26,12 +24,11 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public HomeController(
-            ILogger<HomeController> logger,
             IHttpCache cache,
             IHttpSession session,
             IScopePresentation scopeUIService,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker)
+            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
         {
             ScopePresentation = scopeUIService;
         }

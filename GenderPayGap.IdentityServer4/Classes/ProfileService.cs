@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.IdentityServer4.Classes
 {
@@ -15,22 +15,15 @@ namespace GenderPayGap.IdentityServer4.Classes
     {
 
         protected readonly IUserRepository _userRepository;
-        protected readonly ILogger Logger;
 
-        public CustomProfileService(IUserRepository userRepository, ILogger<CustomProfileService> logger)
+        public CustomProfileService(IUserRepository userRepository)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            Logger.LogDebug(
-                "Get profile called for subject {subject} from client {client} with claim types {claimTypes} via {caller}",
-                context.Subject.GetSubjectId(),
-                context.Client.ClientName ?? context.Client.ClientId,
-                context.RequestedClaimTypes,
-                context.Caller);
+            CustomLogger.Debug($"Get profile called for subject {context.Subject.GetSubjectId()} from client {context.Client.ClientName ?? context.Client.ClientId} with claim types {context.RequestedClaimTypes} via {context.Caller}");
 
             //Issue the requested claims for the user
             context.IssuedClaims = context.Subject.Claims.Where(x => context.RequestedClaimTypes.Contains(x.Type)).ToList();

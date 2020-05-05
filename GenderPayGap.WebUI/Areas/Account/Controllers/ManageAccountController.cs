@@ -6,7 +6,6 @@ using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Areas.Account.Controllers
 {
@@ -16,12 +15,11 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
     public class ManageAccountController : BaseController
     {
 
-        public ManageAccountController(ILogger<ManageAccountController> logger,
-            IHttpCache cache,
+        public ManageAccountController(IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepo,
             IWebTracker webTracker) :
-            base(logger, cache, session, dataRepo, webTracker) { }
+            base(cache, session, dataRepo, webTracker) { }
 
         [HttpGet]
         public IActionResult ManageAccount()

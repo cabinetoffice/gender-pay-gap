@@ -40,21 +40,18 @@ namespace GenderPayGap.IdentityServer4.Controllers
         private readonly IUserRepository _userRepository;
         protected readonly IDistributedCache _cache;
         protected readonly IEventService _events;
-        protected readonly ILogger _Logger;
 
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IUserRepository userRepository,
             IEventService events,
-            IDistributedCache cache,
-            ILogger<AccountController> logger)
+            IDistributedCache cache)
         {
             _userRepository = userRepository;
             _interaction = interaction;
             _events = events;
             _cache = cache;
-            _Logger = logger;
         }
 
 

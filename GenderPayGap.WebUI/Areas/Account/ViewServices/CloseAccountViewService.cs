@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 {
@@ -21,12 +21,10 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 
         public CloseAccountViewService(IUserRepository userRepository,
             IRegistrationRepository registrationRepository,
-            ILogger<CloseAccountViewService> logger,
             EmailSendingService emailSendingService)
         {
             UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             RegistrationRepository = registrationRepository ?? throw new ArgumentNullException(nameof(registrationRepository));
-            Logger = logger;
             this.emailSendingService = emailSendingService;
         }
 
@@ -63,11 +61,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                     catch (Exception ex)
                     {
                         UserRepository.RollbackTransaction();
-                        Logger.LogWarning(
-                            ex,
-                            "Failed to retire user {UserId}. Action by user {ActionByUserId}",
-                            userToRetire.UserId,
-                            actionByUser.UserId);
+                        CustomLogger.Warning($"Failed to retire user {userToRetire.UserId}. Action by user {actionByUser.UserId}", ex);
                         throw;
                     }
                 });
@@ -88,8 +82,6 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
         private IUserRepository UserRepository { get; }
 
         private IRegistrationRepository RegistrationRepository { get; }
-
-        private ILogger<CloseAccountViewService> Logger { get; }
 
         #endregion
 

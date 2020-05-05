@@ -6,7 +6,6 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI
 {
@@ -14,8 +13,6 @@ namespace GenderPayGap.WebUI
     {
 
         double SessionTimeOutMinutes { get; }
-
-        ILogger Logger { get; }
         IQueue ExecuteWebjobQueue { get; }
 
         Task InitAsync();
@@ -28,21 +25,17 @@ namespace GenderPayGap.WebUI
         public static IContainer ContainerIoC;
 
         public MvcApplication(
-            ILogger<MvcApplication> logger,
             IFileRepository fileRepository,
             ISearchRepository<EmployerSearchModel> searchRepository,
             [KeyFilter(QueueNames.ExecuteWebJob)] IQueue executeWebjobQueue
         )
         {
-            Logger = logger;
-
             Global.FileRepository = fileRepository;
             Global.SearchRepository = searchRepository;
 
             ExecuteWebjobQueue = executeWebjobQueue;
         }
 
-        public ILogger Logger { get; }
         public IQueue ExecuteWebjobQueue { get; }
 
         public double SessionTimeOutMinutes => Config.GetAppSetting("SessionTimeOut").ToInt32(20);

@@ -6,7 +6,6 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -19,11 +18,10 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ActionHubController(
-            ILogger<ActionHubController> logger,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker)
+            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
         {
         }
 

@@ -3,6 +3,7 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -150,7 +151,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
                 else
                 {
-                    _logger.LogWarning(
+                    CustomLogger.Warning(
                         $"Attempt to PIN activate a {userOrg.Organisation.Status} organisation",
                         $"Organisation: '{userOrg.Organisation.OrganisationName}' Reference: '{userOrg.Organisation.EmployerReference}' User: '{currentUser.EmailAddress}'");
                     return View("CustomError", new ErrorViewModel(1149));
