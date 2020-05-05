@@ -3,12 +3,13 @@
 # Start of configuration
 
 # Name - This is the bit after gpg- - e.g. for gpg-dev, PAAS_ENV_SHORTNAME would just be 'dev'
-PAAS_ENV_SHORTNAME="dev"
+PAAS_ENV_SHORTNAME="preprod"
+
+# Service - DB or cache
+PAAS_SERVICE="cache"
 
 # The local port to use
-# - the database will use this port
-# - the cache will use port LOCAL_PORT+1
-LOCAL_PORT=7100
+LOCAL_PORT=7310
 
 
 
