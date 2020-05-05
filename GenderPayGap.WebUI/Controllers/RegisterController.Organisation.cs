@@ -1344,31 +1344,28 @@ namespace GenderPayGap.WebUI.Controllers
             if (sector == SectorTypes.Public || model.IsFastTrackAuthorised)
             {
                 //Log the registration
-                if (!userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
-                {
-                    await Global.RegistrationLog.WriteAsync(
-                        new RegisterLogModel
-                        {
-                            StatusDate = VirtualDateTime.Now,
-                            Status = "Public sector email confirmed",
-                            ActionBy = currentUser.EmailAddress,
-                            Details = "",
-                            Sector = userOrg.Organisation.SectorType,
-                            Organisation = userOrg.Organisation.OrganisationName,
-                            CompanyNo = userOrg.Organisation.CompanyNumber,
-                            Address = userOrg?.Address.GetAddressString(),
-                            SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
-                            UserFirstname = userOrg.User.Firstname,
-                            UserLastname = userOrg.User.Lastname,
-                            UserJobtitle = userOrg.User.JobTitle,
-                            UserEmail = userOrg.User.EmailAddress,
-                            ContactFirstName = userOrg.User.ContactFirstName,
-                            ContactLastName = userOrg.User.ContactLastName,
-                            ContactJobTitle = userOrg.User.ContactJobTitle,
-                            ContactOrganisation = userOrg.User.ContactOrganisation,
-                            ContactPhoneNumber = userOrg.User.ContactPhoneNumber
-                        });
-                }
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.RegistrationLog,
+                    userOrg.User,
+                    new
+                    {
+                        Status = "Public sector email confirmed",
+                        Sector = userOrg.Organisation.SectorType,
+                        Organisation = userOrg.Organisation.OrganisationName,
+                        CompanyNo = userOrg.Organisation.CompanyNumber,
+                        Address = userOrg.Address.GetAddressString(),
+                        SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
+                        UserFirstname = userOrg.User.Firstname,
+                        UserLastname = userOrg.User.Lastname,
+                        UserJobtitle = userOrg.User.JobTitle,
+                        UserEmail = userOrg.User.EmailAddress,
+                        userOrg.User.ContactFirstName,
+                        userOrg.User.ContactLastName,
+                        userOrg.User.ContactJobTitle,
+                        userOrg.User.ContactOrganisation,
+                        userOrg.User.ContactPhoneNumber
+                    },
+                    currentUser);
 
                 if (model.IsFastTrackAuthorised)
                 {

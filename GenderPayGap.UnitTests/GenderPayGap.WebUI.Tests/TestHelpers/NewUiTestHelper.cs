@@ -264,8 +264,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             environmentMock.SetupGet(m => m.WebRootPath).Returns(Environment.CurrentDirectory);
             builder.RegisterInstance(environmentMock.Object).As<IHostingEnvironment>().SingleInstance();
 
-            SetupHelpers.SetupMockLogRecordGlobals(builder);
-
             IContainer container = builder.Build();
 
             Mapper.Reset();
