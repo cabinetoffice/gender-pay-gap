@@ -116,67 +116,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             var downloads = new List<DownloadViewModel.Download>();
             DownloadViewModel.Download download;
 
-            #region Create Registration History
-
             IEnumerable<string> files = await Global.FileRepository.GetFilesAsync(Global.LogPath, "RegistrationLog*.csv", true);
-            if (!files.Any())
-            {
-                //Create the first log file
-                var logRecords = new List<RegisterLogModel>();
-                foreach (UserOrganisation userOrg in DataRepository.GetAll<UserOrganisation>()
-                    .Where(uo => uo.PINConfirmedDate != null)
-                    .OrderBy(uo => uo.PINConfirmedDate))
-                {
-                    //Dont log test registrations
-                    if (userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
-                    {
-                        continue;
-                    }
-
-                    OrganisationStatus status = await DataRepository.GetAll<OrganisationStatus>()
-                        .FirstOrDefaultAsync(
-                            os => os.OrganisationId == userOrg.OrganisationId
-                                  && os.Status == userOrg.Organisation.Status
-                                  && os.StatusDate == userOrg.Organisation.StatusDate);
-                    if (status == null)
-                    {
-                        _logger.LogError(
-                            $"Could not find status '{userOrg.Organisation.Status}' for organisation '{userOrg.OrganisationId}' at '{userOrg.Organisation.StatusDate}' while creating registration history");
-                    }
-                    else
-                    {
-                        logRecords.Add(
-                            new RegisterLogModel {
-                                StatusDate = status.StatusDate,
-                                Status = status.StatusDetails,
-                                ActionBy = status.ByUser.EmailAddress,
-                                Details = "",
-                                Sector = userOrg.Organisation.SectorType,
-                                Organisation = userOrg.Organisation.OrganisationName,
-                                CompanyNo = userOrg.Organisation.CompanyNumber,
-                                Address = userOrg?.Address.GetAddressString(),
-                                SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
-                                UserFirstname = userOrg.User.Firstname,
-                                UserLastname = userOrg.User.Lastname,
-                                UserJobtitle = userOrg.User.JobTitle,
-                                UserEmail = userOrg.User.EmailAddress,
-                                ContactFirstName = userOrg.User.ContactFirstName,
-                                ContactLastName = userOrg.User.ContactLastName,
-                                ContactJobTitle = userOrg.User.ContactJobTitle,
-                                ContactOrganisation = userOrg.User.ContactOrganisation,
-                                ContactPhoneNumber = userOrg.User.ContactPhoneNumber
-                            });
-                    }
-                }
-
-                if (logRecords.Count > 0)
-                {
-                    await Global.RegistrationLog.WriteAsync(logRecords.OrderBy(l => l.StatusDate));
-                }
-
-                //Get the files again
-                files = await Global.FileRepository.GetFilesAsync(Global.LogPath, "RegistrationLog*.csv", true);
-            }
 
             foreach (string filePath in files)
             {
@@ -196,9 +136,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             model.Downloads.OrderByDescending(d => d.Modified).ThenByDescending(d => d.Filename);
             model.Downloads.AddRange(downloads);
-
-            #endregion
-
+            
             return View("History", model);
         }
 

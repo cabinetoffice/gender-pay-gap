@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Moq;
@@ -25,15 +26,14 @@ namespace Repositories.RegistrationRepository
             GpgDatabaseContext dbContext = AutoFacHelpers.CreateInMemoryTestDatabase(UserOrganisationHelper.CreateRegistrations());
 
             mockDataRepo = new SqlRepository(dbContext);
-            mockLogRecordLogger = new Mock<IRegistrationLogRecord>();
+            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>(), Mock.Of<IHttpSession>());
 
             // service under test
             testRegistrationRepo =
-                new GenderPayGap.BusinessLogic.Repositories.RegistrationRepository(mockDataRepo, mockLogRecordLogger.Object);
+                new GenderPayGap.BusinessLogic.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks);
         }
 
         private IDataRepository mockDataRepo;
-        private Mock<IRegistrationLogRecord> mockLogRecordLogger;
 
         private IRegistrationRepository testRegistrationRepo;
 
@@ -50,26 +50,12 @@ namespace Repositories.RegistrationRepository
                 .FirstOrDefault();
 
             UserOrganisation testUserOrg = testUnregisterUser.UserOrganisations.FirstOrDefault();
-            var calledLogUnregisteredAsync = false;
-
-            // Flag LogUnregisteredSelfAsync
-            mockLogRecordLogger.Setup(x => x.LogUnregisteredAsync(It.IsAny<UserOrganisation>(), It.IsAny<string>()))
-                .Callback(
-                    (UserOrganisation uo, string abe) => {
-                        calledLogUnregisteredAsync = true;
-                        Assert.AreEqual(uo, testUserOrg, "Expected to log user org");
-                        Assert.AreEqual(abe, testActionByUser.EmailAddress, "Expected log action by email to match");
-                    })
-                .Returns(Task.CompletedTask);
 
             // Act
             await testRegistrationRepo.RemoveRegistrationAsync(testUserOrg, testActionByUser);
 
             // Assert user org removed
             Assert.IsNull(mockDataRepo.GetAll<UserOrganisation>().Where(uo => uo == testUserOrg).FirstOrDefault());
-
-            // Assert log
-            Assert.IsTrue(calledLogUnregisteredAsync, "Expected LogUnregisteredSelfAsync to be called");
         }
 
         [Test]
@@ -81,26 +67,12 @@ namespace Repositories.RegistrationRepository
                 .FirstOrDefault();
 
             UserOrganisation testUserOrg = testUnregisterUser.UserOrganisations.FirstOrDefault();
-            var calledLogUnregisteredSelfAsync = false;
-
-            // Flag LogUnregisteredSelfAsync
-            mockLogRecordLogger.Setup(x => x.LogUnregisteredSelfAsync(It.IsAny<UserOrganisation>(), It.IsAny<string>()))
-                .Callback(
-                    (UserOrganisation uo, string abe) => {
-                        calledLogUnregisteredSelfAsync = true;
-                        Assert.AreEqual(uo, testUserOrg, "Expected to log user org");
-                        Assert.AreEqual(abe, testUnregisterUser.EmailAddress, "Expected log action by email to match");
-                    })
-                .Returns(Task.CompletedTask);
 
             // Act
             await testRegistrationRepo.RemoveRegistrationAsync(testUserOrg, testUnregisterUser);
 
             // Assert user org removed
             Assert.IsNull(mockDataRepo.GetAll<UserOrganisation>().Where(uo => uo == testUserOrg).FirstOrDefault());
-
-            // Assert log
-            Assert.IsTrue(calledLogUnregisteredSelfAsync, "Expected LogUnregisteredSelfAsync to be called");
         }
 
     }

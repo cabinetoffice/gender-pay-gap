@@ -525,31 +525,28 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix));
 
                 //Log the approval
-                if (!userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
-                {
-                    await Global.RegistrationLog.WriteAsync(
-                        new RegisterLogModel
-                        {
-                            StatusDate = VirtualDateTime.Now,
-                            Status = "Manually registered",
-                            ActionBy = currentUser.EmailAddress,
-                            Details = "",
-                            Sector = userOrg.Organisation.SectorType,
-                            Organisation = userOrg.Organisation.OrganisationName,
-                            CompanyNo = userOrg.Organisation.CompanyNumber,
-                            Address = userOrg?.Address.GetAddressString(),
-                            SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
-                            UserFirstname = userOrg.User.Firstname,
-                            UserLastname = userOrg.User.Lastname,
-                            UserJobtitle = userOrg.User.JobTitle,
-                            UserEmail = userOrg.User.EmailAddress,
-                            ContactFirstName = userOrg.User.ContactFirstName,
-                            ContactLastName = userOrg.User.ContactLastName,
-                            ContactJobTitle = userOrg.User.ContactJobTitle,
-                            ContactOrganisation = userOrg.User.ContactOrganisation,
-                            ContactPhoneNumber = userOrg.User.ContactPhoneNumber
-                        });
-                }
+                auditLogger.AuditChangeToUser(
+                    AuditedAction.RegistrationLog,
+                    userOrg.User,
+                    new
+                    {
+                        Status = "Manually registered",
+                        Sector = userOrg.Organisation.SectorType,
+                        Organisation = userOrg.Organisation.OrganisationName,
+                        CompanyNo = userOrg.Organisation.CompanyNumber,
+                        Address = userOrg?.Address.GetAddressString(),
+                        SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
+                        UserFirstname = userOrg.User.Firstname,
+                        UserLastname = userOrg.User.Lastname,
+                        UserJobtitle = userOrg.User.JobTitle,
+                        UserEmail = userOrg.User.EmailAddress,
+                        userOrg.User.ContactFirstName,
+                        userOrg.User.ContactLastName,
+                        userOrg.User.ContactJobTitle,
+                        userOrg.User.ContactOrganisation,
+                        userOrg.User.ContactPhoneNumber
+                    },
+                    currentUser);
 
                 //Show confirmation
                 if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
@@ -665,31 +662,28 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Log the rejection
-            if (!userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                await Global.RegistrationLog.WriteAsync(
-                    new RegisterLogModel
-                    {
-                        StatusDate = VirtualDateTime.Now,
-                        Status = "Manually Rejected",
-                        ActionBy = currentUser.EmailAddress,
-                        Details = "",
-                        Sector = userOrg.Organisation.SectorType,
-                        Organisation = userOrg.Organisation.OrganisationName,
-                        CompanyNo = userOrg.Organisation.CompanyNumber,
-                        Address = userOrg?.Address.GetAddressString(),
-                        SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
-                        UserFirstname = userOrg.User.Firstname,
-                        UserLastname = userOrg.User.Lastname,
-                        UserJobtitle = userOrg.User.JobTitle,
-                        UserEmail = userOrg.User.EmailAddress,
-                        ContactFirstName = userOrg.User.ContactFirstName,
-                        ContactLastName = userOrg.User.ContactLastName,
-                        ContactJobTitle = userOrg.User.ContactJobTitle,
-                        ContactOrganisation = userOrg.User.ContactOrganisation,
-                        ContactPhoneNumber = userOrg.User.ContactPhoneNumber
-                    });
-            }
+            auditLogger.AuditChangeToUser(
+                AuditedAction.RegistrationLog,
+                userOrg.User,
+                new
+                {
+                    Status = "Manually Rejected",
+                    Sector = userOrg.Organisation.SectorType,
+                    Organisation = userOrg.Organisation.OrganisationName,
+                    CompanyNo = userOrg.Organisation.CompanyNumber,
+                    Address = userOrg?.Address.GetAddressString(),
+                    SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
+                    UserFirstname = userOrg.User.Firstname,
+                    UserLastname = userOrg.User.Lastname,
+                    UserJobtitle = userOrg.User.JobTitle,
+                    UserEmail = userOrg.User.EmailAddress,
+                    userOrg.User.ContactFirstName,
+                    userOrg.User.ContactLastName,
+                    userOrg.User.ContactJobTitle,
+                    userOrg.User.ContactOrganisation,
+                    userOrg.User.ContactPhoneNumber
+                },
+                currentUser);
 
             //Delete address for this user and organisation
             if (userOrg.Address.Status != AddressStatuses.Active && userOrg.Address.CreatedByUserId == userOrg.UserId)

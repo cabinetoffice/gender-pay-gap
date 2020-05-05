@@ -277,6 +277,8 @@ namespace GenderPayGap.Core
         PurgeRegistration = 35,
         [Display(Name = "Purge user")]
         PurgeUser = 36,
+        [Display(Name = "Registraion log")]
+        RegistrationLog = 37,
     }
 
     public enum HashingAlgorithm
@@ -328,9 +330,6 @@ namespace GenderPayGap.Core
         public const string SicCodes = "SicCodes.csv";
         public const string SicSections = "SicSections.csv";
         public const string SicSectorSynonyms = "GPG-SicSectorSynonyms.csv";
-
-        // Record logs
-        public const string RegistrationLog = "RegistrationLog.csv";
 
         public static string GetRootFilename(string filePath)
         {

@@ -26,8 +26,6 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
             testOrganisationId = new Random().Next(100000, 150000);
             testSnapshotYear = VirtualDateTime.Now.AddYears(-1).Year;
             testUserId = new Random().Next(160000, 170000);
-
-            SetupHelpers.SetupMockLogRecordGlobals();
         }
 
         private IDraftFileBusinessLogic testDraftFileBusinessLogic;

@@ -69,8 +69,6 @@ namespace GenderPayGap.WebJob.Tests.TestHelpers
                 .As(typeof(ILogger<>))
                 .SingleInstance();
 
-            SetupHelpers.SetupMockLogRecordGlobals(builder);
-
             return builder.Build();
         }
 

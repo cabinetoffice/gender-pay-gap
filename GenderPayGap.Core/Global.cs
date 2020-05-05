@@ -172,12 +172,5 @@ namespace GenderPayGap.Core
             AppInsightsSetupComplete = true;
         }
 
-        #region Log Declarations
-
-        // WebUI
-        public static ILogRecordLogger RegistrationLog { get; set; }
-
-        #endregion
-
     }
 }
