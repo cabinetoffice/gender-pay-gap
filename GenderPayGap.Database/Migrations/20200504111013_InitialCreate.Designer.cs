@@ -1192,13 +1192,13 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GenderPayGap.Database.User", "User")
                         .WithMany("UserStatuses")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_dbo.UserStatus_dbo.Users_UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
