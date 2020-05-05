@@ -60,48 +60,6 @@ namespace GenderPayGap.Database.Migrations
 
             #endregion
             
-            #region 201811261523023_Add view OrganisationInfoView.cs
-
-            migrationBuilder.Sql(
-                " CREATE VIEW [dbo].[OrganisationInfoView] "
-                + " AS "
-                + " SELECT orgs.OrganisationId "
-                + " 	,orgs.EmployerReference "
-                + " 	,orgs.CompanyNumber "
-                + " 	,orgs.OrganisationName "
-                + " 	,CASE orgs.[SectorTypeId] "
-                + " 		WHEN 0 "
-                + " 			THEN 'Unknown' "
-                + " 		WHEN 1 "
-                + " 			THEN 'Private' "
-                + " 		WHEN 2 "
-                + " 			THEN 'Public' "
-                + " 		ELSE 'Error' "
-                + " 		END + ' (' + CAST(orgs.SectorTypeId AS VARCHAR(2)) + ')' AS SectorType "
-                + " 	,CASE orgs.StatusId "
-                + " 		WHEN 0 "
-                + " 			THEN 'Unknown' "
-                + " 		WHEN 1 "
-                + " 			THEN 'New' "
-                + " 		WHEN 2 "
-                + " 			THEN 'Suspended' "
-                + " 		WHEN 3 "
-                + " 			THEN 'Active' "
-                + " 		WHEN 4 "
-                + " 			THEN 'Retired' "
-                + " 		WHEN 5 "
-                + " 			THEN 'Pending' "
-                + " 		ELSE 'Error' "
-                + " 		END + ' (' + CAST(orgs.StatusId AS VARCHAR(2)) + ')' AS OrganisationStatus "
-                + " 	,orgs.[SecurityCode] "
-                + " 	,orgs.[SecurityCodeExpiryDateTime] "
-                + " 	,orgs.[SecurityCodeCreatedDateTime] "
-                + " FROM dbo.Organisations AS orgs ");
-
-            migrationBuilder.Sql(" GRANT SELECT " + " 	ON OBJECT::dbo.[OrganisationInfoView] " + " 	TO [ReportsReaderDv]; ");
-
-            #endregion
-
             #region 201811261527380_Add view OrganisationRegistrationInfoView.cs
 
             migrationBuilder.Sql(
@@ -209,120 +167,6 @@ namespace GenderPayGap.Database.Migrations
                 + " FROM dbo.Organisations AS orgs ");
 
             migrationBuilder.Sql(" GRANT SELECT " + " 	ON OBJECT::dbo.[OrganisationSearchInfoView] " + " 	TO [ReportsReaderDv]; ");
-
-            #endregion
-
-            #region 201811261605329_Add view OrganisationSubmissionInfoView.cs
-
-            migrationBuilder.Sql(
-                " CREATE VIEW [dbo].[OrganisationSubmissionInfoView] "
-                + " AS "
-                + " SELECT ret.OrganisationId "
-                + " 	,CONVERT(DATE, ret.AccountingDate) AS LatestReturnAccountingDate "
-                + " 	,DATEADD(second, - 1, DATEADD(year, 1, ret.AccountingDate)) AS ReportingDeadline "
-                + " 	,CASE ret.[StatusId] "
-                + " 		WHEN 0 "
-                + " 			THEN 'Unknown' "
-                + " 		WHEN 1 "
-                + " 			THEN 'Draft' "
-                + " 		WHEN 2 "
-                + " 			THEN 'Suspended' "
-                + " 		WHEN 3 "
-                + " 			THEN 'Submitted' "
-                + " 		WHEN 4 "
-                + " 			THEN 'Retired' "
-                + " 		WHEN 5 "
-                + " 			THEN 'Deleted' "
-                + " 		ELSE 'Error' "
-                + " 		END + ' (' + CAST(ret.StatusId AS VARCHAR(2)) + ')' AS latestReturnStatus "
-                + " 	,ret.StatusDate AS latestReturnStatusDate "
-                + " 	,ret.StatusDetails AS LatestReturnStatusDetails "
-                + " 	,CASE  "
-                + " 		WHEN ([Modified] > dateadd(second, - 1, dateadd(year, 1, accountingdate))) "
-                + " 			THEN 'true' "
-                + " 		ELSE 'false' "
-                + " 		END AS ReportedLate "
-                + " 	,ret.LateReason AS LatestReturnLateReason "
-                + " 	,CASE retstat.[StatusId] "
-                + " 		WHEN 0 "
-                + " 			THEN 'Unknown' "
-                + " 		WHEN 1 "
-                + " 			THEN 'Draft' "
-                + " 		WHEN 2 "
-                + " 			THEN 'Suspended' "
-                + " 		WHEN 3 "
-                + " 			THEN 'Submitted' "
-                + " 		WHEN 4 "
-                + " 			THEN 'Retired' "
-                + " 		WHEN 5 "
-                + " 			THEN 'Deleted' "
-                + " 		ELSE 'Error' "
-                + " 		END + ' (' + CAST(retstat.StatusId AS VARCHAR(2)) + ')' AS StatusId "
-                + " 	,retstat.StatusDate "
-                + " 	,retstat.StatusDetails "
-                + " 	,ret.Modifications AS ReturnModifiedFields "
-                + " 	,CASE ret.[EHRCResponse] "
-                + " 		WHEN 1 "
-                + " 			THEN 'true' "
-                + " 		ELSE 'false' "
-                + " 		END AS EHRCResponse "
-                + " 	,ret.FirstName + ' ' + ret.LastName + ' [' + ret.JobTitle + ']' AS SubmittedBy "
-                + " 	,CASE  "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 0 "
-                + " 				AND [MaxEmployees] = 0 "
-                + " 				) "
-                + " 			THEN 'Not provided' "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 0 "
-                + " 				AND [MaxEmployees] = 249 "
-                + " 				) "
-                + " 			THEN 'Employees 0 to 249' "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 250 "
-                + " 				AND [MaxEmployees] = 499 "
-                + " 				) "
-                + " 			THEN 'Employees 250 to 499' "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 500 "
-                + " 				AND [MaxEmployees] = 999 "
-                + " 				) "
-                + " 			THEN 'Employees 500 to 999' "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 1000 "
-                + " 				AND [MaxEmployees] = 4999 "
-                + " 				) "
-                + " 			THEN 'Employees 1,000 to 4,999' "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 5000 "
-                + " 				AND [MaxEmployees] = 19999 "
-                + " 				) "
-                + " 			THEN 'Employees 5,000 to 19,999' "
-                + " 		WHEN ( "
-                + " 				[MinEmployees] = 20000 "
-                + " 				AND [MaxEmployees] = 2147483647 "
-                + " 				) "
-                + " 			THEN 'Employees 20,000 or more' "
-                + " 		ELSE 'Error' "
-                + " 		END AS OrganisationSize "
-                + " 	,ret.DiffMeanHourlyPayPercent "
-                + " 	,ret.DiffMedianHourlyPercent "
-                + " 	,ret.DiffMeanBonusPercent "
-                + " 	,ret.DiffMedianBonusPercent "
-                + " 	,ret.MaleMedianBonusPayPercent "
-                + " 	,ret.FemaleMedianBonusPayPercent "
-                + " 	,ret.MaleLowerPayBand "
-                + " 	,ret.FemaleLowerPayBand "
-                + " 	,ret.MaleMiddlePayBand "
-                + " 	,ret.FemaleMiddlePayBand "
-                + " 	,ret.MaleUpperPayBand "
-                + " 	,ret.FemaleUpperPayBand "
-                + " 	,ret.MaleUpperQuartilePayBand "
-                + " 	,ret.FemaleUpperQuartilePayBand "
-                + " FROM dbo.[Returns] AS ret "
-                + " LEFT OUTER JOIN dbo.ReturnStatus AS retstat ON retstat.ReturnId = ret.ReturnId");
-
-            migrationBuilder.Sql(" GRANT SELECT " + " 	ON OBJECT::dbo.[OrganisationSubmissionInfoView] " + " 	TO [ReportsReaderDv]; ");
 
             #endregion
             
@@ -494,7 +338,7 @@ namespace GenderPayGap.Database.Migrations
             #region 201812131250589_Modify view OrganisationInfoView.cs
 
             migrationBuilder.Sql(
-                " ALTER VIEW [dbo].[OrganisationInfoView] "
+                " CREATE VIEW [dbo].[OrganisationInfoView] "
                 + " AS "
                 + " SELECT orgs.OrganisationId "
                 + " 	, orgs.EmployerReference "
@@ -605,7 +449,7 @@ namespace GenderPayGap.Database.Migrations
 
             #endregion
             
-            migrationBuilder.Sql(" ALTER VIEW [dbo].["
+            migrationBuilder.Sql(" CREATE VIEW [dbo].["
                                                   + "OrganisationSubmissionInfoView"
                                                   + "] "
                                                   + " AS "
