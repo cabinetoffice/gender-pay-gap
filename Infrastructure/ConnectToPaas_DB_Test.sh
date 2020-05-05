@@ -5,9 +5,10 @@
 # Name - This is the bit after gpg- - e.g. for gpg-dev, PAAS_ENV_SHORTNAME would just be 'dev'
 PAAS_ENV_SHORTNAME="test"
 
+# Service - DB or cache
+PAAS_SERVICE="db"
+
 # The local port to use
-# - the database will use this port
-# - the cache will use port LOCAL_PORT+1
 LOCAL_PORT=7200
 
 

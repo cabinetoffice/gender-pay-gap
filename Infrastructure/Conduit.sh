@@ -1,7 +1,8 @@
 
 # Get parameters
 PAAS_ENV_SHORTNAME=$1
-LOCAL_PORT=$2
+PAAS_SERVICE=$2
+LOCAL_PORT=$3
 
 
 # Login
@@ -13,18 +14,19 @@ cf target -s "gpg-${PAAS_ENV_SHORTNAME}"
 
 
 
-# Fetch the keys that you might want to use to connect to the database and cache
+# Fetch the keys that you might want to use to connect to the database or cache
 echo ""
 echo "======================================="
 echo "HERE ARE THE KEYS YOU MIGHT WANT TO USE"
 echo "======================================="
 echo ""
 
-# - Database
-cf service-key "gpg-${PAAS_ENV_SHORTNAME}-db" "gpg-${PAAS_ENV_SHORTNAME}-db-developerkey"
+echo "Host: 127.0.0.1"
+echo "Port: ${LOCAL_PORT}"
+echo "Username & Password: see below"
+echo ""
 
-# - Cache
-cf service-key "gpg-${PAAS_ENV_SHORTNAME}-cache" "gpg-${PAAS_ENV_SHORTNAME}-cache-developerkey"
+cf service-key "gpg-${PAAS_ENV_SHORTNAME}-${PAAS_SERVICE}" "gpg-${PAAS_ENV_SHORTNAME}-${PAAS_SERVICE}-developerkey"
 
 
 
@@ -36,18 +38,17 @@ echo "==========================="
 echo ""
 
 # - Setup variables
-DB_NAME="gpg-${PAAS_ENV_SHORTNAME}-db"
-CACHE_NAME="gpg-${PAAS_ENV_SHORTNAME}-cache"
+SERVICE_NAME="gpg-${PAAS_ENV_SHORTNAME}-${PAAS_SERVICE}"
 SPACE_NAME="gpg-${PAAS_ENV_SHORTNAME}"
 
 DEVELOPER_MACHINE_NAME=$(hostname)
-CONDUIT_APP_NAME="conduit-gpg-${PAAS_ENV_SHORTNAME}-${DEVELOPER_MACHINE_NAME}"
+CONDUIT_APP_NAME="conduit-gpg-${PAAS_ENV_SHORTNAME}-${PAAS_SERVICE}-${DEVELOPER_MACHINE_NAME}"
 
 # - Delete any old conduit apps - sometimes they don't get cleared up correctly
 cf delete "${CONDUIT_APP_NAME}" -f
 
 # - Connect
-cf conduit "${DB_NAME}" "${CACHE_NAME}" --local-port $LOCAL_PORT --space "${SPACE_NAME}" --app-name "${CONDUIT_APP_NAME}"
+cf conduit "${SERVICE_NAME}" --local-port $LOCAL_PORT --space "${SPACE_NAME}" --app-name "${CONDUIT_APP_NAME}"
 
 
 
