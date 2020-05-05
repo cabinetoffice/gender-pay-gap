@@ -36,20 +36,6 @@ namespace GenderPayGap.Infrastructure.AzureQueues.Extensions
                 .SingleInstance();
         }
 
-        public static void RegisterLogRecord(this ContainerBuilder builder, string fileName)
-        {
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
-
-            string applicationName = AppDomain.CurrentDomain.FriendlyName;
-
-            builder.Register(ctx => new LogRecordLogger(ctx.Resolve<LogRecordQueue>(), applicationName, fileName))
-                .Keyed<ILogRecordLogger>(fileName)
-                .SingleInstance();
-        }
-
         /// <summary>
         ///     Adds the LogEvent queue as logging provider to the application
         /// </summary>
