@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +22,6 @@ namespace GenderPayGap.Core.Interfaces
         DbSet<TEntity> GetEntities<TEntity>() where TEntity : class;
 
         Task SaveChangesAsync();
-
-        void UpdateChangesInBulk<TEntity>(IEnumerable<TEntity> listOfOrganisations) where TEntity : class;
 
     }
 

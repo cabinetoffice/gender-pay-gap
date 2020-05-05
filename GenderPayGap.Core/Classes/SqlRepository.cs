@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace GenderPayGap.Core.Classes
 {
 
-    public class SqlRepository : IDataRepository, IDataTransaction
+    public class SqlRepository : IDataRepository
     {
 
         private IDbContextTransaction Transaction;
@@ -59,12 +59,7 @@ namespace GenderPayGap.Core.Classes
 
             await DbContext.SaveChangesAsync();
         }
-
-        public void UpdateChangesInBulk<TEntity>(IEnumerable<TEntity> listOfOrganisations) where TEntity : class
-        {
-            DbContext.UpdateChangesInBulk(listOfOrganisations);
-        }
-
+        
         public void Dispose()
         {
             DbContext?.Dispose();
