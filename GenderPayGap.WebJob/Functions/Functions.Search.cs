@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -19,8 +19,7 @@ namespace GenderPayGap.WebJob
 
         //Update the search indexes
         public async Task UpdateSearchAsync([TimerTrigger("20 * * * *" /* once per hour, at 20 minutes past the hour */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -28,7 +27,7 @@ namespace GenderPayGap.WebJob
 
             try
             {
-                await UpdateAllSearchIndexesAsync(log);
+                await UpdateAllSearchIndexesAsync();
                 JobHelpers.LogFunctionEnd(runId, nameof(UpdateSearchAsync), startTime);
             }
             catch (Exception ex)
@@ -40,22 +39,22 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        private async Task UpdateAllSearchIndexesAsync(ILogger log, string userEmail = null, bool force = false)
+        private async Task UpdateAllSearchIndexesAsync(string userEmail = null, bool force = false)
         {
-            log.LogInformation($"-- Started the updating of index {Global.SearchIndexName}");
-            await UpdateSearchAsync(log, Global.SearchRepository, Global.SearchIndexName, userEmail, force);
-            log.LogInformation($"-- Updating of index {Global.SearchIndexName} completed");
-            log.LogInformation($"-- Started the updating of index {Global.SicCodesIndexName}");
-            await UpdateSearchAsync(log, Global.SicCodeSearchRepository, Global.SicCodesIndexName, userEmail, force);
-            log.LogInformation($"-- Updating of index {Global.SicCodesIndexName} completed");
+            CustomLogger.Information($"-- Started the updating of index {Global.SearchIndexName}");
+            await UpdateSearchAsync(Global.SearchRepository, Global.SearchIndexName, userEmail, force);
+            CustomLogger.Information($"-- Updating of index {Global.SearchIndexName} completed");
+            CustomLogger.Information($"-- Started the updating of index {Global.SicCodesIndexName}");
+            await UpdateSearchAsync(Global.SicCodeSearchRepository, Global.SicCodesIndexName, userEmail, force);
+            CustomLogger.Information($"-- Updating of index {Global.SicCodesIndexName} completed");
         }
 
-        public async Task UpdateSearchAsync(ILogger log, string userEmail = null, bool force = false)
+        public async Task UpdateSearchAsync(string userEmail = null, bool force = false)
         {
-            await UpdateSearchAsync(log, Global.SearchRepository, Global.SearchIndexName, userEmail, force);
+            await UpdateSearchAsync(Global.SearchRepository, Global.SearchIndexName, userEmail, force);
         }
 
-        private async Task UpdateSearchAsync<T>(ILogger log,
+        private async Task UpdateSearchAsync<T>(
             ISearchRepository<T> searchRepositoryToUpdate,
             string indexNameToUpdate,
             string userEmail = null,
@@ -63,7 +62,7 @@ namespace GenderPayGap.WebJob
         {
             if (RunningJobs.Contains(nameof(UpdateSearchAsync)))
             {
-                log.LogInformation("The set of running jobs already contains 'UpdateSearch'");
+                CustomLogger.Information("The set of running jobs already contains 'UpdateSearch'");
                 return;
             }
 
@@ -73,11 +72,11 @@ namespace GenderPayGap.WebJob
 
                 if (typeof(T) == typeof(EmployerSearchModel))
                 {
-                    await AddDataToIndexAsync(log);
+                    await AddDataToIndexAsync();
                 }
                 else if (typeof(T) == typeof(SicCodeSearchModel))
                 {
-                    await AddDataToSicCodesIndexAsync(log);
+                    await AddDataToSicCodesIndexAsync();
                 }
                 else
                 {
@@ -90,25 +89,25 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        private async Task AddDataToSicCodesIndexAsync(ILogger log)
+        private async Task AddDataToSicCodesIndexAsync()
         {
-            List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync(log);
+            List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync();
 
             if (listOfSicCodeRecords == null || !listOfSicCodeRecords.Any())
             {
-                log.LogInformation($"No records to be added to index {Global.SicCodesIndexName}");
+                CustomLogger.Information($"No records to be added to index {Global.SicCodesIndexName}");
                 return;
             }
 
             await Global.SicCodeSearchRepository.RefreshIndexDataAsync(listOfSicCodeRecords);
         }
 
-        private async Task AddDataToIndexAsync(ILogger log)
+        private async Task AddDataToIndexAsync()
         {
-            log.LogInformation("UpdateSearchAsync: Loading SIC codes from file");
-            List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync(log);
+            CustomLogger.Information("UpdateSearchAsync: Loading SIC codes from file");
+            List<SicCodeSearchModel> listOfSicCodeRecords = await GetListOfSicCodeSearchModelsFromFileAsync();
 
-            log.LogInformation("UpdateSearchAsync: Loading organisations");
+            CustomLogger.Information("UpdateSearchAsync: Loading organisations");
 
             IQueryable<Organisation> organisations = _DataRepository.GetAll<Organisation>()
                 .Where(o => o.Status == OrganisationStatuses.Active || o.Status == OrganisationStatuses.Retired)
@@ -132,20 +131,20 @@ namespace GenderPayGap.WebJob
 
             List<Organisation> materialisedOrganisations = organisations.ToList();
 
-            log.LogInformation("UpdateSearchAsync: Converting organisations to search results");
+            CustomLogger.Information("UpdateSearchAsync: Converting organisations to search results");
             List<EmployerSearchModel> selectionList =
                 materialisedOrganisations.Select(o => o.ToEmployerSearchResult(false, listOfSicCodeRecords)).ToList();
 
-            log.LogInformation("UpdateSearchAsync: Refreshing index");
+            CustomLogger.Information("UpdateSearchAsync: Refreshing index");
             if (selectionList.Any())
             {
                 await Global.SearchRepository.RefreshIndexDataAsync(selectionList);
             }
 
-            log.LogInformation("UpdateSearchAsync: done with organisations");
+            CustomLogger.Information("UpdateSearchAsync: done with organisations");
         }
 
-        private static async Task<List<SicCodeSearchModel>> GetListOfSicCodeSearchModelsFromFileAsync(ILogger log)
+        private static async Task<List<SicCodeSearchModel>> GetListOfSicCodeSearchModelsFromFileAsync()
         {
             List<SicCodeSearchModel> listOfSicCodeRecords = null;
 
@@ -163,11 +162,11 @@ namespace GenderPayGap.WebJob
                 if (string.IsNullOrEmpty(sicSectorSynonymsFilePath))
                 {
                     string unableToFindPathMessage = $"Unable to find {fileInPathMessage}";
-                    log.LogError(unableToFindPathMessage);
+                    CustomLogger.Error(unableToFindPathMessage);
                     return null;
                 }
 
-                log.LogInformation($"Found {fileInPathMessage}");
+                CustomLogger.Information($"Found {fileInPathMessage}");
 
                 #endregion
 
@@ -177,11 +176,11 @@ namespace GenderPayGap.WebJob
                 if (!fileExists)
                 {
                     string fileDoesNotExistMessage = $"File does not exist {sicSectorSynonymsFilePath}.";
-                    log.LogError(fileDoesNotExistMessage);
+                    CustomLogger.Error(fileDoesNotExistMessage);
                     return null;
                 }
 
-                log.LogInformation($"File exists {sicSectorSynonymsFilePath}");
+                CustomLogger.Information($"File exists {sicSectorSynonymsFilePath}");
 
                 #endregion
 
@@ -194,17 +193,17 @@ namespace GenderPayGap.WebJob
                 if (!listOfSicCodeRecords.Any())
                 {
                     string noRecordsFoundMessage = $"No records found in '{sicSectorSynonymsFilePath}'";
-                    log.LogError(noRecordsFoundMessage);
+                    CustomLogger.Error(noRecordsFoundMessage);
                     return listOfSicCodeRecords;
                 }
 
-                log.LogInformation($"Number of records found {listOfSicCodeRecords.Count}");
+                CustomLogger.Information($"Number of records found {listOfSicCodeRecords.Count}");
 
                 #endregion
             }
             catch (Exception ex)
             {
-                log.LogError(ex, "An error occurred in GetListOfSicCodeSearchModelsFromFile function");
+                CustomLogger.Error( $"An error occurred in GetListOfSicCodeSearchModelsFromFile function.", ex);
             }
 
             return listOfSicCodeRecords;

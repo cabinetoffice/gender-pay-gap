@@ -9,7 +9,6 @@ using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Areas.Account.Controllers
 {
@@ -21,12 +20,11 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
 
         public ChangeEmailController(
             IChangeEmailViewService changeEmailService,
-            ILogger<ChangeEmailController> logger,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepo,
             IWebTracker webTracker) :
-            base(logger, cache, session, dataRepo, webTracker)
+            base(cache, session, dataRepo, webTracker)
         {
             ChangeEmailService = changeEmailService;
         }

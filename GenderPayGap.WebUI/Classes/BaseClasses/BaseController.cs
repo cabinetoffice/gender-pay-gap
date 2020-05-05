@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -16,7 +17,6 @@ using GenderPayGap.WebUI.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Classes
 {
@@ -26,13 +26,11 @@ namespace GenderPayGap.WebUI.Classes
         #region Constructors
 
         public BaseController(
-            ILogger logger,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
             IWebTracker webTracker) : base(cache, session)
         {
-            _logger = logger;
             DataRepository = dataRepository;
             WebTracker = webTracker;
         }
@@ -268,8 +266,6 @@ namespace GenderPayGap.WebUI.Classes
         }
         
         #region Dependencies
-
-        protected ILogger _logger;
 
         public IDataRepository DataRepository { get; protected set; }
         public IWebTracker WebTracker { get; }
@@ -540,7 +536,7 @@ namespace GenderPayGap.WebUI.Classes
             UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == ReportingOrganisationId);
             if (userOrg == null)
             {
-                _logger.LogWarning(
+                CustomLogger.Warning(
                     $"Cannot find UserOrganisation for user {currentUser.UserId} and organisation {ReportingOrganisationId}");
 
                 return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
@@ -619,7 +615,7 @@ namespace GenderPayGap.WebUI.Classes
             //Ensure pending manual registrations always redirected back to home
             if (userOrg.PINConfirmedDate == null)
             {
-                _logger.LogWarning(
+                CustomLogger.Warning(
                     $"UserOrganisation for user {userOrg.UserId} and organisation {userOrg.OrganisationId} PIN is not confirmed");
                 return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
             }

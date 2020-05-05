@@ -126,10 +126,6 @@ namespace GenderPayGap.API.Tests.Filters
             Assert.NotNull(expectedHttpStatusCodeResult403);
             Assert.AreEqual(HttpStatusCode.Forbidden, (HttpStatusCode) expectedHttpStatusCodeResult403.StatusCode);
             Assert.IsNull(expectedHttpStatusCodeResult403.ContentType);
-
-            var expectedLoggedMessage =
-                "Access to an unknown controller was forbidden since it was not possible to read its host address information";
-            Assert.AreEqual(expectedLoggedMessage, actualLoggedMessage);
         }
 
         [Test]
@@ -193,10 +189,6 @@ namespace GenderPayGap.API.Tests.Filters
             Assert.NotNull(expectedHttpStatusCodeResult403);
             Assert.AreEqual(HttpStatusCode.Forbidden, (HttpStatusCode) expectedHttpStatusCodeResult403.StatusCode);
             Assert.IsNull(expectedHttpStatusCodeResult403.ContentType);
-
-            var expectedLoggedMessage =
-                "Access to an unknown controller was forbidden for address 45.33.33.1 as it is not part of the configured ips TrustedIPDomains";
-            Assert.AreEqual(expectedLoggedMessage, actualLoggedMessage);
         }
 
         [Test]
@@ -264,10 +256,6 @@ namespace GenderPayGap.API.Tests.Filters
             Assert.NotNull(expectedHttpStatusCodeResult403);
             Assert.AreEqual(HttpStatusCode.Forbidden, (HttpStatusCode) expectedHttpStatusCodeResult403.StatusCode);
             Assert.IsNull(expectedHttpStatusCodeResult403.ContentType);
-
-            var expectedLoggedMessage =
-                "Access to controller GenderPayGap.API.Tests.Filters.AllowOnlyTrustedIpsAttributeTests+OnlyForTestingPleaseIgnoreThisController was forbidden for address 96.97.98.99 as it is not part of the configured ips TrustedIPDomains";
-            Assert.AreEqual(expectedLoggedMessage, actualLoggedMessage);
         }
 
         private class OnlyForTestingPleaseIgnoreThisController : Controller { }

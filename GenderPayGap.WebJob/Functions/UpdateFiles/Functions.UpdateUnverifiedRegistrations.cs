@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -15,8 +15,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task UpdateUnverifiedRegistrations([TimerTrigger("20 2 * * *" /* 02:20 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
@@ -33,7 +32,7 @@ namespace GenderPayGap.WebJob
                     return;
                 }
 
-                await UpdateUnverifiedRegistrationsAsync(log, filePath);
+                await UpdateUnverifiedRegistrationsAsync(filePath);
                 JobHelpers.LogFunctionEnd(runId, nameof(UpdateUnverifiedRegistrations), startTime);
             }
             catch (Exception ex)
@@ -54,11 +53,11 @@ namespace GenderPayGap.WebJob
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="log"></param>
-        public async Task UpdateUnverifiedRegistrationsAsync(ILogger log, string filePath)
+        public async Task UpdateUnverifiedRegistrationsAsync(string filePath)
         {
             if (RunningJobs.Contains(nameof(UpdateUnverifiedRegistrations)))
             {
-                log.LogWarning($"'{nameof(UpdateUnverifiedRegistrations)}' is already running.");
+                CustomLogger.Warning($"'{nameof(UpdateUnverifiedRegistrations)}' is already running.");
                 return;
             }
 

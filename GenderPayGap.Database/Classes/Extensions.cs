@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +15,7 @@ namespace GenderPayGap.Database.Classes
     public static class Extensions
     {
 
-        internal static List<T> SqlQuery<T>(this IDbConnection connection, string query, ILogger logger = null)
+        internal static List<T> SqlQuery<T>(this IDbConnection connection, string query)
         {
             if (connection.State != ConnectionState.Open)
             {
@@ -66,8 +67,8 @@ namespace GenderPayGap.Database.Classes
                     }
 
                     sw.Stop();
-                    logger?.LogInformation($"Executed ({sw.ElapsedMilliseconds}ms)");
-                    logger?.LogInformation($"{query}");
+                    CustomLogger.Information($"Executed ({sw.ElapsedMilliseconds}ms)");
+                    CustomLogger.Information($"{query}");
 
                     return list;
                 }

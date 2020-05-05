@@ -9,6 +9,7 @@ using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Classes.Queues;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -37,12 +38,10 @@ namespace GenderPayGap.IdentityServer4
 
         private static string _SiteAuthority;
         private readonly IHostingEnvironment env;
-        private readonly ILogger logger;
 
-        public Startup(IHostingEnvironment env, ILogger<Startup> logger)
+        public Startup(IHostingEnvironment env)
         {
             this.env = env;
-            this.logger = logger;
         }
 
         public static string SiteAuthority
@@ -271,14 +270,14 @@ namespace GenderPayGap.IdentityServer4
             if (!string.IsNullOrWhiteSpace(certThumprint))
             {
                 cert = HttpsCertificate.LoadCertificateFromThumbprint(certThumprint);
-                logger.LogInformation(
+                CustomLogger.Information(
                     $"Successfully loaded certificate '{cert.FriendlyName}' expiring '{cert.GetExpirationDateString()}' from thumbprint '{certThumprint}'");
             }
             else
             {
                 string certPath = Path.Combine(Directory.GetCurrentDirectory(), @"LocalHost.pfx");
                 cert = HttpsCertificate.LoadCertificateFromFile(certPath, "LocalHost");
-                logger.LogInformation(
+                CustomLogger.Information(
                     $"Successfully loaded certificate '{cert.FriendlyName}' expiring '{cert.GetExpirationDateString()}' from file '{certPath}'");
             }
 
@@ -287,7 +286,7 @@ namespace GenderPayGap.IdentityServer4
                 DateTime expires = cert.GetExpirationDateString().ToDateTime();
                 if (expires < VirtualDateTime.UtcNow)
                 {
-                    logger.LogError(
+                    CustomLogger.Error(
                         $"The website certificate for '{Global.ExternalHost}' expired on {expires.ToFriendlyDate()} and needs replacing immediately.");
                 }
                 else
@@ -296,7 +295,7 @@ namespace GenderPayGap.IdentityServer4
 
                     if (expires < VirtualDateTime.UtcNow.AddDays(Global.CertExpiresWarningDays))
                     {
-                        logger.LogWarning(
+                        CustomLogger.Warning(
                             $"The website certificate for '{SiteAuthority}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.");
                     }
                 }

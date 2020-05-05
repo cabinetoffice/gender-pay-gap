@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -15,8 +15,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task UpdateRegistrations([TimerTrigger("50 1 * * *" /* 01:50 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
@@ -32,7 +31,7 @@ namespace GenderPayGap.WebJob
                     return;
                 }
 
-                await UpdateRegistrationsAsync(log, filePath);
+                await UpdateRegistrationsAsync(filePath);
 
                 JobHelpers.LogFunctionEnd(runId, nameof(UpdateRegistrations), startTime);
             }
@@ -49,11 +48,11 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        public async Task UpdateRegistrationsAsync(ILogger log, string filePath)
+        public async Task UpdateRegistrationsAsync(string filePath)
         {
             if (RunningJobs.Contains(nameof(UpdateRegistrations)))
             {
-                log.LogDebug($"'{nameof(UpdateRegistrations)}' is already running.");
+                CustomLogger.Debug($"'{nameof(UpdateRegistrations)}' is already running.");
                 return;
             }
 

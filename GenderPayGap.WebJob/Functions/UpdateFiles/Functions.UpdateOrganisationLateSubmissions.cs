@@ -13,8 +13,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task UpdateOrganisationLateSubmissions([TimerTrigger("5 * * * *" /* once per hour, at 5 minutes past the hour */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;
@@ -31,7 +30,7 @@ namespace GenderPayGap.WebJob
                     return;
                 }
 
-                await UpdateOrganisationLateSubmissionsAsync(filePath, log);
+                await UpdateOrganisationLateSubmissionsAsync(filePath);
 
                 JobHelpers.LogFunctionEnd(runId, nameof(UpdateOrganisationLateSubmissions), startTime);
             }
@@ -48,7 +47,7 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        private async Task UpdateOrganisationLateSubmissionsAsync(string filePath, ILogger log)
+        private async Task UpdateOrganisationLateSubmissionsAsync(string filePath)
         {
             string callingMethodName = nameof(UpdateOrganisationLateSubmissions);
             if (RunningJobs.Contains(callingMethodName))

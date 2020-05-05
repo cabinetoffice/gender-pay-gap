@@ -23,7 +23,7 @@ namespace GenderPayGap.WebJob
             new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
 
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
-        public async Task LogEvent([QueueTrigger(QueueNames.LogEvent)] string queueMessage, ILogger log)
+        public async Task LogEvent([QueueTrigger(QueueNames.LogEvent)] string queueMessage)
         {
             string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -103,8 +103,7 @@ namespace GenderPayGap.WebJob
         }
 
         public async Task LogEventPoison([QueueTrigger(QueueNames.LogEvent + "-poison")]
-            string queueMessage,
-            ILogger log)
+            string queueMessage)
         {
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
@@ -116,7 +115,7 @@ namespace GenderPayGap.WebJob
                 await Global.FileRepository.DeleteFileAsync(filepath);
             }
 
-            log.LogError($"Could not log event, Details: {queueMessage}");
+            CustomLogger.Error($"Could not log event, Details: {queueMessage}");
 
             DateTime time = VirtualDateTime.Now;
             CustomLogger.Error(
@@ -125,7 +124,7 @@ namespace GenderPayGap.WebJob
         }
 
         [Singleton(Mode = SingletonMode.Listener)] //Ensures execution on only one instance with one listener
-        public async Task LogRecord([QueueTrigger(QueueNames.LogRecord)] string queueMessage, ILogger log)
+        public async Task LogRecord([QueueTrigger(QueueNames.LogRecord)] string queueMessage)
         {
             string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -185,8 +184,7 @@ namespace GenderPayGap.WebJob
         }
 
         public async Task LogRecordPoison([QueueTrigger(QueueNames.LogRecord + "-poison")]
-            string queueMessage,
-            ILogger log)
+            string queueMessage)
         {
             //Retrieve long messages from file storage
             string filepath = GetLargeQueueFilepath(queueMessage);
@@ -198,7 +196,7 @@ namespace GenderPayGap.WebJob
                 await Global.FileRepository.DeleteFileAsync(filepath);
             }
 
-            log.LogError($"Could not log record: Details:{queueMessage}");
+            CustomLogger.Error($"Could not log record: Details:{queueMessage}");
 
             DateTime time = VirtualDateTime.Now;
             CustomLogger.Error(

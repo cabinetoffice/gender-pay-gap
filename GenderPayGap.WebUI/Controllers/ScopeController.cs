@@ -15,7 +15,6 @@ using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -28,14 +27,13 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ScopeController(
-            ILogger<ScopeController> logger,
             IHttpCache cache,
             IHttpSession session,
             IScopePresentation scopeUI,
             IDataRepository dataRepository,
             IWebTracker webTracker,
             EmailSendingService emailSendingService)
-            : base(logger, cache, session, dataRepository, webTracker)
+            : base(cache, session, dataRepository, webTracker)
         {
             ScopePresentation = scopeUI;
             this.emailSendingService = emailSendingService;

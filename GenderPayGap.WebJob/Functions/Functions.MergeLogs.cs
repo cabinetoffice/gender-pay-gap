@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -17,8 +17,7 @@ namespace GenderPayGap.WebJob
 
         //Merge all event log files from all instances into 1 single file per month
         public async Task MergeLogs([TimerTrigger("30 3 * * *" /* 03:30 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -31,33 +30,33 @@ namespace GenderPayGap.WebJob
                 #region WebServer Logs
 
                 string webServerlogPath = Path.Combine(Global.LogPath, "GenderPayGap.WebUI");
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webServerlogPath, "ErrorLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webServerlogPath, "DebugLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webServerlogPath, "WarningLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webServerlogPath, "InfoLog"));
-                actions.Add(MergeCsvLogsAsync<BadSicLogModel>(log, webServerlogPath, "BadSicLog"));
-                actions.Add(MergeCsvLogsAsync<SearchLogModel>(log, webServerlogPath, "SearchLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webServerlogPath, "ErrorLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webServerlogPath, "DebugLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webServerlogPath, "WarningLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webServerlogPath, "InfoLog"));
+                actions.Add(MergeCsvLogsAsync<BadSicLogModel>(webServerlogPath, "BadSicLog"));
+                actions.Add(MergeCsvLogsAsync<SearchLogModel>(webServerlogPath, "SearchLog"));
 
                 #endregion
 
                 #region IdentityServer Logs
 
                 string identityServerlogPath = Path.Combine(Global.LogPath, "GenderPayGap.IdentityServer4");
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, identityServerlogPath, "ErrorLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, identityServerlogPath, "DebugLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, identityServerlogPath, "WarningLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, identityServerlogPath, "InfoLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(identityServerlogPath, "ErrorLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(identityServerlogPath, "DebugLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(identityServerlogPath, "WarningLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(identityServerlogPath, "InfoLog"));
 
                 #endregion
 
                 #region Webjob Logs
 
                 string webJoblogPath = Path.Combine(Global.LogPath, "GenderPayGap.WebJob");
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webJoblogPath, "ErrorLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webJoblogPath, "DebugLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webJoblogPath, "WarningLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webJoblogPath, "InfoLog"));
-                actions.Add(MergeCsvLogsAsync<LogEntryModel>(log, webJoblogPath, "StannpSendLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webJoblogPath, "ErrorLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webJoblogPath, "DebugLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webJoblogPath, "WarningLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webJoblogPath, "InfoLog"));
+                actions.Add(MergeCsvLogsAsync<LogEntryModel>(webJoblogPath, "StannpSendLog"));
 
                 #endregion
 
@@ -74,7 +73,7 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        private static async Task MergeCsvLogsAsync<T>(ILogger log, string logPath, string prefix, string extension = ".csv")
+        private static async Task MergeCsvLogsAsync<T>(string logPath, string prefix, string extension = ".csv")
         {
             //Get all the daily log files
             IEnumerable<string> files = await Global.FileRepository.GetFilesAsync(logPath, $"{prefix}_*{extension}");
@@ -124,7 +123,7 @@ namespace GenderPayGap.WebJob
                 {
                     string message =
                         $"ERROR: Webjob ({nameof(MergeLogs)}) could not merge file '{file}':{ex.Message}:{ex.GetDetailsText()}";
-                    log.LogError(ex, message);
+                    CustomLogger.Error(message, ex);
                 }
             }
 
@@ -188,7 +187,7 @@ namespace GenderPayGap.WebJob
                 {
                     string message =
                         $"ERROR: Webjob ({nameof(MergeLogs)}) could not archive file '{file}':{ex.Message}:{ex.GetDetailsText()}";
-                    log.LogError(ex, message);
+                    CustomLogger.Error(message, ex);
                 }
             }
         }

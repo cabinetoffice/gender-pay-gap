@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Web;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -83,12 +84,6 @@ namespace GenderPayGap.Core.Filters
         {
             try
             {
-                var logger = context.HttpContext.RequestServices?.GetService<ILogger<AllowOnlyTrustedIps>>();
-                if (logger == null)
-                {
-                    return;
-                }
-
                 string controllerMessagePart = context.Controller == null || string.IsNullOrWhiteSpace(context.Controller.ToString())
                     ? "an unknown controller"
                     : $"controller {context.Controller}";
@@ -97,7 +92,7 @@ namespace GenderPayGap.Core.Filters
                     ? "since it was not possible to read its host address information"
                     : $"for address {userHostAddress} as it is not part of the configured ips {_ipRange}";
 
-                logger.LogWarning($"Access to {controllerMessagePart} was forbidden {forbiddingReasonMessagePart}");
+                CustomLogger.Warning($"Access to {controllerMessagePart} was forbidden {forbiddingReasonMessagePart}");
             }
             catch (Exception ex)
             {

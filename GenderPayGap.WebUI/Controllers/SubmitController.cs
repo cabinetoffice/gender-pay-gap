@@ -10,7 +10,6 @@ using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers.Submission
 {
@@ -30,14 +29,13 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         #region Constructors
 
         public SubmitController(
-            ILogger<SubmitController> logger,
             IHttpCache cache,
             IHttpSession session,
             ISubmissionService submitService,
             IDataRepository dataRepository,
             IWebTracker webTracker,
             EmailSendingService emailSendingService)
-            : base(logger, cache, session, dataRepository, webTracker)
+            : base(cache, session, dataRepository, webTracker)
         {
             submissionService = submitService;
             this.emailSendingService = emailSendingService;

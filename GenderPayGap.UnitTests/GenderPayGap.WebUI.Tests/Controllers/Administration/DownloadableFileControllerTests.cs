@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -38,35 +38,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             string argumentToBeLoggedAsMissing)
         {
             // Arrange
-            string loggedExceptionMessage = string.Empty;
-            var configurableLogger = new Mock<ILogger<DownloadableFileController>>();
-
-            configurableLogger
-                .Setup(
-                    x => x.Log(
-                        It.IsAny<LogLevel>(),
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()))
-                .Callback(
-                    (LogLevel logLevel,
-                        EventId eventId,
-                        object message,
-                        Exception exception,
-                        Func<object, Exception, string> formatter) => {
-                        // LogLevel myLogLevel = logLevel; // LogLevel.Error
-                        // EventId myEventId = eventId;
-                        // string myMessage= message.ToString(); // Value cannot be null.\nParameter name: filePath
-                        // Exception myException = exception; // System.ArgumentNullException
-                        loggedExceptionMessage = exception.Message;
-                        // Func<object, Exception, string> myFormatter = formatter;
-                    });
-
             var downloadableFileBusinessLogic = IocContainer.Resolve<IDownloadableFileBusinessLogic>();
 
             _TestDownloadableFileController = new DownloadableFileController(
-                configurableLogger.Object,
                 null,
                 null,
                 null,
@@ -81,20 +55,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             // Assert
             Assert.NotNull(expectedBadRequestResult, $"expected a BadRequestResult but was {actualResult.GetType()}");
             Assert.AreEqual((int) HttpStatusCode.BadRequest, expectedBadRequestResult.StatusCode);
-
-            configurableLogger
-                .Verify(
-                    x => x.Log(
-                        LogLevel.Error // Expected
-                        ,
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<ArgumentNullException>() // Expected
-                        ,
-                        It.IsAny<Func<object, Exception, string>>()),
-                    Times.Once);
-
-            Assert.AreEqual($"Value cannot be null.\r\nParameter name: {argumentToBeLoggedAsMissing}", loggedExceptionMessage);
         }
 
         [TestCase("unavailableDirectory/someFile.csv", "someFile")]
@@ -104,35 +64,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             string fileNameReportedOnError)
         {
             // Arrange
-            string loggedExceptionMessage = string.Empty;
-            var configurableLogger = new Mock<ILogger<DownloadableFileController>>();
-
-            configurableLogger
-                .Setup(
-                    x => x.Log(
-                        It.IsAny<LogLevel>(),
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()))
-                .Callback(
-                    (LogLevel logLevel,
-                        EventId eventId,
-                        object message,
-                        Exception exception,
-                        Func<object, Exception, string> formatter) => {
-                        // LogLevel myLogLevel = logLevel; // LogLevel.Error
-                        // EventId myEventId = eventId;
-                        // string myMessage= message.ToString(); // Value cannot be null.\nParameter name: filePath
-                        // Exception myException = exception; // System.ArgumentNullException
-                        loggedExceptionMessage = exception.Message;
-                        // Func<object, Exception, string> myFormatter = formatter;
-                    });
-
             var downloadableFileBusinessLogic = IocContainer.Resolve<IDownloadableFileBusinessLogic>();
 
             _TestDownloadableFileController = new DownloadableFileController(
-                configurableLogger.Object,
                 null,
                 null,
                 null,
@@ -147,52 +81,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             // Assert
             Assert.NotNull(expectedNotFoundResult, $"expected a NotFoundResult but was {actualResult.GetType()}");
             Assert.AreEqual((int) HttpStatusCode.NotFound, expectedNotFoundResult.StatusCode);
-
-            configurableLogger
-                .Verify(
-                    x => x.Log(
-                        LogLevel.Error // Expected
-                        ,
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>() // DirectoryNotFoundException or FileNotFoundException depending on the call being made to systemFileRepository or AzureFileRepository
-                        ,
-                        It.IsAny<Func<object, Exception, string>>()),
-                    Times.Once);
-
-            Assert.IsTrue(
-                loggedExceptionMessage.Contains("Cannot find"),
-                $"The exception message was expected to contain 'Cannot find file/directory' but was '{loggedExceptionMessage}' ");
         }
 
         [Test]
         public async Task POST_Download_When_File_Is_Not_Available_Returns_FileNotFoundException()
         {
             // Arrange
-            string loggedExceptionMessage = string.Empty;
-            var configurableLogger = new Mock<ILogger<DownloadableFileController>>();
-
-            configurableLogger
-                .Setup(
-                    x => x.Log(
-                        It.IsAny<LogLevel>(),
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()))
-                .Callback(
-                    (LogLevel logLevel,
-                        EventId eventId,
-                        object message,
-                        Exception exception,
-                        Func<object, Exception, string> formatter) => {
-                        // LogLevel myLogLevel = logLevel; // LogLevel.Error
-                        // EventId myEventId = eventId;
-                        // string myMessage= message.ToString(); // Value cannot be null.\nParameter name: filePath
-                        // Exception myException = exception; // System.ArgumentNullException
-                        loggedExceptionMessage = exception.Message;
-                        // Func<object, Exception, string> myFormatter = formatter;
-                    });
 
             var configurableDownloadableFileBusinessLogic = new Mock<IDownloadableFileBusinessLogic>();
             configurableDownloadableFileBusinessLogic
@@ -200,7 +94,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 .ThrowsAsync(new FileNotFoundException());
 
             _TestDownloadableFileController = new DownloadableFileController(
-                configurableLogger.Object,
                 null,
                 null,
                 null,
@@ -215,22 +108,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             // Assert
             Assert.NotNull(expectedNotFoundResult, $"expected a NotFoundResult but was {actualResult.GetType()}");
             Assert.AreEqual((int) HttpStatusCode.NotFound, expectedNotFoundResult.StatusCode);
-
-            configurableLogger
-                .Verify(
-                    x => x.Log(
-                        LogLevel.Error // Expected
-                        ,
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>() // DirectoryNotFoundException or FileNotFoundException depending on the call being made to systemFileRepository or AzureFileRepository
-                        ,
-                        It.IsAny<Func<object, Exception, string>>()),
-                    Times.Once);
-
-            Assert.IsTrue(
-                loggedExceptionMessage.Contains("Unable to find"),
-                $"The exception message was expected to contain 'Unable to find the specified file' but was '{loggedExceptionMessage}' ");
         }
 
         [Test]
@@ -243,7 +120,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 .ReturnsAsync(new DownloadableFileModel("someName") {DataTable = new DataTable()});
 
             _TestDownloadableFileController = new DownloadableFileController(
-                null,
                 null,
                 null,
                 null,
@@ -276,7 +152,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 .ReturnsAsync(new List<IDownloadableItem>());
 
             _TestDownloadableFileController = new DownloadableFileController(
-                null,
                 null,
                 null,
                 null,
@@ -336,7 +211,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 null,
                 null,
                 null,
-                null,
                 configurableDownloadableFileBusinessLogic.Object);
 
             // Act
@@ -392,7 +266,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 null,
                 null,
                 null,
-                null,
                 configurableDownloadableFileBusinessLogic.Object);
 
             // Act
@@ -442,7 +315,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 .ReturnsAsync(listOfDownloadableItems);
 
             _TestDownloadableFileController = new DownloadableFileController(
-                null,
                 null,
                 null,
                 null,

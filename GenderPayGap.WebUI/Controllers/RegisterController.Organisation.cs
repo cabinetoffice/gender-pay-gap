@@ -190,7 +190,7 @@ namespace GenderPayGap.WebUI.Controllers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, ex.Message);
+                        CustomLogger.Error(ex.Message, ex);
 
                         CompaniesHouseFailures++;
                         if (CompaniesHouseFailures < 3)
@@ -417,7 +417,7 @@ namespace GenderPayGap.WebUI.Controllers
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, ex.Message);
+                            CustomLogger.Error(ex.Message, ex);
 
                             CompaniesHouseFailures++;
                             if (CompaniesHouseFailures < 3)
@@ -516,7 +516,7 @@ namespace GenderPayGap.WebUI.Controllers
                     //Make sure the found organisation is active or pending
                     if (org.Status != OrganisationStatuses.Active && org.Status != OrganisationStatuses.Pending)
                     {
-                        _logger.LogWarning(
+                        CustomLogger.Warning(
                             $"Attempt to register a {org.Status} organisation",
                             $"Organisation: '{org.OrganisationName}' Reference: '{org.EmployerReference}' User: '{currentUser.EmailAddress}'");
                         return View("CustomError", new ErrorViewModel(1149));
@@ -970,7 +970,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Make sure the found organisation is active or pending
             if (org.Status != OrganisationStatuses.Active && org.Status != OrganisationStatuses.Pending)
             {
-                _logger.LogWarning(
+                CustomLogger.Warning(
                     $"Attempt to register a {org.Status} organisation",
                     $"Organisation: '{org.OrganisationName}' Reference: '{org.EmployerReference}' User: '{currentUser.EmailAddress}'");
                 return View("CustomError", new ErrorViewModel(1149));
@@ -1287,7 +1287,7 @@ namespace GenderPayGap.WebUI.Controllers
             catch (Exception ex)
             {
                 //This line is to help diagnose object reference not found exception raised at this point 
-                _logger.LogWarning(ex, Extensions.Json.SerializeObjectDisposed(m));
+                CustomLogger.Warning(Extensions.Json.SerializeObjectDisposed(m), ex);
                 throw;
             }
 
@@ -1674,7 +1674,7 @@ namespace GenderPayGap.WebUI.Controllers
             //This line is to help diagnose object reference not found exception raised at this point 
             if (address == null)
             {
-                _logger.LogDebug("Address should not be null", Extensions.Json.SerializeObjectDisposed(model));
+                CustomLogger.Debug("Address should not be null", Extensions.Json.SerializeObjectDisposed(model));
             }
 
             #endregion
@@ -1695,7 +1695,7 @@ namespace GenderPayGap.WebUI.Controllers
             //This line is to help diagnose object reference not found exception raised at this point 
             if (address == null)
             {
-                _logger.LogWarning("Address should not be null", Extensions.Json.SerializeObjectDisposed(model));
+                CustomLogger.Warning("Address should not be null", Extensions.Json.SerializeObjectDisposed(model));
             }
 
             userOrg.Address = address;
@@ -1788,7 +1788,7 @@ namespace GenderPayGap.WebUI.Controllers
                     {
                         DataRepository.RollbackTransaction();
                         sendRequest = false;
-                        _logger.LogWarning(ex, Extensions.Json.SerializeObjectDisposed(model));
+                        CustomLogger.Warning(Extensions.Json.SerializeObjectDisposed(model), ex);
                         throw;
                     }
                 });

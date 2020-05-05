@@ -20,12 +20,11 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
 
         public CloseAccountController(
             ICloseAccountViewService closeAccountService,
-            ILogger<CloseAccountController> logger,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepo,
             IWebTracker webTracker) :
-            base(logger, cache, session, dataRepo, webTracker)
+            base(cache, session, dataRepo, webTracker)
         {
             CloseAccountService = closeAccountService;
         }
