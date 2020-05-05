@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Moq;
@@ -25,15 +26,14 @@ namespace Repositories.UserRepository
             GpgDatabaseContext dbContext = AutoFacHelpers.CreateInMemoryTestDatabase(UserOrganisationHelper.CreateRegistrations());
 
             mockDataRepo = new SqlRepository(dbContext);
-            mockLogRecordLogger = new Mock<IRegistrationLogRecord>();
+            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>(), Mock.Of<IHttpSession>());
 
             // service under test
             testRegistrationRepo =
-                new GenderPayGap.BusinessLogic.Repositories.RegistrationRepository(mockDataRepo, mockLogRecordLogger.Object);
+                new GenderPayGap.BusinessLogic.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks);
         }
 
         private IDataRepository mockDataRepo;
-        private Mock<IRegistrationLogRecord> mockLogRecordLogger;
 
         private IRegistrationRepository testRegistrationRepo;
 
@@ -45,18 +45,6 @@ namespace Repositories.UserRepository
                 .Where(u => u.EmailAddress == "active1@ad5bda75-e514-491b-b74d-4672542cbd15.com")
                 .FirstOrDefault();
 
-            UserOrganisation testUserOrg = testRetiredUser.UserOrganisations.FirstOrDefault();
-            var calledLogUserAccountClosedAsync = 0;
-
-            // Flag LogUserAccountClosedAsync
-            mockLogRecordLogger.Setup(x => x.LogUserAccountClosedAsync(It.IsAny<UserOrganisation>(), It.IsAny<string>()))
-                .Callback(
-                    (UserOrganisation uo, string actionByEmail) => {
-                        calledLogUserAccountClosedAsync++;
-                        Assert.AreEqual(actionByEmail, testRetiredUser.EmailAddress, "Expected log action by email to match");
-                    })
-                .Returns(Task.CompletedTask);
-
             // Act
             await testRegistrationRepo.RemoveRetiredUserRegistrationsAsync(testRetiredUser, testRetiredUser);
 
@@ -64,9 +52,6 @@ namespace Repositories.UserRepository
             Assert.IsFalse(
                 mockDataRepo.GetAll<UserOrganisation>().Any(uo => uo.UserId == testRetiredUser.UserId),
                 "Expected no registrations");
-
-            // Assert log
-            Assert.AreEqual(2, calledLogUserAccountClosedAsync, "Expected LogUnregisteredSelfAsync to be called 2 times");
         }
 
     }

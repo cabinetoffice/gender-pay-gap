@@ -5,6 +5,7 @@ using System.Web;
 using Autofac.Features.AttributeFilters;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
+using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
@@ -29,6 +30,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly PinInThePostService pinInThePostService;
         private readonly EmailSendingService emailSendingService;
+        private readonly AuditLogger auditLogger;
 
         #region Constructors
 
@@ -46,7 +48,8 @@ namespace GenderPayGap.WebUI.Controllers
             PinInThePostService pinInThePostService,
             EmailSendingService emailSendingService,
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
-            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository)
+            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository,
+            AuditLogger auditLogger)
             : base(
             logger,
             cache,
@@ -63,6 +66,7 @@ namespace GenderPayGap.WebUI.Controllers
             UserRepository = userRepository;
             this.pinInThePostService = pinInThePostService;
             this.emailSendingService = emailSendingService;
+            this.auditLogger = auditLogger;
         }
 
         #endregion

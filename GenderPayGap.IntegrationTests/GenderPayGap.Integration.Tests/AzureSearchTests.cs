@@ -30,8 +30,6 @@ namespace GenderPayGap.Integration.Tests
         {
             Global.FileRepository = Mock.Of<IFileRepository>();
 
-            SetupHelpers.SetupMockLogRecordGlobals();
-
             string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");
             string azureSearchAdminApiKey = Config.GetAppSetting("SearchService:AdminApiKey");
             //_azureSearchRepo = new AzureSearchRepository(azureSearchServiceName, azureSearchAdminApiKey, null, Global.AppInsightsClient);

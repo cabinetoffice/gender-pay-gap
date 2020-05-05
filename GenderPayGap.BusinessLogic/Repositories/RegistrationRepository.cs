@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.LogRecords;
+using GenderPayGap.BusinessLogic.Services;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 
 namespace GenderPayGap.BusinessLogic.Repositories
 {
@@ -14,10 +12,10 @@ namespace GenderPayGap.BusinessLogic.Repositories
     public class RegistrationRepository : IRegistrationRepository
     {
 
-        public RegistrationRepository(IDataRepository dataRepository, IRegistrationLogRecord registrationLog)
+        public RegistrationRepository(IDataRepository dataRepository, AuditLogger auditLogger)
         {
             DataRepository = dataRepository ?? throw new ArgumentNullException(nameof(dataRepository));
-            RegistrationLog = registrationLog ?? throw new ArgumentNullException(nameof(registrationLog));
+            AuditLogger = auditLogger ?? throw new ArgumentNullException(nameof(auditLogger));
         }
 
         public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire, User actionByUser)
@@ -28,7 +26,11 @@ namespace GenderPayGap.BusinessLogic.Repositories
                 userOrgToUnregister.Organisation.UserOrganisations.Remove(userOrgToUnregister);
 
                 // log unregistered via closed account
-                await RegistrationLog.LogUserAccountClosedAsync(userOrgToUnregister, actionByUser.EmailAddress);
+                AuditLogger.AuditChangeToUser(
+                    AuditedAction.RegistrationLog,
+                    userToRetire,
+                    new { Status = "Unregistered closed account" },
+                    actionByUser);
 
                 // Remove user organisation
                 DataRepository.Delete(userOrgToUnregister);
@@ -59,12 +61,20 @@ namespace GenderPayGap.BusinessLogic.Repositories
             if (userOrgToUnregister.UserId == actionByUser.UserId)
             {
                 // unregistered self
-                await RegistrationLog.LogUnregisteredSelfAsync(userOrgToUnregister, actionByUser.EmailAddress);
+                AuditLogger.AuditChangeToUser(
+                    AuditedAction.RegistrationLog,
+                    userOrgToUnregister.User,
+                    new { Status = "Unregistered self" },
+                    actionByUser);
             }
             else
             {
                 // unregistered by someone else
-                await RegistrationLog.LogUnregisteredAsync(userOrgToUnregister, actionByUser.EmailAddress);
+                AuditLogger.AuditChangeToUser(
+                    AuditedAction.RegistrationLog,
+                    userOrgToUnregister.User,
+                    new { Status = "Unregistered" },
+                    actionByUser);
             }
 
             // Remove user organisation
@@ -78,7 +88,7 @@ namespace GenderPayGap.BusinessLogic.Repositories
 
         public IDataRepository DataRepository { get; }
 
-        public IRegistrationLogRecord RegistrationLog { get; }
+        public AuditLogger AuditLogger { get; set; }
 
         #endregion
 

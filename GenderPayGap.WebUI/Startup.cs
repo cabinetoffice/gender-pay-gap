@@ -9,7 +9,6 @@ using AutoMapper;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Account.Repositories;
-using GenderPayGap.BusinessLogic.LogRecords;
 using GenderPayGap.BusinessLogic.Repositories;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
@@ -45,7 +44,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Newtonsoft.Json.Serialization;
-using HttpSession = GenderPayGap.Extensions.AspNetCore.HttpSession;
 
 namespace GenderPayGap.WebUI
 {
@@ -99,7 +97,8 @@ namespace GenderPayGap.WebUI
 
             //Create the MVC service
             services.AddMvc(
-                    options => {
+                    options =>
+                    {
                         options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
                         options.ModelMetadataDetailsProviders.Add(
                             new TrimModelBinder()); //Set DisplayMetadata to input empty strings as null
@@ -124,7 +123,8 @@ namespace GenderPayGap.WebUI
 
             //Add services needed for sessions
             services.AddSession(
-                o => {
+                o =>
+                {
                     o.Cookie.IsEssential = true; //This is required otherwise session will not load
                     o.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Equivalent to <httpCookies requireSSL="true" /> from Web.Config
                     o.Cookie.HttpOnly = false; //Always use https cookies
@@ -158,8 +158,6 @@ namespace GenderPayGap.WebUI
 
             //Create Inversion of Control container
             MvcApplication.ContainerIoC = BuildContainerIoC(services);
-
-            Global.RegistrationLog = MvcApplication.ContainerIoC.ResolveKeyed<ILogRecordLogger>(Filenames.RegistrationLog);
 
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(MvcApplication.ContainerIoC);
@@ -241,12 +239,6 @@ namespace GenderPayGap.WebUI
             builder.Register(c => new LogEventQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
             builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
 
-            // Register record loggers
-            builder.RegisterLogRecord(Filenames.RegistrationLog);
-
-            // Register log records (without key filtering)
-            builder.RegisterType<RegistrationLogRecord>().As<IRegistrationLogRecord>().SingleInstance();
-
             // Setup azure search
             string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");
             string azureSearchAdminKey = Config.GetAppSetting("SearchService:AdminApiKey");
@@ -312,7 +304,8 @@ namespace GenderPayGap.WebUI
             // Register Action helpers
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();
             builder.Register(
-                x => {
+                x =>
+                {
                     ActionContext actionContext = x.Resolve<IActionContextAccessor>().ActionContext;
                     var factory = x.Resolve<IUrlHelperFactory>();
                     return factory.GetUrlHelper(actionContext);
@@ -347,7 +340,8 @@ namespace GenderPayGap.WebUI
             if (!AutoMapperInitialised)
             {
                 Mapper.Initialize(
-                    config => {
+                    config =>
+                    {
                         // allows auto mapper to inject our dependencies
                         config.ConstructServicesUsing(container.Resolve);
                         // register all out mapper profiles (classes/mappers/*)
@@ -385,8 +379,10 @@ namespace GenderPayGap.WebUI
             app.UseHttpsRedirection();
             //app.UseResponseCompression(); //Disabled to use IIS compression which has better performance (see https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.1)
             app.UseStaticFiles(
-                new StaticFileOptions {
-                    OnPrepareResponse = ctx => {
+                new StaticFileOptions
+                {
+                    OnPrepareResponse = ctx =>
+                    {
                         //Caching static files is required to reduce connections since the default behavior of checking if a static file has changed and returning a 304 still requires a connection.
                         if (Global.StaticCacheSeconds > 0)
                         {
@@ -399,10 +395,12 @@ namespace GenderPayGap.WebUI
             if (Config.IsLocal())
             {
                 app.UseStaticFiles(
-                    new StaticFileOptions {
+                    new StaticFileOptions
+                    {
                         FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
                         RequestPath = "",
-                        OnPrepareResponse = ctx => {
+                        OnPrepareResponse = ctx =>
+                        {
                             //Caching static files is required to reduce connections since the default behavior of checking if a static file has changed and returning a 304 still requires a connection.
                             if (Global.StaticCacheSeconds > 0)
                             {
@@ -427,7 +425,8 @@ namespace GenderPayGap.WebUI
             HangfireConfigurationHelper.ConfigureApp(app);
 
             lifetime.ApplicationStarted.Register(
-                async () => {
+                async () =>
+                {
                     // Summary:
                     //     Triggered when the application host has fully started and is about to wait for
                     //     a graceful shutdown.
@@ -438,7 +437,8 @@ namespace GenderPayGap.WebUI
                     logger.LogInformation("Application Started");
                 });
             lifetime.ApplicationStopping.Register(
-                () => {
+                () =>
+                {
                     // Summary:
                     //     Triggered when the application host is performing a graceful shutdown. Requests
                     //     may still be in flight. Shutdown will block until this event completes.
