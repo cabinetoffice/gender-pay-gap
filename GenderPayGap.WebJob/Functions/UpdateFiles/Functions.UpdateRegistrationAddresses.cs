@@ -7,7 +7,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,8 +17,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task UpdateRegistrationAddressesAsync([TimerTrigger("40 1 * * *" /* 01:40 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             //string funcName = nameof(UpdateRegistrationAddressesAsync);
 
@@ -54,7 +52,7 @@ namespace GenderPayGap.WebJob
             //}
         }
 
-        public async Task UpdateRegistrationAddressesAsync(string filePath, ILogger log)
+        public async Task UpdateRegistrationAddressesAsync(string filePath)
         {
             //string funcName = nameof(UpdateRegistrationAddressesAsync);
 

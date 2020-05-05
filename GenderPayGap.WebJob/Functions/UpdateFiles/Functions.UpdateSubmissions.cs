@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -12,8 +11,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task UpdateSubmissions([TimerTrigger("15 * * * *" /* once per hour, at 15 minutes past the hour */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = DateTime.Now;

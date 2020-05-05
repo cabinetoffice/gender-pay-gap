@@ -16,8 +16,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task CheckSiteCertAsync([TimerTrigger("20 3 * * *" /* 03:20 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             string runId = JobHelpers.CreateRunId();
             DateTime startTime = VirtualDateTime.Now;

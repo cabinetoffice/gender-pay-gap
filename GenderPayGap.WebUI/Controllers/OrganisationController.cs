@@ -19,7 +19,6 @@ using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -32,7 +31,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public OrganisationController(
-            ILogger<ErrorController> logger,
             IHttpCache cache,
             IHttpSession session,
             ISubmissionService submitService,
@@ -45,7 +43,6 @@ namespace GenderPayGap.WebUI.Controllers
             EmailSendingService emailSendingService,
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
             [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository) : base(
-            logger,
             cache,
             session,
             dataRepository,

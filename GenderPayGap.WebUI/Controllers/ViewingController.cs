@@ -12,6 +12,7 @@ using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -24,7 +25,6 @@ using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -36,7 +36,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ViewingController(
-            ILogger<ErrorController> logger,
             IHttpCache cache,
             IHttpSession session,
             IViewingService viewingService,
@@ -46,7 +45,7 @@ namespace GenderPayGap.WebUI.Controllers
             ISubmissionBusinessLogic submissionBusinessLogic,
             IObfuscator obfuscator,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker)
+            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;
@@ -74,7 +73,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Cannot decrypt return id from '{employerIdentifier}'");
+                CustomLogger.Error($"Cannot decrypt return id from '{employerIdentifier}'", ex);
                 actionResult = View("CustomError", new ErrorViewModel(400));
             }
 
@@ -338,7 +337,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Cannot decrypt return id from query string");
+                    CustomLogger.Error("Cannot decrypt return id from query string", ex);
                     return View("CustomError", new ErrorViewModel(400));
                 }
 
@@ -393,7 +392,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Cannot decrypt return employerIdentifier from '{employerIdentifier}'");
+                CustomLogger.Error($"Cannot decrypt return employerIdentifier from '{employerIdentifier}'", ex);
                 return View("CustomError", new ErrorViewModel(400));
             }
 
@@ -468,7 +467,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Cannot decrypt return employerIdentifier from '{employerIdentifier}'");
+                CustomLogger.Error($"Cannot decrypt return employerIdentifier from '{employerIdentifier}'", ex);
                 return View("CustomError", new ErrorViewModel(400));
             }
 
@@ -494,9 +493,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    ex,
-                    $"Exception processing the return information for Organisation '{foundOrganisation.OrganisationId}:{foundOrganisation.OrganisationName}'");
+                CustomLogger.Error($"Exception processing the return information for Organisation '{foundOrganisation.OrganisationId}:{foundOrganisation.OrganisationName}'", ex);
                 return View("CustomError", new ErrorViewModel(400));
             }
 

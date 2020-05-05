@@ -9,7 +9,6 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 using static GenderPayGap.Extensions.Web;
 
 namespace GenderPayGap.WebJob
@@ -18,8 +17,7 @@ namespace GenderPayGap.WebJob
     {
 
         public async Task TakeSnapshotAsync([TimerTrigger("20 5 * * *" /* 05:20 once per day */)]
-            TimerInfo timer,
-            ILogger log)
+            TimerInfo timer)
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
@@ -60,7 +58,7 @@ namespace GenderPayGap.WebJob
                             continue;
                         }
 
-                        await DeleteSnapshotAsync(log, azureStorageAccount, azureStorageKey, azureStorageShareName, snapshot);
+                        await DeleteSnapshotAsync(azureStorageAccount, azureStorageKey, azureStorageShareName, snapshot);
                         count++;
                     }
                 }
@@ -85,7 +83,7 @@ namespace GenderPayGap.WebJob
             }
         }
 
-        public async Task TakeSnapshotAsync(ILogger log)
+        public async Task TakeSnapshotAsync()
         {
             try
             {
@@ -104,11 +102,11 @@ namespace GenderPayGap.WebJob
                 //Take the snapshot
                 await TakeSnapshotAsync(azureStorageAccount, azureStorageKey, azureStorageShareName);
 
-                log.LogDebug($"Executed {nameof(TakeSnapshotAsync)} successfully");
+                CustomLogger.Debug($"Executed {nameof(TakeSnapshotAsync)} successfully");
             }
             catch (Exception ex)
             {
-                log.LogError(ex, $"Failed webjob:{nameof(TakeSnapshotAsync)}:{ex.Message}");
+                CustomLogger.Error($"Failed webjob:{nameof(TakeSnapshotAsync)}:{ex.Message}", ex);
                 throw;
             }
         }
@@ -187,7 +185,7 @@ namespace GenderPayGap.WebJob
             return response;
         }
 
-        private static async Task<string> DeleteSnapshotAsync(ILogger log,
+        private static async Task<string> DeleteSnapshotAsync(
             string storageAccount,
             string storageKey,
             string shareName,
@@ -225,7 +223,7 @@ namespace GenderPayGap.WebJob
             headers.Add("Authorization", authorizationHeader);
             string response = await CallApiAsync(HttpMethods.Delete, url, headers: headers);
 
-            log.LogDebug($"{nameof(DeleteSnapshotAsync)}: successfully deleted snapshot:{snapshot}");
+            CustomLogger.Debug($"{nameof(DeleteSnapshotAsync)}: successfully deleted snapshot:{snapshot}");
 
             return headers["x-ms-request-id"];
         }

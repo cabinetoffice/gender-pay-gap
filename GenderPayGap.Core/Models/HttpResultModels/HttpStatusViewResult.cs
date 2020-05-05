@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using GenderPayGap.Core.Classes.Logger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -79,9 +80,7 @@ namespace GenderPayGap.Core.Models.HttpResultModels
 
             if (logLevel != null && logLevel != LogLevel.None)
             {
-                var log = actionContext.HttpContext.RequestServices?.GetRequiredService<ILogger<HttpStatusViewResult>>();
-
-                string message = null;
+                string message;
                 if (Enum.IsDefined(typeof(HttpStatusCode), StatusCode.Value))
                 {
                     message = $"{(HttpStatusCode) StatusCode.Value} ({StatusCode.Value}):  {StatusDescription}";
@@ -95,11 +94,19 @@ namespace GenderPayGap.Core.Models.HttpResultModels
                 {
                     case LogLevel.Trace:
                     case LogLevel.Debug:
+                        CustomLogger.Debug(message);
+                        break;
                     case LogLevel.Information:
+                        CustomLogger.Information(message);
+                        break;
                     case LogLevel.Warning:
+                        CustomLogger.Warning(message);
+                        break;
                     case LogLevel.Error:
+                        CustomLogger.Error(message);
+                        break;
                     case LogLevel.Critical:
-                        log.Log(logLevel.Value, message);
+                        CustomLogger.Fatal(message);
                         break;
                 }
             }

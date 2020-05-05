@@ -20,12 +20,11 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
 
         public ChangePasswordController(
             IChangePasswordViewService changePasswordService,
-            ILogger<ChangePasswordController> logger,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepo,
             IWebTracker webTracker) :
-            base(logger, cache, session, dataRepo, webTracker)
+            base(cache, session, dataRepo, webTracker)
         {
             ChangePasswordService = changePasswordService;
         }

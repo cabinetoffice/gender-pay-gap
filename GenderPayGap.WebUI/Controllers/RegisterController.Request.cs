@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
@@ -702,7 +703,7 @@ namespace GenderPayGap.WebUI.Controllers
                 && !await DataRepository.GetAll<UserOrganisation>()
                     .AnyAsync(uo => uo.OrganisationId == userOrg.Organisation.OrganisationId && uo.UserId != userOrg.UserId))
             {
-                _logger.LogInformation(
+                CustomLogger.Information(
                     $"Unused organisation {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}' deleted by {(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)} when declining manual registration for {userOrg.User.EmailAddress}");
                 DataRepository.Delete(userOrg.Organisation);
             }

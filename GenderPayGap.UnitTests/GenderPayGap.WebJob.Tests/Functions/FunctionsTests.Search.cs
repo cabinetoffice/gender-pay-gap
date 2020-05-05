@@ -40,13 +40,12 @@ namespace GenderPayGap.WebJob.Tests.Functions
         public async Task Functions_UpdateSearch()
         {
             // Arrange
-            var log = new Mock<ILogger>();
             var timespan = new TimeSpan();
             var schedule = new ConstantSchedule(timespan);
             var timer = new TimerInfo(schedule, new ScheduleStatus());
 
             // Act
-            await _functions.UpdateSearchAsync(timer, log.Object);
+            await _functions.UpdateSearchAsync(timer);
         }
 
         [Test]
@@ -65,7 +64,6 @@ namespace GenderPayGap.WebJob.Tests.Functions
             //Add returns to remaining orgs 
             ReturnHelper.CreateTestReturns(orgs.Skip(inScope).ToArray(), VirtualDateTime.Now.Year);
 
-            var log = new Mock<ILogger>();
             orgs = orgs
                 .Where(
                     o => o.Status == OrganisationStatuses.Active
@@ -77,7 +75,7 @@ namespace GenderPayGap.WebJob.Tests.Functions
                 .ToList();
 
             //ACT
-            await _functions.UpdateSearchAsync(log.Object, "testadmin@user.com", true);
+            await _functions.UpdateSearchAsync("testadmin@user.com", true);
 
             //ASSERT
 

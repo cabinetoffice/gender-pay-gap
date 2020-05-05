@@ -56,13 +56,11 @@ namespace GenderPayGap.WebUI
         private static bool AutoMapperInitialised;
         private readonly IConfiguration config;
         private readonly IHostingEnvironment env;
-        private readonly ILogger logger;
 
-        public Startup(IHostingEnvironment env, IConfiguration config, ILogger<Startup> logger)
+        public Startup(IHostingEnvironment env, IConfiguration config)
         {
             this.env = env;
             this.config = config;
-            this.logger = logger;
         }
 
         public static HttpMessageHandler BackChannelHandler { get; set; }

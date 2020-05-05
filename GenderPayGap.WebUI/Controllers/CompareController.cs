@@ -19,7 +19,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -28,14 +27,13 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         public CompareController(
-            ILogger<ErrorController> logger,
             IHttpCache cache,
             IHttpSession session,
             ISearchViewService searchViewService,
             ICompareViewService compareViewService,
             IDataRepository dataRepository,
             IOrganisationBusinessLogic organisationBusinessLogic,
-            IWebTracker webTracker) : base(logger, cache, session, dataRepository, webTracker)
+            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
         {
             OrganisationBusinessLogic = organisationBusinessLogic;
             SearchViewService = searchViewService;
