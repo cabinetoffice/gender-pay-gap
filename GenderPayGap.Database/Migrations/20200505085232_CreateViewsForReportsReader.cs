@@ -2,7 +2,7 @@
 
 namespace GenderPayGap.Database.Migrations
 {
-    public partial class RawSqlUpdates : Migration
+    public partial class CreateViewsForReportsReader : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
