@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenderPayGap.Database.Migrations
 {
     [DbContext(typeof(GpgDatabaseContext))]
-    [Migration("20200504141221_RawSqlUpdates")]
-    partial class RawSqlUpdates
+    [Migration("20200505085232_CreateViewsForReportsReader")]
+    partial class CreateViewsForReportsReader
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -998,12 +998,12 @@ namespace GenderPayGap.Database.Migrations
                         .WithMany("AddressStatuses")
                         .HasForeignKey("AddressId")
                         .HasConstraintName("FK_dbo.AddressStatus_dbo.OrganisationAddresses_AddressId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.InactiveUserOrganisation", b =>
@@ -1118,13 +1118,13 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GenderPayGap.Database.Organisation", "Organisation")
                         .WithMany("OrganisationStatuses")
                         .HasForeignKey("OrganisationId")
                         .HasConstraintName("FK_dbo.OrganisationStatus_dbo.Organisations_OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.Return", b =>
@@ -1141,13 +1141,13 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GenderPayGap.Database.Return", "Return")
                         .WithMany("ReturnStatuses")
                         .HasForeignKey("ReturnId")
                         .HasConstraintName("FK_dbo.ReturnStatus_dbo.Returns_ReturnId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("GenderPayGap.Database.SicCode", b =>
@@ -1192,13 +1192,13 @@ namespace GenderPayGap.Database.Migrations
                     b.HasOne("GenderPayGap.Database.User", "ByUser")
                         .WithMany()
                         .HasForeignKey("ByUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GenderPayGap.Database.User", "User")
                         .WithMany("UserStatuses")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_dbo.UserStatus_dbo.Users_UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
