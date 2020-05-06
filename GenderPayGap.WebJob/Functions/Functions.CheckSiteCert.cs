@@ -8,7 +8,6 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {

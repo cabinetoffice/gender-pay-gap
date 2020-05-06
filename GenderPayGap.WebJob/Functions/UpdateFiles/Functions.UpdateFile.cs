@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {

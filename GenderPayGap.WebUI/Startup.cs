@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Web;
@@ -14,6 +14,7 @@ using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Classes.Queues;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
@@ -432,7 +433,7 @@ namespace GenderPayGap.WebUI
                     //Initialise the application
                     await Program.MvcApplication.InitAsync();
 
-                    logger.LogInformation("Application Started");
+                    CustomLogger.Information("Application Started");
                 });
             lifetime.ApplicationStopping.Register(
                 () =>
@@ -440,7 +441,7 @@ namespace GenderPayGap.WebUI
                     // Summary:
                     //     Triggered when the application host is performing a graceful shutdown. Requests
                     //     may still be in flight. Shutdown will block until this event completes.
-                    logger.LogInformation("Application Stopping");
+                    CustomLogger.Information("Application Stopping");
                 });
         }
 

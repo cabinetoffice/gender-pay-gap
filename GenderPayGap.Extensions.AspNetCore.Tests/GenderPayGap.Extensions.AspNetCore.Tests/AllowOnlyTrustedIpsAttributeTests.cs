@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -74,35 +73,9 @@ namespace GenderPayGap.API.Tests.Filters
                 .Setup(hcf => hcf.RemoteIpAddress)
                 .Returns(IPAddress.Parse("34.33.33.1"));
 
-            string actualLoggedMessage = string.Empty;
-            var configurableLogger = new Mock<ILogger<AllowOnlyTrustedIps>>();
-
-            configurableLogger
-                .Setup(
-                    x => x.Log(
-                        It.IsAny<LogLevel>(),
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()))
-                .Callback(
-                    (LogLevel logLevel,
-                        EventId eventId,
-                        object message,
-                        Exception exception,
-                        Func<object, Exception, string> formatter) => {
-                        // LogLevel myLogLevel = logLevel; // LogLevel.Error
-                        // EventId myEventId = eventId;
-                        actualLoggedMessage = message.ToString(); // Value cannot be null.\nParameter name: filePath
-                        // Exception myException = exception; // System.ArgumentNullException
-                        // loggedExceptionMessage = exception.Message;
-                        // Func<object, Exception, string> myFormatter = formatter;
-                    });
-
             var configurableServiceProvider = new Mock<IServiceProvider>();
             configurableServiceProvider
-                .Setup(x => x.GetService(It.IsAny<Type>()))
-                .Returns(configurableLogger.Object);
+                .Setup(x => x.GetService(It.IsAny<Type>()));
 
             var httpContext = new DefaultHttpContext();
             //httpContext.Features.Set(httpConnectionFeature.Object);
@@ -137,35 +110,9 @@ namespace GenderPayGap.API.Tests.Filters
                 .Setup(hcf => hcf.RemoteIpAddress)
                 .Returns(IPAddress.Parse("45.33.33.1")); // address NOT on trusted list
 
-            string actualLoggedMessage = string.Empty;
-            var configurableLogger = new Mock<ILogger<AllowOnlyTrustedIps>>();
-
-            configurableLogger
-                .Setup(
-                    x => x.Log(
-                        It.IsAny<LogLevel>(),
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()))
-                .Callback(
-                    (LogLevel logLevel,
-                        EventId eventId,
-                        object message,
-                        Exception exception,
-                        Func<object, Exception, string> formatter) => {
-                        // LogLevel myLogLevel = logLevel; // LogLevel.Error
-                        // EventId myEventId = eventId;
-                        actualLoggedMessage = message.ToString(); // Value cannot be null.\nParameter name: filePath
-                        // Exception myException = exception; // System.ArgumentNullException
-                        // loggedExceptionMessage = exception.Message;
-                        // Func<object, Exception, string> myFormatter = formatter;
-                    });
-
             var configurableServiceProvider = new Mock<IServiceProvider>();
             configurableServiceProvider
-                .Setup(x => x.GetService(It.IsAny<Type>()))
-                .Returns(configurableLogger.Object);
+                .Setup(x => x.GetService(It.IsAny<Type>()));
 
             var httpContext = new DefaultHttpContext();
             httpContext.Features.Set(httpConnectionFeature.Object);
@@ -200,35 +147,9 @@ namespace GenderPayGap.API.Tests.Filters
                 .Setup(hcf => hcf.RemoteIpAddress)
                 .Returns(IPAddress.Parse("96.97.98.99")); // address NOT on trusted list
 
-            string actualLoggedMessage = string.Empty;
-            var configurableLogger = new Mock<ILogger<AllowOnlyTrustedIps>>();
-
-            configurableLogger
-                .Setup(
-                    x => x.Log(
-                        It.IsAny<LogLevel>(),
-                        It.IsAny<EventId>(),
-                        It.IsAny<object>(),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<object, Exception, string>>()))
-                .Callback(
-                    (LogLevel logLevel,
-                        EventId eventId,
-                        object message,
-                        Exception exception,
-                        Func<object, Exception, string> formatter) => {
-                        // LogLevel myLogLevel = logLevel; // LogLevel.Error
-                        // EventId myEventId = eventId;
-                        actualLoggedMessage = message.ToString(); // Value cannot be null.\nParameter name: filePath
-                        // Exception myException = exception; // System.ArgumentNullException
-                        // loggedExceptionMessage = exception.Message;
-                        // Func<object, Exception, string> myFormatter = formatter;
-                    });
-
             var configurableServiceProvider = new Mock<IServiceProvider>();
             configurableServiceProvider
-                .Setup(x => x.GetService(It.IsAny<Type>()))
-                .Returns(configurableLogger.Object);
+                .Setup(x => x.GetService(It.IsAny<Type>()));
 
             var httpContext = new DefaultHttpContext();
             httpContext.Features.Set(httpConnectionFeature.Object);
