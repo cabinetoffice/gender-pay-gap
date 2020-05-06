@@ -27,54 +27,9 @@ namespace GenderPayGap.Core.Classes.Downloadable
                     return null;
                 }
 
-                if (Name.Contains("ErrorLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Error logs";
-                }
-
-                if (Name.Contains("WarningLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Warning logs";
-                }
-
-                if (Name.Contains("InfoLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Information logs";
-                }
-
-                if (Name.Contains("BadSicLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Bad SIC Codes Log";
-                }
-
-                if (Name.Contains("searchLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Search logs";
-                }
-
                 if (Name.Contains("submissionLog", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Submission History";
-                }
-
-                if (Name.Contains("userLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "User Logs";
-                }
-
-                if (Name.Contains("emailSendLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Email Send Log";
-                }
-
-                if (Name.Contains("stannpSendLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Stannp Send Log";
-                }
-
-                if (Name.Contains("debugLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Debug Log from system";
                 }
 
                 return null;
@@ -90,54 +45,9 @@ namespace GenderPayGap.Core.Classes.Downloadable
                     return null;
                 }
 
-                if (Name.Contains("ErrorLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Error log";
-                }
-
-                if (Name.Contains("WarningLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Warning log";
-                }
-
-                if (Name.Contains("InfoLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Information log";
-                }
-
-                if (Name.Contains("BadSicLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Bad SIC Codes Logs";
-                }
-
-                if (Name.Contains("SearchLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Search log";
-                }
-
                 if (Name.Contains("submissionLog", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Submission History";
-                }
-
-                if (Name.Contains("userLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "User Activity Log";
-                }
-
-                if (Name.Contains("emailSendLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Email Send Log";
-                }
-
-                if (Name.Contains("stannpSendLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Stannp Send Log";
-                }
-
-                if (Name.Contains("debugLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Debug Log from system";
                 }
 
                 return null;
@@ -153,54 +63,9 @@ namespace GenderPayGap.Core.Classes.Downloadable
                     return null;
                 }
 
-                if (Name.Contains("ErrorLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Error log from system";
-                }
-
-                if (Name.Contains("WarningLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Warning log from system";
-                }
-
-                if (Name.Contains("InfoLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Information log from system";
-                }
-
-                if (Name.Contains("BadSicLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Companies and their unknown SIC Codes from Companies House.";
-                }
-
-                if (Name.Contains("SearchLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Searches carried out by users.";
-                }
-
                 if (Name.Contains("submissionLog", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Audit history of approved and rejected registrations.";
-                }
-
-                if (Name.Contains("userLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "A list of all user account activity.";
-                }
-
-                if (Name.Contains("emailSendLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Log of sent email messages via Gov Notify or SendGrid.";
-                }
-
-                if (Name.Contains("stannpSendLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Log of sent PIN Letters to Stannp.com.";
-                }
-
-                if (Name.Contains("debugLog", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Debug information";
                 }
 
                 return null;
