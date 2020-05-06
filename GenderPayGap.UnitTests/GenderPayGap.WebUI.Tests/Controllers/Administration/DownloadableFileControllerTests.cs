@@ -12,7 +12,6 @@ using GenderPayGap.Core.Models.Downloadable;
 using GenderPayGap.WebUI.Controllers.Administration;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 

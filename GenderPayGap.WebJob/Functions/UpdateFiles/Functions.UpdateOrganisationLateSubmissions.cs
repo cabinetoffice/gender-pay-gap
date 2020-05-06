@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Models;
 using GenderPayGap.Core;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {

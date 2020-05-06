@@ -3,21 +3,17 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
 namespace GenderPayGap.Extensions.AspNetCore
 {
     public class ExceptionMiddleware
     {
 
         private readonly IConfiguration _config; //ms
-        private readonly ILogger _logger;
         private readonly RequestDelegate _next;
 
-        public ExceptionMiddleware(RequestDelegate next, IConfiguration config, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next, IConfiguration config)
         {
             _config = config;
-            _logger = logger;
             _next = next;
         }
 
@@ -29,7 +25,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{ex.Message}");
                 await HandleExceptionAsync(httpContext, ex);
             }
         }

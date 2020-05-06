@@ -12,7 +12,6 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Services
 {
