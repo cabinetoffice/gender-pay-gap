@@ -48,8 +48,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
@@ -330,10 +328,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<ChangeDetailsViewService>().As<IChangeDetailsViewService>().InstancePerLifetimeScope();
             builder.RegisterType<ChangePasswordViewService>().As<IChangePasswordViewService>().InstancePerLifetimeScope();
             builder.RegisterType<CloseAccountViewService>().As<ICloseAccountViewService>().InstancePerLifetimeScope();
-
-            builder.RegisterInstance(new NullLoggerFactory()).As<ILoggerFactory>().SingleInstance();
-            builder.RegisterGeneric(typeof(Logger<>)).As(typeof(ILogger<>)).SingleInstance();
-
+            
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
 
             builder.Register(c => new Mock<IAdminService>().Object).As<IAdminService>().InstancePerLifetimeScope();

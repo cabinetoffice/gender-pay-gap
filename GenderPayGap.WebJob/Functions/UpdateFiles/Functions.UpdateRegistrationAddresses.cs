@@ -9,7 +9,6 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using Microsoft.Azure.WebJobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {

@@ -11,8 +11,6 @@ using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebJob.Tests.TestHelpers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Timers;
-using Microsoft.Extensions.Logging;
-using Moq;
 using NUnit.Framework;
 using OrganisationHelper = GenderPayGap.WebJob.Tests.TestHelpers.OrganisationHelper;
 

@@ -8,7 +8,6 @@ using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Areas.Account.Controllers
 {

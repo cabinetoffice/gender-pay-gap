@@ -7,8 +7,6 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.Core.Filters
 {
