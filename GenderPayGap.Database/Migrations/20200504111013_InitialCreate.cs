@@ -227,7 +227,7 @@ namespace GenderPayGap.Database.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -459,8 +459,7 @@ namespace GenderPayGap.Database.Migrations
                         name: "FK_OrganisationStatus_Users_ByUserId",
                         column: x => x.ByUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
                         name: "FK_dbo.OrganisationStatus_dbo.Organisations_OrganisationId",
                         column: x => x.OrganisationId,
@@ -543,8 +542,7 @@ namespace GenderPayGap.Database.Migrations
                         name: "FK_AddressStatus_Users_ByUserId",
                         column: x => x.ByUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -646,8 +644,7 @@ namespace GenderPayGap.Database.Migrations
                         name: "FK_ReturnStatus_Users_ByUserId",
                         column: x => x.ByUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                     table.ForeignKey(
                         name: "FK_dbo.ReturnStatus_dbo.Returns_ReturnId",
                         column: x => x.ReturnId,
