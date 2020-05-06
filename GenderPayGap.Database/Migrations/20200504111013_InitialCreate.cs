@@ -43,7 +43,7 @@ namespace GenderPayGap.Database.Migrations
                     PersonInterestedInSpecificOrganisationGpg = table.Column<bool>(nullable: true),
                     OtherPerson = table.Column<bool>(nullable: true),
                     OtherPersonText = table.Column<string>(maxLength: 2000, nullable: true),
-                    FeedbackStatus = table.Column<int>(nullable: false)
+                    FeedbackStatus = table.Column<int>(nullable: false, defaultValueSql: "((0))")
                 },
                 constraints: table =>
                 {
@@ -248,7 +248,7 @@ namespace GenderPayGap.Database.Migrations
                     DateOfCessation = table.Column<DateTime>(nullable: true),
                     LatestPublicSectorTypeId = table.Column<long>(nullable: true),
                     LastCheckedAgainstCompaniesHouse = table.Column<DateTime>(nullable: true),
-                    OptedOutFromCompaniesHouseUpdate = table.Column<bool>(nullable: false),
+                    OptedOutFromCompaniesHouseUpdate = table.Column<bool>(nullable: false, defaultValueSql: "((0))"),
                     SecurityCode = table.Column<string>(nullable: true),
                     SecurityCodeExpiryDateTime = table.Column<DateTime>(nullable: true),
                     SecurityCodeCreatedDateTime = table.Column<DateTime>(nullable: true)
@@ -502,7 +502,7 @@ namespace GenderPayGap.Database.Migrations
                     LastName = table.Column<string>(maxLength: 50, nullable: true),
                     MinEmployees = table.Column<int>(nullable: false, defaultValueSql: "((0))"),
                     MaxEmployees = table.Column<int>(nullable: false, defaultValueSql: "((0))"),
-                    IsLateSubmission = table.Column<bool>(nullable: false),
+                    IsLateSubmission = table.Column<bool>(nullable: false, defaultValueSql: "((0))"),
                     LateReason = table.Column<string>(maxLength: 200, nullable: true),
                     Modifications = table.Column<string>(maxLength: 200, nullable: true),
                     EHRCResponse = table.Column<bool>(nullable: false, defaultValueSql: "((0))")
