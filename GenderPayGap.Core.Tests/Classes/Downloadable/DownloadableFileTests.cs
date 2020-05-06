@@ -23,14 +23,7 @@ namespace GenderPayGap.Core.Tests.Classes.Downloadable
         }
 
         [TestCase("", null)]
-        [TestCase("filePath\\ErrorLog", "Error logs")]
-        [TestCase("filePath\\WarningLog", "Warning logs")]
-        [TestCase("filePath\\InfoLog", "Information logs")]
-        [TestCase("filePath\\BadSicLog", "Bad SIC Codes Log")]
-        [TestCase("filePath/searchLog", "Search logs")]
         [TestCase("filePath/submissionLog", "Submission History")]
-        [TestCase("filePath/userLog", "User Logs")]
-        [TestCase("filePath/emailSendLog", "Email Send Log")]
         [TestCase("filePath/NotAMappedLog_Name", null)]
         public void Type_Is_Correctly_Determined_From_Filename(string fileName, string expectedType)
         {
@@ -45,14 +38,7 @@ namespace GenderPayGap.Core.Tests.Classes.Downloadable
         }
 
         [TestCase("", null)]
-        [TestCase("aPath/ErrorLog", "Error log from system")]
-        [TestCase("aPath/WarningLog", "Warning log from system")]
-        [TestCase("aPath/InfoLog", "Information log from system")]
-        [TestCase("aPath/BadSicLog", "Companies and their unknown SIC Codes from Companies House.")]
-        [TestCase("aPath\\SearchLog", "Searches carried out by users.")]
         [TestCase("aPath\\submissionLog", "Audit history of approved and rejected registrations.")]
-        [TestCase("aPath\\userLog", "A list of all user account activity.")]
-        [TestCase("aPath\\emailSendLog", "Log of sent email messages via Gov Notify or SendGrid.")]
         [TestCase("aPath\\NotAMappedLog_Name", null)]
         public void Description_Is_Correctly_Determined_From_Filename(string fileName, string expectedDescription)
         {
@@ -67,14 +53,7 @@ namespace GenderPayGap.Core.Tests.Classes.Downloadable
         }
 
         [TestCase("", null)]
-        [TestCase("location\\ErrorLog", "Error log")]
-        [TestCase("location\\WarningLog", "Warning log")]
-        [TestCase("location\\InfoLog", "Information log")]
-        [TestCase("location\\BadSicLog", "Bad SIC Codes Logs")]
-        [TestCase("location\\SearchLog", "Search log")]
         [TestCase("location\\submissionLog", "Submission History")]
-        [TestCase("location\\userLog", "User Activity Log")]
-        [TestCase("location\\emailSendLog", "Email Send Log")]
         [TestCase("location\\NotAMappedLog_Name", null)]
         public void Title_Is_Correctly_Determined_From_Filename(string fileName, string expectedTitle)
         {

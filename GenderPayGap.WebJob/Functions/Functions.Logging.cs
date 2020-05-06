@@ -46,19 +46,6 @@ namespace GenderPayGap.WebJob
                 case LogLevel.Trace:
                     FilePath = Path.Combine(LogRoot, wrapper.ApplicationName, "TraceLog.csv");
                     break;
-                case LogLevel.Debug:
-                    FilePath = Path.Combine(LogRoot, wrapper.ApplicationName, "DebugLog.csv");
-                    break;
-                case LogLevel.Information:
-                    FilePath = Path.Combine(LogRoot, wrapper.ApplicationName, "InfoLog.csv");
-                    break;
-                case LogLevel.Warning:
-                    FilePath = Path.Combine(LogRoot, wrapper.ApplicationName, "WarningLog.csv");
-                    break;
-                case LogLevel.Error:
-                case LogLevel.Critical:
-                    FilePath = Path.Combine(LogRoot, wrapper.ApplicationName, "ErrorLog.csv");
-                    break;
                 default:
                     throw new ArgumentException("Invalid Log Level", nameof(LogLevel));
             }
