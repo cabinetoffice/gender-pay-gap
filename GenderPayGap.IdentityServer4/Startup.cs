@@ -169,10 +169,6 @@ namespace GenderPayGap.IdentityServer4
                 builder.Register(c => new SystemFileRepository(localStorageRoot)).As<IFileRepository>().SingleInstance();
             }
 
-            // Register queues (without key filtering)
-            builder.Register(c => new LogEventQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
-            builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
-
             // Register Audit Logger
             builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
             builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();

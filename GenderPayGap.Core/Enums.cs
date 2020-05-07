@@ -344,8 +344,6 @@ namespace GenderPayGap.Core
     public static class QueueNames
     {
         public const string ExecuteWebJob = "execute-webjob";
-        public const string LogEvent = "log-event";
-        public const string LogRecord = "log-record";
     }
 
     public static class CookieNames
