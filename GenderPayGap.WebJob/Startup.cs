@@ -133,10 +133,6 @@ namespace GenderPayGap.WebJob
             //Register some singletons
             builder.RegisterType<InternalObfuscator>().As<IObfuscator>().SingleInstance();
             builder.RegisterType<EncryptionHandler>().As<IEncryptionHandler>().SingleInstance();
-
-            // Register queues (without key filtering)
-            builder.Register(c => new LogEventQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
-            builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
         }
 
     }
