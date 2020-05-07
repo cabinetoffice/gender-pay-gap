@@ -286,9 +286,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
             builder.Register(g => new MockClassQueue(QueueNames.ExecuteWebJob)).Keyed<IQueue>(QueueNames.ExecuteWebJob).SingleInstance();
 
-            builder.Register(c => Mock.Of<LogEventQueue>()).SingleInstance();
-            builder.Register(c => Mock.Of<LogRecordQueue>()).SingleInstance();
-
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
 
             // UI Presentation

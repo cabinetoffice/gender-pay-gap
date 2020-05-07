@@ -5,8 +5,6 @@ using GenderPayGap.Core.Classes.Logger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.Core.Models.HttpResultModels
 {
@@ -16,9 +14,7 @@ namespace GenderPayGap.Core.Models.HttpResultModels
     //     code and description.
     public class HttpStatusViewResult : ViewResult
     {
-
-        private readonly LogLevel? _LogLevel;
-
+        
         //
         // Summary:
         //     Initializes a new instance of the System.Web.Mvc.HttpStatusViewResult class using
@@ -30,10 +26,9 @@ namespace GenderPayGap.Core.Models.HttpResultModels
         //
         //   statusDescription:
         //     The status description.
-        public HttpStatusViewResult(HttpStatusCode statusCode, string statusDescription = null, LogLevel? logLevel = null) : this(
+        public HttpStatusViewResult(HttpStatusCode statusCode, string statusDescription = null) : this(
             (int) statusCode,
-            statusDescription,
-            logLevel)
+            statusDescription)
         {
             StatusDescription = statusDescription;
         }
@@ -49,9 +44,8 @@ namespace GenderPayGap.Core.Models.HttpResultModels
         //
         //   statusDescription:
         //     The status description.
-        public HttpStatusViewResult(int statusCode, string statusDescription = null, LogLevel? logLevel = null)
+        public HttpStatusViewResult(int statusCode, string statusDescription = null)
         {
-            _LogLevel = logLevel;
             StatusCode = statusCode;
             StatusDescription = statusDescription;
         }
@@ -60,57 +54,28 @@ namespace GenderPayGap.Core.Models.HttpResultModels
 
         public override Task ExecuteResultAsync(ActionContext actionContext)
         {
-            LogLevel? logLevel = _LogLevel;
-
-            if (logLevel == null)
+            string message;
+            if (Enum.IsDefined(typeof(HttpStatusCode), StatusCode.Value))
             {
-                if (StatusCode == 404 || StatusCode == 405)
-                {
-                    logLevel = LogLevel.Warning;
-                }
-                else if (StatusCode >= 500)
-                {
-                    logLevel = LogLevel.Critical;
-                }
-                else if (StatusCode >= 400)
-                {
-                    logLevel = LogLevel.Error;
-                }
+                message = $"{(HttpStatusCode)StatusCode.Value} ({StatusCode.Value}):  {StatusDescription}";
             }
-
-            if (logLevel != null && logLevel != LogLevel.None)
+            else
             {
-                string message;
-                if (Enum.IsDefined(typeof(HttpStatusCode), StatusCode.Value))
-                {
-                    message = $"{(HttpStatusCode) StatusCode.Value} ({StatusCode.Value}):  {StatusDescription}";
-                }
-                else
-                {
-                    message = $"HttpStatusCode ({StatusCode.Value}):  {StatusDescription}";
-                }
-
-                switch (logLevel)
-                {
-                    case LogLevel.Trace:
-                    case LogLevel.Debug:
-                        CustomLogger.Debug(message);
-                        break;
-                    case LogLevel.Information:
-                        CustomLogger.Information(message);
-                        break;
-                    case LogLevel.Warning:
-                        CustomLogger.Warning(message);
-                        break;
-                    case LogLevel.Error:
-                        CustomLogger.Error(message);
-                        break;
-                    case LogLevel.Critical:
-                        CustomLogger.Fatal(message);
-                        break;
-                }
+                message = $"HttpStatusCode ({StatusCode.Value}):  {StatusDescription}";
             }
-
+            if (StatusCode == 404 || StatusCode == 405)
+            {
+                CustomLogger.Warning(message);
+            }
+            else if (StatusCode >= 500)
+            {
+                CustomLogger.Fatal(message);
+            }
+            else if (StatusCode >= 400)
+            {
+                CustomLogger.Error(message);
+            }
+            
             ViewName = "Error";
             ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), actionContext.ModelState) {
                 Model = new ErrorViewModel((int) StatusCode) // set the model

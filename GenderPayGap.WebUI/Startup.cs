@@ -233,10 +233,6 @@ namespace GenderPayGap.WebUI
             // Register queues
             builder.RegisterAzureQueue(azureStorageConnectionString, QueueNames.ExecuteWebJob);
 
-            // Register queues (without key filtering)
-            builder.Register(c => new LogEventQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
-            builder.Register(c => new LogRecordQueue(Global.AzureStorageConnectionString, c.Resolve<IFileRepository>())).SingleInstance();
-
             // Setup azure search
             string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");
             string azureSearchAdminKey = Config.GetAppSetting("SearchService:AdminApiKey");
