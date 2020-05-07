@@ -14,11 +14,19 @@ namespace ExampleGovPaasWebApp
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var config = new ConfigurationBuilder()
+                .AddCommandLine(args)
+                .Build();
+
+            var host = WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
+                .UseConfiguration(config)
+                .UseStartup<Startup>()
+                .UseUrls($"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT")}/")
+                .Build();
+
+            host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
     }
 }
