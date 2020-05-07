@@ -12,7 +12,6 @@ using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebJob
 {
@@ -76,22 +75,7 @@ namespace GenderPayGap.WebJob
             IHostBuilder jobHostBuilder = new HostBuilder()
                 .UseEnvironment(Config.EnvironmentName)
                 .ConfigureServices(Startup.ConfigureServices);
-
-            jobHostBuilder.ConfigureLogging(
-                (context, builder) => {
-                    builder.ClearProviders();
-                    builder.AddConfiguration(Config.Configuration.GetSection("Logging"));
-                    // If this key exists in any config, use it to enable App Insights
-                    if (!string.IsNullOrEmpty(Global.APPINSIGHTS_INSTRUMENTATIONKEY))
-                    {
-                        builder.AddApplicationInsights(o => o.InstrumentationKey = Global.APPINSIGHTS_INSTRUMENTATIONKEY);
-                    }
-
-                    builder.AddDebug();
-                    builder.AddConsole();
-                    builder.AddEventSourceLogger(); //Log to windows event log
-                });
-
+            
             Extensions.AspNetCore.Extensions.SetupSerilogLogger();
 
             var settings = new Dictionary<string, string>();

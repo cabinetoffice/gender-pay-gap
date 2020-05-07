@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 
@@ -59,22 +58,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             {
                 webHostBuilder.UseStartup(startupType);
             }
-
-            //Add the logging to the web host
-            webHostBuilder.ConfigureLogging(
-                builder => {
-                    //For more info see https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.2
-                    builder.ClearProviders();
-                    builder.AddConfiguration(Config.Configuration.GetSection("Logging"));
-                    builder.AddDebug();
-                    builder.AddConsole();
-                    builder.AddEventSourceLogger(); //Log to windows event log
-                    //builder.AddAzureWebAppDiagnostics(); //Log to live azure stream
-                    /* Temporarily removed this line and nuget as its still in beta and was causing a downgrade of AppInsights down to 2.8.1
-                    To add nuget again see microsoft.extensions.logging.applicationinsights
-                    builder.AddApplicationInsights(); 
-                    */
-                });
 
             SetupSerilogLogger();
             return webHostBuilder;
