@@ -1,4 +1,6 @@
 ﻿@using System.Collections
+@using System.Reflection
+@using System.Runtime.Versioning
 @using System.Security.Cryptography
 @using System.Text
 @{
@@ -24,25 +26,34 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Welcome v2</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-VCAP_SERVICES...<br/>
-@(Environment.GetEnvironmentVariable("VCAP_SERVICES"))
-<br/>
-<br/>
-<br/>
-
-SomeAccessKey...<br/>
-@(Environment.GetEnvironmentVariable("SomeAccessKey"))
-<br/>
-<br/>
-<br/>
 
 
 @if (ComputeSha256Hash(Context.Request.QueryString.ToString()) == "52905bdea7a5a8f4e30ad905a63f98a6e5c9799a25e28a86c0d622f8732b48b2")
 {
+    <span>
+        .Net Versions...<br/>
+        @(Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName)
+        <br/>
+        <br/>
+        <br/>
+
+        VCAP_SERVICES...<br/>
+        @(Environment.GetEnvironmentVariable("VCAP_SERVICES"))
+        <br/>
+        <br/>
+        <br/>
+
+        SomeAccessKey...<br/>
+        @(Environment.GetEnvironmentVariable("SomeAccessKey"))
+        <br/>
+        <br/>
+        <br/>
+    </span>
+
     var envVars = Environment.GetEnvironmentVariables();
 
     foreach (DictionaryEntry envVar in envVars)
