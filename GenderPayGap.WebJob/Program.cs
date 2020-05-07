@@ -9,7 +9,6 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.Infrastructure.AzureQueues.Extensions;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -91,7 +90,6 @@ namespace GenderPayGap.WebJob
                     builder.AddDebug();
                     builder.AddConsole();
                     builder.AddEventSourceLogger(); //Log to windows event log
-                    builder.AddAzureQueueLogger();
                 });
 
             Extensions.AspNetCore.Extensions.SetupSerilogLogger();

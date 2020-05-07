@@ -16,7 +16,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.IdentityServer4.Classes;
-using GenderPayGap.Infrastructure.AzureQueues.Extensions;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +23,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 
@@ -188,10 +186,8 @@ namespace GenderPayGap.IdentityServer4
             return builder.Build();
         }
 
-        public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
-            loggerFactory.UseLogEventQueueLogger(app.ApplicationServices);
-
             app.UseMiddleware<ExceptionMiddleware>();
             if (Debugger.IsAttached || Config.IsDevelopment() || Config.IsLocal())
             {

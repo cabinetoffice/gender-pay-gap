@@ -41,7 +41,6 @@ using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Newtonsoft.Json.Serialization;
@@ -357,10 +356,8 @@ namespace GenderPayGap.WebUI
         // Configure is where you add middleware. This is called after
         // ConfigureContainer. You can use IApplicationBuilder.ApplicationServices
         // here if you need to resolve things from the container.
-        public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime, ILoggerFactory loggerFactory, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
-            loggerFactory.UseLogEventQueueLogger(app.ApplicationServices);
-
             app.UseMiddleware<ExceptionMiddleware>();
             if (Global.UseDeveloperExceptions)
             {
