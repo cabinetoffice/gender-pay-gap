@@ -61,11 +61,6 @@ namespace GenderPayGap.WebJob.Services
             }
         }
 
-        public void SendEmailFromQueue(NotifyEmail notifyEmail)
-        {
-            SendEmail(notifyEmail);
-        }
-
         private void SendEmail(NotifyEmail notifyEmail)
         {
             govNotifyApi.SendEmail(notifyEmail);

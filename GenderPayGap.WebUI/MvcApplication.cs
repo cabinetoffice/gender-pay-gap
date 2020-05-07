@@ -25,7 +25,7 @@ namespace GenderPayGap.WebUI
 
         public MvcApplication(
             IFileRepository fileRepository,
-            ISearchRepository<EmployerSearchModel> searchRepository,
+            ISearchRepository<EmployerSearchModel> searchRepository
         )
         {
             Global.FileRepository = fileRepository;
