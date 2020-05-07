@@ -2,3 +2,4 @@
 applications:
 - buildpacks:
   - dotnet_core_buildpack
+  command: dotnet ExampleGovPaasWebApp.dll
