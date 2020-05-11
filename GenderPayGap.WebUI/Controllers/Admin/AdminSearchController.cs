@@ -1,4 +1,5 @@
 ﻿using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,11 @@ namespace GenderPayGap.WebUI.Controllers
     public class AdminSearchController : Controller
     {
 
-        private readonly AdminSearchService adminSearchService;
+        private readonly SearchRepository searchRepository;
 
-        public AdminSearchController(AdminSearchService adminSearchService)
+        public AdminSearchController(SearchRepository searchRepository)
         {
-            this.adminSearchService = adminSearchService;
+            this.searchRepository = searchRepository;
         }
 
         [HttpGet("search")]
@@ -33,7 +34,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                AdminSearchResultsViewModel results = adminSearchService.Search(query);
+                AdminSearchResultsViewModel results = searchRepository.Search(query);
 
                 viewModel.SearchResults = results;
             }
