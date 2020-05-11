@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Search.CachedObjects;
 using Microsoft.Extensions.Hosting;
 
 namespace GenderPayGap.WebUI.Search {
@@ -34,13 +29,7 @@ namespace GenderPayGap.WebUI.Search {
         {
             CustomLogger.Information("Starting cache update (SearchRepository.StartCacheUpdateThread)");
 
-            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
-            List<SearchCachedOrganisation> allOrganisations = SearchRepository.LoadAllOrganisations(dataRepository);
-            List<SearchCachedUser> allUsers = SearchRepository.LoadAllUsers(dataRepository);
-
-            SearchRepository.cachedOrganisations = allOrganisations;
-            SearchRepository.cachedUsers = allUsers;
-            SearchRepository.cacheLastUpdated = VirtualDateTime.Now;
+            SearchRepository.LoadSearchDataIntoCache();
 
             CustomLogger.Information("Finished cache update (SearchRepository.StartCacheUpdateThread)");
         }
