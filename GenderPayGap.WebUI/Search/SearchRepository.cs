@@ -29,6 +29,37 @@ namespace GenderPayGap.WebUI.Search
             cacheLastUpdated = VirtualDateTime.Now;
         }
 
+        private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
+        {
+            return repository
+                .GetAll<Organisation>()
+                .Include(o => o.OrganisationNames)
+                .Select(o => new SearchCachedOrganisation
+                {
+                    OrganisationId = o.OrganisationId,
+                    OrganisationName = o.OrganisationName,
+                    CompanyNumber = o.CompanyNumber,
+                    EmployerReference = o.EmployerReference,
+                    OrganisationNames = o.OrganisationNames.Select(on => @on.Name).ToList(),
+                    Status = o.Status
+                })
+                .ToList();
+        }
+
+        private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
+        {
+            return repository
+                .GetAll<User>()
+                .Select(u => new SearchCachedUser
+                {
+                    UserId = u.UserId,
+                    FullName = u.Fullname,
+                    EmailAddress = u.EmailAddress,
+                    Status = u.Status
+                })
+                .ToList();
+        }
+
         public AdminSearchResultsViewModel Search(string query)
         {
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
@@ -73,37 +104,6 @@ namespace GenderPayGap.WebUI.Search
         {
             return query.Split(" ", StringSplitOptions.RemoveEmptyEntries)
                 .Select(st => st.ToLower())
-                .ToList();
-        }
-
-        private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
-        {
-            return repository
-                .GetAll<Organisation>()
-                .Include(o => o.OrganisationNames)
-                .Select(o => new SearchCachedOrganisation
-                {
-                    OrganisationId = o.OrganisationId,
-                    OrganisationName = o.OrganisationName,
-                    CompanyNumber = o.CompanyNumber,
-                    EmployerReference = o.EmployerReference,
-                    OrganisationNames = o.OrganisationNames.Select(on => @on.Name).ToList(),
-                    Status = o.Status
-                })
-                .ToList();
-        }
-
-        private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
-        {
-            return repository
-                .GetAll<User>()
-                .Select(u => new SearchCachedUser
-                {
-                    UserId = u.UserId,
-                    FullName = u.Fullname,
-                    EmailAddress = u.EmailAddress,
-                    Status = u.Status
-                })
                 .ToList();
         }
 
