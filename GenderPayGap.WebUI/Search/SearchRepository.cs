@@ -64,26 +64,11 @@ namespace GenderPayGap.WebUI.Search
         {
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
 
-            List<SearchCachedOrganisation> allOrganisations = cachedOrganisations;
-            List<SearchCachedUser> allUsers = cachedUsers;
-            DateTime timeDetailsLoaded = cacheLastUpdated;
-
-            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
-            List<SearchCachedUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
-
-            List<SearchCachedOrganisation> matchingOrganisationsOrderedByName =
-                matchingOrganisations.OrderBy(o => o.OrganisationName.ToLower()).ToList();
-            List<SearchCachedUser> matchingUsersOrderedByName =
-                matchingUsers.OrderBy(u => u.FullName).ToList();
-
-            List<AdminSearchResultOrganisationViewModel> matchingOrganisationsWithHighlightedMatches =
-                HighlightOrganisationMatches(matchingOrganisationsOrderedByName, searchTerms, query);
-            List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
-                HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
+            DateTime timeDetailsLoaded = cacheLastUpdated; // Do this before we run the search, in case the cache is updated whilst the search is running
 
             var results = new AdminSearchResultsViewModel {
-                OrganisationResults = matchingOrganisationsWithHighlightedMatches,
-                UserResults = matchingUsersWithHighlightedMatches,
+                OrganisationResults = SearchOrganisations(query, searchTerms),
+                UserResults = SearchUsers(searchTerms),
 
                 SearchCacheUpdatedSecondsAgo = (int)VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
             };
@@ -95,6 +80,36 @@ namespace GenderPayGap.WebUI.Search
             return query.Split(" ", StringSplitOptions.RemoveEmptyEntries)
                 .Select(st => st.ToLower())
                 .ToList();
+        }
+
+        private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query, List<string> searchTerms)
+        {
+            List<SearchCachedOrganisation> allOrganisations = cachedOrganisations;
+
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
+            
+            List<SearchCachedOrganisation> matchingOrganisationsOrderedByName =
+                matchingOrganisations.OrderBy(o => o.OrganisationName.ToLower()).ToList();
+            
+            List<AdminSearchResultOrganisationViewModel> matchingOrganisationsWithHighlightedMatches =
+                HighlightOrganisationMatches(matchingOrganisationsOrderedByName, searchTerms, query);
+            
+            return matchingOrganisationsWithHighlightedMatches;
+        }
+
+        private List<AdminSearchResultUserViewModel> SearchUsers(List<string> searchTerms)
+        {
+            List<SearchCachedUser> allUsers = cachedUsers;
+            
+            List<SearchCachedUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
+            
+            List<SearchCachedUser> matchingUsersOrderedByName =
+                matchingUsers.OrderBy(u => u.FullName).ToList();
+            
+            List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
+                HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
+            
+            return matchingUsersWithHighlightedMatches;
         }
 
         private List<SearchCachedOrganisation> GetMatchingOrganisations(
