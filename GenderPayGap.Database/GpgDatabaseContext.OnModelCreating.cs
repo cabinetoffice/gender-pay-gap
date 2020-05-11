@@ -30,14 +30,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.AddressStatusId).HasName("PK_dbo.AddressStatus");
 
-                    entity.HasIndex(e => e.AddressId)
-                        .HasName("IX_AddressId");
+                    entity.HasIndex(e => e.AddressId);
 
-                    entity.HasIndex(e => e.ByUserId)
-                        .HasName("IX_ByUserId");
+                    entity.HasIndex(e => e.ByUserId);
 
-                    entity.HasIndex(e => e.StatusDate)
-                        .HasName("IX_StatusDate");
+                    entity.HasIndex(e => e.StatusDate);
 
                     entity.Property(e => e.StatusDetails).HasMaxLength(255);
                     entity.Property(e => e.Status).HasColumnName("StatusId");
@@ -62,14 +59,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.AddressId).HasName("PK_dbo.OrganisationAddresses");
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.StatusDate)
-                        .HasName("IX_StatusDate");
+                    entity.HasIndex(e => e.StatusDate);
 
-                    entity.HasIndex(e => e.Status)
-                        .HasName("IX_StatusId");
+                    entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
@@ -107,14 +101,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.OrganisationNameId).HasName("PK_dbo.OrganisationNames");
 
-                    entity.HasIndex(e => e.Created)
-                        .HasName("IX_Created");
+                    entity.HasIndex(e => e.Created);
 
-                    entity.HasIndex(e => e.Name)
-                        .HasName("IX_Name");
+                    entity.HasIndex(e => e.Name);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
                     entity.Property(e => e.Name)
                         .IsRequired()
@@ -136,17 +127,13 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.OrganisationReferenceId).HasName("PK_dbo.OrganisationReferences");
 
-                    entity.HasIndex(e => e.Created)
-                        .HasName("IX_Created");
+                    entity.HasIndex(e => e.Created);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.ReferenceName)
-                        .HasName("IX_ReferenceName");
+                    entity.HasIndex(e => e.ReferenceName);
 
-                    entity.HasIndex(e => e.ReferenceValue)
-                        .HasName("IX_ReferenceValue");
+                    entity.HasIndex(e => e.ReferenceValue);
 
                     entity.Property(e => e.ReferenceName)
                         .IsRequired()
@@ -171,23 +158,18 @@ namespace GenderPayGap.Database
                     entity.HasKey(e => e.OrganisationId).HasName("PK_dbo.Organisations");
 
                     entity.HasIndex(e => e.CompanyNumber)
-                        .HasName("idx_Organisations_CompanyNumber")
                         .IsUnique()
                         .HasFilter("([CompanyNumber] IS NOT NULL)");
 
                     entity.HasIndex(e => e.EmployerReference)
-                        .HasName("idx_Organisations_EmployerReference")
                         .IsUnique()
                         .HasFilter("([EmployerReference] IS NOT NULL)");
 
-                    entity.HasIndex(e => e.OrganisationName)
-                        .HasName("IX_OrganisationName");
+                    entity.HasIndex(e => e.OrganisationName);
 
-                    entity.HasIndex(e => e.SectorType)
-                        .HasName("IX_SectorTypeId");
+                    entity.HasIndex(e => e.SectorType);
 
-                    entity.HasIndex(e => e.Status)
-                        .HasName("IX_StatusId");
+                    entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
                     entity.Property(e => e.SectorType).HasColumnName("SectorTypeId");
@@ -216,23 +198,17 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.OrganisationScopeId).HasName("PK_dbo.OrganisationScopes");
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.RegisterStatus)
-                        .HasName("IX_RegisterStatusId");
+                    entity.HasIndex(e => e.RegisterStatus);
 
-                    entity.HasIndex(e => e.ScopeStatusDate)
-                        .HasName("IX_ScopeStatusDate");
+                    entity.HasIndex(e => e.ScopeStatusDate);
 
-                    entity.HasIndex(e => e.ScopeStatus)
-                        .HasName("IX_ScopeStatusId");
+                    entity.HasIndex(e => e.ScopeStatus);
 
-                    entity.HasIndex(e => e.SnapshotDate)
-                        .HasName("IX_SnapshotDate");
+                    entity.HasIndex(e => e.SnapshotDate);
 
-                    entity.HasIndex(e => e.Status)
-                        .HasName("IX_StatusId");
+                    entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.ScopeStatus).HasColumnName("ScopeStatusId");
                     entity.Property(e => e.RegisterStatus).HasColumnName("RegisterStatusId");
@@ -266,17 +242,13 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.OrganisationSicCodeId).HasName("PK_dbo.OrganisationSicCodes");
 
-                    entity.HasIndex(e => e.Created)
-                        .HasName("IX_Created");
+                    entity.HasIndex(e => e.Created);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.Retired)
-                        .HasName("IX_Retired");
+                    entity.HasIndex(e => e.Retired);
 
-                    entity.HasIndex(e => e.SicCodeId)
-                        .HasName("IX_SicCodeId");
+                    entity.HasIndex(e => e.SicCodeId);
 
                     entity.Property(e => e.Source).HasMaxLength(255);
 
@@ -298,14 +270,11 @@ namespace GenderPayGap.Database
             modelBuilder.Entity<OrganisationStatus>(
                 entity => {
                     entity.HasKey(e => e.OrganisationStatusId).HasName("PK_dbo.OrganisationStatus");
-                    entity.HasIndex(e => e.ByUserId)
-                        .HasName("IX_ByUserId");
+                    entity.HasIndex(e => e.ByUserId);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.StatusDate)
-                        .HasName("IX_StatusDate");
+                    entity.HasIndex(e => e.StatusDate);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
@@ -331,21 +300,18 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.ReturnId).HasName("PK_dbo.Returns");
 
-                    entity.HasIndex(e => e.AccountingDate)
-                        .HasName("IX_AccountingDate");
+                    entity.HasIndex(e => e.AccountingDate);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.Status)
-                        .HasName("IX_StatusId");
+                    entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.CompanyLinkToGPGInfo)
                         .HasMaxLength(255);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
-                    entity.Property(e => e.EHRCResponse).HasColumnName("EHRCResponse").HasDefaultValueSql("((0))");
+                    entity.Property(e => e.EHRCResponse).HasColumnName("EHRCResponse").HasDefaultValueSql(Database.IsNpgsql() ? "false" : "((0))");
                     entity.Property(e => e.MinEmployees).HasDefaultValueSql("((0))");
                     entity.Property(e => e.MaxEmployees).HasDefaultValueSql("((0))");
 
@@ -375,14 +341,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.ReturnStatusId).HasName("PK_dbo.ReturnStatus");
 
-                    entity.HasIndex(e => e.ByUserId)
-                        .HasName("IX_ByUserId");
+                    entity.HasIndex(e => e.ByUserId);
 
-                    entity.HasIndex(e => e.ReturnId)
-                        .HasName("IX_ReturnId");
+                    entity.HasIndex(e => e.ReturnId);
 
-                    entity.HasIndex(e => e.StatusDate)
-                        .HasName("IX_StatusDate");
+                    entity.HasIndex(e => e.StatusDate);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
@@ -408,8 +371,7 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.SicCodeId).HasName("PK_dbo.SicCodes");
 
-                    entity.HasIndex(e => e.SicSectionId)
-                        .HasName("IX_SicSectionId");
+                    entity.HasIndex(e => e.SicSectionId);
 
                     entity.Property(e => e.SicCodeId).ValueGeneratedNever();
 
@@ -453,14 +415,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => new {e.UserId, e.OrganisationId}).HasName("PK_dbo.UserOrganisations");
 
-                    entity.HasIndex(e => e.AddressId)
-                        .HasName("IX_AddressId");
+                    entity.HasIndex(e => e.AddressId);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.UserId)
-                        .HasName("IX_UserId");
+                    entity.HasIndex(e => e.UserId);
 
                     entity.Property(e => e.Method).HasColumnName("MethodId").HasDefaultValueSql("((0))");
 
@@ -488,14 +447,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => new { e.UserId, e.OrganisationId }).HasName("PK_dbo.InactiveUserOrganisations");
 
-                    entity.HasIndex(e => e.AddressId)
-                        .HasName("IX_AddressId");
+                    entity.HasIndex(e => e.AddressId);
 
-                    entity.HasIndex(e => e.OrganisationId)
-                        .HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.UserId)
-                        .HasName("IX_UserId");
+                    entity.HasIndex(e => e.UserId);
 
                     entity.Property(e => e.Method).HasColumnName("MethodId").HasDefaultValueSql("((0))");
                 });
@@ -508,17 +464,13 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.UserId).HasName("PK_dbo.Users");
 
-                    entity.HasIndex(e => e.ContactEmailAddressDB)
-                        .HasName("IX_ContactEmailAddress");
+                    entity.HasIndex(e => e.ContactEmailAddressDB);
 
-                    entity.HasIndex(e => e.ContactPhoneNumber)
-                        .HasName("IX_ContactPhoneNumber");
+                    entity.HasIndex(e => e.ContactPhoneNumber);
 
-                    entity.HasIndex(e => e.EmailAddressDB)
-                        .HasName("IX_EmailAddress");
+                    entity.HasIndex(e => e.EmailAddressDB);
 
-                    entity.HasIndex(e => e.Status)
-                        .HasName("IX_StatusId");
+                    entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
                     entity.Property(e => e.ContactEmailAddressDB).HasColumnName("ContactEmailAddress");
@@ -569,8 +521,7 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => new {e.UserId, e.Key}).HasName("PK_dbo.UserSettings");
 
-                    entity.HasIndex(e => e.UserId)
-                        .HasName("IX_UserId");
+                    entity.HasIndex(e => e.UserId);
 
                     entity.Property(e => e.Value).HasMaxLength(50);
 
@@ -588,14 +539,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.UserStatusId).HasName("PK_dbo.UserStatus");
 
-                    entity.HasIndex(e => e.ByUserId)
-                        .HasName("IX_ByUserId");
+                    entity.HasIndex(e => e.ByUserId);
 
-                    entity.HasIndex(e => e.StatusDate)
-                        .HasName("IX_StatusDate");
+                    entity.HasIndex(e => e.StatusDate);
 
-                    entity.HasIndex(e => e.UserId)
-                        .HasName("IX_UserId");
+                    entity.HasIndex(e => e.UserId);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
 
@@ -636,13 +584,13 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.OrganisationPublicSectorTypeId).HasName("PK_dbo.OrganisationPublicSectorTypes");
 
-                    entity.HasIndex(e => e.Created).HasName("IX_Created");
+                    entity.HasIndex(e => e.Created);
 
-                    entity.HasIndex(e => e.Retired).HasName("IX_Retired");
+                    entity.HasIndex(e => e.Retired);
 
-                    entity.HasIndex(e => e.PublicSectorTypeId).HasName("IX_PublicSectorTypeId");
+                    entity.HasIndex(e => e.PublicSectorTypeId);
 
-                    entity.HasIndex(e => e.OrganisationId).HasName("IX_OrganisationId");
+                    entity.HasIndex(e => e.OrganisationId);
 
                     entity.Property(e => e.Source).HasMaxLength(255);
                 });
@@ -653,7 +601,7 @@ namespace GenderPayGap.Database
 
             modelBuilder.Entity<Feedback>()
                 .Property(e => e.CreatedDate)
-                .HasDefaultValueSql("getdate()");
+                .HasDefaultValueSql(Database.IsNpgsql() ? "now()" : "getdate()");
 
             #endregion
 
@@ -667,7 +615,7 @@ namespace GenderPayGap.Database
                 .HasOne(e => e.Organisation);
             modelBuilder.Entity<AuditLog>()
                 .Property(e => e.CreatedDate)
-                .HasDefaultValueSql("getdate()");
+                .HasDefaultValueSql(Database.IsNpgsql() ? "now()" : "getdate()");
             modelBuilder.Entity<AuditLog>()
                 .Property<string>("DetailsString")
                 .HasField("_details");
