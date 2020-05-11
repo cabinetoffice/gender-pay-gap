@@ -73,6 +73,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{9AB0CA8E
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetEnvironmentVariablesInGovPaaS", "SetEnvironmentVariablesInGovPaaS\SetEnvironmentVariablesInGovPaaS.csproj", "{95E70733-073A-498E-8653-BE4626FEFA5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E70733-073A-498E-8653-BE4626FEFA5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E70733-073A-498E-8653-BE4626FEFA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E70733-073A-498E-8653-BE4626FEFA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E70733-073A-498E-8653-BE4626FEFA5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
