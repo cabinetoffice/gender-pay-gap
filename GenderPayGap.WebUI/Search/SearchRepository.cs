@@ -13,42 +13,18 @@ namespace GenderPayGap.WebUI.Search
 
     public class SearchRepository
     {
-        private readonly IDataRepository dataRepository;
 
         internal static List<SearchCachedOrganisation> cachedOrganisations;
         internal static List<SearchCachedUser> cachedUsers;
         internal static DateTime cacheLastUpdated = DateTime.MinValue;
 
-        public SearchRepository(IDataRepository dataRepository)
-        {
-            this.dataRepository = dataRepository;
-        }
-
         public AdminSearchResultsViewModel Search(string query)
         {
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
 
-            List<SearchCachedOrganisation> allOrganisations;
-            List<SearchCachedUser> allUsers;
-            DateTime timeDetailsLoaded;
-            bool usedCache;
-
-            DateTime loadingStart = VirtualDateTime.Now;
-            if (cacheLastUpdated < VirtualDateTime.Now.AddSeconds(-70))
-            {
-                allOrganisations = LoadAllOrganisations(dataRepository);
-                allUsers = LoadAllUsers(dataRepository);
-                timeDetailsLoaded = VirtualDateTime.Now;
-                usedCache = false;
-            }
-            else
-            {
-                allOrganisations = cachedOrganisations;
-                allUsers = cachedUsers;
-                timeDetailsLoaded = cacheLastUpdated;
-                usedCache = true;
-            }
-            DateTime loadingEnd = VirtualDateTime.Now;
+            List<SearchCachedOrganisation> allOrganisations = cachedOrganisations;
+            List<SearchCachedUser> allUsers = cachedUsers;
+            DateTime timeDetailsLoaded = cacheLastUpdated;
 
             DateTime filteringStart = VirtualDateTime.Now;
             List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
@@ -73,13 +49,11 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationResults = matchingOrganisationsWithHighlightedMatches,
                 UserResults = matchingUsersWithHighlightedMatches,
 
-                LoadingMilliSeconds = loadingEnd.Subtract(loadingStart).TotalMilliseconds,
                 FilteringMilliSeconds = filteringEnd.Subtract(filteringStart).TotalMilliseconds,
                 OrderingMilliSeconds = orderingEnd.Subtract(orderingStart).TotalMilliseconds,
                 HighlightingMilliSeconds = highlightingEnd.Subtract(highlightingStart).TotalMilliseconds,
 
                 SearchCacheUpdatedSecondsAgo = (int)VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
-                UsedCache = usedCache
             };
             return results;
         }

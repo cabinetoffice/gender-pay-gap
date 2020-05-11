@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.Search {
             timer = new Timer(
                 DoWork,
                 null,
-                dueTime: TimeSpan.FromSeconds(10), // How long to wait before the cache is first updated 
+                dueTime: TimeSpan.FromSeconds(0), // How long to wait before the cache is first updated 
                 period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
 
             CustomLogger.Information("Started timer (SearchRepository.StartCacheUpdateThread)");
