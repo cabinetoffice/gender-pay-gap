@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -8,6 +8,9 @@ namespace GenderPayGap.Database.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            
+            var IsNpgsql = migrationBuilder.ActiveProvider == "Npgsql.EntityFrameworkCore.PostgreSQL";
+            
             migrationBuilder.CreateTable(
                 name: "Feedback",
                 columns: table => new
@@ -18,7 +21,7 @@ namespace GenderPayGap.Database.Migrations
                     Details = table.Column<string>(maxLength: 2000, nullable: true),
                     EmailAddress = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: IsNpgsql ? "now()" : "getdate()"),
                     NewsArticle = table.Column<bool>(nullable: true),
                     SocialMedia = table.Column<bool>(nullable: true),
                     CompanyIntranet = table.Column<bool>(nullable: true),
@@ -43,7 +46,7 @@ namespace GenderPayGap.Database.Migrations
                     PersonInterestedInSpecificOrganisationGpg = table.Column<bool>(nullable: true),
                     OtherPerson = table.Column<bool>(nullable: true),
                     OtherPersonText = table.Column<string>(maxLength: 2000, nullable: true),
-                    FeedbackStatus = table.Column<int>(nullable: false, defaultValueSql: "((0))")
+                    FeedbackStatus = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -227,7 +230,7 @@ namespace GenderPayGap.Database.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,7 +251,7 @@ namespace GenderPayGap.Database.Migrations
                     DateOfCessation = table.Column<DateTime>(nullable: true),
                     LatestPublicSectorTypeId = table.Column<long>(nullable: true),
                     LastCheckedAgainstCompaniesHouse = table.Column<DateTime>(nullable: true),
-                    OptedOutFromCompaniesHouseUpdate = table.Column<bool>(nullable: false, defaultValueSql: "((0))"),
+                    OptedOutFromCompaniesHouseUpdate = table.Column<bool>(nullable: false, defaultValueSql: IsNpgsql ? "false" : "((0))"),
                     SecurityCode = table.Column<string>(nullable: true),
                     SecurityCodeExpiryDateTime = table.Column<DateTime>(nullable: true),
                     SecurityCodeCreatedDateTime = table.Column<DateTime>(nullable: true)
@@ -271,7 +274,7 @@ namespace GenderPayGap.Database.Migrations
                     AuditLogId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Action = table.Column<int>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: IsNpgsql ? "now()" : "getdate()"),
                     OrganisationId = table.Column<long>(nullable: true),
                     OriginalUserId = table.Column<long>(nullable: true),
                     ImpersonatedUserId = table.Column<long>(nullable: true),
@@ -459,13 +462,14 @@ namespace GenderPayGap.Database.Migrations
                         name: "FK_OrganisationStatus_Users_ByUserId",
                         column: x => x.ByUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_dbo.OrganisationStatus_dbo.Organisations_OrganisationId",
                         column: x => x.OrganisationId,
                         principalTable: "Organisations",
                         principalColumn: "OrganisationId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -501,10 +505,10 @@ namespace GenderPayGap.Database.Migrations
                     LastName = table.Column<string>(maxLength: 50, nullable: true),
                     MinEmployees = table.Column<int>(nullable: false, defaultValueSql: "((0))"),
                     MaxEmployees = table.Column<int>(nullable: false, defaultValueSql: "((0))"),
-                    IsLateSubmission = table.Column<bool>(nullable: false, defaultValueSql: "((0))"),
+                    IsLateSubmission = table.Column<bool>(nullable: false, defaultValueSql: IsNpgsql ? "false" : "((0))"),
                     LateReason = table.Column<string>(maxLength: 200, nullable: true),
                     Modifications = table.Column<string>(maxLength: 200, nullable: true),
-                    EHRCResponse = table.Column<bool>(nullable: false, defaultValueSql: "((0))")
+                    EHRCResponse = table.Column<bool>(nullable: false, defaultValueSql: IsNpgsql ? "false" : "((0))")
                 },
                 constraints: table =>
                 {
@@ -537,12 +541,13 @@ namespace GenderPayGap.Database.Migrations
                         column: x => x.AddressId,
                         principalTable: "OrganisationAddresses",
                         principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AddressStatus_Users_ByUserId",
                         column: x => x.ByUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -644,27 +649,28 @@ namespace GenderPayGap.Database.Migrations
                         name: "FK_ReturnStatus_Users_ByUserId",
                         column: x => x.ByUserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_dbo.ReturnStatus_dbo.Returns_ReturnId",
                         column: x => x.ReturnId,
                         principalTable: "Returns",
                         principalColumn: "ReturnId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AddressId",
+                name: "IX_AddressStatus_AddressId",
                 table: "AddressStatus",
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ByUserId",
+                name: "IX_AddressStatus_ByUserId",
                 table: "AddressStatus",
                 column: "ByUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusDate",
+                name: "IX_AddressStatus_StatusDate",
                 table: "AddressStatus",
                 column: "StatusDate");
 
@@ -684,99 +690,99 @@ namespace GenderPayGap.Database.Migrations
                 column: "OriginalUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AddressId",
+                name: "IX_InactiveUserOrganisations_AddressId",
                 table: "InactiveUserOrganisations",
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_InactiveUserOrganisations_OrganisationId",
                 table: "InactiveUserOrganisations",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserId",
+                name: "IX_InactiveUserOrganisations_UserId",
                 table: "InactiveUserOrganisations",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationAddresses_OrganisationId",
                 table: "OrganisationAddresses",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusId",
+                name: "IX_OrganisationAddresses_StatusId",
                 table: "OrganisationAddresses",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusDate",
+                name: "IX_OrganisationAddresses_StatusDate",
                 table: "OrganisationAddresses",
                 column: "StatusDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Created",
+                name: "IX_OrganisationNames_Created",
                 table: "OrganisationNames",
                 column: "Created");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Name",
+                name: "IX_OrganisationNames_Name",
                 table: "OrganisationNames",
                 column: "Name");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationNames_OrganisationId",
                 table: "OrganisationNames",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Created",
+                name: "IX_OrganisationPublicSectorTypes_Created",
                 table: "OrganisationPublicSectorTypes",
                 column: "Created");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationPublicSectorTypes_OrganisationId",
                 table: "OrganisationPublicSectorTypes",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PublicSectorTypeId",
+                name: "IX_OrganisationPublicSectorTypes_PublicSectorTypeId",
                 table: "OrganisationPublicSectorTypes",
                 column: "PublicSectorTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Retired",
+                name: "IX_OrganisationPublicSectorTypes_Retired",
                 table: "OrganisationPublicSectorTypes",
                 column: "Retired");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Created",
+                name: "IX_OrganisationReferences_Created",
                 table: "OrganisationReferences",
                 column: "Created");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationReferences_OrganisationId",
                 table: "OrganisationReferences",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReferenceName",
+                name: "IX_OrganisationReferences_ReferenceName",
                 table: "OrganisationReferences",
                 column: "ReferenceName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReferenceValue",
+                name: "IX_OrganisationReferences_ReferenceValue",
                 table: "OrganisationReferences",
                 column: "ReferenceValue");
 
             migrationBuilder.CreateIndex(
-                name: "idx_Organisations_CompanyNumber",
+                name: "IX_Organisations_CompanyNumber",
                 table: "Organisations",
                 column: "CompanyNumber",
                 unique: true,
                 filter: "([CompanyNumber] IS NOT NULL)");
 
             migrationBuilder.CreateIndex(
-                name: "idx_Organisations_EmployerReference",
+                name: "IX_Organisations_EmployerReference",
                 table: "Organisations",
                 column: "EmployerReference",
                 unique: true,
@@ -788,82 +794,82 @@ namespace GenderPayGap.Database.Migrations
                 column: "LatestPublicSectorTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationName",
+                name: "IX_Organisations_OrganisationName",
                 table: "Organisations",
                 column: "OrganisationName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SectorTypeId",
+                name: "IX_Organisations_SectorTypeId",
                 table: "Organisations",
                 column: "SectorTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusId",
+                name: "IX_Organisations_StatusId",
                 table: "Organisations",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationScopes_OrganisationId",
                 table: "OrganisationScopes",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RegisterStatusId",
+                name: "IX_OrganisationScopes_RegisterStatusId",
                 table: "OrganisationScopes",
                 column: "RegisterStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScopeStatusId",
+                name: "IX_OrganisationScopes_ScopeStatusId",
                 table: "OrganisationScopes",
                 column: "ScopeStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScopeStatusDate",
+                name: "IX_OrganisationScopes_ScopeStatusDate",
                 table: "OrganisationScopes",
                 column: "ScopeStatusDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SnapshotDate",
+                name: "IX_OrganisationScopes_SnapshotDate",
                 table: "OrganisationScopes",
                 column: "SnapshotDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusId",
+                name: "IX_OrganisationScopes_StatusId",
                 table: "OrganisationScopes",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Created",
+                name: "IX_OrganisationSicCodes_Created",
                 table: "OrganisationSicCodes",
                 column: "Created");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationSicCodes_OrganisationId",
                 table: "OrganisationSicCodes",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Retired",
+                name: "IX_OrganisationSicCodes_Retired",
                 table: "OrganisationSicCodes",
                 column: "Retired");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SicCodeId",
+                name: "IX_OrganisationSicCodes_SicCodeId",
                 table: "OrganisationSicCodes",
                 column: "SicCodeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ByUserId",
+                name: "IX_OrganisationStatus_ByUserId",
                 table: "OrganisationStatus",
                 column: "ByUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_OrganisationStatus_OrganisationId",
                 table: "OrganisationStatus",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusDate",
+                name: "IX_OrganisationStatus_StatusDate",
                 table: "OrganisationStatus",
                 column: "StatusDate");
 
@@ -873,102 +879,94 @@ namespace GenderPayGap.Database.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountingDate",
+                name: "IX_Returns_AccountingDate",
                 table: "Returns",
                 column: "AccountingDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_Returns_OrganisationId",
                 table: "Returns",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusId",
+                name: "IX_Returns_StatusId",
                 table: "Returns",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ByUserId",
+                name: "IX_ReturnStatus_ByUserId",
                 table: "ReturnStatus",
                 column: "ByUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReturnId",
+                name: "IX_ReturnStatus_ReturnId",
                 table: "ReturnStatus",
                 column: "ReturnId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusDate",
+                name: "IX_ReturnStatus_StatusDate",
                 table: "ReturnStatus",
                 column: "StatusDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SicSectionId",
+                name: "IX_SicCodes_SicSectionId",
                 table: "SicCodes",
                 column: "SicSectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AddressId",
+                name: "IX_UserOrganisations_AddressId",
                 table: "UserOrganisations",
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganisationId",
+                name: "IX_UserOrganisations_OrganisationId",
                 table: "UserOrganisations",
                 column: "OrganisationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserId",
+                name: "IX_UserOrganisations_UserId",
                 table: "UserOrganisations",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContactEmailAddress",
+                name: "IX_Users_ContactEmailAddress",
                 table: "Users",
                 column: "ContactEmailAddress");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContactPhoneNumber",
+                name: "IX_Users_ContactPhoneNumber",
                 table: "Users",
                 column: "ContactPhoneNumber");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmailAddress",
+                name: "IX_Users_EmailAddress",
                 table: "Users",
                 column: "EmailAddress");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusId",
+                name: "IX_Users_StatusId",
                 table: "Users",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserId",
+                name: "IX_UserSettings_UserId",
                 table: "UserSettings",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ByUserId",
+                name: "IX_UserStatus_ByUserId",
                 table: "UserStatus",
                 column: "ByUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StatusDate",
+                name: "IX_UserStatus_StatusDate",
                 table: "UserStatus",
                 column: "StatusDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserId",
+                name: "IX_UserStatus_UserId",
                 table: "UserStatus",
                 column: "UserId");
-            
-            migrationBuilder.AddForeignKey(
-                name: "FK_OrganisationPublicSectorTypes_Organisations_OrganisationId",
-                table: "OrganisationPublicSectorTypes",
-                column: "OrganisationId",
-                principalTable: "Organisations",
-                principalColumn: "OrganisationId",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
