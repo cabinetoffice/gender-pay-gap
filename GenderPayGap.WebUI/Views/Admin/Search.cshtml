@@ -109,11 +109,6 @@
 
         @if (Model.SearchResults != null)
         {
-            <!--
-            Filtering    @(Model.SearchResults.FilteringMilliSeconds)ms
-            Ordering     @(Model.SearchResults.OrderingMilliSeconds)ms
-            Highlighting @(Model.SearchResults.HighlightingMilliSeconds)ms
-            -->
             <p class="govuk-body-s">
                 Changes made within the last @(Model.SearchResults.SearchCacheUpdatedSecondsAgo) seconds will not be reflected in these results.
             </p>

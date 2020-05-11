@@ -19,9 +19,6 @@ namespace GenderPayGap.WebUI.Models.Admin
         public List<AdminSearchResultOrganisationViewModel> OrganisationResults { get; set; }
         public List<AdminSearchResultUserViewModel> UserResults { get; set; }
 
-        public double FilteringMilliSeconds { get; set; }
-        public double OrderingMilliSeconds { get; set; }
-        public double HighlightingMilliSeconds { get; set; }
         public int SearchCacheUpdatedSecondsAgo { get; set; }
 
     }
