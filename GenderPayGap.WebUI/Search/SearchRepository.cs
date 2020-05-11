@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -14,9 +15,19 @@ namespace GenderPayGap.WebUI.Search
     public class SearchRepository
     {
 
-        internal static List<SearchCachedOrganisation> cachedOrganisations;
-        internal static List<SearchCachedUser> cachedUsers;
-        internal static DateTime cacheLastUpdated = DateTime.MinValue;
+        private static List<SearchCachedOrganisation> cachedOrganisations;
+        private static List<SearchCachedUser> cachedUsers;
+        private static DateTime cacheLastUpdated = DateTime.MinValue;
+
+        public static void LoadSearchDataIntoCache()
+        {
+            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
+
+            cachedOrganisations = LoadAllOrganisations(dataRepository);
+            cachedUsers = LoadAllUsers(dataRepository);
+
+            cacheLastUpdated = VirtualDateTime.Now;
+        }
 
         public AdminSearchResultsViewModel Search(string query)
         {
@@ -65,7 +76,7 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        internal static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
+        private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
         {
             return repository
                 .GetAll<Organisation>()
@@ -76,13 +87,13 @@ namespace GenderPayGap.WebUI.Search
                     OrganisationName = o.OrganisationName,
                     CompanyNumber = o.CompanyNumber,
                     EmployerReference = o.EmployerReference,
-                    OrganisationNames = o.OrganisationNames.Select(on => on.Name).ToList(),
+                    OrganisationNames = o.OrganisationNames.Select(on => @on.Name).ToList(),
                     Status = o.Status
                 })
                 .ToList();
         }
 
-        internal static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
+        private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
         {
             return repository
                 .GetAll<User>()
