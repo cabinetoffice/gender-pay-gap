@@ -110,17 +110,13 @@
         @if (Model.SearchResults != null)
         {
             <!--
-            Loading      @(Model.SearchResults.LoadingMilliSeconds)ms
             Filtering    @(Model.SearchResults.FilteringMilliSeconds)ms
             Ordering     @(Model.SearchResults.OrderingMilliSeconds)ms
             Highlighting @(Model.SearchResults.HighlightingMilliSeconds)ms
             -->
-            @if (Model.SearchResults.UsedCache)
-            {
-                <p class="govuk-body-s">
-                    Changes made within the last @(Model.SearchResults.SearchCacheUpdatedSecondsAgo) seconds will not be reflected in these results.
-                </p>
-            }
+            <p class="govuk-body-s">
+                Changes made within the last @(Model.SearchResults.SearchCacheUpdatedSecondsAgo) seconds will not be reflected in these results.
+            </p>
 
             <details class="govuk-details" data-module="govuk-details" open>
                 <summary class="govuk-details__summary">
