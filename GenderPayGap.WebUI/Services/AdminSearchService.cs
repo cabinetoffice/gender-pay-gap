@@ -4,34 +4,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Search;
+using GenderPayGap.WebUI.Search.CachedObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 namespace GenderPayGap.WebUI.Services
 {
-    internal class AdminSearchServiceOrganisation
-    {
-        public long OrganisationId { get; set; }
-        public string OrganisationName { get; set; }
-        public List<string> OrganisationNames { get; set; } // All names (current and previous)
-        public string CompanyNumber { get; set; }
-        public string EmployerReference { get; set; }
-        public OrganisationStatuses Status { get; set; }
-    }
-
-    internal class AdminSearchServiceUser
-    {
-        public long UserId { get; set; }
-        public string FullName { get; set; }
-        public string EmailAddress { get; set; }
-        public UserStatuses Status { get; set; }
-    }
 
     public class AdminSearchServiceCacheUpdater : IHostedService, IDisposable
     {
@@ -48,7 +32,7 @@ namespace GenderPayGap.WebUI.Services
                 period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
 
             CustomLogger.Information("Started timer (AdminSearchService.StartCacheUpdateThread)");
-            
+
             return Task.CompletedTask;
         }
 
@@ -57,8 +41,8 @@ namespace GenderPayGap.WebUI.Services
             CustomLogger.Information("Starting cache update (AdminSearchService.StartCacheUpdateThread)");
 
             var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
-            List<AdminSearchServiceOrganisation> allOrganisations = AdminSearchService.LoadAllOrganisations(dataRepository);
-            List<AdminSearchServiceUser> allUsers = AdminSearchService.LoadAllUsers(dataRepository);
+            List<SearchCachedOrganisation> allOrganisations = AdminSearchService.LoadAllOrganisations(dataRepository);
+            List<SearchCachedUser> allUsers = AdminSearchService.LoadAllUsers(dataRepository);
 
             AdminSearchService.cachedOrganisations = allOrganisations;
             AdminSearchService.cachedUsers = allUsers;
@@ -86,8 +70,8 @@ namespace GenderPayGap.WebUI.Services
     {
         private readonly IDataRepository dataRepository;
 
-        internal static List<AdminSearchServiceOrganisation> cachedOrganisations;
-        internal static List<AdminSearchServiceUser> cachedUsers;
+        internal static List<SearchCachedOrganisation> cachedOrganisations;
+        internal static List<SearchCachedUser> cachedUsers;
         internal static DateTime cacheLastUpdated = DateTime.MinValue;
 
         public AdminSearchService(IDataRepository dataRepository)
@@ -99,8 +83,8 @@ namespace GenderPayGap.WebUI.Services
         {
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
 
-            List<AdminSearchServiceOrganisation> allOrganisations;
-            List<AdminSearchServiceUser> allUsers;
+            List<SearchCachedOrganisation> allOrganisations;
+            List<SearchCachedUser> allUsers;
             DateTime timeDetailsLoaded;
             bool usedCache;
 
@@ -122,14 +106,14 @@ namespace GenderPayGap.WebUI.Services
             DateTime loadingEnd = VirtualDateTime.Now;
 
             DateTime filteringStart = VirtualDateTime.Now;
-            List<AdminSearchServiceOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
-            List<AdminSearchServiceUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
+            List<SearchCachedUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
             DateTime filteringEnd = VirtualDateTime.Now;
 
             DateTime orderingStart = VirtualDateTime.Now;
-            List<AdminSearchServiceOrganisation> matchingOrganisationsOrderedByName =
+            List<SearchCachedOrganisation> matchingOrganisationsOrderedByName =
                 matchingOrganisations.OrderBy(o => o.OrganisationName.ToLower()).ToList();
-            List<AdminSearchServiceUser> matchingUsersOrderedByName =
+            List<SearchCachedUser> matchingUsersOrderedByName =
                 matchingUsers.OrderBy(u => u.FullName).ToList();
             DateTime orderingEnd = VirtualDateTime.Now;
 
@@ -162,12 +146,12 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        internal static List<AdminSearchServiceOrganisation> LoadAllOrganisations(IDataRepository repository)
+        internal static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
         {
             return repository
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
-                .Select(o => new AdminSearchServiceOrganisation
+                .Select(o => new SearchCachedOrganisation
                 {
                     OrganisationId = o.OrganisationId,
                     OrganisationName = o.OrganisationName,
@@ -179,11 +163,11 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        internal static List<AdminSearchServiceUser> LoadAllUsers(IDataRepository repository)
+        internal static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
         {
             return repository
                 .GetAll<User>()
-                .Select(u => new AdminSearchServiceUser
+                .Select(u => new SearchCachedUser
                 {
                     UserId = u.UserId,
                     FullName = u.Fullname,
@@ -193,8 +177,8 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        private List<AdminSearchServiceOrganisation> GetMatchingOrganisations(
-            List<AdminSearchServiceOrganisation> allOrganisations,
+        private List<SearchCachedOrganisation> GetMatchingOrganisations(
+            List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
             string query)
         {
@@ -209,14 +193,14 @@ namespace GenderPayGap.WebUI.Services
                 .ToList();
         }
 
-        private List<AdminSearchServiceUser> GetMatchingUsers(List<AdminSearchServiceUser> allUsers, List<string> searchTerms)
+        private List<SearchCachedUser> GetMatchingUsers(List<SearchCachedUser> allUsers, List<string> searchTerms)
         {
             return allUsers
                 .Where(user => NameMatchesSearchTerms(user.FullName, searchTerms) || NameMatchesSearchTerms(user.EmailAddress, searchTerms))
                 .ToList();
         }
 
-        private bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(AdminSearchServiceOrganisation organisation, List<string> searchTerms)
+        private bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(SearchCachedOrganisation organisation, List<string> searchTerms)
         {
             return organisation.OrganisationNames.Any(on => NameMatchesSearchTerms(on, searchTerms));
         }
@@ -227,7 +211,7 @@ namespace GenderPayGap.WebUI.Services
         }
 
         private List<AdminSearchResultOrganisationViewModel> HighlightOrganisationMatches(
-            List<AdminSearchServiceOrganisation> organisations,
+            List<SearchCachedOrganisation> organisations,
             List<string> searchTerms,
             string query)
         {
@@ -265,7 +249,7 @@ namespace GenderPayGap.WebUI.Services
         }
 
         private List<AdminSearchResultUserViewModel> HighlightUserMatches(
-            List<AdminSearchServiceUser> users,
+            List<SearchCachedUser> users,
             List<string> searchTerms
         )
         {
