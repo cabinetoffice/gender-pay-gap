@@ -27,6 +27,22 @@ cf target -s "gpg-${PAAS_ENV_SHORTNAME}"
 
 
 
+#-----------
+# Delete App
+# - Un-bind app from file storage
+#cf unbind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-filestorage"
+
+# - Un-bind app from database
+#cf unbind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-db"
+
+# - Un-bind app from Redis cache
+#cf unbind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-cache"
+
+# - Delete the app itself
+cf v3-delete "gender-pay-gap-${PAAS_ENV_SHORTNAME}" -f
+
+
+
 #------------------------------
 # Delete AWS S3 backing service
 # - Delete the service key
