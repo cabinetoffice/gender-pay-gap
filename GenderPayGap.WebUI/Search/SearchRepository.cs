@@ -1,72 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
-using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
-using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Search.CachedObjects;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
-namespace GenderPayGap.WebUI.Services
+namespace GenderPayGap.WebUI.Search
 {
 
-    public class AdminSearchServiceCacheUpdater : IHostedService, IDisposable
-    {
-        private Timer timer;
-
-        public Task StartAsync(CancellationToken stoppingToken)
-        {
-            CustomLogger.Information("Starting timer (AdminSearchService.StartCacheUpdateThread)");
-
-            timer = new Timer(
-                DoWork,
-                null,
-                dueTime: TimeSpan.FromSeconds(10), // How long to wait before the cache is first updated 
-                period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
-
-            CustomLogger.Information("Started timer (AdminSearchService.StartCacheUpdateThread)");
-
-            return Task.CompletedTask;
-        }
-
-        private void DoWork(object state)
-        {
-            CustomLogger.Information("Starting cache update (AdminSearchService.StartCacheUpdateThread)");
-
-            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
-            List<SearchCachedOrganisation> allOrganisations = AdminSearchService.LoadAllOrganisations(dataRepository);
-            List<SearchCachedUser> allUsers = AdminSearchService.LoadAllUsers(dataRepository);
-
-            AdminSearchService.cachedOrganisations = allOrganisations;
-            AdminSearchService.cachedUsers = allUsers;
-            AdminSearchService.cacheLastUpdated = VirtualDateTime.Now;
-
-            CustomLogger.Information("Finished cache update (AdminSearchService.StartCacheUpdateThread)");
-        }
-
-        public Task StopAsync(CancellationToken stoppingToken)
-        {
-            CustomLogger.Information("Timed Hosted Service is stopping.");
-
-            timer?.Change(Timeout.Infinite, 0);
-
-            return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            timer?.Dispose();
-        }
-    }
-
-    public class AdminSearchService
+    public class SearchRepository
     {
         private readonly IDataRepository dataRepository;
 
@@ -74,7 +19,7 @@ namespace GenderPayGap.WebUI.Services
         internal static List<SearchCachedUser> cachedUsers;
         internal static DateTime cacheLastUpdated = DateTime.MinValue;
 
-        public AdminSearchService(IDataRepository dataRepository)
+        public SearchRepository(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }

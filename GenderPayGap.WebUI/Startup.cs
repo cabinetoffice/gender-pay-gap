@@ -30,6 +30,7 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Options;
+using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -147,7 +148,7 @@ namespace GenderPayGap.WebUI
                 Config.GetAppSetting("AuthSecret", "secret"),
                 BackChannelHandler);
 
-            services.AddHostedService<AdminSearchServiceCacheUpdater>();
+            services.AddHostedService<SearchCacheUpdaterService>();
 
             HangfireConfigurationHelper.ConfigureServices(services);
 
@@ -279,7 +280,7 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
             builder.RegisterType<ScopePresentation>().As<IScopePresentation>().InstancePerLifetimeScope();
-            builder.RegisterType<AdminSearchService>().As<AdminSearchService>().InstancePerLifetimeScope();
+            builder.RegisterType<SearchRepository>().As<SearchRepository>().InstancePerLifetimeScope();
             builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
 
             //Register some singletons
