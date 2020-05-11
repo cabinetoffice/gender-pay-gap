@@ -68,32 +68,22 @@ namespace GenderPayGap.WebUI.Search
             List<SearchCachedUser> allUsers = cachedUsers;
             DateTime timeDetailsLoaded = cacheLastUpdated;
 
-            DateTime filteringStart = VirtualDateTime.Now;
             List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
             List<SearchCachedUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
-            DateTime filteringEnd = VirtualDateTime.Now;
 
-            DateTime orderingStart = VirtualDateTime.Now;
             List<SearchCachedOrganisation> matchingOrganisationsOrderedByName =
                 matchingOrganisations.OrderBy(o => o.OrganisationName.ToLower()).ToList();
             List<SearchCachedUser> matchingUsersOrderedByName =
                 matchingUsers.OrderBy(u => u.FullName).ToList();
-            DateTime orderingEnd = VirtualDateTime.Now;
 
-            DateTime highlightingStart = VirtualDateTime.Now;
             List<AdminSearchResultOrganisationViewModel> matchingOrganisationsWithHighlightedMatches =
                 HighlightOrganisationMatches(matchingOrganisationsOrderedByName, searchTerms, query);
             List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
                 HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
-            DateTime highlightingEnd = VirtualDateTime.Now;
 
             var results = new AdminSearchResultsViewModel {
                 OrganisationResults = matchingOrganisationsWithHighlightedMatches,
                 UserResults = matchingUsersWithHighlightedMatches,
-
-                FilteringMilliSeconds = filteringEnd.Subtract(filteringStart).TotalMilliseconds,
-                OrderingMilliSeconds = orderingEnd.Subtract(orderingStart).TotalMilliseconds,
-                HighlightingMilliSeconds = highlightingEnd.Subtract(highlightingStart).TotalMilliseconds,
 
                 SearchCacheUpdatedSecondsAgo = (int)VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
             };
