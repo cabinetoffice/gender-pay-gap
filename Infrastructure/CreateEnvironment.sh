@@ -11,6 +11,11 @@ DATABSE_SIZE="small-11"
 # Redis cache size - we normally use 'tiny-4.x' for all environments
 REDIS_SIZE="tiny-4.x"
 
+# App scale settings
+APP_INSTANCES=2     # We use 2 for most environments, 3 for production
+APP_DISK="1G"       # Not sure what this default should be - we'll have to test this and set a default later
+APP_MEMORY="1G"     # In Azure this is 4G for most environments, 8G for production
+
 
 
 #################
@@ -78,7 +83,7 @@ cf service-key "gpg-${PAAS_ENV_SHORTNAME}-db" "gpg-${PAAS_ENV_SHORTNAME}-db-deve
 
 #-----------------------------------
 # Create Redis cache backing service
-# -Create the Redis cache itself
+# - Create the Redis cache itself
 cf create-service redis "${REDIS_SIZE}" "gpg-${PAAS_ENV_SHORTNAME}-cache"
 
 echo "Waiting for the Redis cache to be created (normally takes 5-10 mins)"
@@ -108,6 +113,26 @@ cf create-service-key "gpg-${PAAS_ENV_SHORTNAME}-cache" "gpg-${PAAS_ENV_SHORTNAM
 
 # - Get the key (and print to the console)
 cf service-key "gpg-${PAAS_ENV_SHORTNAME}-cache" "gpg-${PAAS_ENV_SHORTNAME}-cache-developerkey"
+
+
+
+#-----------
+# Create App
+# - Create the App
+cf v3-create-app "gender-pay-gap-${PAAS_ENV_SHORTNAME}"
+
+# - Scale to the right size
+cf v3-scale "gender-pay-gap-${PAAS_ENV_SHORTNAME}" -i ${APP_INSTANCES} -k ${APP_DISK} -m ${APP_MEMORY} -f
+echo "This will say FAILED, but it has probably worked (it failed to START the app because there isn't currently an app deployed)"
+
+# - Bind app to file storage
+cf bind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-filestorage"
+
+# - Bind app to database
+cf bind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-db"
+
+# - Bind app to Redis cache
+cf bind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-cache"
 
 
 
