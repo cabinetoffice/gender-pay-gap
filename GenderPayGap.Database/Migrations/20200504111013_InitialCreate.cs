@@ -967,6 +967,14 @@ namespace GenderPayGap.Database.Migrations
                 name: "IX_UserStatus_UserId",
                 table: "UserStatus",
                 column: "UserId");
+            
+            migrationBuilder.AddForeignKey(
+                name: "FK_OrganisationPublicSectorTypes_Organisations_OrganisationId",
+                table: "OrganisationPublicSectorTypes",
+                column: "OrganisationId",
+                principalTable: "Organisations",
+                principalColumn: "OrganisationId",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
