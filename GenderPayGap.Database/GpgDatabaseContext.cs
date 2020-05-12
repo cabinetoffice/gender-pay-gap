@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -18,6 +18,8 @@ namespace GenderPayGap.Database
 
         public static string ConnectionString = @"Server=(localdb)\ProjectsV13;Database=GpgDatabase;Trusted_Connection=True;";
 
+        public static bool IsPostgres = true;
+        
         public GpgDatabaseContext(string connectionString = null, bool useMigrations = false)
         {
             if (!string.IsNullOrWhiteSpace(connectionString))
@@ -126,8 +128,14 @@ namespace GenderPayGap.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //Setup the SQL server with automatic retry on failure
-                optionsBuilder.UseSqlServer(ConnectionString, options => options.EnableRetryOnFailure());
+                if (IsPostgres)
+                {
+                    optionsBuilder.UseNpgsql(ConnectionString, options => options.EnableRetryOnFailure());
+                }
+                else
+                {
+                    optionsBuilder.UseSqlServer(ConnectionString, options => options.EnableRetryOnFailure());
+                }
             }
 
             //Use lazy loading for related virtual items
