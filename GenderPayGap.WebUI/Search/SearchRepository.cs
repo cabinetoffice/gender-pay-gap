@@ -40,9 +40,9 @@ namespace GenderPayGap.WebUI.Search
                 {
                     OrganisationId = o.OrganisationId,
                     OrganisationName = new SearchReadyValue(o.OrganisationName),
-                    CompanyNumber = o.CompanyNumber,
-                    EmployerReference = o.EmployerReference,
-                    OrganisationNames = o.OrganisationNames.Select(on => new SearchReadyValue(@on.Name)).ToList(),
+                    CompanyNumber = o.CompanyNumber != null ? o.CompanyNumber.Trim() : null,
+                    EmployerReference = o.EmployerReference != null ? o.EmployerReference.Trim() : null,
+                    OrganisationNames = o.OrganisationNames.Select(on => new SearchReadyValue(on.Name)).ToList(),
                     Status = o.Status
                 })
                 .ToList();
@@ -66,6 +66,8 @@ namespace GenderPayGap.WebUI.Search
 
         public AdminSearchResultsViewModel Search(string query)
         {
+            query = query.Trim();
+
             List<string> searchTerms = ExtractSearchTermsFromQuery(query);
 
             DateTime timeDetailsLoaded = cacheLastUpdated; // Do this before we run the search, in case the cache is updated whilst the search is running
@@ -113,8 +115,8 @@ namespace GenderPayGap.WebUI.Search
                     organisation =>
                     {
                         bool nameMatches = CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms);
-                        bool employerRefMatches = organisation.EmployerReference?.Trim() == query.Trim();
-                        bool companyNumberMatches = organisation.CompanyNumber?.Trim() == query.Trim();
+                        bool employerRefMatches = organisation.EmployerReference == query;
+                        bool companyNumberMatches = organisation.CompanyNumber == query;
                         return nameMatches || employerRefMatches || companyNumberMatches;
                     })
                 .ToList();
@@ -145,11 +147,11 @@ namespace GenderPayGap.WebUI.Search
                             .Select(on => GetMatchGroups(on, searchTerms))
                             .ToList();
 
-                        string employerRefMatch = organisation.EmployerReference?.Trim() == query.Trim()
+                        string employerRefMatch = organisation.EmployerReference == query
                             ? organisation.EmployerReference
                             : null;
 
-                        string companyNumberMatch = organisation.CompanyNumber?.Trim() == query.Trim()
+                        string companyNumberMatch = organisation.CompanyNumber == query
                             ? organisation.CompanyNumber
                             : null;
 
