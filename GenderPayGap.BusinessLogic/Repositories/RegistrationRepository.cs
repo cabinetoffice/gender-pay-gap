@@ -18,7 +18,7 @@ namespace GenderPayGap.BusinessLogic.Repositories
             AuditLogger = auditLogger ?? throw new ArgumentNullException(nameof(auditLogger));
         }
 
-        public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire, User actionByUser)
+        public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire)
         {
             foreach (UserOrganisation userOrgToUnregister in userToRetire.UserOrganisations)
             {
@@ -30,7 +30,7 @@ namespace GenderPayGap.BusinessLogic.Repositories
                     AuditedAction.RegistrationLog,
                     userToRetire,
                     new { Status = "Unregistered closed account" },
-                    actionByUser);
+                    userToRetire);
 
                 // Remove user organisation
                 DataRepository.Delete(userOrgToUnregister);

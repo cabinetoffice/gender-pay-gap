@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             this.emailSendingService = emailSendingService;
         }
 
-        public async Task<ModelStateDictionary> CloseAccountAsync(User userToRetire, string currentPassword, User actionByUser)
+        public async Task<ModelStateDictionary> CloseAccountAsync(User userToRetire, string currentPassword)
         {
             var errorState = new ModelStateDictionary();
 
@@ -50,7 +50,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                     try
                     {
                         // update retired user registrations 
-                        await RegistrationRepository.RemoveRetiredUserRegistrationsAsync(userToRetire, actionByUser);
+                        await RegistrationRepository.RemoveRetiredUserRegistrationsAsync(userToRetire);
 
                         // retire user
                         UserRepository.RetireUser(userToRetire);
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
                     catch (Exception ex)
                     {
                         UserRepository.RollbackTransaction();
-                        CustomLogger.Warning($"Failed to retire user {userToRetire.UserId}. Action by user {actionByUser.UserId}", ex);
+                        CustomLogger.Warning($"Failed to retire user {userToRetire.UserId}", ex);
                         throw;
                     }
                 });
