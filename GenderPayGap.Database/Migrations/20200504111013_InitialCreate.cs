@@ -1,6 +1,6 @@
-using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GenderPayGap.Database.Migrations
 {
@@ -16,7 +16,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     FeedbackId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Difficulty = table.Column<int>(nullable: true),
                     Details = table.Column<string>(maxLength: 2000, nullable: true),
                     EmailAddress = table.Column<string>(nullable: true),
@@ -58,7 +58,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     PublicSectorTypeId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Description = table.Column<string>(maxLength: 250, nullable: false),
                     Created = table.Column<DateTime>(nullable: false)
                 },
@@ -85,7 +85,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     JobTitle = table.Column<string>(maxLength: 50, nullable: false),
                     Firstname = table.Column<string>(maxLength: 50, nullable: false),
                     Lastname = table.Column<string>(maxLength: 50, nullable: false),
@@ -124,7 +124,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationPublicSectorTypeId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     PublicSectorTypeId = table.Column<int>(nullable: false),
                     OrganisationId = table.Column<long>(nullable: false),
                     Source = table.Column<string>(maxLength: 255, nullable: true),
@@ -135,7 +135,7 @@ namespace GenderPayGap.Database.Migrations
                 {
                     table.PrimaryKey("PK_dbo.OrganisationPublicSectorTypes", x => x.OrganisationPublicSectorTypeId);
                     table.ForeignKey(
-                        name: "FK_OrganisationPublicSectorTypes_PublicSectorTypes_PublicSectorTypeId",
+                        name: "FK_OrganisationPublicSectorTypes_PublicSectorTypes_PublicSecto~",
                         column: x => x.PublicSectorTypeId,
                         principalTable: "PublicSectorTypes",
                         principalColumn: "PublicSectorTypeId",
@@ -167,7 +167,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     ReminderEmailId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     UserId = table.Column<long>(nullable: false),
                     SectorType = table.Column<int>(nullable: false),
                     DateChecked = table.Column<DateTime>(nullable: false),
@@ -209,7 +209,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     UserStatusId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     UserId = table.Column<long>(nullable: false),
                     StatusId = table.Column<byte>(nullable: false),
                     StatusDate = table.Column<DateTime>(nullable: false),
@@ -238,7 +238,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CompanyNumber = table.Column<string>(maxLength: 10, nullable: true),
                     OrganisationName = table.Column<string>(maxLength: 100, nullable: false),
                     SectorTypeId = table.Column<int>(nullable: false),
@@ -272,7 +272,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     AuditLogId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Action = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: IsNpgsql ? "now()" : "getdate()"),
                     OrganisationId = table.Column<long>(nullable: true),
@@ -308,7 +308,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     AddressId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     CreatedByUserId = table.Column<long>(nullable: false),
                     Address1 = table.Column<string>(maxLength: 100, nullable: true),
                     Address2 = table.Column<string>(maxLength: 100, nullable: true),
@@ -343,7 +343,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationNameId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     OrganisationId = table.Column<long>(nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Source = table.Column<string>(maxLength: 255, nullable: true),
@@ -365,7 +365,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationReferenceId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     OrganisationId = table.Column<long>(nullable: false),
                     ReferenceName = table.Column<string>(maxLength: 100, nullable: false),
                     ReferenceValue = table.Column<string>(maxLength: 100, nullable: false),
@@ -387,7 +387,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationScopeId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     OrganisationId = table.Column<long>(nullable: false),
                     ScopeStatusId = table.Column<int>(nullable: false),
                     ScopeStatusDate = table.Column<DateTime>(nullable: false),
@@ -419,7 +419,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationSicCodeId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     SicCodeId = table.Column<int>(nullable: false),
                     OrganisationId = table.Column<long>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
@@ -448,7 +448,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     OrganisationStatusId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     OrganisationId = table.Column<long>(nullable: false),
                     StatusId = table.Column<byte>(nullable: false),
                     StatusDate = table.Column<DateTime>(nullable: false),
@@ -477,7 +477,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     ReturnId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     OrganisationId = table.Column<long>(nullable: false),
                     AccountingDate = table.Column<DateTime>(nullable: false),
                     DiffMeanHourlyPayPercent = table.Column<decimal>(nullable: false),
@@ -526,7 +526,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     AddressStatusId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     AddressId = table.Column<long>(nullable: false),
                     StatusId = table.Column<byte>(nullable: false),
                     StatusDate = table.Column<DateTime>(nullable: false),
@@ -635,7 +635,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     ReturnStatusId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     ReturnId = table.Column<long>(nullable: false),
                     StatusId = table.Column<byte>(nullable: false),
                     StatusDate = table.Column<DateTime>(nullable: false),
