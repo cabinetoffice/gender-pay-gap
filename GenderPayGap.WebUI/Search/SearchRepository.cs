@@ -19,6 +19,8 @@ namespace GenderPayGap.WebUI.Search
         private static List<SearchCachedUser> cachedUsers;
         private static DateTime cacheLastUpdated = DateTime.MinValue;
 
+
+        #region Load data into cache
         public static void LoadSearchDataIntoCache()
         {
             var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
@@ -59,6 +61,8 @@ namespace GenderPayGap.WebUI.Search
                 })
                 .ToList();
         }
+        #endregion
+
 
         public AdminSearchResultsViewModel Search(string query)
         {
@@ -82,6 +86,8 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
+
+        #region Search Organisations
         private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query, List<string> searchTerms)
         {
             List<SearchCachedOrganisation> allOrganisations = cachedOrganisations;
@@ -97,21 +103,6 @@ namespace GenderPayGap.WebUI.Search
             return matchingOrganisationsWithHighlightedMatches;
         }
 
-        private List<AdminSearchResultUserViewModel> SearchUsers(List<string> searchTerms)
-        {
-            List<SearchCachedUser> allUsers = cachedUsers;
-            
-            List<SearchCachedUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
-            
-            List<SearchCachedUser> matchingUsersOrderedByName =
-                matchingUsers.OrderBy(u => u.FullName).ToList();
-            
-            List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
-                HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
-            
-            return matchingUsersWithHighlightedMatches;
-        }
-
         private List<SearchCachedOrganisation> GetMatchingOrganisations(
             List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
@@ -119,7 +110,8 @@ namespace GenderPayGap.WebUI.Search
         {
             return allOrganisations
                 .Where(
-                    organisation => {
+                    organisation =>
+                    {
                         bool nameMatches = CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms);
                         bool employerRefMatches = organisation.EmployerReference?.Trim() == query.Trim();
                         bool companyNumberMatches = organisation.CompanyNumber?.Trim() == query.Trim();
@@ -128,21 +120,9 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        private List<SearchCachedUser> GetMatchingUsers(List<SearchCachedUser> allUsers, List<string> searchTerms)
-        {
-            return allUsers
-                .Where(user => NameMatchesSearchTerms(user.FullName, searchTerms) || NameMatchesSearchTerms(user.EmailAddress, searchTerms))
-                .ToList();
-        }
-
         private bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(SearchCachedOrganisation organisation, List<string> searchTerms)
         {
             return organisation.OrganisationNames.Any(on => NameMatchesSearchTerms(on, searchTerms));
-        }
-
-        private bool NameMatchesSearchTerms(string name, List<string> searchTerms)
-        {
-            return searchTerms.All(st => name.ToLower().Contains(st));
         }
 
         private List<AdminSearchResultOrganisationViewModel> HighlightOrganisationMatches(
@@ -152,11 +132,12 @@ namespace GenderPayGap.WebUI.Search
         {
             return organisations
                 .Select(
-                    organisation => {
+                    organisation =>
+                    {
                         AdminSearchMatchViewModel matchGroupsForCurrentName = GetMatchGroups(organisation.OrganisationName, searchTerms);
 
                         IEnumerable<string> previousNames = organisation.OrganisationNames
-                            .Except(new[] {organisation.OrganisationName});
+                            .Except(new[] { organisation.OrganisationName });
 
                         List<AdminSearchMatchViewModel> matchGroupsForPreviousNames = previousNames
                             .Where(on => NameMatchesSearchTerms(on, searchTerms))
@@ -171,7 +152,8 @@ namespace GenderPayGap.WebUI.Search
                             ? organisation.CompanyNumber
                             : null;
 
-                        return new AdminSearchResultOrganisationViewModel {
+                        return new AdminSearchResultOrganisationViewModel
+                        {
                             OrganisationName = matchGroupsForCurrentName,
                             OrganisationPreviousNames = matchGroupsForPreviousNames,
                             EmployerRef = employerRefMatch,
@@ -182,6 +164,31 @@ namespace GenderPayGap.WebUI.Search
                     })
                 .ToList();
         }
+        #endregion
+
+
+        #region Search Users
+        private List<AdminSearchResultUserViewModel> SearchUsers(List<string> searchTerms)
+        {
+            List<SearchCachedUser> allUsers = cachedUsers;
+
+            List<SearchCachedUser> matchingUsers = GetMatchingUsers(allUsers, searchTerms);
+
+            List<SearchCachedUser> matchingUsersOrderedByName =
+                matchingUsers.OrderBy(u => u.FullName).ToList();
+
+            List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
+                HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
+
+            return matchingUsersWithHighlightedMatches;
+        }
+
+        private List<SearchCachedUser> GetMatchingUsers(List<SearchCachedUser> allUsers, List<string> searchTerms)
+        {
+            return allUsers
+                .Where(user => NameMatchesSearchTerms(user.FullName, searchTerms) || NameMatchesSearchTerms(user.EmailAddress, searchTerms))
+                .ToList();
+        }
 
         private List<AdminSearchResultUserViewModel> HighlightUserMatches(
             List<SearchCachedUser> users,
@@ -190,11 +197,13 @@ namespace GenderPayGap.WebUI.Search
         {
             return users
                 .Select(
-                    user => {
+                    user =>
+                    {
                         AdminSearchMatchViewModel matchGroupsForFullName = GetMatchGroups(user.FullName, searchTerms);
                         AdminSearchMatchViewModel matchGroupsForEmailAddress = GetMatchGroups(user.EmailAddress, searchTerms);
 
-                        return new AdminSearchResultUserViewModel {
+                        return new AdminSearchResultUserViewModel
+                        {
                             UserId = user.UserId,
                             UserFullName = matchGroupsForFullName,
                             UserEmailAddress = matchGroupsForEmailAddress,
@@ -202,6 +211,14 @@ namespace GenderPayGap.WebUI.Search
                         };
                     })
                 .ToList();
+        }
+        #endregion
+
+
+        #region Helpers
+        private bool NameMatchesSearchTerms(string name, List<string> searchTerms)
+        {
+            return searchTerms.All(st => name.ToLower().Contains(st));
         }
 
         private AdminSearchMatchViewModel GetMatchGroups(string organisationName, List<string> searchTerms)
@@ -228,7 +245,7 @@ namespace GenderPayGap.WebUI.Search
                 }
             }
 
-            return new AdminSearchMatchViewModel {Text = organisationName, MatchGroups = matchGroups};
+            return new AdminSearchMatchViewModel { Text = organisationName, MatchGroups = matchGroups };
         }
 
         private static AdminSearchMatchGroupViewModel GetNextMatch(string organisationName, List<string> searchTerms, int searchStart)
@@ -240,7 +257,7 @@ namespace GenderPayGap.WebUI.Search
                 int matchStart = organisationName.IndexOf(searchTerm, searchStart, StringComparison.InvariantCultureIgnoreCase);
                 if (matchStart != -1)
                 {
-                    possibleMatches.Add(new AdminSearchMatchGroupViewModel {Start = matchStart, Length = searchTerm.Length});
+                    possibleMatches.Add(new AdminSearchMatchGroupViewModel { Start = matchStart, Length = searchTerm.Length });
                 }
             }
 
@@ -249,6 +266,7 @@ namespace GenderPayGap.WebUI.Search
                 .ThenByDescending(m => m.Length)
                 .FirstOrDefault();
         }
+        #endregion
 
     }
 }
