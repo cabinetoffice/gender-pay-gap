@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // execute change password process
-            ModelStateDictionary errors = await CloseAccountService.CloseAccountAsync(currentUser, formData.EnterPassword, currentUser);
+            ModelStateDictionary errors = await CloseAccountService.CloseAccountAsync(currentUser, formData.EnterPassword);
             if (errors.ErrorCount > 0)
             {
                 ModelState.Merge(errors);
