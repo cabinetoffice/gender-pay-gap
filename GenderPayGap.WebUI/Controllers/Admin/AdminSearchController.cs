@@ -11,11 +11,11 @@ namespace GenderPayGap.WebUI.Controllers
     public class AdminSearchController : Controller
     {
 
-        private readonly SearchRepository searchRepository;
+        private readonly AdminSearchService adminSearchService;
 
-        public AdminSearchController(SearchRepository searchRepository)
+        public AdminSearchController(AdminSearchService adminSearchService)
         {
-            this.searchRepository = searchRepository;
+            this.adminSearchService = adminSearchService;
         }
 
         [HttpGet("search")]
@@ -34,7 +34,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                AdminSearchResultsViewModel results = searchRepository.Search(query);
+                AdminSearchResultsViewModel results = adminSearchService.Search(query);
 
                 viewModel.SearchResults = results;
             }

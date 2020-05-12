@@ -280,7 +280,7 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
             builder.RegisterType<ScopePresentation>().As<IScopePresentation>().InstancePerLifetimeScope();
-            builder.RegisterType<SearchRepository>().As<SearchRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<AdminSearchService>().As<AdminSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
 
             //Register some singletons
