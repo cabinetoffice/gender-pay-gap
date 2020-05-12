@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GenderPayGap.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace GenderPayGap.Database
@@ -13,7 +14,7 @@ namespace GenderPayGap.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<GpgDatabaseContext>();
 
-            if (GpgDatabaseContext.IsPostgres)
+            if (Global.UsePostgresDb)
             {
                 optionsBuilder.UseNpgsql(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
             }

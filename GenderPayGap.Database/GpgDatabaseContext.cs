@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -15,10 +16,11 @@ namespace GenderPayGap.Database
 {
     public partial class GpgDatabaseContext : IDbContext
     {
-
-        public static string ConnectionString = @"Server=(localdb)\ProjectsV13;Database=GpgDatabase;Trusted_Connection=True;";
-
-        public static bool IsPostgres = true;
+        
+        // Switches between using Postgres and SQL Server for local DB during development
+        public static string ConnectionString = Global.UsePostgresDb
+            ? @"Server=127.0.0.1;Port=5432;Database=GpgDatabase;User Id=gpg_user;Password=local_gpg_database;" 
+            : @"Server=(localdb)\ProjectsV13;Database=GpgDatabase;Trusted_Connection=True;";
         
         public GpgDatabaseContext(string connectionString = null, bool useMigrations = false)
         {
@@ -128,7 +130,7 @@ namespace GenderPayGap.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                if (IsPostgres)
+                if (Global.UsePostgresDb)
                 {
                     optionsBuilder.UseNpgsql(ConnectionString, options => options.EnableRetryOnFailure());
                 }
