@@ -146,6 +146,8 @@ namespace GenderPayGap.Core
 
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 
+        public static bool UsePostgresDb => Config.GetAppSetting("UsePostgresDb").ToBoolean();
+        
         public static void SetupAppInsights()
         {
             if (AppInsightsSetupComplete)
