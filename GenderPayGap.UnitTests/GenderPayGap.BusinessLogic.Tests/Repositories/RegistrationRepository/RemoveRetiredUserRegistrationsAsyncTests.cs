@@ -45,7 +45,7 @@ namespace Repositories.UserRepository
                 .FirstOrDefault();
 
             // Act
-            await testRegistrationRepo.RemoveRetiredUserRegistrationsAsync(testRetiredUser, testRetiredUser);
+            await testRegistrationRepo.RemoveRetiredUserRegistrationsAsync(testRetiredUser);
 
             // Assert user org removed
             Assert.IsFalse(
