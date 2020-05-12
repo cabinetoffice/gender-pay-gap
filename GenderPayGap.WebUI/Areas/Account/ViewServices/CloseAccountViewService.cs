@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
+using GenderPayGap.BusinessLogic.Repositories;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -20,7 +20,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
         private readonly EmailSendingService emailSendingService;
 
         public CloseAccountViewService(IUserRepository userRepository,
-            IRegistrationRepository registrationRepository,
+            RegistrationRepository registrationRepository,
             EmailSendingService emailSendingService)
         {
             UserRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
@@ -81,7 +81,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 
         private IUserRepository UserRepository { get; }
 
-        private IRegistrationRepository RegistrationRepository { get; }
+        private RegistrationRepository RegistrationRepository { get; }
 
         #endregion
 

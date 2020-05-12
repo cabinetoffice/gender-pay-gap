@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -35,7 +34,7 @@ namespace Repositories.RegistrationRepository
 
         private IDataRepository mockDataRepo;
 
-        private IRegistrationRepository testRegistrationRepo;
+        private GenderPayGap.BusinessLogic.Repositories.RegistrationRepository testRegistrationRepo;
 
         [Test]
         public async Task UserCanUnregisterAnotherUser()
