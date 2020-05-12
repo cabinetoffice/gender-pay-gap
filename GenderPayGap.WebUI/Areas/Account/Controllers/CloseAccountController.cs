@@ -2,8 +2,8 @@
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.Areas.Account.ViewServices;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
     {
 
         public CloseAccountController(
-            ICloseAccountViewService closeAccountService,
+            CloseAccountViewService closeAccountService,
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepo,
@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             CloseAccountService = closeAccountService;
         }
 
-        public ICloseAccountViewService CloseAccountService { get; }
+        public CloseAccountViewService CloseAccountService { get; }
 
         [HttpGet("close-account")]
         public IActionResult CloseAccount()

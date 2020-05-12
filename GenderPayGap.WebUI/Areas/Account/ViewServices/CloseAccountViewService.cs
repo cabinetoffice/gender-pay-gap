@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 {
 
-    public class CloseAccountViewService : ICloseAccountViewService
+    public class CloseAccountViewService
     {
 
         private readonly EmailSendingService emailSendingService;
