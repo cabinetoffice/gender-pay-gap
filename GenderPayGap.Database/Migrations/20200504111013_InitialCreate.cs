@@ -779,14 +779,14 @@ namespace GenderPayGap.Database.Migrations
                 table: "Organisations",
                 column: "CompanyNumber",
                 unique: true,
-                filter: "([CompanyNumber] IS NOT NULL)");
+                filter: IsNpgsql ? "(\"CompanyNumber\" IS NOT NULL)" : "([CompanyNumber] IS NOT NULL)");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Organisations_EmployerReference",
                 table: "Organisations",
                 column: "EmployerReference",
                 unique: true,
-                filter: "([EmployerReference] IS NOT NULL)");
+                filter: IsNpgsql ? "(\"EmployerReference\" IS NOT NULL)" : "([EmployerReference] IS NOT NULL)");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Organisations_LatestPublicSectorTypeId",
