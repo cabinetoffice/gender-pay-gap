@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GenderPayGap.WebUI.Search
 {
@@ -15,29 +17,29 @@ namespace GenderPayGap.WebUI.Search
                     return regex;
                 }
 
-                // The "language=regexp" comments below tell Resharper to do regex syntax highlighting
-                // "CG" means "character group" - i.e. [A-Z] in regex
-
+                // The "language=regexp" comment below tells Resharper to do regex syntax highlighting
                 //language=regexp
-                string wordCG = "[a-zA-Z0-9'-]";
-                //language=regexp
-                string nonWordCG = "[^a-zA-Z0-9'-]";
-
-                //language=regexp
-                string regexPattern =
-                    "^" // Start of line
-                    + "(?:" // Start of non-capturing group
-                    +    $"{nonWordCG}*" // Start with non-word characters (0+ times - i.e. optional)
-                    +    "(" // Capture this next bit - we only want to capture the word characters, not the non-word characters
-                    +        $"{wordCG}+" // Some word characters (1+ i.e. there must be some word characters!)
-                    +    ")" // End capture
-                    + ")+"  // End of non-capturing group - repeat this 1+ times
-                    + $"{nonWordCG}*" // End with non-word characters (0+ times - i.e. optional)
-                    + "$"; // End of line
+                var regexPattern = "[a-zA-Z0-9'-]+";
 
                 regex = new Regex(regexPattern, RegexOptions.Compiled);
                 return regex;
             }
+        }
+
+        public static List<string> SplitValueIntoWords(string originalValue)
+        {
+            if (originalValue != null)
+            {
+                MatchCollection matches = Regex.Matches(originalValue);
+                //if (matches.Success)
+                {
+                    return matches
+                        .Select(m => m.Value.ToLower())
+                        .ToList();
+                }
+            }
+
+            return new List<string>();
         }
 
     }

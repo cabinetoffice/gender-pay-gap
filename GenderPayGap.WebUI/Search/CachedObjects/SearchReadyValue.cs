@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace GenderPayGap.WebUI.Search.CachedObjects
 {
@@ -17,20 +17,8 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public SearchReadyValue(string originalValue)
         {
             OriginalValue = originalValue;
-            LowercaseWords = SplitValueIntoWords(originalValue);
+            LowercaseWords = WordSplittingRegex.SplitValueIntoWords(originalValue);
             Acronym = MakeAcronymFromWords(LowercaseWords);
-        }
-
-        private static List<string> SplitValueIntoWords(string originalValue)
-        {
-            Match match = WordSplittingRegex.Regex.Match(originalValue);
-            if (match.Success)
-            {
-                return match.Groups
-                    .Select(g => g.Value.ToLower())
-                    .ToList();
-            }
-            return new List<string>();
         }
 
         private string MakeAcronymFromWords(List<string> words)
@@ -38,6 +26,38 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             var firstLetterOfEachWord = words.Select(word => word.Substring(0, 1));
             string acronym = string.Join("", firstLetterOfEachWord);
             return acronym;
+        }
+
+
+        public bool Matches(List<string> searchTerms)
+        {
+            foreach (string searchTerm in searchTerms)
+            {
+                if (!(SearchTermIsPartOfAcronym(searchTerm) || SearchTermIsPartOfAWord(searchTerm)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool SearchTermIsPartOfAcronym(string searchTerm)
+        {
+            return Acronym.Contains(searchTerm);
+        }
+
+        private bool SearchTermIsPartOfAWord(string searchTerm)
+        {
+            foreach (string word in LowercaseWords)
+            {
+                if (word.Contains(searchTerm))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }
