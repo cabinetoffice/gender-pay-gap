@@ -13,8 +13,15 @@ namespace GenderPayGap.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<GpgDatabaseContext>();
 
-            //Setup the SQL server with automatic retry on failure
-            optionsBuilder.UseSqlServer(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
+            if (GpgDatabaseContext.IsPostgres)
+            {
+                optionsBuilder.UseNpgsql(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
+            }
+            else
+            {
+                optionsBuilder.UseSqlServer(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());   
+            }
+            
             return new GpgDatabaseContext(optionsBuilder.Options);
         }
 
