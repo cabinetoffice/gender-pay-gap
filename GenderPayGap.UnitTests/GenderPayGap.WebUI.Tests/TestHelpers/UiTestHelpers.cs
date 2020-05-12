@@ -247,7 +247,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.Register(c => new MockSearchRepository()).As<ISearchRepository<EmployerSearchModel>>().SingleInstance();
             builder.Register(c => Mock.Of<ISearchRepository<SicCodeSearchModel>>()).As<ISearchRepository<SicCodeSearchModel>>();
             builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
-            builder.RegisterType<RegistrationRepository>().As<IRegistrationRepository>().SingleInstance();
+            builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().SingleInstance();
 
             // BL Services
             builder.RegisterInstance(Config.Configuration);

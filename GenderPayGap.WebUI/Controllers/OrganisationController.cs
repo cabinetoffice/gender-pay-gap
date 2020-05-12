@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using GenderPayGap.BusinessLogic;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
+using GenderPayGap.BusinessLogic.Repositories;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
@@ -38,7 +38,7 @@ namespace GenderPayGap.WebUI.Controllers
             IScopeBusinessLogic scopeBL,
             IOrganisationBusinessLogic organisationBL,
             IDataRepository dataRepository,
-            IRegistrationRepository registrationRepository,
+            RegistrationRepository registrationRepository,
             IWebTracker webTracker,
             EmailSendingService emailSendingService,
             [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
@@ -384,7 +384,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
 
-        public IRegistrationRepository RegistrationRepository { get; }
+        public RegistrationRepository RegistrationRepository { get; }
 
         #endregion
 

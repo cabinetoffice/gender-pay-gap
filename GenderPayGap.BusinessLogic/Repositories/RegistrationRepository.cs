@@ -9,7 +9,7 @@ using GenderPayGap.Database;
 namespace GenderPayGap.BusinessLogic.Repositories
 {
 
-    public class RegistrationRepository : IRegistrationRepository
+    public class RegistrationRepository
     {
 
         public RegistrationRepository(IDataRepository dataRepository, AuditLogger auditLogger)
