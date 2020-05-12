@@ -26,9 +26,9 @@ namespace GenderPayGap.BusinessLogic.Repositories
                 userOrgToUnregister.Organisation.UserOrganisations.Remove(userOrgToUnregister);
 
                 // log unregistered via closed account
-                AuditLogger.AuditChangeToUser(
+                AuditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
-                    userToRetire,
+                    userOrgToUnregister.Organisation,
                     new { Status = "Unregistered closed account" },
                     userToRetire);
 
@@ -61,20 +61,20 @@ namespace GenderPayGap.BusinessLogic.Repositories
             if (userOrgToUnregister.UserId == actionByUser.UserId)
             {
                 // unregistered self
-                AuditLogger.AuditChangeToUser(
+                AuditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
-                    userOrgToUnregister.User,
+                    userOrgToUnregister.Organisation,
                     new { Status = "Unregistered self" },
-                    actionByUser);
+                    userOrgToUnregister.User);
             }
             else
             {
                 // unregistered by someone else
-                AuditLogger.AuditChangeToUser(
+                AuditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
-                    userOrgToUnregister.User,
+                    userOrgToUnregister.Organisation,
                     new { Status = "Unregistered" },
-                    actionByUser);
+                    userOrgToUnregister.User);
             }
 
             // Remove user organisation

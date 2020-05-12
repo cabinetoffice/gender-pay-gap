@@ -1343,9 +1343,9 @@ namespace GenderPayGap.WebUI.Controllers
             if (sector == SectorTypes.Public || model.IsFastTrackAuthorised)
             {
                 //Log the registration
-                auditLogger.AuditChangeToUser(
+                auditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
-                    userOrg.User,
+                    userOrg.Organisation,
                     new
                     {
                         Status = "Public sector email confirmed",
