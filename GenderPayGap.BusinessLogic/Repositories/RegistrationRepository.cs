@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Services;
@@ -20,20 +22,29 @@ namespace GenderPayGap.BusinessLogic.Repositories
 
         public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire)
         {
+            // We extract this list of Organisations BEFORE deleting the UserOrganisations to prevent an Entity Framework error:
+            // "Attempted to update or delete an entity that does not exist in the store."
+            List<Organisation> organisationsToAuditLog = userToRetire.UserOrganisations
+                .Select(userOrg => userOrg.Organisation)
+                .ToList();
+
             foreach (UserOrganisation userOrgToUnregister in userToRetire.UserOrganisations)
             {
                 // remove all the user registrations associated with the organisation
                 userOrgToUnregister.Organisation.UserOrganisations.Remove(userOrgToUnregister);
 
+                // Remove user organisation
+                DataRepository.Delete(userOrgToUnregister);
+            }
+
+            foreach (Organisation organisation in organisationsToAuditLog)
+            {
                 // log unregistered via closed account
                 AuditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
-                    userOrgToUnregister.Organisation,
+                    organisation,
                     new { Status = "Unregistered closed account" },
                     userToRetire);
-
-                // Remove user organisation
-                DataRepository.Delete(userOrgToUnregister);
             }
 
             // save changes to database
@@ -57,31 +68,23 @@ namespace GenderPayGap.BusinessLogic.Repositories
             // Remove the user registration from the organisation
             sourceOrg.UserOrganisations.Remove(userOrgToUnregister);
 
-            // log record
-            if (userOrgToUnregister.UserId == actionByUser.UserId)
-            {
-                // unregistered self
-                AuditLogger.AuditChangeToOrganisation(
-                    AuditedAction.RegistrationLog,
-                    userOrgToUnregister.Organisation,
-                    new { Status = "Unregistered self" },
-                    userOrgToUnregister.User);
-            }
-            else
-            {
-                // unregistered by someone else
-                AuditLogger.AuditChangeToOrganisation(
-                    AuditedAction.RegistrationLog,
-                    userOrgToUnregister.Organisation,
-                    new { Status = "Unregistered" },
-                    userOrgToUnregister.User);
-            }
+            // We extract these two variables BEFORE deleting the UserOrganisations to prevent an Entity Framework error:
+            // "Attempted to update or delete an entity that does not exist in the store."
+            Organisation organisationToLog = userOrgToUnregister.Organisation;
+            string status = (userOrgToUnregister.UserId == actionByUser.UserId) ? "Unregistered self" : "Unregistered";
 
             // Remove user organisation
             DataRepository.Delete(userOrgToUnregister);
 
             // Save changes to database
             await DataRepository.SaveChangesAsync();
+
+
+            AuditLogger.AuditChangeToOrganisation(
+                AuditedAction.RegistrationLog,
+                organisationToLog,
+                new { Status = status },
+                userOrgToUnregister.User);
         }
 
         #region Dependencies
