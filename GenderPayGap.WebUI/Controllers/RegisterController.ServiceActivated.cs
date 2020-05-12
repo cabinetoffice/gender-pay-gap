@@ -196,9 +196,9 @@ namespace GenderPayGap.WebUI.Controllers
             await DataRepository.SaveChangesAsync();
 
             //Log the registration
-            auditLogger.AuditChangeToUser(
+            auditLogger.AuditChangeToOrganisation(
                 AuditedAction.RegistrationLog,
-                userOrg.User,
+                userOrg.Organisation,
                 new
                 {
                     Status = "PIN Confirmed",

@@ -525,9 +525,9 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix));
 
                 //Log the approval
-                auditLogger.AuditChangeToUser(
+                auditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
-                    userOrg.User,
+                    userOrg.Organisation,
                     new
                     {
                         Status = "Manually registered",
@@ -662,9 +662,9 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Log the rejection
-            auditLogger.AuditChangeToUser(
+            auditLogger.AuditChangeToOrganisation(
                 AuditedAction.RegistrationLog,
-                userOrg.User,
+                userOrg.Organisation,
                 new
                 {
                     Status = "Manually Rejected",
