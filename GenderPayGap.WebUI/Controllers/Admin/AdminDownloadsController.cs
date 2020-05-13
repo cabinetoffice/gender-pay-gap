@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Controllers
                     {
                         org.OrganisationId,
                         org.OrganisationName,
-                        Address = org.GetLatestAddress().GetAddressString(),
+                        Address = org.GetLatestAddress()?.GetAddressString(),
                         Sector = org.SectorType,
                         ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1),
                     })
