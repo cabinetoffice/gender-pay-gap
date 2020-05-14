@@ -12,6 +12,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public string LowercaseValue { get; }
 
         public List<string> LowercaseWords { get; }
+        public List<string> LowercaseWordsWithPunctuation { get; }
 
         public string Acronym { get; }
 
@@ -20,7 +21,8 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         {
             OriginalValue = originalValue;
             LowercaseValue = originalValue.ToLower();
-            LowercaseWords = WordSplittingRegex.SplitValueIntoWords(originalValue);
+            LowercaseWordsWithPunctuation = WordSplittingRegex.SplitValueIntoWords(originalValue, retainPunctuation: true);
+            LowercaseWords = WordSplittingRegex.RemovePunctuationFromWords(LowercaseWordsWithPunctuation).ToList();
             Acronym = MakeAcronymFromWords(LowercaseWords);
         }
 
@@ -32,11 +34,11 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         }
 
 
-        public bool Matches(List<string> searchTerms)
+        public bool Matches(List<string> searchTerms, bool queryContainsPunctuation = false)
         {
             foreach (string searchTerm in searchTerms)
             {
-                if (!(SearchTermIsPartOfAcronym(searchTerm) || SearchTermIsPartOfAWord(searchTerm)))
+                if (!(SearchTermIsPartOfAcronym(searchTerm) || SearchTermIsPartOfAWord(searchTerm, queryContainsPunctuation)))
                 {
                     return false;
                 }
@@ -50,9 +52,10 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             return Acronym.Contains(searchTerm);
         }
 
-        private bool SearchTermIsPartOfAWord(string searchTerm)
+        private bool SearchTermIsPartOfAWord(string searchTerm, bool queryContainsPunctuation)
         {
-            foreach (string word in LowercaseWords)
+            List<string> words = queryContainsPunctuation ? LowercaseWordsWithPunctuation : LowercaseWords;
+            foreach (string word in words)
             {
                 if (word.Contains(searchTerm))
                 {
