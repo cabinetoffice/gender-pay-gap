@@ -9,6 +9,8 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
 
         public string OriginalValue { get; }
 
+        public string LowercaseValue { get; }
+
         public List<string> LowercaseWords { get; }
 
         public string Acronym { get; }
@@ -17,6 +19,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public SearchReadyValue(string originalValue)
         {
             OriginalValue = originalValue;
+            LowercaseValue = originalValue.ToLower();
             LowercaseWords = WordSplittingRegex.SplitValueIntoWords(originalValue);
             Acronym = MakeAcronymFromWords(LowercaseWords);
         }
