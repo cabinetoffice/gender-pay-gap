@@ -38,11 +38,9 @@ namespace GenderPayGap.WebUI.Search
 
         private static void CalculateOrganisationWords()
         {
-            var currentNames = CachedOrganisations.Select(org => org.OrganisationName);
-            var previousNames = CachedOrganisations.SelectMany(org => org.OrganisationNames);
-            var allNames = currentNames.Concat(previousNames);
+            var allNames = CachedOrganisations.SelectMany(org => org.OrganisationNames);
 
-            var allWords = allNames.SelectMany(name => name.LowercaseWords);
+            var allWords = allNames.SelectMany(name => name.LowercaseWords.Concat(name.LowercaseWordsWithPunctuation).Distinct());
 
             Dictionary<string, int> groupedWords = allWords
                 .GroupBy(

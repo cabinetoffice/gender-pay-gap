@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.WebUI.Models.Search;
@@ -28,56 +29,61 @@ namespace GenderPayGap.WebUI.Search
         {
             query = query.Trim().ToLower();
 
-            List<string> searchTerms = ExtractSearchTermsFromQuery(query);
+            bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
+
+            List<string> searchTerms = ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
 
-            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms);
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, queryContainsPunctuation);
 
-            List<AutoCompleteOrganisation> orderedOrganisations = CalculateRankings(matchingOrganisations, searchTerms, query);
+            List<AutoCompleteOrganisation> orderedOrganisations = CalculateRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
 
             List<SuggestEmployerResult> results = ConvertOrganisationsToSearchResults(orderedOrganisations);
 
             return results;
         }
 
-        private static List<string> ExtractSearchTermsFromQuery(string query)
+        private static List<string> ExtractSearchTermsFromQuery(string query, bool queryContainsPunctuation)
         {
-            return WordSplittingRegex.SplitValueIntoWords(query);
+            return WordSplittingRegex.SplitValueIntoWords(query, queryContainsPunctuation);
         }
 
-        private static List<SearchCachedOrganisation> GetMatchingOrganisations(
-            List<SearchCachedOrganisation> allOrganisations,
-            List<string> searchTerms)
+        private static List<SearchCachedOrganisation> GetMatchingOrganisations(List<SearchCachedOrganisation> allOrganisations,
+            List<string> searchTerms,
+            bool queryContainsPunctuation)
         {
             return allOrganisations
                 .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
-                .Where(org => CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms))
+                .Where(org => CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms, queryContainsPunctuation))
                 .ToList();
         }
 
-        private static bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(SearchCachedOrganisation organisation, List<string> searchTerms)
+        private static bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(
+            SearchCachedOrganisation organisation,
+            List<string> searchTerms,
+            bool queryContainsPunctuation)
         {
-            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms));
+            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms, queryContainsPunctuation));
         }
 
-        private static List<AutoCompleteOrganisation> CalculateRankings(
-            List<SearchCachedOrganisation> matchingOrganisations,
+        private static List<AutoCompleteOrganisation> CalculateRankings(List<SearchCachedOrganisation> matchingOrganisations,
             List<string> searchTerms,
-            string query)
+            string query,
+            bool queryContainsPunctuation)
         {
             return matchingOrganisations
-                .Select(organisation => CalculateRankForOrganisation(organisation, searchTerms, query))
+                .Select(organisation => CalculateRankForOrganisation(organisation, searchTerms, query, queryContainsPunctuation))
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)
                 .ThenBy(mar => mar.Names[0].Name)
                 .Take(10)
                 .ToList();
         }
 
-        private static AutoCompleteOrganisation CalculateRankForOrganisation(
-            SearchCachedOrganisation organisation,
+        private static AutoCompleteOrganisation CalculateRankForOrganisation(SearchCachedOrganisation organisation,
             List<string> searchTerms,
-            string query)
+            string query,
+            bool queryContainsPunctuation)
         {
             var autoCompleteOrganisation = new AutoCompleteOrganisation
             {
@@ -88,7 +94,7 @@ namespace GenderPayGap.WebUI.Search
             for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
             {
                 SearchReadyValue name = organisation.OrganisationNames[nameIndex];
-                autoCompleteOrganisation.Names.Add(CalculateRankForName(name, searchTerms, query, nameIndex));
+                autoCompleteOrganisation.Names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
             }
 
             autoCompleteOrganisation.Ranks = autoCompleteOrganisation.Names
@@ -97,7 +103,7 @@ namespace GenderPayGap.WebUI.Search
                 .First();
 
             double companySizeMultiplier = 1 + (0.2 * (organisation.MinEmployees / 20000)); // Multiply by up to 1.2 for big companies
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < Math.Min(autoCompleteOrganisation.Ranks.Count, 5); i++)
             {
                 autoCompleteOrganisation.Ranks[i] *= companySizeMultiplier;
             }
@@ -108,6 +114,7 @@ namespace GenderPayGap.WebUI.Search
         private static AutoCompleteOrganisationName CalculateRankForName(SearchReadyValue name,
             List<string> searchTerms,
             string query,
+            bool queryContainsPunctuation,
             int nameIndex)
         {
             var rankValues = new List<double>();
@@ -120,9 +127,10 @@ namespace GenderPayGap.WebUI.Search
             {
                 string searchTerm = searchTerms[searchTermIndex];
 
-                for (int wordIndex = 0; wordIndex < name.LowercaseWords.Count; wordIndex++)
+                List<string> words = queryContainsPunctuation ? name.LowercaseWordsWithPunctuation : name.LowercaseWords;
+                for (int wordIndex = 0; wordIndex < words.Count; wordIndex++)
                 {
-                    string word = name.LowercaseWords[wordIndex];
+                    string word = words[wordIndex];
 
                     rankValues.Add(RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
                 }
