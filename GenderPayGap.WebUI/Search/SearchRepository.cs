@@ -15,6 +15,10 @@ namespace GenderPayGap.WebUI.Search
     {
 
         internal static List<SearchCachedOrganisation> CachedOrganisations { get; private set; }
+        internal static Dictionary<string, int> OrganisationNameWords { get; private set; }
+        internal static int MaxOrganisationNameWords { get; private set; }
+        internal static int NumberOfOrganisations { get; private set; }
+
         internal static List<SearchCachedUser> CachedUsers { get; private set; }
         internal static DateTime CacheLastUpdated { get; private set; } = DateTime.MinValue;
 
@@ -24,9 +28,31 @@ namespace GenderPayGap.WebUI.Search
             var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
 
             CachedOrganisations = LoadAllOrganisations(dataRepository);
+            CalculateOrganisationWords();
+            NumberOfOrganisations = CachedOrganisations.Count;
+
             CachedUsers = LoadAllUsers(dataRepository);
 
             CacheLastUpdated = VirtualDateTime.Now;
+        }
+
+        private static void CalculateOrganisationWords()
+        {
+            var currentNames = CachedOrganisations.Select(org => org.OrganisationName);
+            var previousNames = CachedOrganisations.SelectMany(org => org.OrganisationNames);
+            var allNames = currentNames.Concat(previousNames);
+
+            var allWords = allNames.SelectMany(name => name.LowercaseWords);
+
+            Dictionary<string, int> groupedWords = allWords
+                .GroupBy(
+                    word => word,
+                    word => 1,
+                    (word, listOfOnes) => new Tuple<string, int>(word, listOfOnes.Count()))
+                .ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
+
+            OrganisationNameWords = groupedWords;
+            MaxOrganisationNameWords = groupedWords.Values.Max();
         }
 
         private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
@@ -34,14 +60,18 @@ namespace GenderPayGap.WebUI.Search
             return repository
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
+                .Include(o => o.Returns)
+                .ToList()
                 .Select(
                     o => new SearchCachedOrganisation
                     {
                         OrganisationId = o.OrganisationId,
+                        EncryptedId = o.GetEncryptedId(),
                         OrganisationName = new SearchReadyValue(o.OrganisationName),
-                        CompanyNumber = o.CompanyNumber != null ? o.CompanyNumber.Trim() : null,
-                        EmployerReference = o.EmployerReference != null ? o.EmployerReference.Trim() : null,
-                        OrganisationNames = o.OrganisationNames.Select(on => new SearchReadyValue(on.Name)).ToList(),
+                        CompanyNumber = o.CompanyNumber?.Trim(),
+                        EmployerReference = o.EmployerReference?.Trim(),
+                        OrganisationNames = o.OrganisationNames.OrderByDescending(n => n.Created).Select(on => new SearchReadyValue(on.Name)).ToList(),
+                        MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
                         Status = o.Status
                     })
                 .ToList();

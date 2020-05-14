@@ -23,6 +23,7 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
+using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
@@ -32,6 +33,7 @@ namespace GenderPayGap.WebUI.Controllers
     [Route("viewing")]
     public class ViewingController : BaseController
     {
+        private AutoCompleteSearchService autoCompleteSearchService;
 
         #region Constructors
 
@@ -45,7 +47,8 @@ namespace GenderPayGap.WebUI.Controllers
             ISubmissionBusinessLogic submissionBusinessLogic,
             IObfuscator obfuscator,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
+            IWebTracker webTracker,
+            AutoCompleteSearchService autoCompleteSearchService) : base(cache, session, dataRepository, webTracker)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;
@@ -53,6 +56,7 @@ namespace GenderPayGap.WebUI.Controllers
             OrganisationBusinessLogic = organisationBusinessLogic;
             Obfuscator = obfuscator;
             SubmissionBusinessLogic = submissionBusinessLogic;
+            this.autoCompleteSearchService = autoCompleteSearchService;
         }
 
         #endregion
@@ -205,14 +209,14 @@ namespace GenderPayGap.WebUI.Controllers
 
         [ResponseCache(CacheProfileName = "SuggestEmployerNameJs")]
         [HttpGet("suggest-employer-name-js")]
-        public async Task<IActionResult> SuggestEmployerNameJs(string search)
+        public IActionResult SuggestEmployerNameJs(string search)
         {
             if (string.IsNullOrEmpty(search))
             {
                 return Json(new {ErrorCode = HttpStatusCode.BadRequest, ErrorMessage = "Cannot search for a null or empty value"});
             }
 
-            List<SuggestEmployerResult> matches = await ViewingService.SuggestEmployerNameAsync(search.Trim());
+            List<SuggestEmployerResult> matches = autoCompleteSearchService.Search(search);
 
             return Json(new {Matches = matches});
         }
