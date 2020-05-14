@@ -31,15 +31,22 @@ namespace GenderPayGap.WebUI.Search
             if (originalValue != null)
             {
                 MatchCollection matches = Regex.Matches(originalValue);
-                //if (matches.Success)
-                {
-                    return matches
-                        .Select(m => m.Value.ToLower())
-                        .ToList();
-                }
+
+                return matches
+                    .Select(m => m.Value.ToLower())
+                    .Select(RemovePunctuation)
+                    .Where(word => word != "")
+                    .ToList();
             }
 
             return new List<string>();
+        }
+
+        private static string RemovePunctuation(string input)
+        {
+            return input
+                .Replace("'", "")
+                .Replace("-", "");
         }
 
     }
