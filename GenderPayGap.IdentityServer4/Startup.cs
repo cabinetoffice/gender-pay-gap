@@ -229,7 +229,6 @@ namespace GenderPayGap.IdentityServer4
 
             app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
-            app.UseStickySessionMiddleware(Global.StickySessions); //Enable/Disable sticky sessions based on  
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
             app.UseMvcWithDefaultRoute();
 
