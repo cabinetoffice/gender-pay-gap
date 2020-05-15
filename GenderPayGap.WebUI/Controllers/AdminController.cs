@@ -104,41 +104,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
         #endregion
 
-        #region History Action
-
-        [HttpGet("history")]
-        public async Task<IActionResult> History()
-        {
-            var model = new DownloadViewModel();
-            var downloads = new List<DownloadViewModel.Download>();
-            DownloadViewModel.Download download;
-
-            IEnumerable<string> files = await Global.FileRepository.GetFilesAsync(Global.LogPath, "RegistrationLog*.csv", true);
-
-            foreach (string filePath in files)
-            {
-                download = new DownloadViewModel.Download {
-                    Type = "Registration History",
-                    Filepath = filePath,
-                    Title = "Registration History",
-                    Description = "Audit history of approved and rejected registrations."
-                };
-                if (await Global.FileRepository.GetFileExistsAsync(download.Filepath))
-                {
-                    download.Modified = await Global.FileRepository.GetLastWriteTimeAsync(download.Filepath);
-                }
-
-                downloads.Add(download);
-            }
-
-            model.Downloads.OrderByDescending(d => d.Modified).ThenByDescending(d => d.Filename);
-            model.Downloads.AddRange(downloads);
-            
-            return View("History", model);
-        }
-
-        #endregion
-
         #region Download Action
 
         [HttpGet("download")]
