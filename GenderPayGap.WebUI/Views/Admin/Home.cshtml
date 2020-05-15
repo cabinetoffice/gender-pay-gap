@@ -122,24 +122,6 @@
     Latest feedback received: @(Model.LatestFeedbackDate?.ToString("d MMM yyyy"))
 </p>
 
-<p class="govuk-body">
-    <a href="@Url.Action("WebsiteLogs", "DownloadableFile")" class="govuk-link govuk-!-font-weight-bold">Web UI logs</a>
-    <br/>
-    System error, warning, information and bad SIC log files from websites.
-</p>
-
-<p class="govuk-body">
-    <a href="@Url.Action("WebjobLogs", "DownloadableFile")" class="govuk-link govuk-!-font-weight-bold">Webjob logs</a>
-    <br/>
-    System error, warning, information, Stannp and email log files from background webjobs processor.
-</p>
-
-<p class="govuk-body">
-    <a href="@Url.Action("IdentityLogs", "DownloadableFile")" class="govuk-link govuk-!-font-weight-bold">Identity Server logs</a>
-    <br/>
-    System error, warning and information log files from identity server.
-</p>
-
 
 <h2 class="govuk-heading-l">Background Jobs</h2>
 
