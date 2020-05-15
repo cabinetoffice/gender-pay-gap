@@ -36,6 +36,7 @@ using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers.Admin;
 using GenderPayGap.WebUI.Options;
+using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
@@ -327,6 +328,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<CloseAccountViewService>().As<CloseAccountViewService>().InstancePerLifetimeScope();
             
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
+            builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
 
             builder.Register(c => new Mock<IAdminService>().Object).As<IAdminService>().InstancePerLifetimeScope();
             builder.Register(c => Mock.Of<IObfuscator>()).As<IObfuscator>().SingleInstance();
