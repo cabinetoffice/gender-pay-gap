@@ -19,12 +19,7 @@ namespace GenderPayGap.Extensions.AspNetCore
         {
             return builder.UseMiddleware<SecurityHeaderMiddleware>();
         }
-
-        public static IApplicationBuilder UseStickySessionMiddleware(this IApplicationBuilder builder, bool enable)
-        {
-            return builder.UseMiddleware<StickySessionMiddleware>(enable);
-        }
-
+        
         public static IApplicationBuilder UseMaintenancePageMiddleware(this IApplicationBuilder builder, bool enable)
         {
             return builder.UseMiddleware<MaintenancePageMiddleware>(enable);

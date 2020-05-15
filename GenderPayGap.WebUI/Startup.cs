@@ -410,7 +410,6 @@ namespace GenderPayGap.WebUI
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
             app.UseCookiePolicy();
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
-            app.UseStickySessionMiddleware(Global.StickySessions); //Enable/Disable sticky sessions based on  
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
             app.UseMvCApplication(); //Creates the global instance of Program.MvcApplication (equavalent in old Global.asax.cs)
             app.UseMvcWithDefaultRoute();
