@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.Downloadable;
 using GenderPayGap.Extensions;
@@ -100,32 +98,6 @@ namespace GenderPayGap.Tests.Common.Mocks
             return results;
         }
 
-        public async Task<bool> GetAnyFileExistsAsync(string directoryPath, string searchPattern = null, bool recursive = false)
-        {
-            var results = new List<string>();
-            foreach (string key in files.Keys)
-            {
-                if (!key.StartsWithI(directoryPath))
-                {
-                    continue;
-                }
-
-                if (!recursive && key.Substring(directoryPath.Length).TrimStartI("/\\").ContainsAny('/', '\\'))
-                {
-                    continue;
-                }
-
-                if (!string.IsNullOrWhiteSpace(searchPattern) && !Path.GetFileName(key).Like(searchPattern))
-                {
-                    continue;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
         public async Task<long> GetFileSizeAsync(string filePath)
         {
             if (!files.ContainsKey(filePath))
@@ -200,22 +172,6 @@ namespace GenderPayGap.Tests.Common.Mocks
             return files[filePath];
         }
 
-        public async Task<byte[]> ReadBytesAsync(string filePath)
-        {
-            if (!files.ContainsKey(filePath))
-            {
-                throw new FileNotFoundException();
-            }
-
-            return Encoding.UTF8.GetBytes(files[filePath]);
-        }
-
-        public async Task<DataTable> ReadDataTableAsync(string filePath)
-        {
-            string fileContent = await ReadAsync(filePath);
-            return fileContent.ToDataTable();
-        }
-
 
         public async Task WriteAsync(string filePath, byte[] bytes)
         {
@@ -257,40 +213,6 @@ namespace GenderPayGap.Tests.Common.Mocks
             fileWrites[filePath] = VirtualDateTime.Now;
         }
 
-        public async Task<IEnumerable<string>> GetDirectoriesAsync(string directoryPath,
-            string searchPattern = null,
-            bool recursive = false)
-        {
-            var results = new List<string>();
-            foreach (string key in files.Keys)
-            {
-                if (!key.StartsWithI(directoryPath))
-                {
-                    continue;
-                }
-
-                if (!recursive && key.Substring(directoryPath.Length).TrimStartI("/\\").ContainsAny('/', '\\'))
-                {
-                    continue;
-                }
-
-                string path = key.Substring(0, key.Length - Path.GetFileName(key).Length);
-                if (!string.IsNullOrWhiteSpace(searchPattern) && !path.Like(searchPattern))
-                {
-                    continue;
-                }
-
-                results.Add(key);
-            }
-
-            return results;
-        }
-
-        public async Task ReadAsync(string filePath, Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-        
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
     }

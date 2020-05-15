@@ -15,7 +15,6 @@ namespace GenderPayGap.Extensions
 
         public const string NumberChars = "1234567890";
         public const string UpperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        public static string LowerCaseChars = UpperCaseChars.ToLower();
 
         public static bool IsNumber(this string input)
         {
@@ -163,17 +162,6 @@ namespace GenderPayGap.Extensions
             return text;
         }
 
-        public static string RemoveEndI(this string text, string suffix)
-        {
-            int i = text.LastIndexOf(suffix);
-            if (i > -1)
-            {
-                text = text.Substring(0, i);
-            }
-
-            return text;
-        }
-
         public static string Strip(this string text, string excludeChars)
         {
             if (text == null)
@@ -212,23 +200,6 @@ namespace GenderPayGap.Extensions
         }
 
         //Checks if a byte sequence starts with another byte sequence
-        public static bool StartsWith(this string text, byte[] subStr)
-        {
-            if (text.Length < subStr.Length || subStr.Length < 1)
-            {
-                return false;
-            }
-
-            for (var i = 0; i < subStr.Length; i++)
-            {
-                if (text[i] != subStr[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         public static int LineCount(this string text, string newLineChars = null)
         {
@@ -314,32 +285,6 @@ namespace GenderPayGap.Extensions
             }
 
             return includeWhenNoSeparator ? text : null;
-        }
-
-        /// <summary>
-        ///     Returns all characters after the last occurrence of any specified character
-        /// </summary>
-        public static string AfterLastAny(this string text,
-            string separators,
-            StringComparison comparisionType = StringComparison.OrdinalIgnoreCase,
-            bool inclusive = false)
-        {
-            if (comparisionType.IsAny(
-                StringComparison.OrdinalIgnoreCase,
-                StringComparison.CurrentCultureIgnoreCase,
-                StringComparison.InvariantCultureIgnoreCase))
-            {
-                text = text.ToLower();
-                separators = separators.ToLower();
-            }
-
-            int i = text.LastIndexOfAny(separators.ToCharArray(), text.Length - 1);
-            if (i > -1)
-            {
-                return text.Substring(inclusive ? i : i + 1);
-            }
-
-            return null;
         }
 
         public static bool EqualsI(this string original, params string[] target)

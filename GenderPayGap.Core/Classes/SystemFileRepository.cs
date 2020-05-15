@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -23,13 +22,6 @@ namespace GenderPayGap.Core.Classes
         }
 
         public string RootDir => _rootDir.FullName;
-
-        public async Task<IEnumerable<string>> GetDirectoriesAsync(string directoryPath,
-            string searchPattern = null,
-            bool recursive = false)
-        {
-            return await Task.Run(() => GetDirectories(directoryPath, searchPattern = null, recursive));
-        }
 
         public async Task<bool> GetFileExistsAsync(string filePath)
         {
@@ -71,11 +63,6 @@ namespace GenderPayGap.Core.Classes
             return await Task.Run(() => GetFiles(directoryPath, searchPattern, recursive));
         }
 
-        public async Task<bool> GetAnyFileExistsAsync(string directoryPath, string searchPattern = null, bool recursive = false)
-        {
-            return await Task.Run(() => GetAnyFileExists(directoryPath, searchPattern, recursive));
-        }
-
         public async Task<string> ReadAsync(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -90,23 +77,6 @@ namespace GenderPayGap.Core.Classes
 
             return await Task.Run(() => File.ReadAllText(filePath));
         }
-
-        public async Task ReadAsync(string filePath, Stream stream)
-        {
-            await Task.Run(() => Read(filePath, stream));
-        }
-
-        public async Task<byte[]> ReadBytesAsync(string filePath)
-        {
-            return await Task.Run(() => ReadBytes(filePath));
-        }
-
-        public async Task<DataTable> ReadDataTableAsync(string filePath)
-        {
-            IEnumerable<string> fileContent = await GetFilesAsync(filePath);
-            return fileContent.FirstOrDefault()?.ToDataTable();
-        }
-
 
         public async Task AppendAsync(string filePath, string text)
         {
@@ -143,11 +113,6 @@ namespace GenderPayGap.Core.Classes
             return filePath;
         }
 
-        public async Task<IDictionary<string, string>> LoadMetaDataAsync(string filePath)
-        {
-            return await Task.Run(() => LoadMetaData(filePath));
-        }
-
         public async Task<string> GetMetaDataAsync(string filePath, string key)
         {
             return await Task.Run(() => GetMetaData(filePath, key));
@@ -174,36 +139,6 @@ namespace GenderPayGap.Core.Classes
             SaveMetaData(filePath, metaData);
 
             return Task.CompletedTask;
-        }
-
-        private IEnumerable<string> GetDirectories(string directoryPath, string searchPattern = null, bool recursive = false)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-            {
-                directoryPath = _rootDir.FullName;
-            }
-            else if (!Path.IsPathRooted(directoryPath))
-            {
-                directoryPath = Path.Combine(_rootDir.FullName, directoryPath);
-            }
-            else if (directoryPath == "\\")
-            {
-                directoryPath = _rootDir.FullName;
-            }
-
-            if (!Directory.Exists(directoryPath))
-            {
-                throw new DirectoryNotFoundException($"Cannot find directory '{directoryPath}'");
-            }
-
-            string[] results = string.IsNullOrWhiteSpace(searchPattern)
-                ? Directory.GetDirectories(directoryPath, "*.*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                : Directory.GetDirectories(
-                    directoryPath,
-                    searchPattern,
-                    recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-
-            return results;
         }
 
         private bool GetFileExists(string filePath)
@@ -426,63 +361,6 @@ namespace GenderPayGap.Core.Classes
             }
 
             return results;
-        }
-
-        private bool GetAnyFileExists(string directoryPath, string searchPattern = null, bool recursive = false)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-            {
-                throw new ArgumentNullException(nameof(directoryPath));
-            }
-
-            if (!Path.IsPathRooted(directoryPath))
-            {
-                directoryPath = Path.Combine(_rootDir.FullName, directoryPath);
-            }
-
-            if (!Directory.Exists(directoryPath))
-            {
-                throw new DirectoryNotFoundException($"Cannot find directory '{directoryPath}'");
-            }
-
-            string[] results = string.IsNullOrWhiteSpace(searchPattern)
-                ? Directory.GetFiles(directoryPath, "*.*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                : Directory.GetFiles(directoryPath, searchPattern, recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-
-            return results.Any();
-        }
-
-        private void Read(string filePath, Stream stream)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            using (Stream fs = File.OpenRead(filePath))
-            {
-                fs.CopyTo(stream);
-            }
-        }
-
-        private byte[] ReadBytes(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            return File.ReadAllBytes(filePath);
         }
 
         private void Append(string filePath, string text)

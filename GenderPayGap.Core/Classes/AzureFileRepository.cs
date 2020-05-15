@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -45,48 +44,6 @@ namespace GenderPayGap.Core.Classes
         }
 
         public string RootDir => _rootDir.Name;
-
-        public async Task<IEnumerable<string>> GetDirectoriesAsync(string directoryPath,
-            string searchPattern = null,
-            bool recursive = false)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-            {
-                directoryPath = _rootDir.Name;
-            }
-
-            directoryPath = Url.DirToUrlSeparator(directoryPath);
-
-            CloudFileDirectory directory = await GetDirectoryAsync(directoryPath);
-            if (directory == null || !await directory.ExistsAsync())
-            {
-                throw new DirectoryNotFoundException($"Cannot find directory '{directoryPath}'");
-            }
-
-            var token = new FileContinuationToken();
-            FileResultSegment items = await directory.ListFilesAndDirectoriesSegmentedAsync(token);
-
-            var directories = new List<string>();
-
-            foreach (IListFileItem fileDir in items.Results)
-            {
-                if (fileDir is CloudFileDirectory)
-                {
-                    var dir = (CloudFileDirectory) fileDir;
-                    if (string.IsNullOrWhiteSpace(searchPattern) || dir.Name.Like(searchPattern))
-                    {
-                        directories.Add(Url.Combine(directoryPath, dir.Name));
-                    }
-
-                    if (recursive)
-                    {
-                        directories.AddRange(await GetDirectoriesAsync(Url.Combine(directoryPath, dir.Name), searchPattern, recursive));
-                    }
-                }
-            }
-
-            return directories;
-        }
 
         public async Task CreateDirectoryAsync(string directoryPath)
         {
@@ -325,53 +282,6 @@ namespace GenderPayGap.Core.Classes
             }
 
             return await file.DownloadTextAsync();
-        }
-
-        public async Task ReadAsync(string filePath, Stream stream)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            CloudFile file = await GetFileAsync(filePath);
-            if (file == null || !await file.ExistsAsync())
-            {
-                throw new FileNotFoundException($"Cannot find file '{filePath}'");
-            }
-
-            await file.DownloadToStreamAsync(stream);
-        }
-
-        public async Task<byte[]> ReadBytesAsync(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            CloudFile file = await GetFileAsync(filePath);
-            if (file == null || !await file.ExistsAsync())
-            {
-                throw new FileNotFoundException($"Cannot find file '{filePath}'");
-            }
-
-            await file.FetchAttributesAsync();
-            var bytes = new byte[file.Properties.Length];
-            await file.DownloadToByteArrayAsync(bytes, 0);
-            return bytes;
-        }
-
-        public async Task<DataTable> ReadDataTableAsync(string filePath)
-        {
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            string fileContent = await ReadAsync(filePath);
-            return fileContent.ToDataTable();
         }
 
         public async Task AppendAsync(string filePath, string text)

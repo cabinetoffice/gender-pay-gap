@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Filters;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -451,6 +453,14 @@ namespace GenderPayGap.WebUI.Controllers
             FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
+        }
+
+        [Route("/download")]
+        [AllowOnlyTrustedIps(AllowOnlyTrustedIps.IpRangeTypes.EhrcIPRange)]
+        public IActionResult EhrcDownloadOrganisationsForYear(string p)
+        {
+            // TODO implement this method
+            return Json("TODO");
         }
 
     }
