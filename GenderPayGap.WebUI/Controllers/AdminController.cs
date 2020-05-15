@@ -125,11 +125,8 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 return new HttpNotFoundResult($"File '{filePath}' does not exist");
             }
 
-            var model = new DownloadViewModel.Download();
-            model.Filepath = filePath;
-
             //Setup the http response
-            var contentDisposition = new ContentDisposition {FileName = model.Filename, Inline = true};
+            var contentDisposition = new ContentDisposition {FileName = Path.GetFileName(filePath), Inline = true};
             HttpContext.SetResponseHeader("Content-Disposition", contentDisposition.ToString());
 
             /* No Longer required as AspNetCore has response buffering on by default
@@ -137,36 +134,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             Response.BufferOutput = true;
             */
 
-            return Content(await Global.FileRepository.ReadAsync(filePath), model.ContentType);
-        }
-
-        #endregion
-
-        #region Read Action
-
-        [HttpGet("read")]
-        public async Task<IActionResult> Read(string filePath)
-        {
-            //Ensure the file exists
-            if (string.IsNullOrWhiteSpace(filePath) || !await Global.FileRepository.GetFileExistsAsync(filePath))
-            {
-                return new NotFoundResult();
-            }
-
-            var model = new DownloadViewModel.Download();
-            model.Filepath = filePath;
-            string content = await Global.FileRepository.ReadAsync(filePath);
-
-            if (model.ContentType.EqualsI("text/csv"))
-            {
-                model.Datatable = content.ToDataTable();
-            }
-            else
-            {
-                model.Content = content;
-            }
-
-            return View("Read", model);
+            return Content(await Global.FileRepository.ReadAsync(filePath), "text/csv");
         }
 
         #endregion

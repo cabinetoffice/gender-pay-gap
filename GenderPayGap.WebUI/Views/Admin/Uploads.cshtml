@@ -62,7 +62,7 @@
                                 <td>
                                     @if (upload.Modified > DateTime.MinValue)
                                     {
-                                        <a href="@Url.Action("Read", new {filePath = upload.Filepath})">
+                                        <a href="@Url.Action("Download", new {filePath = upload.Filepath})">
                                             <b>@upload.Title</b>
                                         </a>
                                     }
