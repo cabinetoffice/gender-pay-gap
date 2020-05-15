@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI
                 .AddRazorOptions(
                     // we need to explicitly set AllowRecompilingViewsOnFileChange because we use a custom environment "Local" for local dev 
                     // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-2.2#runtime-compilation
-                    options => options.AllowRecompilingViewsOnFileChange = env.IsDevelopment() || Config.IsLocal())
+                    options => options.AllowRecompilingViewsOnFileChange = Config.IsLocal())
                 .AddDataAnnotationsLocalization(
                     options => { options.DataAnnotationLocalizerProvider = DataAnnotationLocalizerProvider.DefaultResourceHandler; });
 

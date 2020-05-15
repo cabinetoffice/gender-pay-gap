@@ -16,7 +16,7 @@ namespace GenderPayGap.Extensions.AspNetCore
         public static IServiceCollection AddRedisCache(this IServiceCollection services, string applicationDiscriminator = null)
         {
             //Add distributed cache service backed by Redis cache
-            if (Debugger.IsAttached || Config.IsDevelopment() || Config.IsEnvironment("Local"))
+            if (Debugger.IsAttached || Config.IsEnvironment("Local"))
             {
                 //Use a memory cache
                 services.AddDistributedMemoryCache();
