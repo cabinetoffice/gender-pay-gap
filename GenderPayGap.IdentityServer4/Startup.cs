@@ -82,7 +82,7 @@ namespace GenderPayGap.IdentityServer4
                 //.AddInMemoryApiResources(Resources.GetApiResources())
                 .AddCustomUserStore();
 
-            if (Debugger.IsAttached || Config.IsDevelopment() || Config.IsLocal())
+            if (Debugger.IsAttached || Config.IsLocal())
             {
                 builder.AddDeveloperSigningCredential();
             }
@@ -104,7 +104,7 @@ namespace GenderPayGap.IdentityServer4
                 .AddRazorOptions(
                     // we need to explicitly set AllowRecompilingViewsOnFileChange because we use a custom environment "Local" for local dev 
                     // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-2.2#runtime-compilation
-                    options => options.AllowRecompilingViewsOnFileChange = env.IsDevelopment() || Config.IsLocal());
+                    options => options.AllowRecompilingViewsOnFileChange =  Config.IsLocal());
 
             //Add the distributed redis cache
             services.AddRedisCache();
@@ -185,7 +185,7 @@ namespace GenderPayGap.IdentityServer4
         public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
             app.UseMiddleware<ExceptionMiddleware>();
-            if (Debugger.IsAttached || Config.IsDevelopment() || Config.IsLocal())
+            if (Debugger.IsAttached || Config.IsLocal())
             {
                 IdentityModelEventSource.ShowPII = true;
 
