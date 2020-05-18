@@ -31,7 +31,7 @@ namespace GenderPayGap.WebUI.Search
 
             bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
 
-            List<string> searchTerms = ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
+            List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
 
@@ -46,10 +46,7 @@ namespace GenderPayGap.WebUI.Search
             return results;
         }
 
-        private static List<string> ExtractSearchTermsFromQuery(string query, bool queryContainsPunctuation)
-        {
-            return WordSplittingRegex.SplitValueIntoWords(query, queryContainsPunctuation);
-        }
+
 
         private static List<SearchCachedOrganisation> GetMatchingOrganisations(List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,

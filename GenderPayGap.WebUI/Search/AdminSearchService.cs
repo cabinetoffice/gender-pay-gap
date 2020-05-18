@@ -13,33 +13,29 @@ namespace GenderPayGap.WebUI.Search
         public AdminSearchResultsViewModel Search(string query)
         {
             query = query.Trim();
-
-            List<string> searchTerms = ExtractSearchTermsFromQuery(query);
+            
+            bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
+            
+            List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
             DateTime timeDetailsLoaded = SearchRepository.CacheLastUpdated; // Do this before we run the search, in case the cache is updated whilst the search is running
 
             var results = new AdminSearchResultsViewModel
             {
-                OrganisationResults = SearchOrganisations(query, searchTerms),
+                OrganisationResults = SearchOrganisations(query, searchTerms, queryContainsPunctuation),
                 UserResults = SearchUsers(searchTerms),
 
                 SearchCacheUpdatedSecondsAgo = (int)VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
             };
             return results;
         }
-
-        private List<string> ExtractSearchTermsFromQuery(string query)
-        {
-            return WordSplittingRegex.SplitValueIntoWords(query);
-        }
-
-
+        
         #region Search Organisations
-        private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query, List<string> searchTerms)
+        private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query, List<string> searchTerms, bool queryContainsPunctuation)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
 
-            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query);
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query, queryContainsPunctuation);
 
             List<SearchCachedOrganisation> matchingOrganisationsOrderedByName =
                 matchingOrganisations.OrderBy(o => o.OrganisationName.OriginalValue.ToLower()).ToList();
@@ -53,13 +49,14 @@ namespace GenderPayGap.WebUI.Search
         private List<SearchCachedOrganisation> GetMatchingOrganisations(
             List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
-            string query)
+            string query,
+            bool queryContainsPunctuation)
         {
             return allOrganisations
                 .Where(
                     organisation =>
                     {
-                        bool nameMatches = CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms);
+                        bool nameMatches = CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms, queryContainsPunctuation);
                         bool employerRefMatches = organisation.EmployerReference == query;
                         bool companyNumberMatches = organisation.CompanyNumber == query;
                         return nameMatches || employerRefMatches || companyNumberMatches;
@@ -67,9 +64,12 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        private bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(SearchCachedOrganisation organisation, List<string> searchTerms)
+        private static bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(
+            SearchCachedOrganisation organisation,
+            List<string> searchTerms,
+            bool queryContainsPunctuation)
         {
-            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms));
+            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms, queryContainsPunctuation));
         }
 
         private List<AdminSearchResultOrganisationViewModel> HighlightOrganisationMatches(
