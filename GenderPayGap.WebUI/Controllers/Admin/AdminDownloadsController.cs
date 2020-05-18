@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -455,12 +456,75 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [Route("/download")]
-        [AllowOnlyTrustedIps(AllowOnlyTrustedIps.IpRangeTypes.EhrcIPRange)]
-        public IActionResult EhrcDownloadOrganisationsForYear(string p)
+        [HttpGet("downloads/erhc-all-organisations")]
+        public FileContentResult EhrcAllOrganisationsForYear_AdminPage(int year)
         {
-            // TODO implement this method
-            return Json("TODO");
+            return GenerateEhrcAllOrganisationsForYearFile(year);
+        }
+
+        [Route("/download"
+             /* This is "/download" rather than "download" because the URLs we've shared with the EHRC are of the format:
+              https://gender-pay-gap.service.gov.uk/download?p=App_Data%5CDownloads%5CGPG-Organisations_2017-18.csv
+              just "download" would make the URLs "/admin/download" */
+        )]
+        [AllowOnlyTrustedIps(AllowOnlyTrustedIps.IpRangeTypes.EhrcIPRange)]
+        public IActionResult EhrcAllOrganisationsForYear_EhrcIpProtectedLink(string p)
+        {
+            // Get year from query string
+            Match match = Regex.Match(p, @"^App_Data\\Downloads\\GPG-Organisations_(?<year4digits>\d\d\d\d)-(?<year2digits>\d\d)\.csv$");
+            if (match.Success)
+            {
+                string year4digitsString = match.Groups["year4digits"].Value;
+                string year2digitsString = match.Groups["year2digits"].Value;
+
+                if (int.TryParse(year4digitsString, out int year4digits) &&
+                    int.TryParse(year2digitsString, out int year2digits) &&
+                    (year4digits + 1) % 100 == year2digits)
+                {
+                    return GenerateEhrcAllOrganisationsForYearFile(year4digits);
+                }
+            }
+
+            return NotFound();
+        }
+
+        private FileContentResult GenerateEhrcAllOrganisationsForYearFile(int year)
+        {
+            List<Organisation> organisations = dataRepository
+                .GetAll<Organisation>()
+                .Include(org => org.OrganisationAddresses)
+                .Include(org => org.OrganisationSicCodes)
+                .Include(org => org.OrganisationScopes)
+                .Include(org => org.Returns)
+                .Include(org => org.UserOrganisations)
+                .ToList();
+
+            var records = organisations.Select(
+                    o => new
+                    {
+                        OrganisationId = o.OrganisationId,
+                        EmployerReference = o.EmployerReference,
+                        OrganisationName = o.OrganisationName,
+                        CompanyNo = o.CompanyNumber,
+                        Sector = o.SectorType,
+                        Status = o.Status,
+                        StatusDate = o.StatusDate,
+                        StatusDetails = o.StatusDetails,
+                        Address = o.GetLatestAddress()?.GetAddressString(),
+                        SicCodes = o.GetSicCodeIdsString(),
+                        LatestRegistrationDate = o.UserOrganisations.OrderByDescending(uo => uo.Created).FirstOrDefault()?.Created,
+                        LatestRegistrationMethod = o.UserOrganisations.OrderByDescending(uo => uo.Created).FirstOrDefault()?.Method.ToString(),
+                        LatestReturn = o.GetLatestReturn()?.Modified,
+                        ScopeStatus = o.GetLatestScopeForSnapshotYear(year)?.ScopeStatus,
+                        ScopeDate = o.GetLatestScopeForSnapshotYear(year)?.ScopeStatusDate,
+                        Created = o.Created,
+                    })
+                .ToList();
+
+            string fileDownloadName = $"GPG-Organisations_{year}-{(year + 1) % 100}.csv";
+            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
         }
 
     }

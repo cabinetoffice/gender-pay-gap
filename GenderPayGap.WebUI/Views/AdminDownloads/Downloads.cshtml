@@ -35,12 +35,12 @@
         <h1 class="govuk-heading-xl">
             Downloads
         </h1>
-        
+
 
         <h2 class="govuk-heading-m">
             Organisations
         </h2>
-        
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadAllOrganisations", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -49,12 +49,12 @@
             <br />
             A list of all organisations
         </p>
-        
+
 
         <h2 class="govuk-heading-m">
             Orphan organisations
         </h2>
-        
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadOrphanOrganisations", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -63,12 +63,12 @@
             <br />
             In-scope organisations who no longer who have any registered or registering users
         </p>
-        
+
 
         <h2 class="govuk-heading-m">
             Addresses
         </h2>
-        
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadOrganisationAddresses", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -77,12 +77,12 @@
             <br />
             A list of registered organisation addresses for active organisations
         </p>
-        
+
 
         <h2 class="govuk-heading-m">
             Scopes
         </h2>
-        
+
         @foreach (var year in Model.ReportingYears)
         {
             <p class="govuk-body">
@@ -94,12 +94,12 @@
                 The latest organisation scope statuses for each organisation for @(year)-@((year + 1) % 100)
             </p>
         }
-        
+
 
         <h2 class="govuk-heading-m">
             Submissions
         </h2>
-        
+
         @foreach (var year in Model.ReportingYears)
         {
             <p class="govuk-body">
@@ -111,12 +111,12 @@
                 The reported GPG data for all organisations for @(year)-@((year + 1) % 100)
             </p>
         }
-        
+
 
         <h2 class="govuk-heading-m">
             Full submission history
         </h2>
-        
+
         @foreach (var year in Model.ReportingYears)
         {
             <p class="govuk-body">
@@ -128,12 +128,12 @@
                 The full history of changes each organisation made the their submission for @(year)-@((year + 1) % 100)
             </p>
         }
-        
+
 
         <h2 class="govuk-heading-m">
             Late Submissions
         </h2>
-        
+
         @foreach (var year in Model.ReportingYears)
         {
             <p class="govuk-body">
@@ -145,11 +145,11 @@
                 Organisations who reported or changed their submission late for @(year)-@((year + 1) % 100)
             </p>
         }
-        
+
         <h2 class="govuk-heading-m">
             Users
         </h2>
-                
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadAllUsers", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -158,7 +158,7 @@
             <br />
             A list of all user accounts and their statuses
         </p>
-        
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadUserOrganisationRegistrations", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -167,7 +167,7 @@
             <br />
             A list of all organisations that have been registered by a user. This includes all users for each organisation
         </p>
-        
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadUnverifiedUserOrganisationRegistrations", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -176,11 +176,11 @@
             <br />
             A list of all unverified organisations pending verification from a user
         </p>
-        
+
         <h2 class="govuk-heading-m">
             User Consent
         </h2>
-        
+
         <p class="govuk-body">
             <a href="@Url.Action("DownloadUserConsentSendUpdates", "AdminDownloads")"
                class="govuk-link govuk-!-font-weight-bold">
@@ -198,6 +198,31 @@
             <br />
             Users who answered "Yes" to "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"
         </p>
+
+
+        <h2 class="govuk-heading-m">
+            EHRC list of Organisations with latest Returns and Scopes for each year.
+        </h2>
+        
+        <p class="govuk-body">
+            These files are accessible to the EHRC via IP-protected links in this format:
+            <br />
+            <span class="govuk-!-font-size-16">
+                https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations_2017-18.csv
+            </span>
+        </p>
+
+        @foreach (var year in Model.ReportingYears)
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("EhrcAllOrganisationsForYear_AdminPage", "AdminDownloads", new { year = year })"
+                   class="govuk-link govuk-!-font-weight-bold">
+                    EHRC Organisations for @(year)-@((year + 1) % 100)
+                </a>
+                <br />
+                Organisations who reported or changed their submission late for @(year)-@((year + 1) % 100)
+            </p>
+        }
 
     </div>
 </div>
