@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Extensions;
@@ -16,9 +17,8 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
+using CompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
 namespace GenderPayGap.WebUI.Classes
 {
