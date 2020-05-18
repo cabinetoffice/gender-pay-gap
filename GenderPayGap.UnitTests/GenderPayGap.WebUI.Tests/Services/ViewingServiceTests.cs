@@ -306,12 +306,12 @@ namespace GenderPayGap.WebUI.Tests.Services
                 _mockCommonLogic.Object);
 
             // Test
-            List<SuggestEmployerResult> assertResults = await testService.SuggestEmployerNameAsync("testing 123");
+            List<SuggestOrganisationResult> assertResults = await testService.SuggestEmployerNameAsync("testing 123");
 
             Assert.That(assertResults.Count == testRecords.Count);
             for (var i = 0; i < assertResults.Count; i++)
             {
-                SuggestEmployerResult result = assertResults[i];
+                SuggestOrganisationResult result = assertResults[i];
                 Assert.That(result.Id == i.ToString());
                 Assert.That(result.Text == $"Org{i.ToString()}");
             }

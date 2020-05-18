@@ -216,7 +216,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return Json(new {ErrorCode = HttpStatusCode.BadRequest, ErrorMessage = "Cannot search for a null or empty value"});
             }
 
-            List<SuggestEmployerResult> matches = autoCompleteSearchService.Search(search);
+            List<SuggestOrganisationResult> matches = autoCompleteSearchService.Search(search);
 
             return Json(new {Matches = matches});
         }

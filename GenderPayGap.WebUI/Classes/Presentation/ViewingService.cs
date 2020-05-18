@@ -30,7 +30,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             int page,
             int pageSize);
 
-        Task<List<SuggestEmployerResult>> SuggestEmployerNameAsync(string search);
+        Task<List<SuggestOrganisationResult>> SuggestEmployerNameAsync(string search);
         Task<List<SicCodeSearchResult>> GetListOfSicCodeSuggestionsAsync(string search);
 
     }
@@ -112,13 +112,13 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             };
         }
 
-        public async Task<List<SuggestEmployerResult>> SuggestEmployerNameAsync(string searchText)
+        public async Task<List<SuggestOrganisationResult>> SuggestEmployerNameAsync(string searchText)
         {
             IEnumerable<KeyValuePair<string, EmployerSearchModel>> results = await SearchRepository.SuggestAsync(
                 searchText,
                 $"{nameof(EmployerSearchModel.Name)};{nameof(EmployerSearchModel.PreviousName)};{nameof(EmployerSearchModel.Abbreviations)}");
 
-            var matches = new List<SuggestEmployerResult>();
+            var matches = new List<SuggestOrganisationResult>();
             foreach (KeyValuePair<string, EmployerSearchModel> result in results)
             {
                 //Ensure all names in suggestions are unique
@@ -128,7 +128,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 }
 
                 matches.Add(
-                    new SuggestEmployerResult {
+                    new SuggestOrganisationResult {
                         Id = result.Value.OrganisationIdEncrypted, Text = result.Value.Name, PreviousName = result.Value.PreviousName
                     });
             }

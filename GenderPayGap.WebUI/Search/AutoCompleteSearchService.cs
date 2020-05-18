@@ -25,7 +25,7 @@ namespace GenderPayGap.WebUI.Search
     public class AutoCompleteSearchService
     {
 
-        public List<SuggestEmployerResult> Search(string query)
+        public List<SuggestOrganisationResult> Search(string query)
         {
             query = query.Trim().ToLower();
 
@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Search
 
             List<AutoCompleteOrganisation> top10Organisations = TakeTop10RankingOrganisations(organisationsWithRankings);
 
-            List<SuggestEmployerResult> results = ConvertOrganisationsToSearchResults(top10Organisations);
+            List<SuggestOrganisationResult> results = ConvertOrganisationsToSearchResults(top10Organisations);
 
             return results;
         }
@@ -148,7 +148,7 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        private static List<SuggestEmployerResult> ConvertOrganisationsToSearchResults(List<AutoCompleteOrganisation> orderedOrganisations)
+        private static List<SuggestOrganisationResult> ConvertOrganisationsToSearchResults(List<AutoCompleteOrganisation> orderedOrganisations)
         {
             return orderedOrganisations
                 .Select(org =>
@@ -165,7 +165,7 @@ namespace GenderPayGap.WebUI.Search
                         previousName = highestRankedName.Name;
                     }
 
-                    var result = new SuggestEmployerResult
+                    var result = new SuggestOrganisationResult
                     {
                         Id = org.EncryptedId,
                         Text = currentName.Name,
