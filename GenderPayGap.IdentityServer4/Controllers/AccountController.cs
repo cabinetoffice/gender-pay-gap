@@ -192,7 +192,6 @@ namespace GenderPayGap.IdentityServer4.Controllers
                 else
                 {
                     //Prompt unknown users same as with known users to prevent guessing of valid usernames
-                    //Note: Its OK here to use the local web cache since sticky sessions are used by Azure
                     string login = await _cache.GetStringAsync($"{model.Username}:login");
 
                     DateTime loginDate = string.IsNullOrWhiteSpace(login) ? DateTime.MinValue : login.BeforeFirst("|").ToDateTime();
