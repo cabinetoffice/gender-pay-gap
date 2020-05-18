@@ -37,9 +37,11 @@ namespace GenderPayGap.WebUI.Search
 
             List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, queryContainsPunctuation);
 
-            List<AutoCompleteOrganisation> orderedOrganisations = CalculateRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
+            List<AutoCompleteOrganisation> organisationsWithRankings = CalculateRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
 
-            List<SuggestEmployerResult> results = ConvertOrganisationsToSearchResults(orderedOrganisations);
+            List<AutoCompleteOrganisation> top10Organisations = TakeTop10RankingOrganisations(organisationsWithRankings);
+
+            List<SuggestEmployerResult> results = ConvertOrganisationsToSearchResults(top10Organisations);
 
             return results;
         }
@@ -74,9 +76,6 @@ namespace GenderPayGap.WebUI.Search
         {
             return matchingOrganisations
                 .Select(organisation => CalculateRankForOrganisation(organisation, searchTerms, query, queryContainsPunctuation))
-                .RankHelperOrderByListOfDoubles(name => name.Ranks)
-                .ThenBy(mar => mar.Names[0].Name)
-                .Take(10)
                 .ToList();
         }
 
@@ -141,6 +140,15 @@ namespace GenderPayGap.WebUI.Search
                 Name = name.OriginalValue,
                 Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
             };
+        }
+
+        private List<AutoCompleteOrganisation> TakeTop10RankingOrganisations(List<AutoCompleteOrganisation> organisationsWithRankings)
+        {
+            return organisationsWithRankings
+                .RankHelperOrderByListOfDoubles(name => name.Ranks)
+                .ThenBy(mar => mar.Names[0].Name)
+                .Take(10)
+                .ToList();
         }
 
         private static List<SuggestEmployerResult> ConvertOrganisationsToSearchResults(List<AutoCompleteOrganisation> orderedOrganisations)
