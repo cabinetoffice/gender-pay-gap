@@ -464,13 +464,25 @@ namespace GenderPayGap.WebUI.Controllers
 
         [Route("/download"
              /* This is "/download" rather than "download" because the URLs we've shared with the EHRC are of the format:
-              https://gender-pay-gap.service.gov.uk/download?p=App_Data%5CDownloads%5CGPG-Organisations_2017-18.csv
+              https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations_2017-18.csv
               just "download" would make the URLs "/admin/download" */
         )]
         [AllowOnlyTrustedIps(AllowOnlyTrustedIps.IpRangeTypes.EhrcIPRange)]
-        public IActionResult EhrcAllOrganisationsForYear_EhrcIpProtectedLink(string p)
+        public IActionResult EhrcAllOrganisationsForYear_EhrcIpProtectedLink(
+            string p
+            /* The EHRC are given URLs of the form:
+               https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations_2017-18.csv
+               So this query parameter 'p' is of the form
+               App_Data\Downloads\GPG-Organisations_2017-18.csv
+
+               Previously, we would use 'p' to go and find a real file (in the App_Data\Downloads folder).
+               But now, we generate the file on-the-fly from the database.
+               So now all we need to do is check that 'p' is the filename of one of the files we support
+               and extract the year from the URL
+            */
+        )
         {
-            // Get year from query string
+            // Check if query is for an 'EHRC All Organisations file' and get year from query parameter
             Match match = Regex.Match(p, @"^App_Data\\Downloads\\GPG-Organisations_(?<year4digits>\d\d\d\d)-(?<year2digits>\d\d)\.csv$");
             if (match.Success)
             {
