@@ -93,7 +93,8 @@ namespace GenderPayGap.WebUI
             services.AddHttpContextAccessor();
 
             //Create the MVC service
-            services.AddMvc(
+            IMvcBuilder mvcBuilder = services
+                .AddMvc(
                     options =>
                     {
                         options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
@@ -106,14 +107,19 @@ namespace GenderPayGap.WebUI
                     })
                 .AddControllersAsServices() // Add controllers as services so attribute filters be resolved in contructors.
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                // Set the default resolver to use Pascalcase instead of the default camelCase which may break Ajaz responses
-                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
-                .AddRazorOptions(
-                    // we need to explicitly set AllowRecompilingViewsOnFileChange because we use a custom environment "Local" for local dev 
-                    // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-2.2#runtime-compilation
-                    options => options.AllowRecompilingViewsOnFileChange = Config.IsLocal())
+                // Set the default resolver to use Pascalcase instead of the default camelCase which may break Ajaz responses 
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                })
                 .AddDataAnnotationsLocalization(
                     options => { options.DataAnnotationLocalizerProvider = DataAnnotationLocalizerProvider.DefaultResourceHandler; });
+
+            if (Config.IsLocal())
+            {
+                mvcBuilder.AddRazorRuntimeCompilation();
+            }
 
             //Add antiforgery token by default to forms
             services.AddAntiforgery();

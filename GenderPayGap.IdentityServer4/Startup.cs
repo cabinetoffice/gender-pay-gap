@@ -98,12 +98,14 @@ namespace GenderPayGap.IdentityServer4
             //This is to allow access to the current http context anywhere
             services.AddHttpContextAccessor();
 
-            services.AddMvc(options => { options.AddCacheProfiles(); })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddRazorOptions(
-                    // we need to explicitly set AllowRecompilingViewsOnFileChange because we use a custom environment "Local" for local dev 
-                    // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-2.2#runtime-compilation
-                    options => options.AllowRecompilingViewsOnFileChange =  Config.IsLocal());
+            IMvcBuilder mvcBuilder = services
+                .AddMvc(options => { options.AddCacheProfiles(); })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            if (Config.IsLocal())
+            {
+                mvcBuilder.AddRazorRuntimeCompilation();
+            }
 
             //Add the distributed redis cache
             services.AddRedisCache();
