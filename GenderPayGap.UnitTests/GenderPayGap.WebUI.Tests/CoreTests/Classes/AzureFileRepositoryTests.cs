@@ -16,7 +16,7 @@ namespace GenderPayGap.Core.Tests.Classes
             var actualException = Assert.Throws<ArgumentNullException>(() => { new AzureFileRepository(connectionString, null); });
 
             // Assert
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: connectionString", actualException.Message);
+            Assert.AreEqual("Value cannot be null. (Parameter 'connectionString')", actualException.Message);
         }
 
         [TestCase("")]
@@ -28,7 +28,7 @@ namespace GenderPayGap.Core.Tests.Classes
                 Assert.Throws<ArgumentNullException>(() => { new AzureFileRepository("some connection string", shareName); });
 
             // Assert
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: shareName", actualException.Message);
+            Assert.AreEqual("Value cannot be null. (Parameter 'shareName')", actualException.Message);
         }
 
     }

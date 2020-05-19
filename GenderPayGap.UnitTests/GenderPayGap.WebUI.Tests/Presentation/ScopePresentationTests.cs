@@ -269,14 +269,14 @@ namespace GenderPayGap.Tests
 
             var ex = Assert.ThrowsAsync<ArgumentOutOfRangeException>(
                 () => testScopePresentation.SavePresumedScopeAsync(testState, testSnapshotYear));
-            Assert.That(ex.Message.Contains("Parameter name: snapshotYear"));
+            Assert.That(ex.Message.Contains("(Parameter 'snapshotYear')"));
 
             // less than the prev snapshot year
             testSnapshotYear -= SectorTypes.Private.GetAccountingStartDate().Year - 2;
             ex = Assert.ThrowsAsync<ArgumentOutOfRangeException>(
                 () => testScopePresentation.SavePresumedScopeAsync(testState, testSnapshotYear));
 
-            Assert.That(ex.Message.Contains("Parameter name: snapshotYear"));
+            Assert.That(ex.Message.Contains("(Parameter 'snapshotYear')"));
         }
 
         #endregion
