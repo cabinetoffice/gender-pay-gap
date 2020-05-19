@@ -91,8 +91,6 @@ namespace GenderPayGap.Extensions.AspNetCore
                 return default;
             }
 
-            bytes = Encryption.Decompress(bytes);
-
             if (bytes == null || bytes.Length == 0)
             {
                 return default;
@@ -126,7 +124,6 @@ namespace GenderPayGap.Extensions.AspNetCore
                 if (str.Length > 250)
                 {
                     byte[] bytes = Encoding.UTF8.GetBytes(str);
-                    bytes = Encryption.Compress(bytes);
                     _httpContextAccessor.HttpContext.Session.Set(key, bytes);
                     Dirty = true;
                     return;
