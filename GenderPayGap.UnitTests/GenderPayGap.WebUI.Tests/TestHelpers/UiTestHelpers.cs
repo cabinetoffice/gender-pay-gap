@@ -39,11 +39,11 @@ using GenderPayGap.WebUI.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -117,8 +117,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             var requestMock = new Mock<HttpRequest>();
 
             var requestHeaders = new HeaderDictionary();
-            //requestMock.Setup(x => x.GetUri()).Returns(Uri);
-            var requestCookies = new RequestCookieCollection(
+            var requestCookies = new MockRequestCookieCollection(
                 new Dictionary<string, string> {
                     {
                         "cookie_settings",
@@ -203,8 +202,10 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             {
                 baseController.ControllerContext = controllerContextMock;
 
+                var mockTempDataSerializer = new Mock<TempDataSerializer>();
+
                 //Setup temp data
-                baseController.TempData = new TempDataDictionary(httpContextMock.Object, new SessionStateTempDataProvider());
+                baseController.TempData = new TempDataDictionary(httpContextMock.Object, new SessionStateTempDataProvider(mockTempDataSerializer.Object));
 
                 //Setup the mockUrlHelper for the controller with the calling action from the Route Data
                 if (baseController.RouteData != null
