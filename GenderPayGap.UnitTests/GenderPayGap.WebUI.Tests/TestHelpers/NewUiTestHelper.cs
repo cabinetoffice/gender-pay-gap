@@ -35,7 +35,6 @@ using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -76,7 +75,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             var requestMock = new Mock<HttpRequest>();
             var requestForm = new FormCollection(requestFormValues);
             var requestHeaders = new HeaderDictionary();
-            var requestCookies = new RequestCookieCollection(
+            var requestCookies = new MockRequestCookieCollection(
                 new Dictionary<string, string> {
                     {
                         "cookie_settings",
