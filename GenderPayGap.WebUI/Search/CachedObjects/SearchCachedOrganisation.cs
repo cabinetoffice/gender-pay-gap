@@ -3,7 +3,7 @@ using GenderPayGap.Core;
 
 namespace GenderPayGap.WebUI.Search.CachedObjects {
 
-    internal class SearchCachedOrganisation
+    public class SearchCachedOrganisation
     {
         public long OrganisationId { get; set; }
         public string EncryptedId { get; set; }

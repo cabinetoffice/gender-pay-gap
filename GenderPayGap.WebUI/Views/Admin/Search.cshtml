@@ -10,45 +10,6 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@{
-    object HighlightMatches(AdminSearchMatchViewModel searchMatch)
-    {
-        IHtmlContent startComment = Html.Raw("<!--");
-        IHtmlContent endComment = Html.Raw("-->");
-
-        Func<object, object> html =
-            @<text>
-                <span class="admin-search-highlighted">
-                    @(startComment)
-                    @{
-                        string name = searchMatch.Text;
-                        List<AdminSearchMatchGroupViewModel> matchGroups = searchMatch.MatchGroups;
-
-                        var previousMatchEnd = 0;
-                        foreach (AdminSearchMatchGroupViewModel matchGroup in matchGroups)
-                        {
-                            string nonBoldText = name.Substring(previousMatchEnd, matchGroup.Start - previousMatchEnd);
-                            string boldText = name.Substring(matchGroup.Start, matchGroup.Length);
-
-                            // The HTML / C# below looks a bit odd and oddly-formatted
-                            // This is deliberate
-                            // We do this because we want to avoid spaces between the text
-                            @(endComment)@(nonBoldText)<b>@(boldText)</b>@(startComment)
-
-                            previousMatchEnd = matchGroup.Start + matchGroup.Length;
-                        }
-
-                        string finalNonBoldText = name.Substring(previousMatchEnd, name.Length - previousMatchEnd);
-                    }
-                    @(endComment)@(finalNonBoldText)
-                </span>
-             </text>;
-
-        return html(new object());
-    }
-
-}
-
 @section BeforeMain {
     @{
         var crumbs = new List<CrumbViewModel>
@@ -134,13 +95,13 @@
                                     <td class="govuk-table__cell">
                                         <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId}))"
                                            class="govuk-link">
-                                            @(HighlightMatches(organisation.OrganisationName))
+                                            @organisation.OrganisationName
                                         </a>
 
-                                        @foreach (AdminSearchMatchViewModel previousName in organisation.OrganisationPreviousNames)
+                                        @foreach (string previousName in organisation.OrganisationPreviousNames)
                                         {
                                             <br/>
-                                            @:previously @(HighlightMatches(previousName))
+                                            @:previously @previousName
                                         }
 
                                         @if (organisation.EmployerRef != null)
@@ -187,10 +148,10 @@
                                     <td class="govuk-table__cell">
                                         <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
                                            class="govuk-link">
-                                            @(HighlightMatches(user.UserFullName))
+                                            @user.UserFullName
                                         </a>
                                         <br/>
-                                        @(HighlightMatches(user.UserEmailAddress))
+                                        @user.UserEmailAddress
 
                                         @if (user.Status != UserStatuses.Active)
                                         {

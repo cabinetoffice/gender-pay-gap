@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GenderPayGap.WebUI.Models.Search
+﻿namespace GenderPayGap.WebUI.Models.Search
 {
 
     public class SuggestOrganisationResult
@@ -9,7 +7,6 @@ namespace GenderPayGap.WebUI.Models.Search
         public string Id { get; set; }
         public string Text { get; set; }
         public string PreviousName { get; set; }
-        public List<double> Rank { get; set; }
 
     }
 

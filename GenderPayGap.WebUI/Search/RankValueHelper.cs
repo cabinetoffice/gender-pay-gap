@@ -7,6 +7,17 @@ namespace GenderPayGap.WebUI.Search
 {
     public static class RankValueHelper
     {
+        
+        public static List<double> ApplyCompanySizeMultiplierToRanks(List<double> ranks, int minEmployees)
+        {
+            double companySizeMultiplier = 1 + (0.2 * (minEmployees / 20000)); // Multiply by up to 1.2 for big companies
+            for (int i = 0; i < Math.Min(ranks.Count, 5); i++)
+            {
+                ranks[i] *= companySizeMultiplier;
+            }
+
+            return ranks;
+        }
 
         public static double CalculateRankValueForPrefixMatch(SearchReadyValue name, string query)
         {

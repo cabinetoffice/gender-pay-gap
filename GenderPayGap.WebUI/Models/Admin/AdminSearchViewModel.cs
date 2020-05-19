@@ -26,8 +26,8 @@ namespace GenderPayGap.WebUI.Models.Admin
     public class AdminSearchResultOrganisationViewModel
     {
 
-        public AdminSearchMatchViewModel OrganisationName { get; set; }
-        public List<AdminSearchMatchViewModel> OrganisationPreviousNames { get; set; }
+        public string OrganisationName { get; set; }
+        public List<string> OrganisationPreviousNames { get; set; }
         public long OrganisationId { get; set; }
         public string EmployerRef { get; set; }
         public string CompanyNumber { get; set; }
@@ -38,26 +38,11 @@ namespace GenderPayGap.WebUI.Models.Admin
     public class AdminSearchResultUserViewModel
     {
 
-        public AdminSearchMatchViewModel UserFullName { get; set; }
-        public AdminSearchMatchViewModel UserEmailAddress { get; set; }
+        public string UserFullName { get; set; }
+        public string UserEmailAddress { get; set; }
         public long UserId { get; set; }
         public UserStatuses Status { get; set; }
 
     }
-
-    public class AdminSearchMatchViewModel
-    {
-
-        public string Text { get; set; }
-        public List<AdminSearchMatchGroupViewModel> MatchGroups { get; set; }
-
-    }
-
-    public class AdminSearchMatchGroupViewModel
-    {
-
-        public int Start { get; set; }
-        public int Length { get; set; }
-
-    }
+    
 }
