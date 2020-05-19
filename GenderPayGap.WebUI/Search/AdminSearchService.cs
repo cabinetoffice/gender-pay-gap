@@ -1,15 +1,33 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Search.CachedObjects;
 
 namespace GenderPayGap.WebUI.Search
 {
+    
+    internal class RankedAdminSearchOrganisation
+    {
+        
+        public AdminSearchResultOrganisationViewModel AdminSearchResult { get; set; }
+        public List<RankedAdminSearchOrganisationName> Names { get; set; }
+        public RankedAdminSearchOrganisationName TopName { get; set; }
+
+    }
+    
+    internal class RankedAdminSearchOrganisationName
+    {
+        public string Name { get; set; }
+        public List<double> Ranks { get; set; }
+    }
+
+    
     public class AdminSearchService
     {
-
+        
         public AdminSearchResultsViewModel Search(string query)
         {
             query = query.Trim();
@@ -18,7 +36,8 @@ namespace GenderPayGap.WebUI.Search
             
             List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
-            DateTime timeDetailsLoaded = SearchRepository.CacheLastUpdated; // Do this before we run the search, in case the cache is updated whilst the search is running
+            // Do this before we run the search, in case the cache is updated whilst the search is running
+            DateTime timeDetailsLoaded = SearchRepository.CacheLastUpdated; 
 
             var results = new AdminSearchResultsViewModel
             {
@@ -37,13 +56,14 @@ namespace GenderPayGap.WebUI.Search
 
             List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query, queryContainsPunctuation);
 
-            List<SearchCachedOrganisation> matchingOrganisationsOrderedByName =
-                matchingOrganisations.OrderBy(o => o.OrganisationName.OriginalValue.ToLower()).ToList();
+            List<RankedAdminSearchOrganisation> organisationsWithRankings = CalculateRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
 
-            List<AdminSearchResultOrganisationViewModel> matchingOrganisationsWithHighlightedMatches =
-                HighlightOrganisationMatches(matchingOrganisationsOrderedByName, searchTerms, query);
+            List<RankedAdminSearchOrganisation> rankedOrganisations = OrderByRank(organisationsWithRankings);
+            
+            List<AdminSearchResultOrganisationViewModel> results = ConvertOrganisationsToSearchResults(rankedOrganisations);
 
-            return matchingOrganisationsWithHighlightedMatches;
+            return results;
+ 
         }
 
         private List<SearchCachedOrganisation> GetMatchingOrganisations(
@@ -56,7 +76,8 @@ namespace GenderPayGap.WebUI.Search
                 .Where(
                     organisation =>
                     {
-                        bool nameMatches = CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms, queryContainsPunctuation);
+                        bool nameMatches = SearchHelper
+                            .CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms, queryContainsPunctuation);
                         bool employerRefMatches = organisation.EmployerReference == query;
                         bool companyNumberMatches = organisation.CompanyNumber == query;
                         return nameMatches || employerRefMatches || companyNumberMatches;
@@ -64,53 +85,117 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        private static bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(
-            SearchCachedOrganisation organisation,
+        
+        private static List<RankedAdminSearchOrganisation> CalculateRankings(List<SearchCachedOrganisation> matchingOrganisations,
             List<string> searchTerms,
+            string query,
             bool queryContainsPunctuation)
         {
-            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms, queryContainsPunctuation));
-        }
-
-        private List<AdminSearchResultOrganisationViewModel> HighlightOrganisationMatches(
-            List<SearchCachedOrganisation> organisations,
-            List<string> searchTerms,
-            string query)
-        {
-            return organisations
-                .Select(
-                    organisation =>
-                    {
-                        AdminSearchMatchViewModel matchGroupsForCurrentName = GetMatchGroups(organisation.OrganisationName.OriginalValue, searchTerms);
-
-                        IEnumerable<SearchReadyValue> previousNames = organisation.OrganisationNames
-                            .Where(on => on.OriginalValue != organisation.OrganisationName.OriginalValue);
-
-                        List<AdminSearchMatchViewModel> matchGroupsForPreviousNames = previousNames
-                            .Where(on => on.Matches(searchTerms))
-                            .Select(on => GetMatchGroups(on.OriginalValue, searchTerms))
-                            .ToList();
-
-                        string employerRefMatch = organisation.EmployerReference == query
-                            ? organisation.EmployerReference
-                            : null;
-
-                        string companyNumberMatch = organisation.CompanyNumber == query
-                            ? organisation.CompanyNumber
-                            : null;
-
-                        return new AdminSearchResultOrganisationViewModel
-                        {
-                            OrganisationName = matchGroupsForCurrentName,
-                            OrganisationPreviousNames = matchGroupsForPreviousNames,
-                            EmployerRef = employerRefMatch,
-                            CompanyNumber = companyNumberMatch,
-                            OrganisationId = organisation.OrganisationId,
-                            Status = organisation.Status
-                        };
-                    })
+            return matchingOrganisations
+                .Select(organisation => CalculateRankForOrganisation(organisation, searchTerms, query, queryContainsPunctuation))
                 .ToList();
         }
+
+        private static RankedAdminSearchOrganisation CalculateRankForOrganisation(SearchCachedOrganisation organisation,
+            List<string> searchTerms,
+            string query,
+            bool queryContainsPunctuation)
+        {
+            
+            var rankedAdminSearchOrganisation = new RankedAdminSearchOrganisation
+            {
+                Names = new List<RankedAdminSearchOrganisationName>(),
+            };
+
+            
+            for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
+            {
+                SearchReadyValue name = organisation.OrganisationNames[nameIndex];
+                rankedAdminSearchOrganisation.Names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
+            }
+
+            rankedAdminSearchOrganisation.TopName = rankedAdminSearchOrganisation.Names
+                .RankHelperOrderByListOfDoubles(name => name.Ranks)
+                .First();
+
+            var ranks = RankValueHelper.ApplyCompanySizeMultiplierToRanks(
+                rankedAdminSearchOrganisation.TopName.Ranks,
+                organisation.MinEmployees);
+            rankedAdminSearchOrganisation.TopName.Ranks = ranks;
+            
+            string employerRefMatch = organisation.EmployerReference == query
+                ? organisation.EmployerReference
+                : null;
+
+            string companyNumberMatch = organisation.CompanyNumber == query
+                ? organisation.CompanyNumber
+                : null;
+            
+            var previousNames = rankedAdminSearchOrganisation.Names
+                .Where((item, nameIndex) => nameIndex != 0)
+                .Select(name => name.Name)
+                .ToList();
+            
+            rankedAdminSearchOrganisation.AdminSearchResult = new AdminSearchResultOrganisationViewModel
+            {
+                OrganisationName = rankedAdminSearchOrganisation.Names[0].Name,
+                OrganisationPreviousNames = previousNames,
+                EmployerRef = employerRefMatch,
+                CompanyNumber = companyNumberMatch,
+                OrganisationId = organisation.OrganisationId,
+                Status = organisation.Status,
+            };
+            
+            return rankedAdminSearchOrganisation;
+        }
+
+        private static RankedAdminSearchOrganisationName CalculateRankForName(SearchReadyValue name,
+            List<string> searchTerms,
+            string query,
+            bool queryContainsPunctuation,
+            int nameIndex)
+        {
+            var rankValues = new List<double>();
+
+            rankValues.Add(RankValueHelper.CalculateRankValueForPrefixMatch(name, query));
+
+            rankValues.Add(RankValueHelper.CalculateRankValueForAcronymMatch(name, query));
+
+            for (int searchTermIndex = 0; searchTermIndex < searchTerms.Count; searchTermIndex++)
+            {
+                string searchTerm = searchTerms[searchTermIndex];
+
+                List<string> words = queryContainsPunctuation ? name.LowercaseWordsWithPunctuation : name.LowercaseWords;
+                for (int wordIndex = 0; wordIndex < words.Count; wordIndex++)
+                {
+                    string word = words[wordIndex];
+
+                    rankValues.Add(RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
+                }
+            }
+
+            return new RankedAdminSearchOrganisationName
+            {
+                Name = name.OriginalValue,
+                Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
+            };
+        }
+
+        private List<RankedAdminSearchOrganisation> OrderByRank(List<RankedAdminSearchOrganisation> organisationsWithRankings)
+        {
+            return organisationsWithRankings
+                .RankHelperOrderByListOfDoubles(org => org.TopName.Ranks)
+                .ThenBy(org => org.Names[0].Name)
+                .ToList();
+        }
+        
+        private static List<AdminSearchResultOrganisationViewModel> ConvertOrganisationsToSearchResults(List<RankedAdminSearchOrganisation> orderedOrganisations)
+        {
+            return orderedOrganisations
+                .Select(organisation => organisation.AdminSearchResult)
+                .ToList();
+        }
+        
         #endregion
 
 
@@ -125,7 +210,7 @@ namespace GenderPayGap.WebUI.Search
                 matchingUsers.OrderBy(u => u.FullName.OriginalValue).ToList();
 
             List<AdminSearchResultUserViewModel> matchingUsersWithHighlightedMatches =
-                HighlightUserMatches(matchingUsersOrderedByName, searchTerms);
+                ConvertType(matchingUsersOrderedByName);
 
             return matchingUsersWithHighlightedMatches;
         }
@@ -137,79 +222,23 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        private List<AdminSearchResultUserViewModel> HighlightUserMatches(
-            List<SearchCachedUser> users,
-            List<string> searchTerms
+        private List<AdminSearchResultUserViewModel> ConvertType(
+            List<SearchCachedUser> users
         )
         {
             return users
                 .Select(
-                    user =>
+                    user => new AdminSearchResultUserViewModel
                     {
-                        AdminSearchMatchViewModel matchGroupsForFullName = GetMatchGroups(user.FullName.OriginalValue, searchTerms);
-                        AdminSearchMatchViewModel matchGroupsForEmailAddress = GetMatchGroups(user.EmailAddress.OriginalValue, searchTerms);
-
-                        return new AdminSearchResultUserViewModel
-                        {
-                            UserId = user.UserId,
-                            UserFullName = matchGroupsForFullName,
-                            UserEmailAddress = matchGroupsForEmailAddress,
-                            Status = user.Status
-                        };
+                        UserId = user.UserId,
+                        UserFullName = user.FullName.OriginalValue,
+                        UserEmailAddress = user.EmailAddress.OriginalValue,
+                        Status = user.Status
                     })
                 .ToList();
         }
         #endregion
-
-
-        #region Helpers
-        private AdminSearchMatchViewModel GetMatchGroups(string organisationName, List<string> searchTerms)
-        {
-            var matchGroups = new List<AdminSearchMatchGroupViewModel>();
-
-            var stillSearching = true;
-            var searchStart = 0;
-            while (stillSearching)
-            {
-                AdminSearchMatchGroupViewModel nextMatch = GetNextMatch(organisationName, searchTerms, searchStart);
-                if (nextMatch != null)
-                {
-                    matchGroups.Add(nextMatch);
-                    searchStart = nextMatch.Start + nextMatch.Length;
-                    if (searchStart >= organisationName.Length)
-                    {
-                        stillSearching = false;
-                    }
-                }
-                else
-                {
-                    stillSearching = false;
-                }
-            }
-
-            return new AdminSearchMatchViewModel { Text = organisationName, MatchGroups = matchGroups };
-        }
-
-        private static AdminSearchMatchGroupViewModel GetNextMatch(string organisationName, List<string> searchTerms, int searchStart)
-        {
-            var possibleMatches = new List<AdminSearchMatchGroupViewModel>();
-
-            foreach (string searchTerm in searchTerms)
-            {
-                int matchStart = organisationName.IndexOf(searchTerm, searchStart, StringComparison.InvariantCultureIgnoreCase);
-                if (matchStart != -1)
-                {
-                    possibleMatches.Add(new AdminSearchMatchGroupViewModel { Start = matchStart, Length = searchTerm.Length });
-                }
-            }
-
-            return possibleMatches
-                .OrderBy(m => m.Start)
-                .ThenByDescending(m => m.Length)
-                .FirstOrDefault();
-        }
-        #endregion
-
+        
     }
 
 }

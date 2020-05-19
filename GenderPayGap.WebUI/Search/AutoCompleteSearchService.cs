@@ -12,7 +12,9 @@ namespace GenderPayGap.WebUI.Search
     {
         public string EncryptedId { get; set; }
         public List<AutoCompleteOrganisationName> Names { get; set; }
-        public List<double> Ranks { get; set; }
+        
+        public AutoCompleteOrganisationName TopName { get; set; }
+        // The top name is pulled out and effectively duplicated here for performance benefits
     }
 
     internal class AutoCompleteOrganisationName
@@ -46,26 +48,17 @@ namespace GenderPayGap.WebUI.Search
             return results;
         }
 
-
-
+        
         private static List<SearchCachedOrganisation> GetMatchingOrganisations(List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
             bool queryContainsPunctuation)
         {
             return allOrganisations
                 .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
-                .Where(org => CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms, queryContainsPunctuation))
+                .Where(org => SearchHelper.CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms, queryContainsPunctuation))
                 .ToList();
         }
-
-        private static bool CurrentOrPreviousOrganisationNameMatchesSearchTerms(
-            SearchCachedOrganisation organisation,
-            List<string> searchTerms,
-            bool queryContainsPunctuation)
-        {
-            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms, queryContainsPunctuation));
-        }
-
+        
         private static List<AutoCompleteOrganisation> CalculateRankings(List<SearchCachedOrganisation> matchingOrganisations,
             List<string> searchTerms,
             string query,
@@ -93,20 +86,16 @@ namespace GenderPayGap.WebUI.Search
                 autoCompleteOrganisation.Names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
             }
 
-            autoCompleteOrganisation.Ranks = autoCompleteOrganisation.Names
+            autoCompleteOrganisation.TopName = autoCompleteOrganisation.Names
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)
-                .Select(n => n.Ranks)
                 .First();
 
-            double companySizeMultiplier = 1 + (0.2 * (organisation.MinEmployees / 20000)); // Multiply by up to 1.2 for big companies
-            for (int i = 0; i < Math.Min(autoCompleteOrganisation.Ranks.Count, 5); i++)
-            {
-                autoCompleteOrganisation.Ranks[i] *= companySizeMultiplier;
-            }
-
+            var ranks = RankValueHelper.ApplyCompanySizeMultiplierToRanks(autoCompleteOrganisation.TopName.Ranks, organisation.MinEmployees);
+            autoCompleteOrganisation.TopName.Ranks = ranks;
+            
             return autoCompleteOrganisation;
         }
-
+        
         private static AutoCompleteOrganisationName CalculateRankForName(SearchReadyValue name,
             List<string> searchTerms,
             string query,
@@ -142,8 +131,8 @@ namespace GenderPayGap.WebUI.Search
         private List<AutoCompleteOrganisation> TakeTop10RankingOrganisations(List<AutoCompleteOrganisation> organisationsWithRankings)
         {
             return organisationsWithRankings
-                .RankHelperOrderByListOfDoubles(name => name.Ranks)
-                .ThenBy(mar => mar.Names[0].Name)
+                .RankHelperOrderByListOfDoubles(org => org.TopName.Ranks)
+                .ThenBy(org => org.Names[0].Name)
                 .Take(10)
                 .ToList();
         }
@@ -169,8 +158,7 @@ namespace GenderPayGap.WebUI.Search
                     {
                         Id = org.EncryptedId,
                         Text = currentName.Name,
-                        PreviousName = previousName,
-                        Rank = highestRankedName.Ranks
+                        PreviousName = previousName
                     };
 
                     return result;
