@@ -459,48 +459,10 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads/erhc-all-organisations")]
         public FileContentResult EhrcAllOrganisationsForYear_AdminPage(int year)
         {
-            return GenerateEhrcAllOrganisationsForYearFile(year);
+            return GenerateEhrcAllOrganisationsForYearFile(dataRepository, year);
         }
 
-        [Route("/download"
-             /* This is "/download" rather than "download" because the URLs we've shared with the EHRC are of the format:
-              https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations_2017-18.csv
-              just "download" would make the URLs "/admin/download" */
-        )]
-        [AllowOnlyTrustedIps(AllowOnlyTrustedIps.IpRangeTypes.EhrcIPRange)]
-        public IActionResult EhrcAllOrganisationsForYear_EhrcIpProtectedLink(
-            string p
-            /* The EHRC are given URLs of the form:
-               https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations_2017-18.csv
-               So this query parameter 'p' is of the form
-               App_Data\Downloads\GPG-Organisations_2017-18.csv
-
-               Previously, we would use 'p' to go and find a real file (in the App_Data\Downloads folder).
-               But now, we generate the file on-the-fly from the database.
-               So now all we need to do is check that 'p' is the filename of one of the files we support
-               and extract the year from the URL
-            */
-        )
-        {
-            // Check if query is for an 'EHRC All Organisations file' and get year from query parameter
-            Match match = Regex.Match(p, @"^App_Data\\Downloads\\GPG-Organisations_(?<year4digits>\d\d\d\d)-(?<year2digits>\d\d)\.csv$");
-            if (match.Success)
-            {
-                string year4digitsString = match.Groups["year4digits"].Value;
-                string year2digitsString = match.Groups["year2digits"].Value;
-
-                if (int.TryParse(year4digitsString, out int year4digits) &&
-                    int.TryParse(year2digitsString, out int year2digits) &&
-                    (year4digits + 1) % 100 == year2digits)
-                {
-                    return GenerateEhrcAllOrganisationsForYearFile(year4digits);
-                }
-            }
-
-            return NotFound();
-        }
-
-        private FileContentResult GenerateEhrcAllOrganisationsForYearFile(int year)
+        public static FileContentResult GenerateEhrcAllOrganisationsForYearFile(IDataRepository dataRepository, int year)
         {
             List<Organisation> organisations = dataRepository
                 .GetAll<Organisation>()
