@@ -77,7 +77,7 @@ namespace Repositories.UserRepository
             Assert.AreEqual(testStatus, currentUser.Status, "Expected status to still be the same");
         }
 
-        [TestCase(null, "Value cannot be null.\r\nParameter name: userToRetire")]
+        [TestCase(null, "Value cannot be null. (Parameter 'userToRetire')")]
         public void ThrowsErrorWhenArgumentIsNull(User testUserArg, string expectedErrorMessage)
         {
             // Act

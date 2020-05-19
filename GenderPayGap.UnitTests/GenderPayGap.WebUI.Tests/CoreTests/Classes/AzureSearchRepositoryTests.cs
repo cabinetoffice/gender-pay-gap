@@ -27,7 +27,7 @@ namespace GenderPayGap.Core.Tests.Classes
                 Throws.TypeOf<ArgumentNullException>()
                     .With
                     .Message
-                    .Contains("Value cannot be null." + Environment.NewLine + "Parameter name: serviceName"));
+                    .Contains("Value cannot be null. (Parameter 'serviceName')"));
         }
 
     }
