@@ -99,8 +99,7 @@ namespace GenderPayGap.IdentityServer4
             services.AddHttpContextAccessor();
 
             IMvcBuilder mvcBuilder = services
-                .AddMvc(options => { options.AddCacheProfiles(); })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .AddMvc(options => { options.AddCacheProfiles(); });
 
             if (Config.IsLocal())
             {

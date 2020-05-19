@@ -106,7 +106,6 @@ namespace GenderPayGap.WebUI
                         options.Filters.Add<ErrorHandlingFilter>();
                     })
                 .AddControllersAsServices() // Add controllers as services so attribute filters be resolved in contructors.
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 // Set the default resolver to use Pascalcase instead of the default camelCase which may break Ajaz responses 
                 .AddJsonOptions(options =>
                 {
