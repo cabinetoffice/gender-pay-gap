@@ -7,7 +7,7 @@ var UglifyJS = require("uglify-js");
 
 
 var pathToCurrentDirectory = './';
-var pathToVisualStudioDebugDirectory = './bin/Debug/netcoreapp2.2/';
+var pathToVisualStudioDebugDirectory = './bin/Debug/netcoreapp3.1/';
 
 var inputDirectory = './wwwroot';
 var inputJsDirectory = './wwwroot/scripts';
