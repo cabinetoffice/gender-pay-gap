@@ -8,62 +8,73 @@ using GenderPayGap.WebUI.Search.CachedObjects;
 
 namespace GenderPayGap.WebUI.Search
 {
-    
+
     internal class RankedAdminSearchOrganisation
     {
-        
+
         public AdminSearchResultOrganisationViewModel AdminSearchResult { get; set; }
         public List<RankedAdminSearchOrganisationName> Names { get; set; }
         public RankedAdminSearchOrganisationName TopName { get; set; }
 
     }
-    
+
     internal class RankedAdminSearchOrganisationName
     {
+
         public string Name { get; set; }
         public List<double> Ranks { get; set; }
+
     }
 
-    
+
     public class AdminSearchService
     {
-        
+
         public AdminSearchResultsViewModel Search(string query)
         {
             query = query.Trim();
-            
+
             bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
-            
+
             List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
             // Do this before we run the search, in case the cache is updated whilst the search is running
-            DateTime timeDetailsLoaded = SearchRepository.CacheLastUpdated; 
+            DateTime timeDetailsLoaded = SearchRepository.CacheLastUpdated;
 
             var results = new AdminSearchResultsViewModel
             {
                 OrganisationResults = SearchOrganisations(query, searchTerms, queryContainsPunctuation),
                 UserResults = SearchUsers(searchTerms),
-
-                SearchCacheUpdatedSecondsAgo = (int)VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
+                SearchCacheUpdatedSecondsAgo = (int) VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
             };
             return results;
         }
-        
+
         #region Search Organisations
-        private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query, List<string> searchTerms, bool queryContainsPunctuation)
+
+        private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query,
+            List<string> searchTerms,
+            bool queryContainsPunctuation)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
 
-            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query, queryContainsPunctuation);
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(
+                allOrganisations,
+                searchTerms,
+                query,
+                queryContainsPunctuation);
 
-            List<RankedAdminSearchOrganisation> organisationsWithRankings = CalculateRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
+            List<RankedAdminSearchOrganisation> organisationsWithRankings = CalculateRankings(
+                matchingOrganisations,
+                searchTerms,
+                query,
+                queryContainsPunctuation);
 
             List<RankedAdminSearchOrganisation> rankedOrganisations = OrderByRank(organisationsWithRankings);
-            
+
             List<AdminSearchResultOrganisationViewModel> results = ConvertOrganisationsToSearchResults(rankedOrganisations);
 
             return results;
- 
         }
 
         private List<SearchCachedOrganisation> GetMatchingOrganisations(
@@ -85,7 +96,7 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        
+
         private static List<RankedAdminSearchOrganisation> CalculateRankings(List<SearchCachedOrganisation> matchingOrganisations,
             List<string> searchTerms,
             string query,
@@ -101,17 +112,17 @@ namespace GenderPayGap.WebUI.Search
             string query,
             bool queryContainsPunctuation)
         {
-            
             var rankedAdminSearchOrganisation = new RankedAdminSearchOrganisation
             {
-                Names = new List<RankedAdminSearchOrganisationName>(),
+                Names = new List<RankedAdminSearchOrganisationName>()
             };
 
-            
+
             for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
             {
                 SearchReadyValue name = organisation.OrganisationNames[nameIndex];
-                rankedAdminSearchOrganisation.Names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
+                rankedAdminSearchOrganisation.Names.Add(
+                    CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
             }
 
             rankedAdminSearchOrganisation.TopName = rankedAdminSearchOrganisation.Names
@@ -122,20 +133,15 @@ namespace GenderPayGap.WebUI.Search
                 rankedAdminSearchOrganisation.TopName.Ranks,
                 organisation.MinEmployees);
             rankedAdminSearchOrganisation.TopName.Ranks = ranks;
-            
-            string employerRefMatch = organisation.EmployerReference == query
-                ? organisation.EmployerReference
-                : null;
 
-            string companyNumberMatch = organisation.CompanyNumber == query
-                ? organisation.CompanyNumber
-                : null;
-            
+            string employerRefMatch = organisation.EmployerReference == query ? organisation.EmployerReference : null;
+            string companyNumberMatch = organisation.CompanyNumber == query ? organisation.CompanyNumber : null;
+
             var previousNames = rankedAdminSearchOrganisation.Names
                 .Where((item, nameIndex) => nameIndex != 0)
                 .Select(name => name.Name)
                 .ToList();
-            
+
             rankedAdminSearchOrganisation.AdminSearchResult = new AdminSearchResultOrganisationViewModel
             {
                 OrganisationName = rankedAdminSearchOrganisation.Names[0].Name,
@@ -145,7 +151,7 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationId = organisation.OrganisationId,
                 Status = organisation.Status,
             };
-            
+
             return rankedAdminSearchOrganisation;
         }
 
@@ -170,14 +176,14 @@ namespace GenderPayGap.WebUI.Search
                 {
                     string word = words[wordIndex];
 
-                    rankValues.Add(RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
+                    rankValues.Add(
+                        RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
                 }
             }
 
             return new RankedAdminSearchOrganisationName
             {
-                Name = name.OriginalValue,
-                Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
+                Name = name.OriginalValue, Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
             };
         }
 
@@ -188,18 +194,20 @@ namespace GenderPayGap.WebUI.Search
                 .ThenBy(org => org.Names[0].Name)
                 .ToList();
         }
-        
-        private static List<AdminSearchResultOrganisationViewModel> ConvertOrganisationsToSearchResults(List<RankedAdminSearchOrganisation> orderedOrganisations)
+
+        private static List<AdminSearchResultOrganisationViewModel> ConvertOrganisationsToSearchResults(
+            List<RankedAdminSearchOrganisation> orderedOrganisations)
         {
             return orderedOrganisations
                 .Select(organisation => organisation.AdminSearchResult)
                 .ToList();
         }
-        
+
         #endregion
 
 
         #region Search Users
+
         private List<AdminSearchResultUserViewModel> SearchUsers(List<string> searchTerms)
         {
             List<SearchCachedUser> allUsers = SearchRepository.CachedUsers;
@@ -237,8 +245,9 @@ namespace GenderPayGap.WebUI.Search
                     })
                 .ToList();
         }
+
         #endregion
-        
+
     }
 
 }
