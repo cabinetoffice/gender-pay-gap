@@ -26,15 +26,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                     Status = UserStatuses.New
                 },
                 new User {
-                    UserId = 980964,
-                    EmailAddress = "suspended1@ad5bda75-e514-491b-b74d-4672542cbd15.com",
-                    EmailVerifiedDate = VirtualDateTime.Now,
-                    PasswordHash = passwordHash,
-                    Salt = Convert.ToBase64String(salt),
-                    HashingAlgorithm = HashingAlgorithm.PBKDF2,
-                    Status = UserStatuses.Suspended
-                },
-                new User {
                     UserId = 23322,
                     EmailAddress = "active1@ad5bda75-e514-491b-b74d-4672542cbd15.com",
                     EmailVerifiedDate = VirtualDateTime.Now,
