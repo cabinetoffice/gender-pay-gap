@@ -19,7 +19,6 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
         [TestCase(OrganisationStatuses.Deleted, true)]
         [TestCase(OrganisationStatuses.Retired, true)]
         [TestCase(OrganisationStatuses.New, true)]
-        [TestCase(OrganisationStatuses.Suspended, true)]
         [TestCase(OrganisationStatuses.Unknown, true)]
         public void SecurityCodeBusinessLogic_CreateSecurityCode_Only_Applies_To_Active_Or_Pending(OrganisationStatuses organisationStatus,
             bool expectedToFail)
