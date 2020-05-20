@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +35,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
 
             List<User> users = dataRepository.GetAll<User>()
+                .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active)
                 .Where(u => u.EmailVerifiedDate == null)
                 .Where(u => u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline)
                 .Include(u => u.UserOrganisations)
@@ -56,25 +55,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname},
                 null);
 
-            DeleteUserAndAuditLogs(user);
-        }
-
-        private static void DeleteUserAndAuditLogs(User user)
-        {
-            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
-
-            List<AuditLog> auditLogs = dataRepository
-                .GetAll<AuditLog>()
-                .Where(log => log.ImpersonatedUser.UserId == user.UserId)
-                .Where(log => log.Action == AuditedAction.AdminResendVerificationEmail)
-                .ToList();
-
-            foreach (AuditLog log in auditLogs)
-            {
-                dataRepository.Delete(log);
-            }
-
-            dataRepository.Delete(user);
+            user.SetStatus(UserStatuses.Retired, user, "User retired by PurgeUserJob");
             dataRepository.SaveChangesAsync().Wait();
         }
 
