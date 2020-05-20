@@ -57,15 +57,29 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             List<string> words = queryContainsPunctuation ? LowercaseWordsWithPunctuation : LowercaseWords;
             foreach (string word in words)
             {
-                if (word.Contains(searchTerm) 
-                    || FuzzySearch.GetDamerauLevenshteinDistance(word, searchTerm) < 3
-                )
+                if (word.Contains(searchTerm) || IsFuzzyMatch(word, searchTerm))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private bool IsFuzzyMatch(string word, string searchTerm)
+        {
+            
+            var distance = FuzzySearch.GetDamerauLevenshteinDistance(word, searchTerm);
+
+            // this allows fewer "mistakes" for shorter words
+            if (word.Length < 5)
+            {
+                return distance < 2;
+            }
+            
+            // this should be capped rather than a continuous function, so that a word of
+            // length 10 isn't allowed to contain 4 "mistakes" etc.
+            return distance < 3;
         }
 
     }
