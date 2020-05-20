@@ -40,7 +40,6 @@ namespace Repositories.UserRepository
         [TestCase(23322, UserStatuses.Active)]
         [TestCase(23322, UserStatuses.Active, UserStatuses.Active)]
         [TestCase(235251, UserStatuses.New, UserStatuses.New)]
-        [TestCase(980964, UserStatuses.Suspended, UserStatuses.Suspended)]
         [TestCase(707643, UserStatuses.Retired, UserStatuses.Retired)]
         public async Task FindsMatchingUserIdUsingSingleStatusFilter(long testFindId,
             UserStatuses testExpectedStatus,

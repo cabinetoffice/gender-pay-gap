@@ -9,7 +9,6 @@ namespace GenderPayGap.Core
 
         Unknown = 0,
         New = 1,
-        Suspended = 2,
         Active = 3,
         Retired = 4
 

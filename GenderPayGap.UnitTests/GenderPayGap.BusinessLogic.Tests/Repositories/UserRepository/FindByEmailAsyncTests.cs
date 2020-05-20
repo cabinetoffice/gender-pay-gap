@@ -39,7 +39,6 @@ namespace Repositories.UserRepository
 
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Active)]
         [TestCase("new1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New, UserStatuses.New)]
-        [TestCase("suspended1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Suspended, UserStatuses.Suspended)]
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Active, UserStatuses.Active)]
         [TestCase("retired1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Retired, UserStatuses.Retired)]
         public async Task FindsMatchingEmailUsingSingleStatusFilter(string testFindEmail,
