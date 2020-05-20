@@ -12,6 +12,12 @@ namespace GenderPayGap.BusinessLogic.Services
 {
     public class AuditLogger
     {
+        private class OriginalAndImpersonatedUser
+        {
+            public User OriginalUser { get; set; }
+            public User ImpersonatedUser { get; set; }
+        }
+
 
         private readonly IDataRepository dataRepository;
         private readonly IHttpSession session;
@@ -63,19 +69,14 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private void AuditGeneralAction(AuditedAction action, Dictionary<string, string> details, User userWhoPerformedAction)
         {
-            var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
-            var isImpersonating = impersonatedUserId > 0;
-            var originalUserId = session["OriginalUser"].ToInt64();
-
-            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
-            var impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
+            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
 
             dataRepository.Insert(
                 new AuditLog
                 {
                     Action = action,
-                    OriginalUser = originalUser,
-                    ImpersonatedUser = impersonatedUser,
+                    OriginalUser = users.OriginalUser,
+                    ImpersonatedUser = users.ImpersonatedUser,
                     Organisation = null,
                     Details = details
                 });
@@ -85,20 +86,16 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private void AuditActionToOrganisation(AuditedAction action, long organisationId, Dictionary<string, string> details, User userWhoPerformedAction)
         {
-            var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
-            var isImpersonating = impersonatedUserId > 0;
-            var originalUserId = session["OriginalUser"].ToInt64();
+            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
 
-            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
-            var impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
-            var organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
 
             dataRepository.Insert(
                 new AuditLog
                 {
                     Action = action,
-                    OriginalUser = originalUser,
-                    ImpersonatedUser = impersonatedUser,
+                    OriginalUser = users.OriginalUser,
+                    ImpersonatedUser = users.ImpersonatedUser,
                     Organisation = organisation,
                     Details = details
                 });
@@ -108,29 +105,56 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private void AuditActionToUser(AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details, User userWhoPerformedAction)
         {
-            var impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
-            var isImpersonating = impersonatedUserId > 0;
-            var originalUserId = session["OriginalUser"].ToInt64();
+            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
 
-            var originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
-            var impersonatedUser = dataRepository.Get<User>(actionTakenOnUserId);
+            dataRepository.Insert(
+                new AuditLog
+                {
+                    Action = action,
+                    OriginalUser = users.OriginalUser,
+                    ImpersonatedUser = users.ImpersonatedUser,
+                    Organisation = null,
+                    Details = details
+                });
+
+            dataRepository.SaveChangesAsync().Wait();
+        }
+
+        private OriginalAndImpersonatedUser GetOriginalAndImpersonatedUser(User userWhoPerformedAction)
+        {
+            long impersonatedUserId;
+            long originalUserId;
+            bool isImpersonating;
+
+            try
+            {
+                impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
+                isImpersonating = impersonatedUserId > 0;
+                originalUserId = session["OriginalUser"].ToInt64();
+            }
+            catch (Exception ex)
+            {
+                // If we are calling the AuditLogger from a background job, then:
+                // - there won't be a session object (so we'll get an Exception)
+                // - the concept of Original and Impersonated users doesn't apply
+                impersonatedUserId = 0;
+                originalUserId = 0;
+                isImpersonating = false;
+            }
+
+            User originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
+            User impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
 
             if (impersonatedUser?.UserId == originalUser?.UserId)
             {
                 impersonatedUser = null;
             }
 
-            dataRepository.Insert(
-                new AuditLog
-                {
-                    Action = action,
-                    OriginalUser = originalUser,
-                    ImpersonatedUser = impersonatedUser,
-                    Organisation = null,
-                    Details = details
-                });
-
-            dataRepository.SaveChangesAsync().Wait();
+            return new OriginalAndImpersonatedUser
+            {
+                OriginalUser = originalUser,
+                ImpersonatedUser = impersonatedUser
+            };
         }
 
     }
