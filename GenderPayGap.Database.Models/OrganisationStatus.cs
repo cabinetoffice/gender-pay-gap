@@ -13,7 +13,7 @@ namespace GenderPayGap.Database
 
         public DateTime StatusDate { get; set; } = VirtualDateTime.Now;
         public string StatusDetails { get; set; }
-        public long ByUserId { get; set; }
+        public long? ByUserId { get; set; }
 
         public virtual User ByUser { get; set; }
         public virtual Organisation Organisation { get; set; }
