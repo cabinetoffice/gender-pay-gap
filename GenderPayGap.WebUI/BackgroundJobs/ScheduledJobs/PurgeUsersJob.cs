@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Autofac;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
@@ -27,12 +26,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
 
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
-        public async Task PurgeUsers()
+        public void PurgeUsers()
         {
-            string runId = JobHelpers.CreateRunId();
-            DateTime startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId, nameof(PurgeUsers), startTime);
+            JobHelpers.RunAndLogJob(PurgeUsersAction, nameof(PurgeUsers));
+        }
 
+        private void PurgeUsersAction()
+        {
             DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.EmailVerificationExpiryDays);
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
 
@@ -44,28 +44,19 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (User user in users)
             {
-                PurgeUser(user, pinExpiryDate, runId, startTime);
+                PurgeUser(user, pinExpiryDate);
             }
-
-            JobHelpers.LogFunctionEnd(runId, nameof(PurgeUsers), startTime);
         }
 
-        private void PurgeUser(User user, DateTime pinExpiryDate, string runId, DateTime startTime)
+        private void PurgeUser(User user, DateTime pinExpiryDate)
         {
-            try
-            {
-                auditLogger.AuditChangeToUser(
-                    AuditedAction.PurgeUser,
-                    user,
-                    new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname},
-                    null);
+            auditLogger.AuditChangeToUser(
+                AuditedAction.PurgeUser,
+                user,
+                new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname},
+                null);
 
-                DeleteUserAndAuditLogs(user);
-            }
-            catch (Exception ex)
-            {
-                JobHelpers.LogFunctionError(runId, nameof(PurgeUsers), startTime, ex);
-            }
+            DeleteUserAndAuditLogs(user);
         }
 
         private static void DeleteUserAndAuditLogs(User user)

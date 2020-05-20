@@ -40,5 +40,25 @@ namespace GenderPayGap.WebUI.BackgroundJobs {
                 });
         }
 
+        internal static void RunAndLogJob(Action action, string actionName)
+        {
+            string runId = CreateRunId();
+            DateTime startTime = DateTime.Now;
+            LogFunctionStart(runId, actionName, startTime);
+            try
+            {
+                action();
+
+                LogFunctionEnd(runId, actionName, startTime);
+            }
+            catch (Exception ex)
+            {
+                LogFunctionError(runId, actionName, startTime, ex);
+
+                //Rethrow the error
+                throw;
+            }
+        }
+
     }
 }
