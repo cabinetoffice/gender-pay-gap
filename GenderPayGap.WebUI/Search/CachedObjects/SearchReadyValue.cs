@@ -57,7 +57,9 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             List<string> words = queryContainsPunctuation ? LowercaseWordsWithPunctuation : LowercaseWords;
             foreach (string word in words)
             {
-                if (word.Contains(searchTerm))
+                if (word.Contains(searchTerm) 
+                    || FuzzySearch.GetDamerauLevenshteinDistance(word, searchTerm) < 3
+                )
                 {
                     return true;
                 }
