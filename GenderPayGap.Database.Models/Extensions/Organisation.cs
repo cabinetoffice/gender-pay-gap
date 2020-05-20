@@ -48,7 +48,7 @@ namespace GenderPayGap.Database
             }
         }
         
-        public void SetStatus(OrganisationStatuses status, long byUserId, string details = null)
+        public void SetStatus(OrganisationStatuses status, long? byUserId = null, string details = null)
         {
             if (status == Status && details == StatusDetails)
             {

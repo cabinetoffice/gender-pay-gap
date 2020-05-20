@@ -87,28 +87,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 },
                 null);
 
-            await dataRepository.BeginTransactionAsync(
-                async () =>
-                {
-                    try
-                    {
-                        org.UserOrganisations.ForEach(uo => dataRepository.Delete(uo));
-                        await dataRepository.SaveChangesAsync();
+            // Un-register all users for this Organisation
+            org.UserOrganisations.ForEach(uo => dataRepository.Delete(uo));
 
-                        dataRepository.Delete(org);
-                        await dataRepository.SaveChangesAsync();
+            // Soft-Delete the Organisation
+            org.SetStatus(OrganisationStatuses.Deleted, details: "Organisation deleted by PurgeOrganisationJob");
 
-                        dataRepository.CommitTransaction();
-                    }
-                    catch (Exception ex)
-                    {
-                        dataRepository.RollbackTransaction();
-                        CustomLogger.Error(
-                            $"{nameof(PurgeOrganisations)}: Failed to purge organisation {org.OrganisationId} '{org.OrganisationName}' "
-                            + $"ERROR: {ex.Message}:{ex.GetDetailsText()}",
-                            new {Error = ex});
-                    }
-                });
+            dataRepository.SaveChangesAsync().Wait();
 
             //Remove this organisation from the search index
             await Global.SearchRepository.RemoveFromIndexAsync(new[] {searchRecord});
