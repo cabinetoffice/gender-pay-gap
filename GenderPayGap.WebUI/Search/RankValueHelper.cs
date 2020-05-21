@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.WebUI.Search.CachedObjects;
@@ -37,9 +37,9 @@ namespace GenderPayGap.WebUI.Search
         {
             var rankValues = new List<double>();
 
-            rankValues.Add(RankValueHelper.CalculateRankValueForPrefixMatch(name, query));
+            rankValues.Add(CalculateRankValueForPrefixMatch(name, query));
 
-            rankValues.Add(RankValueHelper.CalculateRankValueForAcronymMatch(name, query));
+            rankValues.Add(CalculateRankValueForAcronymMatch(name, query));
 
             for (int searchTermIndex = 0; searchTermIndex < searchTerms.Count; searchTermIndex++)
             {
@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Search
                     string word = words[wordIndex];
 
                     rankValues.Add(
-                        RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
+                        CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
                 }
             }
 
@@ -61,17 +61,6 @@ namespace GenderPayGap.WebUI.Search
             };
         }
         
-        public static List<double> ApplyCompanySizeMultiplierToRanks(List<double> ranks, int minEmployees)
-        {
-            double companySizeMultiplier = 1 + (0.2 * (minEmployees / 20000)); // Multiply by up to 1.2 for big companies
-            for (int i = 0; i < Math.Min(ranks.Count, 5); i++)
-            {
-                ranks[i] *= companySizeMultiplier;
-            }
-
-            return ranks;
-        }
-
         public static double CalculateRankValueForPrefixMatch(SearchReadyValue name, string query)
         {
             if (name.LowercaseValue.StartsWith(query))
@@ -84,7 +73,8 @@ namespace GenderPayGap.WebUI.Search
 
             return 0;
         }
-        public static double CalculateRankValueForAcronymMatch(SearchReadyValue name, string query)
+
+        private static double CalculateRankValueForAcronymMatch(SearchReadyValue name, string query)
         {
             if (name.Acronym.StartsWith(query))
             {
@@ -96,7 +86,8 @@ namespace GenderPayGap.WebUI.Search
 
             return 0;
         }
-        public static double CalculateRankValueForWordMatch(
+
+        private static double CalculateRankValueForWordMatch(
             string word,
             string query,
             string searchTerm,
@@ -117,6 +108,17 @@ namespace GenderPayGap.WebUI.Search
             }
 
             return 0;
+        }
+        
+        public static List<double> ApplyCompanySizeMultiplierToRanks(List<double> ranks, int minEmployees)
+        {
+            double companySizeMultiplier = 1 + (0.2 * (minEmployees / 20000)); // Multiply by up to 1.2 for big companies
+            for (int i = 0; i < Math.Min(ranks.Count, 5); i++)
+            {
+                ranks[i] *= companySizeMultiplier;
+            }
+
+            return ranks;
         }
 
         internal static IOrderedEnumerable<TSource> RankHelperOrderByListOfDoubles<TSource>(
