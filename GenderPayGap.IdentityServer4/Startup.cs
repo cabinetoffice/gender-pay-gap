@@ -227,10 +227,14 @@ namespace GenderPayGap.IdentityServer4
                     });
             }
 
+            app.UseRouting();
             app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
-            app.UseMvcWithDefaultRoute();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             lifetime.ApplicationStarted.Register(
                 () => {

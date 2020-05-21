@@ -106,9 +106,11 @@ namespace GenderPayGap.WebUI
                         options.Filters.Add<ErrorHandlingFilter>();
                     })
                 .AddControllersAsServices() // Add controllers as services so attribute filters be resolved in contructors.
-                // Set the default resolver to use Pascalcase instead of the default camelCase which may break Ajaz responses 
                 .AddJsonOptions(options =>
                 {
+                    // By default, ASP.Net's JSON serialiser converts property names to camelCase (because javascript typically uses camelCase)
+                    // But, some of our javascript code uses PascalCase (e.g. the homepage auto-complete)
+                    // These options tell ASP.Net to use the original C# property names, without changing the case
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 })
@@ -404,16 +406,21 @@ namespace GenderPayGap.WebUI
                     });
             }
 
+            app.UseRouting();
             app.UseResponseCaching();
             app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters
             app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseSession(); //Must be before UseMvC or any middleware which requires session
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
+            app.UseAuthorization();
             app.UseCookiePolicy();
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
             app.UseMvCApplication(); //Creates the global instance of Program.MvcApplication (equavalent in old Global.asax.cs)
-            app.UseMvcWithDefaultRoute();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             HangfireConfigurationHelper.ConfigureApp(app);
 
