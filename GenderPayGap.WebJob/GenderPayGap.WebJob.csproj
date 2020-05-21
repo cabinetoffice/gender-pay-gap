@@ -97,8 +97,11 @@
     <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.10.0" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="2.2.0" />
     <PackageReference Include="Select.HtmlToPdf" Version="19.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="3.0.4" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.Network" Version="2.0.2.68" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1secret_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
