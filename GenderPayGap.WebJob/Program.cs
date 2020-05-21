@@ -76,7 +76,7 @@ namespace GenderPayGap.WebJob
                 .UseEnvironment(Config.EnvironmentName)
                 .ConfigureServices(Startup.ConfigureServices);
             
-            Extensions.AspNetCore.Extensions.SetupSerilogLogger();
+            Extensions.AspNetCore.Extensions.SetupSerilogLogger(jobHostBuilder);
 
             var settings = new Dictionary<string, string>();
             settings["ConnectionStrings:AzureWebJobsStorage"] = Global.AzureStorageConnectionString;
