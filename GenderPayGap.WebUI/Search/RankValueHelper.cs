@@ -5,8 +5,61 @@ using GenderPayGap.WebUI.Search.CachedObjects;
 
 namespace GenderPayGap.WebUI.Search
 {
+    public class RankedName
+    {
+        public string Name { get; set; }
+        public List<double> Ranks { get; set; }
+    }
+    
     public static class RankValueHelper
     {
+        
+        public static List<RankedName> GetRankedNames(SearchCachedOrganisation organisation,
+            List<string> searchTerms,
+            string query,
+            bool queryContainsPunctuation)
+        {
+            var names = new List<RankedName>();
+            for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
+            {
+                SearchReadyValue name = organisation.OrganisationNames[nameIndex];
+                names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
+            }
+
+            return names;
+        }
+        
+        private static RankedName CalculateRankForName(SearchReadyValue name,
+            List<string> searchTerms,
+            string query,
+            bool queryContainsPunctuation,
+            int nameIndex)
+        {
+            var rankValues = new List<double>();
+
+            rankValues.Add(RankValueHelper.CalculateRankValueForPrefixMatch(name, query));
+
+            rankValues.Add(RankValueHelper.CalculateRankValueForAcronymMatch(name, query));
+
+            for (int searchTermIndex = 0; searchTermIndex < searchTerms.Count; searchTermIndex++)
+            {
+                string searchTerm = searchTerms[searchTermIndex];
+
+                List<string> words = queryContainsPunctuation ? name.LowercaseWordsWithPunctuation : name.LowercaseWords;
+                for (int wordIndex = 0; wordIndex < words.Count; wordIndex++)
+                {
+                    string word = words[wordIndex];
+
+                    rankValues.Add(
+                        RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
+                }
+            }
+
+            return new RankedName
+            {
+                Name = name.OriginalValue, Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
+            };
+        }
         
         public static List<double> ApplyCompanySizeMultiplierToRanks(List<double> ranks, int minEmployees)
         {

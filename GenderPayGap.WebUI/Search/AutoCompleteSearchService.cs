@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.WebUI.Models.Search;
@@ -11,19 +10,12 @@ namespace GenderPayGap.WebUI.Search
     internal class AutoCompleteOrganisation
     {
         public string EncryptedId { get; set; }
-        public List<AutoCompleteOrganisationName> Names { get; set; }
+        public List<RankedName> Names { get; set; }
         
-        public AutoCompleteOrganisationName TopName { get; set; }
+        public RankedName TopName { get; set; }
         // The top name is pulled out and effectively duplicated here for performance benefits
     }
-
-    internal class AutoCompleteOrganisationName
-    {
-        public string Name { get; set; }
-        public List<double> Ranks { get; set; }
-    }
-
-
+    
     public class AutoCompleteSearchService
     {
 
@@ -77,14 +69,10 @@ namespace GenderPayGap.WebUI.Search
             var autoCompleteOrganisation = new AutoCompleteOrganisation
             {
                 EncryptedId = organisation.EncryptedId,
-                Names = new List<AutoCompleteOrganisationName>()
+                Names = new List<RankedName>()
             };
-
-            for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
-            {
-                SearchReadyValue name = organisation.OrganisationNames[nameIndex];
-                autoCompleteOrganisation.Names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
-            }
+            
+            autoCompleteOrganisation.Names = RankValueHelper.GetRankedNames(organisation, searchTerms, query, queryContainsPunctuation);
 
             autoCompleteOrganisation.TopName = autoCompleteOrganisation.Names
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)
@@ -96,38 +84,6 @@ namespace GenderPayGap.WebUI.Search
             return autoCompleteOrganisation;
         }
         
-        private static AutoCompleteOrganisationName CalculateRankForName(SearchReadyValue name,
-            List<string> searchTerms,
-            string query,
-            bool queryContainsPunctuation,
-            int nameIndex)
-        {
-            var rankValues = new List<double>();
-
-            rankValues.Add(RankValueHelper.CalculateRankValueForPrefixMatch(name, query));
-
-            rankValues.Add(RankValueHelper.CalculateRankValueForAcronymMatch(name, query));
-
-            for (int searchTermIndex = 0; searchTermIndex < searchTerms.Count; searchTermIndex++)
-            {
-                string searchTerm = searchTerms[searchTermIndex];
-
-                List<string> words = queryContainsPunctuation ? name.LowercaseWordsWithPunctuation : name.LowercaseWords;
-                for (int wordIndex = 0; wordIndex < words.Count; wordIndex++)
-                {
-                    string word = words[wordIndex];
-
-                    rankValues.Add(RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
-                }
-            }
-
-            return new AutoCompleteOrganisationName
-            {
-                Name = name.OriginalValue,
-                Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
-            };
-        }
-
         private List<AutoCompleteOrganisation> TakeTop10RankingOrganisations(List<AutoCompleteOrganisation> organisationsWithRankings)
         {
             return organisationsWithRankings
@@ -142,9 +98,9 @@ namespace GenderPayGap.WebUI.Search
             return orderedOrganisations
                 .Select(org =>
                 {
-                    AutoCompleteOrganisationName currentName = org.Names[0];
+                    RankedName currentName = org.Names[0];
 
-                    AutoCompleteOrganisationName highestRankedName = org.Names
+                    RankedName highestRankedName = org.Names
                         .RankHelperOrderByListOfDoubles(name => name.Ranks)
                         .First();
 
