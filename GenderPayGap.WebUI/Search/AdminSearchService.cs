@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Search.CachedObjects;
@@ -11,22 +10,12 @@ namespace GenderPayGap.WebUI.Search
 
     internal class RankedAdminSearchOrganisation
     {
-
         public AdminSearchResultOrganisationViewModel AdminSearchResult { get; set; }
-        public List<RankedAdminSearchOrganisationName> Names { get; set; }
-        public RankedAdminSearchOrganisationName TopName { get; set; }
+        public List<RankedName> Names { get; set; }
+        public RankedName TopName { get; set; }
 
     }
-
-    internal class RankedAdminSearchOrganisationName
-    {
-
-        public string Name { get; set; }
-        public List<double> Ranks { get; set; }
-
-    }
-
-
+    
     public class AdminSearchService
     {
 
@@ -58,17 +47,9 @@ namespace GenderPayGap.WebUI.Search
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
 
-            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(
-                allOrganisations,
-                searchTerms,
-                query,
-                queryContainsPunctuation);
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(allOrganisations, searchTerms, query, queryContainsPunctuation);
 
-            List<RankedAdminSearchOrganisation> organisationsWithRankings = CalculateRankings(
-                matchingOrganisations,
-                searchTerms,
-                query,
-                queryContainsPunctuation);
+            List<RankedAdminSearchOrganisation> organisationsWithRankings = CalculateRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
 
             List<RankedAdminSearchOrganisation> rankedOrganisations = OrderByRank(organisationsWithRankings);
 
@@ -114,17 +95,12 @@ namespace GenderPayGap.WebUI.Search
         {
             var rankedAdminSearchOrganisation = new RankedAdminSearchOrganisation
             {
-                Names = new List<RankedAdminSearchOrganisationName>()
+                Names = new List<RankedName>()
             };
 
-
-            for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
-            {
-                SearchReadyValue name = organisation.OrganisationNames[nameIndex];
-                rankedAdminSearchOrganisation.Names.Add(
-                    CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
-            }
-
+            rankedAdminSearchOrganisation.Names =
+                RankValueHelper.GetRankedNames(organisation, searchTerms, query, queryContainsPunctuation);
+            
             rankedAdminSearchOrganisation.TopName = rankedAdminSearchOrganisation.Names
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)
                 .First();
@@ -154,39 +130,7 @@ namespace GenderPayGap.WebUI.Search
 
             return rankedAdminSearchOrganisation;
         }
-
-        private static RankedAdminSearchOrganisationName CalculateRankForName(SearchReadyValue name,
-            List<string> searchTerms,
-            string query,
-            bool queryContainsPunctuation,
-            int nameIndex)
-        {
-            var rankValues = new List<double>();
-
-            rankValues.Add(RankValueHelper.CalculateRankValueForPrefixMatch(name, query));
-
-            rankValues.Add(RankValueHelper.CalculateRankValueForAcronymMatch(name, query));
-
-            for (int searchTermIndex = 0; searchTermIndex < searchTerms.Count; searchTermIndex++)
-            {
-                string searchTerm = searchTerms[searchTermIndex];
-
-                List<string> words = queryContainsPunctuation ? name.LowercaseWordsWithPunctuation : name.LowercaseWords;
-                for (int wordIndex = 0; wordIndex < words.Count; wordIndex++)
-                {
-                    string word = words[wordIndex];
-
-                    rankValues.Add(
-                        RankValueHelper.CalculateRankValueForWordMatch(word, query, searchTerm, searchTermIndex, wordIndex, nameIndex));
-                }
-            }
-
-            return new RankedAdminSearchOrganisationName
-            {
-                Name = name.OriginalValue, Ranks = rankValues.OrderByDescending(r => r).Take(5).ToList()
-            };
-        }
-
+        
         private List<RankedAdminSearchOrganisation> OrderByRank(List<RankedAdminSearchOrganisation> organisationsWithRankings)
         {
             return organisationsWithRankings
