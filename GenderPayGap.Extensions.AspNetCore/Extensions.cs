@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Autofac.Extensions.DependencyInjection;
@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Core;
 
 namespace GenderPayGap.Extensions.AspNetCore
 {
@@ -28,7 +28,8 @@ namespace GenderPayGap.Extensions.AspNetCore
             string webRoot = null)
         {
             webHostBuilder.ConfigureKestrel(
-                    options => {
+                    options =>
+                    {
                         options.AddServerHeader = false;
                         //options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
                     })
@@ -59,7 +60,7 @@ namespace GenderPayGap.Extensions.AspNetCore
                 webHostBuilder.UseStartup(startupType);
             }
 
-            SetupSerilogLogger();
+            SetupSerilogLogger(webHostBuilder);
             return webHostBuilder;
         }
 
@@ -147,29 +148,63 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         public static string SetThreadCount()
         {
-            int ioMin = Config.GetAppSetting("MinIOThreads").ToInt32(300);
-            int workerMin = Config.GetAppSetting("MinWorkerThreads").ToInt32(300);
+            var ioMin = Config.GetAppSetting("MinIOThreads").ToInt32(300);
+            var workerMin = Config.GetAppSetting("MinWorkerThreads").ToInt32(300);
             ThreadPool.SetMinThreads(workerMin, ioMin);
             return $"Min Threads Set (Work:{workerMin:N0}, I/O: {ioMin:N0})";
         }
 
-        public static void SetupSerilogLogger()
+        public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
         {
-            Logger log;
-
             if (Config.IsLocal())
             {
-                log = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+                SetupLoggerToConsole();
             }
             else
             {
-                log = new LoggerConfiguration().WriteTo
-                    .ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
-                    .CreateLogger();
+                if (Config.GetAppSetting("LogToApplicationInsight").ToBoolean())
+                {
+                    SetupLoggerToApplicationInsight();
+                }
+                else
+                {
+                    webHostBuilder.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); });
+                }
             }
 
-            Log.Logger = log;
             Log.Information("Serilog logger setup complete");
+        }
+
+        public static void SetupSerilogLogger(IHostBuilder webHostBuilder)
+        {
+            if (Config.IsLocal())
+            {
+                SetupLoggerToConsole();
+            }
+            else
+            {
+                if (Config.GetAppSetting("LogToApplicationInsight").ToBoolean())
+                {
+                    SetupLoggerToApplicationInsight();
+                }
+                else
+                {
+                    webHostBuilder.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); });
+                }
+            }
+
+            Log.Information("Serilog logger setup complete");
+        }
+
+        private static void SetupLoggerToConsole()
+        {
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        }
+
+        private static void SetupLoggerToApplicationInsight()
+        {
+            Log.Logger = new LoggerConfiguration().WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
+                .CreateLogger();
         }
 
     }
