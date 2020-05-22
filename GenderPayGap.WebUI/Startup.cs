@@ -311,7 +311,7 @@ namespace GenderPayGap.WebUI
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(IWebTracker)))
                 .WithParameter("trackingId", Config.GetAppSetting("GoogleAnalyticsAccountId"));
 
-            //Register the global instance of Program.MvcApplication (equavalent in old Global.asax.cs)
+            //Register the global instance of Program.MvcApplication (equivalent in old Global.asax.cs)
             //Specify WithAttributeFiltering for the consumer - required to resolve with Keyed attributes
             builder.RegisterType<MvcApplication>().As<IMvcApplication>().SingleInstance().WithAttributeFiltering();
 
