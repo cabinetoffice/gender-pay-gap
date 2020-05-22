@@ -36,12 +36,7 @@ namespace GenderPayGap.WebUI
 
         public async Task InitAsync()
         {
-            //Copy AppData to remote file storage
-            if (!Config.IsProduction())
-            {
-                await Core.Classes.Extensions.PushRemoteFileAsync(Global.FileRepository, Filenames.SicCodes, Global.DataPath);
-                await Core.Classes.Extensions.PushRemoteFileAsync(Global.FileRepository, Filenames.SicSections, Global.DataPath);
-            }
+
         }
 
     }
