@@ -306,8 +306,6 @@ namespace GenderPayGap.Core
 
     public static class Filenames
     {
-        public const string SicCodes = "SicCodes.csv";
-        public const string SicSections = "SicSections.csv";
         public const string SicSectorSynonyms = "GPG-SicSectorSynonyms.csv";
 
     }
