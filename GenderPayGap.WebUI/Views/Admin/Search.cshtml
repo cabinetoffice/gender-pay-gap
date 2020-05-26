@@ -35,7 +35,7 @@
 <div class="govuk-grid-row admin-search-page">
     <div class="govuk-grid-column-full">
         <span class="govuk-caption-xl">Administration</span>
-        <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))">
+        <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))" id="search-form">
             <div class="govuk-form-group @(Model.Error != null ? "govuk-form-group--error" : "")">
                 <label class="govuk-label" for="search-query">
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">Search for organisations and users</h1>
@@ -65,8 +65,43 @@
                            aria-describedby="search-query-hint">
                     <input type="submit" value="Search" class="admin-search-button"/>
                 </div>
+                
+                <div class="admin-search-orderby">
+                    <fieldset class="govuk-fieldset">
+                        <div class="govuk-radios govuk-radios--small govuk-radios--inline">
+                            <div class="govuk-radios__item" style="padding-left: 0;">
+                                <legend class="govuk-body govuk-!-font-weight-bold" style="padding-top: 7px;">
+                                    Order:
+                                </legend>
+                            </div>
+                            <div class="govuk-radios__item" style="margin-right: 0;">
+                                <input class="govuk-radios__input" id="changed-name" name="orderBy" type="radio" value="relevance"
+                                       @(Html.Raw(Model.OrderBy == "relevance" ? "checked" : null))
+                                       onchange="submitSearchForm();">
+                                <label class="govuk-label govuk-radios__label" for="changed-name">
+                                    By relevance
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item" style="margin-right: 0;">
+                                <input class="govuk-radios__input" id="changed-name-2" name="orderBy" type="radio" value="alphabetically"
+                                       @(Html.Raw(Model.OrderBy == "alphabetically" ? "checked" : null))
+                                       onchange="submitSearchForm();">
+                                <label class="govuk-label govuk-radios__label" for="changed-name-2">
+                                    Alphabetically
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                </div>
+                
             </div>
         </form>
+        <script>
+            function submitSearchForm() {
+                document.getElementById('search-form').submit();
+            }
+        </script>
 
         @if (Model.SearchResults != null)
         {

@@ -10,6 +10,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public string Error { get; set; }
 
         public AdminSearchResultsViewModel SearchResults { get; set; }
+        public string OrderBy { get; set; }
 
     }
 

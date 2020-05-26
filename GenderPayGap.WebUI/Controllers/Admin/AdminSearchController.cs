@@ -19,14 +19,14 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchGet(string query)
+        public IActionResult SearchGet(string query, string orderBy = "relevance")
         {
             if (query == null)
             {
                 return View("../Admin/Search", new AdminSearchViewModel());
             }
 
-            var viewModel = new AdminSearchViewModel {SearchQuery = query};
+            var viewModel = new AdminSearchViewModel {SearchQuery = query, OrderBy = orderBy};
 
             if (string.IsNullOrWhiteSpace(query))
             {
@@ -34,7 +34,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                AdminSearchResultsViewModel results = adminSearchService.Search(query);
+                bool orderByRelevance = orderBy == "relevance";
+                AdminSearchResultsViewModel results = adminSearchService.Search(query, orderByRelevance);
 
                 viewModel.SearchResults = results;
             }
