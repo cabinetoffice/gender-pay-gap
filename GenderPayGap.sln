@@ -28,8 +28,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.WebJob.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.WebUI.Tests", "GenderPayGap.UnitTests\GenderPayGap.WebUI.Tests\GenderPayGap.WebUI.Tests.csproj", "{ADB4DCF7-1D43-41EF-9FD3-DA4C36D923AB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{B5E90979-D1B2-4B06-90D7-2CDFAA261B00}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.Database.Models", "GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj", "{373FD2AD-1EC2-4415-BBA2-6D1098961D03}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.Extensions.AspNetCore", "GenderPayGap.Extensions.AspNetCore\GenderPayGap.Extensions.AspNetCore.csproj", "{280CF592-7FE9-4DDE-9F9E-42F417F8A0C2}"
@@ -41,8 +39,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.Extensions.AspNetCore.Tests", "GenderPayGap.Extensions.AspNetCore.Tests\GenderPayGap.Extensions.AspNetCore.Tests\GenderPayGap.Extensions.AspNetCore.Tests.csproj", "{F68B4A44-85EF-4DAA-AC28-DB14C10D83C7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.Extensions.Tests", "GenderPayGap.UnitTests\GenderPayGap.Extensions.Tests\GenderPayGap.Extensions.Tests.csproj", "{FE05F883-4F1C-4C8E-AF41-A08B07C799F2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.Integration.Tests", "GenderPayGap.IntegrationTests\GenderPayGap.Integration.Tests\GenderPayGap.Integration.Tests.csproj", "{26013934-6DF5-49C7-A825-7FC40D651C3A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovUkDesignSystem", "GovUkDesignSystem\GovUkDesignSystem.csproj", "{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}"
 EndProject
@@ -73,7 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{9AB0CA8E
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetEnvironmentVariablesInGovPaaS", "SetEnvironmentVariablesInGovPaaS\SetEnvironmentVariablesInGovPaaS.csproj", "{95E70733-073A-498E-8653-BE4626FEFA5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetEnvironmentVariablesInGovPaaS", "SetEnvironmentVariablesInGovPaaS\SetEnvironmentVariablesInGovPaaS.csproj", "{95E70733-073A-498E-8653-BE4626FEFA5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,10 +145,6 @@ Global
 		{FE05F883-4F1C-4C8E-AF41-A08B07C799F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE05F883-4F1C-4C8E-AF41-A08B07C799F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE05F883-4F1C-4C8E-AF41-A08B07C799F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26013934-6DF5-49C7-A825-7FC40D651C3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26013934-6DF5-49C7-A825-7FC40D651C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26013934-6DF5-49C7-A825-7FC40D651C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26013934-6DF5-49C7-A825-7FC40D651C3A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -184,7 +176,6 @@ Global
 		{6E500FE9-E063-4F07-89EF-C94F8345A0AB} = {165A87E4-ED4A-4509-A52C-81748DE7286F}
 		{F68B4A44-85EF-4DAA-AC28-DB14C10D83C7} = {165A87E4-ED4A-4509-A52C-81748DE7286F}
 		{FE05F883-4F1C-4C8E-AF41-A08B07C799F2} = {165A87E4-ED4A-4509-A52C-81748DE7286F}
-		{26013934-6DF5-49C7-A825-7FC40D651C3A} = {B5E90979-D1B2-4B06-90D7-2CDFAA261B00}
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33} = {6EB28909-F4E9-402E-A247-01532AAC6841}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
