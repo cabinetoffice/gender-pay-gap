@@ -10,9 +10,9 @@ namespace Tests
 
         [Test]
         public void Config_DefaultDate_Returns_DateTime_Now_Plus_Three_Days_And_One_Hour_When_Configured()
-        {
+        { 
             // Arrange
-            var expectedOffsetCurrentDateTimeForSite = new TimeSpan(4, 2, 0, 0, 0);
+            var expectedOffsetCurrentDateTimeForSite = new TimeSpan(917, 0, 0, 0, 0);
 
             // Act
             TimeSpan actualOffsetCurrentDateTimeForSite = Config.OffsetCurrentDateTimeForSite();
@@ -21,7 +21,7 @@ namespace Tests
             Assert.AreEqual(
                 expectedOffsetCurrentDateTimeForSite,
                 actualOffsetCurrentDateTimeForSite,
-                "This value is expected to be configured as 4 days and 2 hours on the 'appsettings.json' file");
+                "This value is expected to be configured as 917 days and 0 hours on the 'appsettings.json' file");
         }
 
     }
