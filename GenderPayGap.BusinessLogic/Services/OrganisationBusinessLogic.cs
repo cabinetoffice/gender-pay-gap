@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,7 +6,6 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Models.Compare;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
@@ -20,23 +18,14 @@ namespace GenderPayGap.BusinessLogic
 {
     public interface IOrganisationBusinessLogic
     {
-
-        // Organisation repo
-
         Task SetUniqueEmployerReferenceAsync(Organisation organisation);
 
         string GeneratePINCode(bool isTestUser);
 
-        Task<CustomResult<OrganisationScope>> SetAsScopeAsync(string employerRef,
-            int changeScopeToSnapshotYear,
-            string changeScopeToComment,
-            User currentUser,
-            ScopeStatuses scopeStatus,
-            bool saveToDatabase);
-
         CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier);
 
         CustomResult<Organisation> LoadInfoFromActiveEmployerIdentifier(string employerIdentifier);
+
         Task<CustomResult<Organisation>> GetOrganisationByEncryptedReturnIdAsync(string encryptedReturnId);
 
         Task<IEnumerable<CompareReportModel>> GetCompareDataAsync(IEnumerable<string> comparedOrganisationIds,
@@ -44,42 +33,25 @@ namespace GenderPayGap.BusinessLogic
             string sortColumn,
             bool sortAscending);
 
-        Task<CustomResult<Organisation>> CreateSecurityCodeAsync(string employerRef, DateTime securityCodeExpiryDateTime);
-        Task<CustomBulkResult<Organisation>> CreateSecurityCodesInBulkAsync(DateTime securityCodeExpiryDateTime);
-        Task<CustomResult<Organisation>> ExtendSecurityCodeAsync(string employerRef, DateTime securityCodeExpiryDateTime);
-        Task<CustomBulkResult<Organisation>> ExtendSecurityCodesInBulkAsync(DateTime securityCodeExpiryDateTime);
-        Task<CustomResult<Organisation>> ExpireSecurityCodeAsync(string employerRef);
-        Task<CustomBulkResult<Organisation>> ExpireSecurityCodesInBulkAsync();
-
         DataTable GetCompareDatatable(IEnumerable<CompareReportModel> data);
-        Task<Organisation> GetOrganisationByEmployerReferenceAndSecurityCodeAsync(string employerReference, string securityCode);
 
     }
 
     public class OrganisationBusinessLogic : IOrganisationBusinessLogic
     {
 
-        private ICommonBusinessLogic _commonBusinessLogic;
         private readonly IEncryptionHandler _encryptionHandler;
         private readonly IObfuscator _obfuscator;
-        private readonly IScopeBusinessLogic _scopeLogic;
-        private readonly ISecurityCodeBusinessLogic _securityCodeLogic;
         private readonly ISubmissionBusinessLogic _submissionLogic;
 
-        public OrganisationBusinessLogic(ICommonBusinessLogic commonBusinessLogic,
-            IDataRepository dataRepo,
+        public OrganisationBusinessLogic(IDataRepository dataRepo,
             ISubmissionBusinessLogic submissionLogic,
-            IScopeBusinessLogic scopeLogic,
             IEncryptionHandler encryptionHandler,
-            ISecurityCodeBusinessLogic securityCodeLogic,
             IObfuscator obfuscator = null)
         {
-            _commonBusinessLogic = commonBusinessLogic;
             _DataRepository = dataRepo;
             _submissionLogic = submissionLogic;
-            _scopeLogic = scopeLogic;
             _obfuscator = obfuscator;
-            _securityCodeLogic = securityCodeLogic;
             _encryptionHandler = encryptionHandler;
         }
 
@@ -133,23 +105,6 @@ namespace GenderPayGap.BusinessLogic
             }
 
             return Crypto.GeneratePasscode(Global.PINChars.ToCharArray(), Global.PINLength);
-        }
-
-        public virtual async Task<CustomResult<OrganisationScope>> SetAsScopeAsync(string employerRef,
-            int changeScopeToSnapshotYear,
-            string changeScopeToComment,
-            User currentUser,
-            ScopeStatuses scopeStatus,
-            bool saveToDatabase)
-        {
-            Organisation org = await GetOrganisationByEmployerReferenceOrThrowAsync(employerRef);
-            return await _scopeLogic.AddScopeAsync(
-                org,
-                scopeStatus,
-                currentUser,
-                changeScopeToSnapshotYear,
-                changeScopeToComment,
-                saveToDatabase);
         }
 
         public CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier)
@@ -302,19 +257,6 @@ namespace GenderPayGap.BusinessLogic
         }
 
 
-        private async Task<IEnumerable<Organisation>> GetAllActiveOrPendingOrganisationsOrThrowAsync()
-        {
-            IQueryable<Organisation> orgList = _DataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active || o.Status == OrganisationStatuses.Pending);
-
-            if (!await orgList.AnyAsync())
-            {
-                throw new Exception("Unable to find organisations with statuses 'Active' or 'Pending' in the database");
-            }
-
-            return orgList;
-        }
-
         private IEnumerable<CompareReportModel> SortCompareReports(IEnumerable<CompareReportModel> originalList,
             string sortColumn,
             bool sortAscending)
@@ -350,132 +292,10 @@ namespace GenderPayGap.BusinessLogic
             return false;
         }
 
-        #region Repo
-
         public virtual Organisation GetOrganisationById(long organisationId)
         {
             return _DataRepository.Get<Organisation>(organisationId);
         }
-
-        public virtual async Task<Organisation> GetOrganisationByEmployerReferenceAsync(string employerReference)
-        {
-            return await _DataRepository.GetAll<Organisation>()
-                .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerReference.ToUpper());
-        }
-
-        public virtual async Task<Organisation> GetOrganisationByEmployerReferenceAndSecurityCodeAsync(string employerReference,
-            string securityCode)
-        {
-            return await _DataRepository.GetAll<Organisation>()
-                .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerReference.ToUpper() && o.SecurityCode == securityCode);
-        }
-
-        public virtual async Task<Organisation> GetOrganisationByEmployerReferenceOrThrowAsync(string employerReference)
-        {
-            Organisation org = await GetOrganisationByEmployerReferenceAsync(employerReference);
-
-            if (org == null)
-            {
-                throw new ArgumentException(
-                    $"Cannot find organisation with employerReference {employerReference}",
-                    nameof(employerReference));
-            }
-
-            return org;
-        }
-
-        #endregion
-
-        #region Security Codes
-
-        public delegate CustomResult<Organisation> ActionSecurityCodeDelegate(Organisation organisation,
-            DateTime securityCodeExpiryDateTime);
-
-        private async Task<CustomBulkResult<Organisation>> ActionSecurityCodesInBulkAsync(DateTime securityCodeExpiryDateTime,
-            ActionSecurityCodeDelegate actionSecurityCodeDelegate)
-        {
-            IEnumerable<Organisation> listOfOrganisations = await GetAllActiveOrPendingOrganisationsOrThrowAsync();
-
-            var concurrentBagOfProcessedOrganisations = new ConcurrentBag<Organisation>();
-            var concurrentBagOfErrors = new ConcurrentBag<CustomResult<Organisation>>();
-
-            Parallel.ForEach(
-                listOfOrganisations,
-                organisation => {
-                    CustomResult<Organisation> securityCodeCreationResult =
-                        actionSecurityCodeDelegate(organisation, securityCodeExpiryDateTime);
-
-                    if (securityCodeCreationResult.Failed)
-                    {
-                        concurrentBagOfErrors.Add(securityCodeCreationResult);
-                    }
-                    else
-                    {
-                        concurrentBagOfProcessedOrganisations.Add(securityCodeCreationResult.Result);
-                    }
-                });
-
-            return new CustomBulkResult<Organisation> {
-                ConcurrentBagOfSuccesses = concurrentBagOfProcessedOrganisations, ConcurrentBagOfErrors = concurrentBagOfErrors
-            };
-        }
-
-        public async Task<CustomResult<Organisation>> CreateSecurityCodeAsync(string employerRef, DateTime securityCodeExpiryDateTime)
-        {
-            Organisation org = await GetOrganisationByEmployerReferenceOrThrowAsync(employerRef);
-            return _securityCodeLogic.CreateSecurityCode(org, securityCodeExpiryDateTime);
-        }
-
-        public async Task<CustomBulkResult<Organisation>> CreateSecurityCodesInBulkAsync(DateTime securityCodeExpiryDateTime)
-        {
-            return await ActionSecurityCodesInBulkAsync(securityCodeExpiryDateTime, _securityCodeLogic.CreateSecurityCode);
-        }
-
-        public async Task<CustomResult<Organisation>> ExtendSecurityCodeAsync(string employerRef, DateTime securityCodeExpiryDateTime)
-        {
-            Organisation org = await GetOrganisationByEmployerReferenceOrThrowAsync(employerRef);
-            return _securityCodeLogic.ExtendSecurityCode(org, securityCodeExpiryDateTime);
-        }
-
-        public async Task<CustomBulkResult<Organisation>> ExtendSecurityCodesInBulkAsync(DateTime securityCodeExpiryDateTime)
-        {
-            return await ActionSecurityCodesInBulkAsync(securityCodeExpiryDateTime, _securityCodeLogic.ExtendSecurityCode);
-        }
-
-        public async Task<CustomResult<Organisation>> ExpireSecurityCodeAsync(string employerRef)
-        {
-            Organisation org = await GetOrganisationByEmployerReferenceOrThrowAsync(employerRef);
-            return _securityCodeLogic.ExpireSecurityCode(org);
-        }
-
-        public async Task<CustomBulkResult<Organisation>> ExpireSecurityCodesInBulkAsync()
-        {
-            IEnumerable<Organisation> listOfOrganisations = await GetAllActiveOrPendingOrganisationsOrThrowAsync();
-
-            var concurrentBagOfProcessedOrganisations = new ConcurrentBag<Organisation>();
-            var concurrentBagOfErrors = new ConcurrentBag<CustomResult<Organisation>>();
-
-            Parallel.ForEach(
-                listOfOrganisations,
-                organisation => {
-                    CustomResult<Organisation> securityCodeCreationResult = _securityCodeLogic.ExpireSecurityCode(organisation);
-
-                    if (securityCodeCreationResult.Failed)
-                    {
-                        concurrentBagOfErrors.Add(securityCodeCreationResult);
-                    }
-                    else
-                    {
-                        concurrentBagOfProcessedOrganisations.Add(securityCodeCreationResult.Result);
-                    }
-                });
-
-            return new CustomBulkResult<Organisation> {
-                ConcurrentBagOfSuccesses = concurrentBagOfProcessedOrganisations, ConcurrentBagOfErrors = concurrentBagOfErrors
-            };
-        }
-
-        #endregion
 
     }
 }

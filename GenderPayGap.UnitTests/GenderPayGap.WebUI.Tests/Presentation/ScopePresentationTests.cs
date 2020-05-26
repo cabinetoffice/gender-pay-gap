@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -13,12 +12,8 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.Mocks;
-using GenderPayGap.Tests.Common.TestHelpers;
-using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI.Classes.Services;
-using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Models.Scope;
-using GenderPayGap.WebUI.Tests.TestHelpers;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -32,8 +27,6 @@ namespace GenderPayGap.Tests
     {
 
         private Mock<IDataRepository> mockDataRepo;
-        private Mock<IFileRepository> mockFileRepo;
-        private Mock<OrganisationBusinessLogic> mockOrganisationBL;
         private Mock<ScopeBusinessLogic> mockScopeBL;
         private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic(Config.Configuration);
         private ScopePresentation testScopePresentation;
@@ -45,9 +38,6 @@ namespace GenderPayGap.Tests
         public void BeforeEach()
         {
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
-            ;
-
-            mockFileRepo = new Mock<IFileRepository>();
 
             testSearchBL = new SearchBusinessLogic(testSearchRepo);
 
@@ -55,150 +45,9 @@ namespace GenderPayGap.Tests
             mockScopeBL = new Mock<ScopeBusinessLogic>(testCommonBL, mockDataRepo.Object, testSearchBL);
             mockScopeBL.CallBase = true;
 
-            mockOrganisationBL = new Mock<OrganisationBusinessLogic>(
-                testCommonBL,
-                mockDataRepo.Object,
-                new Mock<ISubmissionBusinessLogic>().Object,
-                new Mock<IScopeBusinessLogic>().Object,
-                new Mock<IEncryptionHandler>().Object,
-                new Mock<ISecurityCodeBusinessLogic>().Object,
-                new Mock<IObfuscator>().Object);
-
-            mockOrganisationBL.CallBase = true;
-
             // service under test
-            testScopePresentation = new ScopePresentation(mockScopeBL.Object, mockDataRepo.Object, mockOrganisationBL.Object);
+            testScopePresentation = new ScopePresentation(mockScopeBL.Object, mockDataRepo.Object);
         }
-
-        [Test]
-        public async Task ScopePresentation_CreateOrganisationViewModel_When_Record_Not_Found_Returns_NullAsync()
-        {
-            // Arrange
-            var employerRef = "SomeThatWillBeInDatabase";
-            User mockUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            Organisation mockOrg = OrganisationHelper.GetPrivateOrganisation(employerRef);
-            mockOrg.SetSecurityCode(VirtualDateTime.Now.AddDays(1));
-            UserOrganisation mockUserOrg = UserOrganisationHelper.LinkUserWithOrganisation(mockUser, mockOrg);
-
-            var dataRepo = new Mock<IDataRepository>();
-
-            dataRepo.SetupGetAll(mockOrg);
-
-            var organisationBusinessLogic = new OrganisationBusinessLogic(
-                testCommonBL,
-                dataRepo.Object,
-                new Mock<ISubmissionBusinessLogic>().Object,
-                new Mock<IScopeBusinessLogic>().Object,
-                new Mock<IEncryptionHandler>().Object,
-                new Mock<ISecurityCodeBusinessLogic>().Object,
-                new Mock<IObfuscator>().Object);
-
-            var scopePresentation = new ScopePresentation(
-                mockScopeBL.Object,
-                dataRepo.Object,
-                organisationBusinessLogic);
-
-            var testModel = new EnterCodesViewModel {EmployerReference = "NotFoundInDB", SecurityToken = mockOrg.SecurityCode};
-
-            // Act
-            OrganisationViewModel actual = await scopePresentation.CreateOrganisationViewModelAsync(testModel, mockUser);
-
-            // Assert
-            Assert.Null(actual, "When the combination EmployerReference/SecurityCode is not found in DB, this method must return null");
-        }
-
-        [Test]
-        public async Task ScopePresentation_CreateOrganisationViewModel_When_Data_Is_Valid_It_SucceedsAsync()
-        {
-            // Arrange
-            var employerRef = "6MQP1ETH";
-            User mockUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            Organisation mockOrg = OrganisationHelper.GetPrivateOrganisation(employerRef);
-            mockOrg.SetSecurityCode(VirtualDateTime.Now.AddDays(1));
-            UserOrganisation mockUserOrg = UserOrganisationHelper.LinkUserWithOrganisation(mockUser, mockOrg);
-
-            var dataRepo = new Mock<IDataRepository>();
-            dataRepo.SetupGetAll(mockOrg);
-
-            var organisationBusinessLogic = new OrganisationBusinessLogic(
-                testCommonBL,
-                dataRepo.Object,
-                new Mock<ISubmissionBusinessLogic>().Object,
-                new Mock<IScopeBusinessLogic>().Object,
-                new Mock<IEncryptionHandler>().Object,
-                new Mock<ISecurityCodeBusinessLogic>().Object,
-                new Mock<IObfuscator>().Object);
-
-            var scopePresentation = new ScopePresentation(
-                mockScopeBL.Object,
-                dataRepo.Object,
-                organisationBusinessLogic);
-
-            var testModel = new EnterCodesViewModel {EmployerReference = mockOrg.EmployerReference, SecurityToken = mockOrg.SecurityCode};
-
-            // Act
-            OrganisationViewModel actual = await scopePresentation.CreateOrganisationViewModelAsync(testModel, mockUser);
-
-            // Assert
-            Assert.NotNull(actual, "Expected an organisation view model");
-            Assert.AreEqual(employerRef, actual.Employers.Results[0].EmployerReference);
-            Assert.False(actual.IsSecurityCodeExpired, "the security code was set to expire tomorrow");
-        }
-
-        #region Test Data
-
-        private Organisation[] testOrgData = {
-            new Organisation {OrganisationId = 1, EmployerReference = "6B2LF57C"},
-            new Organisation {OrganisationId = 2, EmployerReference = "DR994D7L"},
-            new Organisation {OrganisationId = 3, EmployerReference = "23TYLBLB"},
-            new Organisation {OrganisationId = 4, EmployerReference = "SNGNB4BH"},
-            new Organisation {OrganisationId = 5, EmployerReference = "RWT2TY62"}
-        };
-
-        private OrganisationScope[] testOrgScopeData = {
-            new OrganisationScope {
-                OrganisationScopeId = 15,
-                OrganisationId = 1,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-5),
-                SnapshotDate = new DateTime(2017, 4, 5)
-            },
-            new OrganisationScope {
-                OrganisationScopeId = 25,
-                OrganisationId = 2,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-51),
-                SnapshotDate = new DateTime(2018, 4, 5)
-            },
-            new OrganisationScope {
-                OrganisationScopeId = 35,
-                OrganisationId = 3,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-2),
-                SnapshotDate = new DateTime(2017, 4, 5),
-                ContactEmailAddress = "user@test.com"
-            },
-            new OrganisationScope {
-                OrganisationScopeId = 45,
-                OrganisationId = 4,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-100),
-                SnapshotDate = new DateTime(2017, 4, 5),
-                ScopeStatus = ScopeStatuses.OutOfScope
-            },
-            new OrganisationScope {
-                OrganisationScopeId = 55,
-                OrganisationId = 4,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-44),
-                SnapshotDate = new DateTime(2017, 4, 5),
-                ScopeStatus = ScopeStatuses.InScope
-            },
-            new OrganisationScope {
-                OrganisationScopeId = 65,
-                OrganisationId = 4,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-2),
-                SnapshotDate = new DateTime(2017, 4, 5),
-                ScopeStatus = ScopeStatuses.OutOfScope
-            }
-        };
-
-        #endregion
 
         #region AuthAndCreateViewModel()
 

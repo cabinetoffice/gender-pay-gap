@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Autofac;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Models.Submit;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -232,17 +231,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var report = new Return {ReturnId = 65412, OrganisationId = org.OrganisationId, Status = ReturnStatuses.Submitted};
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
 
-            var submissionBusinessLogic = new SubmissionBusinessLogic(
-                UiTestHelper.DIContainer.Resolve<ICommonBusinessLogic>(),
-                UiTestHelper.DIContainer.Resolve<IDataRepository>());
+            var submissionBusinessLogic = new SubmissionBusinessLogic(UiTestHelper.DIContainer.Resolve<IDataRepository>());
 
             var organisationBusinessLogic = new OrganisationBusinessLogic(
-                UiTestHelper.DIContainer.Resolve<ICommonBusinessLogic>(),
                 UiTestHelper.DIContainer.Resolve<IDataRepository>(),
                 submissionBusinessLogic,
-                UiTestHelper.DIContainer.Resolve<IScopeBusinessLogic>(),
                 UiTestHelper.DIContainer.Resolve<IEncryptionHandler>(),
-                UiTestHelper.DIContainer.Resolve<ISecurityCodeBusinessLogic>(),
                 UiTestHelper.DIContainer.Resolve<IObfuscator>());
 
             controller.OrganisationBusinessLogic = organisationBusinessLogic;
@@ -318,12 +312,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<ViewingController>();
 
             var organisationBusinessLogic = new OrganisationBusinessLogic(
-                UiTestHelper.DIContainer.Resolve<ICommonBusinessLogic>(),
                 UiTestHelper.DIContainer.Resolve<IDataRepository>(),
                 UiTestHelper.DIContainer.Resolve<ISubmissionBusinessLogic>(),
-                UiTestHelper.DIContainer.Resolve<IScopeBusinessLogic>(),
                 new EncryptionHandler(),
-                UiTestHelper.DIContainer.Resolve<ISecurityCodeBusinessLogic>(),
                 UiTestHelper.DIContainer.Resolve<IObfuscator>());
 
             controller.OrganisationBusinessLogic = organisationBusinessLogic;

@@ -30,15 +30,7 @@ namespace GenderPayGap.BusinessLogic
 
         // business logic
         Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear = 0);
-        ScopeStatuses GetLatestScopeStatusForSnapshotYear(Organisation org, int snapshotYear = 0);
         Task<OrganisationScope> UpdateScopeStatusAsync(long existingOrgScopeId, ScopeStatuses newStatus);
-
-        Task<CustomResult<OrganisationScope>> AddScopeAsync(Organisation organisation,
-            ScopeStatuses newStatus,
-            User currentUser,
-            int snapshotYear,
-            string comment,
-            bool saveToDatabase);
 
         Task<HashSet<Organisation>> SetPresumedScopesAsync();
 
@@ -46,7 +38,6 @@ namespace GenderPayGap.BusinessLogic
         bool FillMissingScopes(Organisation org);
 
         Task<HashSet<Organisation>> SetScopeStatusesAsync();
-        OrganisationScope SetPresumedScope(Organisation org, ScopeStatuses scopeStatus, DateTime snapshotDate, User user = null);
 
     }
 
@@ -159,54 +150,6 @@ namespace GenderPayGap.BusinessLogic
 
             await SaveScopeAsync(org, true, newScope);
             return newScope;
-        }
-
-        public virtual async Task<CustomResult<OrganisationScope>> AddScopeAsync(Organisation organisation,
-            ScopeStatuses newStatus,
-            User currentUser,
-            int snapshotYear,
-            string comment,
-            bool saveToDatabase)
-        {
-            snapshotYear = organisation
-                .SectorType
-                .GetAccountingStartDate(snapshotYear)
-                .Year;
-
-            OrganisationScope oldOrgScope = organisation.GetLatestScopeForSnapshotYearOrThrow(snapshotYear);
-
-            if (oldOrgScope.ScopeStatus == newStatus)
-            {
-                return new CustomResult<OrganisationScope>(
-                    InternalMessages.SameScopesCannotBeUpdated(newStatus, oldOrgScope.ScopeStatus, snapshotYear));
-            }
-
-            // When Organisation is Found Then Save New Scope Record With New Status
-            var newScope = new OrganisationScope {
-                OrganisationId = oldOrgScope.OrganisationId,
-                Organisation = organisation,
-                /* Updated by the current user */
-                ContactEmailAddress = currentUser.EmailAddress,
-                ContactFirstname = currentUser.Firstname,
-                ContactLastname = currentUser.Lastname,
-                ReadGuidance = oldOrgScope.ReadGuidance,
-                Reason = !string.IsNullOrEmpty(comment)
-                    ? comment
-                    : oldOrgScope.Reason,
-                ScopeStatus = newStatus,
-                ScopeStatusDate = VirtualDateTime.Now,
-                StatusDetails = currentUser.IsAdministrator()
-                    ? "Changed by Admin"
-                    : null,
-                RegisterStatus = oldOrgScope.RegisterStatus,
-                RegisterStatusDate = oldOrgScope.RegisterStatusDate,
-                // carry the snapshot date over
-                SnapshotDate = oldOrgScope.SnapshotDate
-            };
-
-            await SaveScopeAsync(organisation, saveToDatabase, newScope);
-
-            return new CustomResult<OrganisationScope>(newScope);
         }
 
         public virtual async Task SaveScopeAsync(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes)

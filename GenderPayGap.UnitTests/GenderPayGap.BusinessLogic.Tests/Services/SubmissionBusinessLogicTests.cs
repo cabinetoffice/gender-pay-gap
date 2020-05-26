@@ -40,9 +40,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
             bool expected)
         {
             // Arrange
-            var submissionBusinessLogic = new SubmissionBusinessLogic(
-                Mock.Of<ICommonBusinessLogic>(),
-                Mock.Of<IDataRepository>());
+            var submissionBusinessLogic = new SubmissionBusinessLogic(Mock.Of<IDataRepository>());
 
             Organisation organisation = OrganisationHelper.GetOrganisationInAGivenScope(scope, "employerRefInScope", 2017);
             Return returnToConvert = ReturnHelper.CreateTestReturn(organisation);

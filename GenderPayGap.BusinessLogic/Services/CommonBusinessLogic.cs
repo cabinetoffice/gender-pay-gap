@@ -7,12 +7,7 @@ namespace GenderPayGap.BusinessLogic
 {
     public interface ICommonBusinessLogic
     {
-
-        DateTime PrivateAccountingDate { get; }
-        DateTime PublicAccountingDate { get; }
-
         DateTime GetAccountingStartDate(SectorTypes sector, int year = 0);
-
     }
 
     public class CommonBusinessLogic : ICommonBusinessLogic

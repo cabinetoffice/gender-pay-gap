@@ -2138,7 +2138,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Return clonedReturn = mockedReturn.GetClone();
 
             ReturnViewModel expectedReturnViewModel =
-                new SubmissionBusinessLogic(null, null).ConvertSubmissionReportToReturnViewModel(clonedReturn);
+                new SubmissionBusinessLogic(null).ConvertSubmissionReportToReturnViewModel(clonedReturn);
 
             #region We must load a draft if we are calling Enter calculations with a stashed model
 
@@ -2272,7 +2272,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             Return clonedReturn = mockedReturn.GetClone();
             ReturnViewModel expectedReturnViewModel =
-                new SubmissionBusinessLogic(null, null).ConvertSubmissionReportToReturnViewModel(clonedReturn);
+                new SubmissionBusinessLogic(null).ConvertSubmissionReportToReturnViewModel(clonedReturn);
 
             controller.ClearStash(); // empty, so it'll search for info on DB
 
