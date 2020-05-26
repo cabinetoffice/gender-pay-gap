@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Search
     public class AdminSearchService
     {
 
-        public AdminSearchResultsViewModel Search(string query)
+        public AdminSearchResultsViewModel Search(string query, bool orderByRelevance)
         {
             query = query.Trim();
 
@@ -40,8 +40,8 @@ namespace GenderPayGap.WebUI.Search
 
             var results = new AdminSearchResultsViewModel
             {
-                OrganisationResults = SearchOrganisations(query, searchTerms, queryContainsPunctuation),
-                UserResults = SearchUsers(query, searchTerms, queryContainsPunctuation),
+                OrganisationResults = SearchOrganisations(query, searchTerms, queryContainsPunctuation, orderByRelevance),
+                UserResults = SearchUsers(query, searchTerms, queryContainsPunctuation, orderByRelevance),
                 SearchCacheUpdatedSecondsAgo = (int) VirtualDateTime.Now.Subtract(timeDetailsLoaded).TotalSeconds,
             };
             return results;
@@ -51,7 +51,8 @@ namespace GenderPayGap.WebUI.Search
 
         private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query,
             List<string> searchTerms,
-            bool queryContainsPunctuation)
+            bool queryContainsPunctuation,
+            bool orderByRelevance)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
 
@@ -59,7 +60,9 @@ namespace GenderPayGap.WebUI.Search
 
             List<RankedAdminSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
 
-            List<RankedAdminSearchOrganisation> rankedOrganisations = OrderOrganisationsByRank(organisationsWithRankings);
+            List<RankedAdminSearchOrganisation> rankedOrganisations = orderByRelevance
+                ? OrderOrganisationsByRank(organisationsWithRankings)
+                : OrderOrganisationsAlphabetically(organisationsWithRankings);
 
             List<AdminSearchResultOrganisationViewModel> results = ConvertOrganisationsToSearchResults(rankedOrganisations);
 
@@ -147,6 +150,11 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
+        private static List<RankedAdminSearchOrganisation> OrderOrganisationsAlphabetically(List<RankedAdminSearchOrganisation> organisationsWithRankings)
+        {
+            return organisationsWithRankings.OrderBy(o => o.Names[0].Name).ToList();
+        }
+
         private static List<AdminSearchResultOrganisationViewModel> ConvertOrganisationsToSearchResults(
             List<RankedAdminSearchOrganisation> orderedOrganisations)
         {
@@ -160,7 +168,10 @@ namespace GenderPayGap.WebUI.Search
 
         #region Search Users
 
-        private List<AdminSearchResultUserViewModel> SearchUsers(string query, List<string> searchTerms, bool queryContainsPunctuation)
+        private List<AdminSearchResultUserViewModel> SearchUsers(string query,
+            List<string> searchTerms,
+            bool queryContainsPunctuation,
+            bool orderByRelevance)
         {
             List<SearchCachedUser> allUsers = SearchRepository.CachedUsers;
 
@@ -168,13 +179,15 @@ namespace GenderPayGap.WebUI.Search
 
             List<RankedAdminSearchUser> usersWithRankings = CalculateUserRankings(matchingUsers, searchTerms, query, queryContainsPunctuation);
 
-            List<RankedAdminSearchUser> rankedUsers = OrderUsersByRank(usersWithRankings);
+            List<RankedAdminSearchUser> rankedUsers = orderByRelevance
+                ? OrderUsersByRank(usersWithRankings)
+                : OrderUsersAlphabetically(usersWithRankings);
 
             List<AdminSearchResultUserViewModel> results = ConvertUsersToSearchResults(rankedUsers);
             
             return results;
         }
-        
+
         private List<SearchCachedUser> GetMatchingUsers(List<SearchCachedUser> allUsers, List<string> searchTerms)
         {
             return allUsers
@@ -263,7 +276,12 @@ namespace GenderPayGap.WebUI.Search
                 .ThenBy(user => user.Values[0].Name)
                 .ToList();
         }
-        
+
+        private List<RankedAdminSearchUser> OrderUsersAlphabetically(List<RankedAdminSearchUser> usersWithRankings)
+        {
+            return usersWithRankings.OrderBy(u => u.AdminSearchResult.UserFullName).ToList();
+        }
+
         private List<AdminSearchResultUserViewModel> ConvertUsersToSearchResults(
             List<RankedAdminSearchUser> users
         )
