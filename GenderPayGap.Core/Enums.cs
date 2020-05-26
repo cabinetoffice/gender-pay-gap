@@ -275,6 +275,9 @@ namespace GenderPayGap.Core
         PurgeUser = 36,
         [Display(Name = "Registraion log")]
         RegistrationLog = 37,
+
+        [Display(Name = "Admin deleted organisation previous name")]
+        AdminDeleteOrganisationPreviousName = 38
     }
 
     public enum HashingAlgorithm

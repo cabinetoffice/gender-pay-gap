@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.API;
@@ -233,6 +234,65 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             organisation.OptedOutFromCompaniesHouseUpdate = true;
             dataRepository.SaveChangesAsync().Wait();
+        }
+
+        [HttpGet("organisation/{organisationId}/name/{nameId}/delete")]
+        public IActionResult DeleteNameGet(long organisationId, long nameId)
+        {
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            OrganisationName name = organisation.OrganisationNames.FirstOrDefault(oa => oa.OrganisationNameId == nameId);
+            if (name == null)
+            {
+                throw new Exception($"Name ID {nameId} is not a valid name for this Organisation");
+            }
+
+            var viewModel = new DeleteOrganisationNameViewModel
+            {
+                Organisation = organisation,
+                OrganisationNameToBeDeleted = name
+            };
+
+            return View("DeleteNameCheck", viewModel);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost("organisation/{organisationId}/name/{nameId}/delete")]
+        public IActionResult DeleteNamePost(long organisationId, long nameId, DeleteOrganisationNameViewModel viewModel)
+        {
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            OrganisationName name = organisation.OrganisationNames.FirstOrDefault(oa => oa.OrganisationNameId == nameId);
+            if (name == null)
+            {
+                throw new Exception($"Name ID {nameId} is not a valid name for this Organisation");
+            }
+
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+
+            if (viewModel.HasAnyErrors())
+            {
+                viewModel.Organisation = organisation;
+                viewModel.OrganisationNameToBeDeleted = name;
+                return View("DeleteNameCheck", viewModel);
+            }
+
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.AdminDeleteOrganisationPreviousName,
+                organisation,
+                new
+                {
+                    DeletedName = name.Name,
+                    DeletedNameId = name.OrganisationNameId,
+                    DeletedNameSource = name.Source,
+                    DeletedNameCreatedDate = name.Created.ToString("d MMM yyyy"),
+                    Reason = viewModel.Reason
+                },
+                currentUser);
+
+            dataRepository.Delete(name);
+            dataRepository.SaveChangesAsync().Wait();
+
+            return View("SuccessfullyDeletedOrganisationName", organisation);
         }
 
     }
