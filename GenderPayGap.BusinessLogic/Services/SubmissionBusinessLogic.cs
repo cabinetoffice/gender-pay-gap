@@ -24,12 +24,8 @@ namespace GenderPayGap.BusinessLogic
 
     public class SubmissionBusinessLogic : ISubmissionBusinessLogic
     {
-
-        private ICommonBusinessLogic _commonBusinessLogic;
-
-        public SubmissionBusinessLogic(ICommonBusinessLogic commonBusinessLogic, IDataRepository dataRepo)
+        public SubmissionBusinessLogic(IDataRepository dataRepo)
         {
-            _commonBusinessLogic = commonBusinessLogic;
             DataRepository = dataRepo;
         }
 

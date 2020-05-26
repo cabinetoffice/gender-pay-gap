@@ -125,7 +125,6 @@ namespace GenderPayGap.WebJob
             builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().SingleInstance();
             builder.RegisterType<ScopeBusinessLogic>().As<IScopeBusinessLogic>().InstancePerDependency();
             builder.RegisterType<SubmissionBusinessLogic>().As<ISubmissionBusinessLogic>().InstancePerDependency();
-            builder.RegisterType<SecurityCodeBusinessLogic>().As<ISecurityCodeBusinessLogic>().InstancePerDependency();
             builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerDependency();
             builder.RegisterType<SearchBusinessLogic>().As<ISearchBusinessLogic>().SingleInstance();
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerDependency();

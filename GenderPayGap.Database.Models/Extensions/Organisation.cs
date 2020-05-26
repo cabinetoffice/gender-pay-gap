@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 
@@ -37,17 +35,6 @@ namespace GenderPayGap.Database
             }
         }
 
-        public OrganisationStatus PreviousStatus
-        {
-            get
-            {
-                return OrganisationStatuses
-                    .OrderByDescending(os => os.StatusDate)
-                    .Skip(1)
-                    .FirstOrDefault();
-            }
-        }
-        
         public void SetStatus(OrganisationStatuses status, long? byUserId = null, string details = null)
         {
             if (status == Status && details == StatusDetails)
@@ -347,18 +334,6 @@ namespace GenderPayGap.Database
                 .FirstOrDefault();
         }
 
-        //Returns the latest return for the specified accounting date or the latest ever if no accounting date specified
-        public Return GetReturn(DateTime? accountingStartDate = null)
-        {
-            if (accountingStartDate == null || accountingStartDate.Value == DateTime.MinValue)
-            {
-                accountingStartDate = SectorType.GetAccountingStartDate();
-            }
-
-            return Returns.FirstOrDefault(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate == accountingStartDate);
-        }
-
-        
         //Returns the latest scope for the current accounting date
         public OrganisationScope GetCurrentScope()
         {
@@ -412,11 +387,6 @@ namespace GenderPayGap.Database
             return OrganisationAddresses
                 .OrderByDescending(add => add.Created)
                 .FirstOrDefault();
-        }
-
-        public bool GetIsDissolved()
-        {
-            return DateOfCessation != null && DateOfCessation < SectorType.GetAccountingStartDate();
         }
 
         public override bool Equals(object obj)
@@ -498,27 +468,6 @@ namespace GenderPayGap.Database
                 .OrderByDescending(r => r.AccountingDate);
         }
 
-        private void RevertToLastStatus(long byUserId, string details = null)
-        {
-            OrganisationStatus previousStatus = PreviousStatus
-                                                ?? throw new InvalidOperationException(
-                                                    $"The list of Statuses for Organisation '{OrganisationName}' employerReference '{EmployerReference}' isn't long enough to perform a '{nameof(RevertToLastStatus)}' command. It needs to have at least 2 statuses so these can reverted.");
-
-            SetStatus(previousStatus.Status, byUserId, details);
-        }
-
-        public virtual CustomError UnRetire(long byUserId, string details = null)
-        {
-            if (Status != Core.OrganisationStatuses.Retired)
-            {
-                return InternalMessages.OrganisationRevertOnlyRetiredErrorMessage(OrganisationName, EmployerReference, Status.ToString());
-            }
-
-            RevertToLastStatus(byUserId, details);
-
-            return null;
-        }
-
         public OrganisationScope GetLatestScopeForSnapshotYear(int snapshotYear)
         {
             return OrganisationScopes.FirstOrDefault(
@@ -527,72 +476,9 @@ namespace GenderPayGap.Database
                     && orgScope.SnapshotDate.Year == snapshotYear);
         }
 
-        public OrganisationScope GetLatestScopeForSnapshotYearOrThrow(int snapshotYear)
-        {
-            OrganisationScope organisationScope = GetLatestScopeForSnapshotYear(snapshotYear);
-
-            if (organisationScope == null)
-            {
-                throw new ArgumentOutOfRangeException(
-                    $"Cannot find an scope with status 'Active' for snapshotYear '{snapshotYear}' linked to organisation '{OrganisationName}', employerReference '{EmployerReference}'.");
-            }
-
-            return organisationScope;
-        }
-
         public bool IsSearchable()
         {
             return Status == Core.OrganisationStatuses.Active || Status == Core.OrganisationStatuses.Retired;
-        }
-
-        public bool IsActive()
-        {
-            return Status == Core.OrganisationStatuses.Active;
-        }
-
-        public bool IsPending()
-        {
-            return Status == Core.OrganisationStatuses.Pending;
-        }
-
-        /// <summary>
-        ///     The security code is created exclusively during setting, for all other cases (extend/expire) see method
-        ///     'SetSecurityCodeExpiryDate'
-        /// </summary>
-        /// <param name="securityCodeExpiryDateTime"></param>
-        public virtual void SetSecurityCode(DateTime securityCodeExpiryDateTime)
-        {
-            //Set the security token
-            string newSecurityCode = null;
-            do
-            {
-                newSecurityCode = Crypto.GeneratePasscode(Global.SecurityCodeChars.ToCharArray(), Global.SecurityCodeLength);
-            } while (newSecurityCode == SecurityCode);
-
-            SecurityCode = newSecurityCode;
-            SetSecurityCodeExpiryDate(securityCodeExpiryDateTime);
-        }
-
-        /// <summary>
-        ///     Method to modify the security code expiring information (create/extend/expire). It additionally timestamps such
-        ///     change.
-        /// </summary>
-        /// <param name="securityCodeExpiryDateTime"></param>
-        public void SetSecurityCodeExpiryDate(DateTime securityCodeExpiryDateTime)
-        {
-            if (SecurityCode == null)
-            {
-                throw new Exception(
-                    "Nothing to modify: Unable to modify the security code's expiry date of the organisation because it's security code is null");
-            }
-
-            SecurityCodeExpiryDateTime = securityCodeExpiryDateTime;
-            SecurityCodeCreatedDateTime = VirtualDateTime.Now;
-        }
-
-        public bool HasSecurityCodeExpired()
-        {
-            return SecurityCodeExpiryDateTime < VirtualDateTime.Now;
         }
 
         public override string ToString()

@@ -171,7 +171,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().InstancePerLifetimeScope();
             builder.RegisterType<SearchBusinessLogic>().As<ISearchBusinessLogic>().InstancePerLifetimeScope();
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
-            builder.RegisterType<SecurityCodeBusinessLogic>().As<ISecurityCodeBusinessLogic>().InstancePerLifetimeScope();
             builder.RegisterType<DraftFileBusinessLogic>().As<IDraftFileBusinessLogic>().InstancePerLifetimeScope();
 
             builder.Register(
@@ -185,7 +184,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .InstancePerLifetimeScope();
 
             builder.Register(
-                    c => c.ResolveAsMock<SubmissionBusinessLogic>(false, typeof(ICommonBusinessLogic), typeof(IDataRepository)).Object)
+                    c => c.ResolveAsMock<SubmissionBusinessLogic>(false, typeof(IDataRepository)).Object)
                 .As<ISubmissionBusinessLogic>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
@@ -198,8 +197,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                         c.ResolveAsMock<ScopePresentation>(
                                 false,
                                 typeof(IScopeBusinessLogic),
-                                typeof(IDataRepository),
-                                typeof(IOrganisationBusinessLogic))
+                                typeof(IDataRepository))
                             .Object)
                 .As<IScopePresentation>()
                 .InstancePerLifetimeScope();

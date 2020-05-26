@@ -1,24 +1,12 @@
 ﻿@model GenderPayGap.WebUI.Models.Admin.ManualChangesViewModel
 @{
     ViewBag.Title = "Administration: Manual Changes";
-    var controller = ViewData["Controller"] as BaseController;
     var options = new[]
     {
         "Please select..",
         "Convert public to private",
         "Convert private to public",
-        "Delete submissions",
-        "Add organisations latest name",
-        "Reset organisation to only original name",
         "Set organisation company number",
-        "Set organisation SIC codes",
-        "Set organisation addresses",
-        "Set public sector type",
-        "Set organisation as out of scope",
-        "Set organisation as in scope",
-        "Create security code",
-        "Extend security code",
-        "Expire security code",
     };
 }
 
@@ -59,8 +47,7 @@
                 <h3 class="heading-small">PARAMETERS</h3>
                 <p>
                     Enter each change on a new line. Use a equal symbol ('=') to separate reference from values, for example <br/><br/>
-                    'MZC3TMGQ=New Org Name Ltd' or<br/>
-                    'SXAT6DGC=[Address1],[Address2],[Address3],[TownCity],[County],[Country],[PostCode]'<br/>Note: ([Address1], [TownCity] and [PostCode] are required)
+                    'MZC3TMGQ=New Org Name Ltd'
                 </p>
 
                 <p>@Html.TextAreaFor(model => Model.Parameters, 6, 60, new {@class = "form-control", style = "width:100%"})</p>

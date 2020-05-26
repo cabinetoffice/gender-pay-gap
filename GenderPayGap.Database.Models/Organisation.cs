@@ -36,8 +36,11 @@ namespace GenderPayGap.Database
         public DateTime? LastCheckedAgainstCompaniesHouse { get; set; }
         public bool OptedOutFromCompaniesHouseUpdate { get; set; } = false;
 
+        [Obsolete]
         public string SecurityCode { get; set; }
+        [Obsolete]
         public DateTime? SecurityCodeExpiryDateTime { get; set; }
+        [Obsolete]
         public DateTime? SecurityCodeCreatedDateTime { get; set; }
 
         public virtual OrganisationPublicSectorType LatestPublicSectorType { get; set; }

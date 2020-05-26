@@ -110,19 +110,6 @@ namespace GenderPayGap.Core
 
     }
 
-    public enum ManualActions : byte
-    {
-
-        Unknown = 0,
-        Create = 1,
-        Read = 2,
-        Update = 3,
-        Delete = 4,
-        Extend = 5,
-        Expire = 6
-
-    }
-
     public enum RegisterStatuses
     {
 
@@ -236,6 +223,12 @@ namespace GenderPayGap.Core
         [Display(Name = "Admin deleted return")]
         AdminDeleteReturn = 18,
 
+        // Note:
+        //   Lots of these Execute Manual Change enum values are no longer referenced in code
+        //   However, we might have Audit Log entries in the database that reference these values
+        //   So, we want to keep these values, so that they show up correctly in the Audit Log
+        //   i.e. it's not possible to perform these actions NOW
+        //        but that doesn't stop us having a record of them being performed in the past
         [Display(Name = "Execute Manual Change: Convert public to private")]
         ExecuteManualChangeConvertPublicToPrivate = 19,
         [Display(Name = "Execute Manual Change: Convert private to public")]
@@ -243,29 +236,29 @@ namespace GenderPayGap.Core
         [Display(Name = "Execute Manual Change: Convert sector: set accounting date")]
         ExecuteManualChangeConvertSectorSetAccountingDate = 21,
         [Display(Name = "Execute Manual Change: Delete submissions")]
-        ExecuteManualChangeDeleteSubmissions = 22,
+        /* See note above */ ExecuteManualChangeDeleteSubmissions = 22,
         [Display(Name = "Execute Manual Change: Add organisations latest name")]
-        ExecuteManualChangeAddOrganisationsLatestName = 23,
+        /* See note above */ ExecuteManualChangeAddOrganisationsLatestName = 23,
         [Display(Name = "Execute Manual Change: Reset organisation to only original name")]
-        ExecuteManualChangeResetOrganisationToOnlyOriginalName = 24,
+        /* See note above */ ExecuteManualChangeResetOrganisationToOnlyOriginalName = 24,
         [Display(Name = "Execute Manual Change: Set organisation company number")]
         ExecuteManualChangeSetOrganisationCompanyNumber = 25,
         [Display(Name = "Execute Manual Change: Set organisation SIC codes")]
         ExecuteManualChangeSetOrganisationSicCodes = 26,
         [Display(Name = "Execute Manual Change: Set organisation addresses")]
-        ExecuteManualChangeSetOrganisationAddresses = 27,
+        /* See note above */ ExecuteManualChangeSetOrganisationAddresses = 27,
         [Display(Name = "Execute Manual Change: Set public sector type")]
-        ExecuteManualChangeSetPublicSectorType = 28,
+        /* See note above */ ExecuteManualChangeSetPublicSectorType = 28,
         [Display(Name = "Execute Manual Change: Set organisation scope")]
-        ExecuteManualChangeSetOrganisationScope = 29,
+        /* See note above */ ExecuteManualChangeSetOrganisationScope = 29,
         [Display(Name = "Execute Manual Change: Create security code")]
-        ExecuteManualChangeCreateOrExtendSecurityCode = 30,
+        /* See note above */ ExecuteManualChangeCreateOrExtendSecurityCode = 30,
         [Display(Name = "Execute Manual Change: Extend security code")]
-        ExecuteManualChangeExpireSecurityCode = 31,
+        /* See note above */ ExecuteManualChangeExpireSecurityCode = 31,
         [Display(Name = "Execute Manual Change: Create security codes for all active and pending orgs")]
-        ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs = 32,
+        /* See note above */ ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs = 32,
         [Display(Name = "Execute Manual Change: Expire security codes for all active and pending orgs")]
-        ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs = 33,
+        /* See note above */ ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs = 33,
 
         [Display(Name = "Purge organisation")]
         PurgeOrganisation = 34,

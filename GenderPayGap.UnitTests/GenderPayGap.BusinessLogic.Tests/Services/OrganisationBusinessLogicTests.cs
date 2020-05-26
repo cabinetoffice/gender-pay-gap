@@ -99,22 +99,15 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
             IDataRepository dataRepository = mockedDataRepository.Object;
 
 
-            var mockedCommonBusinessLogic = Get<ICommonBusinessLogic>();
+            var submissionBusinessLogic = new SubmissionBusinessLogic(dataRepository);
 
-            var submissionBusinessLogic = new SubmissionBusinessLogic(mockedCommonBusinessLogic, dataRepository);
-
-            var mockedScopeBusinessLogic = Get<IScopeBusinessLogic>();
-            var mockedSecurityCodeBusinessLogic = Get<ISecurityCodeBusinessLogic>();
             var mockedEncryptionHandler = Get<IEncryptionHandler>();
             var mockedObfuscator = Get<IObfuscator>();
 
             var organisationBusinessLogic = new OrganisationBusinessLogic(
-                mockedCommonBusinessLogic,
                 dataRepository,
                 submissionBusinessLogic,
-                mockedScopeBusinessLogic,
                 mockedEncryptionHandler,
-                mockedSecurityCodeBusinessLogic,
                 mockedObfuscator);
 
             IEnumerable<string> listEncOrgIds = listOfReturns.Select(x => mockedObfuscator.Obfuscate(x.OrganisationId.ToString()));

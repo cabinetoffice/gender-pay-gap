@@ -18,56 +18,24 @@ namespace GenderPayGap.WebUI.Classes.Services
     public interface IScopePresentation
     {
 
-        // inteface
         ScopingViewModel CreateScopingViewModel(Organisation org, User currentUser);
-        Task<OrganisationViewModel> CreateOrganisationViewModelAsync(EnterCodesViewModel enterCodes, User currentUser);
         Task<ScopingViewModel> CreateScopingViewModelAsync(EnterCodesViewModel enterCodes, User currentUser);
         Task SaveScopesAsync(ScopingViewModel model, IEnumerable<int> snapshotYears);
-        Task SavePresumedScopeAsync(ScopingViewModel model, int reportingStartYear);
 
     }
 
     public class ScopePresentation : IScopePresentation
     {
 
-        private readonly IOrganisationBusinessLogic _organisationBusinessLogic;
-
         public ScopePresentation(IScopeBusinessLogic scopeBL,
-            IDataRepository dataRepo,
-            IOrganisationBusinessLogic organisationBusinessLogic)
+            IDataRepository dataRepo)
         {
             ScopeBusinessLogic = scopeBL;
             DataRepository = dataRepo;
-            _organisationBusinessLogic = organisationBusinessLogic;
         }
 
         private IScopeBusinessLogic ScopeBusinessLogic { get; }
         private IDataRepository DataRepository { get; }
-
-        public virtual async Task<OrganisationViewModel> CreateOrganisationViewModelAsync(EnterCodesViewModel enterCodes, User currentUser)
-        {
-            Organisation org = await _organisationBusinessLogic.GetOrganisationByEmployerReferenceAndSecurityCodeAsync(
-                enterCodes.EmployerReference,
-                enterCodes.SecurityToken);
-            if (org == null)
-            {
-                return null;
-            }
-
-            var model = new OrganisationViewModel();
-            // when SecurityToken is expired then model.SecurityCodeExpired should be true
-            model.IsSecurityCodeExpired = org.HasSecurityCodeExpired();
-
-            model.Employers = new PagedResult<EmployerRecord>();
-            model.Employers.Results = new List<EmployerRecord> {org.ToEmployerRecord()};
-            model.SelectedEmployerIndex = 0;
-
-            //Mark the organisation as authorised
-            model.SelectedAuthorised = true;
-            model.IsFastTrackAuthorised = true;
-
-            return model;
-        }
 
         public virtual async Task<ScopingViewModel> CreateScopingViewModelAsync(EnterCodesViewModel enterCodes, User currentUser)
         {

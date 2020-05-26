@@ -23,7 +23,6 @@ namespace GenderPayGap.BusinessLogic.Tests
             builder.Register(c => Mock.Of<ISearchBusinessLogic>()).As<ISearchBusinessLogic>();
             builder.Register(c => Mock.Of<UpdateFromCompaniesHouseService>()).As<UpdateFromCompaniesHouseService>();
             builder.Register(c => Mock.Of<IEncryptionHandler>()).As<IEncryptionHandler>();
-            builder.Register(c => Mock.Of<ISecurityCodeBusinessLogic>()).As<ISecurityCodeBusinessLogic>();
             builder.Register(c => Mock.Of<IObfuscator>()).As<IObfuscator>();
 
             IContainer container = builder.Build();
