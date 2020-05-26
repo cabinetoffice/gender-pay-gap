@@ -68,18 +68,20 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
 
         private bool IsFuzzyMatch(string word, string searchTerm)
         {
-            
-            var distance = FuzzySearch.GetDamerauLevenshteinDistance(word, searchTerm);
-
-            // this allows fewer "mistakes" for shorter words
-            if (word.Length < 5)
+            if (word.Length <= 2)
             {
-                return distance < 2;
+                // For 1-letter and 2-letter words, we need an exact match (no spelling mistakes)
+                return false;
             }
-            
-            // this should be capped rather than a continuous function, so that a word of
-            // length 10 isn't allowed to contain 4 "mistakes" etc.
-            return distance < 3;
+            else
+            {
+                // For words of more than 3 letters, allow "length/3" spelling mistakes
+
+                int numberOfSpellingMistakes = FuzzySearch.GetDamerauLevenshteinDistance(word, searchTerm);
+                int allowableSpellingMistakes = word.Length / 3;
+
+                return numberOfSpellingMistakes <= allowableSpellingMistakes;
+            }
         }
 
     }
