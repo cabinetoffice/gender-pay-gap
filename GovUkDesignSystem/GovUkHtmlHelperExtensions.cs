@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using GovUkDesignSystem.GovUkDesignSystemComponents;
 using GovUkDesignSystem.GovUkDesignSystemComponents.SubComponents;
 using GovUkDesignSystem.HtmlGenerators;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GovUkDesignSystem
@@ -137,6 +139,32 @@ namespace GovUkDesignSystem
             FieldsetViewModel fieldsetViewModel)
         {
             return htmlHelper.Partial("/GovUkDesignSystemComponents/Fieldset.cshtml", fieldsetViewModel);
+        }
+        
+        public static async Task<IHtmlContent> GovUkFileUpload(
+            this IHtmlHelper htmlHelper,
+            FileUploadViewModel fileUploadViewModel)
+        {
+            return await htmlHelper.PartialAsync("/GovUkDesignSystemComponents/FileUpload.cshtml", fileUploadViewModel);
+        }
+
+        public static async Task<IHtmlContent> GovUkFileUploadFor<TModel>(
+            this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, IFormFile>> propertyLambdaExpression,
+            LabelViewModel labelOptions = null,
+            HintViewModel hintOptions = null,
+            FormGroupViewModel formGroupOptions = null,
+            string classes = null
+            )
+            where TModel : GovUkViewModel
+        {
+            return await FileUploadHtmlGenerator.GenerateHtml(
+                htmlHelper,
+                propertyLambdaExpression,
+                labelOptions,
+                hintOptions,
+                formGroupOptions,
+                classes);
         }
 
         public static IHtmlContent GovUkFooter(
