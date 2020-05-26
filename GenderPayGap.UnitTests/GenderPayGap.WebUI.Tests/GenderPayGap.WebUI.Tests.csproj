@@ -83,6 +83,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
@@ -103,7 +104,6 @@
     <ProjectReference Include="..\..\GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj" />
     <ProjectReference Include="..\..\GenderPayGap.Extensions.AspNetCore\GenderPayGap.Extensions.AspNetCore.csproj" />
     <ProjectReference Include="..\..\GenderPayGap.Extensions\GenderPayGap.Extensions.csproj" />
-    <ProjectReference Include="..\..\GenderPayGap.Tests.Common\GenderPayGap.Tests.Common.csproj" />
     <ProjectReference Include="..\..\GenderPayGap.WebUI\GenderPayGap.WebUI.csproj" />
   </ItemGroup>
 
