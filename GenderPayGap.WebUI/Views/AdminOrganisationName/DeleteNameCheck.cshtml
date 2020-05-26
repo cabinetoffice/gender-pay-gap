@@ -1,0 +1,97 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.DeleteOrganisationNameViewModel
+
+@{
+    ViewBag.Title = $"Delete name - {Model.Organisation.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>();
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("Home", "Admin")
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = Model.Organisation.OrganisationName,
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Name history",
+            Href = Url.Action("ViewNameHistory", "AdminOrganisationName", new { id = Model.Organisation.OrganisationId })
+        });
+
+        crumbs.Add(new CrumbViewModel
+        {
+            Text = "Delete name"
+        });
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Delete name
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+        
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Current name</th>
+                    <td class="govuk-table__cell">@(Model.Organisation.OrganisationName)</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Previous name that you are about to delete</th>
+                    <td class="govuk-table__cell">@(Model.OrganisationNameToBeDeleted.Name)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form method="post" action="@Url.Action("ChangeAddressPost", "AdminOrganisationAddress", 
+                                        new { organisationId = Model.Organisation.OrganisationId, nameId = Model.OrganisationNameToBeDeleted.OrganisationNameId })">
+            @(Html.AntiForgeryToken())
+
+            @(Html.GovUkTextAreaFor(
+                m => m.Reason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the reason for this change?",
+                    Classes = "govuk-label--m"
+                }
+            ))
+            
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Confirm and save",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+            
+            <p class="govuk-body">
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })"
+                   class="govuk-link">
+                    Cancel and return to organisation page
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>

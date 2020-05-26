@@ -57,6 +57,7 @@
             <th scope="col" class="govuk-table__header">Name</th>
             <th scope="col" class="govuk-table__header">Changed to this name on date</th>
             <th scope="col" class="govuk-table__header">Source</th>
+            <th scope="col" class="govuk-table__header">Actions</th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -84,6 +85,21 @@
                 <td class="govuk-table__cell">@(name.Name)</td>
                 <td class="govuk-table__cell">@(name.Created.ToString("d MMM yyyy"))</td>
                 <td class="govuk-table__cell">@(name.Source)</td>
+
+                <td class="govuk-table__cell">
+                    @if (i == 0)
+                    {
+                        <span class="govuk-visually-hidden">No actions available for this name</span>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("DeleteNameGet", "AdminOrganisationName", new { organisationId = name.OrganisationId, nameId = name.OrganisationNameId })"
+                           class="govuk-link">
+                            Delete
+                            <span class="govuk-visually-hidden"> previous name (@(name.Name))</span>
+                        </a>
+                    }
+                </td>
             </tr>
         }
     </tbody>
