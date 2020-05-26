@@ -11,6 +11,12 @@ namespace GenderPayGap.Extensions.Tests
         [SetUp]
         public void Setup()
         {
+            VirtualDateTime.Initialise(TimeSpan.Parse("3.01:00") /* 3 days and one hour */);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
             VirtualDateTime.Initialise(Config.OffsetCurrentDateTimeForSite());
         }
 
