@@ -92,9 +92,7 @@ namespace GenderPayGap.WebUI
             //Allow creation of a static http context anywhere
             services.AddHttpContextAccessor();
 
-            //Create the MVC service
-            IMvcBuilder mvcBuilder = services
-                .AddMvc(
+            services.AddControllersWithViews(
                     options =>
                     {
                         options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
@@ -116,6 +114,8 @@ namespace GenderPayGap.WebUI
                 })
                 .AddDataAnnotationsLocalization(
                     options => { options.DataAnnotationLocalizerProvider = DataAnnotationLocalizerProvider.DefaultResourceHandler; });
+
+            IMvcBuilder mvcBuilder = services.AddRazorPages();
 
             if (Config.IsLocal())
             {
