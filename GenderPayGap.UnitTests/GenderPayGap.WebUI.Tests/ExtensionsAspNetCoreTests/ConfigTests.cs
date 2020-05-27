@@ -9,7 +9,7 @@ namespace Tests
     {
 
         [Test]
-        public void Config_DefaultDate_Returns_DateTime_Now_Plus_Three_Days_And_One_Hour_When_Configured()
+        public void Config_DefaultDate_Returns_DateTime_Now_Plus_917_Days_When_Configured()
         { 
             // Arrange
             var expectedOffsetCurrentDateTimeForSite = new TimeSpan(917, 0, 0, 0, 0);
