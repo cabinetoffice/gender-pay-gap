@@ -39,8 +39,6 @@
     <ProjectReference Include="..\GenderPayGap.BusinessLogic\GenderPayGap.BusinessLogic.csproj" />
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
-    <ProjectReference Include="..\GenderPayGap.Extensions.AspNetCore\GenderPayGap.Extensions.AspNetCore.csproj" />
-    <ProjectReference Include="..\GenderPayGap.Extensions\GenderPayGap.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

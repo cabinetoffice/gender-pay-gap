@@ -31,7 +31,6 @@
   <ItemGroup>
     <ProjectReference Include="..\GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
-    <ProjectReference Include="..\GenderPayGap.Extensions\GenderPayGap.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
