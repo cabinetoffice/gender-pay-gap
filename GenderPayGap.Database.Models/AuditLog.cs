@@ -9,7 +9,6 @@ namespace GenderPayGap.Database.Models
     public class AuditLog
     {
 
-        private string _details;
         public long AuditLogId { get; set; }
         public AuditedAction Action { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -21,11 +20,13 @@ namespace GenderPayGap.Database.Models
         [ForeignKey("ImpersonatedUserId")]
         public virtual User ImpersonatedUser { get; set; }
 
+        public string DetailsString { get; set; }
+
         [NotMapped]
         public Dictionary<string, string> Details
         {
-            get => JsonConvert.DeserializeObject<Dictionary<string, string>>(string.IsNullOrEmpty(_details) ? "{}" : _details);
-            set => _details = JsonConvert.SerializeObject(value);
+            get => JsonConvert.DeserializeObject<Dictionary<string, string>>(string.IsNullOrEmpty(DetailsString) ? "{}" : DetailsString);
+            set => DetailsString = JsonConvert.SerializeObject(value);
         }
 
     }

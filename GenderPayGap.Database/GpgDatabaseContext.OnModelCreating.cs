@@ -616,9 +616,6 @@ namespace GenderPayGap.Database
             modelBuilder.Entity<AuditLog>()
                 .Property(e => e.CreatedDate)
                 .HasDefaultValueSql(Database.IsNpgsql() ? "now()" : "getdate()");
-            modelBuilder.Entity<AuditLog>()
-                .Property<string>("DetailsString")
-                .HasField("_details");
 
             #endregion
         }

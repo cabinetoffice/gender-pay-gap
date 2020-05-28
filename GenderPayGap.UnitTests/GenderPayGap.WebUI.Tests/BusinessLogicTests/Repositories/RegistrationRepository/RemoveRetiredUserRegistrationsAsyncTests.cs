@@ -41,6 +41,7 @@ namespace Repositories.UserRepository
         {
             // Arrange
             User testRetiredUser = mockDataRepo.GetAll<User>()
+                .AsEnumerable()
                 .Where(u => u.EmailAddress == "active1@ad5bda75-e514-491b-b74d-4672542cbd15.com")
                 .FirstOrDefault();
 

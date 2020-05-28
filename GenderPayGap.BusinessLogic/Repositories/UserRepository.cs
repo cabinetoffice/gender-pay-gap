@@ -46,13 +46,14 @@ namespace GenderPayGap.BusinessLogic.Account.Repositories
 
         public async Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses)
         {
-            return await dataRepository.GetAll<User>()
+            return dataRepository.GetAll<User>()
+                .AsEnumerable()
                 // filter by email address
                 .Where(user => user.EmailAddress.ToLower() == email.ToLower())
                 // skip or filter by user status
                 .Where(user => filterStatuses.Length == 0 || filterStatuses.Contains(user.Status))
                 // return first match otherwise null
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
         public async Task<List<User>> FindAllUsersByNameAsync(string name)
