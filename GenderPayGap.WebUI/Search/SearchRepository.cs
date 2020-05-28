@@ -50,7 +50,9 @@ namespace GenderPayGap.WebUI.Search
                 .ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
 
             OrganisationNameWords = groupedWords;
-            MaxOrganisationNameWords = groupedWords.Values.Max();
+            MaxOrganisationNameWords = groupedWords.Count > 0
+                ? groupedWords.Values.Max()
+                : 1 /* groupedWords would only be empty if the database is empty - we use 1 to prevent a divide-by-zero error */;
         }
 
         private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
