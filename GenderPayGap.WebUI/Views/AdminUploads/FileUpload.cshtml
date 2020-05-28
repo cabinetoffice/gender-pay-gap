@@ -1,0 +1,79 @@
+﻿@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminFileUploadViewModel
+@{
+    ViewBag.Title = "File upload - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Uploads",
+                Href = Url.Action("Uploads", "AdminUploads")
+            },
+            new CrumbViewModel
+            {
+                Text = "File upload"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            @(Html.DisplayFor(m => m.FileUploadType)) file upload
+        </h1>
+        
+        <form method="post" enctype="multipart/form-data" action="@Url.Action("FileUploadPost", "AdminUploads")" class="govuk-!-margin-top-8">
+            @(Html.AntiForgeryToken())
+            <input type="hidden" name="fileUploadType" value="@(Model.FileUploadType)"/>
+            
+            @(Html.GovUkErrorSummary(new[]
+                                {
+                                    nameof(AdminFileUploadViewModel.File),
+                                }))
+            
+            @(await Html.GovUkFileUploadFor(m => m.File,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "Upload a CSV file",
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-4"
+                }
+                ))
+            
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Upload",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("Uploads", "AdminUploads")"
+                   class="govuk-link">
+                    Cancel and return to the uploads page
+                </a>
+            </p>
+
+        </form>
+    </div>
+</div>

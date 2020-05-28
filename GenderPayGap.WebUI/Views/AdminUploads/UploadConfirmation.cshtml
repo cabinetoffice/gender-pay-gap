@@ -1,0 +1,51 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminSicSectionUploadCheckViewModel
+@{
+    ViewBag.Title = "Upload confirmation - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Uploads",
+                Href = Url.Action("Uploads", "AdminUploads")
+            },
+            new CrumbViewModel
+            {
+                Text = "Upload confirmation"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <span class="govuk-caption-xl">Administration</span>
+    <h1 class="govuk-heading-xl">
+        @(Html.DisplayFor(m => m.FileUploadType)) upload confirmation
+    </h1>
+
+    <p class="govuk-body">Your changes were successfully saved.</p>
+
+    <p class="govuk-body">
+        <a href="@Url.Action("Uploads", "AdminUploads")"
+           class="govuk-link">
+            Return to the uploads page
+        </a>
+    </p>
+
+</div>

@@ -1,0 +1,81 @@
+﻿@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminUploadsViewModel
+@{
+    ViewBag.Title = "Uploads - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Uploads"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Uploads
+</h1>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header ">Description</th>
+            <th scope="col" class="govuk-table__header">Items</th>
+            <th scope="col" class="govuk-table__header">Actions</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">SIC Sections</td>
+            <td class="govuk-table__cell">@(Model.SicSectionsCount) sections</td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("FileUploadGet", "AdminUploads", 
+                             new {fileUploadType = FileUploadType.SicSection})"
+                   class="govuk-link">
+                    Upload a new version
+                </a>
+                <br/>
+                <br/>
+                <a href="@Url.Action("DownloadAllSicSections", "AdminUploads")"
+                   class="govuk-link">
+                    Download current version
+                </a>
+            </td>
+        </tr>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">SIC Codes</td>
+            <td class="govuk-table__cell">@(Model.SicCodesCount) codes</td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("FileUploadGet", "AdminUploads", 
+                             new {fileUploadType = FileUploadType.SicCode})"
+                   class="govuk-link">
+                    Upload a new version
+                </a>
+                <br/>
+                <br/>
+                <a href="@Url.Action("DownloadAllSicCodes", "AdminUploads")"
+                   class="govuk-link">
+                    Download current version
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>

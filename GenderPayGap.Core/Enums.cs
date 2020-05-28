@@ -270,7 +270,9 @@ namespace GenderPayGap.Core
         RegistrationLog = 37,
 
         [Display(Name = "Admin deleted organisation previous name")]
-        AdminDeleteOrganisationPreviousName = 38
+        AdminDeleteOrganisationPreviousName = 38,
+        [Display(Name = "Admin updated SIC sections")]
+        AdminUpdatedSicSections = 39
     }
 
     public enum HashingAlgorithm
