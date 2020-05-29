@@ -515,24 +515,6 @@ namespace GenderPayGap.Database
 
             #endregion
 
-            #region UserSetting
-
-            modelBuilder.Entity<UserSetting>(
-                entity => {
-                    entity.HasKey(e => new {e.UserId, e.Key}).HasName("PK_dbo.UserSettings");
-
-                    entity.HasIndex(e => e.UserId);
-
-                    entity.Property(e => e.Value).HasMaxLength(50);
-
-                    entity.HasOne(d => d.User)
-                        .WithMany(p => p.UserSettings)
-                        .HasForeignKey(d => d.UserId)
-                        .HasConstraintName("FK_dbo.UserSettings_dbo.Users_UserId");
-                });
-
-            #endregion
-
             #region UserStatus
 
             modelBuilder.Entity<UserStatus>(

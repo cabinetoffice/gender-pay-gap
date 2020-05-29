@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database.Models;
@@ -12,7 +12,6 @@ namespace GenderPayGap.Database
         public User()
         {
             UserOrganisations = new HashSet<UserOrganisation>();
-            UserSettings = new HashSet<UserSetting>();
             UserStatuses = new HashSet<UserStatus>();
             ReminderEmails = new HashSet<ReminderEmail>();
         }
@@ -62,7 +61,6 @@ namespace GenderPayGap.Database
 
 
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
-        public virtual ICollection<UserSetting> UserSettings { get; set; }
         public virtual ICollection<UserStatus> UserStatuses { get; set; }
         public virtual ICollection<ReminderEmail> ReminderEmails { get; set; }
 

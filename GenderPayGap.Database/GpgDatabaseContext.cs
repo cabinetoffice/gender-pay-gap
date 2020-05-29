@@ -74,7 +74,6 @@ namespace GenderPayGap.Database
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<UserOrganisation> UserOrganisations { get; set; }
         public virtual DbSet<InactiveUserOrganisation> InactiveUserOrganisations { get; set; }
-        public virtual DbSet<UserSetting> UserSettings { get; set; }
         public virtual DbSet<UserStatus> UserStatuses { get; set; }
         public virtual DbSet<PublicSectorType> PublicSectorTypes { get; set; }
         public virtual DbSet<OrganisationPublicSectorType> OrganisationPublicSectorTypes { get; set; }
