@@ -1,6 +1,6 @@
 ﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Admin.AdminSicSectionUploadCheckViewModel
+@model GenderPayGap.WebUI.Models.Admin.FileUploadType
 @{
     ViewBag.Title = "Upload confirmation - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -36,7 +36,7 @@
 <div class="govuk-grid-row">
     <span class="govuk-caption-xl">Administration</span>
     <h1 class="govuk-heading-xl">
-        @(Html.DisplayFor(m => m.FileUploadType)) upload confirmation
+        @(Html.DisplayFor(m => m)) upload confirmation
     </h1>
 
     <p class="govuk-body">Your changes were successfully saved.</p>
