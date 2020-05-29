@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // ARRANGE
             User mockUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            mockUser.UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, VirtualDateTime.Now.ToString())};
+            mockUser.AcceptedPrivacyStatement = VirtualDateTime.Now;
 
             Organisation mockOrg = OrganisationHelper.GetPublicOrganisation();
             Organisation mockOrg2 = OrganisationHelper.GetPublicOrganisation();
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 UserId = 87654,
                 EmailAddress = "mock@test.com",
                 EmailVerifiedDate = VirtualDateTime.Now,
-                UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, VirtualDateTime.Now.ToString())}
+                AcceptedPrivacyStatement = VirtualDateTime.Now
             };
 
             var controller = UiTestHelper.GetController<OrganisationController>(-1, mockRouteData, mockUser);
@@ -98,7 +98,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             mockRouteData.Values.Add("Controller", "Organisation");
 
             var mockUser = new User {
-                UserId = 87654, EmailAddress = "mock@test.com", EmailVerifiedDate = VirtualDateTime.Now, UserSettings = new UserSetting[0]
+                UserId = 87654, EmailAddress = "mock@test.com", EmailVerifiedDate = VirtualDateTime.Now
             };
 
             var controller = UiTestHelper.GetController<OrganisationController>(-1, mockRouteData, mockUser);
@@ -126,7 +126,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 UserId = 87654,
                 EmailAddress = "mock@test.com",
                 EmailVerifiedDate = VirtualDateTime.Now,
-                UserSettings = new[] {new UserSetting(UserSettingKeys.AcceptedPrivacyStatement, VirtualDateTime.Now.AddYears(-10).ToString())}
+                AcceptedPrivacyStatement = VirtualDateTime.Now.AddYears(-10)
             };
 
             var controller = UiTestHelper.GetController<OrganisationController>(-1, mockRouteData, mockUser);

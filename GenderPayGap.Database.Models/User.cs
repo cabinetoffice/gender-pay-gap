@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database.Models;
@@ -55,6 +55,11 @@ namespace GenderPayGap.Database
 
         public DateTime Created { get; set; } = VirtualDateTime.Now;
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
+
+        public bool SendUpdates { get; set; }
+        public bool AllowContact { get; set; }
+        public DateTime? AcceptedPrivacyStatement { get; set; }
+
 
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
         public virtual ICollection<UserSetting> UserSettings { get; set; }
