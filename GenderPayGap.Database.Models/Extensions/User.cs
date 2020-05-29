@@ -76,36 +76,6 @@ namespace GenderPayGap.Database
                 ? TimeSpan.Zero
                 : LoginDate.Value.AddMinutes(Config.Configuration["LockoutMinutes"].ToInt32()) - VirtualDateTime.Now;
 
-        [NotMapped]
-        public bool SendUpdates
-        {
-            get => GetSetting(UserSettingKeys.SendUpdates) == "True";
-            set => SetSetting(UserSettingKeys.SendUpdates, value.ToString());
-        }
-
-        [NotMapped]
-        public bool AllowContact
-        {
-            get => GetSetting(UserSettingKeys.AllowContact) == "True";
-            set => SetSetting(UserSettingKeys.AllowContact, value.ToString());
-        }
-
-        [NotMapped]
-        public DateTime? AcceptedPrivacyStatement
-        {
-            get
-            {
-                string value = GetSetting(UserSettingKeys.AcceptedPrivacyStatement);
-                if (value == null)
-                {
-                    return null;
-                }
-
-                return DateTime.Parse(value);
-            }
-            set => SetSetting(UserSettingKeys.AcceptedPrivacyStatement, value.HasValue ? value.Value.ToString() : null);
-        }
-
         public bool IsAdministrator()
         {
             if (!EmailAddress.IsEmailAddress())
@@ -148,58 +118,6 @@ namespace GenderPayGap.Database
             Status = status;
             StatusDate = VirtualDateTime.Now;
             StatusDetails = details;
-        }
-
-        public string GetSetting(UserSettingKeys key)
-        {
-            UserSetting setting = UserSettings.FirstOrDefault(s => s.Key == key);
-
-            if (setting != null && !string.IsNullOrWhiteSpace(setting.Value))
-            {
-                return setting.Value;
-            }
-
-            return null;
-        }
-
-        public void SetSetting(UserSettingKeys key, string value)
-        {
-            UserSetting setting = UserSettings.FirstOrDefault(s => s.Key == key);
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                if (setting != null)
-                {
-                    UserSettings.Remove(setting);
-                }
-            }
-            else if (setting == null)
-            {
-                UserSettings.Add(new UserSetting(key, value));
-            }
-            else if (setting.Value != value)
-            {
-                setting.Value = value;
-                setting.Modified = VirtualDateTime.Now;
-            }
-        }
-
-        public string GetVerifyUrl()
-        {
-            if (EmailVerifiedDate != null)
-            {
-                return null;
-            }
-
-            string verifyCode = Guid.NewGuid().ToString("N");
-            string verifyUrl = $"/register/verify-email?code={verifyCode}";
-            return verifyUrl;
-        }
-
-        public string GetPasswordResetUrl()
-        {
-            string resetCode = Encryption.EncryptQuerystring(UserId + ":" + VirtualDateTime.Now.ToSmallDateTime());
-            string resetUrl = $"/register/enter-new-password?code={resetCode}";
-            return resetUrl;
         }
 
         public override bool Equals(object obj)

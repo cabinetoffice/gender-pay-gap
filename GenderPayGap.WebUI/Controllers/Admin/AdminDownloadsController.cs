@@ -411,7 +411,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             List<User> users = dataRepository.GetAll<User>()
                 .Where(user => user.Status == UserStatuses.Active)
-                .Where(user => user.UserSettings.Any(us => us.Key == UserSettingKeys.SendUpdates && us.Value.ToLower() == "true"))
+                .Where(user => user.SendUpdates)
                 .ToList();
 
             var records = users.Select(
@@ -436,7 +436,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             List<User> users = dataRepository.GetAll<User>()
                 .Where(user => user.Status == UserStatuses.Active)
-                .Where(user => user.UserSettings.Any(us => us.Key == UserSettingKeys.AllowContact && us.Value.ToLower() == "true"))
+                .Where(user => user.AllowContact)
                 .ToList();
 
             var records = users.Select(
