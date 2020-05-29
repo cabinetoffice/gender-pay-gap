@@ -126,6 +126,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\LogModels" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
