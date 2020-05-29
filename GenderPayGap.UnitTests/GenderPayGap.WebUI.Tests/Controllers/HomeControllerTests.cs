@@ -34,8 +34,7 @@ namespace GenderPayGap.Tests
             var mockUser = new User {
                 UserId = 87654,
                 EmailAddress = "mock@test.com",
-                EmailVerifiedDate = VirtualDateTime.Now,
-                UserSettings = new HashSet<UserSetting>()
+                EmailVerifiedDate = VirtualDateTime.Now
             };
 
             var mockModel = new PrivacyStatementModel {Accept = "Yes"};
@@ -52,11 +51,9 @@ namespace GenderPayGap.Tests
             Assert.AreEqual("Organisation", result.ControllerName, "Expected the Controller to be 'Home'");
 
             // Assert User Settings
-            UserSetting acceptedSetting = mockUser.UserSettings.FirstOrDefault(u => u.Key == UserSettingKeys.AcceptedPrivacyStatement);
-            Assert.AreEqual(1, mockUser.UserSettings.Count, "UserSettings should have one element on the list");
-            Assert.NotNull(acceptedSetting, "AcceptedPrivacyStatement setting should exist");
+            Assert.NotNull(mockUser.AcceptedPrivacyStatement, "AcceptedPrivacyStatement setting should exist");
             Assert.GreaterOrEqual(
-                DateTime.Parse(acceptedSetting.Value),
+                mockUser.AcceptedPrivacyStatement.Value,
                 DateTime.Parse(testDate),
                 "AcceptedPrivacyStatement value should be a new date");
         }

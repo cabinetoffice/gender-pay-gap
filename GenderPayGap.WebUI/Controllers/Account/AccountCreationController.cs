@@ -177,8 +177,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
             user.Lastname = viewModel.LastName;
             user.JobTitle = viewModel.JobTitle;
             user.EmailAddress = viewModel.EmailAddress;
-            user.SetSetting(UserSettingKeys.AllowContact, viewModel.AllowContact.ToString());
-            user.SetSetting(UserSettingKeys.SendUpdates, viewModel.SendUpdates.ToString());
+            user.AllowContact = viewModel.AllowContact;
+            user.SendUpdates = viewModel.SendUpdates;
 
             byte[] salt = Crypto.GetSalt();
             user.Salt = Convert.ToBase64String(salt);
