@@ -59,7 +59,6 @@ namespace GenderPayGap.Database
         }
 
 
-        public virtual DbSet<AddressStatus> AddressStatus { get; set; }
         public virtual DbSet<Organisation> Organisation { get; set; }
         public virtual DbSet<OrganisationAddress> OrganisationAddress { get; set; }
         public virtual DbSet<OrganisationName> OrganisationName { get; set; }
