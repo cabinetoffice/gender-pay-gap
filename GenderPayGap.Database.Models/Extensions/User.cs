@@ -103,7 +103,7 @@ namespace GenderPayGap.Database
 
                 return DateTime.Parse(value);
             }
-            set => SetSetting(UserSettingKeys.AcceptedPrivacyStatement, value.HasValue ? value.Value.ToString() : null);
+            set => SetSetting(UserSettingKeys.AcceptedPrivacyStatement, value.HasValue ? value.Value.ToString("s") : null);
         }
 
         public bool IsAdministrator()
