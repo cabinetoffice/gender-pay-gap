@@ -107,7 +107,6 @@ namespace GenderPayGap.WebUI.Controllers
                     csvReader.Configuration.WillThrowOnMissingField = false;
                     csvReader.Configuration.TrimFields = true;
                     csvReader.Configuration.IgnoreQuotes = false;
-                    csvReader.Configuration.IgnoreBlankLines = true;
                     csvReader.ReadHeader();
                     string[] fieldHeaders = csvReader.FieldHeaders;
 
