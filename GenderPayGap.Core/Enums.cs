@@ -14,17 +14,6 @@ namespace GenderPayGap.Core
 
     }
 
-    public enum UserSettingKeys : byte
-    {
-
-        Unknown = 0,
-        SendUpdates = 1,
-        AllowContact = 2,
-        PendingFasttrackCodes = 3,
-        AcceptedPrivacyStatement = 4
-
-    }
-
     public enum OrganisationStatuses : byte
     {
 
