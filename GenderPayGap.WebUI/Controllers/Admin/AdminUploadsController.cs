@@ -124,26 +124,27 @@ namespace GenderPayGap.WebUI.Controllers
                                 return View("FileUpload", viewModel);
                             }
 
-                            List<SicSection> records = csvReader.GetRecords<SicSection>().ToList();
+                            List<SicSection> sicSections = csvReader.GetRecords<SicSection>().ToList();
 
-                            if (records.Count < 1)
+                            if (sicSections.Count < 1)
                             {
                                 viewModel.AddErrorFor(m => m.File, "The selected file is empty");
                                 return View("FileUpload", viewModel);
                             }
 
-                            AdminSicSectionUploadCheckViewModel uploadCheckViewModel = GenerateAdminSicSectionUploadCheckViewModel(records);
+                            AdminSicSectionUploadCheckViewModel sicSectionUploadCheckViewModelModel = 
+                                GenerateAdminSicSectionUploadCheckViewModel(sicSections);
                             
-                            if (uploadCheckViewModel.RecordsToCreate.Count == 0
-                                && uploadCheckViewModel.RecordsToUpdate.Count == 0
-                                && uploadCheckViewModel.RecordsToDelete.Count == 0)
+                            if (sicSectionUploadCheckViewModelModel.RecordsToCreate.Count == 0
+                                && sicSectionUploadCheckViewModelModel.RecordsToUpdate.Count == 0
+                                && sicSectionUploadCheckViewModelModel.RecordsToDelete.Count == 0)
                             {
                                 viewModel.AddErrorFor(m => m.File, "The selected file does not contain "
                                                                    + "any changes to the current SIC sections");
                                 return View("FileUpload", viewModel);
                             }
 
-                            return View("UploadCheck", uploadCheckViewModel);
+                            return View("SicSectionUploadCheck", sicSectionUploadCheckViewModelModel);
 
                         case FileUploadType.SicCode:
                             if (!fieldHeaders.SequenceEqual(new[] {"SicCodeId", "SicSectionId", "Description"}))
@@ -154,8 +155,29 @@ namespace GenderPayGap.WebUI.Controllers
                                     + "on the previous page to find the correct format.");
                                 return View("FileUpload", viewModel);
                             }
-                            break;
-                            // TODO Implement SIC Codes
+                            
+                            List<SicCode> sicCodes = csvReader.GetRecords<SicCode>().ToList();
+                            
+                            if (sicCodes.Count < 1)
+                            {
+                                viewModel.AddErrorFor(m => m.File, "The selected file is empty");
+                                return View("FileUpload", viewModel);
+                            }
+
+                            AdminSicCodeUploadCheckViewModel sicCodeUploadCheckViewModel =
+                                GenerateAdminSicCodeUploadCheckViewModel(sicCodes);
+                            
+                            if (sicCodeUploadCheckViewModel.RecordsToCreate.Count == 0
+                                && sicCodeUploadCheckViewModel.RecordsToUpdate.Count == 0
+                                && sicCodeUploadCheckViewModel.RecordsToDelete.Count == 0)
+                            {
+                                viewModel.AddErrorFor(m => m.File, "The selected file does not contain "
+                                                                   + "any changes to the current SIC codes");
+                                return View("FileUpload", viewModel);
+                            }
+
+                            return View("SicCodeUploadCheck", sicCodeUploadCheckViewModel);
+
                         
                         default:
                             throw new Exception("Invalid file upload type");
@@ -168,8 +190,64 @@ namespace GenderPayGap.WebUI.Controllers
                     "The selected file could not be uploaded – try again.");
                 return View("FileUpload", viewModel);
             }
+        }
+        
+        [HttpPost("uploads/sic-section-upload-check")]
+        public IActionResult SicSectionUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
+        {
             
-            return View("UploadCheck", new AdminSicSectionUploadCheckViewModel());
+            var newRecords = JsonConvert.DeserializeObject<List<SicSection>>(viewModel.SerializedNewRecords);
+            
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+            if (viewModel.HasAnyErrors())
+            {
+                var uploadCheckViewModel = GenerateAdminSicSectionUploadCheckViewModel(newRecords);
+                return View("SicSectionUploadCheck", uploadCheckViewModel);
+            }
+            
+            List<SicSection> existingRecords = dataRepository.GetAll<SicSection>().ToList();
+            existingRecords.ForEach(record => dataRepository.Delete(record));
+            newRecords.ForEach(record => dataRepository.Insert(record));
+            dataRepository.SaveChangesAsync().Wait();
+            
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicSections, new
+            {
+                ExistingRecords = JsonConvert.SerializeObject(existingRecords),
+                NewRecords = JsonConvert.SerializeObject(newRecords),
+                Reason = viewModel.Reason
+            }, currentUser);
+            
+            return View("UploadConfirmation", viewModel.FileUploadType);
+        }
+        
+        [HttpPost("uploads/sic-code-upload-check")]
+        public IActionResult SicCodeUploadCheckPost(AdminSicCodeUploadCheckViewModel viewModel)
+        {
+            
+            var newRecords = JsonConvert.DeserializeObject<List<SicCode>>(viewModel.SerializedNewRecords);
+            
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+            if (viewModel.HasAnyErrors())
+            {
+                var uploadCheckViewModel = GenerateAdminSicCodeUploadCheckViewModel(newRecords);
+                return View("SicCodeUploadCheck", uploadCheckViewModel);
+            }
+            
+            List<SicCode> existingRecords = dataRepository.GetAll<SicCode>().ToList();
+            existingRecords.ForEach(record => dataRepository.Delete(record));
+            newRecords.ForEach(record => dataRepository.Insert(record));
+            dataRepository.SaveChangesAsync().Wait();
+            
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicCodes, new
+            {
+                ExistingRecords = JsonConvert.SerializeObject(existingRecords),
+                NewRecords = JsonConvert.SerializeObject(newRecords),
+                Reason = viewModel.Reason
+            }, currentUser);
+            
+            return View("UploadConfirmation", viewModel.FileUploadType);
         }
 
         private AdminSicSectionUploadCheckViewModel GenerateAdminSicSectionUploadCheckViewModel(List<SicSection> newRecords)
@@ -223,35 +301,60 @@ namespace GenderPayGap.WebUI.Controllers
             
             return uploadCheckViewModel;
         }
-
-        [HttpPost("uploads/file-upload-check")]
-        public IActionResult FileUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
+        
+        private AdminSicCodeUploadCheckViewModel GenerateAdminSicCodeUploadCheckViewModel(List<SicCode> newRecords)
         {
-            
-            var newRecords = JsonConvert.DeserializeObject<List<SicSection>>(viewModel.SerializedNewRecords);
-            
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
+            List<SicCode> existingRecords = dataRepository.GetAll<SicCode>().ToList();
+
+            var uploadCheckViewModel = new AdminSicCodeUploadCheckViewModel
             {
-                var uploadCheckViewModel = GenerateAdminSicSectionUploadCheckViewModel(newRecords);
-                return View("UploadCheck", uploadCheckViewModel);
+                RecordsToCreate = new List<SicCode>(),
+                RecordsToUpdate = new List<SicCodeToUpdate>(),
+                RecordsToDelete = new List<SicCode>(),
+                SerializedNewRecords = JsonConvert.SerializeObject(newRecords),
+                AbleToProceed = true
+                
+            };
+
+            foreach (SicCode newRecord in newRecords)
+            {
+                if (existingRecords.Select(r => r.SicCodeId).Contains(newRecord.SicCodeId))
+                {
+                    SicCode matchingExistingRecord =
+                        existingRecords.FirstOrDefault(r => r.SicCodeId == newRecord.SicCodeId);
+                    if (matchingExistingRecord.SicSectionId.Trim() != newRecord.SicSectionId
+                        || matchingExistingRecord.Description.Trim() != newRecord.Description)
+                    {
+                        var recordToUpdate = new SicCodeToUpdate
+                        {
+                            SicCodeId = newRecord.SicCodeId,
+                            PreviousSicSectionId = matchingExistingRecord.SicSectionId,
+                            NewSicSectionId = newRecord.SicSectionId,
+                            PreviousDescription = matchingExistingRecord.Description,
+                            NewDescription = newRecord.Description
+                        };
+                        uploadCheckViewModel.RecordsToUpdate.Add(recordToUpdate);
+                    }
+                }
+                else 
+                {
+                    uploadCheckViewModel.RecordsToCreate.Add(newRecord);
+                }
+            }
+
+            foreach (SicCode existingRecord in existingRecords)
+            {
+                if (!newRecords.Select(r => r.SicCodeId).Contains(existingRecord.SicCodeId))
+                {
+                    uploadCheckViewModel.RecordsToDelete.Add(existingRecord);
+                    if (existingRecord.OrganisationSicCodes.Count > 0)
+                    {
+                        uploadCheckViewModel.AbleToProceed = false;
+                    }
+                }
             }
             
-            List<SicSection> existingRecords = dataRepository.GetAll<SicSection>().ToList();
-            existingRecords.ForEach(record => dataRepository.Delete(record));
-            newRecords.ForEach(record => dataRepository.Insert(record));
-            dataRepository.SaveChangesAsync().Wait();
-            
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicSections, new
-            {
-                ExistingRecords = JsonConvert.SerializeObject(existingRecords),
-                NewRecords = JsonConvert.SerializeObject(newRecords),
-                Reason = viewModel.Reason
-            }, currentUser);
-            
-            return View("UploadConfirmation", viewModel);
+            return uploadCheckViewModel;
         }
-
     }
 }
