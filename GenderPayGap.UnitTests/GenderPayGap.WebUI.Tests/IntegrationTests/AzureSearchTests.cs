@@ -234,46 +234,7 @@ namespace GenderPayGap.Integration.Tests
             long totalNumberOfRecordsFound = result.Employers.ActualRecordTotal;
             Assert.LessOrEqual(totalNumberOfRecordsFound, maxNumberOfRecordsExpected);
         }
-
-        [TestCase(null, 0)]
-        [TestCase("", 0)]
-        [TestCase("   ", 0)]
-        [TestCase("Accommodation", 9)]
-        [TestCase("Supermarket", 2)]
-        [TestCase("Bank", 2)]
-        [TestCase("acco*", 11)] // accounting, accommodation
-        [TestCase("01210", 1)] // [confirm it's been indexed correctly -> zero leading]  01210 - Growing of grapes
-        [TestCase("46310", 1)] // 46310 - Wholesale of fruit and vegetables
-        [TestCase("591", 8)] // 59111-Motion picture... + 59112-Video... + 59113-Television...
-        public async Task ViewingService_GetListOfSicCodeSuggestions(string searchKeyWords, int expectedNumberOfSuggestions)
-        {
-            // Arrange
-            string sicCodeSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");
-            string sicCodeSearchAdminApiKey = Config.GetAppSetting("SearchService:AdminApiKey");
-
-            var sicCodeSearchServiceClient = new SearchServiceClient(
-                sicCodeSearchServiceName,
-                new SearchCredentials(sicCodeSearchAdminApiKey));
-
-            var sicCodeSearchIndexClient = new SicCodeSearchRepository(sicCodeSearchServiceClient);
-
-            var viewingService = new ViewingService(
-                Mock.Of<IDataRepository>(),
-                _azureSearchRepo,
-                sicCodeSearchIndexClient,
-                Mock.Of<ICommonBusinessLogic>());
-
-            // Act
-            List<SicCodeSearchResult> result = await viewingService.GetListOfSicCodeSuggestionsAsync(searchKeyWords);
-
-            // Assert
-            int actualNumberOfSuggestions = result.Count;
-            Assert.AreEqual(
-                expectedNumberOfSuggestions,
-                actualNumberOfSuggestions,
-                $"Expected term [{searchKeyWords}] to return {expectedNumberOfSuggestions} suggestion(s).");
-        }
-
+        
         [Description(
             "Users searching by several terms expect the search function to select all sector descriptions that contain ALL the terms in the search box. Therefore the result set must contain the list of organisations linked to either of the relevant sicCodeId's."
             + ""
