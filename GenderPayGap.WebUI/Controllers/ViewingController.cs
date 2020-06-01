@@ -185,6 +185,7 @@ namespace GenderPayGap.WebUI.Controllers
         [NoCache]
         [HttpGet("~/search-results-js")]
         [HttpGet("search-results-js")]
+        // used to generate suggestions for the search on the landing page 
         public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
         {
             //Clear the default back url of the employer hub pages
@@ -220,21 +221,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             return Json(new {Matches = matches});
         }
-
-        [ResponseCache(CacheProfileName = "SuggestSicCodeJs")]
-        [HttpGet("suggest-sic-code-js")]
-        public async Task<JsonResult> SuggestSicCodeJsAsync(string search)
-        {
-            if (string.IsNullOrEmpty(search))
-            {
-                return Json(new {ErrorCode = HttpStatusCode.BadRequest, ErrorMessage = "Cannot search for a null or empty value"});
-            }
-
-            List<SicCodeSearchResult> matches = await ViewingService.GetListOfSicCodeSuggestionsAsync(search.Trim());
-
-            return Json(new {Matches = matches});
-        }
-
+        
         #endregion
 
         #region Downloads

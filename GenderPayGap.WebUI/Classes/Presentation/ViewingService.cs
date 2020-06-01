@@ -31,8 +31,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             int pageSize);
 
         Task<List<SuggestOrganisationResult>> SuggestEmployerNameAsync(string search);
-        Task<List<SicCodeSearchResult>> GetListOfSicCodeSuggestionsAsync(string search);
-
+        
     }
 
     public class ViewingService : IViewingService
@@ -135,15 +134,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
             return matches;
         }
-
-        public async Task<List<SicCodeSearchResult>> GetListOfSicCodeSuggestionsAsync(string searchText)
-        {
-            IEnumerable<KeyValuePair<string, SicCodeSearchModel>> listOfSicCodeSuggestionsFromIndex =
-                await GetListOfSicCodeSuggestionsFromIndexAsync(searchText);
-
-            return SicCodeSearchResult.ConvertToScreenReadableListOfSuggestions(searchText, listOfSicCodeSuggestionsFromIndex);
-        }
-
+        
         public PagedResult<EmployerSearchModel> GetPagedResult(IEnumerable<EmployerSearchModel> searchResults,
             long totalRecords,
             int page,
