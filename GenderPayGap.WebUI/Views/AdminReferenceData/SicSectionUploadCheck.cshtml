@@ -2,7 +2,7 @@
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Admin.AdminSicCodeUploadCheckViewModel
+@model GenderPayGap.WebUI.Models.Admin.AdminSicSectionUploadCheckViewModel
 @{
     ViewBag.Title = "Upload check - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -19,8 +19,8 @@
             },
             new CrumbViewModel
             {
-                Text = "Uploads",
-                Href = Url.Action("Uploads", "AdminUploads")
+                Text = "Reference Data",
+                Href = Url.Action("ReferenceData", "AdminReferenceData")
             },
             new CrumbViewModel
             {
@@ -38,7 +38,7 @@
 <div class="govuk-grid-row">
     <span class="govuk-caption-xl">Administration</span>
     <h1 class="govuk-heading-xl">
-        SIC code upload check
+        SIC section upload check
     </h1>
 
     <p class="govuk-body">Please review the changes you are about to make</p>
@@ -46,24 +46,24 @@
     @if (Model.RecordsToCreate != null && Model.RecordsToCreate.Count > 0)
     {
         <h2 class="govuk-heading-l">
-            @(Model.RecordsToCreate.Count) created SIC code@(Model.RecordsToCreate.Count > 1 ? "s" : "")
+            @(Model.RecordsToCreate.Count) created SIC section@(Model.RecordsToCreate.Count > 1 ? "s" : "")
         </h2>
 
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC code ID</th>
                     <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
                     <th scope="col" class="govuk-table__header">Description</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                @foreach (SicCode record in Model.RecordsToCreate)
+                @foreach (SicSection record in Model.RecordsToCreate)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@(record.SicCodeId)</td>
                         <td class="govuk-table__cell">@(record.SicSectionId)</td>
-                        <td class="govuk-table__cell">@(record.Description)</td>
+                        <td class="govuk-table__cell">
+                            @(record.Description)
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -73,34 +73,24 @@
     @if (Model.RecordsToUpdate != null && Model.RecordsToUpdate.Count > 0)
     {
         <h2 class="govuk-heading-l govuk-!-margin-top-9">
-            @(Model.RecordsToUpdate.Count) updated SIC code@(Model.RecordsToUpdate.Count > 1 ? "s" : "")
+            @(Model.RecordsToUpdate.Count) updated SIC section@(Model.RecordsToUpdate.Count > 1 ? "s" : "")
         </h2>
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC code ID</th>
                     <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
                     <th scope="col" class="govuk-table__header">Description</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                @foreach (SicCodeToUpdate record in Model.RecordsToUpdate)
+                @foreach (SicSectionToUpdate record in Model.RecordsToUpdate)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@(record.SicCodeId)</td>
-                        <td class="govuk-table__cell">
-                            <div>
-                                @(record.NewSicSectionId)
-                            </div>
-                            @if (record.NewSicSectionId != record.PreviousSicSectionId)
-                            {
-                                <div>
-                                    previously @(record.PreviousSicSectionId)
-                                </div>
-                            }
-                        </td>
+                        <td class="govuk-table__cell ">@(record.SicSectionId)</td>
                         <td class="govuk-table__cell ">
-                            <div>@(record.NewDescription)</div>
+                            <div>
+                                @(record.NewDescription)
+                            </div>
                             @if (record.NewDescription != record.PreviousDescription)
                             {
                                 <div>
@@ -117,13 +107,13 @@
     @if (Model.RecordsToDelete != null && Model.RecordsToDelete.Count > 0)
     {
         <h2 class="govuk-heading-l govuk-!-margin-top-9">
-            @(Model.RecordsToDelete.Count) deleted SIC code@(Model.RecordsToDelete.Count > 1 ? "s" : "")
+            @(Model.RecordsToDelete.Count) deleted SIC section@(Model.RecordsToDelete.Count > 1 ? "s" : "")
         </h2>
 
         @if (!Model.AbleToProceed)
         {
             <p class="govuk-body govuk-!-font-weight-bold">
-                It is not possible to delete SIC codes that are still in use. Please go back and upload another file
+                It is not possible to delete SIC sections that are still in use. Please go back and upload another file
                 without any deletions.
             </p>
         }
@@ -131,35 +121,34 @@
         <table class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC code ID</th>
                     <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
                     <th scope="col" class="govuk-table__header">Description</th>
-                    @if (Model.RecordsToDelete.Count(r => r.OrganisationSicCodes.Count > 0) > 0)
+                    @if (Model.RecordsToDelete.Count(r => r.SicCodes.Count > 0) > 0)
                     {
                         <th scope="col" class="govuk-table__header">Number of current uses</th>
                     }
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                @foreach (SicCode record in Model.RecordsToDelete)
+                @foreach (SicSection record in Model.RecordsToDelete)
                 {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@(record.SicCodeId)</td>
                         <td class="govuk-table__cell">@(record.SicSectionId)</td>
                         <td class="govuk-table__cell">@(record.Description)</td>
-                        @if (record.OrganisationSicCodes.Count > 0)
+                        @if (record.SicCodes.Count > 0)
                         {
                             <td class="govuk-table__cell">
-                                @(record.OrganisationSicCodes.Count)
+                                @(record.SicCodes.Count)
                             </td>
                         }
+
                     </tr>
                 }
             </tbody>
         </table>
     }
 
-    <form method="post" class="govuk-!-margin-top-9" action="@Url.Action("SicCodeUploadCheckPost", "AdminUploads")">
+    <form method="post" class="govuk-!-margin-top-9" action="@Url.Action("SicSectionUploadCheckPost", "AdminReferenceData")">
         @(Html.AntiForgeryToken())
         <input type="hidden" name="SerializedNewRecords" value="@(Model.SerializedNewRecords)"/>
 
@@ -182,9 +171,9 @@
         }
 
         <p class="govuk-body">
-            <a href="@Url.Action("Uploads", "AdminUploads")"
+            <a href="@Url.Action("ReferenceData", "AdminReferenceData")"
                class="govuk-link">
-                Cancel and return to the uploads page
+                Cancel and return to the reference data page
             </a>
         </p>
     </form>
