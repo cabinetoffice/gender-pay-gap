@@ -18,8 +18,8 @@
             },
             new CrumbViewModel
             {
-                Text = "Uploads",
-                Href = Url.Action("Uploads", "AdminUploads")
+                Text = "Reference Data",
+                Href = Url.Action("ReferenceData", "AdminReferenceData")
             },
             new CrumbViewModel
             {
@@ -41,7 +41,7 @@
             @(Html.DisplayFor(m => m.FileUploadType)) file upload
         </h1>
         
-        <form method="post" enctype="multipart/form-data" action="@Url.Action("FileUploadPost", "AdminUploads")" class="govuk-!-margin-top-8">
+        <form method="post" enctype="multipart/form-data" action="@Url.Action("FileUploadPost", "AdminReferenceData")" class="govuk-!-margin-top-8">
             @(Html.AntiForgeryToken())
             <input type="hidden" name="fileUploadType" value="@(Model.FileUploadType)"/>
             
@@ -68,9 +68,9 @@
             }))
 
             <p class="govuk-body">
-                <a href="@Url.Action("Uploads", "AdminUploads")"
+                <a href="@Url.Action("ReferenceData", "AdminReferenceData")"
                    class="govuk-link">
-                    Cancel and return to the uploads page
+                    Cancel and return to the reference data page
                 </a>
             </p>
 

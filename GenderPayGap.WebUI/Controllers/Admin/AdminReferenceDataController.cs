@@ -22,20 +22,20 @@ namespace GenderPayGap.WebUI.Controllers
 {
     [Authorize(Roles = "GPGadmin")]
     [Route("admin")]
-    public class AdminUploadsController : Controller
+    public class AdminReferenceDataController : Controller
     {
 
         private readonly AuditLogger auditLogger;
         private readonly IDataRepository dataRepository;
 
-        public AdminUploadsController(IDataRepository dataRepository, AuditLogger auditLogger)
+        public AdminReferenceDataController(IDataRepository dataRepository, AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
         }
 
-        [HttpGet("uploads")]
-        public IActionResult Uploads()
+        [HttpGet("reference-data")]
+        public IActionResult ReferenceData()
         {
             var viewModel = new AdminUploadsViewModel
             {
@@ -43,10 +43,10 @@ namespace GenderPayGap.WebUI.Controllers
                 SicCodesCount = dataRepository.GetAll<SicCode>().Count()
             };
 
-            return View("Uploads", viewModel);
+            return View("ReferenceData", viewModel);
         }
 
-        [HttpGet("downloads/all-sic-sections")]
+        [HttpGet("reference-data/all-sic-sections")]
         public FileContentResult DownloadAllSicSections()
         {
             List<SicSection> allSicSections = dataRepository.GetAll<SicSection>().ToList();
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("downloads/all-sic-codes")]
+        [HttpGet("reference-data/all-sic-codes")]
         public FileContentResult DownloadAllSicCodes()
         {
             List<SicCode> allSicCodes = dataRepository.GetAll<SicCode>()
@@ -77,14 +77,14 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("uploads/file-upload")]
+        [HttpGet("reference-data/file-upload")]
         public IActionResult FileUploadGet(FileUploadType fileUploadType)
         {
             var viewModel = new AdminFileUploadViewModel {FileUploadType = fileUploadType};
             return View("FileUpload", viewModel);
         }
 
-        [HttpPost("uploads/file-upload")]
+        [HttpPost("reference-data/file-upload")]
         public IActionResult FileUploadPost(AdminFileUploadViewModel viewModel)
         {
             if (viewModel.File == null)
@@ -191,7 +191,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
         }
         
-        [HttpPost("uploads/sic-section-upload-check")]
+        [HttpPost("reference-data/sic-section-upload-check")]
         public IActionResult SicSectionUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
         {
             
@@ -220,7 +220,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View("UploadConfirmation", viewModel.FileUploadType);
         }
         
-        [HttpPost("uploads/sic-code-upload-check")]
+        [HttpPost("reference-data/sic-code-upload-check")]
         public IActionResult SicCodeUploadCheckPost(AdminSicCodeUploadCheckViewModel viewModel)
         {
             
