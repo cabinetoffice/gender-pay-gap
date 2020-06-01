@@ -31,13 +31,25 @@ namespace GenderPayGap.WebUI.Models.Search
         public List<OptionSelect> ReportingStatusOptions { get; internal set; }
         public List<OptionSelect> SizeOptions { get; internal set; }
 
+        // Keywords
         public string search { get; set; }
 
+        // Sector
         public IEnumerable<char> s { get; set; }
+        
+        // Employer Size
         public IEnumerable<int> es { get; set; }
+        
+        // Reporting Year
         public IEnumerable<int> y { get; set; }
+        
+        // Reporting Status
         public IEnumerable<int> st { get; set; }
+        
+        // Page
         public int p { get; set; }
+        
+        // Employer Type
         public string t { get; set; }
 
         public PagedResult<EmployerSearchModel> Employers { get; set; }
