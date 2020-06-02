@@ -1,8 +1,9 @@
-﻿@using GovUkDesignSystem
+﻿@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Admin.FileUploadType
 @{
-    ViewBag.Title = "Upload confirmation - Administration - Gender pay gap service";
+    ViewBag.Title = "Reference Data - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -22,7 +23,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Upload confirmation"
+                Text = Model == FileUploadType.SicCode ? "SIC codes" : "SIC sections"
             }
         };
     }
@@ -34,18 +35,20 @@
 }
 
 <div class="govuk-grid-row">
-    <span class="govuk-caption-xl">Administration</span>
-    <h1 class="govuk-heading-xl">
-        @(Html.DisplayFor(m => m)) upload confirmation
-    </h1>
+    <div class="govuk-grid-column-two-thirds">
 
-    <p class="govuk-body">Your changes were successfully saved.</p>
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                The @(Model == FileUploadType.SicCode ? "SIC codes" : "SIC sections") were updated successfully
+            </h1>
+        </div>
 
-    <p class="govuk-body">
-        <a href="@Url.Action("ReferenceData", "AdminReferenceData")"
-           class="govuk-link">
-            Return to the reference data page
-        </a>
-    </p>
+        <p class="govuk-body">
+            <a href="@Url.Action("ReferenceData", "AdminReferenceData")"
+               class="govuk-link">
+                Return to the reference data page
+            </a>
+        </p>
 
+    </div>
 </div>

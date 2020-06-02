@@ -15,7 +15,7 @@
         }
         if (Model.ErrorMessage != null)
         {
-            Model.ErrorMessage.Id = $"{Model.Id}-error";
+            Model.ErrorMessage.Id = $"GovUk_{Model.Id}-error";
             describedBy += Model.ErrorMessage.Id;
             await Html.RenderPartialAsync("/GovUkDesignSystemComponents/ErrorMessage.cshtml", Model.ErrorMessage);
         }

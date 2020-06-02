@@ -1,39 +1,20 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
+using GenderPayGap.WebUI.Models.AdminReferenceData;
 using GovUkDesignSystem;
+using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
     public class AdminSicCodeUploadCheckViewModel : GovUkViewModel
     {
 
-        public FileUploadType FileUploadType { get; set; }
-
-        public List<SicCode> RecordsToCreate { get; set; }
-
-        public List<SicCodeToUpdate> RecordsToUpdate { get; set; }
-
-        public List<SicCode> RecordsToDelete { get; set; }
-
-        public bool AbleToProceed { get; set; }
+        // Only used to send data to the view - we don't expect the client to send this data back to us
+        public AddsEditsDeletesSet<SicCode> AddsEditsDeletesSet { get; set; }
 
         public string SerializedNewRecords { get; set; }
 
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
         public string Reason { get; set; }
-
-    }
-
-    public class SicCodeToUpdate
-    {
-        public int SicCodeId { get; set; }
-
-        public string PreviousSicSectionId { get; set; }
-        
-        public string NewSicSectionId { get; set; }
-
-        public string PreviousDescription { get; set; }
-
-        public string NewDescription { get; set; }
 
     }
 
