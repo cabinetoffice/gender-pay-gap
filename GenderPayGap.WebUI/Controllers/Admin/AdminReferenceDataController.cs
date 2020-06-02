@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using CsvHelper;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -11,11 +8,11 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Models.AdminReferenceData;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -46,13 +43,13 @@ namespace GenderPayGap.WebUI.Controllers
             return View("ReferenceData", viewModel);
         }
 
-        [HttpGet("reference-data/all-sic-sections")]
+        [HttpGet("reference-data/sic-sections/download")]
         public FileContentResult DownloadAllSicSections()
         {
             List<SicSection> allSicSections = dataRepository.GetAll<SicSection>().ToList();
 
             var records = allSicSections
-                .Select(sicSection => new {sicSection.SicSectionId, sicSection.Description})
+                .Select(GetSicSectionDetails)
                 .ToList();
 
             string fileDownloadName = $"Gpg-SicSections-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
@@ -61,14 +58,17 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("reference-data/all-sic-codes")]
+        private static object GetSicSectionDetails(SicSection sicSection)
+        {
+            return new {sicSection.SicSectionId, sicSection.Description};
+        }
+
+        [HttpGet("reference-data/sic-codes/download")]
         public FileContentResult DownloadAllSicCodes()
         {
-            List<SicCode> allSicCodes = dataRepository.GetAll<SicCode>()
-                .Include(sicCode => sicCode.SicSection)
-                .ToList();
+            List<SicCode> allSicCodes = dataRepository.GetAll<SicCode>().ToList();
 
-            var records = allSicCodes.Select(sicCode => new {sicCode.SicCodeId, sicCode.SicSectionId, sicCode.Description})
+            var records = allSicCodes.Select(GetSicCodeDetails)
                 .ToList();
 
             string fileDownloadName = $"Gpg-SicCodes-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
@@ -77,283 +77,213 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        [HttpGet("reference-data/file-upload")]
-        public IActionResult FileUploadGet(FileUploadType fileUploadType)
+        private static object GetSicCodeDetails(SicCode sicCode)
         {
-            var viewModel = new AdminFileUploadViewModel {FileUploadType = fileUploadType};
-            return View("FileUpload", viewModel);
+            return new {sicCode.SicCodeId, sicCode.SicSectionId, sicCode.Description};
         }
 
-        [HttpPost("reference-data/file-upload")]
-        public IActionResult FileUploadPost(AdminFileUploadViewModel viewModel)
+        [HttpGet("reference-data/sic-sections/upload")]
+        public IActionResult SicSectionUploadGet()
         {
-            if (viewModel.File == null)
-            {
-                viewModel.AddErrorFor(m => m.File, "Select a CSV file");
-                return View("FileUpload", viewModel);
-            }
-
-            if (!Path.GetExtension(viewModel.File.FileName).Equals(".csv"))
-            {
-                viewModel.AddErrorFor(m => m.File, "The selected file must be a CSV");
-                return View("FileUpload", viewModel);
-            }
-
-            try
-            {
-                using (var reader = new StreamReader(viewModel.File.OpenReadStream(), Encoding.UTF8))
-                {
-                    var csvReader = new CsvReader(reader);
-                    csvReader.Configuration.WillThrowOnMissingField = false;
-                    csvReader.Configuration.TrimFields = true;
-                    csvReader.Configuration.IgnoreQuotes = false;
-                    csvReader.ReadHeader();
-                    string[] fieldHeaders = csvReader.FieldHeaders;
-
-                    switch (viewModel.FileUploadType)
-                    {
-                        case FileUploadType.SicSection:
-
-                            if (!fieldHeaders.SequenceEqual(new[] {"SicSectionId", "Description"}))
-                            {
-                                viewModel.AddErrorFor(
-                                    m => m.File,
-                                    "The selected file has the wrong column headings. Download the current version of this data "
-                                    + "on the previous page to find the correct format.");
-                                return View("FileUpload", viewModel);
-                            }
-
-                            List<SicSection> sicSections = csvReader.GetRecords<SicSection>().ToList();
-
-                            if (sicSections.Count < 1)
-                            {
-                                viewModel.AddErrorFor(m => m.File, "The selected file is empty");
-                                return View("FileUpload", viewModel);
-                            }
-
-                            AdminSicSectionUploadCheckViewModel sicSectionUploadCheckViewModelModel = 
-                                GenerateAdminSicSectionUploadCheckViewModel(sicSections);
-                            
-                            if (sicSectionUploadCheckViewModelModel.RecordsToCreate.Count == 0
-                                && sicSectionUploadCheckViewModelModel.RecordsToUpdate.Count == 0
-                                && sicSectionUploadCheckViewModelModel.RecordsToDelete.Count == 0)
-                            {
-                                viewModel.AddErrorFor(m => m.File, "The selected file does not contain "
-                                                                   + "any changes to the current SIC sections");
-                                return View("FileUpload", viewModel);
-                            }
-
-                            return View("SicSectionUploadCheck", sicSectionUploadCheckViewModelModel);
-
-                        case FileUploadType.SicCode:
-                            if (!fieldHeaders.SequenceEqual(new[] {"SicCodeId", "SicSectionId", "Description"}))
-                            {
-                                viewModel.AddErrorFor(
-                                    m => m.File,
-                                    "The selected file has the wrong column headings. Download the current version of this data "
-                                    + "on the previous page to find the correct format.");
-                                return View("FileUpload", viewModel);
-                            }
-                            
-                            List<SicCode> sicCodes = csvReader.GetRecords<SicCode>().ToList();
-                            
-                            if (sicCodes.Count < 1)
-                            {
-                                viewModel.AddErrorFor(m => m.File, "The selected file is empty");
-                                return View("FileUpload", viewModel);
-                            }
-
-                            AdminSicCodeUploadCheckViewModel sicCodeUploadCheckViewModel =
-                                GenerateAdminSicCodeUploadCheckViewModel(sicCodes);
-                            
-                            if (sicCodeUploadCheckViewModel.RecordsToCreate.Count == 0
-                                && sicCodeUploadCheckViewModel.RecordsToUpdate.Count == 0
-                                && sicCodeUploadCheckViewModel.RecordsToDelete.Count == 0)
-                            {
-                                viewModel.AddErrorFor(m => m.File, "The selected file does not contain "
-                                                                   + "any changes to the current SIC codes");
-                                return View("FileUpload", viewModel);
-                            }
-
-                            return View("SicCodeUploadCheck", sicCodeUploadCheckViewModel);
-
-                        
-                        default:
-                            throw new Exception("Invalid file upload type");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                viewModel.AddErrorFor(m => m.File, 
-                    "The selected file could not be uploaded – try again.");
-                return View("FileUpload", viewModel);
-            }
-        }
-        
-        [HttpPost("reference-data/sic-section-upload-check")]
-        public IActionResult SicSectionUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
-        {
-            
-            var newRecords = JsonConvert.DeserializeObject<List<SicSection>>(viewModel.SerializedNewRecords);
-            
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
-            {
-                var uploadCheckViewModel = GenerateAdminSicSectionUploadCheckViewModel(newRecords);
-                return View("SicSectionUploadCheck", uploadCheckViewModel);
-            }
-            
-            List<SicSection> existingRecords = dataRepository.GetAll<SicSection>().ToList();
-            existingRecords.ForEach(record => dataRepository.Delete(record));
-            newRecords.ForEach(record => dataRepository.Insert(record));
-            dataRepository.SaveChangesAsync().Wait();
-            
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicSections, new
-            {
-                ExistingRecords = JsonConvert.SerializeObject(existingRecords),
-                NewRecords = JsonConvert.SerializeObject(newRecords),
-                Reason = viewModel.Reason
-            }, currentUser);
-            
-            return View("UploadConfirmation", viewModel.FileUploadType);
-        }
-        
-        [HttpPost("reference-data/sic-code-upload-check")]
-        public IActionResult SicCodeUploadCheckPost(AdminSicCodeUploadCheckViewModel viewModel)
-        {
-            
-            var newRecords = JsonConvert.DeserializeObject<List<SicCode>>(viewModel.SerializedNewRecords);
-            
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
-            {
-                var uploadCheckViewModel = GenerateAdminSicCodeUploadCheckViewModel(newRecords);
-                return View("SicCodeUploadCheck", uploadCheckViewModel);
-            }
-            
-            List<SicCode> existingRecords = dataRepository.GetAll<SicCode>().ToList();
-            existingRecords.ForEach(record => dataRepository.Delete(record));
-            newRecords.ForEach(record => dataRepository.Insert(record));
-            dataRepository.SaveChangesAsync().Wait();
-            
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicCodes, new
-            {
-                ExistingRecords = JsonConvert.SerializeObject(existingRecords),
-                NewRecords = JsonConvert.SerializeObject(newRecords),
-                Reason = viewModel.Reason
-            }, currentUser);
-            
-            return View("UploadConfirmation", viewModel.FileUploadType);
+            var viewModel = new AdminFileUploadViewModel();
+            return View("SicSectionUpload", viewModel);
         }
 
-        private AdminSicSectionUploadCheckViewModel GenerateAdminSicSectionUploadCheckViewModel(List<SicSection> newRecords)
+        [HttpGet("reference-data/sic-codes/upload")]
+        public IActionResult SicCodeUploadGet()
         {
-            List<SicSection> existingRecords = dataRepository.GetAll<SicSection>().ToList();
+            var viewModel = new AdminFileUploadViewModel();
+            return View("SicCodeUpload", viewModel);
+        }
+
+        [HttpPost("reference-data/sic-sections/upload")]
+        public IActionResult SicSectionUploadPost(AdminFileUploadViewModel viewModel)
+        {
+            if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
+                viewModel.File,
+                new[] { "SicSectionId", "Description" },
+                out List<SicSection> sicSectionsFromUploadFile,
+                out string errorMessage))
+            {
+                viewModel.AddErrorFor(m => m.File, errorMessage);
+                return View("SicSectionUpload", viewModel);
+            }
+
+            List<SicSection> sicSectionsFromDatabase = dataRepository.GetAll<SicSection>().ToList();
 
             var uploadCheckViewModel = new AdminSicSectionUploadCheckViewModel
             {
-                RecordsToCreate = new List<SicSection>(),
-                RecordsToUpdate = new List<SicSectionToUpdate>(),
-                RecordsToDelete = new List<SicSection>(),
-                SerializedNewRecords = JsonConvert.SerializeObject(newRecords),
-                AbleToProceed = true
-                
+                SerializedNewRecords = JsonConvert.SerializeObject(sicSectionsFromUploadFile),
+                AddsEditsDeletesSet = new AddsEditsDeletesSet<SicSection>(
+                    sicSectionsFromDatabase,
+                    sicSectionsFromUploadFile,
+                    s => s.SicSectionId,
+                    (s1, s2) => s1.Description == s2.Description,
+                    s => s.SicCodes.Count > 0)
             };
 
-            foreach (SicSection newRecord in newRecords)
-            {
-                if (existingRecords.Select(r => r.SicSectionId).Contains(newRecord.SicSectionId))
-                {
-                    SicSection matchingExistingRecord =
-                        existingRecords.FirstOrDefault(r => r.SicSectionId == newRecord.SicSectionId);
-                    if (matchingExistingRecord.Description.Trim() != newRecord.Description)
-                    {
-                        var recordToUpdate = new SicSectionToUpdate
-                        {
-                            SicSectionId = newRecord.SicSectionId,
-                            PreviousDescription = matchingExistingRecord.Description,
-                            NewDescription = newRecord.Description
-                        };
-                        uploadCheckViewModel.RecordsToUpdate.Add(recordToUpdate);
-                    }
-                }
-                else if (newRecord.SicSectionId != "")
-                {
-                    uploadCheckViewModel.RecordsToCreate.Add(newRecord);
-                }
-            }
-
-            foreach (SicSection existingRecord in existingRecords)
-            {
-                if (!newRecords.Select(r => r.SicSectionId).Contains(existingRecord.SicSectionId))
-                {
-                    uploadCheckViewModel.RecordsToDelete.Add(existingRecord);
-                    if (existingRecord.SicCodes.Count > 0)
-                    {
-                        uploadCheckViewModel.AbleToProceed = false;
-                    }
-                }
-            }
-            
-            return uploadCheckViewModel;
+            return View("SicSectionUploadCheck", uploadCheckViewModel);
         }
-        
-        private AdminSicCodeUploadCheckViewModel GenerateAdminSicCodeUploadCheckViewModel(List<SicCode> newRecords)
+
+        [HttpPost("reference-data/sic-codes/upload")]
+        public IActionResult SicCodeUploadPost(AdminFileUploadViewModel viewModel)
         {
-            List<SicCode> existingRecords = dataRepository.GetAll<SicCode>().ToList();
-
-            var uploadCheckViewModel = new AdminSicCodeUploadCheckViewModel
+            if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
+                viewModel.File,
+                new[] { "SicCodeId", "SicSectionId", "Description" },
+                out List<SicCode> sicCodesFromUploadFile,
+                out string errorMessage))
             {
-                RecordsToCreate = new List<SicCode>(),
-                RecordsToUpdate = new List<SicCodeToUpdate>(),
-                RecordsToDelete = new List<SicCode>(),
-                SerializedNewRecords = JsonConvert.SerializeObject(newRecords),
-                AbleToProceed = true
-                
+                viewModel.AddErrorFor(m => m.File, errorMessage);
+                return View("SicCodeUpload", viewModel);
+            }
+
+            List<SicCode> sicCodesFromDatabase = dataRepository.GetAll<SicCode>().ToList();
+
+            var sicCodeUploadCheckViewModel = new AdminSicCodeUploadCheckViewModel
+            {
+                SerializedNewRecords = JsonConvert.SerializeObject(sicCodesFromUploadFile),
+                AddsEditsDeletesSet = new AddsEditsDeletesSet<SicCode>(
+                    sicCodesFromDatabase,
+                    sicCodesFromUploadFile,
+                    s => s.SicCodeId,
+                    (s1, s2) => s1.SicSectionId == s2.SicSectionId && s1.Description == s2.Description,
+                    s => s.OrganisationSicCodes.Count > 0)
             };
 
-            foreach (SicCode newRecord in newRecords)
+            return View("SicCodeUploadCheck", sicCodeUploadCheckViewModel);
+        }
+
+        [HttpPost("reference-data/sic-sections/upload/check")]
+        public IActionResult SicSectionUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
+        {
+            var newRecords = JsonConvert.DeserializeObject<List<SicSection>>(viewModel.SerializedNewRecords);
+
+            List<SicSection> sicSectionsFromDatabase = dataRepository.GetAll<SicSection>().ToList();
+
+            viewModel.AddsEditsDeletesSet =
+                new AddsEditsDeletesSet<SicSection>(
+                    sicSectionsFromDatabase,
+                    newRecords,
+                    s => s.SicSectionId,
+                    (s1, s2) => s1.Description == s2.Description
+                );
+
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+            if (viewModel.HasAnyErrors())
             {
-                if (existingRecords.Select(r => r.SicCodeId).Contains(newRecord.SicCodeId))
-                {
-                    SicCode matchingExistingRecord =
-                        existingRecords.FirstOrDefault(r => r.SicCodeId == newRecord.SicCodeId);
-                    if (matchingExistingRecord.SicSectionId.Trim() != newRecord.SicSectionId
-                        || matchingExistingRecord.Description.Trim() != newRecord.Description)
-                    {
-                        var recordToUpdate = new SicCodeToUpdate
-                        {
-                            SicCodeId = newRecord.SicCodeId,
-                            PreviousSicSectionId = matchingExistingRecord.SicSectionId,
-                            NewSicSectionId = newRecord.SicSectionId,
-                            PreviousDescription = matchingExistingRecord.Description,
-                            NewDescription = newRecord.Description
-                        };
-                        uploadCheckViewModel.RecordsToUpdate.Add(recordToUpdate);
-                    }
-                }
-                else 
-                {
-                    uploadCheckViewModel.RecordsToCreate.Add(newRecord);
-                }
+                return View("SicSectionUploadCheck", viewModel);
             }
 
-            foreach (SicCode existingRecord in existingRecords)
+            List<SicSection> existingRecords = dataRepository.GetAll<SicSection>().ToList();
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicSections, new
             {
-                if (!newRecords.Select(r => r.SicCodeId).Contains(existingRecord.SicCodeId))
-                {
-                    uploadCheckViewModel.RecordsToDelete.Add(existingRecord);
-                    if (existingRecord.OrganisationSicCodes.Count > 0)
-                    {
-                        uploadCheckViewModel.AbleToProceed = false;
-                    }
-                }
-            }
+                ExistingRecords = JsonConvert.SerializeObject(existingRecords.Select(GetSicSectionDetails)),
+                NewRecords = JsonConvert.SerializeObject(newRecords.Select(GetSicSectionDetails)),
+                Reason = viewModel.Reason
+            }, currentUser);
+
+            SaveChangesToSicSections(viewModel);
             
-            return uploadCheckViewModel;
+            return View("UploadConfirmation", FileUploadType.SicSection);
         }
+
+        private void SaveChangesToSicSections(AdminSicSectionUploadCheckViewModel viewModel)
+        {
+            foreach (SicSection sicSectionFromUser in viewModel.AddsEditsDeletesSet.ItemsToAdd)
+            {
+                var sicSection = new SicSection
+                {
+                    SicSectionId = sicSectionFromUser.SicSectionId,
+                    Description = sicSectionFromUser.Description
+                };
+                dataRepository.Insert(sicSection);
+            }
+
+            foreach (OldAndNew<SicSection> oldAndNew in viewModel.AddsEditsDeletesSet.ItemsToChange)
+            {
+                SicSection sicSection = dataRepository.Get<SicSection>(oldAndNew.Old.SicSectionId);
+                sicSection.Description = oldAndNew.New.Description;
+            }
+
+            foreach (SicSection sicSectionFromUser in viewModel.AddsEditsDeletesSet.ItemsToDelete)
+            {
+                SicSection sicSection = dataRepository.Get<SicSection>(sicSectionFromUser.SicSectionId);
+                dataRepository.Delete(sicSection);
+            }
+
+            dataRepository.SaveChangesAsync().Wait();
+        }
+
+        [HttpPost("reference-data/sic-codes/upload/check")]
+        public IActionResult SicCodeUploadCheckPost(AdminSicCodeUploadCheckViewModel viewModel)
+        {
+            var newRecords = JsonConvert.DeserializeObject<List<SicCode>>(viewModel.SerializedNewRecords);
+
+            List<SicCode> sicCodesFromDatabase = dataRepository.GetAll<SicCode>().ToList();
+
+            viewModel.AddsEditsDeletesSet =
+                new AddsEditsDeletesSet<SicCode>(
+                    sicCodesFromDatabase,
+                    newRecords,
+                    s => s.SicCodeId,
+                    (s1, s2) => s1.SicSectionId == s2.SicSectionId && s1.Description == s2.Description,
+                    s => s.OrganisationSicCodes.Count > 0);
+
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+            if (viewModel.HasAnyErrors())
+            {
+                return View("SicCodeUploadCheck", viewModel);
+            }
+
+            if (viewModel.AddsEditsDeletesSet.AnyItemsThatCannotBeDeleted)
+            {
+                throw new Exception("Some SIC codes are not allowed to be deleted, because they have OrganisationSicCodes associated with them");
+            }
+
+            List<SicCode> existingRecords = dataRepository.GetAll<SicCode>().ToList();
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicCodes, new
+            {
+                ExistingRecords = JsonConvert.SerializeObject(existingRecords.Select(GetSicCodeDetails)),
+                NewRecords = JsonConvert.SerializeObject(newRecords.Select(GetSicCodeDetails)),
+                Reason = viewModel.Reason
+            }, currentUser);
+
+            SaveChangesToSicCodes(viewModel);
+            
+            return View("UploadConfirmation", FileUploadType.SicCode);
+        }
+
+        private void SaveChangesToSicCodes(AdminSicCodeUploadCheckViewModel viewModel)
+        {
+            foreach (SicCode sicCodeFromUser in viewModel.AddsEditsDeletesSet.ItemsToAdd)
+            {
+                var sicCode = new SicCode{
+                    SicCodeId = sicCodeFromUser.SicCodeId,
+                    SicSectionId = sicCodeFromUser.SicSectionId,
+                    Description = sicCodeFromUser.Description
+                };
+                dataRepository.Insert(sicCode);
+            }
+
+            foreach (OldAndNew<SicCode> oldAndNew in viewModel.AddsEditsDeletesSet.ItemsToChange)
+            {
+                SicCode sicCode = dataRepository.Get<SicCode>(oldAndNew.Old.SicCodeId);
+
+                sicCode.SicSectionId = oldAndNew.New.SicSectionId;
+                sicCode.Description = oldAndNew.New.Description;
+            }
+
+            foreach (SicCode sicCodeFromUser in viewModel.AddsEditsDeletesSet.ItemsToDelete)
+            {
+                SicCode sicCode = dataRepository.Get<SicCode>(sicCodeFromUser.SicCodeId);
+                dataRepository.Delete(sicCode);
+            }
+
+            dataRepository.SaveChangesAsync().Wait();
+        }
+
     }
 }

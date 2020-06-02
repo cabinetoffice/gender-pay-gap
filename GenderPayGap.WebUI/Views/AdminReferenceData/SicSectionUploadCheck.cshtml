@@ -1,10 +1,10 @@
 ﻿@using GenderPayGap.Database
-@using GenderPayGap.WebUI.Models.Admin
+@using GenderPayGap.WebUI.Models.AdminReferenceData
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Admin.AdminSicSectionUploadCheckViewModel
 @{
-    ViewBag.Title = "Upload check - Administration - Gender pay gap service";
+    ViewBag.Title = "Upload new SIC sections - Reference Data - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -24,7 +24,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Upload check"
+                Text = "SIC sections"
             }
         };
     }
@@ -36,138 +36,180 @@
 }
 
 <div class="govuk-grid-row">
-    <span class="govuk-caption-xl">Administration</span>
-    <h1 class="govuk-heading-xl">
-        SIC section upload check
-    </h1>
+    <div class="govuk-grid-column-full">
 
-    <p class="govuk-body">Please review the changes you are about to make</p>
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Update SIC sections
+        </h1>
 
-    @if (Model.RecordsToCreate != null && Model.RecordsToCreate.Count > 0)
-    {
-        <h2 class="govuk-heading-l">
-            @(Model.RecordsToCreate.Count) created SIC section@(Model.RecordsToCreate.Count > 1 ? "s" : "")
-        </h2>
+        @(Html.GovUkErrorSummary())
 
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
-                    <th scope="col" class="govuk-table__header">Description</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (SicSection record in Model.RecordsToCreate)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@(record.SicSectionId)</td>
-                        <td class="govuk-table__cell">
-                            @(record.Description)
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+        <p class="govuk-body">Please review the changes you are about to make</p>
 
-    @if (Model.RecordsToUpdate != null && Model.RecordsToUpdate.Count > 0)
-    {
-        <h2 class="govuk-heading-l govuk-!-margin-top-9">
-            @(Model.RecordsToUpdate.Count) updated SIC section@(Model.RecordsToUpdate.Count > 1 ? "s" : "")
-        </h2>
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
-                    <th scope="col" class="govuk-table__header">Description</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (SicSectionToUpdate record in Model.RecordsToUpdate)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell ">@(record.SicSectionId)</td>
-                        <td class="govuk-table__cell ">
-                            <div>
-                                @(record.NewDescription)
-                            </div>
-                            @if (record.NewDescription != record.PreviousDescription)
-                            {
-                                <div>
-                                    previously @(record.PreviousDescription)
-                                </div>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+        <h2 class="govuk-heading-l">Summary of changes</h2>
 
-    @if (Model.RecordsToDelete != null && Model.RecordsToDelete.Count > 0)
-    {
-        <h2 class="govuk-heading-l govuk-!-margin-top-9">
-            @(Model.RecordsToDelete.Count) deleted SIC section@(Model.RecordsToDelete.Count > 1 ? "s" : "")
-        </h2>
+        <p class="govuk-body">
+            There are currently <span class="govuk-!-font-weight-bold">@(Model.AddsEditsDeletesSet.OldItems.Count)</span> SIC sections
+            <br/>
+            The new files contains <span class="govuk-!-font-weight-bold">@(Model.AddsEditsDeletesSet.NewItems.Count)</span> SIC sections
+        </p>
 
-        @if (!Model.AbleToProceed)
+        <ul class="govuk-list govuk-list--bullet">
+            <li><span class="govuk-!-font-weight-bold">@(Model.AddsEditsDeletesSet.ItemsToAdd.Count) created</span> SIC sections</li>
+            <li><span class="govuk-!-font-weight-bold">@(Model.AddsEditsDeletesSet.ItemsToChange.Count) updated</span> SIC sections</li>
+            <li><span class="govuk-!-font-weight-bold">@(Model.AddsEditsDeletesSet.ItemsToDelete.Count) deleted</span> SIC sections</li>
+            <li><span class="govuk-!-font-weight-bold">@(Model.AddsEditsDeletesSet.ItemsWithNoChanges.Count)</span> SIC sections without any changes</li>
+        </ul>
+
+        @if (Model.AddsEditsDeletesSet.ItemsToAdd.Count > 0)
         {
-            <p class="govuk-body govuk-!-font-weight-bold">
-                It is not possible to delete SIC sections that are still in use. Please go back and upload another file
-                without any deletions.
+            <h2 class="govuk-heading-l">
+                @(Model.AddsEditsDeletesSet.ItemsToAdd.Count) created SIC section@(Model.AddsEditsDeletesSet.ItemsToAdd.Count > 1 ? "s" : "")
+            </h2>
+
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
+                        <th scope="col" class="govuk-table__header">Description</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (SicSection record in Model.AddsEditsDeletesSet.ItemsToAdd)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@(record.SicSectionId)</td>
+                            <td class="govuk-table__cell">
+                                @(record.Description)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (Model.AddsEditsDeletesSet.ItemsToChange.Count > 0)
+        {
+            <h2 class="govuk-heading-l govuk-!-margin-top-4">
+                @(Model.AddsEditsDeletesSet.ItemsToChange.Count) updated SIC section@(Model.AddsEditsDeletesSet.ItemsToChange.Count > 1 ? "s" : "")
+            </h2>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
+                        <th scope="col" class="govuk-table__header">Description</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (OldAndNew<SicSection> record in Model.AddsEditsDeletesSet.ItemsToChange)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell ">@(record.Old.SicSectionId)</td>
+                            <td class="govuk-table__cell ">
+                                <div>
+                                    @(record.New.Description)
+                                </div>
+                                <div>
+                                    previously @(record.Old.Description)
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @if (Model.AddsEditsDeletesSet.ItemsToDelete.Count > 0)
+        {
+            <h2 class="govuk-heading-l govuk-!-margin-top-4">
+                @(Model.AddsEditsDeletesSet.ItemsToDelete.Count) deleted SIC section@(Model.AddsEditsDeletesSet.ItemsToDelete.Count > 1 ? "s" : "")
+            </h2>
+
+            @if (Model.AddsEditsDeletesSet.AnyItemsThatCannotBeDeleted)
+            {
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        It is not possible to delete SIC sections that are still in use.
+                        Please go back and upload another file without any deletions.
+                    </strong>
+                </div>
+            }
+
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
+                        <th scope="col" class="govuk-table__header">Description</th>
+                        @if (Model.AddsEditsDeletesSet.ItemsToDelete.Count(r => r.SicCodes.Count > 0) > 0)
+                        {
+                            <th scope="col" class="govuk-table__header">Number of current uses</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (SicSection record in Model.AddsEditsDeletesSet.ItemsToDelete)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@(record.SicSectionId)</td>
+                            <td class="govuk-table__cell">@(record.Description)</td>
+                            @if (record.SicCodes.Count > 0)
+                            {
+                                <td class="govuk-table__cell">
+                                    @(record.SicCodes.Count)
+                                </td>
+                            }
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @if (!Model.AddsEditsDeletesSet.AnyChanges)
+        {
+            <p class="govuk-body govuk-!-margin-top-4">
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm and continue",
+                    Classes = "govuk-!-margin-bottom-1",
+                    Disabled = true
+                }))
+
+                <br/>
+                The file you uploaded contains no changes to the SIC sections, so there is nothing to save.
             </p>
         }
 
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
-                    <th scope="col" class="govuk-table__header">Description</th>
-                    @if (Model.RecordsToDelete.Count(r => r.SicCodes.Count > 0) > 0)
-                    {
-                        <th scope="col" class="govuk-table__header">Number of current uses</th>
-                    }
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (SicSection record in Model.RecordsToDelete)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@(record.SicSectionId)</td>
-                        <td class="govuk-table__cell">@(record.Description)</td>
-                        @if (record.SicCodes.Count > 0)
-                        {
-                            <td class="govuk-table__cell">
-                                @(record.SicCodes.Count)
-                            </td>
-                        }
-
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-
-    <form method="post" class="govuk-!-margin-top-9" action="@Url.Action("SicSectionUploadCheckPost", "AdminReferenceData")">
-        @(Html.AntiForgeryToken())
-        <input type="hidden" name="SerializedNewRecords" value="@(Model.SerializedNewRecords)"/>
-
-        @if (Model.AbleToProceed)
+        @if (Model.AddsEditsDeletesSet.AnyChanges && !Model.AddsEditsDeletesSet.AnyItemsThatCannotBeDeleted)
         {
-            @(Html.GovUkTextAreaFor(
-                m => m.Reason,
-                labelOptions: new LabelViewModel
-                {
-                    Text = "What is the reason for this change?",
-                    Classes = "govuk-label--m"
-                }
-                ))
+            <form method="post" class="govuk-!-margin-top-4" action="@Url.Action("SicSectionUploadCheckPost", "AdminReferenceData")">
+                @(Html.AntiForgeryToken())
+                <input type="hidden" name="SerializedNewRecords" value="@(Model.SerializedNewRecords)"/>
 
-            @(Html.GovUkButton(new ButtonViewModel
-            {
-                Text = "Confirm and continue",
-                Classes = "govuk-!-margin-bottom-4"
-            }))
+                @(Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    }
+                    ))
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm and continue",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+            </form>
         }
 
         <p class="govuk-body">
@@ -176,5 +218,6 @@
                 Cancel and return to the reference data page
             </a>
         </p>
-    </form>
+
+    </div>
 </div>

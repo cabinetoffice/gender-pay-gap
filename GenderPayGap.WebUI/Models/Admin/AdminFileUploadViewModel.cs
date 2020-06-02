@@ -7,8 +7,6 @@ namespace GenderPayGap.WebUI.Models.Admin
     public class AdminFileUploadViewModel : GovUkViewModel
     {
 
-        public FileUploadType FileUploadType { get; set; }
-
         public IFormFile File { get; set; }
 
     }
