@@ -11,6 +11,7 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Search;
+using GenderPayGap.WebUI.Search;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Classes.Presentation
@@ -40,18 +41,21 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         private readonly ICommonBusinessLogic commonLogic;
         private readonly IDataRepository dataRepo;
         private readonly ISearchRepository<SicCodeSearchModel> SicCodeSearchServiceClient;
+        private ViewingSearchService viewingSearchService;
 
-        public ViewingService(IDataRepository dataRepo, ISearchRepository<EmployerSearchModel> searchRepo, ICommonBusinessLogic commonLogic)
+        public ViewingService(IDataRepository dataRepo, ISearchRepository<EmployerSearchModel> searchRepo, ICommonBusinessLogic commonLogic, ViewingSearchService viewingSearchService)
         {
             this.dataRepo = dataRepo;
             SearchRepository = searchRepo;
             this.commonLogic = commonLogic;
+            this.viewingSearchService = viewingSearchService;
         }
 
         public ViewingService(IDataRepository dataRepo,
             ISearchRepository<EmployerSearchModel> searchRepo,
             ISearchRepository<SicCodeSearchModel> sicCodeSearchServiceClient,
-            ICommonBusinessLogic commonLogic) : this(dataRepo, searchRepo, commonLogic)
+            ICommonBusinessLogic commonLogic,
+            ViewingSearchService viewingSearchService) : this(dataRepo, searchRepo, commonLogic, viewingSearchService)
         {
             SicCodeSearchServiceClient = sicCodeSearchServiceClient;
         }
@@ -83,7 +87,8 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
                 if (list.Any())
                 {
-                    searchResults = await DoSearchAsync(searchParams, facets);
+                    searchResults = viewingSearchService.Search(searchParams, facets);
+
                 }
             }
 
@@ -91,7 +96,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             {
                 searchParams.Keywords = searchParams.Keywords?.Trim();
                 searchParams.Keywords = searchParams.RemoveTheMostCommonTermsOnOurDatabaseFromTheKeywords();
-                searchResults = await DoSearchAsync(searchParams, facets);
+                searchResults = viewingSearchService.Search(searchParams, facets);
             }
 
             // build the result view model
