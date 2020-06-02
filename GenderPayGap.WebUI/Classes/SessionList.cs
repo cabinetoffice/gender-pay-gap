@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Core.Classes
 {
-    public class SessionList<T> : IHashSet<T>
+    public class SessionList<T>
     {
 
         private HashSet<T> _items;

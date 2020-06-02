@@ -231,7 +231,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
 
-            builder.Register(c => new Mock<IAdminService>().Object).As<IAdminService>().InstancePerLifetimeScope();
             builder.Register(c => Mock.Of<IEncryptionHandler>()).As<IEncryptionHandler>().SingleInstance();
             
             //Register the global instance of Program.MvcApplication (equivalent in old Global.asax.cs)
