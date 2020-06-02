@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -206,8 +206,9 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                     c => new ViewingService(
                         c.Resolve<IDataRepository>(),
                         c.Resolve<ISearchRepository<EmployerSearchModel>>(),
-                        c.Resolve<ISearchRepository<SicCodeSearchModel>>(),
-                        c.Resolve<ICommonBusinessLogic>()))
+                        c.Resolve<ICommonBusinessLogic>(),
+                        c.Resolve<ViewingSearchService>())
+                )
                 .As<IViewingService>()
                 .InstancePerLifetimeScope();
 
