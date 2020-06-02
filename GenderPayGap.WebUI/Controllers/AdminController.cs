@@ -23,7 +23,6 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -44,7 +43,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             IHttpCache cache,
             IHttpSession session,
             IHostingEnvironment hostingEnvironment,
-            IAdminService adminService,
             IOrganisationBusinessLogic organisationBusinessLogic,
             ISearchBusinessLogic searchBusinessLogic,
             IUserRepository userRepository,
@@ -56,7 +54,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         ) : base(cache, session, dataRepository, webTracker)
         {
             HostingEnvironment = hostingEnvironment;
-            AdminService = adminService;
             OrganisationBusinessLogic = organisationBusinessLogic;
             SearchBusinessLogic = searchBusinessLogic;
             UserRepository = userRepository;
@@ -197,7 +194,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         private readonly IHostingEnvironment HostingEnvironment;
         private readonly AuditLogger auditLogger;
 
-        public IAdminService AdminService { get; }
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
         public ISearchBusinessLogic SearchBusinessLogic { get; set; }
         public IUserRepository UserRepository { get; }
