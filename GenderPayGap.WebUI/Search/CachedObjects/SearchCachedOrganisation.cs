@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Database;
+using GenderPayGap.WebUI.Models.Search;
 
 namespace GenderPayGap.WebUI.Search.CachedObjects {
 
@@ -14,6 +16,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects {
         public OrganisationStatuses Status { get; set; }
         public int MinEmployees { get; set; }
         public List<OrganisationSizes> OrganisationSizes { get; set; }
+        public List<char> SicSectionIds { get; set; }
 
     }
 }
