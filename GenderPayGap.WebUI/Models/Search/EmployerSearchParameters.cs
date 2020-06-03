@@ -34,27 +34,6 @@ namespace GenderPayGap.WebUI.Models.Search
 
         public int PageSize { get; set; } = 20;
 
-        public string RemoveTheMostCommonTermsOnOurDatabaseFromTheKeywords()
-        {
-            if (string.IsNullOrEmpty(Keywords))
-            {
-                return Keywords;
-            }
-
-            const string patternToReplace = "(?i)(limited|ltd|llp|uk | uk|\\(uk\\)|-uk|plc)[\\.]*";
-
-            string resultingString;
-
-            resultingString = Regex.Replace(Keywords, patternToReplace, string.Empty);
-            resultingString = resultingString.Trim();
-
-            bool willThisReplacementClearTheString = resultingString == string.Empty;
-
-            return willThisReplacementClearTheString
-                ? Keywords // don't replace - user wants to search 'limited' or 'uk'...
-                : resultingString;
-        }
-
         public string ToFilterQuery()
         {
             var queryFilter = new List<string>();
