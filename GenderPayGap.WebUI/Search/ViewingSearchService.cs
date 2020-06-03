@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -8,6 +8,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search.CachedObjects;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace GenderPayGap.WebUI.Search
 {
@@ -45,16 +46,17 @@ namespace GenderPayGap.WebUI.Search
             this.dataRepository = dataRepository;
         }
 
-        public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams,
-            Dictionary<string, Dictionary<object, long>> facets)
+        public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
+            
+            List<SearchCachedOrganisation> filteredOrganisations = FilterByOrganisationSize(allOrganisations, searchParams);
 
             // no search terms entered
             if (searchParams.Keywords == null)
             {
                 List<SearchCachedOrganisation> paginatedResultsForAllOrganisations = PaginateResults(
-                    allOrganisations,
+                    filteredOrganisations,
                     searchParams.Page,
                     searchParams.PageSize);
 
@@ -63,8 +65,8 @@ namespace GenderPayGap.WebUI.Search
                     Results = ConvertToEmployerSearchModels(paginatedResultsForAllOrganisations),
                     CurrentPage = searchParams.Page,
                     PageSize = searchParams.PageSize,
-                    ActualRecordTotal = allOrganisations.Count,
-                    VirtualRecordTotal = allOrganisations.Count
+                    ActualRecordTotal = filteredOrganisations.Count,
+                    VirtualRecordTotal = filteredOrganisations.Count
                 };
             }
 
@@ -75,12 +77,12 @@ namespace GenderPayGap.WebUI.Search
             List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
             List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(
-                allOrganisations,
+                filteredOrganisations,
                 searchTerms,
                 query,
                 queryContainsPunctuation);
 
-
+            
             // filter out on extra conditions
 //            .Where(
 //                org => org.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
@@ -90,9 +92,7 @@ namespace GenderPayGap.WebUI.Search
 
 
             // need to handle SicCode search and employer type search
-
-            // apply facets
-
+            
             List<RankedViewingSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(
                 matchingOrganisations,
                 searchTerms,
@@ -119,6 +119,21 @@ namespace GenderPayGap.WebUI.Search
 
             return pagedResult;
         }
+        
+        private List<SearchCachedOrganisation> FilterByOrganisationSize(List<SearchCachedOrganisation> organisations,
+            EmployerSearchParameters searchParams)
+        {
+            
+            IEnumerable<OrganisationSizes> selectedOrganisationSizes = searchParams.FilterEmployerSizes.Select(s => (OrganisationSizes) s);
+            
+            if (selectedOrganisationSizes.Any())
+            {
+                return organisations.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any()).ToList();
+            }
+
+            return organisations;
+        }
+
 
         private static List<T> PaginateResults<T>(List<T> results, int currentPage, int pageSize)
         {
