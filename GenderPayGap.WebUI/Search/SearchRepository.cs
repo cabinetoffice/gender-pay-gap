@@ -74,7 +74,12 @@ namespace GenderPayGap.WebUI.Search
                         MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
                         Status = o.Status,
                         OrganisationSizes = o.Returns.Select(r => r.OrganisationSize).ToList(),
-                        SicSectionIds = o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList()
+                        SicSectionIds = o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList(),
+                        ReportingYears = o.Returns.Select(r => r.AccountingDate.Year).ToList(),
+                        DateOfLatestReport = o.GetLatestReturn() != null ? o.GetLatestReturn().StatusDate.Date : new DateTime(1999, 1, 1),
+                        ReportedWithCompanyLinkToGpgInfo = o.Returns.Any(r => r.CompanyLinkToGPGInfo != null),
+                        ReportedLate = o.Returns.Any(r => r.IsLateSubmission)
+                        
                     })
                 .ToList();
         }
