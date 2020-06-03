@@ -2,7 +2,7 @@
 @model GenderPayGap.WebUI.Models.Search.SearchViewModel
 <p class="result-info">
     <span class="result-count">@(string.Format("{0:n0}", Model.Employers.ActualRecordTotal))</span>
-    <span>employer@(Model.Employers.ActualRecordTotal > 1 ? "s": "")</span>
+    <span>employer@(Model.Employers.ActualRecordTotal == 1 ? "": "s")</span>
 
     @if (string.IsNullOrWhiteSpace(Model.search) == false)
     {
