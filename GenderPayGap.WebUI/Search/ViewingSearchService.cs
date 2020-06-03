@@ -171,7 +171,7 @@ namespace GenderPayGap.WebUI.Search
                     return organisations.Where(o => o.DateOfLatestReport > DateTime.Now.AddDays(-30));
                 case SearchReportingStatusFilter.ReportedLate:
                     return organisations.Where(o => o.ReportedLate);
-                case SearchReportingStatusFilter.ExplanationProvidedByEmployer:
+                case SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo:
                     return organisations.Where(o => o.ReportedWithCompanyLinkToGpgInfo);
                 default:
                     throw new Exception();

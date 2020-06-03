@@ -174,7 +174,7 @@ namespace GenderPayGap.WebUI.Tests.Services
                 (int) SearchReportingStatusFilter.ReportedInTheLast7Days,
                 (int) SearchReportingStatusFilter.ReportedInTheLast30Days,
                 (int) SearchReportingStatusFilter.ReportedLate,
-                (int) SearchReportingStatusFilter.ExplanationProvidedByEmployer
+                (int) SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo
             };
 
             var testCheckedOptions = new[] {
