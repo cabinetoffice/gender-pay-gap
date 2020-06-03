@@ -72,7 +72,8 @@ namespace GenderPayGap.WebUI.Search
                         EmployerReference = o.EmployerReference?.Trim(),
                         OrganisationNames = o.OrganisationNames.OrderByDescending(n => n.Created).Select(on => new SearchReadyValue(on.Name)).ToList(),
                         MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
-                        Status = o.Status
+                        Status = o.Status,
+                        OrganisationSizes = o.Returns.Select(r => r.OrganisationSize).ToList()
                     })
                 .ToList();
         }

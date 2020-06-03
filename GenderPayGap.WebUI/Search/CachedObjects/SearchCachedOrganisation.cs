@@ -13,6 +13,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects {
         public string EmployerReference { get; set; }
         public OrganisationStatuses Status { get; set; }
         public int MinEmployees { get; set; }
+        public List<OrganisationSizes> OrganisationSizes { get; set; }
 
     }
 }
