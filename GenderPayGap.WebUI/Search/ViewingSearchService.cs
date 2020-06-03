@@ -8,7 +8,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search.CachedObjects;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace GenderPayGap.WebUI.Search
 {
@@ -35,7 +34,7 @@ namespace GenderPayGap.WebUI.Search
         public string EncryptedId { get; set; }
 
     }
-    
+
     public class ViewingSearchService
     {
 
@@ -49,8 +48,8 @@ namespace GenderPayGap.WebUI.Search
         public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
-            
-            List<SearchCachedOrganisation> filteredOrganisations = FilterByOrganisationSize(allOrganisations, searchParams);
+
+            List<SearchCachedOrganisation> filteredOrganisations = FilterByOrganisations(allOrganisations, searchParams);
 
             // no search terms entered
             if (searchParams.Keywords == null)
@@ -82,7 +81,7 @@ namespace GenderPayGap.WebUI.Search
                 query,
                 queryContainsPunctuation);
 
-            
+
             // filter out on extra conditions
 //            .Where(
 //                org => org.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
@@ -92,7 +91,7 @@ namespace GenderPayGap.WebUI.Search
 
 
             // need to handle SicCode search and employer type search
-            
+
             List<RankedViewingSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(
                 matchingOrganisations,
                 searchTerms,
@@ -119,19 +118,27 @@ namespace GenderPayGap.WebUI.Search
 
             return pagedResult;
         }
-        
-        private List<SearchCachedOrganisation> FilterByOrganisationSize(List<SearchCachedOrganisation> organisations,
+
+        private List<SearchCachedOrganisation> FilterByOrganisations(List<SearchCachedOrganisation> organisations,
             EmployerSearchParameters searchParams)
         {
-            
             IEnumerable<OrganisationSizes> selectedOrganisationSizes = searchParams.FilterEmployerSizes.Select(s => (OrganisationSizes) s);
-            
+            IEnumerable<char> selectedSicSections = searchParams.FilterSicSectionIds;
+
+            List<SearchCachedOrganisation> filteredOrganisations = organisations;
+
             if (selectedOrganisationSizes.Any())
             {
-                return organisations.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any()).ToList();
+                filteredOrganisations = filteredOrganisations.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any())
+                    .ToList();
             }
 
-            return organisations;
+            if (selectedSicSections.Any())
+            {
+                filteredOrganisations = filteredOrganisations.Where(o => o.SicSectionIds.Intersect(selectedSicSections).Any()).ToList();
+            }
+
+            return filteredOrganisations;
         }
 
 
