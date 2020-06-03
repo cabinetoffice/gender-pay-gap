@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -124,21 +127,55 @@ namespace GenderPayGap.WebUI.Search
         {
             IEnumerable<OrganisationSizes> selectedOrganisationSizes = searchParams.FilterEmployerSizes.Select(s => (OrganisationSizes) s);
             IEnumerable<char> selectedSicSections = searchParams.FilterSicSectionIds;
+            IEnumerable<int> selectedReportingYears = searchParams.FilterReportedYears;
+            IEnumerable<SearchReportingStatusFilter> selectedReportingStatuses =
+                searchParams.FilterReportingStatus.Select(s => (SearchReportingStatusFilter) s);
 
-            List<SearchCachedOrganisation> filteredOrganisations = organisations;
+            var filteredOrgs = organisations.AsEnumerable();
 
             if (selectedOrganisationSizes.Any())
             {
-                filteredOrganisations = filteredOrganisations.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any())
-                    .ToList();
+                
+                filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any());
             }
 
             if (selectedSicSections.Any())
             {
-                filteredOrganisations = filteredOrganisations.Where(o => o.SicSectionIds.Intersect(selectedSicSections).Any()).ToList();
+                filteredOrgs = filteredOrgs.Where(o => o.SicSectionIds.Intersect(selectedSicSections).Any());
             }
 
-            return filteredOrganisations;
+            if (selectedReportingYears.Any())
+            {
+                filteredOrgs = filteredOrgs.Where(o => o.ReportingYears.Intersect(selectedReportingYears).Any());
+            }
+
+            if (selectedReportingStatuses.Any())
+            {
+                foreach (SearchReportingStatusFilter status in selectedReportingStatuses)
+                {
+                    filteredOrgs = ApplyReportingStatusesFilter(filteredOrgs, status);
+                }
+            }
+
+            return filteredOrgs.ToList();
+        }
+
+        private IEnumerable<SearchCachedOrganisation> ApplyReportingStatusesFilter(IEnumerable<SearchCachedOrganisation> organisations,
+            SearchReportingStatusFilter filter)
+        {
+            switch (filter)
+            {
+                case SearchReportingStatusFilter.ReportedInTheLast7Days:
+                    return organisations.Where(o => o.DateOfLatestReport > DateTime.Now.AddDays(-7));
+                case SearchReportingStatusFilter.ReportedInTheLast30Days:
+                    return organisations.Where(o => o.DateOfLatestReport > DateTime.Now.AddDays(-30));
+                case SearchReportingStatusFilter.ReportedLate:
+                    return organisations.Where(o => o.ReportedLate);
+                case SearchReportingStatusFilter.ExplanationProvidedByEmployer:
+                    return organisations.Where(o => o.ReportedWithCompanyLinkToGpgInfo);
+                default:
+                    throw new Exception();
+            }
         }
 
 

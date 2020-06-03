@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GenderPayGap.Core;
-using GenderPayGap.Database;
-using GenderPayGap.WebUI.Models.Search;
 
-namespace GenderPayGap.WebUI.Search.CachedObjects {
+namespace GenderPayGap.WebUI.Search.CachedObjects
+{
 
     public class SearchCachedOrganisation
     {
+
         public long OrganisationId { get; set; }
         public string EncryptedId { get; set; }
         public SearchReadyValue OrganisationName { get; set; }
@@ -17,6 +18,10 @@ namespace GenderPayGap.WebUI.Search.CachedObjects {
         public int MinEmployees { get; set; }
         public List<OrganisationSizes> OrganisationSizes { get; set; }
         public List<char> SicSectionIds { get; set; }
+        public List<int> ReportingYears { get; set; }
+        public DateTime DateOfLatestReport { get; set; }
+        public bool ReportedWithCompanyLinkToGpgInfo { get; set; }
+        public bool ReportedLate { get; set; }
 
     }
 }

@@ -87,8 +87,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
                 if (list.Any())
                 {
-                    searchResults = viewingSearchService.Search(searchParams, facets);
-
+                    searchResults = viewingSearchService.Search(searchParams);
                 }
             }
 
@@ -96,7 +95,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             {
                 searchParams.Keywords = searchParams.Keywords?.Trim();
                 searchParams.Keywords = searchParams.RemoveTheMostCommonTermsOnOurDatabaseFromTheKeywords();
-                searchResults = viewingSearchService.Search(searchParams, facets);
+                searchResults = viewingSearchService.Search(searchParams);
             }
 
             // build the result view model
