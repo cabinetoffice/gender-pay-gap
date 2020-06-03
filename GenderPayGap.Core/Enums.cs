@@ -178,7 +178,7 @@ namespace GenderPayGap.Core
         ReportedLate,
 
         [Display(Name = "Reported with extra information")]
-        ExplanationProvidedByEmployer
+        ReportedWithCompanyLinkToGpgInfo
 
     }
 

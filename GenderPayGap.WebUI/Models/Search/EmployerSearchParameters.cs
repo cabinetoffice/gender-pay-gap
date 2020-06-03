@@ -90,7 +90,7 @@ namespace GenderPayGap.WebUI.Models.Search
                 foreach (int status in FilterReportingStatus)
                 {
                     var reportStatus = (SearchReportingStatusFilter) status;
-                    if (reportStatus == SearchReportingStatusFilter.ExplanationProvidedByEmployer)
+                    if (reportStatus == SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo)
                     {
                         statusQuery.Add($"ReportedExplanationYears/any({anyReportedYearParam})");
                     }
