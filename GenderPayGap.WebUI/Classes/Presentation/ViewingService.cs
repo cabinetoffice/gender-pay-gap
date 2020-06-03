@@ -93,8 +93,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
             if (searchParams.SearchType == SearchType.ByEmployerName)
             {
-                searchParams.Keywords = searchParams.Keywords?.Trim();
-                searchParams.Keywords = searchParams.RemoveTheMostCommonTermsOnOurDatabaseFromTheKeywords();
                 searchResults = viewingSearchService.Search(searchParams);
             }
 
