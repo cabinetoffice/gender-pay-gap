@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         private readonly ICommonBusinessLogic commonLogic;
         private readonly IDataRepository dataRepo;
         private readonly ISearchRepository<SicCodeSearchModel> SicCodeSearchServiceClient;
-        private ViewingSearchService viewingSearchService;
+        private readonly ViewingSearchService viewingSearchService;
 
         public ViewingService(IDataRepository dataRepo, ISearchRepository<EmployerSearchModel> searchRepo, ICommonBusinessLogic commonLogic, ViewingSearchService viewingSearchService)
         {

@@ -12,6 +12,7 @@ using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Models.Search;
+using GenderPayGap.WebUI.Search;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Moq;
@@ -110,12 +111,15 @@ namespace GenderPayGap.Integration.Tests
         {
             // Arrange
             Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+            Mock<ISearchRepository<EmployerSearchModel>> mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
+            Mock<ViewingSearchService> mockViewingSearchService = new Mock<ViewingSearchService>();
 
             var viewingService = new ViewingService(
                 mockDataRepo.Object,
-                _azureSearchRepo,
-                Mock.Of<ISearchRepository<SicCodeSearchModel>>(),
-                Mock.Of<ICommonBusinessLogic>());
+                mockSearchRepo.Object,
+                Mock.Of<ICommonBusinessLogic>(),
+                mockViewingSearchService.Object
+                );
 
             var mockedSearchParameters =
                 Mock.Of<EmployerSearchParameters>(
@@ -155,15 +159,19 @@ namespace GenderPayGap.Integration.Tests
         public async Task ViewingService_SearchByEmployerName_Null_Or_Empty_Search_Returns_All(string nullWhitespaceOrEmptySearchKeyWords)
         {
             // Arrange
+            
             Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
-
+            Mock<ISearchRepository<EmployerSearchModel>> mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
+            Mock<ViewingSearchService> mockViewingSearchService = new Mock<ViewingSearchService>();
             const SearchType searchBy = SearchType.ByEmployerName;
+
             var viewingService = new ViewingService(
                 mockDataRepo.Object,
-                _azureSearchRepo,
-                Mock.Of<ISearchRepository<SicCodeSearchModel>>(),
-                Mock.Of<ICommonBusinessLogic>());
-
+                mockSearchRepo.Object,
+                Mock.Of<ICommonBusinessLogic>(),
+                mockViewingSearchService.Object
+            );
+            
             var mockedSearchParameters =
                 Mock.Of<EmployerSearchParameters>(
                     x => x.Keywords == nullWhitespaceOrEmptySearchKeyWords && x.Page == 1 && x.SearchType == searchBy);
@@ -186,14 +194,17 @@ namespace GenderPayGap.Integration.Tests
         {
             // Arrange
             Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
-
+            Mock<ISearchRepository<EmployerSearchModel>> mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
+            Mock<ViewingSearchService> mockViewingSearchService = new Mock<ViewingSearchService>();
             const SearchType searchType = SearchType.BySectorType;
+
             var viewingService = new ViewingService(
                 mockDataRepo.Object,
-                _azureSearchRepo,
-                Mock.Of<ISearchRepository<SicCodeSearchModel>>(),
-                Mock.Of<ICommonBusinessLogic>());
-
+                mockSearchRepo.Object,
+                Mock.Of<ICommonBusinessLogic>(),
+                mockViewingSearchService.Object
+            );
+            
             var mockedSearchParameters =
                 Mock.Of<EmployerSearchParameters>(
                     x => x.Keywords == nullWhitespaceOrEmptySearchKeyWords && x.Page == 1 && x.SearchType == searchType);
@@ -216,12 +227,16 @@ namespace GenderPayGap.Integration.Tests
         {
             // Arrange
             Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+            Mock<ISearchRepository<EmployerSearchModel>> mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
+            Mock<ViewingSearchService> mockViewingSearchService = new Mock<ViewingSearchService>();
+            const SearchType searchType = SearchType.BySectorType;
 
             var viewingService = new ViewingService(
                 mockDataRepo.Object,
-                _azureSearchRepo,
-                Mock.Of<ISearchRepository<SicCodeSearchModel>>(),
-                Mock.Of<ICommonBusinessLogic>());
+                mockSearchRepo.Object,
+                Mock.Of<ICommonBusinessLogic>(),
+                mockViewingSearchService.Object
+            );
 
             var mockedSearchParameters =
                 Mock.Of<EmployerSearchParameters>(
@@ -260,12 +275,15 @@ namespace GenderPayGap.Integration.Tests
             var sicCodeSearchIndexClient = new SicCodeSearchRepository(sicCodeSearchServiceClient);
 
             Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+            Mock<ISearchRepository<EmployerSearchModel>> mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
+            Mock<ViewingSearchService> mockViewingSearchService = new Mock<ViewingSearchService>();
 
             var viewingService = new ViewingService(
                 mockDataRepo.Object,
-                _azureSearchRepo,
-                sicCodeSearchIndexClient,
-                Mock.Of<ICommonBusinessLogic>());
+                mockSearchRepo.Object,
+                Mock.Of<ICommonBusinessLogic>(),
+                mockViewingSearchService.Object
+            );
 
             #region Calculate the expected number of records
 

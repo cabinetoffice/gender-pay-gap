@@ -103,6 +103,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("EmployerSearch: Invalid EmployerSize 4,10", result.StatusDescription);
         }
 
+        [Ignore("Relies on Azure search, which will be replaced soon")]
         [Test]
         [Description("ViewingController.SearchResults GET: Returns Finder/SearchResults view")]
         public async Task ViewingController_SearchResults_GET_Returns_Finder_SearchResults_view()
