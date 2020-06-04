@@ -13,6 +13,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Models.Search;
+using GenderPayGap.WebUI.Search;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -27,15 +28,15 @@ namespace GenderPayGap.WebUI.Tests.Services
         private Mock<ICommonBusinessLogic> _mockCommonLogic;
         private Mock<IDataRepository> _mockDataRepo;
         private Mock<ISearchRepository<EmployerSearchModel>> _mockSearchRepo;
-        private Mock<ISearchRepository<SicCodeSearchModel>> _mockSearchSicCodeRepo;
-
+        private ViewingSearchService viewingSearchService;
+        
         [SetUp]
         public void BeforeEach()
         {
             _mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
             _mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
-            _mockSearchSicCodeRepo = new Mock<ISearchRepository<SicCodeSearchModel>>();
             _mockCommonLogic = new Mock<ICommonBusinessLogic>();
+            viewingSearchService = new ViewingSearchService(_mockDataRepo.Object);
         }
 
         [Test]
@@ -50,8 +51,8 @@ namespace GenderPayGap.WebUI.Tests.Services
             var testService = new ViewingService(
                 _mockDataRepo.Object,
                 _mockSearchRepo.Object,
-                _mockSearchSicCodeRepo.Object,
-                _mockCommonLogic.Object);
+                _mockCommonLogic.Object,
+                viewingSearchService);
             List<OptionSelect> options = testService.GetOrgSizeOptions(testOptions.Select(x => (int) x), null);
 
             // Assert
@@ -100,8 +101,8 @@ namespace GenderPayGap.WebUI.Tests.Services
             var testService = new ViewingService(
                 _mockDataRepo.Object,
                 _mockSearchRepo.Object,
-                _mockSearchSicCodeRepo.Object,
-                _mockCommonLogic.Object);
+                _mockCommonLogic.Object,
+                viewingSearchService);
             List<OptionSelect> options = await testService.GetSectorOptionsAsync(testOptions, null);
 
             // Assert
@@ -139,7 +140,11 @@ namespace GenderPayGap.WebUI.Tests.Services
             _mockCommonLogic.Setup(x => x.GetAccountingStartDate(It.IsAny<SectorTypes>(), 0))
                 .Returns(new DateTime(testAllYears[0], 4, 5));
 
-            var testService = new ViewingService(_mockDataRepo.Object, _mockSearchRepo.Object, _mockCommonLogic.Object);
+            var testService = new ViewingService(
+                _mockDataRepo.Object,
+                _mockSearchRepo.Object,
+                _mockCommonLogic.Object,
+                viewingSearchService);
             List<OptionSelect> options = testService.GetReportingYearOptions(testCheckedYears);
 
             // Assert
@@ -181,7 +186,11 @@ namespace GenderPayGap.WebUI.Tests.Services
                 (int) SearchReportingStatusFilter.ReportedInTheLast7Days, (int) SearchReportingStatusFilter.ReportedLate
             };
 
-            var testService = new ViewingService(_mockDataRepo.Object, _mockSearchRepo.Object, _mockCommonLogic.Object);
+            var testService = new ViewingService(
+                _mockDataRepo.Object, 
+                _mockSearchRepo.Object,
+                _mockCommonLogic.Object,
+                viewingSearchService);
             List<OptionSelect> options = testService.GetReportingStatusOptions(testCheckedOptions);
 
             // Assert
@@ -245,8 +254,8 @@ namespace GenderPayGap.WebUI.Tests.Services
             var testService = new ViewingService(
                 _mockDataRepo.Object,
                 _mockSearchRepo.Object,
-                _mockSearchSicCodeRepo.Object,
-                _mockCommonLogic.Object);
+                _mockCommonLogic.Object,
+                viewingSearchService);
 
             var testResults = new List<EmployerSearchModel>();
             for (var i = 0; i < totalRecords; i++)
@@ -302,8 +311,8 @@ namespace GenderPayGap.WebUI.Tests.Services
             var testService = new ViewingService(
                 _mockDataRepo.Object,
                 _mockSearchRepo.Object,
-                _mockSearchSicCodeRepo.Object,
-                _mockCommonLogic.Object);
+                _mockCommonLogic.Object, 
+                viewingSearchService);
 
             // Test
             List<SuggestOrganisationResult> assertResults = await testService.SuggestEmployerNameAsync("testing 123");
