@@ -9,7 +9,10 @@
         ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
     }
 }
-<div id="comparison-basket" class="no-print show-empty js-stick-at-top-when-scrolling @(compareCount < 1 ? "visuallyhidden" : "")" data-basket-count="@(compareCount)">
+
+@if (compareCount > 0)
+{
+    <div id="comparison-basket" class="no-print show-empty js-stick-at-top-when-scrolling @(compareCount < 1 ? "visuallyhidden" : "")" data-basket-count="@(compareCount)">
     <div class="comparison-basket-row grid-row">
 
         <div class="column-half" style="@(Model.CanViewCompare ? "padding-top: .5em;" : "")">
@@ -64,3 +67,4 @@
 
     </div>
 </div>
+}
