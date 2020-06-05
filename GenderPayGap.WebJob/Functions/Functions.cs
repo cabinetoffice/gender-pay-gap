@@ -7,14 +7,11 @@ namespace GenderPayGap.WebJob
     {
 
         public Functions(
-            IDataRepository dataRepository,
             EmailSendingService emailSendingService)
         {
-            _DataRepository = dataRepository;
             this.emailSendingService = emailSendingService;
         }
 
-        public readonly IDataRepository _DataRepository;
         private readonly EmailSendingService emailSendingService;
 
     }
