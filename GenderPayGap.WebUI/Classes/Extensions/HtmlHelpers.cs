@@ -7,7 +7,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -16,7 +15,6 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
 
@@ -30,19 +28,6 @@ namespace GenderPayGap.WebUI.Classes
             // extract the parial path from the model class attr
             string partialPath = viewModel.GetAttribute<PartialAttribute>().PartialPath;
             return await htmlHelper.PartialAsync(partialPath, viewModel);
-        }
-
-        public static HtmlString PageIdentifier(this IHtmlHelper htmlHelper)
-        {
-            return new HtmlString(
-                $"Date:{VirtualDateTime.Now}, Version:{Global.Version}, File Date:{Global.AssemblyDate.ToLocalTime()}, Environment:{Config.EnvironmentName}, Machine:{Environment.MachineName}, Instance:{Global.AzureInstanceId}, {Global.AssemblyCopyright}");
-        }
-
-        public static HtmlString ToHtml(this IHtmlHelper htmlHelper, string text)
-        {
-            text = htmlHelper.Encode(text);
-            text = text.Replace(Environment.NewLine, "<br/>");
-            return new HtmlString(text);
         }
 
         public static HtmlString AppSetting(this IHtmlHelper htmlHelper, string appSettingKey)
@@ -116,19 +101,6 @@ namespace GenderPayGap.WebUI.Classes
             return helper.Action(actionName) + "?" + querystring;
         }
         
-        public static HtmlString HiddenFor<TModel>(this IHtmlHelper<TModel> helper, params string[] propertyNames)
-        {
-            var hidden = new List<string>();
-            TModel model = helper.ViewData.Model;
-            foreach (string propertyName in propertyNames)
-            {
-                var propertyValue = model.GetProperty<string>(propertyName);
-                hidden.Add(helper.Hidden(propertyName, propertyValue).ToString());
-            }
-
-            return new HtmlString(string.Join("\r\n", hidden));
-        }
-
         #region Asset Bundles
 
         public static HtmlString UnpackBundle(this IHtmlHelper htmlHelper, string bundlePath, string media = "")
