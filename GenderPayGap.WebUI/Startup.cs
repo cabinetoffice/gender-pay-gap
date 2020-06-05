@@ -244,8 +244,6 @@ namespace GenderPayGap.WebUI
                 .SingleInstance()
                 .WithParameter("serviceName", azureSearchServiceName)
                 .WithParameter("adminApiKey", azureSearchAdminKey);
-            builder.RegisterType<SicCodeSearchRepository>().As<ISearchRepository<SicCodeSearchModel>>().SingleInstance();
-
 
             builder.RegisterInstance(Config.Configuration).SingleInstance();
 
