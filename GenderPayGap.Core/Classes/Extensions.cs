@@ -59,74 +59,8 @@ namespace GenderPayGap.Core.Classes
 
         #region FileSystem
 
-        public static async Task<List<T>> ReadCSVAsync<T>(this IFileRepository fileRepository, string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
 
-            string content = await fileRepository.ReadAsync(filePath);
-            return ReadCSV<T>(content);
-        }
-
-        public static List<T> ReadCSV<T>(string content)
-        {
-            using (var codeStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-            using (var reader = new StreamReader(codeStream, Encoding.UTF8))
-            {
-                var csvReader = new CsvReader(reader);
-                csvReader.Configuration.WillThrowOnMissingField = false;
-                csvReader.Configuration.TrimFields = true;
-                csvReader.Configuration.IgnoreQuotes = false;
-
-                try
-                {
-                    return csvReader.GetRecords<T>().ToList();
-                }
-                catch (CsvTypeConverterException ex)
-                {
-                    if (ex.Data.Count > 0)
-                    {
-                        throw new CsvBadDataException(ex.Data.Values.ToList<string>()[0]);
-                    }
-
-                    //ex.Data.Values has more info...
-                    throw;
-                }
-            }
-        }
-
-        public static DataTable ToDataTable(this string csvContent)
-        {
-            var table = new DataTable();
-
-            using (TextReader sr = new StringReader(csvContent))
-            {
-                using (var csv = new CsvReader(sr))
-                {
-                    csv.ReadHeader();
-                    foreach (string header in csv.FieldHeaders)
-                    {
-                        table.Columns.Add(header);
-                    }
-
-                    while (csv.Read())
-                    {
-                        DataRow row = table.NewRow();
-                        foreach (DataColumn col in table.Columns)
-                        {
-                            row[col.ColumnName] = csv.GetField(col.DataType, col.ColumnName);
-                        }
-
-                        table.Rows.Add(row);
-                    }
-                }
-            }
-
-            return table;
-        }
-
+        
         /// <summary>
         ///     Save records to remote CSV via temporary local storage
         /// </summary>
@@ -277,57 +211,6 @@ namespace GenderPayGap.Core.Classes
                     count += records.Count();
                     await fileRepository.SetMetaDataAsync(filePath, "RecordCount", count.ToString());
                 }
-            }
-        }
-
-        public static async Task AppendCsvRecordAsync<T>(this IFileRepository fileRepository, string filePath, T record)
-        {
-            await AppendCsvRecordsAsync(fileRepository, filePath, new[] {record});
-        }
-
-        /// <summary>
-        ///     pushes a local file to remote if it doesnt already exist
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="remotePath">The path to the remote file</param>
-        /// <param name="localPath">The path to the local file (default=</param>
-        public static async Task PushRemoteFileAsync(IFileRepository fileRepository,
-            string fileName,
-            string remotePath,
-            string localPath = null)
-        {
-            if (string.IsNullOrWhiteSpace(remotePath))
-            {
-                throw new ArgumentNullException(nameof(remotePath));
-            }
-
-            if (!await fileRepository.GetDirectoryExistsAsync(remotePath))
-            {
-                await fileRepository.CreateDirectoryAsync(remotePath);
-            }
-
-            remotePath = Path.Combine(remotePath, fileName);
-            bool remoteExists = await fileRepository.GetFileExistsAsync(remotePath);
-            if (remoteExists)
-            {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(localPath))
-            {
-                localPath = "App_Data";
-            }
-
-            localPath = FileSystem.ExpandLocalPath(localPath);
-            localPath = Path.Combine(localPath, fileName);
-            bool localExists = File.Exists(localPath);
-            byte[] localContent = localExists ? File.ReadAllBytes(localPath) : null;
-
-
-            //Overwrite remote 
-            if (localContent != null && localContent.Length > 0)
-            {
-                await fileRepository.WriteAsync(remotePath, localContent);
             }
         }
 
