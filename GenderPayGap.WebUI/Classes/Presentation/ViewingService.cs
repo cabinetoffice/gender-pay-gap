@@ -19,8 +19,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
     public interface IViewingService
     {
-
-        ISearchRepository<EmployerSearchModel> SearchRepository { get; }
+        
         Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams);
         Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync();
         List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetReults);
@@ -33,27 +32,15 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         private readonly ICommonBusinessLogic commonLogic;
         private readonly IDataRepository dataRepo;
-        private readonly ISearchRepository<SicCodeSearchModel> SicCodeSearchServiceClient;
         private readonly ViewingSearchService viewingSearchService;
 
-        public ViewingService(IDataRepository dataRepo, ISearchRepository<EmployerSearchModel> searchRepo, ICommonBusinessLogic commonLogic, ViewingSearchService viewingSearchService)
+        public ViewingService(IDataRepository dataRepo, ICommonBusinessLogic commonLogic, ViewingSearchService viewingSearchService)
         {
             this.dataRepo = dataRepo;
-            SearchRepository = searchRepo;
             this.commonLogic = commonLogic;
             this.viewingSearchService = viewingSearchService;
         }
-
-        public ViewingService(IDataRepository dataRepo,
-            ISearchRepository<EmployerSearchModel> searchRepo,
-            ISearchRepository<SicCodeSearchModel> sicCodeSearchServiceClient,
-            ICommonBusinessLogic commonLogic,
-            ViewingSearchService viewingSearchService) : this(dataRepo, searchRepo, commonLogic, viewingSearchService)
-        {
-            SicCodeSearchServiceClient = sicCodeSearchServiceClient;
-        }
-
-        public ISearchRepository<EmployerSearchModel> SearchRepository { get; }
+        
 
         public async Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams)
         {
