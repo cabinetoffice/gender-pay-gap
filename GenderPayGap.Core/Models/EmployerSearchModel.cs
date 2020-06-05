@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.Search;
-using Microsoft.Azure.Search.Models;
 
 namespace GenderPayGap.Core.Models
 {
@@ -39,61 +37,34 @@ namespace GenderPayGap.Core.Models
 
         public string OrganisationIdEncrypted { get; set; }
 
-        [IsSearchable]
-        [Analyzer(AnalyzerName.AsString.EnLucene)]
-        [IsFilterable]
-        [IsSortable]
         public string Name { get; set; }
 
-        [IsSearchable]
-        [Analyzer(AnalyzerName.AsString.EnLucene)]
         public string PreviousName { get; set; }
 
-        [IsSearchable]
         public string PartialNameForSuffixSearches { get; set; }
 
-        [IsSearchable]
         public string PartialNameForCompleteTokenSearches { get; set; }
 
-        [IsSearchable]
-        [Analyzer(AnalyzerName.AsString.EnLucene)]
         public string[] Abbreviations { get; set; }
 
-        [IsFilterable]
-        [IsSortable]
-        [IsFacetable]
         public int Size { get; set; }
 
-        [IsFilterable]
-        [IsFacetable]
         public string[] SicSectionIds { get; set; }
 
         public string[] SicSectionNames { get; set; }
 
-        [IsSearchable]
-        [IsFilterable]
-        [IsFacetable]
         public string[] SicCodeIds { get; set; }
 
-        [IsSearchable]
         public string[] SicCodeListOfSynonyms { get; set; }
 
         public string Address { get; set; }
 
-        [IsFilterable]
-        [IsFacetable]
         public string[] ReportedYears { get; set; }
 
-        [IsFilterable]
-        [IsFacetable]
         public DateTimeOffset LatestReportedDate { get; set; }
 
-        [IsFilterable]
-        [IsFacetable]
         public string[] ReportedLateYears { get; set; }
 
-        [IsFilterable]
-        [IsFacetable]
         public string[] ReportedExplanationYears { get; set; }
 
         #endregion

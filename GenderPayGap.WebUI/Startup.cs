@@ -36,7 +36,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -229,16 +228,6 @@ namespace GenderPayGap.WebUI
                 builder.Register(c => new SystemFileRepository(localStorageRoot)).As<IFileRepository>().SingleInstance();
             }
 
-            // Register queues
-
-            // Setup azure search
-            string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");
-            string azureSearchAdminKey = Config.GetAppSetting("SearchService:AdminApiKey");
-
-            builder.Register(c => new SearchServiceClient(azureSearchServiceName, new SearchCredentials(azureSearchAdminKey)))
-                .As<ISearchServiceClient>()
-                .SingleInstance();
-            
             builder.RegisterInstance(Config.Configuration).SingleInstance();
 
             // BL Services

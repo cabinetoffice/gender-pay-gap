@@ -8,12 +8,10 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebJob.Services;
-using Microsoft.Azure.Search;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
@@ -98,15 +96,6 @@ namespace GenderPayGap.WebJob
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();
 
-            // Setup azure search
-            string azureSearchServiceName = Config.GetAppSetting("SearchService:ServiceName");
-            //var azureSearchQueryKey = Config.GetAppSetting("SearchService:QueryApiKey");
-            string azureSearchAdminKey = Config.GetAppSetting("SearchService:AdminApiKey");
-
-            builder.Register(c => new SearchServiceClient(azureSearchServiceName, new SearchCredentials(azureSearchAdminKey)))
-                .As<ISearchServiceClient>()
-                .SingleInstance();
-            
             // BL Services
             builder.RegisterInstance(Config.Configuration).SingleInstance();
             builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().SingleInstance();

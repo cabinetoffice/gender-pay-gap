@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.Search;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Core.Models
@@ -13,13 +12,10 @@ namespace GenderPayGap.Core.Models
         private string _consolidatedSynonyms;
 
         [Key]
-        [IsSearchable]
         public string SicCodeId { get; set; }
 
-        [IsSearchable]
         public string SicCodeDescription { get; set; }
 
-        [IsSearchable]
         public string[] SicCodeListOfSynonyms { get; set; }
 
         [JsonIgnore]
