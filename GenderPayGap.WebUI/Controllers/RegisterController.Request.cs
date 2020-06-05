@@ -572,10 +572,7 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 await OrganisationBusinessLogic.SetUniqueEmployerReferenceAsync(userOrg.Organisation);
             }
-
-            //Add or remove this organisation to/from the search index
-            await SearchBusinessLogic.UpdateSearchIndexAsync(userOrg.Organisation);
-
+            
             //Save the model for the redirect
             this.StashModel(model);
 

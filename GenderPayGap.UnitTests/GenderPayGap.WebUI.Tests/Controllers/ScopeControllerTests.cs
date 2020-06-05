@@ -30,31 +30,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
     {
 
         private const string ErrorMessage = "TheErrorMessage";
-
-        //TODO: Add to scope unit tests
-        [Ignore("Needs adding to scope in/out successful tests")]
-        [Test]
-        [Description("When an organisation is out of scope check if removed from search")]
-        public void CheckOutOfScopeRemovesFromSearch()
-        {
-            //Check the organisation exists in search
-            //var actualIndex = controller.SearchBusinessLogic.SearchRepository.Get(org.OrganisationId.ToString());
-            //var expectedIndex = org.ToEmployerSearchResult();
-            //expectedIndex.Compare(actualIndex);
-        }
-
-        //TODO: Add to scope unit tests
-        [Ignore("Needs adding to scope in/out successful tests")]
-        [Test]
-        [Description("When an organisation is in scope check if added to search")]
-        public void CheckInScopeAddedToSearch()
-        {
-            //Check the organisation exists in search
-            //var actualIndex = controller.SearchBusinessLogic.SearchRepository.Get(org.OrganisationId.ToString());
-            //var expectedIndex = org.ToEmployerSearchResult();
-            //expectedIndex.Compare(actualIndex);
-        }
-
+        
         #region Helpers
 
         private static UserOrganisation CreateUserOrganisation(Organisation org, long userId, DateTime? pinConfirmedDate)

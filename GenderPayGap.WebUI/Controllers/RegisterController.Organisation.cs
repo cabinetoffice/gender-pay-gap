@@ -1796,13 +1796,7 @@ namespace GenderPayGap.WebUI.Controllers
             #endregion
 
             #region Update search indexes, log bad SIC codes and send registration request
-
-            //Add or remove this organisation to/from the search index
-            if (saved)
-            {
-                await SearchBusinessLogic.UpdateSearchIndexAsync(userOrg.Organisation);
-            }
-
+            
             //Log the bad sic codes here to ensure organisation identifiers have been created when saved
             if (badSicCodes.Count > 0)
             {

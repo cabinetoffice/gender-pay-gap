@@ -45,14 +45,11 @@ namespace GenderPayGap.BusinessLogic
     {
 
         private readonly ICommonBusinessLogic _commonBusinessLogic;
-        private readonly ISearchBusinessLogic _searchBusinessLogic;
 
         public ScopeBusinessLogic(ICommonBusinessLogic commonBusinessLogic,
-            IDataRepository dataRepo,
-            ISearchBusinessLogic searchBusinessLogic)
+            IDataRepository dataRepo)
         {
             _commonBusinessLogic = commonBusinessLogic;
-            _searchBusinessLogic = searchBusinessLogic;
             DataRepository = dataRepo;
         }
 
@@ -176,8 +173,6 @@ namespace GenderPayGap.BusinessLogic
             if (saveToDatabase)
             {
                 await DataRepository.SaveChangesAsync();
-                ////Update the search index
-                await _searchBusinessLogic.UpdateSearchIndexAsync(org);
             }
         }
 

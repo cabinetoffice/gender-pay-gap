@@ -12,14 +12,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
     public class SetPresumedScopesJob
     {
         private readonly IScopeBusinessLogic scopeBusinessLogic;
-        private readonly ISearchBusinessLogic searchBusinessLogic;
 
         public SetPresumedScopesJob(
-            IScopeBusinessLogic scopeBusinessLogic,
-            ISearchBusinessLogic searchBusinessLogic)
+            IScopeBusinessLogic scopeBusinessLogic)
         {
             this.scopeBusinessLogic = scopeBusinessLogic;
-            this.searchBusinessLogic = searchBusinessLogic;
         }
 
 
@@ -36,13 +33,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 //Initialise the presumed scoped
                 changedOrgs.AddRange(await scopeBusinessLogic.SetPresumedScopesAsync());
-
-                //Update the search indexes
-                if (changedOrgs.Count > 0)
-                {
-                    await searchBusinessLogic.UpdateSearchIndexAsync(changedOrgs.ToArray());
-                }
-
+                
                 JobHelpers.LogFunctionEnd(runId, nameof(SetPresumedScopes), startTime);
             }
             catch (Exception ex)

@@ -45,8 +45,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             // sut
             scopeBusinessLogic = new BusinessLogic.ScopeBusinessLogic(
                 mockCommonBusinessLogic,
-                mockDataRepository.Object,
-                null);
+                mockDataRepository.Object);
         }
 
         private Mock<IDataRepository> mockDataRepository;

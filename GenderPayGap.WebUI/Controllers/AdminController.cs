@@ -44,7 +44,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             IHttpSession session,
             IHostingEnvironment hostingEnvironment,
             IOrganisationBusinessLogic organisationBusinessLogic,
-            ISearchBusinessLogic searchBusinessLogic,
             IUserRepository userRepository,
             IDataRepository dataRepository,
             IWebTracker webTracker,
@@ -55,7 +54,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         {
             HostingEnvironment = hostingEnvironment;
             OrganisationBusinessLogic = organisationBusinessLogic;
-            SearchBusinessLogic = searchBusinessLogic;
             UserRepository = userRepository;
             PrivateSectorRepository = privateSectorRepository;
             PublicSectorRepository = publicSectorRepository;
@@ -195,7 +193,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         private readonly AuditLogger auditLogger;
 
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
-        public ISearchBusinessLogic SearchBusinessLogic { get; set; }
         public IUserRepository UserRepository { get; }
         public IPagedRepository<EmployerRecord> PrivateSectorRepository { get; }
         public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }

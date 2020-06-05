@@ -218,13 +218,7 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.User.ContactPhoneNumber
                 },
                 currentUser);
-
-            //Add this organisation to the search index
-            if (updateSearchIndex)
-            {
-                await SearchBusinessLogic.UpdateSearchIndexAsync(userOrg.Organisation);
-            }
-
+            
             //Prompt the user with confirmation
             return result1;
         }

@@ -24,15 +24,11 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly IDataRepository dataRepository;
 
-        private readonly ISearchBusinessLogic searchBusinessLogic;
-
         public AdminOrganisationStatusController(IDataRepository dataRepository,
-            AuditLogger auditLogger,
-            ISearchBusinessLogic searchBusinessLogic)
+            AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
-            this.searchBusinessLogic = searchBusinessLogic;
         }
 
         [HttpGet("organisation/{id}/status")]
@@ -130,12 +126,7 @@ namespace GenderPayGap.WebUI.Controllers
                 organisation,
                 new {PreviousStatus = previousStatus, NewStatus = newStatus, viewModel.Reason},
                 currentUser);
-
-            // Add/remove this organisation to/from the search index when status has bee changed from/to Deleted
-            if (previousStatus == OrganisationStatuses.Deleted || newStatus == OrganisationStatuses.Deleted)
-            {
-                searchBusinessLogic.UpdateSearchIndexAsync(organisation).Wait();
-            }
+            
         }
 
         private void ActivateUsersOfOrganisation(Organisation organisation)

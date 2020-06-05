@@ -35,8 +35,6 @@ namespace GenderPayGap.Tests
         private IList<Organisation> testOrgData;
         private IList<OrganisationScope> testOrgScopeData;
         public IScopeBusinessLogic testScopeBL;
-        private ISearchBusinessLogic testSearchBL;
-        private readonly ISearchRepository<EmployerSearchModel> testSearchRepo = new MockSearchRepository();
 
         #region Test Data
 
@@ -117,8 +115,7 @@ namespace GenderPayGap.Tests
         {
             mockDataRepo = new Mock<IDataRepository>();
             mockFileRepo = new Mock<IFileRepository>();
-            testSearchBL = new SearchBusinessLogic(testSearchRepo);
-            testScopeBL = new ScopeBusinessLogic(testCommonBL, mockDataRepo.Object, testSearchBL);
+            testScopeBL = new ScopeBusinessLogic(testCommonBL, mockDataRepo.Object);
             GenerateTestData();
         }
 
