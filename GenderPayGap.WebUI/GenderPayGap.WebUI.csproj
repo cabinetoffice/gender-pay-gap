@@ -7,7 +7,6 @@
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <RootNamespace>GenderPayGap.WebUI</RootNamespace>
     <UserSecretsId>9636f8df-5c1c-4066-b955-0c607fe30b2d</UserSecretsId>
-    <Copyright>Crown Copyright © $([System.DateTime]::UtcNow.Year) ($([System.DateTime]::UtcNow.ToLocalTime()))</Copyright>
     <ProjectGuid>73D4A349-7276-4C72-9C67-A8FD08D7ED82</ProjectGuid>
     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
   </PropertyGroup>
@@ -77,6 +76,9 @@
       <DependentUpon>appsettings.json</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <Content Update="build-number.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

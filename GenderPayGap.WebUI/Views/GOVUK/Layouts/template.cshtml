@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.Core
+@using GenderPayGap.Core
 @using GenderPayGap.Core.Models.Cookies
 @using GenderPayGap.WebUI.Helpers
 @{
@@ -10,8 +10,13 @@
 
     ViewBag.hidePhase = ViewBag.hidePhase == null ? false : true;
 }
-<!-- @Html.PageIdentifier() -->
 <!DOCTYPE html>
+
+<!-- Build number: @(BuildNumberHelper.GetBuildNumber()) -->
+<!-- VirtualDateTime: @(VirtualDateTime.Now.ToString("s")) -->
+<!-- Environment: @(Config.EnvironmentName) -->
+<!-- Server name: @(Environment.MachineName) -->
+
 <html lang="en">
 <head>
     <title>@documentTitle</title>

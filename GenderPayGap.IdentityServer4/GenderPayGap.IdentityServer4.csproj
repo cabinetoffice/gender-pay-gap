@@ -5,7 +5,6 @@
     <LangVersion>7.1</LangVersion>
     <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
     <AspNetCoreModuleHostingModel>OutOfProcess</AspNetCoreModuleHostingModel>
-    <Copyright>Crown Copyright © $([System.DateTime]::UtcNow.Year) ($([System.DateTime]::UtcNow.ToLocalTime()))</Copyright>
     <ProjectGuid>F0DBFCDC-2EC9-4181-BF63-1B8F3D585A4E</ProjectGuid>
     <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
   </PropertyGroup>
