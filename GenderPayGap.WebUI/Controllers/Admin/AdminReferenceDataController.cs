@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.BusinessLogic.Services;
@@ -79,7 +79,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private static object GetSicCodeDetails(SicCode sicCode)
         {
-            return new {sicCode.SicCodeId, sicCode.SicSectionId, sicCode.Description};
+            return new {sicCode.SicCodeId, sicCode.SicSectionId, sicCode.Description, sicCode.Synonyms};
         }
 
         [HttpGet("reference-data/sic-sections/upload")]
@@ -130,7 +130,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
                 viewModel.File,
-                new[] { "SicCodeId", "SicSectionId", "Description" },
+                new[] { "SicCodeId", "SicSectionId", "Description", "Synonyms" },
                 out List<SicCode> sicCodesFromUploadFile,
                 out string errorMessage))
             {
@@ -147,7 +147,9 @@ namespace GenderPayGap.WebUI.Controllers
                     sicCodesFromDatabase,
                     sicCodesFromUploadFile,
                     s => s.SicCodeId,
-                    (s1, s2) => s1.SicSectionId == s2.SicSectionId && s1.Description == s2.Description,
+                    (s1, s2) => s1.SicSectionId == s2.SicSectionId 
+                                && s1.Description == s2.Description 
+                                && s1.Synonyms == s2.Synonyms,
                     s => s.OrganisationSicCodes.Count > 0)
             };
 
@@ -228,7 +230,9 @@ namespace GenderPayGap.WebUI.Controllers
                     sicCodesFromDatabase,
                     newRecords,
                     s => s.SicCodeId,
-                    (s1, s2) => s1.SicSectionId == s2.SicSectionId && s1.Description == s2.Description,
+                    (s1, s2) => s1.SicSectionId == s2.SicSectionId 
+                                && s1.Description == s2.Description
+                                && s1.Synonyms == s2.Synonyms,
                     s => s.OrganisationSicCodes.Count > 0);
 
             viewModel.ParseAndValidateParameters(Request, m => m.Reason);
@@ -263,7 +267,8 @@ namespace GenderPayGap.WebUI.Controllers
                 var sicCode = new SicCode{
                     SicCodeId = sicCodeFromUser.SicCodeId,
                     SicSectionId = sicCodeFromUser.SicSectionId,
-                    Description = sicCodeFromUser.Description
+                    Description = sicCodeFromUser.Description,
+                    Synonyms = sicCodeFromUser.Synonyms
                 };
                 dataRepository.Insert(sicCode);
             }
@@ -274,6 +279,7 @@ namespace GenderPayGap.WebUI.Controllers
 
                 sicCode.SicSectionId = oldAndNew.New.SicSectionId;
                 sicCode.Description = oldAndNew.New.Description;
+                sicCode.Synonyms = oldAndNew.New.Synonyms;
             }
 
             foreach (SicCode sicCodeFromUser in viewModel.AddsEditsDeletesSet.ItemsToDelete)
