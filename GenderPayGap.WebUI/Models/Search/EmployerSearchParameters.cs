@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
-using Microsoft.Azure.Search.Models;
 
 namespace GenderPayGap.WebUI.Models.Search
 {
@@ -26,11 +24,7 @@ namespace GenderPayGap.WebUI.Models.Search
 
         public int Page { get; set; } = 1;
 
-        public string SearchFields { get; set; }
-
         public SearchType SearchType { get; set; }
-
-        public SearchMode SearchMode { get; set; }
 
         public int PageSize { get; set; } = 20;
 
