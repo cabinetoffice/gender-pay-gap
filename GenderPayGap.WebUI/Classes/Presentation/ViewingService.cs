@@ -31,7 +31,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             int page,
             int pageSize);
 
-        Task<List<SuggestOrganisationResult>> SuggestEmployerNameAsync(string search);
         
     }
 
@@ -113,29 +112,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             };
         }
 
-        public async Task<List<SuggestOrganisationResult>> SuggestEmployerNameAsync(string searchText)
-        {
-            IEnumerable<KeyValuePair<string, EmployerSearchModel>> results = await SearchRepository.SuggestAsync(
-                searchText,
-                $"{nameof(EmployerSearchModel.Name)};{nameof(EmployerSearchModel.PreviousName)};{nameof(EmployerSearchModel.Abbreviations)}");
-
-            var matches = new List<SuggestOrganisationResult>();
-            foreach (KeyValuePair<string, EmployerSearchModel> result in results)
-            {
-                //Ensure all names in suggestions are unique
-                if (matches.Any(m => m.Text == result.Value.Name))
-                {
-                    continue;
-                }
-
-                matches.Add(
-                    new SuggestOrganisationResult {
-                        Id = result.Value.OrganisationIdEncrypted, Text = result.Value.Name, PreviousName = result.Value.PreviousName
-                    });
-            }
-
-            return matches;
-        }
         
         public PagedResult<EmployerSearchModel> GetPagedResult(IEnumerable<EmployerSearchModel> searchResults,
             long totalRecords,
@@ -217,21 +193,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             return results;
         }
 
-        private async Task<PagedResult<EmployerSearchModel>> DoSearchAsync(EmployerSearchParameters searchParams,
-            Dictionary<string, Dictionary<object, long>> facets)
-        {
-            return await SearchRepository.SearchAsync(
-                searchParams.Keywords, // .ToSearchQuery(),
-                searchParams.Page,
-                searchParams.SearchType,
-                searchParams.PageSize,
-                filter: searchParams.ToFilterQuery(),
-                facets: facets,
-                orderBy: string.IsNullOrWhiteSpace(searchParams.Keywords) ? nameof(EmployerSearchModel.Name) : null,
-                searchFields: searchParams.SearchFields,
-                searchMode: searchParams.SearchMode);
-        }
-
+        
         private async Task<IEnumerable<KeyValuePair<string, SicCodeSearchModel>>> GetListOfSicCodeSuggestionsFromIndexAsync(
             string searchText)
         {

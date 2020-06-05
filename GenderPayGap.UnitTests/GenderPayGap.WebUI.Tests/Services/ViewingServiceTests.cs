@@ -288,43 +288,6 @@ namespace GenderPayGap.WebUI.Tests.Services
             Assert.That(resultModel.Results != null);
             Assert.That(resultModel.Results.Count == totalRecords);
         }
-
-        [Test]
-        [Description("SuggestEmployerName: Returns encrypted org id and matched text")]
-        public async Task SuggestEmployerName_Returns_encryptedid_and_matched_text()
-        {
-            // Setup
-            var testRecords = new List<KeyValuePair<string, EmployerSearchModel>>();
-
-            for (var i = 0; i < 10; i++)
-            {
-                testRecords.Add(
-                    new KeyValuePair<string, EmployerSearchModel>(
-                        i.ToString(),
-                        new EmployerSearchModel {OrganisationIdEncrypted = i.ToString(), Name = $"Org{i.ToString()}"}));
-            }
-
-            // Mocks
-            _mockSearchRepo.Setup(sr => sr.SuggestAsync(It.IsAny<string>(), It.IsAny<string>(), null, true, 10))
-                .ReturnsAsync(testRecords);
-
-            var testService = new ViewingService(
-                _mockDataRepo.Object,
-                _mockSearchRepo.Object,
-                _mockCommonLogic.Object, 
-                viewingSearchService);
-
-            // Test
-            List<SuggestOrganisationResult> assertResults = await testService.SuggestEmployerNameAsync("testing 123");
-
-            Assert.That(assertResults.Count == testRecords.Count);
-            for (var i = 0; i < assertResults.Count; i++)
-            {
-                SuggestOrganisationResult result = assertResults[i];
-                Assert.That(result.Id == i.ToString());
-                Assert.That(result.Text == $"Org{i.ToString()}");
-            }
-        }
-
+        
     }
 }
