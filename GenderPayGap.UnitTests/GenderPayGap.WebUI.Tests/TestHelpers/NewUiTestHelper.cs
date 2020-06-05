@@ -205,7 +205,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.Register(
                     c => new ViewingService(
                         c.Resolve<IDataRepository>(),
-                        c.Resolve<ISearchRepository<EmployerSearchModel>>(),
                         c.Resolve<ICommonBusinessLogic>(),
                         c.Resolve<ViewingSearchService>())
                 )

@@ -50,7 +50,6 @@ namespace GenderPayGap.WebUI.Tests.Services
             // Mocks
             var testService = new ViewingService(
                 _mockDataRepo.Object,
-                _mockSearchRepo.Object,
                 _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = testService.GetOrgSizeOptions(testOptions.Select(x => (int) x), null);
@@ -100,7 +99,6 @@ namespace GenderPayGap.WebUI.Tests.Services
 
             var testService = new ViewingService(
                 _mockDataRepo.Object,
-                _mockSearchRepo.Object,
                 _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = await testService.GetSectorOptionsAsync(testOptions, null);
@@ -142,7 +140,6 @@ namespace GenderPayGap.WebUI.Tests.Services
 
             var testService = new ViewingService(
                 _mockDataRepo.Object,
-                _mockSearchRepo.Object,
                 _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = testService.GetReportingYearOptions(testCheckedYears);
@@ -188,7 +185,6 @@ namespace GenderPayGap.WebUI.Tests.Services
 
             var testService = new ViewingService(
                 _mockDataRepo.Object, 
-                _mockSearchRepo.Object,
                 _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = testService.GetReportingStatusOptions(testCheckedOptions);
