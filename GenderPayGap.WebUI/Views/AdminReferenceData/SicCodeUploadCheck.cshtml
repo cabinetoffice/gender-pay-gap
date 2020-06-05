@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.Database
+@using GenderPayGap.Database
 @using GenderPayGap.WebUI.Models.AdminReferenceData
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -74,6 +74,7 @@
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC code ID</th>
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
                         <th scope="col" class="govuk-table__header">Description</th>
+                        <th scope="col" class="govuk-table__header">Synonyms</th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -83,6 +84,7 @@
                             <td class="govuk-table__cell">@(record.SicCodeId)</td>
                             <td class="govuk-table__cell">@(record.SicSectionId)</td>
                             <td class="govuk-table__cell">@(record.Description)</td>
+                            <td class="govuk-table__cell">@(record.Synonyms)</td>
                         </tr>
                     }
                 </tbody>
@@ -100,6 +102,7 @@
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC code ID</th>
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
                         <th scope="col" class="govuk-table__header">Description</th>
+                        <th scope="col" class="govuk-table__header">Synonyms</th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -127,6 +130,16 @@
                                     </div>
                                 }
                             </td>
+                            <td class="govuk-table__cell ">
+                                <div>@(record.New.Synonyms)</div>
+                                @if (record.Old.Synonyms != record.New.Synonyms)
+                                {
+                                    <div>
+                                        previously @(record.Old.Synonyms)
+                                    </div>
+                                }
+                            </td>
+                            
                         </tr>
                     }
                 </tbody>
@@ -157,6 +170,7 @@
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC code ID</th>
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">SIC section ID</th>
                         <th scope="col" class="govuk-table__header">Description</th>
+                        <th scope="col" class="govuk-table__header">Synonyms</th>
                         @if (Model.AddsEditsDeletesSet.ItemsToDelete.Count(r => r.OrganisationSicCodes.Count > 0) > 0)
                         {
                             <th scope="col" class="govuk-table__header">Number of current uses</th>
@@ -170,6 +184,7 @@
                             <td class="govuk-table__cell">@(record.SicCodeId)</td>
                             <td class="govuk-table__cell">@(record.SicSectionId)</td>
                             <td class="govuk-table__cell">@(record.Description)</td>
+                            <td class="govuk-table__cell">@(record.Synonyms)</td>
                             @if (record.OrganisationSicCodes.Count > 0)
                             {
                                 <td class="govuk-table__cell">
