@@ -107,12 +107,6 @@ namespace GenderPayGap.WebJob
                 .As<ISearchServiceClient>()
                 .SingleInstance();
             
-            builder.RegisterType<SicCodeSearchRepository>()
-                .As<ISearchRepository<SicCodeSearchModel>>()
-                .SingleInstance()
-                .WithParameter("serviceName", azureSearchServiceName)
-                .WithParameter("adminApiKey", azureSearchAdminKey);
-
             // BL Services
             builder.RegisterInstance(Config.Configuration).SingleInstance();
             builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().SingleInstance();
