@@ -242,52 +242,6 @@ namespace GenderPayGap.WebUI.Tests.Services
             string resultFilterQuery = testParams.ToFilterQuery();
             Assert.AreEqual(expectedFilterQuery, resultFilterQuery);
         }
-
-        [Test]
-        [Description("GetPagedResult: Returns paged results")]
-        public void GetPagedResult_Returns_paged_results()
-        {
-            // Setup
-            long totalRecords = 100;
-
-            // Mocks
-            var testService = new ViewingService(
-                _mockDataRepo.Object,
-                _mockSearchRepo.Object,
-                _mockCommonLogic.Object,
-                viewingSearchService);
-
-            var testResults = new List<EmployerSearchModel>();
-            for (var i = 0; i < totalRecords; i++)
-            {
-                testResults.Add(new EmployerSearchModel());
-            }
-
-            // Test
-            PagedResult<EmployerSearchModel> resultModel = testService.GetPagedResult(testResults, totalRecords, 1, 20);
-            Assert.That(resultModel.CurrentPage == 1);
-            Assert.That(resultModel.PageCount == 5);
-            Assert.That(resultModel.PageSize == 20);
-            Assert.That(resultModel.ActualRecordTotal == totalRecords);
-            Assert.That(resultModel.Results != null);
-            Assert.That(resultModel.Results.Count == totalRecords);
-
-            resultModel = testService.GetPagedResult(testResults, totalRecords, 2, 20);
-            Assert.That(resultModel.CurrentPage == 2);
-            Assert.That(resultModel.PageCount == 5);
-            Assert.That(resultModel.PageSize == 20);
-            Assert.That(resultModel.ActualRecordTotal == totalRecords);
-            Assert.That(resultModel.Results != null);
-            Assert.That(resultModel.Results.Count == totalRecords);
-
-            resultModel = testService.GetPagedResult(testResults, totalRecords, 5, 20);
-            Assert.That(resultModel.CurrentPage == 5);
-            Assert.That(resultModel.PageCount == 5);
-            Assert.That(resultModel.PageSize == 20);
-            Assert.That(resultModel.ActualRecordTotal == totalRecords);
-            Assert.That(resultModel.Results != null);
-            Assert.That(resultModel.Results.Count == totalRecords);
-        }
         
     }
 }
