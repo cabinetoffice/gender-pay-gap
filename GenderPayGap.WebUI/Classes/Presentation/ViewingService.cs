@@ -25,12 +25,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync();
         List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetReults);
         Task<List<OptionSelect>> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds, Dictionary<object, long> facetReults);
-
-        PagedResult<EmployerSearchModel> GetPagedResult(IEnumerable<EmployerSearchModel> searchResults,
-            long totalRecords,
-            int page,
-            int pageSize);
-
         
     }
 
@@ -76,18 +70,8 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
             if (searchParams.SearchType == SearchType.BySectorType)
             {
-                IEnumerable<KeyValuePair<string, SicCodeSearchModel>> list =
-                    await GetListOfSicCodeSuggestionsFromIndexAsync(searchParams.Keywords);
-                searchParams.FilterCodeIds = list.Select(x => int.Parse(x.Value.SicCodeId));
-
-                searchParams.SearchFields =
-                    $"{nameof(EmployerSearchModel.SicCodeIds)};{nameof(EmployerSearchModel.SicCodeListOfSynonyms)}";
-                searchParams.Keywords = "*"; // searchTermModified
-
-                if (list.Any())
-                {
-                    searchResults = viewingSearchService.Search(searchParams);
-                }
+                // look up sic code synonyms here or in the viewingSearchService
+                
             }
 
             if (searchParams.SearchType == SearchType.ByEmployerName)
@@ -111,29 +95,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 t = searchParams.SearchType.ToInt32().ToString()
             };
         }
-
         
-        public PagedResult<EmployerSearchModel> GetPagedResult(IEnumerable<EmployerSearchModel> searchResults,
-            long totalRecords,
-            int page,
-            int pageSize)
-        {
-            var result = new PagedResult<EmployerSearchModel>();
-
-            if (page == 0 || page < 0)
-            {
-                page = 1;
-            }
-
-            result.Results = searchResults.ToList();
-            result.ActualRecordTotal = (int) totalRecords;
-            result.VirtualRecordTotal = result.Results.Count;
-            result.CurrentPage = page;
-            result.PageSize = pageSize;
-
-            return result;
-        }
-
         public List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetResults)
         {
             Array allSizes = Enum.GetValues(typeof(OrganisationSizes));
@@ -176,7 +138,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
             return sources;
         }
-
+        
         public async Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync()
         {
             var results = new List<SearchViewModel.SicSection>();
@@ -194,19 +156,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         }
 
         
-        private async Task<IEnumerable<KeyValuePair<string, SicCodeSearchModel>>> GetListOfSicCodeSuggestionsFromIndexAsync(
-            string searchText)
-        {
-            IEnumerable<KeyValuePair<string, SicCodeSearchModel>> listOfSicCodeSuggestionsFromIndex =
-                await SicCodeSearchServiceClient.SuggestAsync(
-                    searchText,
-                    $"{nameof(SicCodeSearchModel.SicCodeDescription)},{nameof(SicCodeSearchModel.SicCodeListOfSynonyms)}",
-                    null,
-                    false,
-                    100);
-            return listOfSicCodeSuggestionsFromIndex;
-        }
-
         public List<OptionSelect> GetReportingYearOptions(IEnumerable<int> filterSnapshotYears)
         {
             // setup the filters
