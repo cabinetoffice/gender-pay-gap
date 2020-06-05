@@ -717,9 +717,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Save the changes and redirect
             await DataRepository.SaveChangesAsync();
 
-            //Remove this organisation from the search index
-            await Global.SearchRepository.RemoveFromIndexAsync(new[] {searchRecord});
-
             //Save the model for the redirect
             this.StashModel(model);
 

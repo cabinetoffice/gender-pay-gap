@@ -27,14 +27,12 @@ namespace GenderPayGap.WebUI.Tests.Services
 
         private Mock<ICommonBusinessLogic> _mockCommonLogic;
         private Mock<IDataRepository> _mockDataRepo;
-        private Mock<ISearchRepository<EmployerSearchModel>> _mockSearchRepo;
         private ViewingSearchService viewingSearchService;
         
         [SetUp]
         public void BeforeEach()
         {
             _mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
-            _mockSearchRepo = new Mock<ISearchRepository<EmployerSearchModel>>();
             _mockCommonLogic = new Mock<ICommonBusinessLogic>();
             viewingSearchService = new ViewingSearchService(_mockDataRepo.Object);
         }

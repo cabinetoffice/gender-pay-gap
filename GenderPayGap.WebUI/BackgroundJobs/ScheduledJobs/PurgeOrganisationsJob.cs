@@ -94,9 +94,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             org.SetStatus(OrganisationStatuses.Deleted, details: "Organisation deleted by PurgeOrganisationJob");
 
             dataRepository.SaveChangesAsync().Wait();
-
-            //Remove this organisation from the search index
-            await Global.SearchRepository.RemoveFromIndexAsync(new[] {searchRecord});
+            
         }
 
     }

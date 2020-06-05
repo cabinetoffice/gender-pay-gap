@@ -2836,9 +2836,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.IsNull(userOrgs[0].PINConfirmedDate, "Wrong PIN confirmed date");
             Assert.That(userOrgs[0].Address.GetAddressString() == address.GetAddressString(), "Wrong address for user org");
 
-            //Check the organisation does not appear in search index
-            var index= await Global.SearchRepository.GetAsync(org.OrganisationId.ToString(), nameof(EmployerSearchModel.OrganisationId));
-            Assert.IsNull(index);
         }
 
         [Test]
@@ -4060,10 +4057,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(userOrgs.Count == 1, "Wrong number of user orgs");
             Assert.IsNull(userOrgs[0].PINSentDate, "Wrong PIN sent date");
             Assert.IsNull(userOrgs[0].PINConfirmedDate, "Wrong PIN confirmed date");
-
-            //Check the organisation does not exists in search
-            var actualIndex = await Global.SearchRepository.GetAsync(org.OrganisationId.ToString(),nameof(EmployerSearchModel.OrganisationId));
-            Assert.IsNull(actualIndex,"Organisation should not exist on search");
+            
         }
 
         [Test]
@@ -4236,10 +4230,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(userOrgs.Count == 1, "Wrong number of user orgs");
             Assert.IsNull(userOrgs[0].PINSentDate, "Wrong PIN sent date");
             Assert.IsNull(userOrgs[0].PINConfirmedDate, "Wrong PIN confirmed date");
-
-            //Check the organisation does not exists in search
-            var actualIndex = await Global.SearchRepository.GetAsync(org.OrganisationId.ToString(), nameof(EmployerSearchModel.OrganisationId));
-            Assert.IsNull(actualIndex, "Organisation should not exist on search");
+            
         }
 
         [Test]
