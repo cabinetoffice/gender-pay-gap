@@ -31,7 +31,6 @@ namespace GenderPayGap.Tests
         private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic(Config.Configuration);
         private ScopePresentation testScopePresentation;
 
-        private ISearchBusinessLogic testSearchBL;
         private readonly ISearchRepository<EmployerSearchModel> testSearchRepo = new MockSearchRepository();
 
         [SetUp]
@@ -39,10 +38,8 @@ namespace GenderPayGap.Tests
         {
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
 
-            testSearchBL = new SearchBusinessLogic(testSearchRepo);
-
             // setup mocks ans ensures they call their implementations. (We override calls per test when need be!)
-            mockScopeBL = new Mock<ScopeBusinessLogic>(testCommonBL, mockDataRepo.Object, testSearchBL);
+            mockScopeBL = new Mock<ScopeBusinessLogic>(testCommonBL, mockDataRepo.Object);
             mockScopeBL.CallBase = true;
 
             // service under test

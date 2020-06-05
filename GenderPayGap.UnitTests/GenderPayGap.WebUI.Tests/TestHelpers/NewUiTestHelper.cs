@@ -169,7 +169,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             // BL Services
             builder.RegisterInstance(Config.Configuration);
             builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().InstancePerLifetimeScope();
-            builder.RegisterType<SearchBusinessLogic>().As<ISearchBusinessLogic>().InstancePerLifetimeScope();
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
             builder.RegisterType<DraftFileBusinessLogic>().As<IDraftFileBusinessLogic>().InstancePerLifetimeScope();
 
@@ -177,8 +176,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                     c => c.ResolveAsMock<ScopeBusinessLogic>(
                             false,
                             typeof(ICommonBusinessLogic),
-                            typeof(IDataRepository),
-                            typeof(ISearchBusinessLogic))
+                            typeof(IDataRepository)
+                            )
                         .Object)
                 .As<IScopeBusinessLogic>()
                 .InstancePerLifetimeScope();

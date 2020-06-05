@@ -67,11 +67,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(userOrg.Organisation.Status == OrganisationStatuses.Active);
             Assert.That(userOrg.Organisation.GetLatestAddress().AddressId == address.AddressId);
             Assert.That(address.Status == AddressStatuses.Active);
-
-            //Check the organisation exists in search
-            EmployerSearchModel actualIndex = await controller.SearchBusinessLogic.SearchRepository.GetAsync(org.OrganisationId.ToString());
-            EmployerSearchModel expectedIndex = org.ToEmployerSearchResult();
-            expectedIndex.Compare(actualIndex);
+            
         }
 
         [Test]

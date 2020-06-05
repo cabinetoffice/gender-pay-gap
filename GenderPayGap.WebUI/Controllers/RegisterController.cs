@@ -40,7 +40,6 @@ namespace GenderPayGap.WebUI.Controllers
             IScopePresentation scopePresentation,
             IScopeBusinessLogic scopeBL,
             IOrganisationBusinessLogic orgBL,
-            ISearchBusinessLogic searchBusinessLogic,
             IUserRepository userRepository,
             IDataRepository dataRepository,
             IWebTracker webTracker,
@@ -58,7 +57,6 @@ namespace GenderPayGap.WebUI.Controllers
             ScopePresentation = scopePresentation;
             ScopeBusinessLogic = scopeBL;
             OrganisationBusinessLogic = orgBL;
-            SearchBusinessLogic = searchBusinessLogic;
             PrivateSectorRepository = privateSectorRepository;
             PublicSectorRepository = publicSectorRepository;
             UserRepository = userRepository;
@@ -88,7 +86,6 @@ namespace GenderPayGap.WebUI.Controllers
         public IScopePresentation ScopePresentation { get; }
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; }
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
-        public ISearchBusinessLogic SearchBusinessLogic { get; }
         public IUserRepository UserRepository { get; }
         public IPagedRepository<EmployerRecord> PrivateSectorRepository { get; }
         public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
