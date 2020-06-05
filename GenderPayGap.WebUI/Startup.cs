@@ -238,13 +238,7 @@ namespace GenderPayGap.WebUI
             builder.Register(c => new SearchServiceClient(azureSearchServiceName, new SearchCredentials(azureSearchAdminKey)))
                 .As<ISearchServiceClient>()
                 .SingleInstance();
-
-            builder.RegisterType<AzureSearchRepository>()
-                .As<ISearchRepository<EmployerSearchModel>>()
-                .SingleInstance()
-                .WithParameter("serviceName", azureSearchServiceName)
-                .WithParameter("adminApiKey", azureSearchAdminKey);
-
+            
             builder.RegisterInstance(Config.Configuration).SingleInstance();
 
             // BL Services
