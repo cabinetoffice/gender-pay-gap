@@ -105,6 +105,10 @@
     <ProjectReference Include="..\..\GenderPayGap.WebUI\GenderPayGap.WebUI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestsCommon\Mocks" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1unittests_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

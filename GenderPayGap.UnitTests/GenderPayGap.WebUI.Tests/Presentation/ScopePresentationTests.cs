@@ -11,7 +11,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
-using GenderPayGap.Tests.Common.Mocks;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Models.Scope;
 using MockQueryable.Moq;
@@ -30,8 +29,6 @@ namespace GenderPayGap.Tests
         private Mock<ScopeBusinessLogic> mockScopeBL;
         private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic(Config.Configuration);
         private ScopePresentation testScopePresentation;
-
-        private readonly ISearchRepository<EmployerSearchModel> testSearchRepo = new MockSearchRepository();
 
         [SetUp]
         public void BeforeEach()

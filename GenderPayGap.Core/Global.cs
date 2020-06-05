@@ -18,8 +18,6 @@ namespace GenderPayGap.Core
 
         public static string DownloadsPath = Path.Combine(DataPath, "Downloads");
         public static IFileRepository FileRepository;
-        public static ISearchRepository<EmployerSearchModel> SearchRepository;
-        public static ISearchRepository<SicCodeSearchModel> SicCodeSearchRepository;
 
         private static TelemetryClient _AppInsightsClient;
 

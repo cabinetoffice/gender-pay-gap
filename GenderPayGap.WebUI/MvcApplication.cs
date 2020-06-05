@@ -24,12 +24,10 @@ namespace GenderPayGap.WebUI
         public static IContainer ContainerIoC;
 
         public MvcApplication(
-            IFileRepository fileRepository,
-            ISearchRepository<EmployerSearchModel> searchRepository
+            IFileRepository fileRepository
         )
         {
             Global.FileRepository = fileRepository;
-            Global.SearchRepository = searchRepository;
         }
 
         public double SessionTimeOutMinutes => Config.GetAppSetting("SessionTimeOut").ToInt32(20);

@@ -21,7 +21,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
-using GenderPayGap.Tests.Common.Mocks;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
@@ -160,9 +159,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             //Create the mock repositories
             // BL Repository
             builder.Register(c => new SystemFileRepository()).As<IFileRepository>().InstancePerLifetimeScope();
-            builder.Register(c => new MockSearchRepository()).As<ISearchRepository<EmployerSearchModel>>().InstancePerLifetimeScope();
             
-            builder.Register(c => Mock.Of<ISearchRepository<SicCodeSearchModel>>()).As<ISearchRepository<SicCodeSearchModel>>();
             builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().SingleInstance();
 
