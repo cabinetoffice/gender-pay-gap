@@ -15,6 +15,7 @@ namespace GenderPayGap.Database
         public int SicCodeId { get; set; }
         public string SicSectionId { get; set; }
         public string Description { get; set; }
+        public string Synonyms { get; set; }
         public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public virtual SicSection SicSection { get; set; }
