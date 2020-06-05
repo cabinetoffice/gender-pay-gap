@@ -44,36 +44,22 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public async Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams)
         {
-            var searchResults = new PagedResult<EmployerSearchModel>();
-
+            
             var facets = new Dictionary<string, Dictionary<object, long>>();
             facets.Add("Size", null);
             facets.Add("SicSectionIds", null);
             facets.Add("ReportedYears", null);
             facets.Add("ReportedLateYears", null);
             facets.Add("ReportedExplanationYears", null);
-
-            string searchTermEnteredOnScreen = searchParams.Keywords;
-
-            if (searchParams.SearchType == SearchType.BySectorType)
-            {
-                // look up sic code synonyms here or in the viewingSearchService
-                
-            }
-
-            if (searchParams.SearchType == SearchType.ByEmployerName)
-            {
-                searchResults = viewingSearchService.Search(searchParams);
-            }
-
+            
             // build the result view model
             return new SearchViewModel {
                 SizeOptions = GetOrgSizeOptions(searchParams.FilterEmployerSizes, facets["Size"]),
                 SectorOptions = await GetSectorOptionsAsync(searchParams.FilterSicSectionIds, facets["SicSectionIds"]),
                 ReportingYearOptions = GetReportingYearOptions(searchParams.FilterReportedYears),
                 ReportingStatusOptions = GetReportingStatusOptions(searchParams.FilterReportingStatus),
-                Employers = searchResults,
-                search = searchTermEnteredOnScreen,
+                Employers = viewingSearchService.Search(searchParams),
+                search = searchParams.Keywords,
                 p = searchParams.Page,
                 s = searchParams.FilterSicSectionIds,
                 es = searchParams.FilterEmployerSizes,
