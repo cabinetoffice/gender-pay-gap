@@ -22,8 +22,8 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         
         Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams);
         Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync();
-        List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetReults);
-        Task<List<OptionSelect>> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds, Dictionary<object, long> facetReults);
+        List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetResults);
+        Task<List<OptionSelect>> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds, Dictionary<object, long> facetResults);
         
     }
 
@@ -148,6 +148,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             // setup the filters
             int firstYear = Global.FirstReportingYear;
             int currentYear = commonLogic.GetAccountingStartDate(SectorTypes.Public).Year;
+            
             var allYears = new List<int>();
             for (int year = firstYear; year <= currentYear; year++)
             {
