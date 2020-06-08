@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,11 +50,11 @@ namespace GenderPayGap.WebUI.Search
 
         public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams)
         {
-            List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
+            List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations
+                .Where(o => o.IncludeInViewingService).ToList();
 
             List<SearchCachedOrganisation> filteredOrganisations = FilterByOrganisations(allOrganisations, searchParams);
-
-            // no search terms entered
+            
             if (searchParams.Keywords == null)
             {
                 List<SearchCachedOrganisation> paginatedResultsForAllOrganisations = PaginateResults(
@@ -78,20 +78,15 @@ namespace GenderPayGap.WebUI.Search
 
             List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
+            // matching on name
             List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisations(
                 filteredOrganisations,
                 searchTerms,
                 query,
                 queryContainsPunctuation);
 
-
-            // filter out on extra conditions
-//            .Where(
-//                org => org.Returns.Any(r => r.Status == ReturnStatuses.Submitted)
-//                       || org.OrganisationScopes.Any(
-//                           sc => sc.Status == ScopeRowStatuses.Active
-//                                 && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope)))
-
+            // need to check and match on synonyms or SIC code
+            
 
             // need to handle SicCode search and employer type search
 
@@ -121,7 +116,7 @@ namespace GenderPayGap.WebUI.Search
 
             return pagedResult;
         }
-
+        
         private List<SearchCachedOrganisation> FilterByOrganisations(List<SearchCachedOrganisation> organisations,
             EmployerSearchParameters searchParams)
         {
@@ -217,7 +212,6 @@ namespace GenderPayGap.WebUI.Search
             bool queryContainsPunctuation)
         {
             return allOrganisations
-                .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
                 .Where(org => SearchHelper.CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms, queryContainsPunctuation))
                 .ToList();
         }

@@ -5,9 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Search;
@@ -44,7 +42,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public async Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams)
         {
-            
             var facets = new Dictionary<string, Dictionary<object, long>>();
             facets.Add("Size", null);
             facets.Add("SicSectionIds", null);
