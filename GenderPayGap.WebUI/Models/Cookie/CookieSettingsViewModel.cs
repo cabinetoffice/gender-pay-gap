@@ -1,4 +1,4 @@
-﻿namespace GenderPayGap.WebUI.Views.Home
+﻿namespace GenderPayGap.WebUI.Models.Cookie
 {
     public class CookieSettingsViewModel
     {
