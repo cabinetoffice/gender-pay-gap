@@ -18,7 +18,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public interface IViewingService
     {
         
-        Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams);
+        Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams, string orderBy);
         Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync();
         List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetResults);
         Task<List<OptionSelect>> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds, Dictionary<object, long> facetResults);
@@ -40,8 +40,10 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         }
         
 
-        public async Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams)
+        public async Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams, string orderBy)
         {
+            bool orderByRelevance = orderBy == "relevance";
+            
             var facets = new Dictionary<string, Dictionary<object, long>>();
             facets.Add("Size", null);
             facets.Add("SicSectionIds", null);
@@ -55,14 +57,15 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 SectorOptions = await GetSectorOptionsAsync(searchParams.FilterSicSectionIds, facets["SicSectionIds"]),
                 ReportingYearOptions = GetReportingYearOptions(searchParams.FilterReportedYears),
                 ReportingStatusOptions = GetReportingStatusOptions(searchParams.FilterReportingStatus),
-                Employers = viewingSearchService.Search(searchParams),
+                Employers = viewingSearchService.Search(searchParams, orderByRelevance),
                 search = searchParams.Keywords,
                 p = searchParams.Page,
                 s = searchParams.FilterSicSectionIds,
                 es = searchParams.FilterEmployerSizes,
                 y = searchParams.FilterReportedYears,
                 st = searchParams.FilterReportingStatus,
-                t = searchParams.SearchType.ToInt32().ToString()
+                t = searchParams.SearchType.ToInt32().ToString(),
+                OrderBy = orderBy
             };
         }
         

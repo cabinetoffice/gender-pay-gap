@@ -52,7 +52,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
         }
 
         [HttpGet("reporting-step-by-step/view-and-compare-organisations")]
-        public async Task<IActionResult> Step1Task2([FromQuery] SearchResultsQuery searchQuery)
+        public async Task<IActionResult> Step1Task2([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
         {
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
             {
@@ -74,7 +74,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
 
                 // generate result view model
                 var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
-                SearchViewModel model = await ViewingService.SearchAsync(searchParams);
+                SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
 
                     ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
 

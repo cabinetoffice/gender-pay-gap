@@ -17,7 +17,7 @@ namespace GenderPayGap.WebUI.Models.Search
         private List<string> _sectorFilterInfo;
 
         private List<string> _sizeFilterInfo;
-
+        
         public SearchViewModel()
         {
             _sectorFilterInfo = new List<string>();
@@ -30,6 +30,8 @@ namespace GenderPayGap.WebUI.Models.Search
         public List<OptionSelect> ReportingYearOptions { get; set; }
         public List<OptionSelect> ReportingStatusOptions { get; internal set; }
         public List<OptionSelect> SizeOptions { get; internal set; }
+        
+        public string OrderBy { get; set; }
 
         // Keywords
         public string search { get; set; }

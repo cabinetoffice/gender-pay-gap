@@ -147,7 +147,7 @@ namespace GenderPayGap.WebUI.Controllers
         [NoCache]
         [HttpGet("~/search-results")]
         [HttpGet("search-results")]
-        public async Task<IActionResult> SearchResults([FromQuery] SearchResultsQuery searchQuery)
+        public async Task<IActionResult> SearchResults([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
         {
             //When never searched in this session
             if (string.IsNullOrWhiteSpace(SearchViewService.LastSearchParameters))
@@ -171,8 +171,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             // generate result view model
             var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
-            SearchViewModel model = await ViewingService.SearchAsync(searchParams);
-
+            SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
             ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {
@@ -186,7 +185,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/search-results-js")]
         [HttpGet("search-results-js")]
         // used to generate suggestions for the search on the landing page 
-        public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
+        public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
         {
             //Clear the default back url of the employer hub pages
             EmployerBackUrl = null;
@@ -201,7 +200,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             // generate result view model
             var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
-            SearchViewModel model = await ViewingService.SearchAsync(searchParams);
+            SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
 
             ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
 
@@ -496,7 +495,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("add-search-results-to-compare")]
-        public async Task<IActionResult> AddSearchResultsToCompare([FromQuery] SearchResultsQuery searchQuery)
+        public async Task<IActionResult> AddSearchResultsToCompare([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
         {
             if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
             {
@@ -509,7 +508,7 @@ namespace GenderPayGap.WebUI.Controllers
             // set maximum search size
             searchParams.Page = 1;
             searchParams.PageSize = CompareViewService.MaxCompareBasketCount;
-            SearchViewModel searchResultsModel = await ViewingService.SearchAsync(searchParams);
+            SearchViewModel searchResultsModel = await ViewingService.SearchAsync(searchParams, orderBy);
 
             // add any new items to the compare list
             string[] resultIds = searchResultsModel.Employers.Results
