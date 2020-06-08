@@ -24,35 +24,6 @@ namespace GenderPayGap.Database
             modelBuilder.Entity<AuditLog>().ToTable("AuditLogs");
             modelBuilder.Entity<ReminderEmail>().ToTable("ReminderEmails");
 
-            #region AddressStatus
-
-            modelBuilder.Entity<AddressStatus>(
-                entity => {
-                    entity.HasKey(e => e.AddressStatusId).HasName("PK_dbo.AddressStatus");
-
-                    entity.HasIndex(e => e.AddressId);
-
-                    entity.HasIndex(e => e.ByUserId);
-
-                    entity.HasIndex(e => e.StatusDate);
-
-                    entity.Property(e => e.StatusDetails).HasMaxLength(255);
-                    entity.Property(e => e.Status).HasColumnName("StatusId");
-
-                    entity.HasOne(d => d.Address)
-                        .WithMany(p => p.AddressStatuses)
-                        .HasForeignKey(d => d.AddressId)
-                        .HasConstraintName("FK_dbo.AddressStatus_dbo.OrganisationAddresses_AddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                        
-                    entity.HasOne(d => d.ByUser)
-                        .WithMany()
-                        .HasForeignKey(d => d.ByUserId)
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            #endregion
-
             #region OrganisationAddress
 
             modelBuilder.Entity<OrganisationAddress>(

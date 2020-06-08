@@ -10,7 +10,6 @@ namespace GenderPayGap.Database
 
         public OrganisationAddress()
         {
-            AddressStatuses = new HashSet<AddressStatus>();
             UserOrganisations = new HashSet<UserOrganisation>();
         }
 
@@ -29,18 +28,12 @@ namespace GenderPayGap.Database
         public string StatusDetails { get; set; }
         public DateTime Created { get; set; }
 
-        [Obsolete("DO NOT USE: OrganisationAddress.Modified will be deleted soon")]
-        public DateTime Modified { get; set; } = VirtualDateTime.Now;
-
         public long OrganisationId { get; set; }
         public string Source { get; set; }
 
         public bool? IsUkAddress { get; set; }
 
         public virtual Organisation Organisation { get; set; }
-
-        [Obsolete("DO NOT USE: OrganisationAddress.AddressStatuses will be deleted soon")]
-        public virtual ICollection<AddressStatus> AddressStatuses { get; set; }
 
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
 
