@@ -24,10 +24,6 @@
     <meta name="description" default-content="@ViewBag.pageDescription" required="false" />
     <meta name="robots" required="false" />
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        <meta http-equiv="refresh" content="@(Program.MvcApplication.SessionTimeOutMinutes * 60);@Url.Action("SessionExpired", "Home", null, "https")" />
-    }
     <meta name="google-site-verification" content="uRt7CAkfClOB8Jig6Pw2-DELUWuuyG2kYKip0UThxhg" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">

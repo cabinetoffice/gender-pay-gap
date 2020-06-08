@@ -60,17 +60,6 @@ namespace GenderPayGap.WebUI.Controllers
             return LogoutUser(returnUrl);
         }
 
-        [HttpGet("~/session-expired")]
-        public IActionResult SessionExpired()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return View("SessionExpired");
-            }
-
-            return LogoutUser(Url.Action("SessionExpired", "Home", null, "https"));
-        }
-
         #region Contact Us
 
         [HttpGet("~/contact-us")]
