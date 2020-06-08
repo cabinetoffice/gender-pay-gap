@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Search.CachedObjects
 {
@@ -22,6 +23,9 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public DateTime DateOfLatestReport { get; set; }
         public bool ReportedWithCompanyLinkToGpgInfo { get; set; }
         public bool ReportedLate { get; set; }
+        public List<SicCode> SicCodes { get; set; }
+        
+        public bool IncludeInViewingService { get; set; }
 
     }
 }

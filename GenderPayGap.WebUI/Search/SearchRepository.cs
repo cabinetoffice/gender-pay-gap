@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Search.CachedObjects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace GenderPayGap.WebUI.Search
 {
@@ -78,10 +80,20 @@ namespace GenderPayGap.WebUI.Search
                         ReportingYears = o.Returns.Select(r => r.AccountingDate.Year).ToList(),
                         DateOfLatestReport = o.GetLatestReturn() != null ? o.GetLatestReturn().StatusDate.Date : new DateTime(1999, 1, 1),
                         ReportedWithCompanyLinkToGpgInfo = o.Returns.Any(r => r.CompanyLinkToGPGInfo != null),
-                        ReportedLate = o.Returns.Any(r => r.IsLateSubmission)
+                        ReportedLate = o.Returns.Any(r => r.IsLateSubmission),
+                        SicCodes = o.OrganisationSicCodes.Select(osc => osc.SicCode).ToList(),
+                        IncludeInViewingService = GetIncludeInViewingService(o)
                         
                     })
                 .ToList();
+        }
+
+        private static bool GetIncludeInViewingService(Organisation organisation)
+        {
+            return (organisation.Status == OrganisationStatuses.Active || organisation.Status == OrganisationStatuses.Retired) 
+                && (organisation.Returns.Any(r => r.Status == ReturnStatuses.Submitted) || organisation.OrganisationScopes.Any(
+                             sc => sc.Status == ScopeRowStatuses.Active
+                                   && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope)));
         }
 
         private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
