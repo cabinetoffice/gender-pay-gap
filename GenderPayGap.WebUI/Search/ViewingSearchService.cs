@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Search
             this.dataRepository = dataRepository;
         }
 
-        public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams)
+        public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams, bool orderByRelevance)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations
                 .Where(o => o.IncludeInViewingService).ToList();
@@ -57,8 +57,10 @@ namespace GenderPayGap.WebUI.Search
             
             if (searchParams.Keywords == null)
             {
+                List<SearchCachedOrganisation> orderedOrganisations = filteredOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
+                
                 List<SearchCachedOrganisation> paginatedResultsForAllOrganisations = PaginateResults(
-                    filteredOrganisations,
+                    orderedOrganisations,
                     searchParams.Page,
                     searchParams.PageSize);
 
@@ -67,8 +69,8 @@ namespace GenderPayGap.WebUI.Search
                     Results = ConvertToEmployerSearchModels(paginatedResultsForAllOrganisations),
                     CurrentPage = searchParams.Page,
                     PageSize = searchParams.PageSize,
-                    ActualRecordTotal = filteredOrganisations.Count,
-                    VirtualRecordTotal = filteredOrganisations.Count
+                    ActualRecordTotal = orderedOrganisations.Count,
+                    VirtualRecordTotal = orderedOrganisations.Count
                 };
             }
 
@@ -96,10 +98,12 @@ namespace GenderPayGap.WebUI.Search
                 query,
                 queryContainsPunctuation);
 
-            List<RankedViewingSearchOrganisation> orderedOrganisations = OrderOrganisationsByRank(organisationsWithRankings);
+            List<RankedViewingSearchOrganisation> rankedOrganisations = orderByRelevance
+                ? OrderOrganisationsByRank(organisationsWithRankings)
+                : OrderOrganisationsAlphabetically(organisationsWithRankings);
 
             List<RankedViewingSearchOrganisation> paginatedResults = PaginateResults(
-                orderedOrganisations,
+                rankedOrganisations,
                 searchParams.Page,
                 searchParams.PageSize);
 
@@ -276,6 +280,12 @@ namespace GenderPayGap.WebUI.Search
                 .ThenBy(org => org.Names[0].Name)
                 .ToList();
         }
+        
+        private static List<RankedViewingSearchOrganisation> OrderOrganisationsAlphabetically(List<RankedViewingSearchOrganisation> organisationsWithRankings)
+        {
+            return organisationsWithRankings.OrderBy(o => o.Names[0].Name).ToList();
+        }
+        
 
         private List<EmployerSearchModel> ConvertRankedOrgsToEmployerSearchModels(List<RankedViewingSearchOrganisation> organisations)
         {
