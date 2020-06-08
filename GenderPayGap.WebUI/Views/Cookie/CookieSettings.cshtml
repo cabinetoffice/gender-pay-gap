@@ -1,4 +1,4 @@
-﻿@model GenderPayGap.WebUI.Views.Home.CookieSettingsViewModel
+﻿@model GenderPayGap.WebUI.Models.Cookie.CookieSettingsViewModel
 @{
     ViewBag.Title = "Cookies on Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -13,7 +13,7 @@
             </section>
         }
 
-        <form method="POST" action="@Url.Action("CookieSettingsPost", "Home")">
+        <form method="POST" action="@Url.Action("CookieSettingsPost", "Cookie")">
             <h1 class="govuk-heading-xl">Cookies on Gender pay gap service</h1>
             <p class="govuk-body">Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
             <p class="govuk-body">We use cookies to store information about how you use the gender pay gap service, such as the pages you visit.</p>
@@ -188,7 +188,7 @@
             </ul>
             <p class="govuk-body">They always need to be on.</p>
             <p class="govuk-body">
-                <a href="@(Url.Action("CookieDetails", "Home"))" class="govuk-link">Find out more about cookies on the gender pay gap service</a>
+                <a href="@Url.Action("CookieDetails", "Cookie")" class="govuk-link">Find out more about cookies on the gender pay gap service</a>
             </p>
 
             <input type="submit" class="govuk-button" data-module="govuk-button" value="Confirm"/>
