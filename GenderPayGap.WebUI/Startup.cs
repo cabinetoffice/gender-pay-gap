@@ -125,9 +125,7 @@ namespace GenderPayGap.WebUI
                     o.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Equivalent to <httpCookies requireSSL="true" /> from Web.Config
                     o.Cookie.HttpOnly = false; //Always use https cookies
                     o.Cookie.Domain = Global.ExternalHost.BeforeFirst(":"); //Domain cannot be an authority and contain a port number
-                    o.IdleTimeout =
-                        TimeSpan.FromMinutes(
-                            Program.MvcApplication.SessionTimeOutMinutes); //Equivalent to <sessionState timeout="20"> from old Web.config
+                    o.IdleTimeout = TimeSpan.FromDays(30); // This is how long the session DATA is kept, not how long the cookie lasts
                 });
 
             //Add the distributed redis cache
