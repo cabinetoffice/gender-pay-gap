@@ -32,7 +32,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [TestCase("~/", "Index")]
         [TestCase("/", "Index")]
-        [TestCase("/viewing/Init", "Init")]
 
         // legacy links used to read employer-details?id:blah
         [TestCase("/viewing/employer-details", "EmployerDetails")]
