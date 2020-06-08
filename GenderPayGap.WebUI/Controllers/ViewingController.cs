@@ -95,17 +95,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         #endregion
 
-        #region Initialisation
-
-        /// <summary>
-        ///     This action is only used to warm up this controller on initialisation
-        /// </summary>
-        [HttpGet("Init")]
-        public IActionResult Init()
-        {
-            return new EmptyResult();
-        }
-
         [HttpGet("~/")]
         public IActionResult Index()
         {
@@ -136,8 +125,6 @@ namespace GenderPayGap.WebUI.Controllers
         {
             return RedirectToActionPermanent("Index");
         }
-
-        #endregion
 
         #region Search
 

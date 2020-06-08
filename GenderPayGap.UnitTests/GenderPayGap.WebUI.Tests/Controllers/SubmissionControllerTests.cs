@@ -3667,21 +3667,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        [Description("SubmitController_Init_GET_Success")]
-        public void SubmitController_Init_GET_Success()
-        {
-            // route data
-            var routeData = new RouteData();
-            routeData.Values.Add("action", "Init");
-            routeData.Values.Add("controller", "submit");
-
-            var controller = UiTestHelper.GetController<SubmitController>();
-            var result = controller.Init() as EmptyResult;
-
-            Assert.NotNull(result);
-        }
-
-        [Test]
         public async Task SubmitController_Late_Warning_GET_Success()
         {
             User mockedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();

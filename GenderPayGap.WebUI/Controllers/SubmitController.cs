@@ -24,8 +24,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
         private readonly EmailSendingService emailSendingService;
 
-        #region Initialisation
-
         #region Constructors
 
         public SubmitController(
@@ -43,12 +41,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
         #endregion
 
-        [Route("Init")]
-        public IActionResult Init()
-        {
-            return new EmptyResult();
-        }
-
         [HttpGet("submit/")]
         public async Task<IActionResult> Redirect()
         {
@@ -56,8 +48,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             return RedirectToAction("EnterCalculations");
         }
-
-        #endregion
 
         #region private methods
 

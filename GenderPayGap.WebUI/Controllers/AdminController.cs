@@ -62,20 +62,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
         #endregion
 
-        #region Initialisation
-
-        /// <summary>
-        ///     This action is only used to warm up this controller on initialisation
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("Init")]
-        public IActionResult Init()
-        {
-            return new EmptyResult();
-        }
-
-        #endregion
-
         #region Home Action
 
         [HttpGet]
