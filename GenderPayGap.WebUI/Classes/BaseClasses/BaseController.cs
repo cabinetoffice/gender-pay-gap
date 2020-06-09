@@ -18,10 +18,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Classes
 {
-    public class BaseController : ControllerExtension
+    public class BaseController : Controller
     {
 
         #region Constructors
@@ -30,10 +31,12 @@ namespace GenderPayGap.WebUI.Classes
             IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(cache, session)
+            IWebTracker webTracker)
         {
             DataRepository = dataRepository;
             WebTracker = webTracker;
+            Cache = cache;
+            Session = session;
         }
 
         #endregion
@@ -141,7 +144,17 @@ namespace GenderPayGap.WebUI.Classes
 
             #endregion
 
-            await base.OnActionExecutionAsync(context, next); // the actual action
+            // the actual action
+            await Session.LoadAsync();
+            try
+            {
+                await base.OnActionExecutionAsync(context, next);
+            }
+            finally
+            {
+                //Ensure the session data is saved
+                await Session.SaveAsync();
+            }
 
             #region logic after the action goes here
 
@@ -228,7 +241,10 @@ namespace GenderPayGap.WebUI.Classes
 
         public IDataRepository DataRepository { get; protected set; }
         public IWebTracker WebTracker { get; }
+        
+        public readonly IHttpCache Cache;
 
+        public readonly IHttpSession Session;
         #endregion
 
         #region Properties
@@ -603,6 +619,33 @@ namespace GenderPayGap.WebUI.Classes
         }
 
         #endregion
+
+
+        public string UserHostAddress => HttpContext.GetUserHostAddress();
+        public Uri RequestUrl => HttpContext.GetUri();
+        public Uri UrlReferrer => HttpContext.GetUrlReferrer();
+
+        public List<string> PageHistory
+        {
+            get
+            {
+                string pageHistory = Session["PageHistory"]?.ToString();
+                return string.IsNullOrWhiteSpace(pageHistory)
+                    ? new List<string>()
+                    : JsonConvert.DeserializeObject<List<string>>(pageHistory);
+            }
+            set
+            {
+                if (value == null || !value.Any())
+                {
+                    Session.Remove("PageHistory");
+                }
+                else
+                {
+                    Session["PageHistory"] = JsonConvert.SerializeObject(value);
+                }
+            }
+        }
 
     }
 }
