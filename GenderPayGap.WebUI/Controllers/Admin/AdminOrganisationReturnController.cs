@@ -185,7 +185,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     ReturnIds = string.Join(", ", viewModel.ReturnIds),
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             return RedirectToAction("ViewReturns", "AdminOrganisationReturn", new {id});
         }

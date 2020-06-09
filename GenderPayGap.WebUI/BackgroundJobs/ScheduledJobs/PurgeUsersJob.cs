@@ -53,8 +53,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             auditLogger.AuditChangeToUser(
                 AuditedAction.PurgeUser,
                 user,
-                new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname},
-                null);
+                new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname});
 
             user.SetStatus(UserStatuses.Retired, user, "User retired by PurgeUserJob");
             dataRepository.SaveChangesAsync().Wait();

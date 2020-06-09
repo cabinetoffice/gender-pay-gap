@@ -348,7 +348,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             string newSicCodes = organisation.GetSicCodeIdsString();
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationSicCode,
                 organisation,
@@ -359,7 +358,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     NewSicCodes = newSicCodes,
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
         }
 
         private void OptOrganisationOutOfCompaniesHouseUpdates(Organisation organisation)

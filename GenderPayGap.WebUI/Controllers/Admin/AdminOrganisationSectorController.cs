@@ -92,7 +92,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             Organisation organisation,
             PublicSectorType newPublicSectorType)
         {
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationPublicSectorClassification,
                 organisation,
@@ -102,7 +101,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     NewClassification = newPublicSectorType.Description,
                     viewModel.Reason
                 },
-                currentUser);
+                User);
         }
 
         private void RetireExistingOrganisationPublicSectorTypesForOrganisation(Organisation organisation)

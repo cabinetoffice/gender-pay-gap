@@ -546,7 +546,7 @@ namespace GenderPayGap.WebUI.Controllers
                         userOrg.User.ContactOrganisation,
                         userOrg.User.ContactPhoneNumber
                     },
-                    currentUser);
+                    User);
 
                 //Show confirmation
                 if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
@@ -680,7 +680,7 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.User.ContactOrganisation,
                     userOrg.User.ContactPhoneNumber
                 },
-                currentUser);
+                User);
 
             //Delete address for this user and organisation
             if (userOrg.Address.Status != AddressStatuses.Active && userOrg.Address.CreatedByUserId == userOrg.UserId)

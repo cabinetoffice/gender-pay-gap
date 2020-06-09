@@ -70,7 +70,6 @@ namespace GenderPayGap.WebUI.Models.Admin
                 return View("ResendVerificationEmail", viewModel);
             }
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToUser(
                 AuditedAction.AdminResendVerificationEmail,
                 user,
@@ -78,7 +77,7 @@ namespace GenderPayGap.WebUI.Models.Admin
                 {
                     viewModel.Reason
                 },
-                currentUser);
+                User);
             
             string verificationCode = Guid.NewGuid().ToString("N");
             string verificationUrl = Url.Action(

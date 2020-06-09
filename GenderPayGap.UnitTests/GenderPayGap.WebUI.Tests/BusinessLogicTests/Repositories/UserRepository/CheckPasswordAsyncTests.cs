@@ -6,7 +6,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Services;
 using Moq;
 using NUnit.Framework;
@@ -25,7 +24,7 @@ namespace Repositories.UserRepository
             // mock data 
             mockDataRepo = new Mock<IDataRepository>();
 
-            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>(), Mock.Of<IHttpSession>());
+            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>());
 
             // service under test
             testUserRepo =

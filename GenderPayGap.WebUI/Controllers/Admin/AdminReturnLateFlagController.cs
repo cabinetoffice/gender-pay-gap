@@ -63,7 +63,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeLateFlag,
                 specifiedReturn.Organisation,
@@ -73,7 +72,7 @@ namespace GenderPayGap.WebUI.Controllers
                     LateFlagChangedTo = viewModel.NewLateFlag,
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = specifiedReturn.OrganisationId});
         }

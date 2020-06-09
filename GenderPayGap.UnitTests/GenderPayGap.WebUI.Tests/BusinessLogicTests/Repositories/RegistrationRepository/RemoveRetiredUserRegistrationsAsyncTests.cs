@@ -4,7 +4,6 @@ using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -26,7 +25,7 @@ namespace Repositories.UserRepository
             GpgDatabaseContext dbContext = AutoFacHelpers.CreateInMemoryTestDatabase(UserOrganisationHelper.CreateRegistrations());
 
             mockDataRepo = new SqlRepository(dbContext);
-            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>(), Mock.Of<IHttpSession>());
+            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>());
 
             // service under test
             testRegistrationRepo =

@@ -57,7 +57,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("ChangeContactPreferences", viewModel);
             }
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToUser(
                 AuditedAction.AdminChangeUserContactPreferences,
                 user,
@@ -69,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     SendUpdates_New = viewModel.SendUpdates ? "Yes" : "No",
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             user.AllowContact = viewModel.AllowContact;
             user.SendUpdates = viewModel.SendUpdates;

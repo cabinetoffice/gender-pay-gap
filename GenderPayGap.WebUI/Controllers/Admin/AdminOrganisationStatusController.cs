@@ -126,8 +126,8 @@ namespace GenderPayGap.WebUI.Controllers
                 AuditedAction.AdminChangeOrganisationStatus,
                 organisation,
                 new {PreviousStatus = previousStatus, NewStatus = newStatus, viewModel.Reason},
-                currentUser);
-            
+                User);
+
         }
 
         private void ActivateUsersOfOrganisation(Organisation organisation)
