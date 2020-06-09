@@ -29,12 +29,12 @@ namespace Repositories.UserRepository
 
             // service under test
             testRegistrationRepo =
-                new GenderPayGap.BusinessLogic.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks);
+                new GenderPayGap.WebUI.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks);
         }
 
         private IDataRepository mockDataRepo;
 
-        private GenderPayGap.BusinessLogic.Repositories.RegistrationRepository testRegistrationRepo;
+        private GenderPayGap.WebUI.Repositories.RegistrationRepository testRegistrationRepo;
 
         [Test]
         public async Task UnregistersAllOrganisationsForUser()

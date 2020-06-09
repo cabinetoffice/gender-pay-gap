@@ -116,7 +116,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Repositories.UserRepository
 
             var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>());
 
-            _configuredIUserRepository = new Account.Repositories.UserRepository(
+            _configuredIUserRepository = new WebUI.Repositories.UserRepository(
                 configurableDataRepository.Object, auditLoggerWithMocks);
         }
 

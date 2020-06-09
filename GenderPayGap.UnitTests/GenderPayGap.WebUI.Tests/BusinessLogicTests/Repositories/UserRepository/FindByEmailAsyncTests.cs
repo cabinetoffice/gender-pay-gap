@@ -29,7 +29,7 @@ namespace Repositories.UserRepository
 
             // service under test
             testUserRepo =
-                new GenderPayGap.BusinessLogic.Account.Repositories.UserRepository(
+                new GenderPayGap.WebUI.Repositories.UserRepository(
                     mockDataRepo.Object,
                     auditLoggerWithMocks);
         }
