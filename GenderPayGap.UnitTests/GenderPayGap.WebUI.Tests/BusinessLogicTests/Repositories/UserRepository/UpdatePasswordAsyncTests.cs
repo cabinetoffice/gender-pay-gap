@@ -9,6 +9,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
+using GenderPayGap.WebUI.Services;
 using Moq;
 using NUnit.Framework;
 

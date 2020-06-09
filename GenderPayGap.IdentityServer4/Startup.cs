@@ -169,7 +169,6 @@ namespace GenderPayGap.IdentityServer4
             }
 
             // Register Audit Logger
-            builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
             builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();
 
             // Register Action helpers
