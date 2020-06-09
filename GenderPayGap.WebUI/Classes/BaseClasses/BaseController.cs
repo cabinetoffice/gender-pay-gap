@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -14,6 +15,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -216,27 +218,6 @@ namespace GenderPayGap.WebUI.Classes
             return false;
         }
 
-        [NonAction]
-        public IActionResult LogoutUser(string redirectUrl = null)
-        {
-            //If impersonating then stop
-            if (ImpersonatedUserId > 0)
-            {
-                ImpersonatedUserId = 0;
-                OriginalUser = null;
-                return RedirectToAction("Home", "Admin");
-            }
-
-            //otherwise actually logout
-            if (string.IsNullOrWhiteSpace(redirectUrl))
-            {
-                return SignOut(CookieAuthenticationDefaults.AuthenticationScheme);
-            }
-
-            var properties = new AuthenticationProperties {RedirectUri = redirectUrl};
-            return SignOut(properties, CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-
         #region Dependencies
 
         public IDataRepository DataRepository { get; protected set; }
@@ -303,54 +284,29 @@ namespace GenderPayGap.WebUI.Classes
             }
         }
 
-        public virtual User CurrentUser => VirtualUser;
-
-        public bool IsImpersonatingUser => OriginalUser != null && OriginalUser.IsAdministrator();
-
-        protected User VirtualUser =>
+        public virtual User CurrentUser =>
             User.Identity.IsAuthenticated
-                ? ImpersonatedUserId > 0 ? DataRepository.Get<User>(ImpersonatedUserId) : DataRepository.FindUser(User)
+                ? DataRepository.Get<User>(LoginHelper.GetUserId(User))
                 : null;
+
+        public bool IsImpersonatingUser => LoginHelper.IsUserBeingImpersonated(User);
 
         #endregion
 
         #region Authorisation Methods
 
-        private User _OriginalUser;
-
         protected User OriginalUser
         {
             get
             {
-                if (_OriginalUser == null)
+                if (LoginHelper.IsUserBeingImpersonated(User))
                 {
-                    long userId = Session["OriginalUser"].ToInt64();
-                    if (userId > 0)
-                    {
-                        _OriginalUser = DataRepository.Get<User>(userId);
-                    }
+                    long userId = LoginHelper.GetAdminImpersonatorUserId(User);
+                    return DataRepository.Get<User>(userId);
                 }
 
-                return _OriginalUser;
+                return null;
             }
-
-            set
-            {
-                if (value == null)
-                {
-                    Session.Remove("OriginalUser");
-                }
-                else
-                {
-                    Session["OriginalUser"] = value.UserId;
-                }
-            }
-        }
-
-        protected long ImpersonatedUserId
-        {
-            get => Session["ImpersonatedUserId"].ToInt64();
-            set => Session["ImpersonatedUserId"] = value;
         }
 
 
@@ -379,7 +335,7 @@ namespace GenderPayGap.WebUI.Classes
             }
 
             //Ensure we get a valid user from the database
-            currentUser = VirtualUser;
+            currentUser = CurrentUser;
             if (currentUser == null)
             {
                 throw new IdentityNotMappedException();

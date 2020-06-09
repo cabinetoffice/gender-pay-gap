@@ -7,6 +7,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -111,14 +112,14 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // force sign-out then prompt sign-in before confirming email
-            LoginHelper.Logout(HttpContext);
-
             string redirectUrl = Url.Action<ChangeEmailController>(
                 nameof(CompleteChangeEmailAsync),
                 new {code},
                 "https");
 
-            return Redirect(redirectUrl);
+            IActionResult suggestedResult = Redirect(redirectUrl);
+
+            return LoginHelper.Logout(HttpContext, suggestedResult);
         }
 
         [Route("complete-change-email")]

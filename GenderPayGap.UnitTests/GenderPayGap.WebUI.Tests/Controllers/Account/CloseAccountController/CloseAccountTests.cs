@@ -140,10 +140,13 @@ namespace Account.Controllers.CloseAccountController
                     verifiedUser);
 
             // Act
-            var signOutResult = await controller.CloseAccount(new CloseAccountViewModel {EnterPassword = testPassword}) as SignOutResult;
+            IActionResult closeAccountResult = await controller.CloseAccount(new CloseAccountViewModel {EnterPassword = testPassword});
 
             // Assert
-            Assert.NotNull(signOutResult, "Expected a SignOutResult");
+            Assert.IsInstanceOf<RedirectToActionResult>(closeAccountResult, "Expected a RedirectToActionResult");
+            RedirectToActionResult redirectToActionResult = closeAccountResult as RedirectToActionResult;
+            Assert.AreEqual("CloseAccount", redirectToActionResult.ControllerName);
+            Assert.AreEqual("CloseAccountCompleted", redirectToActionResult.ActionName);
             Assert.AreEqual(UserStatuses.Retired, verifiedUser.Status, "Expected status to be retired");
         }
 
