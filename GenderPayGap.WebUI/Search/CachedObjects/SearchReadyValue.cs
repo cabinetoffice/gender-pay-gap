@@ -34,11 +34,11 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         }
 
 
-        public bool Matches(List<string> searchTerms, bool queryContainsPunctuation = false)
+        public bool Matches(List<string> searchTerms, bool queryContainsPunctuation = false, bool fuzzyMatch = true)
         {
             foreach (string searchTerm in searchTerms)
             {
-                if (!(SearchTermIsPartOfAcronym(searchTerm) || SearchTermIsPartOfAWord(searchTerm, queryContainsPunctuation)))
+                if (!(SearchTermIsPartOfAcronym(searchTerm) || SearchTermIsPartOfAWord(searchTerm, queryContainsPunctuation, fuzzyMatch)))
                 {
                     return false;
                 }
@@ -52,12 +52,12 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             return Acronym.Contains(searchTerm);
         }
 
-        private bool SearchTermIsPartOfAWord(string searchTerm, bool queryContainsPunctuation)
+        private bool SearchTermIsPartOfAWord(string searchTerm, bool queryContainsPunctuation, bool fuzzyMatch = true)
         {
             List<string> words = queryContainsPunctuation ? LowercaseWordsWithPunctuation : LowercaseWords;
             foreach (string word in words)
             {
-                if (word.Contains(searchTerm) || IsFuzzyMatch(word, searchTerm))
+                if (word.Contains(searchTerm) || (fuzzyMatch && IsFuzzyMatch(word, searchTerm)))
                 {
                     return true;
                 }

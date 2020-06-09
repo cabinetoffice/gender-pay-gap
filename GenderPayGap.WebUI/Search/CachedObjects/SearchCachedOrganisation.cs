@@ -18,13 +18,13 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public OrganisationStatuses Status { get; set; }
         public int MinEmployees { get; set; }
         public List<OrganisationSizes> OrganisationSizes { get; set; }
-        public List<char> SicSectionIds { get; set; }
         public List<int> ReportingYears { get; set; }
         public DateTime DateOfLatestReport { get; set; }
         public bool ReportedWithCompanyLinkToGpgInfo { get; set; }
         public bool ReportedLate { get; set; }
-        public List<SicCode> SicCodes { get; set; }
-        
+        public List<string> SicCodeIds { get; set; }
+        public List<char> SicSectionIds { get; set; }
+        public List<SearchReadyValue> SicCodeSynonyms { get; set; }
         public bool IncludeInViewingService { get; set; }
 
     }
