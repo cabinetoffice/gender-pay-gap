@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.Repositories;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

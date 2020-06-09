@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Account.Models;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace GenderPayGap.BusinessLogic.Account.Repositories
+namespace GenderPayGap.WebUI.Repositories
 {
 
     public class UserRepository : IUserRepository

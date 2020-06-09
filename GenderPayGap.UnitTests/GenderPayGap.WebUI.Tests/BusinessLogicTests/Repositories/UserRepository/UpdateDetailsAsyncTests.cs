@@ -26,7 +26,7 @@ namespace Repositories.UserRepository
         {
             // init mapper
             Mapper.Reset();
-            Mapper.Initialize(config => config.AddMaps(typeof(GenderPayGap.BusinessLogic.Account.Repositories.UserRepository).Assembly));
+            Mapper.Initialize(config => config.AddMaps(typeof(GenderPayGap.WebUI.Repositories.UserRepository).Assembly));
 
             // mock data 
             mockDataRepo = new Mock<IDataRepository>().SetupGetAll(UserHelpers.CreateUsers());
@@ -35,7 +35,7 @@ namespace Repositories.UserRepository
 
             // service under test
             testUserRepo =
-                new GenderPayGap.BusinessLogic.Account.Repositories.UserRepository(
+                new GenderPayGap.WebUI.Repositories.UserRepository(
                     mockDataRepo.Object,
                     auditLoggerWithMocks);
         }
