@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
@@ -46,9 +47,10 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         [ValidateAntiForgeryToken]
         public IActionResult SubmissionCompletePost(string command)
         {
-            string doneUrl = Global.DoneUrl ?? Url.Action("Index", "Viewing", null, "https");
+            LoginHelper.Logout(HttpContext);
 
-            return LogoutUser(doneUrl);
+            string doneUrl = Global.DoneUrl ?? Url.Action("Index", "Viewing", null, "https");
+            return Redirect(doneUrl);
         }
 
     }

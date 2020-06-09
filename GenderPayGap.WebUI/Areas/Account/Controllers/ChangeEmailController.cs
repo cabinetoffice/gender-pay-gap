@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -110,12 +111,14 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // force sign-out then prompt sign-in before confirming email
+            LoginHelper.Logout(HttpContext);
+
             string redirectUrl = Url.Action<ChangeEmailController>(
                 nameof(CompleteChangeEmailAsync),
                 new {code},
                 "https");
 
-            return LogoutUser(redirectUrl);
+            return Redirect(redirectUrl);
         }
 
         [Route("complete-change-email")]
