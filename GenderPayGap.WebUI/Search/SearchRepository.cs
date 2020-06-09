@@ -89,14 +89,14 @@ namespace GenderPayGap.WebUI.Search
                                         .ToList(),
                                 MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
                                 Status = o.Status,
-                                OrganisationSizes = o.Returns.Select(r => r.OrganisationSize).ToList(),
+                                OrganisationSizes = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Select(r => r.OrganisationSize).Distinct().ToList(),
                                 SicSectionIds =
                                     o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList(),
-                                ReportingYears = o.Returns.Select(r => r.AccountingDate.Year).ToList(),
+                                ReportingYears = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Select(r => r.AccountingDate.Year).ToList(),
                                 DateOfLatestReport =
                                     o.GetLatestReturn() != null ? o.GetLatestReturn().StatusDate.Date : new DateTime(1999, 1, 1),
-                                ReportedWithCompanyLinkToGpgInfo = o.Returns.Any(r => r.CompanyLinkToGPGInfo != null),
-                                ReportedLate = o.Returns.Any(r => r.IsLateSubmission),
+                                ReportedWithCompanyLinkToGpgInfo = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Any(r => r.CompanyLinkToGPGInfo != null),
+                                ReportedLate = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Any(r => r.IsLateSubmission),
                                 SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
                                 SicCodeSynonyms = sicCodeSynonyms,
                                 IncludeInViewingService = GetIncludeInViewingService(o)
