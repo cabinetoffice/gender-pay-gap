@@ -147,10 +147,7 @@ namespace GenderPayGap.WebUI.Classes
 
             //Save the history and action/controller names
             SaveHistory();
-
-            LastAction = ActionName;
-            LastController = ControllerName;
-
+            
             #endregion
         }
 
@@ -624,18 +621,6 @@ namespace GenderPayGap.WebUI.Classes
         public string ActionName => ControllerContext.RouteData.Values["action"].ToString();
 
         public string ControllerName => ControllerContext.RouteData.Values["controller"].ToString();
-
-        public string LastAction
-        {
-            get => Session["LastAction"] as string;
-            set => Session["LastAction"] = value;
-        }
-
-        public string LastController
-        {
-            get => Session["LastController"] as string;
-            set => Session["LastController"] = value;
-        }
 
         #endregion
 
