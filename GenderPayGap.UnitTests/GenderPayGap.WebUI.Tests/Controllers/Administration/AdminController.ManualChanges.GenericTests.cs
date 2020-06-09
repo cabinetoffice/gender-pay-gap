@@ -43,52 +43,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
         }
 
         [Test]
-        public void AdminController_ManualChanges_GET_When_User_Is_Not_A_Database_Admin_Returns_Unauthorized_ResultAsync()
-        {
-            // Arrange
-            User notAdminUser = UserHelper.GetNotAdminUserWithoutVerifiedEmailAddress();
-            var adminController = UiTestHelper.GetController<AdminController>(notAdminUser.UserId, null, notAdminUser);
-
-            // Act
-            IActionResult actualResult = adminController.ManualChanges();
-            Assert.NotNull(actualResult, "Expected Manual changes to return a result");
-            var httpUnauthorisedResult = actualResult as HttpUnauthorizedResult;
-            Assert.NotNull(
-                httpUnauthorisedResult,
-                "As we are calling 'Manual changes GET' with a user that is NOT an admin, we were expecting an 'Unauthorised result' back");
-
-            // Assert
-            Assert.NotNull(httpUnauthorisedResult.StatusCode, "This response should have return a status code");
-            Assert.AreEqual(
-                HttpStatusCode.Unauthorized.ToInt32(),
-                httpUnauthorisedResult.StatusCode,
-                "Unauthorised result status code 401 was expected");
-        }
-
-        [Test]
-        public async Task AdminController_ManualChanges_POST_When_User_Is_Not_A_Database_Admin_Returns_Unauthorized_ResultAsync()
-        {
-            // Arrange
-            User notAdminUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            var adminController = UiTestHelper.GetController<AdminController>(notAdminUser.UserId, null, notAdminUser);
-
-            // Act
-            IActionResult actualResult = await adminController.ManualChanges(new ManualChangesViewModel());
-            Assert.NotNull(actualResult, "Expected Manual changes to return a result");
-            var httpUnauthorisedResult = actualResult as HttpUnauthorizedResult;
-            Assert.NotNull(
-                httpUnauthorisedResult,
-                "As we are calling 'Manual changes POST' with a user that is NOT an admin, we were expecting an 'Unauthorised result' back");
-
-            // Assert
-            Assert.NotNull(httpUnauthorisedResult.StatusCode, "This response should have return a status code");
-            Assert.AreEqual(
-                HttpStatusCode.Unauthorized.ToInt32(),
-                httpUnauthorisedResult.StatusCode,
-                "Unauthorised result status code 401 was expected");
-        }
-
-        [Test]
         public async Task AdminController_ManualChanges_POST_When_Command_Was_Not_Selected_Returns_Error_Async()
         {
             // Arrange

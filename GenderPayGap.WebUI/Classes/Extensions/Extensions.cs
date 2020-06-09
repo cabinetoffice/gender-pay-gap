@@ -78,36 +78,6 @@ namespace GenderPayGap.WebUI.Classes
 
         #region User Entity
 
-        public static bool IsSuperAdministrator(this User user)
-        {
-            if (!user.EmailAddress.IsEmailAddress())
-            {
-                throw new ArgumentException("Bad email address");
-            }
-
-            if (string.IsNullOrWhiteSpace(Global.SuperAdminEmails))
-            {
-                throw new ArgumentException("Missing SuperAdminEmails from web.config");
-            }
-
-            return user.EmailAddress.LikeAny(Global.SuperAdminEmails.SplitI(";"));
-        }
-
-        public static bool IsDatabaseAdministrator(this User user)
-        {
-            if (!user.EmailAddress.IsEmailAddress())
-            {
-                throw new ArgumentException("Bad email address");
-            }
-
-            if (string.IsNullOrWhiteSpace(Global.DatabaseAdminEmails))
-            {
-                return user.IsSuperAdministrator();
-            }
-
-            return user.EmailAddress.LikeAny(Global.DatabaseAdminEmails.SplitI(";"));
-        }
-
         public static User FindUser(this IDataRepository repository, IPrincipal principal)
         {
             if (principal == null)

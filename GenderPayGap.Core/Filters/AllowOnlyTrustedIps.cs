@@ -19,7 +19,6 @@ namespace GenderPayGap.Core.Filters
 
             None = 0,
             EhrcIPRange = 1,
-            TrustedIPDomains = 2
 
         }
 
@@ -38,9 +37,7 @@ namespace GenderPayGap.Core.Filters
                     _commaSeparatedListOfTrustedIps = Config.GetAppSetting("EhrcIPRange");
                     break;
                 case IpRangeTypes.None:
-                case IpRangeTypes.TrustedIPDomains:
                 default:
-                    _commaSeparatedListOfTrustedIps = Config.GetAppSetting("TrustedIPDomains");
                     break;
             }
         }
