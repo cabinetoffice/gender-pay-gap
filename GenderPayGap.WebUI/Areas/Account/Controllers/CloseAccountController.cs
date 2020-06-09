@@ -6,6 +6,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -75,10 +76,9 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // force sign-out then redirect to completed page
-            LoginHelper.Logout(HttpContext);
+            IActionResult suggestedResult = RedirectToAction("CloseAccountCompleted", "CloseAccount");
 
-            string redirectUrl = Url.Action<CloseAccountController>(nameof(CloseAccountCompleted));
-            return Redirect(redirectUrl);
+            return LoginHelper.Logout(HttpContext, suggestedResult);
         }
 
         [AllowAnonymous]

@@ -98,6 +98,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             if (userId != 0)
             {
                 claims.Add(new Claim("user_id", userId.ToString()));
+                claims.Add(new Claim(ClaimTypes.Role, "GPGemployer"));
             }
 
             var mockPrincipal = new Mock<ClaimsPrincipal>();

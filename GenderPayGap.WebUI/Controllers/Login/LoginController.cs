@@ -1,10 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Login;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
@@ -63,46 +64,9 @@ namespace GenderPayGap.WebUI.Controllers.Login
                 return View("Login", viewModel);
             }
 
-            string userId = user.UserId.ToString();
             string userRole = user.IsAdministrator() ? "GPGadmin" : "GPGemployer";
 
-            var claims = new List<Claim>
-            {
-                new Claim("user_id", userId),
-                new Claim(ClaimTypes.Role, userRole),
-            };
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            {
-                //AllowRefresh = <bool>,
-                // Refreshing the authentication session should be allowed.
-
-                //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                // The time at which the authentication ticket expires. A 
-                // value set here overrides the ExpireTimeSpan option of 
-                // CookieAuthenticationOptions set with AddCookie.
-
-                //IsPersistent = true,
-                // Whether the authentication session is persisted across 
-                // multiple requests. When used with cookies, controls
-                // whether the cookie's lifetime is absolute (matching the
-                // lifetime of the authentication ticket) or session-based.
-
-                //IssuedUtc = <DateTimeOffset>,
-                // The time at which the authentication ticket was issued.
-
-                //RedirectUri = <string>
-                // The full path or absolute URI to be used as an http 
-                // redirect response value.
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+            LoginHelper.Login(HttpContext, user.UserId, userRole);
 
             if (ReturnUrlIsAllowed(viewModel))
             {
@@ -129,10 +93,22 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
 
         [HttpGet("logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            LoginHelper.Logout(HttpContext);
+            // "LoginHelper.Logout(...)" (below) logs out the user
+            // But, they are still logged in for the full duration of this request
+            // So, when the View is generated, is shows a "Sign out" button (because the user is still logged in when the view is generated)
+            //
+            // To prevent this problem, we redirect the user (so they make a new request)
+            // In the second request, they are logged out, so everything is displayed properly
+            IActionResult suggestedResult = RedirectToAction("LoggedOut", "Login");
 
+            return LoginHelper.Logout(HttpContext, suggestedResult);
+        }
+
+        [HttpGet("logged-out")]
+        public IActionResult LoggedOut()
+        {
             return View("LoggedOut");
         }
 

@@ -1,20 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Mime;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using CsvHelper;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -23,12 +17,11 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers.Administration
 {
@@ -237,8 +230,11 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 return View("Impersonate");
             }
 
-            ImpersonatedUserId = impersonatedUser.UserId;
-            OriginalUser = currentUser;
+            LoginHelper.LoginWithImpersonation(
+                HttpContext,
+                impersonatedUser.UserId,
+                "GPGemployer",
+                currentUser.UserId);
 
             //Refresh page to ensure identity is passed in cookie
             return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
