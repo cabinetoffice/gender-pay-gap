@@ -10,6 +10,7 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {

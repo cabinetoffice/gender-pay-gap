@@ -8,7 +8,7 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 
-namespace GenderPayGap.BusinessLogic.Services
+namespace GenderPayGap.WebUI.Services
 {
     public class AuditLogger
     {

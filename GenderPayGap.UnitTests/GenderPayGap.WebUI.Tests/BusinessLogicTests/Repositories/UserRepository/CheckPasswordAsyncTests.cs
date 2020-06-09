@@ -7,6 +7,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Services;
 using Moq;
 using NUnit.Framework;
 

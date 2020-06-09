@@ -6,6 +6,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
