@@ -149,6 +149,45 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("ConfirmOutOfScopeDetails");
         }
 
+        private async Task IncrementRetryCountAsync(string retryLockKey, int expiryMinutes)
+        {
+            int count = await Cache.GetAsync<int>($"{UserHostAddress}:{retryLockKey}:Count");
+            count++;
+            if (count >= 3)
+            {
+                await CreateRetryLockAsync(retryLockKey, expiryMinutes);
+            }
+
+            await Cache.RemoveAsync($"{UserHostAddress}:{retryLockKey}:Count");
+            await Cache.AddAsync($"{UserHostAddress}:{retryLockKey}:Count", count, VirtualDateTime.Now.AddMinutes(expiryMinutes));
+        }
+
+        private async Task CreateRetryLockAsync(string retryLockKey, int expiryMinutes)
+        {
+            await Cache.RemoveAsync($"{UserHostAddress}:{retryLockKey}");
+            await Cache.AddAsync($"{UserHostAddress}:{retryLockKey}", VirtualDateTime.Now, VirtualDateTime.Now.AddMinutes(expiryMinutes));
+        }
+
+        private async Task<TimeSpan> GetRetryLockRemainingTimeAsync(string retryLockKey, int expiryMinutes)
+        {
+            if (Global.SkipSpamProtection)
+            {
+                return TimeSpan.Zero;
+            }
+
+            DateTime lockDate = await Cache.GetAsync<DateTime>($"{UserHostAddress}:{retryLockKey}");
+            TimeSpan remainingTime =
+                lockDate == DateTime.MinValue ? TimeSpan.Zero : lockDate.AddMinutes(expiryMinutes) - VirtualDateTime.Now;
+            return remainingTime;
+        }
+
+        private async Task ClearRetryLocksAsync(string retryLockKey)
+        {
+            await Cache.RemoveAsync($"{UserHostAddress}:{retryLockKey}");
+            await Cache.RemoveAsync($"{UserHostAddress}:{retryLockKey}:Count");
+        }
+
+
         [Authorize]
         [HttpGet("in")]
         public async Task<IActionResult> InScope()
