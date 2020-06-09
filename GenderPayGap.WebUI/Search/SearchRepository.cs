@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -63,6 +63,7 @@ namespace GenderPayGap.WebUI.Search
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.Returns)
+                .Include(o => o.OrganisationSicCodes)
                 .ToList()
                 .Select(
                     o =>
