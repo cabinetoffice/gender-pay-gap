@@ -84,9 +84,6 @@ namespace GenderPayGap.Core
         public static string DatabaseConnectionString => Config.GetConnectionString(DatabaseConnectionName);
         public static string AzureStorageConnectionString => Config.GetConnectionString("AzureStorage");
 
-        public static string APPINSIGHTS_INSTRUMENTATIONKEY =>
-            Config.GetAppSetting("ApplicationInsights:InstrumentationKey", Config.GetAppSetting("APPINSIGHTS-INSTRUMENTATIONKEY"));
-
         public static string SaveDraftPath => Config.GetAppSetting("SaveDraftPath");
 
         public static int FirstReportingYear
@@ -114,6 +111,6 @@ namespace GenderPayGap.Core
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 
         public static bool UsePostgresDb => Config.GetAppSetting("UsePostgresDb").ToBoolean();
-        
+
     }
 }
