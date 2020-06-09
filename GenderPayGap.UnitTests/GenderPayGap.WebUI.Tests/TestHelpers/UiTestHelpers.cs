@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             if (userId != 0)
             {
-                claims.Add(new Claim("sub", userId.ToString()));
+                claims.Add(new Claim("user_id", userId.ToString()));
             }
 
             var mockPrincipal = new Mock<ClaimsPrincipal>();

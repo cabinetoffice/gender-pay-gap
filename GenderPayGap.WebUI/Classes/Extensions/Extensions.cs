@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.Classes
 
         public static long GetUserId(this IPrincipal principal)
         {
-            return principal.GetClaim("sub").ToLong();
+            return principal.GetClaim("user_id").ToLong();
         }
 
         #endregion
