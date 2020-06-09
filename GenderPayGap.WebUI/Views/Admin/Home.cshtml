@@ -6,17 +6,6 @@
 
 <h1 class="govuk-heading-xl">Administration</h1>
 
-@if (Model.IsDowngradedDueToIpRestrictions)
-{
-    <div class="govuk-warning-text">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-            <span class="govuk-warning-text__assistive">Warning</span>
-            You are accessing this administration page from an untrusted network. Some advanced administration features have been disabled.
-        </strong>
-    </div>
-}
-
 <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))">
     <div class="govuk-form-group">
         <label class="govuk-label" for="search-query">
@@ -43,25 +32,21 @@
     </div>
 </form>
 
+
 <h2 class="govuk-heading-l">Actions</h2>
 
-@if (Model.IsSuperAdministrator)
-{
-    <p class="govuk-body">
-        <a href="@(Url.Action("Impersonate"))" class="govuk-link govuk-!-font-weight-bold">Impersonate user</a>
-        <br/>
-        Login as a user to view their screens.
-    </p>
-}
+<p class="govuk-body">
+    <a href="@(Url.Action("Impersonate"))" class="govuk-link govuk-!-font-weight-bold">Impersonate user</a>
+    <br/>
+    Login as a user to view their screens.
+</p>
 
-@if (Model.IsSuperAdministrator && Model.IsDatabaseAdministrator)
-{
-    <p class="govuk-body">
-        <a href="@(Url.Action("ManualChanges"))" class="govuk-link govuk-!-font-weight-bold">Execute manual changes</a>
-        <br/>
-        Execute various manual tasks on system and data.
-    </p>
-}
+<p class="govuk-body">
+    <a href="@(Url.Action("ManualChanges"))" class="govuk-link govuk-!-font-weight-bold">Execute manual changes</a>
+    <br/>
+    Execute various manual tasks on system and data.
+</p>
+
 
 <h2 class="govuk-heading-l">Registrations</h2>
 
@@ -76,6 +61,7 @@
     <br/>
     List of registrations which are awaiting manual authorisation.
 </p>
+
 
 <h2 class="govuk-heading-l">Information</h2>
 
@@ -98,6 +84,7 @@
     <br/>
     Integrity checks for collected data.
 </p>
+
 
 <h2 class="govuk-heading-l">Logs</h2>
 
@@ -126,4 +113,3 @@
     <br />
     A technical dashboard showing background jobs that are queued / running / succeeded / failed.
 </p>
-

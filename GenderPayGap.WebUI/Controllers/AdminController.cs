@@ -68,10 +68,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         public IActionResult Home()
         {
             var viewModel = new AdminHomepageViewModel {
-                IsSuperAdministrator = CurrentUser.IsSuperAdministrator(),
-                IsDatabaseAdministrator = CurrentUser.IsDatabaseAdministrator(),
-                IsDowngradedDueToIpRestrictions =
-                    !IsTrustedIP && (CurrentUser.IsDatabaseAdministrator() || CurrentUser.IsSuperAdministrator()),
                 FeedbackCount = DataRepository.GetAll<Feedback>().Count(),
                 NewFeedbackCount = DataRepository.GetAll<Feedback>().Count(f => f.FeedbackStatus == FeedbackStatus.New),
                 LatestFeedbackDate = DataRepository.GetAll<Feedback>()
@@ -205,12 +201,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         {
             //Ignore case of email address
             emailAddress = emailAddress?.ToLower();
-
-            //Throw error if the user is not a super administrator of a test admin
-            if (!IsSuperAdministrator && (!IsAdministrator || !IsTestUser || !emailAddress.StartsWithI(Global.TestPrefix)))
-            {
-                return new HttpUnauthorizedResult($"User {CurrentUser?.EmailAddress} is not a super administrator");
-            }
 
             if (string.IsNullOrWhiteSpace(emailAddress) || !emailAddress.IsEmailAddress())
             {

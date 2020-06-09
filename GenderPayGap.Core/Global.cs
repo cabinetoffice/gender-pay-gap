@@ -21,12 +21,6 @@ namespace GenderPayGap.Core
 
         public static int CertExpiresWarningDays => Config.GetAppSetting("CertExpiresWarningDays").ToInt32(30);
 
-        public static string TrustedIPDomains
-        {
-            get => Config.GetAppSetting("TrustedIPDomains");
-            set => Config.SetAppSetting("TrustedIPDomains", value);
-        }
-
         public static bool UseDeveloperExceptions => Config.GetAppSetting("UseDeveloperExceptions").ToBoolean();
         public static string StartUrl => Config.GetAppSetting("StartUrl");
         public static string DoneUrl => Config.GetAppSetting("DoneUrl");
@@ -78,8 +72,6 @@ namespace GenderPayGap.Core
         public static string PINChars => Config.GetAppSetting("PINChars");
         public static string PinRegex => Config.GetAppSetting("PinRegex");
         public static string PinRegexError => Config.GetAppSetting("PinRegexError");
-        public static string SuperAdminEmails => Config.GetAppSetting("SuperAdminEmails");
-        public static string DatabaseAdminEmails => Config.GetAppSetting("DatabaseAdminEmails");
         public static string TestPrefix => Config.GetAppSetting("TestPrefix");
         public static string WhoNeedsToReportGuidanceLink => Config.GetAppSetting("WhoNeedsToReportGuidanceLink");
         public static int CurrentAccountingYear => SectorTypes.Private.GetAccountingStartDate().Year;

@@ -331,14 +331,6 @@ namespace GenderPayGap.WebUI.Classes
 
         public virtual User CurrentUser => VirtualUser;
 
-        public bool IsTrustedIP =>
-            string.IsNullOrWhiteSpace(Global.TrustedIPDomains) || UserHostAddress.IsTrustedAddress(Global.TrustedIPDomains.SplitI());
-
-        public bool IsAdministrator => CurrentUser.IsAdministrator();
-        public bool IsSuperAdministrator => IsTrustedIP && CurrentUser.IsSuperAdministrator();
-        public bool IsDatabaseAdministrator => IsTrustedIP && CurrentUser.IsDatabaseAdministrator();
-
-        public bool IsTestUser => CurrentUser.EmailAddress.StartsWithI(Global.TestPrefix);
         public bool IsImpersonatingUser => OriginalUser != null && OriginalUser.IsAdministrator();
 
         protected User VirtualUser =>

@@ -27,12 +27,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         [HttpGet("manual-changes")]
         public IActionResult ManualChanges()
         {
-            //Throw error if the user is not a super administrator
-            if (!IsDatabaseAdministrator)
-            {
-                return new HttpUnauthorizedResult($"User {CurrentUser?.EmailAddress} is not a database administrator");
-            }
-
             return View(new ManualChangesViewModel());
         }
 
@@ -41,12 +35,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         [HttpPost("manual-changes")]
         public async Task<IActionResult> ManualChanges(ManualChangesViewModel model)
         {
-            //Throw error if the user is not a super administrator
-            if (!IsDatabaseAdministrator)
-            {
-                return new HttpUnauthorizedResult($"User {CurrentUser?.EmailAddress} is not a database administrator");
-            }
-
             model.Results = null;
             ModelState.Clear();
             bool test = model.LastTestedCommand != model.Command
