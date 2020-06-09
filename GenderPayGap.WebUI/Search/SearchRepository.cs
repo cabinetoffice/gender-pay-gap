@@ -65,25 +65,42 @@ namespace GenderPayGap.WebUI.Search
                 .Include(o => o.Returns)
                 .ToList()
                 .Select(
-                    o => new SearchCachedOrganisation
+                    o =>
                     {
-                        OrganisationId = o.OrganisationId,
-                        EncryptedId = o.GetEncryptedId(),
-                        OrganisationName = new SearchReadyValue(o.OrganisationName),
-                        CompanyNumber = o.CompanyNumber?.Trim(),
-                        EmployerReference = o.EmployerReference?.Trim(),
-                        OrganisationNames = o.OrganisationNames.OrderByDescending(n => n.Created).Select(on => new SearchReadyValue(on.Name)).ToList(),
-                        MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
-                        Status = o.Status,
-                        OrganisationSizes = o.Returns.Select(r => r.OrganisationSize).ToList(),
-                        SicSectionIds = o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList(),
-                        ReportingYears = o.Returns.Select(r => r.AccountingDate.Year).ToList(),
-                        DateOfLatestReport = o.GetLatestReturn() != null ? o.GetLatestReturn().StatusDate.Date : new DateTime(1999, 1, 1),
-                        ReportedWithCompanyLinkToGpgInfo = o.Returns.Any(r => r.CompanyLinkToGPGInfo != null),
-                        ReportedLate = o.Returns.Any(r => r.IsLateSubmission),
-                        SicCodes = o.OrganisationSicCodes.Select(osc => osc.SicCode).ToList(),
-                        IncludeInViewingService = GetIncludeInViewingService(o)
+                        var sicCodeSynonyms = o.OrganisationSicCodes.Select(osc => osc.SicCode.Synonyms)
+                            .Select(s => new SearchReadyValue(s))
+                            .ToList();
+
+                        foreach (var osc in o.OrganisationSicCodes)
+                        {
+                                sicCodeSynonyms.Add(new SearchReadyValue(osc.SicCode.Description));
+                        }
                         
+                        return new SearchCachedOrganisation
+                            {
+                                OrganisationId = o.OrganisationId,
+                                EncryptedId = o.GetEncryptedId(),
+                                OrganisationName = new SearchReadyValue(o.OrganisationName),
+                                CompanyNumber = o.CompanyNumber?.Trim(),
+                                EmployerReference = o.EmployerReference?.Trim(),
+                                OrganisationNames =
+                                    o.OrganisationNames.OrderByDescending(n => n.Created)
+                                        .Select(on => new SearchReadyValue(@on.Name))
+                                        .ToList(),
+                                MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
+                                Status = o.Status,
+                                OrganisationSizes = o.Returns.Select(r => r.OrganisationSize).ToList(),
+                                SicSectionIds =
+                                    o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList(),
+                                ReportingYears = o.Returns.Select(r => r.AccountingDate.Year).ToList(),
+                                DateOfLatestReport =
+                                    o.GetLatestReturn() != null ? o.GetLatestReturn().StatusDate.Date : new DateTime(1999, 1, 1),
+                                ReportedWithCompanyLinkToGpgInfo = o.Returns.Any(r => r.CompanyLinkToGPGInfo != null),
+                                ReportedLate = o.Returns.Any(r => r.IsLateSubmission),
+                                SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
+                                SicCodeSynonyms = sicCodeSynonyms,
+                                IncludeInViewingService = GetIncludeInViewingService(o)
+                            };
                     })
                 .ToList();
         }
