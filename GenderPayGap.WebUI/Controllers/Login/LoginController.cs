@@ -3,12 +3,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Models.Login;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Login
@@ -129,8 +131,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
         [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            LoginHelper.Logout(HttpContext);
 
             return View("LoggedOut");
         }
