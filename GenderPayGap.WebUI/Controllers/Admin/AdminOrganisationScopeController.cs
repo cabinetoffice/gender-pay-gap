@@ -106,7 +106,6 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository.Insert(newOrganisationScope);
             await dataRepository.SaveChangesAsync();
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationScope,
                 organisation,
@@ -115,7 +114,7 @@ namespace GenderPayGap.WebUI.Controllers
                     NewScope = newScope.ToString(),
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
         }

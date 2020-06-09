@@ -217,8 +217,8 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.User.ContactOrganisation,
                     userOrg.User.ContactPhoneNumber
                 },
-                currentUser);
-            
+                User);
+
             //Prompt the user with confirmation
             return result1;
         }

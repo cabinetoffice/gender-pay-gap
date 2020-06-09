@@ -5,7 +5,6 @@ using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Services;
 using MockQueryable.Moq;
 using Moq;
@@ -115,7 +114,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Repositories.UserRepository
                         .BuildMock()
                         .Object);
 
-            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>(), Mock.Of<IHttpSession>());
+            var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>());
 
             _configuredIUserRepository = new Account.Repositories.UserRepository(
                 configurableDataRepository.Object, auditLoggerWithMocks);

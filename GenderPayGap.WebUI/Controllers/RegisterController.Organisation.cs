@@ -1364,7 +1364,7 @@ namespace GenderPayGap.WebUI.Controllers
                         userOrg.User.ContactOrganisation,
                         userOrg.User.ContactPhoneNumber
                     },
-                    currentUser);
+                    User);
 
                 if (model.IsFastTrackAuthorised)
                 {

@@ -227,7 +227,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                 NewCompanyNumber = newValue,
                                 Reason = comment,
                             },
-                            CurrentUser);
+                            User);
                     }
                 }
 
@@ -338,7 +338,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                 {
                                     Reason = comment,
                                 },
-                                CurrentUser);
+                                User);
                         }
                     }
 
@@ -363,7 +363,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                     NewSicCodes = "1",
                                     Reason = comment,
                                 },
-                                CurrentUser);
+                                User);
                         }
                     }
 
@@ -392,7 +392,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                         NewDate = newDate,
                                         Reason = comment,
                                     },
-                                    CurrentUser);
+                                    User);
                             }
                         }
                     }
@@ -422,7 +422,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                         NewDate = newDate,
                                         Reason = comment,
                                     },
-                                    CurrentUser);
+                                    User);
                             }
                         }
                     }
@@ -541,7 +541,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                 {
                                     Reason = comment,
                                 },
-                                CurrentUser);
+                                User);
                         }
                     }
 
@@ -570,7 +570,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                         OldSicCode_Retired = sic.Retired,
                                         Reason = comment,
                                     },
-                                    CurrentUser);
+                                    User);
                             }
 
                             DataRepository.Delete(sic);
@@ -602,7 +602,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                         NewDate = newDate,
                                         Reason = comment,
                                     },
-                                    CurrentUser);
+                                    User);
                             }
 
                             if (string.IsNullOrWhiteSpace(@return.ResponsiblePerson))
@@ -639,7 +639,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                                         NewDate = newDate,
                                         Reason = comment,
                                     },
-                                    CurrentUser);
+                                    User);
                             }
                         }
                     }

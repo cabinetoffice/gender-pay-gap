@@ -196,7 +196,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             dataRepository.SaveChangesAsync().Wait();
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationName,
                 organisation,
@@ -208,7 +207,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     NewNameId = newOrganisationName.OrganisationNameId,
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
         }
 
         private OrganisationName CreateOrganisationNameFromViewModel(ChangeOrganisationNameViewModel viewModel)
@@ -276,7 +275,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("DeleteNameCheck", viewModel);
             }
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminDeleteOrganisationPreviousName,
                 organisation,
@@ -288,7 +286,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     DeletedNameCreatedDate = name.Created.ToString("d MMM yyyy"),
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             dataRepository.Delete(name);
             dataRepository.SaveChangesAsync().Wait();

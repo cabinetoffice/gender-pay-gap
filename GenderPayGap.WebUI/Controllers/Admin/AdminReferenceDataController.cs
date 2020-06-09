@@ -179,13 +179,12 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             List<SicSection> existingRecords = dataRepository.GetAll<SicSection>().ToList();
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicSections, new
             {
                 ExistingRecords = JsonConvert.SerializeObject(existingRecords.Select(GetSicSectionDetails)),
                 NewRecords = JsonConvert.SerializeObject(newRecords.Select(GetSicSectionDetails)),
                 Reason = viewModel.Reason
-            }, currentUser);
+            }, User);
 
             SaveChangesToSicSections(viewModel);
             
@@ -248,13 +247,12 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             List<SicCode> existingRecords = dataRepository.GetAll<SicCode>().ToList();
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditGeneralAction(AuditedAction.AdminUpdatedSicCodes, new
             {
                 ExistingRecords = JsonConvert.SerializeObject(existingRecords.Select(GetSicCodeDetails)),
                 NewRecords = JsonConvert.SerializeObject(newRecords.Select(GetSicCodeDetails)),
                 Reason = viewModel.Reason
-            }, currentUser);
+            }, User);
 
             SaveChangesToSicCodes(viewModel);
             

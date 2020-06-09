@@ -71,7 +71,6 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.OptedOutFromCompaniesHouseUpdate = false;
             dataRepository.SaveChangesAsync().Wait();
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeCompaniesHouseOpting,
                 organisation,
@@ -79,7 +78,7 @@ namespace GenderPayGap.WebUI.Controllers
                     Opt = "In",
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }
@@ -131,7 +130,6 @@ namespace GenderPayGap.WebUI.Controllers
             organisation.OptedOutFromCompaniesHouseUpdate = true;
             dataRepository.SaveChangesAsync().Wait();
 
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeCompaniesHouseOpting,
                 organisation,
@@ -139,7 +137,7 @@ namespace GenderPayGap.WebUI.Controllers
                     Opt = "Out",
                     Reason = viewModel.Reason
                 },
-                currentUser);
+                User);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }

@@ -147,12 +147,11 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // Audit log
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminRemoveUserFromOrganisation,
                 organisation,
                 new {RemovedUserId = user.UserId, viewModel.Reason},
-                currentUser);
+                User);
 
             return View("SuccessfullyRemoved", viewModel);
         }

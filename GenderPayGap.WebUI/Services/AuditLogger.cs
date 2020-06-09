@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Security.Principal;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Helpers;
 
 namespace GenderPayGap.WebUI.Services
 {
@@ -20,33 +21,59 @@ namespace GenderPayGap.WebUI.Services
 
 
         private readonly IDataRepository dataRepository;
-        private readonly IHttpSession session;
 
-        public AuditLogger(IDataRepository dataRepository, IHttpSession session)
+        public AuditLogger(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
-            this.session = session;
         }
 
-        public void AuditGeneralAction(AuditedAction action, object anonymousObject, User userWhoPerformedAction)
+        public void AuditGeneralAction(AuditedAction action, object anonymousObject, IPrincipal userWhoPerformedAction)
         {
-            Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
+            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
 
-            AuditGeneralAction(action, details, userWhoPerformedAction);
+            AuditAction(action, null, anonymousObject, users);
+        }
+
+        public void AuditChangeToOrganisation(AuditedAction action, Organisation organisationChanged, object anonymousObject)
+        {
+            var users = new OriginalAndImpersonatedUser();
+
+            AuditAction(action, organisationChanged.OrganisationId, anonymousObject, users);
+        }
+
+        public void AuditChangeToOrganisation(AuditedAction action, Organisation organisationChanged, object anonymousObject, IPrincipal userWhoPerformedAction)
+        {
+            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
+
+            AuditAction(action, organisationChanged.OrganisationId, anonymousObject, users);
         }
 
         public void AuditChangeToOrganisation(AuditedAction action, Organisation organisationChanged, object anonymousObject, User userWhoPerformedAction)
         {
-            Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
+            var users = new OriginalAndImpersonatedUser {OriginalUser = userWhoPerformedAction};
 
-            AuditActionToOrganisation(action, organisationChanged.OrganisationId, details, userWhoPerformedAction);
+            AuditAction(action, organisationChanged.OrganisationId, anonymousObject, users);
+        }
+
+        public void AuditChangeToUser(AuditedAction action, User userChanged, object anonymousObject, IPrincipal userWhoPerformedAction)
+        {
+            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
+
+            AuditAction(action, null, anonymousObject, users);
+        }
+
+        public void AuditChangeToUser(AuditedAction action, User userChanged, object anonymousObject)
+        {
+            var users = new OriginalAndImpersonatedUser();
+
+            AuditAction(action, null, anonymousObject, users);
         }
 
         public void AuditChangeToUser(AuditedAction action, User userChanged, object anonymousObject, User userWhoPerformedAction)
         {
-            Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
+            var users = new OriginalAndImpersonatedUser { OriginalUser = userWhoPerformedAction };
 
-            AuditActionToUser(action, userChanged.UserId, details, userWhoPerformedAction);
+            AuditAction(action, null, anonymousObject, users);
         }
 
         private static Dictionary<string, string> ExtractDictionaryOfDetailsFromAnonymousObject(object anonymousObject)
@@ -67,28 +94,11 @@ namespace GenderPayGap.WebUI.Services
             return details;
         }
 
-        private void AuditGeneralAction(AuditedAction action, Dictionary<string, string> details, User userWhoPerformedAction)
+        private void AuditAction(AuditedAction action, long? organisationId, object anonymousObject, OriginalAndImpersonatedUser users)
         {
-            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
+            Dictionary<string, string> details = ExtractDictionaryOfDetailsFromAnonymousObject(anonymousObject);
 
-            dataRepository.Insert(
-                new AuditLog
-                {
-                    Action = action,
-                    OriginalUser = users.OriginalUser,
-                    ImpersonatedUser = users.ImpersonatedUser,
-                    Organisation = null,
-                    Details = details
-                });
-
-            dataRepository.SaveChangesAsync().Wait();
-        }
-
-        private void AuditActionToOrganisation(AuditedAction action, long organisationId, Dictionary<string, string> details, User userWhoPerformedAction)
-        {
-            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
-
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = organisationId.HasValue ? dataRepository.Get<Organisation>(organisationId.Value) : null;
 
             dataRepository.Insert(
                 new AuditLog
@@ -103,34 +113,24 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.SaveChangesAsync().Wait();
         }
 
-        private void AuditActionToUser(AuditedAction action, long actionTakenOnUserId, Dictionary<string, string> details, User userWhoPerformedAction)
-        {
-            OriginalAndImpersonatedUser users = GetOriginalAndImpersonatedUser(userWhoPerformedAction);
 
-            dataRepository.Insert(
-                new AuditLog
-                {
-                    Action = action,
-                    OriginalUser = users.OriginalUser,
-                    ImpersonatedUser = users.ImpersonatedUser,
-                    Organisation = null,
-                    Details = details
-                });
-
-            dataRepository.SaveChangesAsync().Wait();
-        }
-
-        private OriginalAndImpersonatedUser GetOriginalAndImpersonatedUser(User userWhoPerformedAction)
+        private OriginalAndImpersonatedUser GetOriginalAndImpersonatedUser(IPrincipal user)
         {
             long impersonatedUserId;
             long originalUserId;
-            bool isImpersonating;
 
             try
             {
-                impersonatedUserId = session["ImpersonatedUserId"].ToInt64();
-                isImpersonating = impersonatedUserId > 0;
-                originalUserId = session["OriginalUser"].ToInt64();
+                if (LoginHelper.IsUserBeingImpersonated(user))
+                {
+                    originalUserId = LoginHelper.GetAdminImpersonatorUserId(user);
+                    impersonatedUserId = LoginHelper.GetUserId(user);
+                }
+                else
+                {
+                    originalUserId = LoginHelper.GetUserId(user);
+                    impersonatedUserId = 0;
+                }
             }
             catch (Exception ex)
             {
@@ -139,10 +139,9 @@ namespace GenderPayGap.WebUI.Services
                 // - the concept of Original and Impersonated users doesn't apply
                 impersonatedUserId = 0;
                 originalUserId = 0;
-                isImpersonating = false;
             }
 
-            User originalUser = isImpersonating ? dataRepository.Get<User>(originalUserId) : userWhoPerformedAction;
+            User originalUser = dataRepository.Get<User>(originalUserId);
             User impersonatedUser = dataRepository.Get<User>(impersonatedUserId);
 
             if (impersonatedUser?.UserId == originalUser?.UserId)
