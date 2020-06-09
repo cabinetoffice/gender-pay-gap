@@ -28,7 +28,7 @@ namespace GenderPayGap.Core.Models.Cookies
             }
 
             return new CookieSettings {
-                GoogleAnalyticsGpg = false, GoogleAnalyticsGovUk = false, ApplicationInsights = false, RememberSettings = false
+                GoogleAnalyticsGpg = false, GoogleAnalyticsGovUk = false, RememberSettings = false
             };
         }
 

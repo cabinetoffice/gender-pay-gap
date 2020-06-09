@@ -1,7 +1,5 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Core.Models.Cookies
-@using Microsoft.ApplicationInsights.AspNetCore
-@inject JavaScriptSnippet snippet
 @{
     CookieSettings cookieSettings = CookieHelper.GetCookieSettingsCookie(Context.Request);
 }
@@ -72,23 +70,14 @@
     }
 </script>
 
-@if (cookieSettings.ApplicationInsights &&
-     snippet != null &&
-     !string.IsNullOrWhiteSpace(Global.APPINSIGHTS_INSTRUMENTATIONKEY))
-{
-    @Html.Raw(snippet.FullScript)
-}
-else
-{
-    <script>
-        @* Delete Application Insights cookies *@
-        (() => {
-            function deleteCookie(cookieName) {
-                document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            }
+<script>
+    @* Delete Application Insights cookies *@
+    (() => {
+        function deleteCookie(cookieName) {
+            document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
 
-            deleteCookie('ai_session');
-            deleteCookie('ai_user');
-        })();
-    </script>
-}
+        deleteCookie('ai_session');
+        deleteCookie('ai_user');
+    })();
+</script>

@@ -101,47 +101,6 @@
             </div>
 
             <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset" aria-describedby="ApplicationInsights__Hint">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h3 class="govuk-fieldset__heading">Cookies measuring system performance</h3>
-                    </legend>
-                    <div id="ApplicationInsights__Hint" class="govuk-hint">
-                        <p class="govuk-body govuk-hint">We use Microsoft Azure Application Insights to measure system performance to see if there is anything that is not working in the way it should. Application Insights stores anonymised information about:</p>
-                        <ul class="govuk-list govuk-list--bullet govuk-hint">
-                            <li>the pages you visit on the gender pay gap service</li>
-                            <li>details about the site's performance, for example how long each page takes to load</li>
-                        </ul>
-                    </div>
-                    <div class="govuk-radios govuk-radios--inline">
-                        <div class="govuk-radios__item">
-                            @(Html.RadioButtonFor(x => x.ApplicationInsights, "On",
-                                new
-                                {
-                                    @class = "govuk-radios__input",
-                                    id = "ApplicationInsights__On",
-                                    @checked = Model.ApplicationInsights == "On"
-                                }))
-                            <label class="govuk-label govuk-radios__label" for="ApplicationInsights__On">
-                                On
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            @(Html.RadioButtonFor(x => x.ApplicationInsights, "Off",
-                                new
-                                {
-                                    @class = "govuk-radios__input",
-                                    id = "ApplicationInsights__Off",
-                                    @checked = Model.ApplicationInsights == "Off"
-                                }))
-                            <label class="govuk-label govuk-radios__label" for="ApplicationInsights__Off">
-                                Off
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="RememberSettings__Hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h3 class="govuk-fieldset__heading">Cookies that remember your settings</h3>
