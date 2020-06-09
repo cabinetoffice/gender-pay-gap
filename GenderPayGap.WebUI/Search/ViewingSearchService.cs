@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -33,7 +31,6 @@ namespace GenderPayGap.WebUI.Search
         public string EmployerRef { get; set; }
         public string CompanyNumber { get; set; }
         public OrganisationStatuses Status { get; set; }
-
         public string EncryptedId { get; set; }
 
     }
@@ -51,14 +48,16 @@ namespace GenderPayGap.WebUI.Search
         public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams, bool orderByRelevance)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations
-                .Where(o => o.IncludeInViewingService).ToList();
+                .Where(o => o.IncludeInViewingService)
+                .ToList();
 
             List<SearchCachedOrganisation> filteredOrganisations = FilterByOrganisations(allOrganisations, searchParams);
-            
+
             if (searchParams.Keywords == null)
             {
-                List<SearchCachedOrganisation> orderedOrganisations = filteredOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
-                
+                List<SearchCachedOrganisation> orderedOrganisations =
+                    filteredOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
+
                 List<SearchCachedOrganisation> paginatedResultsForAllOrganisations = PaginateResults(
                     orderedOrganisations,
                     searchParams.Page,
@@ -79,10 +78,10 @@ namespace GenderPayGap.WebUI.Search
             bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
 
             List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
-            
-            List<SearchCachedOrganisation> matchingOrganisations = new List<SearchCachedOrganisation>();
-            List<EmployerSearchModel> convertedResults = new List<EmployerSearchModel>();
-            
+
+            var matchingOrganisations = new List<SearchCachedOrganisation>();
+            var convertedResults = new List<EmployerSearchModel>();
+
             if (searchParams.SearchType == SearchType.NotSet)
             {
                 throw new NotImplementedException();
@@ -95,7 +94,7 @@ namespace GenderPayGap.WebUI.Search
                     searchTerms,
                     query,
                     queryContainsPunctuation);
-                
+
                 List<RankedViewingSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(
                     matchingOrganisations,
                     searchTerms,
@@ -105,12 +104,12 @@ namespace GenderPayGap.WebUI.Search
                 List<RankedViewingSearchOrganisation> rankedOrganisations = orderByRelevance
                     ? OrderOrganisationsByRank(organisationsWithRankings)
                     : OrderOrganisationsAlphabetically(organisationsWithRankings);
-                
+
                 List<RankedViewingSearchOrganisation> paginatedResults = PaginateResults(
                     rankedOrganisations,
                     searchParams.Page,
                     searchParams.PageSize);
-                
+
                 convertedResults = ConvertRankedOrgsToEmployerSearchModels(paginatedResults);
             }
 
@@ -123,14 +122,17 @@ namespace GenderPayGap.WebUI.Search
                     queryContainsPunctuation);
 
                 // Only alphabetically for SIC code search
-                var orderedOrganisations = matchingOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
+                List<SearchCachedOrganisation> orderedOrganisations =
+                    matchingOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
 
-                var paginatedSicCodeResults = PaginateResults(orderedOrganisations, searchParams.Page, searchParams.PageSize);
+                List<SearchCachedOrganisation> paginatedSicCodeResults = PaginateResults(
+                    orderedOrganisations,
+                    searchParams.Page,
+                    searchParams.PageSize);
 
-                convertedResults = ConvertSearchCachesOrganisationsToEmployerSearchModels(paginatedSicCodeResults);
-                
+                convertedResults = ConvertSearchCachedOrganisationsToEmployerSearchModels(paginatedSicCodeResults);
             }
-            
+
             var pagedResult = new PagedResult<EmployerSearchModel>
             {
                 Results = convertedResults,
@@ -142,7 +144,7 @@ namespace GenderPayGap.WebUI.Search
 
             return pagedResult;
         }
-        
+
         private List<SearchCachedOrganisation> FilterByOrganisations(List<SearchCachedOrganisation> organisations,
             EmployerSearchParameters searchParams)
         {
@@ -152,11 +154,10 @@ namespace GenderPayGap.WebUI.Search
             IEnumerable<SearchReportingStatusFilter> selectedReportingStatuses =
                 searchParams.FilterReportingStatus.Select(s => (SearchReportingStatusFilter) s);
 
-            var filteredOrgs = organisations.AsEnumerable();
+            IEnumerable<SearchCachedOrganisation> filteredOrgs = organisations.AsEnumerable();
 
             if (selectedOrganisationSizes.Any())
             {
-                
                 filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any());
             }
 
@@ -241,23 +242,6 @@ namespace GenderPayGap.WebUI.Search
                 .Where(org => SearchHelper.CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms, queryContainsPunctuation))
                 .ToList();
         }
-        
-        private static List<SearchCachedOrganisation> GetMatchingOrganisationsBySicCode(List<SearchCachedOrganisation> allOrganisations,
-            List<string> searchTerms,
-            string query,
-            bool queryContainsPunctuation)
-        {
-            List<SearchCachedOrganisation> matchesOnSicCode = allOrganisations.Where(org => org.SicCodeIds.Contains(query)).ToList();
-
-            if (matchesOnSicCode.Any())
-            {
-                return matchesOnSicCode;
-            }
-            
-            return allOrganisations
-                .Where(org => SearchHelper.OrganisationSicCodesMatchSearchTerms(org, searchTerms, queryContainsPunctuation))
-                .ToList();
-        }
 
         private static List<RankedViewingSearchOrganisation> CalculateOrganisationRankings(
             List<SearchCachedOrganisation> matchingOrganisations,
@@ -319,12 +303,12 @@ namespace GenderPayGap.WebUI.Search
                 .ThenBy(org => org.Names[0].Name)
                 .ToList();
         }
-        
-        private static List<RankedViewingSearchOrganisation> OrderOrganisationsAlphabetically(List<RankedViewingSearchOrganisation> organisationsWithRankings)
+
+        private static List<RankedViewingSearchOrganisation> OrderOrganisationsAlphabetically(
+            List<RankedViewingSearchOrganisation> organisationsWithRankings)
         {
             return organisationsWithRankings.OrderBy(o => o.Names[0].Name).ToList();
         }
-        
 
         private List<EmployerSearchModel> ConvertRankedOrgsToEmployerSearchModels(List<RankedViewingSearchOrganisation> organisations)
         {
@@ -353,8 +337,26 @@ namespace GenderPayGap.WebUI.Search
                     })
                 .ToList();
         }
-        
-        private List<EmployerSearchModel> ConvertSearchCachesOrganisationsToEmployerSearchModels(List<SearchCachedOrganisation> organisations)
+
+        private static List<SearchCachedOrganisation> GetMatchingOrganisationsBySicCode(List<SearchCachedOrganisation> allOrganisations,
+            List<string> searchTerms,
+            string query,
+            bool queryContainsPunctuation)
+        {
+            List<SearchCachedOrganisation> matchesOnSicCode = allOrganisations.Where(org => org.SicCodeIds.Contains(query)).ToList();
+
+            if (matchesOnSicCode.Any())
+            {
+                return matchesOnSicCode;
+            }
+
+            return allOrganisations
+                .Where(org => SearchHelper.OrganisationSicCodesMatchSearchTerms(org, searchTerms, queryContainsPunctuation))
+                .ToList();
+        }
+
+        private List<EmployerSearchModel> ConvertSearchCachedOrganisationsToEmployerSearchModels(
+            List<SearchCachedOrganisation> organisations)
         {
             return organisations.Select(
                     org =>
