@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
             var claims = new List<Claim>
             {
-                new Claim("sub", userId),
+                new Claim("user_id", userId),
                 new Claim(ClaimTypes.Role, userRole),
             };
 
