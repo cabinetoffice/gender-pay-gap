@@ -33,17 +33,6 @@
     LiveSearch.prototype.bindEvents = function bindEvents() {
         this.$form = $("#" + this.formId);
 
-        this.$form.find('input[type=text]').keypress(
-            function (e) {
-                if (e.keyCode === 13) {
-                    // 13 is the return key
-                    this.formChange();
-                    $(e.target).typeahead('close');
-                    e.preventDefault();
-                }
-            }.bind(this)
-        );
-
         this.$form.find('#ClearFilters').click(this.clearFilters.bind(this));
 
         $(window).on('popstate', this.popState.bind(this));
