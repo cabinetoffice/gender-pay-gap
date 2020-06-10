@@ -185,7 +185,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/search-results-js")]
         [HttpGet("search-results-js")]
         // used to generate suggestions for the search on the landing page 
-        public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
+        public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
         {
             //Clear the default back url of the employer hub pages
             EmployerBackUrl = null;
@@ -200,7 +200,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             // generate result view model
             var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
-            SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
+            SearchViewModel model = await ViewingService.SearchAsync(searchParams, "relevance");
 
             ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
 
