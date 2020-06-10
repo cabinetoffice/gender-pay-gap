@@ -69,6 +69,7 @@ namespace GenderPayGap.WebUI.Search
                     o =>
                     {
                         var sicCodeSynonyms = o.OrganisationSicCodes.Select(osc => osc.SicCode.Synonyms)
+                            .Where(s => s != null)
                             .Select(s => new SearchReadyValue(s))
                             .ToList();
 
