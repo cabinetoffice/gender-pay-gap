@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
@@ -66,61 +62,5 @@ namespace GenderPayGap.Extensions.AspNetCore
             return services;
         }
 
-        /// <summary>
-        ///     Configure the Owin authentication for Identity Server
-        /// </summary>
-        /// <param name="services"></param>
-        public static IServiceCollection AddIdentityServerClient(this IServiceCollection services,
-            string authority,
-            string signedOutRedirectUri,
-            string clientId,
-            string clientSecret = null,
-            HttpMessageHandler backchannelHttpHandler = null)
-        {
-            //Turn off the JWT claim type mapping to allow well-known claims (e.g. ‘sub’ and ‘idp’) to flow through unmolested
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            services.AddAuthentication(
-                    options => {
-                        options.DefaultScheme = "Cookies";
-                        options.DefaultChallengeScheme = "oidc";
-                    })
-                .AddOpenIdConnect(
-                    "oidc",
-                    options => {
-                        options.SignInScheme = "Cookies";
-                        options.Authority = authority;
-                        options.RequireHttpsMetadata = true;
-                        options.ClientId = clientId;
-                        if (!string.IsNullOrWhiteSpace(clientSecret))
-                        {
-                            options.ClientSecret = clientSecret.GetSHA256Checksum();
-                        }
-
-                        options.Scope.Add("openid");
-                        options.Scope.Add("profile");
-                        options.Scope.Add("roles");
-                        options.SaveTokens = true;
-                        options.SignedOutRedirectUri = signedOutRedirectUri;
-                        options.Events.OnRedirectToIdentityProvider = context => {
-                            Uri referrer = context.HttpContext?.GetUri();
-                            if (referrer != null)
-                            {
-                                context.ProtocolMessage.SetParameter("Referrer", referrer.PathAndQuery);
-                            }
-
-                            return Task.CompletedTask;
-                        };
-                        options.BackchannelHttpHandler = backchannelHttpHandler;
-                    })
-                .AddCookie(
-                    "Cookies",
-                    options => {
-                        options.AccessDeniedPath = "/Error/403"; //Show forbidden error page
-                    });
-            return services;
-        }
-
     }
-
-
 }

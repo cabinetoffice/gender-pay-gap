@@ -30,6 +30,7 @@ using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Options;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -134,14 +135,14 @@ namespace GenderPayGap.WebUI
             //This may now be required 
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
 
-            //Configure the services required for authentication by IdentityServer
-            string authority = Config.IsLocal() ? Config.GetAppSetting("IDENTITY_ISSUER") : $"{Config.SiteAuthority}account/";
-            services.AddIdentityServerClient(
-                authority,
-                Config.SiteAuthority,
-                "gpgWeb",
-                Config.GetAppSetting("AuthSecret", "secret"),
-                BackChannelHandler);
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new PathString("/login");
+                    options.LogoutPath = new PathString("/logout");
+                    options.AccessDeniedPath = new PathString("/error/403");
+                    // ...
+                });
 
             services.AddHostedService<SearchCacheUpdaterService>();
 
@@ -382,7 +383,12 @@ namespace GenderPayGap.WebUI
             app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseSession(); //Must be before UseMvC or any middleware which requires session
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
-            app.UseCookiePolicy();
+            
+            var cookiePolicyOptions = new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+            };
+            app.UseCookiePolicy(cookiePolicyOptions);
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
             app.UseMvCApplication(); //Creates the global instance of Program.MvcApplication (equavalent in old Global.asax.cs)

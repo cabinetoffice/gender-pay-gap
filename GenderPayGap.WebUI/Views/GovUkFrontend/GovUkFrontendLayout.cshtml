@@ -1,4 +1,4 @@
-@using GenderPayGap.Core
+﻿@using GenderPayGap.Core
 @using GenderPayGap.Core.Models.Cookies
 @using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
@@ -113,7 +113,7 @@
             headerNavigationLinks.Add(new HeaderNavigationViewModel
             {
                 Text = "Sign out",
-                Href = Url.Action("SignOut", "Home"),
+                Href = Url.Action("Logout", "Login"),
                 Classes = "sign-out-link"
             });
         }

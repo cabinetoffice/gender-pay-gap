@@ -1,0 +1,87 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Login.LoginViewModel
+@{
+    ViewBag.Title = "Login - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="/Views/Components/CovidMessage.cshtml"/>
+        
+        <hr class="govuk-section-break govuk-section-break--xl"/>
+        
+        <h1 class="govuk-heading-xl">Sign in</h1>
+        
+        @(Html.GovUkErrorSummary())
+        
+        <p class="govuk-body">
+            If you have a user account, enter your email address and password. After signing into your 
+            account you can add an organisation or manage your existing organisations.
+        </p>
+        
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                If you add an organisation to your account it may take up to three weeks to verify
+            </strong>
+        </div>
+        
+        <form method="post" action="@Url.Action("LoginPost", "Login")">
+            @(Html.AntiForgeryToken())
+            @(Html.HiddenFor(m => m.ReturnUrl))
+
+            @(Html.GovUkTextInputFor(
+                m => m.EmailAddress,
+                type: "email",
+                labelOptions: new LabelViewModel { Text = "Email address" },
+                classes: "govuk-input--width-20",
+                formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" }
+                ))
+            
+            @(Html.GovUkTextInputFor(
+                m => m.Password,
+                type: "password",
+                labelOptions: new LabelViewModel { Text = "Password" },
+                classes: "govuk-input--width-20"
+                ))
+            
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Sign in",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+        </form>
+        
+        <p class="govuk-body">
+            <a href="@Url.Action("PasswordReset", "Register")"
+               class="govuk-link">
+                Reset your password
+            </a>
+        </p>
+        
+        <h2 class="govuk-heading-m">Don't have a user account?</h2>
+        
+        <p class="govuk-body">
+            If you're new to the service you will need to create an account.
+            This will allow you to add organisations or manage existing ones.
+        </p>
+
+        <p class="govuk-body">
+            <a href="@Url.Action("CreateUserAccountGet", "AccountCreation")"
+               class="govuk-link">
+                Create a user account
+            </a>
+        </p>
+        
+        <div class="govuk-inset-text">
+            You will need to create your own user account even if someone else
+            has previously reported your organisation's gender pay gap.
+        </div>
+        
+    </div>
+</div>

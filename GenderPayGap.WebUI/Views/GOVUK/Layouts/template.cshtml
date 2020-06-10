@@ -1,5 +1,6 @@
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Models.Cookies
+@using GenderPayGap.WebUI.Controllers.Login
 @using GenderPayGap.WebUI.Helpers
 @{
     string assetsPath = "/assets/images";
@@ -137,7 +138,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li id="login-links" class="nowrap">
-                                @Html.ActionLink("Sign out", nameof(HomeController.SignOut), "Home")
+                                @Html.ActionLink("Sign out", nameof(LoginController.Logout), "Login")
                             </li>
                         } 
                         else 
