@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.Core;
+using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -73,6 +75,29 @@ namespace GenderPayGap.WebUI.Helpers
                 .Wait();
         }
 
+        public static IActionResult Logout(HttpContext httpContext, IActionResult suggestedActionResult)
+        {
+            if (IsUserBeingImpersonated(httpContext.User))
+            {
+                // If the user is being impersonated by an administrator, then:
+                // - don't log the user out completely
+                // - just log them back in as the original administrator user
+                long employerUserId = GetUserId(httpContext.User);
+
+                long adminUserId = GetAdminImpersonatorUserId(httpContext.User);
+                Login(httpContext, adminUserId, "GPGadmin");
+
+                return new RedirectToActionResult("ViewUser", "AdminViewUser", new {id = employerUserId});
+            }
+            else
+            {
+                if (httpContext.RequestServices != null)
+                {
+                    httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+                }
+                return suggestedActionResult;
+            }
+        }
 
         public static long GetUserId(IPrincipal principal)
         {
@@ -107,29 +132,48 @@ namespace GenderPayGap.WebUI.Helpers
             return claim == null ? null : claim.Value;
         }
 
-
-        public static IActionResult Logout(HttpContext httpContext, IActionResult suggestedActionResult)
+        public static bool UserIsLockedOutBecauseOfTooManyRecentFailedLoginAttempts(User user)
         {
-            if (IsUserBeingImpersonated(httpContext.User))
-            {
-                // If the user is being impersonated by an administrator, then:
-                // - don't log the user out completely
-                // - just log them back in as the original administrator user
-                long employerUserId = GetUserId(httpContext.User);
+            int failedLoginAttempts = user.LoginAttempts;
+            int maxAllowedFailedLoginAttempts = Global.MaxLoginAttempts;
 
-                long adminUserId = GetAdminImpersonatorUserId(httpContext.User);
-                Login(httpContext, adminUserId, "GPGadmin");
-
-                return new RedirectToActionResult("ViewUser", "AdminViewUser", new {id = employerUserId});
-            }
-            else
+            if (failedLoginAttempts < maxAllowedFailedLoginAttempts)
             {
-                if (httpContext.RequestServices != null)
-                {
-                    httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
-                }
-                return suggestedActionResult;
+                // The number of failed login attempts is acceptable (not too many)
+                return false;
             }
+
+            DateTime? mostRecentLoginAttempt = user.LoginDate;
+            if (!mostRecentLoginAttempt.HasValue)
+            {
+                // If we don't know when the most recent login attempt is, we don't have any way of calculating when the lockout will end
+                // In this case, just let them try again (this should never happen, we just need this check because mostRecentLoginAttempt is nullable!)
+                return false;
+            }
+
+            int timeInMinutesUserIsLockedOut = Global.LockoutMinutes;
+            DateTime lockoutEndTime = mostRecentLoginAttempt.Value.AddMinutes(timeInMinutesUserIsLockedOut);
+
+            if (lockoutEndTime < VirtualDateTime.Now)
+            {
+                // The user was locked out, but the lockout time has expired, so they're allowed to try again
+                return false;
+            }
+
+            // The user has been locked out and they are still within the lockout time
+            return true;
+        }
+
+        public static int GetMinutesUntilAccountIsUnlocked(User user)
+        {
+            DateTime? mostRecentLoginAttempt = user.LoginDate;
+
+            int timeInMinutesUserIsLockedOut = Global.LockoutMinutes;
+            DateTime lockoutEndTime = mostRecentLoginAttempt.Value.AddMinutes(timeInMinutesUserIsLockedOut);
+
+            TimeSpan timeUntilLockoutEnds = lockoutEndTime.Subtract(VirtualDateTime.Now);
+            int minutesUntilLockoutEndsRoundedUp = (int) Math.Ceiling(timeUntilLockoutEnds.TotalMinutes);
+            return minutesUntilLockoutEndsRoundedUp;
         }
 
     }

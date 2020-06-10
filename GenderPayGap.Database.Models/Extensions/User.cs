@@ -70,12 +70,6 @@ namespace GenderPayGap.Database
         [NotMapped]
         public string ContactFullname => (ContactFirstName + " " + ContactLastName).TrimI();
 
-        [NotMapped]
-        public TimeSpan LockRemaining =>
-            LoginDate == null || LoginAttempts < Config.Configuration["MaxLoginAttempts"].ToInt32()
-                ? TimeSpan.Zero
-                : LoginDate.Value.AddMinutes(Config.Configuration["LockoutMinutes"].ToInt32()) - VirtualDateTime.Now;
-
         public bool IsAdministrator()
         {
             if (!EmailAddress.IsEmailAddress())
