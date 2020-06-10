@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.WebUI", "Gende
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.WebJob", "GenderPayGap.WebJob\GenderPayGap.WebJob.csproj", "{1DF71C5E-2C26-43ED-80EA-79317303909F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.IdentityServer4", "GenderPayGap.IdentityServer4\GenderPayGap.IdentityServer4.csproj", "{F0DBFCDC-2EC9-4181-BF63-1B8F3D585A4E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.BusinessLogic", "GenderPayGap.BusinessLogic\GenderPayGap.BusinessLogic.csproj", "{700A7499-DF43-4E1D-8519-4A45FAB7C782}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{165A87E4-ED4A-4509-A52C-81748DE7286F}"
@@ -75,10 +73,6 @@ Global
 		{1DF71C5E-2C26-43ED-80EA-79317303909F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DF71C5E-2C26-43ED-80EA-79317303909F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DF71C5E-2C26-43ED-80EA-79317303909F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0DBFCDC-2EC9-4181-BF63-1B8F3D585A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0DBFCDC-2EC9-4181-BF63-1B8F3D585A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0DBFCDC-2EC9-4181-BF63-1B8F3D585A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0DBFCDC-2EC9-4181-BF63-1B8F3D585A4E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{700A7499-DF43-4E1D-8519-4A45FAB7C782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{700A7499-DF43-4E1D-8519-4A45FAB7C782}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{700A7499-DF43-4E1D-8519-4A45FAB7C782}.Release|Any CPU.ActiveCfg = Release|Any CPU
