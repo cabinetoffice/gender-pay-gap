@@ -273,9 +273,6 @@ namespace GenderPayGap.WebUI.Search
                 organisation.MinEmployees);
             rankedViewingSearchOrganisation.TopName.Ranks = ranks;
 
-            string employerRefMatch = organisation.EmployerReference == query ? organisation.EmployerReference : null;
-            string companyNumberMatch = organisation.CompanyNumber == query ? organisation.CompanyNumber : null;
-
             List<string> previousNames = rankedViewingSearchOrganisation.Names
                 .Where((item, nameIndex) => nameIndex != 0)
                 .Select(name => name.Name)
@@ -285,10 +282,7 @@ namespace GenderPayGap.WebUI.Search
             {
                 OrganisationName = rankedViewingSearchOrganisation.Names[0].Name,
                 OrganisationPreviousNames = previousNames,
-                EmployerRef = employerRefMatch,
-                CompanyNumber = companyNumberMatch,
                 OrganisationId = organisation.OrganisationId,
-                Status = organisation.Status,
                 EncryptedId = organisation.EncryptedId
             };
 
