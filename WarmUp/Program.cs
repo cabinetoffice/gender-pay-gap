@@ -56,8 +56,8 @@ namespace WarmUp
                 "/viewing/download",
                 "/actions-to-close-the-gap",
                 "/send-feedback",
-                "/account/sign-in",
-                "/account/sign-out"
+                "/login",
+                "/logout"
             };
 
             List<Uri> uris = paths
