@@ -145,13 +145,13 @@ namespace GenderPayGap.IdentityServer4.Controllers
 
                 if (user != null)
                 {
-                    if (user.LockRemaining > TimeSpan.Zero)
+                    if (/*user.LockRemaining*/ TimeSpan.Zero > TimeSpan.Zero)
                     {
                         await _events.RaiseAsync(
                             new UserLoginFailureEvent(model.Username, AccountOptions.TooManySigninAttemptsErrorMessage));
                         ModelState.AddModelError(
                             "",
-                            $"{AccountOptions.TooManySigninAttemptsErrorMessage}<br/>Please try again in {user.LockRemaining.ToFriendly(maxParts: 2)}.");
+                            $"{AccountOptions.TooManySigninAttemptsErrorMessage}<br/>Please try again in {/*user.LockRemaining*/ TimeSpan.Zero.ToFriendly(maxParts: 2)}.");
                     }
                     else if (await _userRepository.CheckPasswordAsync(user, model.Password) == false)
                     {

@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
+﻿using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Login;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Login
@@ -55,6 +48,15 @@ namespace GenderPayGap.WebUI.Controllers.Login
             if (user == null)
             {
                 viewModel.AddErrorFor(m => m.Password, "Incorrect email address or password. Please double-check and try again");
+                return View("Login", viewModel);
+            }
+
+            if (LoginHelper.UserIsLockedOutBecauseOfTooManyRecentFailedLoginAttempts(user))
+            {
+                viewModel.AddErrorFor(
+                    m => m.Password,
+                    "You have entered the email address or password wrong too many times. "
+                    + $"Please try again in {LoginHelper.GetMinutesUntilAccountIsUnlocked(user)} minutes");
                 return View("Login", viewModel);
             }
 
