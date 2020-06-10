@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Signed out - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Signed out</h1>
+
+        <p class="govuk-body">
+            You are now signed out of the Gender pay gap service.
+        </p>
+
+        <p class="govuk-body">
+            <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+               class="govuk-link">
+                Sign in again
+            </a>
+        </p>
+
+    </div>
+</div>

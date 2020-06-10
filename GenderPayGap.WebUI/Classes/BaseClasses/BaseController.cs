@@ -15,6 +15,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Controllers;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -213,17 +214,17 @@ namespace GenderPayGap.WebUI.Classes
             {
                 ImpersonatedUserId = 0;
                 OriginalUser = null;
-                return new RedirectToActionResult(nameof(OrganisationController.ManageOrganisations), "Organisation", null);
+                return RedirectToAction("Home", "Admin");
             }
 
             //otherwise actually logout
             if (string.IsNullOrWhiteSpace(redirectUrl))
             {
-                return SignOut("Cookies", "oidc");
+                return SignOut(CookieAuthenticationDefaults.AuthenticationScheme);
             }
 
             var properties = new AuthenticationProperties {RedirectUri = redirectUrl};
-            return SignOut(properties, "Cookies", "oidc");
+            return SignOut(properties, CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
 
