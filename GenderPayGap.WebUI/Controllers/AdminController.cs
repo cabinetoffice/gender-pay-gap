@@ -75,41 +75,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
         #endregion
 
-        #region Download Action
-
-        [HttpGet("download")]
-        public async Task<IActionResult> Download(string filePath)
-        {
-            //Ensure the file exists
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                return new HttpNotFoundResult("Missing file path");
-            }
-
-            if (filePath.StartsWithI("http:", "https:"))
-            {
-                return new RedirectResult(filePath);
-            }
-
-            if (!await Global.FileRepository.GetFileExistsAsync(filePath))
-            {
-                return new HttpNotFoundResult($"File '{filePath}' does not exist");
-            }
-
-            //Setup the http response
-            var contentDisposition = new ContentDisposition {FileName = Path.GetFileName(filePath), Inline = true};
-            HttpContext.SetResponseHeader("Content-Disposition", contentDisposition.ToString());
-
-            /* No Longer required as AspNetCore has response buffering on by default
-            // Buffer response so that page is sent after processing is complete.
-            Response.BufferOutput = true;
-            */
-
-            return Content(await Global.FileRepository.ReadAsync(filePath), "text/csv");
-        }
-
-        #endregion
-
         #region PendingRegistration Action
 
         [HttpGet("pending-registrations")]
