@@ -115,11 +115,6 @@
     <PackageReference Include="Serilog.Sinks.Network" Version="2.0.2.68" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="App_Data\SicCodes.csv" />
-    <Content Include="App_Data\SicSections.csv" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\GenderPayGap.BusinessLogic\GenderPayGap.BusinessLogic.csproj" />
