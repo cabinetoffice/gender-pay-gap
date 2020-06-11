@@ -223,7 +223,6 @@ namespace GenderPayGap.WebUI.Controllers
                 var download = new DownloadViewModel.Download {
                     Title = Path.GetFileNameWithoutExtension(file).AfterFirst("GPGData_"),
                     Count = await Global.FileRepository.GetMetaDataAsync(file, "RecordCount"),
-                    Extension = Path.GetExtension(file).TrimI("."),
                 };
 
                 download.Url = Url.Action("DownloadData", new {year = download.Title.BeforeFirst("-")});
