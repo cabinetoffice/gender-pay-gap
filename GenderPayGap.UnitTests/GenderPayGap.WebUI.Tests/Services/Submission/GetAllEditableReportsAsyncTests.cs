@@ -50,7 +50,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                null,
                 mockDraftFileBL.Object,
                 MoqHelpers.CreateIOptionsSnapshotMock(testConfig));
 

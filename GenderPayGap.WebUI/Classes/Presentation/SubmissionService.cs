@@ -74,13 +74,11 @@ namespace GenderPayGap.WebUI.Classes.Services
         public SubmissionService(
             IDataRepository dataRepository,
             IScopeBusinessLogic scopeBL,
-            IFileRepository fileRepository,
             IDraftFileBusinessLogic draftFileBusinessLogic,
             IOptionsSnapshot<SubmissionOptions> submissionOptions)
         {
             DataRepository = dataRepository;
             ScopeBusinessLogic = scopeBL;
-            FileRepository = fileRepository;
             _draftFileBusinessLogic = draftFileBusinessLogic;
             SubmissionOptions = submissionOptions;
         }
@@ -88,8 +86,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         public IOptionsSnapshot<SubmissionOptions> SubmissionOptions { get; }
         public IDataRepository DataRepository { get; }
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
-
-        public IFileRepository FileRepository { get; }
 
         public bool IsCurrentSnapshotYear(SectorTypes sector, int snapshotYear)
         {
