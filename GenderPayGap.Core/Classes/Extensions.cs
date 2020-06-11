@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -67,7 +67,7 @@ namespace GenderPayGap.Core.Classes
         /// <param name="records">collection of records to write</param>
         /// <param name="filePath">the remote location of the file to save overwrite</param>
         /// <param name="oldfilePath">the previous file (if any) to be deleted on successful copy</param>
-        public static async Task<long> SaveCSVAsync(this IFileRepository fileRepository,
+        public static async Task SaveCSVAsync(this IFileRepository fileRepository,
             IEnumerable records,
             string filePath,
             string oldfilePath = null)
@@ -77,7 +77,6 @@ namespace GenderPayGap.Core.Classes
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            long size = 0;
             var tempfile = new FileInfo(Path.GetTempFileName());
             try
             {
@@ -93,8 +92,6 @@ namespace GenderPayGap.Core.Classes
                 //Save CSV to storage
                 await fileRepository.WriteAsync(filePath, tempfile);
 
-                size = await fileRepository.GetFileSizeAsync(filePath);
-
 
                 //Delete the old file if it exists
                 if (!string.IsNullOrWhiteSpace(oldfilePath)
@@ -108,8 +105,6 @@ namespace GenderPayGap.Core.Classes
             {
                 File.Delete(tempfile.FullName);
             }
-
-            return size;
         }
 
         public static string ToCSV(this DataTable datatable)
