@@ -74,25 +74,6 @@ namespace GenderPayGap.WebJob
             //Set the default encryption key
             Encryption.SetDefaultEncryptionKey(Config.GetAppSetting("DefaultEncryptionKey"));
 
-            string azureStorageShareName = Config.GetAppSetting("AzureStorageShareName");
-            string localStorageRoot = Config.GetAppSetting("LocalStorageRoot");
-
-            if (string.IsNullOrWhiteSpace(localStorageRoot))
-            {
-                //Exponential retry policy is recommended for background tasks - see https://docs.microsoft.com/en-us/azure/architecture/best-practices/retry-service-specific#azure-storage
-                builder.Register(
-                        c => new AzureFileRepository(
-                            Global.AzureStorageConnectionString,
-                            azureStorageShareName,
-                            new ExponentialRetry(TimeSpan.FromSeconds(3), 10)))
-                    .As<IFileRepository>()
-                    .SingleInstance();
-            }
-            else
-            {
-                builder.Register(c => new SystemFileRepository(localStorageRoot)).As<IFileRepository>().SingleInstance();
-            }
-
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();
 

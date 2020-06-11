@@ -43,9 +43,6 @@ namespace GenderPayGap.WebJob
             //Build the webjob host and services
             IHost host = BuildJobHost(args);
             
-            //Initialise the global file and search repositories
-            Global.FileRepository = ContainerIOC.Resolve<IFileRepository>();
-            
             //Leave this check here to ensure function dependencies resolve on startup rather than when each function method is invoked
             var functions = ContainerIOC.Resolve<Functions>();
             
