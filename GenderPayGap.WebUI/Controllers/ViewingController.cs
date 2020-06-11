@@ -224,7 +224,6 @@ namespace GenderPayGap.WebUI.Controllers
                     Title = Path.GetFileNameWithoutExtension(file).AfterFirst("GPGData_"),
                     Count = await Global.FileRepository.GetMetaDataAsync(file, "RecordCount"),
                     Extension = Path.GetExtension(file).TrimI("."),
-                    Size = Numeric.FormatFileSize(await Global.FileRepository.GetFileSizeAsync(file))
                 };
 
                 download.Url = Url.Action("DownloadData", new {year = download.Title.BeforeFirst("-")});
