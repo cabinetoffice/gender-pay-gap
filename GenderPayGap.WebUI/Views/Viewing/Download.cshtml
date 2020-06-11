@@ -18,7 +18,6 @@
                 <thead>
                 <tr>
                     <th scope="col">Reporting year</th>
-                    <th scope="col" class="numeric">Number of employers</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,7 +33,6 @@
                             <td data-prefix="Reporting year">
                                 <a download="true" data-name="download" data-index="@i" href="@Model.Downloads[i].Url" target="_blank">@Model.Downloads[i].Title (CSV)</a>
                             </td>
-                            <td data-prefix="Number of employers" class="numeric"> @Model.Downloads[i].Count </td>
                         </tr>
                     }
                 }
