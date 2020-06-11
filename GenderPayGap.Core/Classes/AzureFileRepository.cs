@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
@@ -42,8 +41,6 @@ namespace GenderPayGap.Core.Classes
 
             _rootDir = share.GetRootDirectoryReference();
         }
-
-        public string RootDir => _rootDir.Name;
 
         public async Task CreateDirectoryAsync(string directoryPath)
         {
@@ -109,43 +106,6 @@ namespace GenderPayGap.Core.Classes
 
             CloudFile file = await GetFileAsync(filePath);
             return file != null && await file.ExistsAsync();
-        }
-
-        public async Task<DateTime> GetLastWriteTimeAsync(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            CloudFile file = await GetFileAsync(filePath);
-            if (file == null || !await file.ExistsAsync())
-            {
-                throw new FileNotFoundException($"Cannot find file '{filePath}'");
-            }
-
-            return file.Properties.LastModified.Value.LocalDateTime;
-        }
-
-        public async Task<long> GetFileSizeAsync(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            CloudFile file = await GetFileAsync(filePath);
-            if (file == null || !await file.ExistsAsync())
-            {
-                throw new FileNotFoundException($"Cannot find file '{filePath}'");
-            }
-
-            await file.FetchAttributesAsync();
-            return file.Properties.Length;
         }
 
 
@@ -284,47 +244,6 @@ namespace GenderPayGap.Core.Classes
             return await file.DownloadTextAsync();
         }
 
-        public async Task AppendAsync(string filePath, string text)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
-
-            //Ensure the directory exists
-            string directory = Url.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !await GetDirectoryExistsAsync(directory))
-            {
-                await CreateDirectoryAsync(directory);
-            }
-
-            byte[] buffer = Encoding.UTF8.GetBytes(text);
-            CloudFile file = await GetFileAsync(filePath);
-            if (await file.ExistsAsync())
-            {
-                await file.FetchAttributesAsync();
-                await file.ResizeAsync(file.Properties.Length + buffer.Length);
-                using (CloudFileStream fileStream = await file.OpenWriteAsync(null))
-                {
-                    fileStream.Seek(buffer.Length * -1, SeekOrigin.End);
-                    fileStream.Write(buffer, 0, buffer.Length);
-                }
-            }
-            else
-            {
-                await file.UploadFromByteArrayAsync(buffer, 0, buffer.Length);
-            }
-
-            await file.FetchAttributesAsync();
-        }
-
         public async Task WriteAsync(string filePath, byte[] bytes)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -344,26 +263,6 @@ namespace GenderPayGap.Core.Classes
             CloudFile file = await GetFileAsync(filePath);
 
             var stream = new SyncMemoryStream(bytes, 0, bytes.Length);
-            await file.UploadFromStreamAsync(stream);
-        }
-
-        public async Task WriteAsync(string filePath, Stream stream)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            //Ensure the directory exists
-            string directory = Url.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !await GetDirectoryExistsAsync(directory))
-            {
-                await CreateDirectoryAsync(directory);
-            }
-
-            CloudFile file = await GetFileAsync(filePath);
             await file.UploadFromStreamAsync(stream);
         }
 
