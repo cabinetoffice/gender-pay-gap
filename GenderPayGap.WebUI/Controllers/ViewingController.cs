@@ -271,13 +271,6 @@ namespace GenderPayGap.WebUI.Controllers
             };
             HttpContext.SetResponseHeader("Content-Disposition", contentDisposition.ToString());
 
-            //cache old files for 1 day
-            DateTime lastWriteTime = await Global.FileRepository.GetLastWriteTimeAsync(file);
-            if (lastWriteTime.AddMonths(12) < VirtualDateTime.Now)
-            {
-                Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue {MaxAge = TimeSpan.FromDays(1), Public = true};
-            }
-
             /* No Longer required as AspNetCore has response buffering on by default
             Response.BufferOutput = true;
             */
