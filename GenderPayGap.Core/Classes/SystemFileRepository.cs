@@ -21,8 +21,6 @@ namespace GenderPayGap.Core.Classes
             _rootDir = new DirectoryInfo(rootPath);
         }
 
-        public string RootDir => _rootDir.FullName;
-
         public async Task<bool> GetFileExistsAsync(string filePath)
         {
             return await Task.Run(() => GetFileExists(filePath));
@@ -36,16 +34,6 @@ namespace GenderPayGap.Core.Classes
         public async Task<bool> GetDirectoryExistsAsync(string directoryPath)
         {
             return await Task.Run(() => GetDirectoryExists(directoryPath));
-        }
-
-        public async Task<DateTime> GetLastWriteTimeAsync(string filePath)
-        {
-            return await Task.Run(() => GetLastWriteTime(filePath));
-        }
-
-        public async Task<long> GetFileSizeAsync(string filePath)
-        {
-            return await Task.Run(() => GetFileSize(filePath));
         }
 
         public async Task DeleteFileAsync(string filePath)
@@ -78,19 +66,9 @@ namespace GenderPayGap.Core.Classes
             return await Task.Run(() => File.ReadAllText(filePath));
         }
 
-        public async Task AppendAsync(string filePath, string text)
-        {
-            await Task.Run(() => Append(filePath, text));
-        }
-
         public async Task WriteAsync(string filePath, byte[] bytes)
         {
             await Task.Run(() => Write(filePath, bytes));
-        }
-
-        public async Task WriteAsync(string filePath, Stream stream)
-        {
-            await Task.Run(() => Write(filePath, stream));
         }
 
         public async Task WriteAsync(string filePath, FileInfo uploadFile)
@@ -201,36 +179,6 @@ namespace GenderPayGap.Core.Classes
             }
 
             return Directory.Exists(directoryPath);
-        }
-
-        private DateTime GetLastWriteTime(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            return File.GetLastWriteTime(filePath);
-        }
-
-        private long GetFileSize(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            return new FileInfo(filePath).Length;
         }
 
         private void DeleteFile(string filePath)
@@ -363,44 +311,6 @@ namespace GenderPayGap.Core.Classes
             return results;
         }
 
-        private void Append(string filePath, string text)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            //Ensure the directory exists
-            string directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var retries = 0;
-            Retry:
-            try
-            {
-                File.AppendAllText(filePath, text);
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
-        }
-
         private void Write(string filePath, byte[] bytes)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -425,47 +335,6 @@ namespace GenderPayGap.Core.Classes
             try
             {
                 File.WriteAllBytes(filePath, bytes);
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
-        }
-
-        private void Write(string filePath, Stream stream)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            //Ensure the directory exists
-            string directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var retries = 0;
-            Retry:
-            try
-            {
-                using (FileStream fs = File.OpenWrite(filePath))
-                {
-                    stream.CopyTo(fs);
-                }
             }
             catch (IOException)
             {

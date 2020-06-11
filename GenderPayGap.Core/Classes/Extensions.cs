@@ -1,14 +1,10 @@
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 
@@ -142,60 +138,6 @@ namespace GenderPayGap.Core.Classes
                             return reader.ReadToEnd();
                         }
                     }
-                }
-            }
-        }
-
-        public static async Task AppendCsvRecordsAsync<T>(this IFileRepository fileRepository, string filePath, IEnumerable<T> records)
-        {
-            if (records == null || !records.Any())
-            {
-                return;
-            }
-
-            DataTable table = records.ToDataTable();
-
-            using (var textWriter = new StringWriter())
-            {
-                var config = new CsvConfiguration {QuoteAllFields = true, TrimFields = true, TrimHeaders = true};
-
-                using (var writer = new CsvWriter(textWriter, config))
-                {
-                    if (!await fileRepository.GetFileExistsAsync(filePath))
-                    {
-                        for (var c = 0; c < table.Columns.Count; c++)
-                        {
-                            writer.WriteField(table.Columns[c].ColumnName);
-                        }
-
-                        writer.NextRecord();
-                    }
-                    else
-                    {
-                        writer.Configuration.HasHeaderRecord = false;
-                    }
-
-                    foreach (DataRow row in table.Rows)
-                    {
-                        for (var c = 0; c < table.Columns.Count; c++)
-                        {
-                            writer.WriteField(row[c].ToString());
-                        }
-
-                        writer.NextRecord();
-                    }
-                }
-
-                string appendString = textWriter.ToString().Trim();
-                if (!string.IsNullOrWhiteSpace(appendString))
-                {
-                    await fileRepository.AppendAsync(filePath, appendString + Environment.NewLine);
-
-                    //Increase the count in the metadata file
-                    string metaData = await fileRepository.GetMetaDataAsync(filePath, "RecordCount");
-                    int count = metaData.ToInt32();
-                    count += records.Count();
-                    await fileRepository.SetMetaDataAsync(filePath, "RecordCount", count.ToString());
                 }
             }
         }
