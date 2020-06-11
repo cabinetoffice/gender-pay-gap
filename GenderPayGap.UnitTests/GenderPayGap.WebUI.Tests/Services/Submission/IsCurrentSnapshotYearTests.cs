@@ -17,7 +17,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         private ICommonBusinessLogic mockCommonBusinessLogic;
         private Mock<IDataRepository> mockDataRepo;
         private Mock<IDraftFileBusinessLogic> mockDraftFileBL;
-        private Mock<IFileRepository> mockFileRepo;
         private Mock<IScopeBusinessLogic> mockScopeBL;
 
         [SetUp]
@@ -27,7 +26,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
             mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
-            mockFileRepo = new Mock<IFileRepository>();
         }
 
         [TestCase(SectorTypes.Private, 2017)]
@@ -44,7 +42,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 mockDraftFileBL.Object,
                 null);
             mockService.CallBase = true;
@@ -77,7 +74,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             var testService = new WebUI.Classes.Services.SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 mockDraftFileBL.Object,
                 null);
 

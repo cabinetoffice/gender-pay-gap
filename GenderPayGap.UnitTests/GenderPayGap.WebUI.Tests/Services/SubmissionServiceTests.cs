@@ -36,13 +36,11 @@ namespace GenderPayGap.Tests
         {
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
-            mockFileRepo = new Mock<IFileRepository>();
             _mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
         }
 
         private Mock<IDraftFileBusinessLogic> _mockDraftFileBL;
         private Mock<IDataRepository> mockDataRepo;
-        private Mock<IFileRepository> mockFileRepo;
         private Mock<IScopeBusinessLogic> mockScopeBL;
 
         [Test]
@@ -79,7 +77,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -129,7 +126,7 @@ namespace GenderPayGap.Tests
             OrganisationHelper.LinkOrganisationAndReturn(mockedOrganisation, mockedReturn);
 
             var testDraftFileBL = new DraftFileBusinessLogic(new SystemFileRepository());
-            var testService = new SubmissionService(mockDataRepo.Object, null, mockFileRepo.Object, testDraftFileBL, null);
+            var testService = new SubmissionService(mockDataRepo.Object, null, testDraftFileBL, null);
 
             // Act
             Draft actualDraft = await testService.GetDraftFileAsync(
@@ -178,7 +175,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -240,7 +236,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -274,7 +269,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -311,7 +305,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -345,7 +338,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -383,7 +375,6 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -417,7 +408,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -459,7 +449,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 testDraftFileFileBusinessLogic,
                 null);
 
@@ -525,7 +514,6 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
             mockService.CallBase = true;
@@ -576,7 +564,6 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
 
@@ -601,7 +588,6 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
             mockService.CallBase = true;
@@ -629,7 +615,6 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockFileRepo.Object,
                 _mockDraftFileBL.Object,
                 null);
             mockService.CallBase = true;

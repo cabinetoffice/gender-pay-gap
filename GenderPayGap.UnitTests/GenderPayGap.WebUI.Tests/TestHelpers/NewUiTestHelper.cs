@@ -210,7 +210,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                     c => new SubmissionService(
                         c.Resolve<IDataRepository>(),
                         c.Resolve<IScopeBusinessLogic>(),
-                        c.Resolve<IFileRepository>(),
                         c.Resolve<IDraftFileBusinessLogic>(),
                         c.Resolve<IOptionsSnapshot<SubmissionOptions>>()))
                 .As<ISubmissionService>()
