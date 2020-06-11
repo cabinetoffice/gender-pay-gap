@@ -13,7 +13,6 @@ namespace GenderPayGap.WebUI.Models.Search
         {
 
             public string Title { get; set; }
-            public string Count { get; set; }
             public string Url { get; set; }
 
         }

@@ -96,15 +96,6 @@ namespace GenderPayGap.Core.Classes
                 size = await fileRepository.GetFileSizeAsync(filePath);
 
 
-                //Set the count in the metadata file
-                var count = 0;
-                foreach (object item in records)
-                {
-                    count++;
-                }
-
-                await fileRepository.SetMetaDataAsync(filePath, "RecordCount", count.ToString());
-
                 //Delete the old file if it exists
                 if (!string.IsNullOrWhiteSpace(oldfilePath)
                     && await fileRepository.GetFileExistsAsync(oldfilePath)
