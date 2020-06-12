@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
@@ -10,8 +9,6 @@ namespace GenderPayGap.Core
 {
     public class Global
     {
-
-        public static IFileRepository FileRepository;
 
         public static bool SkipSpamProtection
         {
