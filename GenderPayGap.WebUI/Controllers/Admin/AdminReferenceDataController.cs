@@ -54,7 +54,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-SicSections-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .ToList();
 
             string fileDownloadName = $"Gpg-SicCodes-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
