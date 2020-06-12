@@ -2,9 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using Autofac;
-using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore;
@@ -14,8 +11,6 @@ namespace GenderPayGap.WebUI
 {
     public class Program
     {
-
-        public static IMvcApplication MvcApplication { get; set; }
 
         public static void Main(string[] args)
         {
