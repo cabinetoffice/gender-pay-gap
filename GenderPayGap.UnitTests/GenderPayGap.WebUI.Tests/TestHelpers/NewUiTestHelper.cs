@@ -66,8 +66,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             //Create Inversion of Control container
             Global.ContainerIoC = DIContainer;
-            Program.MvcApplication = DIContainer.Resolve<IMvcApplication>();
-
             var mockPrincipal = CreateMockPrincipal(userId, dbObjects);
 
             //Mock HttpRequest
@@ -227,10 +225,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             builder.Register(c => Mock.Of<IEncryptionHandler>()).As<IEncryptionHandler>().SingleInstance();
             
-            //Register the global instance of Program.MvcApplication (equivalent in old Global.asax.cs)
-            //Specify WithAttributeFiltering for the consumer - required to resolve with Keyed attributes
-            builder.RegisterType<MvcApplication>().As<IMvcApplication>().SingleInstance().WithAttributeFiltering();
-
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterType<AccountCreationController>().InstancePerLifetimeScope();
 
@@ -259,7 +253,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                     // allows auto mapper to inject our dependencies
                     config.ConstructServicesUsing(container.Resolve);
                     // register all out mapper profiles (classes/mappers/*)
-                    config.AddMaps(typeof(MvcApplication).Assembly);
+                    config.AddMaps(typeof(Program).Assembly);
                 });
 
             return container;

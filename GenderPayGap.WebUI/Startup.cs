@@ -288,10 +288,6 @@ namespace GenderPayGap.WebUI
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(IWebTracker)))
                 .WithParameter("trackingId", Config.GetAppSetting("GoogleAnalyticsAccountId"));
 
-            //Register the global instance of Program.MvcApplication (equivalent in old Global.asax.cs)
-            //Specify WithAttributeFiltering for the consumer - required to resolve with Keyed attributes
-            builder.RegisterType<MvcApplication>().As<IMvcApplication>().SingleInstance().WithAttributeFiltering();
-
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterAssemblyTypes(typeof(BaseController).Assembly)
                 .Where(t => t.IsAssignableTo<BaseController>())
@@ -313,7 +309,7 @@ namespace GenderPayGap.WebUI
                         // allows auto mapper to inject our dependencies
                         config.ConstructServicesUsing(container.Resolve);
                         // register all out mapper profiles (classes/mappers/*)
-                        config.AddMaps(typeof(MvcApplication).Assembly);
+                        config.AddMaps(typeof(Program).Assembly);
                         AutoMapperInitialised = true;
                     });
             }
@@ -389,7 +385,6 @@ namespace GenderPayGap.WebUI
             app.UseCookiePolicy(cookiePolicyOptions);
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
-            app.UseMvCApplication(); //Creates the global instance of Program.MvcApplication (equavalent in old Global.asax.cs)
             app.UseMvcWithDefaultRoute();
 
             HangfireConfigurationHelper.ConfigureApp(app);
@@ -400,10 +395,6 @@ namespace GenderPayGap.WebUI
                     // Summary:
                     //     Triggered when the application host has fully started and is about to wait for
                     //     a graceful shutdown.
-
-                    //Initialise the application
-                    await Program.MvcApplication.InitAsync();
-
                     CustomLogger.Information("Application Started");
                 });
             lifetime.ApplicationStopping.Register(
