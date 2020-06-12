@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+using GenderPayGap.Core.Models;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
+using StackExchange.Redis;
 
-namespace GenderPayGap.Extensions.AspNetCore
+namespace GenderPayGap.Core.Extensions.AspNetCore
 {
-    public static partial class Extensions
+    public static class Extensions
     {
 
         public static IServiceCollection AddRedisCache(this IServiceCollection services, string applicationDiscriminator = null)
@@ -26,13 +30,26 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
             else
             {
-                string redisConnectionString = Config.GetConnectionString("RedisCache");
-                if (string.IsNullOrWhiteSpace(redisConnectionString))
+                if (Global.VcapServices != null && Global.VcapServices.Redis != null)
                 {
-                    throw new ArgumentNullException("RedisCache", "Cannot find 'RedisCache' ConnectionString");
-                }
+                    VcapRedis redisConfiguration = Global.VcapServices.Redis.First(b => b.Name.EndsWith("-cache"));
 
-                services.AddStackExchangeRedisCache(options => { options.Configuration = redisConnectionString; });
+                    services.AddStackExchangeRedisCache(
+                        options =>
+                        {
+                            options.ConfigurationOptions = new ConfigurationOptions
+                            {
+                                EndPoints = {{redisConfiguration.Credentials.Host, redisConfiguration.Credentials.Port}},
+                                Password = redisConfiguration.Credentials.Password,
+                                Ssl = redisConfiguration.Credentials.TlsEnabled,
+                                AbortOnConnectFail = false
+                            };
+                        });
+                }
+                else
+                {
+                    throw new ArgumentNullException("VCAP_SERVICES", "Cannot find 'VCAP_SERVICES' config setting");
+                }
 
                 //Use blob storage to persist data protection keys equivalent to old MachineKeys
                 string storageConnectionString = Config.GetConnectionString("AzureStorage");
