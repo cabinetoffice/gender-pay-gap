@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Filters;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -33,18 +30,14 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads")]
         public IActionResult Downloads()
         {
-            int firstReportingYear = Global.FirstReportingYear;
-            int currentReportingYear = SectorTypes.Public.GetAccountingStartDate().Year;
-            int numberOfYears = currentReportingYear - firstReportingYear + 1;
-
             var viewModel = new AdminDownloadsViewModel
             {
-                ReportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList()
+                ReportingYears = ReportingYearsHelper.GetReportingYears()
             };
 
             return View("Downloads", viewModel);
         }
-        
+
         [HttpGet("downloads/all-organisations")]
         public FileContentResult DownloadAllOrganisations()
         {

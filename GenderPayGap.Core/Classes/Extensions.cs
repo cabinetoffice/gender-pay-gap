@@ -55,54 +55,6 @@ namespace GenderPayGap.Core.Classes
 
         #region FileSystem
 
-
-        
-        /// <summary>
-        ///     Save records to remote CSV via temporary local storage
-        /// </summary>
-        /// <param name="records">collection of records to write</param>
-        /// <param name="filePath">the remote location of the file to save overwrite</param>
-        /// <param name="oldfilePath">the previous file (if any) to be deleted on successful copy</param>
-        public static async Task SaveCSVAsync(this IFileRepository fileRepository,
-            IEnumerable records,
-            string filePath,
-            string oldfilePath = null)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            var tempfile = new FileInfo(Path.GetTempFileName());
-            try
-            {
-                using (StreamWriter textWriter = tempfile.CreateText())
-                {
-                    var config = new CsvConfiguration {QuoteAllFields = true, TrimFields = true, TrimHeaders = true};
-                    using (var writer = new CsvWriter(textWriter, config))
-                    {
-                        writer.WriteRecords(records);
-                    }
-                }
-
-                //Save CSV to storage
-                await fileRepository.WriteAsync(filePath, tempfile);
-
-
-                //Delete the old file if it exists
-                if (!string.IsNullOrWhiteSpace(oldfilePath)
-                    && await fileRepository.GetFileExistsAsync(oldfilePath)
-                    && !filePath.EqualsI(oldfilePath))
-                {
-                    await fileRepository.DeleteFileAsync(oldfilePath);
-                }
-            }
-            finally
-            {
-                File.Delete(tempfile.FullName);
-            }
-        }
-
         public static string ToCSV(this DataTable datatable)
         {
             using (var stream = new MemoryStream())

@@ -266,40 +266,6 @@ namespace GenderPayGap.Core.Classes
             await file.UploadFromStreamAsync(stream);
         }
 
-        public async Task WriteAsync(string filePath, FileInfo uploadFile)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            if (!uploadFile.Exists)
-            {
-                throw new FileNotFoundException(nameof(uploadFile));
-            }
-
-            //Ensure the directory exists
-            string directory = Url.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !await GetDirectoryExistsAsync(directory))
-            {
-                await CreateDirectoryAsync(directory);
-            }
-
-            CloudFile file = await GetFileAsync(filePath);
-
-            try
-            {
-                await file.UploadFromFileAsync(uploadFile.FullName);
-            }
-            catch (Exception ex)
-            {
-#warning Remove this after bug 'The specifed resource name contains invalid characters.' fixed
-                throw new Exception($"{nameof(filePath)}:'{filePath}', {nameof(uploadFile.FullName)}:'{uploadFile.FullName}'", ex);
-            }
-        }
-
         public string GetFullPath(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
@@ -386,6 +352,15 @@ namespace GenderPayGap.Core.Classes
             await SaveMetaDataAsync(filePath, metaData);
         }
 
+        public void Write(string relativeFilePath, string csvFileContents)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            CloudFile file = GetFile(fullFilePath);
+
+            file.UploadTextAsync(csvFileContents).Wait();
+        }
+
 
         private async Task<CloudFileDirectory> GetDirectoryAsync(string directoryPath)
         {
@@ -401,6 +376,19 @@ namespace GenderPayGap.Core.Classes
         }
 
         private async Task<CloudFile> GetFileAsync(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
+            filePath = Url.DirToUrlSeparator(filePath);
+
+            filePath = filePath.TrimI(@"/\");
+            return _rootDir.GetFileReference(filePath);
+        }
+
+        private CloudFile GetFile(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {

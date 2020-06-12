@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,11 +24,6 @@ namespace GenderPayGap.Core.Classes
         public async Task<bool> GetFileExistsAsync(string filePath)
         {
             return await Task.Run(() => GetFileExists(filePath));
-        }
-
-        public async Task CreateDirectoryAsync(string directoryPath)
-        {
-            await Task.Run(() => CreateDirectory(directoryPath));
         }
 
         public async Task<bool> GetDirectoryExistsAsync(string directoryPath)
@@ -69,11 +64,6 @@ namespace GenderPayGap.Core.Classes
         public async Task WriteAsync(string filePath, byte[] bytes)
         {
             await Task.Run(() => Write(filePath, bytes));
-        }
-
-        public async Task WriteAsync(string filePath, FileInfo uploadFile)
-        {
-            await Task.Run(() => Write(filePath, uploadFile));
         }
 
         public string GetFullPath(string filePath)
@@ -117,6 +107,21 @@ namespace GenderPayGap.Core.Classes
             SaveMetaData(filePath, metaData);
 
             return Task.CompletedTask;
+        }
+
+        public void Write(string relativeFilePath, string csvFileContents)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            string directory = Path.GetDirectoryName(fullFilePath);
+
+            // Create the folder (if it's missing)
+            if (!GetDirectoryExists(directory))
+            {
+                CreateDirectory(directory);
+            }
+
+            File.WriteAllText(fullFilePath, csvFileContents);
         }
 
         private bool GetFileExists(string filePath)
@@ -335,49 +340,6 @@ namespace GenderPayGap.Core.Classes
             try
             {
                 File.WriteAllBytes(filePath, bytes);
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
-        }
-
-        private void Write(string filePath, FileInfo uploadFile)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            if (!uploadFile.Exists)
-            {
-                throw new FileNotFoundException(nameof(uploadFile));
-            }
-
-            //Ensure the directory exists
-            string directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var retries = 0;
-            Retry:
-            try
-            {
-                File.WriteAllText(filePath, File.ReadAllText(uploadFile.FullName));
             }
             catch (IOException)
             {
