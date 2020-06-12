@@ -1,15 +1,17 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
@@ -24,8 +26,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         }
 
 
-        //Update data for viewing service
-        public async Task UpdateDownloadFiles()
+        public void UpdateDownloadFiles()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
@@ -33,7 +34,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             try
             {
-                await UpdateDownloadFilesAsync();
+                UpdateDownloadFilesInner();
             }
             catch (Exception ex)
             {
@@ -46,27 +47,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             JobHelpers.LogFunctionEnd(runId, nameof(UpdateDownloadFiles), startTime);
         }
 
-        //Update GPG download file
-        public async Task UpdateDownloadFilesAsync()
+        public void UpdateDownloadFilesInner()
         {
-            CustomLogger.Information("UpdateDownloadFiles: Checking there is a directory");
-            //Get the downloads location
-            string downloadsLocation = Global.DownloadsLocation;
-
-            //Ensure we have a directory
-            if (!await Global.FileRepository.GetDirectoryExistsAsync(downloadsLocation))
-            {
-                await Global.FileRepository.CreateDirectoryAsync(downloadsLocation);
-            }
-
-            CustomLogger.Information("UpdateDownloadFiles: Getting return years");
-            List<int> returnYears = dataRepository.GetAll<Return>()
-                .Where(r => r.Status == ReturnStatuses.Submitted)
-                .Select(r => r.AccountingDate.Year)
-                .Distinct()
-                .ToList();
-
-            CustomLogger.Information($"UpdateDownloadFiles: - Loading Returns");
+            CustomLogger.Information($"UpdateDownloadFiles: Loading Returns");
             List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Include(o => o.OrganisationNames)
@@ -75,13 +58,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 .Include(o => o.Returns)
                 .ToList();
 
-            foreach (int year in returnYears)
+            foreach (int year in ReportingYearsHelper.GetReportingYears())
             {
                 CustomLogger.Information($"UpdateDownloadFiles: Creating download for year {year}");
-
-                string downloadFilePattern = $"GPGData_{year}-{year + 1}.csv";
-                IEnumerable<string> files = await Global.FileRepository.GetFilesAsync(downloadsLocation, downloadFilePattern);
-                string oldDownloadFilePath = files.FirstOrDefault();
 
                 CustomLogger.Information($"UpdateDownloadFiles: - Filtering Returns");
                 List<Return> returns = activeOrganisations.SelectMany(o => o.Returns)
@@ -98,18 +77,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     .ToList();
 
                 CustomLogger.Information($"UpdateDownloadFiles: - Saving results to file");
-                string newFilePath =
-                    Global.FileRepository.GetFullPath(Path.Combine(downloadsLocation, $"GPGData_{year}-{year + 1}.csv"));
+                string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");
+
                 try
                 {
-                    if (downloadData.Any())
-                    {
-                        await Global.FileRepository.SaveCSVAsync(downloadData, newFilePath, oldDownloadFilePath);
-                    }
-                    else if (!string.IsNullOrWhiteSpace(oldDownloadFilePath))
-                    {
-                        await Global.FileRepository.DeleteFileAsync(oldDownloadFilePath);
-                    }
+                    SaveCsvFile(downloadData, filePath);
                 }
                 catch (Exception ex)
                 {
@@ -119,6 +91,26 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             }
 
             CustomLogger.Information($"UpdateDownloadFiles: Done");
+        }
+
+        private static void SaveCsvFile(IEnumerable records, string relativeFilePath)
+        {
+            var csvConfiguration = new CsvConfiguration { QuoteAllFields = true, TrimFields = true, TrimHeaders = true };
+
+            using (var memoryStream = new MemoryStream())
+            using (var streamReader = new StreamReader(memoryStream))
+            using (var streamWriter = new StreamWriter(memoryStream))
+            using (var csvWriter = new CsvWriter(streamWriter, csvConfiguration))
+            {
+                // Create CSV file (as string)
+                csvWriter.WriteRecords(records);
+                streamWriter.Flush();
+                memoryStream.Position = 0;
+                string csvFileContents = streamReader.ReadToEnd();
+
+                //Save CSV to storage
+                Global.FileRepository.Write(relativeFilePath, csvFileContents);
+            }
         }
 
     }
