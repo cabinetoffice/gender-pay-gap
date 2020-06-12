@@ -159,7 +159,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 EmailSent = wasAnEmailSent
             };
 
-            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
+            var dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
             dataRepository.Insert(reminderEmailRecord);
             dataRepository.SaveChangesAsync().Wait();
         }

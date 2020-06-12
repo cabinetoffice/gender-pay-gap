@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             DIContainer = BuildContainerIoC(dbObjects);
 
             //Create Inversion of Control container
-            MvcApplication.ContainerIoC = DIContainer;
+            Global.ContainerIoC = DIContainer;
 
             Program.MvcApplication = DIContainer.Resolve<IMvcApplication>();
 

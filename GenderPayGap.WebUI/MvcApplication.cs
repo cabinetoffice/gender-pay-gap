@@ -13,8 +13,6 @@ namespace GenderPayGap.WebUI
     public class MvcApplication : IMvcApplication
     {
 
-        public static IContainer ContainerIoC;
-
         public async Task InitAsync()
         {
 
