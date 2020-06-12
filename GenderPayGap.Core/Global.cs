@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -9,6 +10,8 @@ namespace GenderPayGap.Core
 {
     public class Global
     {
+
+        public static IContainer ContainerIoC;
 
         public static bool SkipSpamProtection
         {
@@ -111,6 +114,6 @@ namespace GenderPayGap.Core
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 
         public static bool UsePostgresDb => Config.GetAppSetting("UsePostgresDb").ToBoolean();
-        
+
     }
 }

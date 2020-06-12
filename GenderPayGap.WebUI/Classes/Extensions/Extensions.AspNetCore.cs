@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using GenderPayGap.Core;
 using Microsoft.AspNetCore.Builder;
 
 namespace GenderPayGap.WebUI.Classes
@@ -8,7 +9,7 @@ namespace GenderPayGap.WebUI.Classes
 
         public static IApplicationBuilder UseMvCApplication(this IApplicationBuilder app)
         {
-            Program.MvcApplication = MvcApplication.ContainerIoC.Resolve<IMvcApplication>();
+            Program.MvcApplication = Global.ContainerIoC.Resolve<IMvcApplication>();
 
             return app;
         }

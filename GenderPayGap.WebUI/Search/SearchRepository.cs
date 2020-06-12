@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Search
 
         public static void LoadSearchDataIntoCache()
         {
-            var dataRepository = MvcApplication.ContainerIoC.Resolve<IDataRepository>();
+            var dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
 
             CachedOrganisations = LoadAllOrganisations(dataRepository);
             CalculateOrganisationWords();

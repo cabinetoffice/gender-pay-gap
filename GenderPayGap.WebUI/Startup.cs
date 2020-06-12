@@ -151,10 +151,10 @@ namespace GenderPayGap.WebUI
             ConfigureTestServices?.Invoke(services);
 
             //Create Inversion of Control container
-            MvcApplication.ContainerIoC = BuildContainerIoC(services);
+            Global.ContainerIoC = BuildContainerIoC(services);
 
             // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(MvcApplication.ContainerIoC);
+            return new AutofacServiceProvider(Global.ContainerIoC);
         }
 
         // ConfigureContainer is where you can register things directly
