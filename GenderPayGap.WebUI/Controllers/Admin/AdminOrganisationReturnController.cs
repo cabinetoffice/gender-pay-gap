@@ -104,7 +104,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             string sanitisedOrganisationName = SanitiseOrganisationNameForFilename(organisation.OrganisationName);
             string fileDownloadName = $"ReturnsForOrganisation-{sanitisedOrganisationName}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
-            FileContentResult fileContentResult = CsvDownloadHelper.CreateCsvDownload(records, fileDownloadName);
+            FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
         }
