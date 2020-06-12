@@ -13,6 +13,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Extensions.AspNetCore;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;

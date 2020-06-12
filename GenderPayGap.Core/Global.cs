@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
@@ -111,6 +112,11 @@ namespace GenderPayGap.Core
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 
         public static bool UsePostgresDb => Config.GetAppSetting("UsePostgresDb").ToBoolean();
+
+        public static VcapServices VcapServices =>
+            Config.GetAppSetting("VCAP_SERVICES") != null
+                ? JsonConvert.DeserializeObject<VcapServices>(Config.GetAppSetting("VCAP_SERVICES"))
+                : null;
 
     }
 }
