@@ -147,44 +147,6 @@ namespace GenderPayGap.Core.Classes
             await destinationCloudFile.StartCopyAsync(sourceCloudFile);
         }
 
-        public async Task<IEnumerable<string>> GetFilesAsync(string directoryPath, string searchPattern = null, bool recursive = false)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-            {
-                throw new ArgumentNullException(nameof(directoryPath));
-            }
-
-            directoryPath = Url.DirToUrlSeparator(directoryPath);
-
-            CloudFileDirectory directory = await GetDirectoryAsync(directoryPath);
-            if (directory == null || !await directory.ExistsAsync())
-            {
-                throw new DirectoryNotFoundException($"Cannot find directory '{directoryPath}'");
-            }
-
-            var files = new List<string>();
-            var token = new FileContinuationToken();
-            FileResultSegment items = await directory.ListFilesAndDirectoriesSegmentedAsync(token);
-            foreach (IListFileItem fileDir in items.Results)
-            {
-                if (fileDir is CloudFile)
-                {
-                    var file = (CloudFile) fileDir;
-                    if (string.IsNullOrWhiteSpace(searchPattern) || file.Name.Like(searchPattern))
-                    {
-                        files.Add(Url.Combine(directoryPath, file.Name));
-                    }
-                }
-                else if (recursive)
-                {
-                    var dir = (CloudFileDirectory) fileDir;
-                    files.AddRange(await GetFilesAsync(Url.Combine(directoryPath, dir.Name), searchPattern, recursive));
-                }
-            }
-
-            return files;
-        }
-
         public async Task<bool> GetAnyFileExistsAsync(string directoryPath, string searchPattern = null, bool recursive = false)
         {
             if (string.IsNullOrWhiteSpace(directoryPath))

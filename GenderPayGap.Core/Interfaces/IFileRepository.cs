@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace GenderPayGap.Core.Interfaces
 {
@@ -10,8 +9,6 @@ namespace GenderPayGap.Core.Interfaces
 
         Task DeleteFileAsync(string filePath);
         Task CopyFileAsync(string sourceFilePath, string destinationFilePath, bool overwrite);
-
-        Task<IEnumerable<string>> GetFilesAsync(string directoryPath, string searchPattern = null, bool recursive = false);
 
         Task<string> ReadAsync(string filePath);
 
