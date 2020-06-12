@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
@@ -25,16 +24,15 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace GenderPayGap.WebUI.Controllers
 {
     [Route("viewing")]
     public class ViewingController : BaseController
     {
-        private AutoCompleteSearchService autoCompleteSearchService;
+        private readonly AutoCompleteSearchService autoCompleteSearchService;
+        private readonly IFileRepository fileRepository;
 
         #region Constructors
 
@@ -49,7 +47,8 @@ namespace GenderPayGap.WebUI.Controllers
             IObfuscator obfuscator,
             IDataRepository dataRepository,
             IWebTracker webTracker,
-            AutoCompleteSearchService autoCompleteSearchService) : base(cache, session, dataRepository, webTracker)
+            AutoCompleteSearchService autoCompleteSearchService,
+            IFileRepository fileRepository) : base(cache, session, dataRepository, webTracker)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;
@@ -58,6 +57,7 @@ namespace GenderPayGap.WebUI.Controllers
             Obfuscator = obfuscator;
             SubmissionBusinessLogic = submissionBusinessLogic;
             this.autoCompleteSearchService = autoCompleteSearchService;
+            this.fileRepository = fileRepository;
         }
 
         #endregion
@@ -229,7 +229,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");
-            string fileContents = Global.FileRepository.Read(filePath);
+            string fileContents = fileRepository.Read(filePath);
 
             string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";
 

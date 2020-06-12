@@ -19,10 +19,14 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
     public class UpdatePublicFacingDownloadFilesJob
     {
         private readonly IDataRepository dataRepository;
+        private readonly IFileRepository fileRepository;
 
-        public UpdatePublicFacingDownloadFilesJob(IDataRepository dataRepository)
+        public UpdatePublicFacingDownloadFilesJob(
+            IDataRepository dataRepository,
+            IFileRepository fileRepository)
         {
             this.dataRepository = dataRepository;
+            this.fileRepository = fileRepository;
         }
 
 
@@ -93,7 +97,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             CustomLogger.Information($"UpdateDownloadFiles: Done");
         }
 
-        private static void SaveCsvFile(IEnumerable records, string relativeFilePath)
+        private void SaveCsvFile(IEnumerable records, string relativeFilePath)
         {
             var csvConfiguration = new CsvConfiguration { QuoteAllFields = true, TrimFields = true, TrimHeaders = true };
 
@@ -109,7 +113,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 string csvFileContents = streamReader.ReadToEnd();
 
                 //Save CSV to storage
-                Global.FileRepository.Write(relativeFilePath, csvFileContents);
+                fileRepository.Write(relativeFilePath, csvFileContents);
             }
         }
 

@@ -185,8 +185,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 routeData = new RouteData();
             }
 
-            Global.FileRepository = DIContainer.Resolve<IFileRepository>();
-
             //Mock IHttpContextAccessor
             Mock<IHttpContextAccessor> mockHttpContextAccessor = DIContainer.Resolve<IHttpContextAccessor>().GetMockFromObject();
             mockHttpContextAccessor.SetupGet(a => a.HttpContext).Returns(httpContextMock.Object);
