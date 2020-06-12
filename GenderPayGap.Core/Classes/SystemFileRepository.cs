@@ -26,11 +26,6 @@ namespace GenderPayGap.Core.Classes
             return await Task.Run(() => GetFileExists(filePath));
         }
 
-        public async Task<bool> GetDirectoryExistsAsync(string directoryPath)
-        {
-            return await Task.Run(() => GetDirectoryExists(directoryPath));
-        }
-
         public async Task DeleteFileAsync(string filePath)
         {
             await Task.Run(() => DeleteFile(filePath));
@@ -122,6 +117,13 @@ namespace GenderPayGap.Core.Classes
             }
 
             File.WriteAllText(fullFilePath, csvFileContents);
+        }
+
+        public string Read(string relativeFilePath)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            return File.ReadAllText(fullFilePath);
         }
 
         private bool GetFileExists(string filePath)

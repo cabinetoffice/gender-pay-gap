@@ -1,13 +1,10 @@
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GenderPayGap.Core.Interfaces
 {
     public interface IFileRepository
     {
-
-        Task<bool> GetDirectoryExistsAsync(string directoryPath);
 
         Task<bool> GetFileExistsAsync(string filePath);
 
@@ -24,6 +21,8 @@ namespace GenderPayGap.Core.Interfaces
         Task SetMetaDataAsync(string filePath, string key, string value);
 
         void Write(string relativeFilePath, string csvFileContents);
+
+        string Read(string relativeFilePath);
 
     }
 }

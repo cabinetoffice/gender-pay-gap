@@ -361,6 +361,15 @@ namespace GenderPayGap.Core.Classes
             file.UploadTextAsync(csvFileContents).Wait();
         }
 
+        public string Read(string relativeFilePath)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            CloudFile file = GetFile(fullFilePath);
+
+            return file.DownloadTextAsync().Result;
+        }
+
 
         private async Task<CloudFileDirectory> GetDirectoryAsync(string directoryPath)
         {
