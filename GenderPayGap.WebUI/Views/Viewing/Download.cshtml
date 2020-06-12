@@ -1,43 +1,35 @@
-﻿@model GenderPayGap.WebUI.Models.Search.DownloadViewModel
+﻿@using GenderPayGap.WebUI.Helpers
+
 @{
-    ViewBag.Title = "Gender pay gap";
+    ViewBag.Title = "Download gender pay gap figures - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge">
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
             Download gender pay gap data
         </h1>
-        <p>
+
+        <p class="govuk-body">
             These files are in a CSV (Comma Separated Values) format that can be read by any spreadsheet program or word processor. They are not formatted for printing.
         </p>
-        <div>
-            <h2 class="heading-medium">
-                Employers who have published their gender pay gap figures
-            </h2>
-            <table class="download-table" data-downloadcount="@Model.Downloads.Count">
-                <thead>
-                <tr>
-                    <th scope="col">Reporting year</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if (Model.Downloads.Count < 1)
-                {
-                    <td colspan="2">No downloads found</td>
-                }
-                else
-                {
-                    for (var i = 0; i < Model.Downloads.Count; i++)
-                    {
-                        <tr>
-                            <td data-prefix="Reporting year">
-                                <a download="true" data-name="download" data-index="@i" href="@Model.Downloads[i].Url" target="_blank">@Model.Downloads[i].Title (CSV)</a>
-                            </td>
-                        </tr>
-                    }
-                }
-                </tbody>
-            </table>
-        </div>
+        
+        <ul class="govuk-list">
+            @foreach (int year in ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y))
+            {
+                <li>
+                    <a href="@Url.Action("DownloadData", "Viewing", new { year = year })"
+                       class="govuk-link">
+                        <span class="govuk-visually-hidden">Download gender pay gap data for</span>
+                        Reporting year @(year)-@((year + 1) % 100) (CSV file)
+                    </a>
+                </li>
+            }
+        </ul>
+
+
     </div>
 </div>

@@ -21,6 +21,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search;
@@ -213,69 +214,29 @@ namespace GenderPayGap.WebUI.Controllers
         #region Downloads
 
         [HttpGet("download")]
-        public async Task<IActionResult> Download()
+        public IActionResult Download()
         {
-            var model = new DownloadViewModel {Downloads = new List<DownloadViewModel.Download>()};
-
-            const string filePattern = "GPGData_????-????.csv";
-            foreach (string file in await Global.FileRepository.GetFilesAsync(Global.DownloadsLocation, filePattern))
-            {
-                var download = new DownloadViewModel.Download {
-                    Title = Path.GetFileNameWithoutExtension(file).AfterFirst("GPGData_"),
-                };
-
-                download.Url = Url.Action("DownloadData", new {year = download.Title.BeforeFirst("-")});
-                model.Downloads.Add(download);
-            }
-
-            //Sort downloads by descending year
-            model.Downloads = model.Downloads.OrderByDescending(d => d.Title).ToList();
-
-            //Return the view with the model
-            return View("Download", model);
+            return View("Download");
         }
 
         [HttpGet("download-data")]
         [HttpGet("download-data/{year:int=0}")]
-        public async Task<IActionResult> DownloadData(int year = 0)
+        public IActionResult DownloadData(int year = 0)
         {
             if (year == 0)
             {
                 year = SectorTypes.Private.GetAccountingStartDate().Year;
             }
 
-            //Ensure we have a directory
-            if (!await Global.FileRepository.GetDirectoryExistsAsync(Global.DownloadsLocation))
-            {
-                return new HttpNotFoundResult($"Directory '{Global.DownloadsLocation}' does not exist");
-            }
+            string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");
+            string fileContents = Global.FileRepository.Read(filePath);
 
-            //Ensure we have a file
-            string filePattern = $"GPGData_{year}-{year + 1}.csv";
-            IEnumerable<string> files = await Global.FileRepository.GetFilesAsync(Global.DownloadsLocation, filePattern);
-            string file = files.FirstOrDefault();
-            if (file == null || !await Global.FileRepository.GetFileExistsAsync(file))
-            {
-                return new HttpNotFoundResult("Cannot find GPG data file for year: " + year);
-            }
-            //Get the public and private accounting dates for the specified year
+            string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";
 
-            //TODO log download
-
-            //Setup the HTTP response
-            var contentDisposition = new ContentDisposition {
-                FileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv", Inline = false
-            };
-            HttpContext.SetResponseHeader("Content-Disposition", contentDisposition.ToString());
-
-            /* No Longer required as AspNetCore has response buffering on by default
-            Response.BufferOutput = true;
-            */
             //Track the download 
-            await WebTracker.TrackPageViewAsync(this, contentDisposition.FileName);
+            WebTracker.TrackPageViewAsync(this, userFacingDownloadFileName).Wait();
 
-            //Return the data
-            return Content(await Global.FileRepository.ReadAsync(file), "text/csv");
+            return DownloadHelper.CreateCsvDownload(fileContents, userFacingDownloadFileName);
         }
 
         #endregion
