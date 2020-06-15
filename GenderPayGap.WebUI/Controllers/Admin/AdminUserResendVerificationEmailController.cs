@@ -1,19 +1,19 @@
 ﻿using System;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GenderPayGap.WebUI.Models.Admin
+namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public class AdminUserResendVerificationEmailController : Controller
     {

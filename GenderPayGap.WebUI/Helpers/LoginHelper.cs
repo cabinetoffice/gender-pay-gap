@@ -13,6 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Helpers
 {
+    public static class LoginRoles
+    {
+        public const string GpgAdmin = "GPGadmin";
+        public const string GpgEmployer = "GPGemployer";
+    }
+
     public static class LoginHelper
     {
 
@@ -85,7 +91,7 @@ namespace GenderPayGap.WebUI.Helpers
                 long employerUserId = GetUserId(httpContext.User);
 
                 long adminUserId = GetAdminImpersonatorUserId(httpContext.User);
-                Login(httpContext, adminUserId, "GPGadmin");
+                Login(httpContext, adminUserId, LoginRoles.GpgAdmin);
 
                 return new RedirectToActionResult("ViewUser", "AdminViewUser", new {id = employerUserId});
             }

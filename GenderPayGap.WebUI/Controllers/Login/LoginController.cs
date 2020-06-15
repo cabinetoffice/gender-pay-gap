@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
                 return View("Login", viewModel);
             }
 
-            string userRole = user.IsAdministrator() ? "GPGadmin" : "GPGemployer";
+            string userRole = user.IsAdministrator() ? LoginRoles.GpgAdmin : LoginRoles.GpgEmployer;
 
             LoginHelper.Login(HttpContext, user.UserId, userRole);
 

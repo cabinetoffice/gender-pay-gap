@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Security.Claims;
+using GenderPayGap.WebUI.Helpers;
 using Hangfire.Dashboard;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
@@ -18,7 +19,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
             var claims = httpContext.User.Claims;
             Claim roleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
 
-            bool isAdministrator = roleClaim != null && roleClaim.Value == "GPGadmin";
+            bool isAdministrator = roleClaim != null && roleClaim.Value == LoginRoles.GpgAdmin;
 
             return isAdministrator;
         }

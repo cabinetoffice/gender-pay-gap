@@ -11,6 +11,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -144,7 +145,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         #region ReviewRequest
 
-        [Authorize(Roles = "GPGadmin")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [HttpGet("review-request")]
         public async Task<IActionResult> ReviewRequest(string code)
         {
@@ -324,7 +325,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View("ReviewRequest", model);
         }
 
-        [Authorize(Roles = "GPGadmin")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("review-request")]
@@ -597,7 +598,7 @@ namespace GenderPayGap.WebUI.Controllers
         ///     ask the reviewer for decline reason and confirmation ///
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "GPGadmin")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [HttpGet("confirm-cancellation")]
         public IActionResult ConfirmCancellation()
         {
@@ -623,7 +624,7 @@ namespace GenderPayGap.WebUI.Controllers
         ///     On confirmation save the organisation
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "GPGadmin")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("confirm-cancellation")]
@@ -741,7 +742,7 @@ namespace GenderPayGap.WebUI.Controllers
         /// <summary>
         ///     Show review accepted confirmation
         ///     <returns></returns>
-        [Authorize(Roles = "GPGadmin")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [HttpGet("request-accepted")]
         public IActionResult RequestAccepted()
         {
@@ -774,7 +775,7 @@ namespace GenderPayGap.WebUI.Controllers
         /// <summary>
         ///     Show review cancel confirmation
         ///     <returns></returns>
-        [Authorize(Roles = "GPGadmin")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [HttpGet("request-cancelled")]
         public IActionResult RequestCancelled()
         {
