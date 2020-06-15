@@ -52,7 +52,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             if (IsImpersonatingUser == false)
             {
                 ViewBag.CloseAccountUrl = Url.Action<CloseAccountController>(nameof(CloseAccountController.CloseAccount));
-                ViewBag.ChangeEmailUrl = Url.Action<ChangeEmailController>(nameof(ChangeEmailController.ChangeEmail));
+                ViewBag.ChangeEmailUrl = Url.Action("ChangeEmailGet", "ChangeEmail");
                 ViewBag.ChangePasswordUrl = Url.Action<ChangePasswordController>(nameof(ChangePasswordController.ChangePassword));
                 ViewBag.ChangeDetailsUrl = Url.Action<ChangeDetailsController>(nameof(ChangeDetailsController.ChangeDetails));
             }
