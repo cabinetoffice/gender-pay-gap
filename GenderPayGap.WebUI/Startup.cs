@@ -244,7 +244,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<DraftFileBusinessLogic>().As<IDraftFileBusinessLogic>().SingleInstance();
 
             builder.RegisterType<ChangeDetailsViewService>().As<IChangeDetailsViewService>().InstancePerLifetimeScope();
-            builder.RegisterType<ChangeEmailViewService>().As<IChangeEmailViewService>().InstancePerLifetimeScope();
             builder.RegisterType<ChangePasswordViewService>().As<IChangePasswordViewService>().InstancePerLifetimeScope();
             builder.RegisterType<CloseAccountViewService>().As<CloseAccountViewService>().InstancePerLifetimeScope();
             builder.RegisterType<SubmissionService>().As<ISubmissionService>().InstancePerLifetimeScope();
