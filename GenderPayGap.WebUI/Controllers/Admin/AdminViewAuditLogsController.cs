@@ -3,13 +3,14 @@ using System.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public class AdminViewAuditLogsController : Controller
     {

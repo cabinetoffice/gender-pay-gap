@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Administration
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public partial class AdminController : BaseController
     {
@@ -234,7 +234,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             LoginHelper.LoginWithImpersonation(
                 HttpContext,
                 impersonatedUser.UserId,
-                "GPGemployer",
+                LoginRoles.GpgEmployer,
                 currentUser.UserId);
 
             //Refresh page to ensure identity is passed in cookie

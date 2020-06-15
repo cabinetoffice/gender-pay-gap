@@ -5,12 +5,13 @@ using CsvHelper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public class AdminFeedbackController : Controller
     {

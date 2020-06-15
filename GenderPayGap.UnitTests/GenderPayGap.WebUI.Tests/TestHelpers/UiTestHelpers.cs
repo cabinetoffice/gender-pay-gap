@@ -29,6 +29,7 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers.Admin;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Options;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
@@ -97,7 +98,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             if (userId != 0)
             {
                 claims.Add(new Claim("user_id", userId.ToString()));
-                claims.Add(new Claim(ClaimTypes.Role, "GPGemployer"));
+                claims.Add(new Claim(ClaimTypes.Role, LoginRoles.GpgEmployer));
             }
 
             var mockPrincipal = new Mock<ClaimsPrincipal>();

@@ -1,4 +1,5 @@
-﻿using GenderPayGap.WebUI.Models.Admin;
+﻿using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public class AdminSearchController : Controller
     {

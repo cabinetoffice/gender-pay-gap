@@ -6,6 +6,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public class AdminDatabaseIntegrityChecksController : Controller
     {
