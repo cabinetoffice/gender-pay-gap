@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Autofac.Extensions.DependencyInjection;
+using GenderPayGap.Core;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,8 +35,7 @@ namespace GenderPayGap.Extensions.AspNetCore
                         //options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
                     })
                 .ConfigureAppConfiguration(ConfigureAppConfiguration)
-                .UseApplicationInsights(
-                    Config.GetAppSetting("ApplicationInsights:InstrumentationKey", Config.GetAppSetting("APPINSIGHTS-INSTRUMENTATIONKEY")))
+                .UseApplicationInsights(Global.ApplicationInsightsInstrumentationKey)
                 .CaptureStartupErrors(true) // Add this line to capture startup errors
                 .UseEnvironment(Config.EnvironmentName) //Set the environment name
                 .UseSetting(
@@ -76,9 +76,9 @@ namespace GenderPayGap.Extensions.AspNetCore
 
             //Build the configuration
             Config.Configuration = Config.Build(builder: configBuilder);
-            Encryption.SetDefaultEncryptionKey(Config.GetAppSetting("DefaultEncryptionKey"));
+            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
 
-            Console.WriteLine($"AzureStorageConnectionString: {Config.Configuration.GetConnectionString("AzureStorage")}");
+            Console.WriteLine($"AzureStorageConnectionString: {Global.AzureStorageConnectionString}");
             Console.WriteLine($"Authority: {Config.SiteAuthority}");
         }
 
@@ -148,8 +148,8 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         public static string SetThreadCount()
         {
-            var ioMin = Config.GetAppSetting("MinIOThreads").ToInt32(300);
-            var workerMin = Config.GetAppSetting("MinWorkerThreads").ToInt32(300);
+            var ioMin = Global.MinIOThreads;
+            var workerMin = Global.MinWorkerThreads;
             ThreadPool.SetMinThreads(workerMin, ioMin);
             return $"Min Threads Set (Work:{workerMin:N0}, I/O: {ioMin:N0})";
         }
@@ -162,7 +162,7 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
             else
             {
-                if (Config.GetAppSetting("LogToApplicationInsight").ToBoolean())
+                if (Global.LogToApplicationInsight)
                 {
                     SetupLoggerToApplicationInsight();
                 }
@@ -183,7 +183,7 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
             else
             {
-                if (Config.GetAppSetting("LogToApplicationInsight").ToBoolean())
+                if (Global.LogToApplicationInsight)
                 {
                     SetupLoggerToApplicationInsight();
                 }

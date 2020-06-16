@@ -48,9 +48,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
 
         private static bool HangfireEnabledOnThisServer()
         {
-            int webjobsStoppedSetting = Config.GetAppSetting("WEBJOBS_STOPPED").ToInt32(0);
-            bool webJobsAreEnabled = (webjobsStoppedSetting == 0);
-            return webJobsAreEnabled;
+            return Global.BackgroundJobsEnabled;
         }
 
     }

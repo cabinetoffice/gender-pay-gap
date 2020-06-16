@@ -216,7 +216,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private static List<int> GetReminderEmailDays()
         {
-            var reminderEmailDays = JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReminderEmailDays"));
+            var reminderEmailDays = JsonConvert.DeserializeObject<List<int>>(Global.ReminderEmailDays);
             reminderEmailDays.Sort();
             return reminderEmailDays;
         }

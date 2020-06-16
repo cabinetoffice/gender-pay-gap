@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GenderPayGap.BusinessLogic.Services;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -44,7 +45,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void UpdateFromCompaniesHouse(string runId)
         {
-            int maxNumCallCompaniesHouseApi = Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
+            int maxNumCallCompaniesHouseApi = Global.MaxNumCallsCompaniesHouseApiPerFiveMins;
 
             for (var i = 0; i < maxNumCallCompaniesHouseApi; i++)
             {

@@ -147,8 +147,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         public void CompareController_AddEmployer_Success_RedirectToReturnUrl()
         {
             // Arrange
-            Config.SetAppSetting("SearchService:CacheResults", "true");
-
             var controller = UiTestHelper.GetController<CompareController>();
             long organisationId = 123;
             var expectedObfuscatedOrganisationId = ViewingControllerTests.ConfigureObfuscator(organisationId);

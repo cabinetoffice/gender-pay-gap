@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -25,7 +26,7 @@ namespace GenderPayGap.WebJob
             
             try
             {
-                string azureStorageConnectionString = Config.GetConnectionString("AzureStorage");
+                string azureStorageConnectionString = Global.AzureStorageConnectionString;
                 if (azureStorageConnectionString.Equals("UseDevelopmentStorage=true"))
                 {
                     return;
@@ -35,7 +36,7 @@ namespace GenderPayGap.WebJob
 
                 string azureStorageAccount = connectionString["AccountName"];
                 string azureStorageKey = connectionString["AccountKey"];
-                string azureStorageShareName = Config.GetAppSetting("AzureStorageShareName");
+                string azureStorageShareName = Global.AzureStorageShareName;
 
                 //Take the snapshot
                 await TakeSnapshotAsync(azureStorageAccount, azureStorageKey, azureStorageShareName);
@@ -87,7 +88,7 @@ namespace GenderPayGap.WebJob
         {
             try
             {
-                string azureStorageConnectionString = Config.GetConnectionString("AzureStorage");
+                string azureStorageConnectionString = Global.AzureStorageConnectionString;
                 if (azureStorageConnectionString.Equals("UseDevelopmentStorage=true"))
                 {
                     return;
@@ -97,7 +98,7 @@ namespace GenderPayGap.WebJob
 
                 string azureStorageAccount = connectionString["AccountName"];
                 string azureStorageKey = connectionString["AccountKey"];
-                string azureStorageShareName = Config.GetAppSetting("AzureStorageShareName");
+                string azureStorageShareName = Global.AzureStorageShareName;
 
                 //Take the snapshot
                 await TakeSnapshotAsync(azureStorageAccount, azureStorageKey, azureStorageShareName);

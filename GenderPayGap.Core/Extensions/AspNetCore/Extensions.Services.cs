@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
@@ -52,7 +53,7 @@ namespace GenderPayGap.Core.Extensions.AspNetCore
                 }
 
                 //Use blob storage to persist data protection keys equivalent to old MachineKeys
-                string storageConnectionString = Config.GetConnectionString("AzureStorage");
+                string storageConnectionString = Global.AzureStorageConnectionString;
                 if (string.IsNullOrWhiteSpace(storageConnectionString))
                 {
                     throw new ArgumentNullException("AzureStorage", "Cannot find 'AzureStorage' ConnectionString");

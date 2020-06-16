@@ -34,7 +34,7 @@ namespace GenderPayGap.Core.Filters
             switch (_ipRange)
             {
                 case IpRangeTypes.EhrcIPRange:
-                    _commaSeparatedListOfTrustedIps = Config.GetAppSetting("EhrcIPRange");
+                    _commaSeparatedListOfTrustedIps = Global.EhrcIPRange;
                     break;
                 case IpRangeTypes.None:
                 default:

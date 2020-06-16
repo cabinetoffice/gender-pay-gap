@@ -1,4 +1,5 @@
 using System;
+using GenderPayGap.Core;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -11,7 +12,7 @@ namespace GenderPayGap.Database.Migrations
             if (migrationBuilder.ActiveProvider == "Microsoft.EntityFrameworkCore.SqlServer")
             {
 
-                string ReportsReaderPassword = Config.GetAppSetting("ReportsReaderPassword", "Password");
+                string ReportsReaderPassword = Global.ReportsReaderPassword;
                 migrationBuilder.Sql(
                     $"If not Exists (select loginname from master.dbo.syslogins where name = 'ReportsReaderLogin') CREATE "
                     + $"LOGIN [ReportsReaderLogin] WITH PASSWORD = '{ReportsReaderPassword}';");
