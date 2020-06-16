@@ -182,10 +182,10 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return verifyExpiryDate < VirtualDateTime.Now;
         }
 
-        private void NotifyBothOldAndNewEmailAddressesThatEmailAddressHasBeenChanged(string newOldAddress, string newEmailAddress)
+        private void NotifyBothOldAndNewEmailAddressesThatEmailAddressHasBeenChanged(string oldEmailAddress, string newEmailAddress)
         {
             // send to old email
-            emailSendingService.SendChangeEmailCompletedNotificationEmail(newOldAddress);
+            emailSendingService.SendChangeEmailCompletedNotificationEmail(oldEmailAddress);
 
             // send to new email
             emailSendingService.SendChangeEmailCompletedVerificationEmail(newEmailAddress);
