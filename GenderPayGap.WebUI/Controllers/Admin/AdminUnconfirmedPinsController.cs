@@ -67,7 +67,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
             {
-                string newPin = organisationBusinessLogic.GeneratePINCode(false);
+                string newPin = organisationBusinessLogic.GeneratePINCode();
                 userOrganisation.PIN = newPin;
             }
 

@@ -17,7 +17,7 @@ namespace GenderPayGap.Core.API
     public interface ICompaniesHouseAPI
     {
 
-        Task<PagedResult<EmployerRecord>> SearchEmployersAsync(string searchText, int page, int pageSize, bool test = false);
+        Task<PagedResult<EmployerRecord>> SearchEmployersAsync(string searchText, int page, int pageSize);
         Task<string> GetSicCodesAsync(string companyNumber);
         Task<CompaniesHouseCompany> GetCompanyAsync(string companyNumber);
 
@@ -38,7 +38,7 @@ namespace GenderPayGap.Core.API
             _httpClient = httpClient;
         }
 
-        public async Task<PagedResult<EmployerRecord>> SearchEmployersAsync(string searchText, int page, int pageSize, bool test = false)
+        public async Task<PagedResult<EmployerRecord>> SearchEmployersAsync(string searchText, int page, int pageSize)
         {
             if (searchText.IsNumber())
             {
@@ -49,29 +49,9 @@ namespace GenderPayGap.Core.API
                 PageSize = pageSize, CurrentPage = page, Results = new List<EmployerRecord>()
             };
 
-            if (test)
-            {
-                employersPage.ActualRecordTotal = 1;
-                employersPage.VirtualRecordTotal = 1;
-
-                int id = Numeric.Rand(100000, int.MaxValue - 1);
-                var employer = new EmployerRecord {
-                    OrganisationName = Global.TestPrefix + "_Ltd_" + id,
-                    CompanyNumber = ("_" + id).Left(10),
-                    Address1 = "Test Address 1",
-                    Address2 = "Test Address 2",
-                    City = "Test Address 3",
-                    Country = "Test Country",
-                    PostCode = "Test Post Code",
-                    PoBox = null
-                };
-                employersPage.Results.Add(employer);
-                return employersPage;
-            }
-
             //Get the first page of results and the total records, number of pages, and page size
             var tasks = new List<Task<PagedResult<EmployerRecord>>>();
-            Task<PagedResult<EmployerRecord>> page1task = SearchEmployersAsync(searchText, 1, pageSize);
+            Task<PagedResult<EmployerRecord>> page1task = SearchEmployersAsyncInner(searchText, 1, pageSize);
             await page1task;
 
             //Calculate the maximum page size
@@ -81,7 +61,7 @@ namespace GenderPayGap.Core.API
             //Add a task for ll pages from 2 upwards to maxpages
             for (var subPage = 2; subPage <= maxPages; subPage++)
             {
-                tasks.Add(SearchEmployersAsync(searchText, subPage, page1task.Result.PageSize));
+                tasks.Add(SearchEmployersAsyncInner(searchText, subPage, page1task.Result.PageSize));
             }
 
             //Wait for all the tasks to complete
@@ -158,7 +138,7 @@ namespace GenderPayGap.Core.API
             }
         }
 
-        private async Task<PagedResult<EmployerRecord>> SearchEmployersAsync(string searchText, int page, int pageSize)
+        private async Task<PagedResult<EmployerRecord>> SearchEmployersAsyncInner(string searchText, int page, int pageSize)
         {
             var employersPage = new PagedResult<EmployerRecord> {
                 PageSize = pageSize, CurrentPage = page, Results = new List<EmployerRecord>()

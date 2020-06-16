@@ -174,14 +174,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 throw new IdentityNotMappedException();
             }
 
-            if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix) && !emailAddress.StartsWithI(Global.TestPrefix))
-            {
-                ModelState.AddModelError(
-                    "",
-                    "Test administrators are only permitted to impersonate other test users");
-                return View("Impersonate");
-            }
-
             // find the latest active user by email
             User impersonatedUser = await UserRepository.FindByEmailAsync(emailAddress, UserStatuses.Active);
             if (impersonatedUser == null)

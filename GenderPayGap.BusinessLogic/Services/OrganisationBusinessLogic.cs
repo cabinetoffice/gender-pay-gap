@@ -20,7 +20,7 @@ namespace GenderPayGap.BusinessLogic
     {
         Task SetUniqueEmployerReferenceAsync(Organisation organisation);
 
-        string GeneratePINCode(bool isTestUser);
+        string GeneratePINCode();
 
         CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier);
 
@@ -97,13 +97,8 @@ namespace GenderPayGap.BusinessLogic
             return Crypto.GeneratePasscode(Global.EmployerCodeChars.ToCharArray(), Global.EmployerCodeLength);
         }
 
-        public virtual string GeneratePINCode(bool isTestUser)
+        public virtual string GeneratePINCode()
         {
-            if (isTestUser)
-            {
-                return "ABCDEFG";
-            }
-
             return Crypto.GeneratePasscode(Global.PINChars.ToCharArray(), Global.PINLength);
         }
 

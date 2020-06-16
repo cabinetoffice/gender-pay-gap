@@ -44,7 +44,7 @@ namespace GenderPayGap
             throw new NotImplementedException();
         }
 
-        public async Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize, bool test = false)
+        public async Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize)
         {
             if (searchText.IsNumber())
             {
@@ -53,35 +53,32 @@ namespace GenderPayGap
 
 
             var remoteTotal = 0;
-            PagedResult<EmployerRecord> searchResults = test ? null : LoadSearch(searchText);
+            PagedResult<EmployerRecord> searchResults = LoadSearch(searchText);
 
             if (searchResults == null)
             {
                 var orgs = new List<Organisation>();
                 var localResults = new List<Organisation>();
 
-                if (!test)
-                {
-                    orgs = await _DataRepository.GetAll<Organisation>()
-                        .Where(
-                            o => o.SectorType == SectorTypes.Private &&
-                                 o.Status == OrganisationStatuses.Active &&
-                                o.OrganisationAddresses.Count > 0)
-                        .ToListAsync();
+                orgs = await _DataRepository.GetAll<Organisation>()
+                    .Where(
+                        o => o.SectorType == SectorTypes.Private
+                             && o.Status == OrganisationStatuses.Active
+                             && o.OrganisationAddresses.Count > 0)
+                    .ToListAsync();
 
-                    if (searchText.IsCompanyNumber())
-                    {
-                        localResults = orgs.Where(o => o.CompanyNumber.EqualsI(searchText)).OrderBy(o => o.OrganisationName).ToList();
-                    }
-                    else
-                    {
-                        localResults = orgs.Where(o => o.OrganisationName.ContainsI(searchText)).OrderBy(o => o.OrganisationName).ToList();
-                    }
+                if (searchText.IsCompanyNumber())
+                {
+                    localResults = orgs.Where(o => o.CompanyNumber.EqualsI(searchText)).OrderBy(o => o.OrganisationName).ToList();
+                }
+                else
+                {
+                    localResults = orgs.Where(o => o.OrganisationName.ContainsI(searchText)).OrderBy(o => o.OrganisationName).ToList();
                 }
 
                 try
                 {
-                    searchResults = await _CompaniesHouseAPI.SearchEmployersAsync(searchText, 1, CompaniesHouseAPI.MaxRecords, test);
+                    searchResults = await _CompaniesHouseAPI.SearchEmployersAsync(searchText, 1, CompaniesHouseAPI.MaxRecords);
                     remoteTotal = searchResults.Results.Count;
                 }
                 catch (Exception ex)
@@ -120,23 +117,13 @@ namespace GenderPayGap
 
                     if (localResults.Count > 0)
                     {
-                        if (test) //Make sure test employer is first
-                        {
-                            searchResults.Results.AddRange(localResults.Select(o => o.ToEmployerRecord()));
-                        }
-                        else
-                        {
-                            searchResults.Results.InsertRange(0, localResults.Select(o => o.ToEmployerRecord()));
-                        }
+                        searchResults.Results.InsertRange(0, localResults.Select(o => o.ToEmployerRecord()));
 
                         searchResults.ActualRecordTotal += localTotal;
                     }
                 }
 
-                if (!test)
-                {
-                    SaveSearch(searchText, searchResults, remoteTotal);
-                }
+                SaveSearch(searchText, searchResults, remoteTotal);
             }
 
             var result = new PagedResult<EmployerRecord>();

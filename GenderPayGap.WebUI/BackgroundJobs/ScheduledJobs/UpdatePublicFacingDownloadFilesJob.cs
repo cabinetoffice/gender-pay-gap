@@ -72,8 +72,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     .Where(r => r.Status == ReturnStatuses.Submitted)
                     .ToList();
 
-                returns.RemoveAll(r => r.Organisation.OrganisationName.StartsWithI(Global.TestPrefix));
-
                 CustomLogger.Information($"UpdateDownloadFiles: - Converting Returns into results");
                 List<DownloadResult> downloadData = returns.ToList()
                     .Select(r => r.ToDownloadResult())

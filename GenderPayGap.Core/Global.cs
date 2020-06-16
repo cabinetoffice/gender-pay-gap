@@ -73,7 +73,6 @@ namespace GenderPayGap.Core
         public static string PINChars => Config.GetAppSetting("PINChars");
         public static string PinRegex => Config.GetAppSetting("PinRegex");
         public static string PinRegexError => Config.GetAppSetting("PinRegexError");
-        public static string TestPrefix => Config.GetAppSetting("TestPrefix");
         public static string WhoNeedsToReportGuidanceLink => Config.GetAppSetting("WhoNeedsToReportGuidanceLink");
         public static int CurrentAccountingYear => SectorTypes.Private.GetAccountingStartDate().Year;
 

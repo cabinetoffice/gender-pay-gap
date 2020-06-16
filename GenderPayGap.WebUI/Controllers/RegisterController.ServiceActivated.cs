@@ -86,12 +86,6 @@ namespace GenderPayGap.WebUI.Controllers
             model.AllowResend = remaining <= TimeSpan.Zero;
             model.Remaining = remaining.ToFriendly(maxParts: 2);
 
-            //If the email address is a test email then simulate sending
-            if (userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                model.PIN = "ABCDEF";
-            }
-
             //Show the PIN textbox and button
             return View("ActivateService", model);
         }

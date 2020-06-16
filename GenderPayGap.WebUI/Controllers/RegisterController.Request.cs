@@ -521,9 +521,7 @@ namespace GenderPayGap.WebUI.Controllers
                     "Manually registered");
 
                 //Send the approved email to the applicant
-                SendRegistrationAccepted(
-                    userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress),
-                    userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix));
+                SendRegistrationAccepted(userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress));
 
                 //Log the approval
                 auditLogger.AuditChangeToOrganisation(
@@ -548,12 +546,6 @@ namespace GenderPayGap.WebUI.Controllers
                         userOrg.User.ContactPhoneNumber
                     },
                     User);
-
-                //Show confirmation
-                if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
-                {
-                    TempData["TestUrl"] = Url.Action("Impersonate", "Admin", new {emailAddress = userOrg.User.EmailAddress});
-                }
 
                 result = RedirectToAction("RequestAccepted");
             }
@@ -581,7 +573,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         //Send the registration request
-        protected void SendRegistrationAccepted(string emailAddress, bool test = false)
+        protected void SendRegistrationAccepted(string emailAddress)
         {
             //Always use the administrators email when not on production
             if (!Config.IsProduction())
@@ -764,11 +756,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Clear the stash
             this.ClearStash();
 
-            if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix) && TempData.ContainsKey("TestUrl"))
-            {
-                ViewBag.TestUrl = TempData["TestUrl"];
-            }
-
             return View("RequestAccepted", model);
         }
 
@@ -796,14 +783,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Clear the stash
             this.ClearStash();
-
-            if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                UserOrganisation userOrg;
-                ActionResult result = UnwrapRegistrationRequest(model, out userOrg);
-
-                ViewBag.TestUrl = Url.Action("Impersonate", "Admin", new {emailAddress = userOrg.User.EmailAddress});
-            }
 
             return View("RequestCancelled", model);
         }

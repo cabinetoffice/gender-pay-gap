@@ -25,38 +25,9 @@ namespace GenderPayGap
             _CompaniesHouseAPI = companiesHouseAPI;
         }
 
-        public async Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize, bool test = false)
+        public async Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize)
         {
             var result = new PagedResult<EmployerRecord>();
-            if (test)
-            {
-                var employers = new List<EmployerRecord>();
-
-                int min = await _DataRepository.GetAll<Organisation>().CountAsync();
-
-                int id = Numeric.Rand(min, int.MaxValue - 1);
-                var employer = new EmployerRecord {
-                    OrganisationName = Global.TestPrefix + "_GovDept_" + id,
-                    CompanyNumber = ("_" + id).Left(10),
-                    Address1 = "Test Address 1",
-                    Address2 = "Test Address 2",
-                    City = "Test Address 3",
-                    Country = "Test Country",
-                    PostCode = "Test Post Code",
-                    EmailDomains = "*@*",
-                    PoBox = null,
-                    SicCodeIds = "1"
-                };
-                employers.Add(employer);
-
-                result.ActualRecordTotal = employers.Count;
-                result.VirtualRecordTotal = employers.Count;
-                result.CurrentPage = page;
-                result.PageSize = pageSize;
-                result.Results = employers;
-                return result;
-            }
-
             List<Organisation> searchResults = await _DataRepository.GetAll<Organisation>()
                 .Where(o => o.SectorType == SectorTypes.Public && o.Status == OrganisationStatuses.Active)
                 .ToListAsync();
