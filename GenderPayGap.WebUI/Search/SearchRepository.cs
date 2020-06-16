@@ -63,6 +63,7 @@ namespace GenderPayGap.WebUI.Search
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.Returns)
+                .Include(o => o.OrganisationScopes)
                 .Include(o => o.OrganisationSicCodes)
                 .ToList()
                 .Select(
