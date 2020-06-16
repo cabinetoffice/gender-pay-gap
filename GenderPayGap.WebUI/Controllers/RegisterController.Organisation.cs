@@ -184,8 +184,7 @@ namespace GenderPayGap.WebUI.Controllers
                         model.Employers = await PrivateSectorRepository.SearchAsync(
                             model.SearchText,
                             1,
-                            Global.EmployerPageSize,
-                            currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                            Global.EmployerPageSize);
                     }
                     catch (Exception ex)
                     {
@@ -213,8 +212,7 @@ namespace GenderPayGap.WebUI.Controllers
                     model.Employers = await PublicSectorRepository.SearchAsync(
                         model.SearchText,
                         1,
-                        Global.EmployerPageSize,
-                        currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                        Global.EmployerPageSize);
 
                     break;
 
@@ -411,8 +409,7 @@ namespace GenderPayGap.WebUI.Controllers
                             model.Employers = await PrivateSectorRepository.SearchAsync(
                                 model.SearchText,
                                 nextPage,
-                                Global.EmployerPageSize,
-                                currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                                Global.EmployerPageSize);
                         }
                         catch (Exception ex)
                         {
@@ -455,8 +452,7 @@ namespace GenderPayGap.WebUI.Controllers
                         model.Employers = await PublicSectorRepository.SearchAsync(
                             model.SearchText,
                             nextPage,
-                            Global.EmployerPageSize,
-                            currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                            Global.EmployerPageSize);
                         break;
 
                     default:
@@ -1083,53 +1079,45 @@ namespace GenderPayGap.WebUI.Controllers
                 if (!model.ManualRegistration && string.IsNullOrWhiteSpace(employer.SicCodeIds))
                 {
                     employer.SicSource = "CoHo";
-                    if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
+                    try
                     {
-                        SicCode sic = await DataRepository.GetAll<SicCode>().FirstOrDefaultAsync(s => s.SicSectionId != "X");
-                        employer.SicCodeIds = sic?.SicCodeId.ToString();
-                    }
-                    else
-                    {
-                        try
+                        if (employer.SectorType == SectorTypes.Public)
                         {
-                            if (employer.SectorType == SectorTypes.Public)
-                            {
-                                employer.SicCodeIds = await PublicSectorRepository.GetSicCodesAsync(employer.CompanyNumber);
-                            }
-                            else
-                            {
-                                employer.SicCodeIds = await PrivateSectorRepository.GetSicCodesAsync(employer.CompanyNumber);
-                            }
-
-                            employer.SicSource = "CoHo";
+                            employer.SicCodeIds = await PublicSectorRepository.GetSicCodesAsync(employer.CompanyNumber);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            CompaniesHouseFailures++;
-                            if (CompaniesHouseFailures < 3)
-                            {
-                                this.StashModel(model);
-                                ModelState.AddModelError(1142);
-                                return View(model);
-                            }
-
-                            DateTime time = VirtualDateTime.Now;
-                            CustomLogger.Error(
-                                $"Companies House failed: {nameof(ConfirmOrganisation)}",
-                                new
-                                {
-                                    environment = Config.EnvironmentName,
-                                    time,
-                                    Exception = ex,
-                                    employer.OrganisationName,
-                                    employer.CompanyNumber
-                                });
-
-                            return View("CustomError", new ErrorViewModel(1140));
+                            employer.SicCodeIds = await PrivateSectorRepository.GetSicCodesAsync(employer.CompanyNumber);
                         }
 
-                        CompaniesHouseFailures = 0;
+                        employer.SicSource = "CoHo";
                     }
+                    catch (Exception ex)
+                    {
+                        CompaniesHouseFailures++;
+                        if (CompaniesHouseFailures < 3)
+                        {
+                            this.StashModel(model);
+                            ModelState.AddModelError(1142);
+                            return View(model);
+                        }
+
+                        DateTime time = VirtualDateTime.Now;
+                        CustomLogger.Error(
+                            $"Companies House failed: {nameof(ConfirmOrganisation)}",
+                            new
+                            {
+                                environment = Config.EnvironmentName,
+                                time,
+                                Exception = ex,
+                                employer.OrganisationName,
+                                employer.CompanyNumber
+                            });
+
+                        return View("CustomError", new ErrorViewModel(1140));
+                    }
+
+                    CompaniesHouseFailures = 0;
                 }
 
                 model.SicCodeIds = employer.SicCodeIds;
@@ -1330,11 +1318,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 string reviewCode = Encryption.EncryptQuerystring(
                     userOrg.UserId + ":" + userOrg.OrganisationId + ":" + VirtualDateTime.Now.ToSmallDateTime());
-
-                if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
-                {
-                    TempData["TestUrl"] = Url.Action("ReviewRequest", new {code = reviewCode});
-                }
 
                 return RedirectToAction("RequestReceived");
             }
@@ -1823,8 +1806,7 @@ namespace GenderPayGap.WebUI.Controllers
                         userOrg,
                         $"{model.ContactFirstName} {currentUser.ContactLastName} ({currentUser.JobTitle})",
                         org.OrganisationName,
-                        address.GetAddressString(),
-                        currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                        address.GetAddressString());
                 }
                 else
                 {
@@ -1832,8 +1814,7 @@ namespace GenderPayGap.WebUI.Controllers
                         userOrg,
                         $"{currentUser.Fullname} ({currentUser.JobTitle})",
                         org.OrganisationName,
-                        address.GetAddressString(),
-                        currentUser.EmailAddress.StartsWithI(Global.TestPrefix));
+                        address.GetAddressString());
                 }
             }
 
@@ -1844,18 +1825,11 @@ namespace GenderPayGap.WebUI.Controllers
         protected async Task SendGEORegistrationRequestAsync(UserOrganisation userOrg,
             string contactName,
             string reportingOrg,
-            string reportingAddress,
-            bool test = false)
+            string reportingAddress)
         {
             //Send a verification link to the email address
             string reviewCode = userOrg.GetReviewCode();
             string reviewUrl = Url.Action("ReviewRequest", "Register", new {code = reviewCode}, "https");
-
-            //If the email address is a test email then simulate sending
-            if (userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                return;
-            }
 
             emailSendingService.SendGeoOrganisationRegistrationRequestEmail(
                 contactName,
@@ -1879,11 +1853,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Clear the stash
             this.ClearStash();
-
-            if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix) && TempData.ContainsKey("TestUrl"))
-            {
-                ViewBag.TestUrl = TempData["TestUrl"];
-            }
 
             return View("RequestReceived");
         }

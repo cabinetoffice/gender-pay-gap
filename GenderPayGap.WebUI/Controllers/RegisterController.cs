@@ -138,11 +138,8 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     DateTime now = VirtualDateTime.Now;
 
-                    // Check if we are a test user (for load testing)
-                    bool thisIsATestUser = userOrg.User.EmailAddress.StartsWithI(Global.TestPrefix);
-
                     // Generate a new pin
-                    string pin = OrganisationBusinessLogic.GeneratePINCode(thisIsATestUser);
+                    string pin = OrganisationBusinessLogic.GeneratePINCode();
 
                     // Save the PIN and confirm code
                     userOrg.PIN = pin;
@@ -150,21 +147,18 @@ namespace GenderPayGap.WebUI.Controllers
                     userOrg.Method = RegistrationMethods.PinInPost;
                     await DataRepository.SaveChangesAsync();
 
-                    if (!thisIsATestUser)
+                    // Try and send the PIN in post
+                    if (pinInThePostService.SendPinInThePost(this, userOrg, pin, out string letterId))
                     {
-                        // Try and send the PIN in post
-                        if (pinInThePostService.SendPinInThePost(this, userOrg, pin, out string letterId))
-                        {
-                            userOrg.PITPNotifyLetterId = letterId;
-                            await DataRepository.SaveChangesAsync();
-                        }
-                        else
-                        {
-                            // Show "Notify is down" error message
-                            return View(
-                                "PinFailedToSend",
-                                new PinFailedToSendViewModel {OrganisationName = userOrg.Organisation.OrganisationName});
-                        }
+                        userOrg.PITPNotifyLetterId = letterId;
+                        await DataRepository.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // Show "Notify is down" error message
+                        return View(
+                            "PinFailedToSend",
+                            new PinFailedToSendViewModel {OrganisationName = userOrg.Organisation.OrganisationName});
                     }
 
                     CustomLogger.Information(
@@ -334,8 +328,7 @@ namespace GenderPayGap.WebUI.Controllers
             ViewBag.EmailAddress = model.EmailAddress;
 
             //Ensure signup is restricted to every 10 mins
-            await SetLastPasswordResetDateAsync(
-                model.EmailAddress.StartsWithI(Global.TestPrefix) ? DateTime.MinValue : VirtualDateTime.Now);
+            await SetLastPasswordResetDateAsync(VirtualDateTime.Now);
 
             // find the latest active user by email
             currentUser = await UserRepository.FindByEmailAsync(model.EmailAddress, UserStatuses.Active);
@@ -360,14 +353,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             //show confirmation
             ViewBag.EmailAddress = currentUser.EmailAddress;
-            if (currentUser.EmailAddress.StartsWithI(Global.TestPrefix))
-            {
-                ViewBag.TestUrl = Url.Action(
-                    "NewPassword",
-                    "Register",
-                    new {code = Encryption.EncryptQuerystring(currentUser.UserId + ":" + VirtualDateTime.Now.ToSmallDateTime())},
-                    "https");
-            }
 
             return View("PasswordResetSent");
         }

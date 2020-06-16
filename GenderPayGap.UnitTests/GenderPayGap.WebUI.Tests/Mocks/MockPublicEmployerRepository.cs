@@ -40,7 +40,7 @@ public class MockPublicEmployerRepository : IPagedRepository<EmployerRecord>
         return Task.FromResult(sics);
     }
 
-    public Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize, bool test = false)
+    public Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize)
     {
         //var searchResults = PublicSectorOrgs.Messages.List.Where(o => o.Name.ContainsI(searchText));
 
@@ -59,7 +59,7 @@ public class MockPublicEmployerRepository : IPagedRepository<EmployerRecord>
         return Task.FromResult(result);
     }
 
-    public PagedResult<EmployerRecord> Search(string searchText, int page, int pageSize, bool test = false)
+    public PagedResult<EmployerRecord> Search(string searchText, int page, int pageSize)
     {
         var result = new PagedResult<EmployerRecord>();
         List<EmployerRecord> allEmployers = AllEmployers.Where(e => e.OrganisationName.ContainsI(searchText)).ToList();

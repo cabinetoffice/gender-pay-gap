@@ -30,7 +30,7 @@ namespace GenderPayGap.Tests
             AllEmployers.Add(employer);
         }
 
-        public Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize, bool test = false)
+        public Task<PagedResult<EmployerRecord>> SearchAsync(string searchText, int page, int pageSize)
         {
             // var searchResults = CompaniesHouseAPI.SearchEmployers(out totalRecords, searchText, page, pageSize);
             var result = new PagedResult<EmployerRecord> {Results = new List<EmployerRecord>()};
@@ -48,7 +48,7 @@ namespace GenderPayGap.Tests
             return Task.FromResult(result);
         }
 
-        public PagedResult<EmployerRecord> Search(string searchText, int page, int pageSize, bool test = false)
+        public PagedResult<EmployerRecord> Search(string searchText, int page, int pageSize)
         {
             var result = new PagedResult<EmployerRecord>();
             //DONE:NastyBug! Page method arguments Page(pageSize, page) where in vice-versa positions as in Page(page, pageSize)! now fixed 
