@@ -16,7 +16,7 @@ namespace GenderPayGap.Database
     {
 
         [NotMapped]
-        public static bool EncryptEmails = Config.GetAppSetting("EncryptEmails").ToBoolean(true);
+        public static bool EncryptEmails = Global.EncryptEmails;
 
         [NotMapped]
         public string EmailAddress

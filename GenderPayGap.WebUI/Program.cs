@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore;
@@ -20,7 +21,7 @@ namespace GenderPayGap.WebUI
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             //Culture is required so UK dates can be parsed correctly
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(Config.GetAppSetting("Culture").ToStringOr("en-GB"));
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(Global.Culture.ToStringOr("en-GB"));
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
             //Create the web host

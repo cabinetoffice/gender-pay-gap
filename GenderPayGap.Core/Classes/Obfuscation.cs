@@ -16,7 +16,7 @@ namespace GenderPayGap.Core.Classes
     public class InternalObfuscator : IObfuscator
     {
 
-        private static readonly int Seed = Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
+        private static readonly int Seed = Global.ObfuscationSeed;
         private readonly Obfuscator _obfuscator;
 
         public InternalObfuscator()

@@ -112,6 +112,42 @@ namespace GenderPayGap.Core
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 
         public static bool UsePostgresDb => Config.GetAppSetting("UsePostgresDb").ToBoolean();
+        
+        public static bool BackgroundJobsEnabled => Config.GetAppSetting("WEBJOBS_STOPPED").ToInt32(0) == 0;
+
+        public static int MaxNumCallsCompaniesHouseApiPerFiveMins => Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
+
+        public static string ReminderEmailDays => Config.GetAppSetting("ReminderEmailDays");
+
+        public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
+
+        public static string Culture => Config.GetAppSetting("Culture");
+
+        public static string AzureStorageShareName => Config.GetAppSetting("AzureStorageShareName");
+        public static string LocalStorageRoot => Config.GetAppSetting("LocalStorageRoot");
+
+        public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
+        public static string CompaniesHouseApiServer => Config.GetAppSetting("CompaniesHouseApiServer");
+        public static int CompaniesHouseMaxRecords => Config.GetAppSetting("CompaniesHouseMaxRecords").ToInt32(400);
+
+        public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
+
+        public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
+
+        public static string ApplicationInsightsInstrumentationKey => Config.GetAppSetting("ApplicationInsights:InstrumentationKey", Config.GetAppSetting("APPINSIGHTS-INSTRUMENTATIONKEY"));
+
+        public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
+
+        public static int MinIOThreads => Config.GetAppSetting("MinIOThreads").ToInt32(300);
+        public static int MinWorkerThreads => Config.GetAppSetting("MinWorkerThreads").ToInt32(300);
+
+        public static bool LogToApplicationInsight => Config.GetAppSetting("LogToApplicationInsight").ToBoolean();
+
+        public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
+
+        public static bool EncryptEmails => Config.GetAppSetting("EncryptEmails").ToBoolean(true);
+
+        public static string ReportsReaderPassword => Config.GetAppSetting("ReportsReaderPassword", "Password");
 
         public static VcapServices VcapServices =>
             Config.GetAppSetting("VCAP_SERVICES") != null

@@ -13,7 +13,7 @@ namespace GenderPayGap.Core.Classes
     {
 
         private readonly NotificationClient _client = new NotificationClient(_apiKey);
-        private static string _apiKey => Config.GetAppSetting("GovUkNotifyApiKey");
+        private static string _apiKey => Global.GovUkNotifyApiKey;
 
         public EmailNotificationResponse SendEmail(NotifyEmail notifyEmail)
         {

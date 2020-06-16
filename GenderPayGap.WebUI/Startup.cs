@@ -199,7 +199,7 @@ namespace GenderPayGap.WebUI
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(ICompaniesHouseAPI)));
 
             // use the 'azureStorageConnectionString' and 'AzureStorageShareName' when connecting to a remote storage
-            string azureStorageConnectionString = Config.GetConnectionString("AzureStorage");
+            string azureStorageConnectionString = Global.AzureStorageConnectionString;
             Console.WriteLine($"AzureStorageConnectionString: {azureStorageConnectionString}");
 
             // validate we have a storage connection
@@ -208,9 +208,9 @@ namespace GenderPayGap.WebUI
                 throw new InvalidOperationException("No Azure Storage connection specified. Check the config.");
             }
 
-            string azureStorageShareName = Config.GetAppSetting("AzureStorageShareName");
+            string azureStorageShareName = Global.AzureStorageShareName;
             // use the 'localStorageRoot' when hosting the storage in a local folder
-            string localStorageRoot = Config.GetAppSetting("LocalStorageRoot");
+            string localStorageRoot = Global.LocalStorageRoot;
 
             if (string.IsNullOrWhiteSpace(localStorageRoot))
             {
@@ -287,7 +287,7 @@ namespace GenderPayGap.WebUI
                 .WithParameter(
                     (p, ctx) => p.ParameterType == typeof(HttpClient),
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(IWebTracker)))
-                .WithParameter("trackingId", Config.GetAppSetting("GoogleAnalyticsAccountId"));
+                .WithParameter("trackingId", Global.GoogleAnalyticsAccountId);
 
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterAssemblyTypes(typeof(BaseController).Assembly)

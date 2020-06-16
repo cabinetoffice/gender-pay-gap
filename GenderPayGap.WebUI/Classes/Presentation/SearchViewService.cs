@@ -11,8 +11,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public interface ISearchViewService
     {
 
-        bool CacheSearchResults { get; }
-
         SearchViewModel LastSearchResults { get; set; }
 
         string LastSearchParameters { get; }
@@ -26,7 +24,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public SearchViewService(IHttpSession session, IUrlHelper urlHelper)
         {
-            CacheSearchResults = Config.GetAppSetting("SearchService:CacheResults").ToBoolean();
             Session = session;
             UrlHelper = urlHelper;
         }
@@ -48,30 +45,11 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public IUrlHelper UrlHelper { get; }
 
-        public bool CacheSearchResults { get; }
-
         #endregion
 
         #region Properties
 
-        public SearchViewModel LastSearchResults
-        {
-            get => CacheSearchResults ? Session.Get<SearchViewModel>("LastSearchResults") : null;
-            set
-            {
-                if (CacheSearchResults)
-                {
-                    if (value == null || value.Employers == null || value.Employers.Results == null || value.Employers.Results.Count == 0)
-                    {
-                        Session.Remove("LastSearchResults");
-                    }
-                    else
-                    {
-                        Session["LastSearchResults"] = value;
-                    }
-                }
-            }
-        }
+        public SearchViewModel LastSearchResults { get; set; }
 
         /// <summary>
         ///     last search querystring

@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.Core.Models.Cookies
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Core.Models.Cookies
 @{
     Layout = "../../govuk/layouts/template.cshtml";
 }
@@ -55,7 +56,7 @@
             // Configure profiles and make interface public
             // for custom dimensions, virtual pageviews and events
             GOVUK.analytics = new GOVUK.Analytics({
-                universalId: '@Html.AppSetting("GoogleAnalyticsAccountId")',
+                universalId: '@(Global.GoogleAnalyticsAccountId)',
                 cookieDomain: cookieDomain
             });
 

@@ -72,7 +72,7 @@ namespace GenderPayGap.WebJob
             }
 
             //Set the default encryption key
-            Encryption.SetDefaultEncryptionKey(Config.GetAppSetting("DefaultEncryptionKey"));
+            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
 
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();

@@ -26,10 +26,10 @@ namespace GenderPayGap.Core.API
     public class CompaniesHouseAPI : ICompaniesHouseAPI
     {
 
-        private static readonly string ApiKey = Config.GetAppSetting("CompaniesHouseApiKey");
-        public static readonly int MaxRecords = Config.GetAppSetting("CompaniesHouseMaxRecords").ToInt32(400);
+        private static readonly string ApiKey = Global.CompaniesHouseApiKey;
+        public static readonly int MaxRecords = Global.CompaniesHouseMaxRecords;
 
-        public static Uri BaseUri = new Uri(Config.GetAppSetting("CompaniesHouseApiServer"));
+        public static Uri BaseUri = new Uri(Global.CompaniesHouseApiServer);
 
         private readonly HttpClient _httpClient;
 
@@ -56,7 +56,7 @@ namespace GenderPayGap.Core.API
 
                 int id = Numeric.Rand(100000, int.MaxValue - 1);
                 var employer = new EmployerRecord {
-                    OrganisationName = Config.GetAppSetting("TestPrefix") + "_Ltd_" + id,
+                    OrganisationName = Global.TestPrefix + "_Ltd_" + id,
                     CompanyNumber = ("_" + id).Left(10),
                     Address1 = "Test Address 1",
                     Address2 = "Test Address 2",

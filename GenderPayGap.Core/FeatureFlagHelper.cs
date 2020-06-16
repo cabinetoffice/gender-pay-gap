@@ -30,7 +30,6 @@ namespace GenderPayGap.Core
     public enum FeatureFlag
     {
         ReportingStepByStep,
-        AccountCreationPrototype,
         PrivateManualRegistration,
         SendRegistrationReviewEmails
     }

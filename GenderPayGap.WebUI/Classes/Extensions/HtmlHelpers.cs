@@ -30,11 +30,6 @@ namespace GenderPayGap.WebUI.Classes
             return await htmlHelper.PartialAsync(partialPath, viewModel);
         }
 
-        public static HtmlString AppSetting(this IHtmlHelper htmlHelper, string appSettingKey)
-        {
-            return new HtmlString(Config.GetAppSetting(appSettingKey));
-        }
-
         public static HtmlString SetErrorClass<TModel, TProperty>(
             this IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
