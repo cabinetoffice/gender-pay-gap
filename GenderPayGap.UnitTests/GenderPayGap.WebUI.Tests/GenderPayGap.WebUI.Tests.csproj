@@ -17,7 +17,6 @@
     <None Remove="appsettings.PREPRODSTAGING.json" />
     <None Remove="appsettings.PROD.json" />
     <None Remove="AppSettings.secret.json" />
-    <None Remove="appsettings.STAGING.json" />
     <None Remove="appsettings.TEST.json" />
   </ItemGroup>
 
@@ -49,10 +48,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.PROD.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.STAGING.json">
       <DependentUpon>appsettings.json</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

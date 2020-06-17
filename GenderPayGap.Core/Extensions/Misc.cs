@@ -292,21 +292,6 @@ namespace GenderPayGap.Extensions
             return string.IsNullOrWhiteSpace(result) ? string.Empty : result;
         }
 
-        public static string ToStringOr(this object text, string replacement)
-        {
-            string result = null;
-            if (text is string)
-            {
-                result = (string) text;
-            }
-            else if (!text.IsNull())
-            {
-                result = System.Convert.ToString(text);
-            }
-
-            return string.IsNullOrWhiteSpace(result) ? replacement : result;
-        }
-
         public static DateTime ToDateTime(this object text)
         {
             if (text.IsNull())

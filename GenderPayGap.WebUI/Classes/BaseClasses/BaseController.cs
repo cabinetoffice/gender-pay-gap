@@ -138,12 +138,6 @@ namespace GenderPayGap.WebUI.Classes
             var controller = context.Controller as Controller;
             controller.ViewData["Controller"] = controller;
 
-            if (Global.DisablePageCaching)
-            {
-                //Disable page caching
-                context.HttpContext.DisableResponseCache();
-            }
-
             #endregion
 
             // the actual action

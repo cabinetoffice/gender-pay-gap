@@ -21,7 +21,7 @@ namespace GenderPayGap.WebUI
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             //Culture is required so UK dates can be parsed correctly
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(Global.Culture.ToStringOr("en-GB"));
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
             //Create the web host

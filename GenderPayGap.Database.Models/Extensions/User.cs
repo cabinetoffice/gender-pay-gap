@@ -16,9 +16,6 @@ namespace GenderPayGap.Database
     {
 
         [NotMapped]
-        public static bool EncryptEmails = Global.EncryptEmails;
-
-        [NotMapped]
         public string EmailAddress
         {
             get
@@ -36,7 +33,7 @@ namespace GenderPayGap.Database
             }
             set
             {
-                if (!string.IsNullOrWhiteSpace(value) && EncryptEmails)
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     EmailAddressDB = Encryption.EncryptData(value.ToLower());
                 }
@@ -53,7 +50,7 @@ namespace GenderPayGap.Database
             get => string.IsNullOrWhiteSpace(ContactEmailAddressDB) ? ContactEmailAddressDB : Encryption.DecryptData(ContactEmailAddressDB);
             set
             {
-                if (!string.IsNullOrWhiteSpace(value) && EncryptEmails)
+                if (!string.IsNullOrWhiteSpace(value))
                 {
                     ContactEmailAddressDB = Encryption.EncryptData(value);
                 }

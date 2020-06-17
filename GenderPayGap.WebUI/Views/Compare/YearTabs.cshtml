@@ -1,8 +1,9 @@
 ﻿@inject IOptionsSnapshot<ViewingOptions> ViewingOptions
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Classes
 @model CompareViewModel
 @{
-    int endYear = Global.CurrentAccountingYear;
+    int endYear = SectorTypes.Private.GetAccountingStartDate().Year;
     int startYear = endYear - (ViewingOptions.Value.ShowReportYearCount - 1);
     if (startYear < Global.FirstReportingYear)
     {

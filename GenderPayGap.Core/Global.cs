@@ -42,6 +42,11 @@ namespace GenderPayGap.Core
             JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement"));
         public static DateTime ActionHubSwitchOverDate => Config.GetAppSetting("ActionHubSwitchOverDate").ToDateTime();
         public static string ReminderEmailDays => Config.GetAppSetting("ReminderEmailDays");
+        public static bool EnableSubmitAlerts
+        {
+            get => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean(true);
+            set => Config.SetAppSetting("EnableSubmitAlerts", value.ToString());
+        }
 
         #endregion
 
@@ -59,6 +64,9 @@ namespace GenderPayGap.Core
 
         // Could be replaced by Config.IsLocal
         public static bool UseDeveloperExceptions => Config.GetAppSetting("UseDeveloperExceptions").ToBoolean();
+
+        public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
+        public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
         #endregion
 
         #region Settings that change per deployment slot
@@ -77,10 +85,9 @@ namespace GenderPayGap.Core
 
         #region Settings that change rarely, but might be used in lots of places (could be constants)
 
-        public static string GpgReportingEmail => Config.GetAppSetting("GPGReportingEmail");
-        public static string DataControllerEmail => Config.GetAppSetting("DataControllerEmail");
-        public static string DataProtectionOfficerEmail => Config.GetAppSetting("DataProtectionOfficerEmail");
-        public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+        public static string GpgReportingEmail => "gpg.reporting@cabinetoffice.gov.uk";
+        public static string DataControllerEmail => "publiccorrespondence@cabinetoffice.gov.uk";
+        public static string DataProtectionOfficerEmail => "dpo@cabinetoffice.gov.uk";
 
         // These vary by environment, but the URL doesn't change, only whether we use it or not
         // So, really, these should be settings called something like "UseStartUrl" and "UseDoneUrl"
@@ -109,39 +116,16 @@ namespace GenderPayGap.Core
         public static int PinInPostMinRepostDays => 5;
         public static int PurgeUnusedOrganisationDays => 30;
         public static int PurgeUnconfirmedPinDays => PinInPostExpiryDays + 30;
-        public static int SecurityCodeExpiryDays => Config.GetAppSetting("SecurityCodeExpiryDays").ToInt32(90);
-        public static string DownloadsLocation => Config.GetAppSetting("DownloadsLocation");
-        public static string EmployerCodeChars => Config.GetAppSetting("EmployerCodeChars");
-        public static string PasswordRegex => Config.GetAppSetting("PasswordRegex");
-        public static string PasswordRegexError => Config.GetAppSetting("PasswordRegexError");
-        public static string PINChars => Config.GetAppSetting("PINChars");
-        public static string PinRegex => Config.GetAppSetting("PinRegex");
-        public static string PinRegexError => Config.GetAppSetting("PinRegexError");
-        public static string WhoNeedsToReportGuidanceLink => Config.GetAppSetting("WhoNeedsToReportGuidanceLink");
-        public static int CurrentAccountingYear => SectorTypes.Private.GetAccountingStartDate().Year;
-        public static string CompanyNumberRegexError => Config.GetAppSetting("CompanyNumberRegexError");
-        public static string SaveDraftPath => Config.GetAppSetting("SaveDraftPath");
-        public static int FirstReportingYear
-
-        {
-            get => Config.GetAppSetting("FirstReportingYear").ToInt32(2017);
-            set => Config.SetAppSetting("FirstReportingYear", value.ToString());
-        }
-        public static string GovUkNotifyPinInThePostTemplateId => Config.GetAppSetting("GovUkNotifyPinInThePostTemplateId");
-        public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
-        public static string Culture => Config.GetAppSetting("Culture");
-        public static string CompaniesHouseApiServer => Config.GetAppSetting("CompaniesHouseApiServer");
-        public static int CompaniesHouseMaxRecords => Config.GetAppSetting("CompaniesHouseMaxRecords").ToInt32(400);
-        public static int MinIOThreads => Config.GetAppSetting("MinIOThreads").ToInt32(300);
-        public static int MinWorkerThreads => Config.GetAppSetting("MinWorkerThreads").ToInt32(300);
-        public static bool EncryptEmails => Config.GetAppSetting("EncryptEmails").ToBoolean(true);
-        public static bool DisablePageCaching => Config.GetAppSetting("DisablePageCaching").ToBoolean();
-        public static string DataPath => Config.GetAppSetting("DataPath");
-        public static bool EnableSubmitAlerts
-        {
-            get => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean(true);
-            set => Config.SetAppSetting("EnableSubmitAlerts", value.ToString());
-        }
+        public static string DownloadsLocation => "Downloads";
+        public static string EmployerCodeChars => "123456789ABCDEFGHKLMNPQRSTUXYZ";
+        public static string PINChars => "123456789ABCDEF";
+        public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/guidance/gender-pay-gap-who-needs-to-report";
+        public static string SaveDraftPath => "draftReturns";
+        public static int FirstReportingYear => 2017;
+        public static int CompaniesHouseMaxRecords => 400;
+        public static int MinIOThreads => 300;
+        public static int MinWorkerThreads => 300;
+        public static string DataPath => "App_Data";
 
         #endregion
 

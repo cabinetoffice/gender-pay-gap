@@ -125,8 +125,6 @@ namespace GenderPayGap.Tests
             var testSecurityTok = "11113333";
             var testModel = new EnterCodesViewModel {EmployerReference = testEmployerRef, SecurityToken = testSecurityTok};
 
-            DateTime testExpiredDate = VirtualDateTime.Now.AddDays(-(Global.SecurityCodeExpiryDays + 1));
-
             //Always returns an organisation and scope
             mockDataRepo.SetupGetAll(new Organisation(), new OrganisationScope());
 
@@ -148,8 +146,6 @@ namespace GenderPayGap.Tests
             var testEmployerRef = "ABCDEFG";
             var testSecurityTok = "11113333";
             var testModel = new EnterCodesViewModel {EmployerReference = testEmployerRef, SecurityToken = testSecurityTok};
-
-            DateTime testExpiredDate = VirtualDateTime.Now.AddDays(-(Global.SecurityCodeExpiryDays - 1));
 
             //Always returns an organisation and scope
             mockDataRepo.SetupGetAll(new Organisation(), new OrganisationScope());
