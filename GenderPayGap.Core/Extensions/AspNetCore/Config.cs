@@ -24,7 +24,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             VirtualDateTime.Initialise(OffsetCurrentDateTimeForSite());
 
             Console.WriteLine($"Environment: {EnvironmentName}");
-            Console.WriteLine($"Authority: {SiteAuthority}");
         }
 
         public static string EnvironmentName
@@ -70,15 +69,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             set => _EnvironmentName = value;
         }
 
-
-        public static string SiteAuthority
-        {
-            get
-            {
-                string siteName = GetAppSetting("EXTERNAL_HOST");
-                return $"https://{siteName}/";
-            }
-        }
 
         public static IConfiguration Build(Dictionary<string, string> additionalSettings = null, IConfigurationBuilder builder = null)
         {

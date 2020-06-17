@@ -79,7 +79,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
 
             Console.WriteLine($"AzureStorageConnectionString: {Global.AzureStorageConnectionString}");
-            Console.WriteLine($"Authority: {Config.SiteAuthority}");
         }
 
         public static bool IsValidField(this ModelStateDictionary modelState, string key)
