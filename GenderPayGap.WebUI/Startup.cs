@@ -207,12 +207,9 @@ namespace GenderPayGap.WebUI
                 throw new InvalidOperationException("No Azure Storage connection specified. Check the config.");
             }
 
-            string azureStorageShareName = Global.AzureStorageShareName;
-            // use the 'localStorageRoot' when hosting the storage in a local folder
-            string localStorageRoot = Global.LocalStorageRoot;
-
-            if (string.IsNullOrWhiteSpace(localStorageRoot))
+            if (!Config.IsLocal())
             {
+                string azureStorageShareName = Global.AzureStorageShareName;
                 builder.Register(
                         c => new AzureFileRepository(
                             azureStorageConnectionString,
@@ -223,6 +220,7 @@ namespace GenderPayGap.WebUI
             }
             else
             {
+                string localStorageRoot = @"..\..\..\..\Temp\";
                 builder.Register(c => new SystemFileRepository(localStorageRoot)).As<IFileRepository>().SingleInstance();
             }
 
