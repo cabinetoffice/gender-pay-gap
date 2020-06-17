@@ -93,7 +93,6 @@ namespace GenderPayGap.Core
 
         #region Settings that we do not expect to change / we only expect to change alongside a code change
 
-        public static string AzureStorageShareName => Config.GetAppSetting("AzureStorageShareName");
         public static string DatabaseConnectionName => Config.GetAppSetting("DatabaseConnectionName") ?? "GpgDatabase";
         public static int StaticCacheSeconds => Config.GetAppSetting("CacheProfileSettings:StaticDuration").ToInt32(86400);
         public static DateTime PrivacyChangedDate => Config.GetAppSetting("PrivacyChangedDate").ToDateTime();
