@@ -14,8 +14,7 @@ namespace GenderPayGap.WebJob
         public static string AzureStorageShareName => "common";
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
         public static string Culture => Config.GetAppSetting("Culture");
-        public static string DatabaseConnectionName => Config.GetAppSetting("DatabaseConnectionName") ?? "GpgDatabase";
-        public static string DatabaseConnectionString => Config.GetConnectionString(DatabaseConnectionName);
+        public static string DatabaseConnectionString => Config.GetConnectionString("GpgDatabase");
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
 
 
