@@ -124,7 +124,7 @@ namespace GenderPayGap.Database
         /// </summary>
         public bool GetIsOrphan()
         {
-            DateTime pinExpiresDate = Global.PinExpiresDate;
+            DateTime pinExpiresDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
             return Status == Core.OrganisationStatuses.Active
                    && (GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope)
                    && (UserOrganisations == null

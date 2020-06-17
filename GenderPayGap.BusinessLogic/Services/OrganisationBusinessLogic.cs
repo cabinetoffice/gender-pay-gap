@@ -94,12 +94,12 @@ namespace GenderPayGap.BusinessLogic
 
         public virtual string GenerateEmployerReference()
         {
-            return Crypto.GeneratePasscode(Global.EmployerCodeChars.ToCharArray(), Global.EmployerCodeLength);
+            return Crypto.GeneratePasscode(Global.EmployerCodeChars.ToCharArray(), 8);
         }
 
         public virtual string GeneratePINCode()
         {
-            return Crypto.GeneratePasscode(Global.PINChars.ToCharArray(), Global.PINLength);
+            return Crypto.GeneratePasscode(Global.PINChars.ToCharArray(), 7);
         }
 
         public CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier)
