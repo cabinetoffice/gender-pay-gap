@@ -21,23 +21,6 @@ namespace GenderPayGap.Extensions
             return Assembly.GetEntryAssembly();
         }
 
-        public static async Task WaitForAllAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task> method)
-        {
-            await Task.WhenAll(source.Select(async s => await method(s)));
-        }
-
-        public static TValue GetAttributeValue<TAttribute, TValue>(this Type type, Func<TAttribute, TValue> valueSelector)
-            where TAttribute : Attribute
-        {
-            var att = type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
-            if (att != null)
-            {
-                return valueSelector(att);
-            }
-
-            return default;
-        }
-
         public static string CorrectNull(this object text)
         {
             var str = text as string;
@@ -64,22 +47,6 @@ namespace GenderPayGap.Extensions
             var enumerable = list as IEnumerable;
             return enumerable != null;
         }
-
-        public static DateTime GetAssemblyCreationTime(this Assembly assembly)
-        {
-            string filePath = assembly.Location;
-
-            return File.GetCreationTime(filePath);
-            ;
-        }
-
-        public static string GetAssemblyCopyright(this Assembly assembly)
-        {
-            FileVersionInfo version = FileVersionInfo.GetVersionInfo(assembly.Location);
-
-            return version.LegalCopyright;
-        }
-
 
         public static string Resolve(this object obj, string text)
         {

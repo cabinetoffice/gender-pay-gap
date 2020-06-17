@@ -78,8 +78,6 @@ namespace GenderPayGap.Core
 
         public static string CompanyNumberRegexError => Config.GetAppSetting("CompanyNumberRegexError");
         public static Version Version => Misc.GetTopAssembly().GetName().Version;
-        public static DateTime AssemblyDate => Misc.GetTopAssembly().GetAssemblyCreationTime();
-        public static string AssemblyCopyright => Misc.GetTopAssembly().GetAssemblyCopyright();
         public static string DatabaseConnectionName => Config.GetAppSetting("DatabaseConnectionName") ?? "GpgDatabase";
         public static string DatabaseConnectionString => Config.GetConnectionString(DatabaseConnectionName);
         public static string AzureStorageConnectionString => Config.GetConnectionString("AzureStorage");
