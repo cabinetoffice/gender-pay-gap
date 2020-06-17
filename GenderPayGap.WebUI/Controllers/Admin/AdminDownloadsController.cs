@@ -69,7 +69,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads/orphan-organisations")]
         public FileContentResult DownloadOrphanOrganisations()
         {
-            DateTime pinExpiresDate = Global.PinExpiresDate;
+            DateTime pinExpiresDate = VirtualDateTime.Now.AddDays(0 - Global.PinInPostExpiryDays);
 
             List<Organisation> orphanOrganisations = dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
