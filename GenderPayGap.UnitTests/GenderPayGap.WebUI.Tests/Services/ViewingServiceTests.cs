@@ -25,7 +25,6 @@ namespace GenderPayGap.WebUI.Tests.Services
     public class ViewingServiceTests
     {
 
-        private Mock<ICommonBusinessLogic> _mockCommonLogic;
         private Mock<IDataRepository> _mockDataRepo;
         private ViewingSearchService viewingSearchService;
         
@@ -33,7 +32,6 @@ namespace GenderPayGap.WebUI.Tests.Services
         public void BeforeEach()
         {
             _mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
-            _mockCommonLogic = new Mock<ICommonBusinessLogic>();
             viewingSearchService = new ViewingSearchService(_mockDataRepo.Object);
         }
 
@@ -48,7 +46,6 @@ namespace GenderPayGap.WebUI.Tests.Services
             // Mocks
             var testService = new ViewingService(
                 _mockDataRepo.Object,
-                _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = testService.GetOrgSizeOptions(testOptions.Select(x => (int) x), null);
 
@@ -97,7 +94,6 @@ namespace GenderPayGap.WebUI.Tests.Services
 
             var testService = new ViewingService(
                 _mockDataRepo.Object,
-                _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = await testService.GetSectorOptionsAsync(testOptions, null);
 
@@ -128,21 +124,19 @@ namespace GenderPayGap.WebUI.Tests.Services
         public void GetReportingYearOptions_Marks_given_years_as_checked_or_not_checked()
         {
             // Setup
-            var testAllYears = new[] {2020, 2019, 2018, 2017};
-
             var testCheckedYears = new[] {2018, 2017};
 
             // Mocks
-            _mockCommonLogic.Setup(x => x.GetAccountingStartDate(It.IsAny<SectorTypes>(), 0))
-                .Returns(new DateTime(testAllYears[0], 4, 5));
-
             var testService = new ViewingService(
                 _mockDataRepo.Object,
-                _mockCommonLogic.Object,
                 viewingSearchService);
             List<OptionSelect> options = testService.GetReportingYearOptions(testCheckedYears);
 
             // Assert
+            int firstYear = 2017;
+            int nowYear = VirtualDateTime.Now.Year;
+            List<int> testAllYears = Enumerable.Range(firstYear, nowYear - firstYear + 1).OrderByDescending(y => y).ToList();
+
             for (var i = 0; i < options.Count; i++)
             {
                 OptionSelect opt = options[i];
@@ -158,10 +152,10 @@ namespace GenderPayGap.WebUI.Tests.Services
                 }
 
                 // assert all other meta values
-                Assert.That(opt.Disabled == false);
-                Assert.That(opt.Id == testAllYears[i].ToString());
-                Assert.That(opt.Label == $"{testAllYears[i]} to {testAllYears[i] + 1}");
-                Assert.That(opt.Value == testAllYears[i].ToString());
+                Assert.AreEqual(false, opt.Disabled);
+                Assert.AreEqual(testAllYears[i].ToString(), opt.Id);
+                Assert.AreEqual($"{testAllYears[i]} to {testAllYears[i] + 1}", opt.Label);
+                Assert.AreEqual(testAllYears[i].ToString(), opt.Value);
             }
         }
 
@@ -182,8 +176,7 @@ namespace GenderPayGap.WebUI.Tests.Services
             };
 
             var testService = new ViewingService(
-                _mockDataRepo.Object, 
-                _mockCommonLogic.Object,
+                _mockDataRepo.Object,
                 viewingSearchService);
             List<OptionSelect> options = testService.GetReportingStatusOptions(testCheckedOptions);
 

@@ -16,7 +16,6 @@ namespace GenderPayGap.BusinessLogic.Tests
             var builder = new ContainerBuilder();
 
             builder.Register(c => Mock.Of<IOrganisationBusinessLogic>()).As<IOrganisationBusinessLogic>();
-            builder.Register(c => Mock.Of<ICommonBusinessLogic>()).As<ICommonBusinessLogic>();
             builder.Register(c => Mock.Of<IDataRepository>()).As<IDataRepository>();
             builder.Register(c => Mock.Of<ISubmissionBusinessLogic>()).As<ISubmissionBusinessLogic>();
             builder.Register(c => Mock.Of<IScopeBusinessLogic>()).As<IScopeBusinessLogic>();

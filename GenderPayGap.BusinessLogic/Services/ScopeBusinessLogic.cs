@@ -44,12 +44,8 @@ namespace GenderPayGap.BusinessLogic
     public class ScopeBusinessLogic : IScopeBusinessLogic
     {
 
-        private readonly ICommonBusinessLogic _commonBusinessLogic;
-
-        public ScopeBusinessLogic(ICommonBusinessLogic commonBusinessLogic,
-            IDataRepository dataRepo)
+        public ScopeBusinessLogic(IDataRepository dataRepo)
         {
-            _commonBusinessLogic = commonBusinessLogic;
             DataRepository = dataRepo;
         }
 
@@ -240,7 +236,7 @@ namespace GenderPayGap.BusinessLogic
         public bool FillMissingScopes(Organisation org)
         {
             int firstYear = Global.FirstReportingYear;
-            DateTime currentSnapshotDate = _commonBusinessLogic.GetAccountingStartDate(org.SectorType);
+            DateTime currentSnapshotDate = org.SectorType.GetAccountingStartDate();
             int currentSnapshotYear = currentSnapshotDate.Year;
             var prevYearScope = ScopeStatuses.Unknown;
             var neverDeclaredScope = true;
@@ -312,7 +308,7 @@ namespace GenderPayGap.BusinessLogic
             var orgsWithMissingScope = new HashSet<OrganisationMissingScope>();
             foreach (Organisation org in allOrgs)
             {
-                DateTime currentSnapshotDate = _commonBusinessLogic.GetAccountingStartDate(org.SectorType);
+                DateTime currentSnapshotDate = org.SectorType.GetAccountingStartDate();
                 int currentYear = currentSnapshotDate.Year;
                 var missingSnapshotYears = new List<int>();
 
@@ -432,7 +428,7 @@ namespace GenderPayGap.BusinessLogic
         {
             if (snapshotYear == 0)
             {
-                snapshotYear = _commonBusinessLogic.GetAccountingStartDate(organisation.SectorType).Year;
+                snapshotYear = organisation.SectorType.GetAccountingStartDate().Year;
             }
 
             OrganisationScope orgScope = organisation.OrganisationScopes

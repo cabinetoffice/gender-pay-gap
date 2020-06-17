@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
@@ -24,11 +22,7 @@ namespace GenderPayGap.Tests
     public class ScopeBusinessLogicTests : AssertionHelper
     {
 
-        private static IContainer DIContainer;
-
         private Mock<IDataRepository> mockDataRepo;
-        private Mock<IFileRepository> mockFileRepo;
-        private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic();
 
         private IList<Organisation> testOrgData;
         private IList<OrganisationScope> testOrgScopeData;
@@ -99,21 +93,11 @@ namespace GenderPayGap.Tests
 
         #endregion
 
-        [OneTimeSetUp]
-        public static void Init()
-        {
-            var builder = new ContainerBuilder();
-
-
-            DIContainer = builder.Build();
-        }
-
         [SetUp]
         public void BeforeEach()
         {
             mockDataRepo = new Mock<IDataRepository>();
-            mockFileRepo = new Mock<IFileRepository>();
-            testScopeBL = new ScopeBusinessLogic(testCommonBL, mockDataRepo.Object);
+            testScopeBL = new ScopeBusinessLogic(mockDataRepo.Object);
             GenerateTestData();
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -21,16 +22,12 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         {
             // setup mocks
             mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
-            mockCommonBusinessLogic = new CommonBusinessLogic();
 
             // sut
-            scopeBusinessLogic = new BusinessLogic.ScopeBusinessLogic(
-                mockCommonBusinessLogic,
-                mockDataRepository.Object);
+            scopeBusinessLogic = new BusinessLogic.ScopeBusinessLogic(mockDataRepository.Object);
         }
 
         private Mock<IDataRepository> mockDataRepository;
-        private ICommonBusinessLogic mockCommonBusinessLogic;
 
         // sut
         private IScopeBusinessLogic scopeBusinessLogic;
@@ -49,7 +46,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.IsTrue(actualChanged, "Expected change for missing scopes");
 
             // test the count of scopes set is correct
-            DateTime currentSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testOrg.SectorType);
+            DateTime currentSnapshotDate = testOrg.SectorType.GetAccountingStartDate();
             int expectedScopeCount = (currentSnapshotDate.Year - Global.FirstReportingYear) + 1;
             Assert.AreEqual(expectedScopeCount, testOrg.OrganisationScopes.Count);
 
@@ -70,7 +67,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         public void PresumesInScopeForSnapshotYearsDuringAndAfterOrgCreatedDate(SectorTypes testSectorType)
         {
             // setup
-            DateTime testCreatedDate = mockCommonBusinessLogic.GetAccountingStartDate(testSectorType).AddYears(-1);
+            DateTime testCreatedDate = testSectorType.GetAccountingStartDate().AddYears(-1);
             Organisation testOrg = CreateOrgWithNoScopes(1, testSectorType, testCreatedDate);
 
             // act
@@ -80,7 +77,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.IsTrue(actualChanged, "Expected change for missing scopes");
 
             // test the count of scopes set is correct
-            DateTime currentSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testOrg.SectorType);
+            DateTime currentSnapshotDate = testOrg.SectorType.GetAccountingStartDate();
             int expectedScopeCount = (currentSnapshotDate.Year - Global.FirstReportingYear) + 1;
             Assert.AreEqual(expectedScopeCount, testOrg.OrganisationScopes.Count);
 
@@ -102,7 +99,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             ScopeStatuses expectedPresumedScopeStatus)
         {
             // setup
-            DateTime testSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testSectorType, Global.FirstReportingYear);
+            DateTime testSnapshotDate = testSectorType.GetAccountingStartDate(Global.FirstReportingYear);
             Organisation testOrg = CreateOrgWithScopeForAllYears(1, testSectorType, testDeclaredScopeStatus, testSnapshotDate);
 
             // act
@@ -121,7 +118,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             ScopeStatuses expectedPresumedScopeStatus)
         {
             // setup
-            DateTime testCreatedDate = mockCommonBusinessLogic.GetAccountingStartDate(testSectorType, Global.FirstReportingYear);
+            DateTime testCreatedDate = testSectorType.GetAccountingStartDate(Global.FirstReportingYear);
             Organisation testOrg = CreateOrgWithDeclaredAndPresumedScopes(
                 testSectorType,
                 testDeclaredScopeStatus,

@@ -26,7 +26,6 @@ namespace GenderPayGap.Tests
 
         private Mock<IDataRepository> mockDataRepo;
         private Mock<ScopeBusinessLogic> mockScopeBL;
-        private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic();
         private ScopePresentation testScopePresentation;
 
         [SetUp]
@@ -35,7 +34,7 @@ namespace GenderPayGap.Tests
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
 
             // setup mocks ans ensures they call their implementations. (We override calls per test when need be!)
-            mockScopeBL = new Mock<ScopeBusinessLogic>(testCommonBL, mockDataRepo.Object);
+            mockScopeBL = new Mock<ScopeBusinessLogic>(mockDataRepo.Object);
             mockScopeBL.CallBase = true;
 
             // service under test

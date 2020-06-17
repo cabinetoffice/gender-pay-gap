@@ -227,8 +227,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterInstance(Config.Configuration).SingleInstance();
 
             // BL Services
-            builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().SingleInstance();
-
             builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerLifetimeScope();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().InstancePerLifetimeScope();
 
