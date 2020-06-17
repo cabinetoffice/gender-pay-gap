@@ -22,7 +22,7 @@ namespace GenderPayGap.Core
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
-        public static string ApplicationInsightsInstrumentationKey => Config.GetAppSetting("ApplicationInsights:InstrumentationKey", Config.GetAppSetting("APPINSIGHTS-INSTRUMENTATIONKEY"));
+        public static string ApplicationInsightsInstrumentationKey => Config.GetAppSetting("APPINSIGHTS-INSTRUMENTATIONKEY");
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
         public static string ReportsReaderPassword => Config.GetAppSetting("ReportsReaderPassword", "Password");
         public static string AdminEmails => Config.GetAppSetting("AdminEmails");
