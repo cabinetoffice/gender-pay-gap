@@ -1,7 +1,6 @@
 ﻿using System;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
-using Microsoft.Extensions.Configuration;
 
 namespace GenderPayGap.BusinessLogic
 {
@@ -12,16 +11,6 @@ namespace GenderPayGap.BusinessLogic
 
     public class CommonBusinessLogic : ICommonBusinessLogic
     {
-
-        private readonly IConfiguration _configuration;
-
-        public CommonBusinessLogic(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public DateTime PrivateAccountingDate => _configuration["PrivateAccountingDate"].ToDateTime();
-        public DateTime PublicAccountingDate => _configuration["PublicAccountingDate"].ToDateTime();
 
         /// <summary>
         ///     Returns the accounting start date for the specified sector and year
@@ -39,12 +28,12 @@ namespace GenderPayGap.BusinessLogic
             switch (sectorType)
             {
                 case SectorTypes.Private:
-                    tempDay = PrivateAccountingDate.Day;
-                    tempMonth = PrivateAccountingDate.Month;
+                    tempDay = Global.PrivateAccountingDate.Day;
+                    tempMonth = Global.PrivateAccountingDate.Month;
                     break;
                 case SectorTypes.Public:
-                    tempDay = PublicAccountingDate.Day;
-                    tempMonth = PublicAccountingDate.Month;
+                    tempDay = Global.PublicAccountingDate.Day;
+                    tempMonth = Global.PublicAccountingDate.Month;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(

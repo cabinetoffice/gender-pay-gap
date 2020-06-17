@@ -9,7 +9,6 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using MockQueryable.Moq;
 using Moq;
@@ -29,7 +28,7 @@ namespace GenderPayGap.Tests
 
         private Mock<IDataRepository> mockDataRepo;
         private Mock<IFileRepository> mockFileRepo;
-        private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic(Config.Configuration);
+        private readonly ICommonBusinessLogic testCommonBL = new CommonBusinessLogic();
 
         private IList<Organisation> testOrgData;
         private IList<OrganisationScope> testOrgScopeData;
