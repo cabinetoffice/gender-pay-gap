@@ -83,23 +83,11 @@ namespace GenderPayGap.Core
 
 
 
-        #region Settings that change rarely, but might be used in lots of places (could be constants)
+        #region Settings that change rarely / we only expect to change alongside a code change, but might be used in lots of places (could be constants)
 
         public static string GpgReportingEmail => "gpg.reporting@cabinetoffice.gov.uk";
         public static string DataControllerEmail => "publiccorrespondence@cabinetoffice.gov.uk";
         public static string DataProtectionOfficerEmail => "dpo@cabinetoffice.gov.uk";
-
-        // These vary by environment, but the URL doesn't change, only whether we use it or not
-        // So, really, these should be settings called something like "UseStartUrl" and "UseDoneUrl"
-        public static string StartUrl => Config.GetAppSetting("StartUrl");
-        public static string DoneUrl => Config.GetAppSetting("DoneUrl");
-
-        #endregion
-
-
-
-        #region Settings that we do not expect to change / we only expect to change alongside a code change
-
         public static int StaticCacheSeconds => 86400;
         public static DateTime PrivacyChangedDate => DateTime.Parse("2019-09-23");
         public static DateTime PrivateAccountingDate => DateTime.Parse("2017-04-05");
@@ -126,6 +114,11 @@ namespace GenderPayGap.Core
         public static int MinIOThreads => 300;
         public static int MinWorkerThreads => 300;
         public static string DataPath => "App_Data";
+        public static string StartUrl =>
+            Config.GetAppSetting("UseStartUrl").ToBoolean()
+                ? "https://www.gov.uk/report-gender-pay-gap-data"
+                : null;
+        public static string DoneUrl => "https://www.gov.uk/done/report-gender-pay-gap-data";
 
         #endregion
 
