@@ -209,7 +209,7 @@ namespace GenderPayGap.WebUI
 
             if (!Config.IsLocal())
             {
-                string azureStorageShareName = Global.AzureStorageShareName;
+                string azureStorageShareName = "common";
                 builder.Register(
                         c => new AzureFileRepository(
                             azureStorageConnectionString,
