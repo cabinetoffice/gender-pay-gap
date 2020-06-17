@@ -2,6 +2,7 @@
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Tests.Common.Classes;
 using Moq;
@@ -13,7 +14,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
     public class IsHistoricSnapshotYearTests
     {
 
-        private ICommonBusinessLogic mockCommonBusinessLogic;
         private Mock<IDataRepository> mockDataRepo;
         private Mock<IDraftFileBusinessLogic> mockDraftFileBL;
         private Mock<IScopeBusinessLogic> mockScopeBL;
@@ -21,7 +21,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         [SetUp]
         public void BeforeEach()
         {
-            mockCommonBusinessLogic = new CommonBusinessLogic();
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
             mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
@@ -34,7 +33,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         public void ReturnsTrueForHistoricYears(SectorTypes testSector, int testHistoricYear)
         {
             // Arrange
-            DateTime testSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testSector);
+            DateTime testSnapshotDate = testSector.GetAccountingStartDate();
             var expectCalledGetSnapshotDate = false;
 
             // Mocks
@@ -66,7 +65,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         public void ReturnsFalseForHistoricYears(SectorTypes testSector)
         {
             // Arrange
-            DateTime testSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testSector);
+            DateTime testSnapshotDate = testSector.GetAccountingStartDate();
             int testHistoricYear = testSnapshotDate.Year;
             var expectCalledGetSnapshotDate = false;
 

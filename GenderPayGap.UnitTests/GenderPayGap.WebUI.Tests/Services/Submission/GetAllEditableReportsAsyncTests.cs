@@ -5,6 +5,7 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Models.Organisation;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Tests.Common.Classes;
@@ -18,7 +19,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
     public class GetAllEditableReportsAsyncTests
     {
 
-        private ICommonBusinessLogic mockCommonBusinessLogic;
         private Mock<IDataRepository> mockDataRepo;
         private Mock<IDraftFileBusinessLogic> mockDraftFileBL;
         private Mock<IScopeBusinessLogic> mockScopeBL;
@@ -26,7 +26,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         [SetUp]
         public void BeforeEach()
         {
-            mockCommonBusinessLogic = new CommonBusinessLogic();
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
             mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
@@ -44,7 +43,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             var testConfig = new SubmissionOptions {EditableReportCount = testEditableReportCount};
             var testOrg = new Organisation {OrganisationId = 1, SectorType = testSector};
             var testUserOrg = new UserOrganisation {Organisation = testOrg};
-            DateTime testSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testOrg.SectorType);
+            DateTime testSnapshotDate = testOrg.SectorType.GetAccountingStartDate();
 
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,

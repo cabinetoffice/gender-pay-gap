@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Claims;
 using Autofac;
-using Autofac.Features.AttributeFilters;
 using AutoMapper;
 using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Account.Abstractions;
@@ -13,7 +12,6 @@ using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.Cookies;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -162,14 +160,12 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             // BL Services
             builder.RegisterInstance(Config.Configuration);
-            builder.RegisterType<CommonBusinessLogic>().As<ICommonBusinessLogic>().InstancePerLifetimeScope();
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
             builder.RegisterType<DraftFileBusinessLogic>().As<IDraftFileBusinessLogic>().InstancePerLifetimeScope();
 
             builder.Register(
                     c => c.ResolveAsMock<ScopeBusinessLogic>(
                             false,
-                            typeof(ICommonBusinessLogic),
                             typeof(IDataRepository)
                             )
                         .Object)
@@ -198,7 +194,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.Register(
                     c => new ViewingService(
                         c.Resolve<IDataRepository>(),
-                        c.Resolve<ICommonBusinessLogic>(),
                         c.Resolve<ViewingSearchService>())
                 )
                 .As<IViewingService>()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Models.Scope;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Tests.Common.Classes;
@@ -23,11 +24,10 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         {
             // setup mocks
             mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
-            mockCommonBusinessLogic = new CommonBusinessLogic();
 
             // setup data
-            DateTime currentPrivateSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(SectorTypes.Private);
-            DateTime currentPublicSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(SectorTypes.Public);
+            DateTime currentPrivateSnapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime currentPublicSnapshotDate = SectorTypes.Public.GetAccountingStartDate();
 
             testOrgs = new List<Organisation>();
             testOrgs.Add(CreateOrgWithExistingScopeForAllYears(1, SectorTypes.Private, currentPrivateSnapshotDate));
@@ -42,13 +42,10 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             mockDataRepository.SetupGetAll(testOrgs);
 
             // sut
-            scopeBusinessLogic = new BusinessLogic.ScopeBusinessLogic(
-                mockCommonBusinessLogic,
-                mockDataRepository.Object);
+            scopeBusinessLogic = new BusinessLogic.ScopeBusinessLogic(mockDataRepository.Object);
         }
 
         private Mock<IDataRepository> mockDataRepository;
-        private ICommonBusinessLogic mockCommonBusinessLogic;
         private List<Organisation> testOrgs;
 
         // sut
@@ -82,7 +79,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
             Assert.IsNotNull(actualMissingEntry, "Expected to find organisations who have null scopes");
 
-            DateTime currentSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testSector);
+            DateTime currentSnapshotDate = testSector.GetAccountingStartDate();
             List<int> testYears = GetAllSnapshotYearsForSector(currentSnapshotDate);
             foreach (int testYear in testYears)
             {
@@ -104,7 +101,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
             Assert.IsNotNull(actualMissingEntry, "Expected to find organisations who have unknown scopes");
 
-            DateTime currentSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(testSector);
+            DateTime currentSnapshotDate = testSector.GetAccountingStartDate();
             List<int> testYears = GetAllSnapshotYearsForSector(currentSnapshotDate);
             foreach (int testYear in testYears)
             {

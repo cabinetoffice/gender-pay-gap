@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -28,14 +28,12 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public class ViewingService : IViewingService
     {
 
-        private readonly ICommonBusinessLogic commonLogic;
         private readonly IDataRepository dataRepo;
         private readonly ViewingSearchService viewingSearchService;
 
-        public ViewingService(IDataRepository dataRepo, ICommonBusinessLogic commonLogic, ViewingSearchService viewingSearchService)
+        public ViewingService(IDataRepository dataRepo, ViewingSearchService viewingSearchService)
         {
             this.dataRepo = dataRepo;
-            this.commonLogic = commonLogic;
             this.viewingSearchService = viewingSearchService;
         }
         
@@ -133,7 +131,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         {
             // setup the filters
             int firstYear = Global.FirstReportingYear;
-            int currentYear = commonLogic.GetAccountingStartDate(SectorTypes.Public).Year;
+            int currentYear = SectorTypes.Public.GetAccountingStartDate().Year;
             
             var allYears = new List<int>();
             for (int year = firstYear; year <= currentYear; year++)
