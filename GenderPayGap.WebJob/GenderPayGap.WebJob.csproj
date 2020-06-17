@@ -24,7 +24,6 @@
   <ItemGroup>
     <None Remove="appsettings.DEV.json" />
     <None Remove="appsettings.json" />
-    <None Remove="appsettings.loadtest.json" />
     <None Remove="appsettings.PREPROD.json" />
     <None Remove="appsettings.PROD.json" />
     <None Remove="AppSettings.secret.json" />
@@ -41,11 +40,6 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <Content Include="appsettings.loadtest.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToPublishDirectory>never</CopyToPublishDirectory>
     </Content>
     <Content Include="AppSettings.secret.json" Condition="Exists('AppSettings.secret.json')">
       <DependentUpon>appsettings.json</DependentUpon>
