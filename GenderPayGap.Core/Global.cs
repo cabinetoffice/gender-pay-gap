@@ -93,9 +93,9 @@ namespace GenderPayGap.Core
 
         #region Settings that we do not expect to change / we only expect to change alongside a code change
 
-        public static int StaticCacheSeconds => Config.GetAppSetting("CacheProfileSettings:StaticDuration").ToInt32(86400);
-        public static DateTime PrivacyChangedDate => Config.GetAppSetting("PrivacyChangedDate").ToDateTime();
-        public static DateTime PrivateAccountingDate => Config.GetAppSetting("PrivateAccountingDate").ToDateTime();
+        public static int StaticCacheSeconds => 86400;
+        public static DateTime PrivacyChangedDate => DateTime.Parse("2019-09-23");
+        public static DateTime PrivateAccountingDate => DateTime.Parse("2017-04-05");
         public static DateTime PublicAccountingDate => Config.GetAppSetting("PublicAccountingDate").ToDateTime();
         public static int EmailVerificationExpiryDays => Config.GetAppSetting("EmailVerificationExpiryDays").ToInt32(7);
         public static int EmailVerificationMinResendHours => Config.GetAppSetting("EmailVerificationMinResendHours").ToInt32();
