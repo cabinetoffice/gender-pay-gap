@@ -86,17 +86,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             return modelState[key] == null || modelState[key].ValidationState == ModelValidationState.Valid;
         }
 
-        public static void AddCacheProfiles(this MvcOptions options)
-        {
-            //Control how controller actions cache content using appsettings.json file.
-            var cacheProfileSettings = new CacheProfileSettings();
-            Config.Configuration.GetSection("CacheProfileSettings:CacheProfiles").Bind(cacheProfileSettings.CacheProfiles);
-            foreach (KeyValuePair<string, CacheProfile> keyValuePair in cacheProfileSettings.CacheProfiles)
-            {
-                options.CacheProfiles.Add(keyValuePair);
-            }
-        }
-
         /// <summary>
         ///     Removes null header or ensures header is set to correct value
         ///     ///
