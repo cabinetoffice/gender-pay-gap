@@ -125,7 +125,6 @@ namespace GenderPayGap.WebUI
                     o.Cookie.IsEssential = true; //This is required otherwise session will not load
                     o.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Equivalent to <httpCookies requireSSL="true" /> from Web.Config
                     o.Cookie.HttpOnly = false; //Always use https cookies
-                    o.Cookie.Domain = Global.ExternalHost.BeforeFirst(":"); //Domain cannot be an authority and contain a port number
                     o.IdleTimeout = TimeSpan.FromDays(30); // This is how long the session DATA is kept, not how long the cookie lasts
                 });
 
