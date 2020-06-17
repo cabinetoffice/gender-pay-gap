@@ -26,7 +26,7 @@ namespace GenderPayGap.WebJob.Services
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
-            foreach (string emailAddress in Global.GeoDistributionList)
+            foreach (string emailAddress in WebJobGlobal.GeoDistributionList)
             {
                 var notifyEmail = new NotifyEmail
                 {
@@ -48,7 +48,7 @@ namespace GenderPayGap.WebJob.Services
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
-            foreach (string emailAddress in Global.GeoDistributionList)
+            foreach (string emailAddress in WebJobGlobal.GeoDistributionList)
             {
                 var notifyEmail = new NotifyEmail
                 {

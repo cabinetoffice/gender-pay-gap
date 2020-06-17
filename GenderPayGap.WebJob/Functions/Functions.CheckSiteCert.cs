@@ -22,7 +22,7 @@ namespace GenderPayGap.WebJob
             JobHelpers.LogFunctionStart(runId, nameof(CheckSiteCertAsync), startTime);
             try
             {
-                if (Global.CertExpiresWarningDays > 0)
+                if (WebJobGlobal.CertExpiresWarningDays > 0)
                 {
                     //Get the cert thumbprint
                     string certThumprint = Config.Configuration["WEBSITE_LOAD_CERTIFICATES"].SplitI(";").FirstOrDefault();
@@ -41,23 +41,23 @@ namespace GenderPayGap.WebJob
                         if (expires < VirtualDateTime.UtcNow)
                         {
                             CustomLogger.Error(
-                                $"The website certificate for '{Global.ExternalHost}' expired on {expires.ToFriendlyDate()} and needs replacing immediately.",
+                                $"The website certificate for '{WebJobGlobal.ExternalHost}' expired on {expires.ToFriendlyDate()} and needs replacing immediately.",
                                 new {environment = Config.EnvironmentName, time});
 
                             emailSendingService.SendGeoSiteCertificateExpiredEmail(
-                                Global.ExternalHost,
+                                WebJobGlobal.ExternalHost,
                                 expires.ToFriendlyDate());
                         }
-                        else if (expires < VirtualDateTime.UtcNow.AddDays(Global.CertExpiresWarningDays))
+                        else if (expires < VirtualDateTime.UtcNow.AddDays(WebJobGlobal.CertExpiresWarningDays))
                         {
                             TimeSpan remainingTime = expires - VirtualDateTime.Now;
 
                             CustomLogger.Error(
-                                $"The website certificate for '{Global.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.",
+                                $"The website certificate for '{WebJobGlobal.ExternalHost}' is due expire on {expires.ToFriendlyDate()} and will need replacing within {remainingTime.ToFriendly(maxParts: 2)}.",
                                 new {environment = Config.EnvironmentName, time});
 
                             emailSendingService.SendGeoSiteCertificateSoonToExpireEmail(
-                                Global.ExternalHost,
+                                WebJobGlobal.ExternalHost,
                                 expires.ToFriendlyDate(),
                                 remainingTime.ToFriendly(maxParts: 2));
                         }

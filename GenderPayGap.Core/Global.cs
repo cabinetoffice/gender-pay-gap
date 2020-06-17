@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace GenderPayGap.Core
 {
-    public class Global
+    public static class Global
     {
 
         public static IContainer ContainerIoC;
@@ -19,8 +19,6 @@ namespace GenderPayGap.Core
             get => Config.GetAppSetting("TESTING-SkipSpamProtection").ToBoolean();
             set => Config.SetAppSetting("TESTING-SkipSpamProtection", value.ToString());
         }
-
-        public static int CertExpiresWarningDays => Config.GetAppSetting("CertExpiresWarningDays").ToInt32(30);
 
         public static bool UseDeveloperExceptions => Config.GetAppSetting("UseDeveloperExceptions").ToBoolean();
         public static string StartUrl => Config.GetAppSetting("StartUrl");
@@ -103,8 +101,6 @@ namespace GenderPayGap.Core
         public static DateTime ActionHubSwitchOverDate => Config.GetAppSetting("ActionHubSwitchOverDate").ToDateTime();
 
         public static bool SendGoogleAnalyticsDataToGovUk => Config.GetAppSetting("SendGoogleAnalyticsDataToGovUk").ToBoolean();
-
-        public static string AzureInstanceId => Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
 
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 

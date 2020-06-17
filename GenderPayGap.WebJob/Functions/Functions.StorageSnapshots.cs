@@ -26,7 +26,7 @@ namespace GenderPayGap.WebJob
             
             try
             {
-                string azureStorageConnectionString = Global.AzureStorageConnectionString;
+                string azureStorageConnectionString = WebJobGlobal.AzureStorageConnectionString;
                 if (azureStorageConnectionString.Equals("UseDevelopmentStorage=true"))
                 {
                     return;
@@ -36,7 +36,7 @@ namespace GenderPayGap.WebJob
 
                 string azureStorageAccount = connectionString["AccountName"];
                 string azureStorageKey = connectionString["AccountKey"];
-                string azureStorageShareName = Global.AzureStorageShareName;
+                string azureStorageShareName = WebJobGlobal.AzureStorageShareName;
 
                 //Take the snapshot
                 await TakeSnapshotAsync(azureStorageAccount, azureStorageKey, azureStorageShareName);
@@ -88,7 +88,7 @@ namespace GenderPayGap.WebJob
         {
             try
             {
-                string azureStorageConnectionString = Global.AzureStorageConnectionString;
+                string azureStorageConnectionString = WebJobGlobal.AzureStorageConnectionString;
                 if (azureStorageConnectionString.Equals("UseDevelopmentStorage=true"))
                 {
                     return;
@@ -98,7 +98,7 @@ namespace GenderPayGap.WebJob
 
                 string azureStorageAccount = connectionString["AccountName"];
                 string azureStorageKey = connectionString["AccountKey"];
-                string azureStorageShareName = Global.AzureStorageShareName;
+                string azureStorageShareName = WebJobGlobal.AzureStorageShareName;
 
                 //Take the snapshot
                 await TakeSnapshotAsync(azureStorageAccount, azureStorageKey, azureStorageShareName);
