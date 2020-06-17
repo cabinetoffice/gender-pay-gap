@@ -3,7 +3,6 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using Moq;
 using NUnit.Framework;
@@ -22,7 +21,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         [SetUp]
         public void BeforeEach()
         {
-            mockCommonBusinessLogic = new CommonBusinessLogic(Config.Configuration);
+            mockCommonBusinessLogic = new CommonBusinessLogic();
             mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
             mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();

@@ -6,7 +6,6 @@ using GenderPayGap.BusinessLogic.Models.Scope;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using Moq;
 using NUnit.Framework;
@@ -24,7 +23,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         {
             // setup mocks
             mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
-            mockCommonBusinessLogic = new CommonBusinessLogic(Config.Configuration);
+            mockCommonBusinessLogic = new CommonBusinessLogic();
 
             // setup data
             DateTime currentPrivateSnapshotDate = mockCommonBusinessLogic.GetAccountingStartDate(SectorTypes.Private);
