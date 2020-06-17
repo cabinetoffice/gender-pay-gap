@@ -101,7 +101,6 @@ namespace GenderPayGap.WebUI
                             new TrimModelBinder()); //Set DisplayMetadata to input empty strings as null
                         options.ModelMetadataDetailsProviders.Add(
                             new DefaultResourceValidationMetadataProvider()); // sets default resource type to use for display text and error messages
-                        options.AddCacheProfiles(); //Load the response cache profiles from appsettings file
                         options.Filters.Add<ErrorHandlingFilter>();
                     })
                 .AddControllersAsServices() // Add controllers as services so attribute filters be resolved in contructors.
