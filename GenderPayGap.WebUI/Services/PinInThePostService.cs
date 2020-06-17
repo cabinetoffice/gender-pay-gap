@@ -15,6 +15,7 @@ namespace GenderPayGap.WebUI.Services
     public class PinInThePostService
     {
 
+        private const string GovUkNotifyPinInThePostLetterTemplateId = "4cc0b2e0-d8c2-43ab-a61a-9fba6575514e";
         private const int NotifyAddressLineLength = 35;
 
         private readonly IGovNotifyAPI govNotifyApi;
@@ -38,8 +39,6 @@ namespace GenderPayGap.WebUI.Services
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);
 
 
-            string templateId = Global.GovUkNotifyPinInThePostTemplateId;
-
             var personalisation = new Dictionary<string, dynamic> {
                 {"address_line_1", userFullNameAndJobTitle},
                 {"address_line_2", companyName},
@@ -54,7 +53,7 @@ namespace GenderPayGap.WebUI.Services
                 {"expires", pinExpiryDate.ToString("d MMMM yyyy")}
             };
 
-            LetterNotificationResponse response = govNotifyApi.SendLetter(templateId, personalisation);
+            LetterNotificationResponse response = govNotifyApi.SendLetter(GovUkNotifyPinInThePostLetterTemplateId, personalisation);
             if (response != null)
             {
                 letterId = response.id;

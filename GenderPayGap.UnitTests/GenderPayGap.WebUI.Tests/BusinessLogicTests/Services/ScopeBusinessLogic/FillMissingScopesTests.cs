@@ -184,7 +184,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             DateTime snapshotDate)
         {
             int firstYear = Global.FirstReportingYear;
-            int lastYear = Global.CurrentAccountingYear;
+            int lastYear = SectorTypes.Private.GetAccountingStartDate().Year;
 
             Organisation testOrg = CreateOrgWithNoScopes(testOrgId, testSector, VirtualDateTime.Now);
 

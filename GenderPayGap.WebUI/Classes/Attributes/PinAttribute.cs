@@ -8,9 +8,9 @@ namespace GenderPayGap.WebUI.Classes
     public class PinAttribute : RegularExpressionAttribute
     {
 
-        public PinAttribute() : base(Global.PinRegex)
+        public PinAttribute() : base("^[A-Za-z0-9]{7}$")
         {
-            ErrorMessage = Global.PinRegexError;
+            ErrorMessage = "PIN code must contain 7 alpha or numeric characters";
         }
 
     }

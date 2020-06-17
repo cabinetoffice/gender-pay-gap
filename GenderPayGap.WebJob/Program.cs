@@ -29,7 +29,7 @@ namespace GenderPayGap.WebJob
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             //Culture is required so UK dates can be parsed correctly
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(WebJobGlobal.Culture.ToStringOr("en-GB"));
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
             if (!Config.IsProduction() && Config.GetAppSetting("DUMP_APPSETTINGS") == "1")

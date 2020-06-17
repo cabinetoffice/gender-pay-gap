@@ -12,7 +12,7 @@ namespace GenderPayGap.WebUI.Classes
 
         public CompanyNumberAttribute() : base(pattern)
         {
-            ErrorMessage = Global.CompanyNumberRegexError;
+            ErrorMessage = "Company number must contain 8 characters only";
         }
 
     }

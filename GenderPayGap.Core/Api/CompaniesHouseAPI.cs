@@ -29,7 +29,8 @@ namespace GenderPayGap.Core.API
         private static readonly string ApiKey = Global.CompaniesHouseApiKey;
         public static readonly int MaxRecords = Global.CompaniesHouseMaxRecords;
 
-        public static Uri BaseUri = new Uri(Global.CompaniesHouseApiServer);
+        private const string CompaniesHouseApiServer = "https://api.companieshouse.gov.uk";
+        public static Uri BaseUri = new Uri(CompaniesHouseApiServer);
 
         private readonly HttpClient _httpClient;
 

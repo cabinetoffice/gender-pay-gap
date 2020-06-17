@@ -8,9 +8,9 @@ namespace GenderPayGap.WebUI.Classes
     public class PasswordAttribute : RegularExpressionAttribute
     {
 
-        public PasswordAttribute() : base(Global.PasswordRegex)
+        public PasswordAttribute() : base("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d\\W]{8,}$")
         {
-            ErrorMessage = Global.PasswordRegexError;
+            ErrorMessage = "Password must contain at least one upper case, 1 lower case character and 1 digit";
         }
 
     }
