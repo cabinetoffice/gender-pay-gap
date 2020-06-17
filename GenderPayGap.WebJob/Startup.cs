@@ -55,7 +55,7 @@ namespace GenderPayGap.WebJob
             // Need to register webJob class in Autofac as well
             builder.RegisterType<Functions>().InstancePerDependency();
 
-            builder.Register(c => new SqlRepository(new GpgDatabaseContext(Global.DatabaseConnectionString)))
+            builder.Register(c => new SqlRepository(new GpgDatabaseContext(WebJobGlobal.DatabaseConnectionString)))
                 .As<IDataRepository>()
                 .InstancePerDependency();
             builder.RegisterType<CompaniesHouseAPI>()
@@ -66,13 +66,13 @@ namespace GenderPayGap.WebJob
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(ICompaniesHouseAPI)));
 
             // validate we have a storage connection
-            if (string.IsNullOrWhiteSpace(Global.AzureStorageConnectionString))
+            if (string.IsNullOrWhiteSpace(WebJobGlobal.AzureStorageConnectionString))
             {
                 throw new InvalidOperationException("No Azure Storage connection specified. Check the config.");
             }
 
             //Set the default encryption key
-            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
+            Encryption.SetDefaultEncryptionKey(WebJobGlobal.DefaultEncryptionKey);
 
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();

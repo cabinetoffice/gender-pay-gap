@@ -29,7 +29,7 @@ namespace GenderPayGap.WebJob
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             //Culture is required so UK dates can be parsed correctly
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(Global.Culture.ToStringOr("en-GB"));
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(WebJobGlobal.Culture.ToStringOr("en-GB"));
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
             if (!Config.IsProduction() && Config.GetAppSetting("DUMP_APPSETTINGS") == "1")
@@ -74,7 +74,7 @@ namespace GenderPayGap.WebJob
             Extensions.AspNetCore.Extensions.SetupSerilogLogger(jobHostBuilder);
 
             var settings = new Dictionary<string, string>();
-            settings["ConnectionStrings:AzureWebJobsStorage"] = Global.AzureStorageConnectionString;
+            settings["ConnectionStrings:AzureWebJobsStorage"] = WebJobGlobal.AzureStorageConnectionString;
 
             jobHostBuilder.ConfigureAppConfiguration(b => { b.AddInMemoryCollection(settings); });
 
