@@ -12,18 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="AppSettings.secret.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <Content Include="AppSettings.secret.json" Condition="Exists('AppSettings.secret.json')">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
     <Content Include="AppSettings.UnitTests.json" Condition="Exists('AppSettings.UnitTests.json')">
       <DependentUpon>appsettings.json</DependentUpon>
