@@ -320,7 +320,7 @@ namespace GenderPayGap.WebUI
         public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
             app.UseMiddleware<ExceptionMiddleware>();
-            if (Global.UseDeveloperExceptions)
+            if (Config.IsLocal())
             {
                 IdentityModelEventSource.ShowPII = true;
 
