@@ -75,7 +75,7 @@ namespace GenderPayGap.Extensions.AspNetCore
             Console.WriteLine($"Environment: {Config.EnvironmentName}");
 
             //Build the configuration
-            Config.Configuration = Config.Build(builder: configBuilder);
+            Config.Configuration = Config.Build(configBuilder);
             Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
 
             Console.WriteLine($"AzureStorageConnectionString: {Global.AzureStorageConnectionString}");
