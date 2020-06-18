@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autofac;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -30,6 +29,7 @@ namespace GenderPayGap.Core
             Config.GetAppSetting("VCAP_SERVICES") != null
                 ? JsonConvert.DeserializeObject<VcapServices>(Config.GetAppSetting("VCAP_SERVICES"))
                 : null;
+        public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
 
         #endregion
 
@@ -37,14 +37,14 @@ namespace GenderPayGap.Core
 
         #region Settings that we expect to want to update at short notice
 
-        public static bool MaintenanceMode => Config.GetAppSetting("MaintenanceMode").ToBoolean();
+        public static bool MaintenanceMode => Config.GetAppSetting("MaintenanceMode").ToBoolean(false);
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>
-            JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement"));
+            JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement", "[]"));
         public static DateTime ActionHubSwitchOverDate => Config.GetAppSetting("ActionHubSwitchOverDate").ToDateTime();
         public static string ReminderEmailDays => Config.GetAppSetting("ReminderEmailDays");
         public static bool EnableSubmitAlerts
         {
-            get => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean(true);
+            get => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean(false);
             set => Config.SetAppSetting("EnableSubmitAlerts", value.ToString());
         }
 
@@ -60,7 +60,6 @@ namespace GenderPayGap.Core
         }
         public static bool SendGoogleAnalyticsDataToGovUk => Config.GetAppSetting("SendGoogleAnalyticsDataToGovUk").ToBoolean();
         public static int MaxNumCallsCompaniesHouseApiPerFiveMins => Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
-        public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
 
         public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
