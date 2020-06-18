@@ -791,13 +791,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 Times.Once(),
                 "Expected the other user of the same organisation's email address to be in the email send queue");
 
-            string geoDistributionList = Config.GetAppSetting("GEODistributionList");
+            List<string> geoDistributionList = Global.GeoDistributionList;
             UiTestHelper.MockBackgroundJobsApi.Verify(
                 x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.SendGeoOrphanOrganisationEmail))),
                 Times.Never(),
                 $"Didnt expect the GEO Email addresses using {EmailTemplates.SendGeoOrphanOrganisationEmail} to be in the email send queue");
             UiTestHelper.MockBackgroundJobsApi.Verify(
-                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(geoDistributionList))),
+                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => geoDistributionList.Contains(inst.EmailAddress))),
                 Times.Never(),
                 "Didnt expect the GEO Email addresses to be in the email send queue");
 
