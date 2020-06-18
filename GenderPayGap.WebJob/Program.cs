@@ -4,9 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using Autofac;
-using GenderPayGap.Core;
-using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.Azure.WebJobs.Host;
@@ -31,14 +28,6 @@ namespace GenderPayGap.WebJob
             //Culture is required so UK dates can be parsed correctly
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
-
-            if (!Config.IsProduction() && Config.GetAppSetting("DUMP_APPSETTINGS") == "1")
-            {
-                foreach (string key in Config.GetAppSettingKeys())
-                {
-                    Console.WriteLine($@"APPSETTING[""{key}""]={Config.GetAppSetting(key)}");
-                }
-            }
 
             //Build the webjob host and services
             IHost host = BuildJobHost(args);

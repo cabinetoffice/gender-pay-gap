@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
 namespace GenderPayGap.Extensions.AspNetCore
@@ -70,7 +69,7 @@ namespace GenderPayGap.Extensions.AspNetCore
         }
 
 
-        public static IConfiguration Build(Dictionary<string, string> additionalSettings = null, IConfigurationBuilder builder = null)
+        public static IConfiguration Build(IConfigurationBuilder builder = null)
         {
             builder = builder ?? new ConfigurationBuilder();
 
@@ -78,11 +77,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             builder.AddJsonFile($"appsettings.{EnvironmentName}.json", true, true);
 
             builder.AddEnvironmentVariables();
-
-            if (additionalSettings != null && additionalSettings.Any())
-            {
-                builder.AddInMemoryCollection(additionalSettings);
-            }
 
             IConfigurationRoot configuration = builder.Build();
 
@@ -119,12 +113,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             /* make sure these files are loaded AFTER the vault, so their keys superseed the vaults' values - that way, unit tests will pass because the obfuscation key is whatever the appSettings says it is [and not a hidden secret inside the vault])  */
             if (Debugger.IsAttached || IsEnvironment("Local"))
             {
-                Assembly appAssembly = Misc.GetTopAssembly();
-                if (appAssembly != null)
-                {
-                    builder.AddUserSecrets(appAssembly, true);
-                }
-
                 builder.AddJsonFile("appsettings.secret.json", true, true);
             }
 
@@ -139,21 +127,6 @@ namespace GenderPayGap.Extensions.AspNetCore
         public static bool IsLocal()
         {
             return IsEnvironment("LOCAL");
-        }
-
-        public static bool IsDevelopment()
-        {
-            return IsEnvironment("DEV", "DEVELOPMENT");
-        }
-
-        public static bool IsStaging()
-        {
-            return IsEnvironment("STAGING");
-        }
-
-        public static bool IsPreProduction()
-        {
-            return IsEnvironment("PREPROD", "PREPRODUCTION");
         }
 
         public static bool IsProduction()
@@ -199,11 +172,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             appSettings[key] = value;
         }
 
-        public static IEnumerable<string> GetAppSettingKeys()
-        {
-            return GetAppSettings().GetKeys();
-        }
-
         public static string GetConnectionString(string key)
         {
             var prefix = "ConnectionStrings:";
@@ -219,16 +187,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
 
             return string.IsNullOrWhiteSpace(value) ? null : value;
-        }
-
-        public static IEnumerable<string> GetKeys(this IConfiguration section)
-        {
-            return section.GetChildren().Select(c => c.Key);
-        }
-
-        public static bool HasKey(this IConfiguration section, string key)
-        {
-            return section.GetChildren().Any(c => c.Key.EqualsI(key));
         }
 
         public static TimeSpan OffsetCurrentDateTimeForSite()
