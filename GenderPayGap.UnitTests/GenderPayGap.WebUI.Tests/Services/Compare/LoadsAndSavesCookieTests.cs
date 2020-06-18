@@ -1,8 +1,6 @@
 ﻿using GenderPayGap.Core;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
-using GenderPayGap.WebUI.Options;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
@@ -35,7 +33,6 @@ namespace GenderPayGap.Tests.Services.Compare
                 .Returns(string.Join(",", expectedEmployerIds));
 
             var testService = new CompareViewService(
-                MoqHelpers.CreateIOptionsSnapshotMock(new ViewingOptions()),
                 mockHttpContextAccessor.Object,
                 Mock.Of<IHttpSession>());
 
@@ -58,7 +55,6 @@ namespace GenderPayGap.Tests.Services.Compare
                 .Returns("12345678");
 
             var testService = new CompareViewService(
-                MoqHelpers.CreateIOptionsSnapshotMock(new ViewingOptions()),
                 mockHttpContextAccessor.Object,
                 Mock.Of<IHttpSession>());
 
@@ -85,7 +81,6 @@ namespace GenderPayGap.Tests.Services.Compare
                 .Returns("12345678");
 
             var testService = new CompareViewService(
-                MoqHelpers.CreateIOptionsSnapshotMock(new ViewingOptions()),
                 mockHttpContextAccessor.Object,
                 Mock.Of<IHttpSession>());
 

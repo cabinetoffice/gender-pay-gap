@@ -7,9 +7,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models.Cookies;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.Options;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace GenderPayGap.WebUI.Classes.Presentation
@@ -51,15 +49,12 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public class CompareViewService : ICompareViewService
     {
 
-        public CompareViewService(IOptionsSnapshot<ViewingOptions> options, IHttpContextAccessor httpContext, IHttpSession session)
+        public CompareViewService(IHttpContextAccessor httpContext, IHttpSession session)
         {
-            Options = options;
             HttpContext = httpContext.HttpContext;
             Session = session;
             ComparedEmployers = new Lazy<SessionList<string>>(CreateCompareSessionList(Session));
         }
-
-        public IOptionsSnapshot<ViewingOptions> Options { get; }
 
         public void LoadComparedEmployersFromCookie()
         {
@@ -146,9 +141,9 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public int BasketItemCount => ComparedEmployers.Value.Count;
 
-        public int MaxCompareBasketCount => Options.Value.MaxCompareBasketCount;
+        public int MaxCompareBasketCount => Global.MaxCompareBasketCount;
 
-        public int MaxCompareBasketShareCount => Options.Value.MaxCompareBasketShareCount;
+        public int MaxCompareBasketShareCount => Global.MaxCompareBasketShareCount;
 
         #endregion
 

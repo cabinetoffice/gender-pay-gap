@@ -208,7 +208,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -508,7 +508,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -615,7 +615,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -955,7 +955,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
@@ -1044,7 +1044,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
@@ -1169,7 +1169,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -1312,7 +1312,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -1415,7 +1415,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -1524,7 +1524,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -1604,7 +1604,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -1697,7 +1697,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -2144,7 +2144,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             expectedReturnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
@@ -2295,7 +2295,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Clean up
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
             await testService.DiscardDraftFileAsync(actualReturnViewModel);
         }
 
@@ -2466,7 +2466,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.Bind(returnViewModel);
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
-            var submissionServiceMock = new SubmissionService(null, null, new DraftFileBusinessLogic(testFileRepository), null);
+            var submissionServiceMock = new SubmissionService(null, null, new DraftFileBusinessLogic(testFileRepository));
             returnViewModel.ReportInfo.Draft = await submissionServiceMock.GetDraftFileAsync(
                 organisation.OrganisationId,
                 organisation.SectorType.GetAccountingStartDate().Year,
@@ -2547,7 +2547,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.Bind(returnViewModel);
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
-            var submissionServiceMock = new SubmissionService(null, null, new DraftFileBusinessLogic(testFileRepository), null);
+            var submissionServiceMock = new SubmissionService(null, null, new DraftFileBusinessLogic(testFileRepository));
             returnViewModel.ReportInfo.Draft = await submissionServiceMock.GetDraftFileAsync(
                 organisation.OrganisationId,
                 organisation.SectorType.GetAccountingStartDate().Year,
@@ -2740,7 +2740,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -2945,7 +2945,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -3040,7 +3040,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -3175,7 +3175,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -3306,7 +3306,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -3565,7 +3565,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -3700,7 +3700,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
@@ -3921,7 +3921,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
@@ -4170,7 +4170,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -4263,7 +4263,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
@@ -4411,7 +4411,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
@@ -4681,7 +4681,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var testFileRepository = UiTestHelper.DIContainer.Resolve<IFileRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testFileRepository);
-            var testService = new SubmissionService(null, null, testDraftFileBL, null);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,

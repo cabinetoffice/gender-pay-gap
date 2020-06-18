@@ -15,9 +15,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Submit;
-using GenderPayGap.WebUI.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace GenderPayGap.WebUI.Classes.Services
 {
@@ -74,16 +72,13 @@ namespace GenderPayGap.WebUI.Classes.Services
         public SubmissionService(
             IDataRepository dataRepository,
             IScopeBusinessLogic scopeBL,
-            IDraftFileBusinessLogic draftFileBusinessLogic,
-            IOptionsSnapshot<SubmissionOptions> submissionOptions)
+            IDraftFileBusinessLogic draftFileBusinessLogic)
         {
             DataRepository = dataRepository;
             ScopeBusinessLogic = scopeBL;
             _draftFileBusinessLogic = draftFileBusinessLogic;
-            SubmissionOptions = submissionOptions;
         }
 
-        public IOptionsSnapshot<SubmissionOptions> SubmissionOptions { get; }
         public IDataRepository DataRepository { get; }
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
 
@@ -529,7 +524,7 @@ namespace GenderPayGap.WebUI.Classes.Services
         public async Task<List<ReportInfoModel>> GetAllEditableReportsAsync(UserOrganisation userOrg, DateTime currentSnapshotDate)
         {
             int currentYear = currentSnapshotDate.Year;
-            int startYear = currentYear - (SubmissionOptions.Value.EditableReportCount - 1);
+            int startYear = currentYear - (Global.EditableReportCount - 1);
             if (startYear < Global.FirstReportingYear)
             {
                 startYear = Global.FirstReportingYear;

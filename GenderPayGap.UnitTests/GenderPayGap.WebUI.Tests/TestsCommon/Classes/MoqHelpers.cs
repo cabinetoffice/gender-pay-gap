@@ -2,7 +2,6 @@
 using System.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using Microsoft.Extensions.Options;
 using MockQueryable.Moq;
 using Moq;
 
@@ -55,13 +54,6 @@ namespace GenderPayGap.Tests.Common.Classes
             mockDataRepo.SetupGetAll(objects);
 
             return mockDataRepo;
-        }
-
-        public static IOptionsSnapshot<T> CreateIOptionsSnapshotMock<T>(T value) where T : class, new()
-        {
-            var mock = new Mock<IOptionsSnapshot<T>>();
-            mock.Setup(m => m.Value).Returns(value);
-            return mock.Object;
         }
 
         private static void SetupGetAll(this Mock<IDataRepository> mockDataRepo, IEnumerable<object> items)
