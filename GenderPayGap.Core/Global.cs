@@ -131,10 +131,10 @@ namespace GenderPayGap.Core
                 {"X-Content-Security-Policy", "$(Content-Security-Policy)"},
                 {"Referrer-Policy", "origin-when-cross-origin"},
                 {"Strict-Transport-Security", "max-age=31536000; includeSubDomains"},
-                {"X-Powered-By", null},
-                {"X-AspNet-Version", null},
-                {"X-AspNetMvc-Version", null},
-                {"Server", null}
+                {"X-Powered-By", ""},
+                {"X-AspNet-Version", ""},
+                {"X-AspNetMvc-Version", ""},
+                {"Server", ""}
             };
 
         #endregion
