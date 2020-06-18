@@ -116,6 +116,11 @@ namespace GenderPayGap.Core
                 ? "https://www.gov.uk/report-gender-pay-gap-data"
                 : null;
         public static string DoneUrl => "https://www.gov.uk/done/report-gender-pay-gap-data";
+        public static int ShowReportYearCount => 10; // Specifies how many reporting years the public can view or compare
+        public static int MaxCompareBasketCount => 500; // Maximum number of employers you can add to the compare basket
+        public static int MaxCompareBasketShareCount => 195; // Maximum number of employers you can share in a mailto: protocol
+        public static int EditableReportCount => 4; // Specifies how many reports an employer can edit
+        public static int EditableScopeCount => 2; // Specifies how many scopes an employer can edit
 
         #endregion
 

@@ -40,8 +40,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockDraftFileBL.Object,
-                null);
+                mockDraftFileBL.Object);
             mockService.CallBase = true;
 
             // Override GetPreviousReportingStartDate and return expectedYear
@@ -73,8 +72,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                mockDraftFileBL.Object,
-                null);
+                mockDraftFileBL.Object);
             mockService.CallBase = true;
 
             // Override GetPreviousReportingStartDate and return expectedYear

@@ -17,7 +17,6 @@ using GenderPayGap.Core.Extensions.AspNetCore;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewServices;
@@ -26,7 +25,6 @@ using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
-using GenderPayGap.WebUI.Options;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
@@ -37,7 +35,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Logging;
@@ -53,16 +50,6 @@ namespace GenderPayGap.WebUI
         public static Action<ContainerBuilder> ConfigureTestContainer;
 
         private static bool AutoMapperInitialised;
-        private readonly IConfiguration config;
-        private readonly IHostingEnvironment env;
-
-        public Startup(IHostingEnvironment env, IConfiguration config)
-        {
-            this.env = env;
-            this.config = config;
-        }
-
-        public static HttpMessageHandler BackChannelHandler { get; set; }
 
         // ConfigureServices is where you register dependencies. This gets
         // called by the runtime before the ConfigureContainer method, below.
@@ -71,10 +58,6 @@ namespace GenderPayGap.WebUI
             // Add services to the collection. Don't build or return 
             // any IServiceProvider or the ConfigureContainer method
             // won't get called.
-
-            // setup configuration
-            services.Configure<ViewingOptions>(config.GetSection("Gpg:Viewing"));
-            services.Configure<SubmissionOptions>(config.GetSection("Gpg:Submission"));
 
             //Allow handler for caching of http responses
             services.AddResponseCaching();

@@ -77,8 +77,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             mockDataRepo.Setup(x => x.Get<Organisation>(It.IsAny<long>())).Returns(mockedOrganisation);
 
@@ -126,7 +125,7 @@ namespace GenderPayGap.Tests
             OrganisationHelper.LinkOrganisationAndReturn(mockedOrganisation, mockedReturn);
 
             var testDraftFileBL = new DraftFileBusinessLogic(new SystemFileRepository());
-            var testService = new SubmissionService(mockDataRepo.Object, null, testDraftFileBL, null);
+            var testService = new SubmissionService(mockDataRepo.Object, null, testDraftFileBL);
 
             // Act
             Draft actualDraft = await testService.GetDraftFileAsync(
@@ -175,8 +174,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Copy the original
             var testNewReturn = (Return) testOldReturn.CopyProperties(new Return());
@@ -236,8 +234,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Assert all figures
             foreach (string figurePropName in figureProps)
@@ -269,8 +266,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Copy the original
             var testNewReturn = (Return) testOldReturn.CopyProperties(new Return());
@@ -305,8 +301,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Assert all figures
             foreach (string personPropName in personProps)
@@ -338,8 +333,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Copy the original
             var testNewReturn = (Return) testOldReturn.CopyProperties(new Return());
@@ -375,8 +369,7 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             mockService.CallBase = true;
             mockService.Setup(s => s.IsValidSnapshotYear(It.IsAny<int>())).Returns(true);
@@ -408,8 +401,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Assert
             Return actualReturn = await testService.GetReturnFromDatabaseAsync(1, 1998);
@@ -449,8 +441,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                testDraftFileFileBusinessLogic,
-                null);
+                testDraftFileFileBusinessLogic);
 
             // Test
             ReturnViewModel actualModel = await testService.GetReturnViewModelAsync(testOrganisation.OrganisationId, testYear, testUserId);
@@ -514,8 +505,7 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
             mockService.CallBase = true;
             mockService.Setup(s => s.IsValidSnapshotYear(It.IsIn(testYear))).Returns(true);
 
@@ -564,8 +554,7 @@ namespace GenderPayGap.Tests
             var testService = new SubmissionService(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
 
             // Test
             var ex = Assert.ThrowsAsync<AuthenticationException>(
@@ -588,8 +577,7 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
             mockService.CallBase = true;
 
             // Override GetCurrentReportingStartDate and return expectedYear
@@ -615,8 +603,7 @@ namespace GenderPayGap.Tests
             var mockService = new Mock<SubmissionService>(
                 mockDataRepo.Object,
                 mockScopeBL.Object,
-                _mockDraftFileBL.Object,
-                null);
+                _mockDraftFileBL.Object);
             mockService.CallBase = true;
 
             // Override GetReportingStartDate and return expectedYear

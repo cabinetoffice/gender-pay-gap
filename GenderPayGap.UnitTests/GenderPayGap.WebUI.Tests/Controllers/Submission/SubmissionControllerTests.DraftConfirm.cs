@@ -67,8 +67,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var submissionServiceMock = new SubmissionService(
                 null,
                 null,
-                new DraftFileBusinessLogic(new SystemFileRepository()),
-                null);
+                new DraftFileBusinessLogic(new SystemFileRepository()));
             returnViewModel.ReportInfo.Draft = await submissionServiceMock.GetDraftFileAsync(
                 organisation.OrganisationId,
                 organisation.SectorType.GetAccountingStartDate().Year,

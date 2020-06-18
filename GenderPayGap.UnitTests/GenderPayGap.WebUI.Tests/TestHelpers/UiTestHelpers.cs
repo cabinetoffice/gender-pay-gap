@@ -30,7 +30,6 @@ using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers.Admin;
 using GenderPayGap.WebUI.Helpers;
-using GenderPayGap.WebUI.Options;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
@@ -45,7 +44,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
 using Moq;
 using Newtonsoft.Json;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
@@ -229,10 +227,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 builder.Register(c => mockDataRepo.Object).As<IDataRepository>().InstancePerLifetimeScope();
             }
 
-            // configuration options
-            builder.Register(c => MoqHelpers.CreateIOptionsSnapshotMock(new SubmissionOptions()));
-            builder.Register(c => MoqHelpers.CreateIOptionsSnapshotMock(new ViewingOptions()));
-
             //Create the mock repositories
             // BL Repository
             builder.Register(c => new SystemFileRepository()).As<IFileRepository>().SingleInstance();
@@ -294,8 +288,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                     c => new SubmissionService(
                         c.Resolve<IDataRepository>(),
                         c.Resolve<IScopeBusinessLogic>(),
-                        c.Resolve<IDraftFileBusinessLogic>(),
-                        c.Resolve<IOptionsSnapshot<SubmissionOptions>>()))
+                        c.Resolve<IDraftFileBusinessLogic>()))
                 .As<ISubmissionService>()
                 .InstancePerLifetimeScope();
 

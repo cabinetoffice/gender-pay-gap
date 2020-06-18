@@ -24,7 +24,6 @@ using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers.Account;
-using GenderPayGap.WebUI.Options;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
@@ -39,7 +38,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using Newtonsoft.Json;
@@ -203,8 +201,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                     c => new SubmissionService(
                         c.Resolve<IDataRepository>(),
                         c.Resolve<IScopeBusinessLogic>(),
-                        c.Resolve<IDraftFileBusinessLogic>(),
-                        c.Resolve<IOptionsSnapshot<SubmissionOptions>>()))
+                        c.Resolve<IDraftFileBusinessLogic>()))
                 .As<ISubmissionService>()
                 .InstancePerLifetimeScope();
 

@@ -1,5 +1,4 @@
-﻿@inject IOptionsSnapshot<ViewingOptions> ViewingOptions
-@using GenderPayGap.Core
+﻿@using GenderPayGap.Core
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Models.Shared
 @model EmployerDetailsViewModel
@@ -82,7 +81,7 @@
             </div>
         </div>
 
-        @foreach (Return report in organisation.GetRecentReports(ViewingOptions.Value.ShowReportYearCount))
+        @foreach (Return report in organisation.GetRecentReports(Global.ShowReportYearCount))
         {
             <div class="grid-row">
                 <div class="column-full">
