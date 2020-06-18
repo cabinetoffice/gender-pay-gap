@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
@@ -73,55 +72,27 @@ namespace GenderPayGap.Extensions.AspNetCore
         {
             builder = builder ?? new ConfigurationBuilder();
 
+            // NOTE: The order in which these commands run determines which settings take priority
+
+            // First, load from appsettings.json
             builder.AddJsonFile("appsettings.json", false, true);
+
+            // Then, override this with the environment-specific settings
             builder.AddJsonFile($"appsettings.{EnvironmentName}.json", true, true);
 
-            builder.AddEnvironmentVariables();
-
-            IConfigurationRoot configuration = builder.Build();
-
-            //Add the azure key vault to configuration
-            string vault = configuration["Vault"];
-            if (!string.IsNullOrWhiteSpace(vault))
-            {
-                if (!vault.StartsWithI("http"))
-                {
-                    vault = $"https://{vault}.vault.azure.net/";
-                }
-
-                string clientId = configuration["ClientId"];
-                string clientSecret = configuration["ClientSecret"];
-                var exceptions = new List<Exception>();
-                if (string.IsNullOrWhiteSpace(clientId))
-                {
-                    exceptions.Add(new ArgumentNullException("ClientId is missing"));
-                }
-
-                if (string.IsNullOrWhiteSpace(clientSecret))
-                {
-                    exceptions.Add(new ArgumentNullException("clientSecret is missing"));
-                }
-
-                if (exceptions.Count > 0)
-                {
-                    throw new AggregateException(exceptions);
-                }
-
-                builder.AddAzureKeyVault(vault, clientId, clientSecret);
-            }
-
-            /* make sure these files are loaded AFTER the vault, so their keys superseed the vaults' values - that way, unit tests will pass because the obfuscation key is whatever the appSettings says it is [and not a hidden secret inside the vault])  */
+            // If we're running the code locally, override this with appsettings.secret.json
             if (Debugger.IsAttached || IsEnvironment("Local"))
             {
                 builder.AddJsonFile("appsettings.secret.json", true, true);
             }
 
+            // Then add the unit test configuration (only used when running automated tests)
             builder.AddJsonFile("appsettings.unittests.json", true, false);
 
-            // override using the azure environment variables into the configuration
+            // Environment variables are added last (so have highest priority)
             builder.AddEnvironmentVariables();
-            configuration = builder.Build();
-            return configuration;
+
+            return builder.Build();
         }
 
         public static bool IsLocal()
