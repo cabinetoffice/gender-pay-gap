@@ -121,6 +121,22 @@ namespace GenderPayGap.Core
         public static int MaxCompareBasketShareCount => 195; // Maximum number of employers you can share in a mailto: protocol
         public static int EditableReportCount => 4; // Specifies how many reports an employer can edit
         public static int EditableScopeCount => 2; // Specifies how many scopes an employer can edit
+        public static Dictionary<string, string> SecurityHeaders =>
+            new Dictionary<string, string>
+            {
+                {"X-Content-Type-Options", "nosniff"},
+                {"X-Frame-Options", "DENY"},
+                {"X-Permitted-Cross-Domain-Policies", "master-only"},
+                {"X-Xss-Protection", "1; mode=block;"},
+                {"Content-Security-Policy", "frame-ancestors 'none'"},
+                {"X-Content-Security-Policy", "$(Content-Security-Policy)"},
+                {"Referrer-Policy", "origin-when-cross-origin"},
+                {"Strict-Transport-Security", "max-age=31536000; includeSubDomains"},
+                {"X-Powered-By", null},
+                {"X-AspNet-Version", null},
+                {"X-AspNetMvc-Version", null},
+                {"Server", null}
+            };
 
         #endregion
 

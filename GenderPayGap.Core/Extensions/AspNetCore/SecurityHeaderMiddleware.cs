@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace GenderPayGap.Extensions.AspNetCore
 {
@@ -14,7 +13,7 @@ namespace GenderPayGap.Extensions.AspNetCore
         public SecurityHeaderMiddleware(RequestDelegate next)
         {
             _next = next;
-            _securityHeaders = GetSecurityHeaders();
+            _securityHeaders = Global.SecurityHeaders;
         }
 
         private Dictionary<string, string> _securityHeaders { get; }
@@ -41,16 +40,6 @@ namespace GenderPayGap.Extensions.AspNetCore
                 });
 
             await _next.Invoke(httpContext);
-        }
-
-        public static Dictionary<string, string> GetSecurityHeaders()
-        {
-            var securityHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            //Load the Security headers from the config file
-            Config.Configuration.GetSection("SecurityHeaders").Bind(securityHeaders);
-
-            return securityHeaders;
         }
 
     }
