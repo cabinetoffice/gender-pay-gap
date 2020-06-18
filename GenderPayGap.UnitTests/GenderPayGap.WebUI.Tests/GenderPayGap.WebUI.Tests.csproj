@@ -12,11 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.DEV.json" />
-    <None Remove="appsettings.PREPROD.json" />
-    <None Remove="appsettings.PROD.json" />
     <None Remove="AppSettings.secret.json" />
-    <None Remove="appsettings.TEST.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,22 +29,6 @@
       <DependentUpon>appsettings.json</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <Content Include="appsettings.DEV.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.PREPROD.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.PROD.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.TEST.json">
-      <DependentUpon>appsettings.json</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
@@ -90,6 +70,4 @@
     <ProjectReference Include="..\..\GenderPayGap.WebUI\GenderPayGap.WebUI.csproj" />
   </ItemGroup>
   
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1unittests_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
-
 </Project>
