@@ -132,7 +132,6 @@ namespace GenderPayGap.WebUI.Controllers
         /// <summary>
         /// </summary>
         /// <param name="searchQuery"></param>
-        [NoCache]
         [HttpGet("~/search-results")]
         [HttpGet("search-results")]
         public async Task<IActionResult> SearchResults([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
@@ -169,7 +168,6 @@ namespace GenderPayGap.WebUI.Controllers
             return View("Finder/SearchResults", model);
         }
 
-        [NoCache]
         [HttpGet("~/search-results-js")]
         [HttpGet("search-results-js")]
         // used to generate suggestions for the search on the landing page 
@@ -195,7 +193,6 @@ namespace GenderPayGap.WebUI.Controllers
             return PartialView("Finder/Parts/MainContent", model);
         }
 
-        [ResponseCache(CacheProfileName = "SuggestEmployerNameJs")]
         [HttpGet("suggest-employer-name-js")]
         public IActionResult SuggestEmployerNameJs(string search)
         {
@@ -298,7 +295,6 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier});
         }
 
-        [NoCache]
         [HttpGet("~/Employer/{employerIdentifier}")]
         public IActionResult Employer(string employerIdentifier)
         {
@@ -344,7 +340,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Reports
 
         [HttpGet("employer-{employerIdentifier}/report-{year}")]
-        [NoCache]
         [Obsolete("ReportDeprecated is (unsurprisingly) deprecated, please use method 'Report' instead.")] // , true)]
         public IActionResult ReportDeprecated(string employerIdentifier, int year)
         {

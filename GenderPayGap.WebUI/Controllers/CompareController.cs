@@ -67,7 +67,6 @@ namespace GenderPayGap.WebUI.Controllers
             return Redirect(returnUrl);
         }
 
-        [NoCache]
         [HttpGet("add-employer-js/{employerIdentifier}")]
         public IActionResult AddEmployerJs(string employerIdentifier, string returnUrl)
         {
@@ -136,7 +135,6 @@ namespace GenderPayGap.WebUI.Controllers
             return Redirect(returnUrl);
         }
 
-        [NoCache]
         [HttpGet("remove-employer-js/{employerIdentifier}")]
         public IActionResult RemoveEmployerJs(string employerIdentifier, string returnUrl)
         {
