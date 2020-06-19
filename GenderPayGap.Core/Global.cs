@@ -30,6 +30,7 @@ namespace GenderPayGap.Core
                 ? JsonConvert.DeserializeObject<VcapServices>(Config.GetAppSetting("VCAP_SERVICES"))
                 : null;
         public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
+        public static string TomsAppApiPassword => Config.GetAppSetting("TomsAppApiPassword");
 
         #endregion
 
