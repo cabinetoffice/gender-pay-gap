@@ -60,18 +60,18 @@ namespace GenderPayGap.WebUI.Controllers
 
                         var record = new
                         {
-                            organisationid = organisation.OrganisationId,
-                            organisationname = organisation.OrganisationName,
-                            employerreference = organisation.EmployerReference,
-                            companynumber = organisation.CompanyNumber,
-                            organisationstatus = $"{organisation.Status.ToString()} ({(int)organisation.Status})",
-                            sectortype = $"{organisation.SectorType.ToString()} ({(int)organisation.SectorType})",
-                            scopestatus = $"{ScopeStatusToString(scopeForYear.ScopeStatus)} ({(int)scopeForYear.ScopeStatus})",
-                            snapshotdate = reportingYear,
-                            siccodesectiondescription = organisation.OrganisationSicCodes.FirstOrDefault()?.SicCode?.SicSection?.Description,
-                            returnid = returnForYear?.ReturnId,
-                            publicsectordescription = organisation.LatestPublicSectorType?.PublicSectorType?.Description,
-                            organisationsize = returnForYear?.OrganisationSize.GetAttribute<DisplayAttribute>().Name
+                            OrganisationId = organisation.OrganisationId,
+                            OrganisationName = organisation.OrganisationName,
+                            EmployerReference = organisation.EmployerReference,
+                            CompanyNumber = organisation.CompanyNumber,
+                            OrganisationStatus = $"{organisation.Status.ToString()} ({(int)organisation.Status})",
+                            SectorType = $"{organisation.SectorType.ToString()} ({(int)organisation.SectorType})",
+                            ScopeStatus = $"{ScopeStatusToString(scopeForYear.ScopeStatus)} ({(int)scopeForYear.ScopeStatus})",
+                            SnapshotDate = reportingYear,
+                            SicCodeSectionDescription = organisation.OrganisationSicCodes.FirstOrDefault()?.SicCode?.SicSection?.Description,
+                            ReturnId = returnForYear?.ReturnId,
+                            PublicSectorDescription = organisation.LatestPublicSectorType?.PublicSectorType?.Description,
+                            OrganisationSize = returnForYear?.OrganisationSize.GetAttribute<DisplayAttribute>().Name
                         };
 
                         records.Add(record);
@@ -134,32 +134,32 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     var record = new
                     {
-                        organisationid = ret.OrganisationId,
-                        latestreturnaccountingdate = ret.AccountingDate,
-                        statusid = $"{returnStatus.Status.ToString()} ({(int)returnStatus.Status})",
-                        statusdate = returnStatus.StatusDate,
-                        statusdetails = returnStatus.StatusDetails,
-                        latestreturnstatus = $"{ret.Status.ToString()} ({(int)ret.Status})",
-                        latestreturnstatusdate = ret.StatusDate,
-                        datefirstreportedinyear = firstReturnThisYear.Modified,
-                        submittedby = $"{ret.FirstName} {ret.LastName} [{ret.JobTitle}]",
-                        latestreturnlatereason = ret.LateReason,
-                        returnmodifiedfields = ret.Modifications,
-                        ehrcresponse = ret.EHRCResponse,
-                        diffmeanbonuspercent = ret.DiffMeanBonusPercent,
-                        diffmeanhourlypaypercent = ret.DiffMeanHourlyPayPercent,
-                        diffmedianbonuspercent = ret.DiffMedianBonusPercent,
-                        diffmedianhourlypercent = ret.DiffMedianHourlyPercent,
-                        femalelowerpayband = ret.FemaleLowerPayBand,
-                        femalemedianbonuspaypercent = ret.FemaleMedianBonusPayPercent,
-                        femalemiddlepayband = ret.FemaleMiddlePayBand,
-                        femaleupperpayband = ret.FemaleUpperPayBand,
-                        femaleupperquartilepayband = ret.FemaleUpperQuartilePayBand,
-                        malelowerpayband = ret.MaleLowerPayBand,
-                        malemedianbonuspaypercent = ret.MaleMedianBonusPayPercent,
-                        malemiddlepayband = ret.MaleMiddlePayBand,
-                        maleupperpayband = ret.MaleUpperPayBand,
-                        maleupperquartilepayband = ret.MaleUpperQuartilePayBand
+                        OrganisationId = ret.OrganisationId,
+                        latestReturnAccountingDate = ret.AccountingDate,
+                        StatusId = $"{returnStatus.Status.ToString()} ({(int)returnStatus.Status})",
+                        StatusDate = returnStatus.StatusDate,
+                        StatusDetails = returnStatus.StatusDetails,
+                        latestReturnStatus = $"{ret.Status.ToString()} ({(int)ret.Status})",
+                        latestReturnStatusDate = ret.StatusDate,
+                        dateFirstReportedInYear = firstReturnThisYear.Modified,
+                        SubmittedBy = $"{ret.FirstName} {ret.LastName} [{ret.JobTitle}]",
+                        LatestReturnLateReason = ret.LateReason,
+                        ReturnModifiedFields = ret.Modifications,
+                        EHRCResponse = ret.EHRCResponse,
+                        DiffMeanBonusPercent = ret.DiffMeanBonusPercent,
+                        DiffMeanHourlyPayPercent = ret.DiffMeanHourlyPayPercent,
+                        DiffMedianBonusPercent = ret.DiffMedianBonusPercent,
+                        DiffMedianHourlyPercent = ret.DiffMedianHourlyPercent,
+                        FemaleLowerPayBand = ret.FemaleLowerPayBand,
+                        FemaleMedianBonusPayPercent = ret.FemaleMedianBonusPayPercent,
+                        FemaleMiddlePayBand = ret.FemaleMiddlePayBand,
+                        FemaleUpperPayBand = ret.FemaleUpperPayBand,
+                        FemaleUpperQuartilePayBand = ret.FemaleUpperQuartilePayBand,
+                        MaleLowerPayBand = ret.MaleLowerPayBand,
+                        MaleMedianBonusPayPercent = ret.MaleMedianBonusPayPercent,
+                        MaleMiddlePayBand = ret.MaleMiddlePayBand,
+                        MaleUpperPayBand = ret.MaleUpperPayBand,
+                        MaleUpperQuartilePayBand = ret.MaleUpperQuartilePayBand
                     };
 
                     records.Add(record);
