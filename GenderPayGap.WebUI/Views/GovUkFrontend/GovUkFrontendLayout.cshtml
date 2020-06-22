@@ -61,18 +61,23 @@
             {
                 new HeaderNavigationViewModel
                 {
-                    Text = "Search",
+                    Text = "Search and compare",
                     Href = Url.Action("SearchResults", "Viewing")
                 },
                 new HeaderNavigationViewModel
                 {
-                    Text = "Guidance",
-                    Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
+                    Text = "Download",
+                    Href = Url.Action("Download", "Viewing")
                 },
                 new HeaderNavigationViewModel
                 {
-                    Text = "Submit",
-                    Href = Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")
+                    Text = "Close the gap",
+                    Href = Url.Action("Overview", "ActionHub")
+                },
+                new HeaderNavigationViewModel
+                {
+                    Text = "Employer guidance",
+                    Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
                 }
             };
         }
