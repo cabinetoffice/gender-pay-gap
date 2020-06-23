@@ -1,5 +1,6 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Views.Components.StepByStep
+@using Microsoft.AspNetCore.Html
 @model ReportingStepsViewModel
 
 @{
@@ -7,59 +8,32 @@
     {
         new StepViewModel
         {
-            Title = "Find out what the gender pay gap is",
+            Title = "Check when you are required to report by",
             StepType = StepType.Number,
             StepNumber = 1,
             Description = new StepDescription
             {
-                Text = "A number of factors contribute to the gender pay gap.",
+                Html =
+                    @<text>
+                        <p class="govuk-body">
+                            Organisations that are required to report and publish their gender pay
+                            gap data, and written statement, must do so by these dates:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>public sector organisations must publish before 31 March each year</li>
+                            <li>
+                                all other private, voluntary and public sector employers must publish before 31 March
+                                each year
+                            </li>
+                        </ul>
+                     </text>
             },
             StepTasks = new List<StepTask>
             {
-                new StepTask {
-                    TaskText = "Learn about the gender pay gap and what contributes to it", 
-                    TaskUrl = "/reporting-step-by-step/find-out-what-the-gender-pay-gap-is"
-                },
                 new StepTask
                 {
-                    TaskText = "View and compare other organisations' gender pay gaps", 
-                    TaskUrl = "/reporting-step-by-step/view-and-compare-organisations"
-                }
-            }
-        },
-        new StepViewModel
-        {
-            Title = "Check if and when you're required to report",
-            StepType = StepType.Number,
-            StepNumber = 2,
-            Description = new StepDescription
-            {
-                Text = "There are different regulations for public and private organisations.",
-            },
-            StepTasks = new List<StepTask>
-            {
-                
-                new StepTask {TaskText = "Find out if you need to report", TaskUrl = "/reporting-step-by-step"},
-                new StepTask {TaskText = "Find out when you need to report", TaskUrl = "/reporting-step-by-step"}
-            }
-        },
-
-        new StepViewModel
-        {
-            Title = "Find out what data you need to report",
-            StepType = StepType.Number,
-            StepNumber = 3,
-            Description = new StepDescription
-            {
-                Text = "You will need to gather and calculate a range of data."
-            },
-            StepTasks = new List<StepTask>
-            {
-                new StepTask {TaskText = "Find out when your 'snapshot' date is", 
-                    TaskUrl = "/reporting-step-by-step"
-                },
-                new StepTask {TaskText = "Find out what data you will need", 
-                TaskUrl = "/reporting-step-by-step",
+                    TaskText = "Find out more about gender pay gap reporting deadlines",
+                    TaskUrl = ""
                 }
             }
         },
@@ -67,10 +41,12 @@
         {
             Title = "Create a user account or sign in",
             StepType = StepType.Number,
-            StepNumber = 4,
+            StepNumber = 2,
             Description = new StepDescription
             {
-                Text = "You will need to create your own user account even if someone else has previously reported your organisation's gender pay gap."
+                Text = "You will need to create your own user account even if someone else has previously reported your"
+                       + " organisation's gender pay gap. After you have created an account, you can add or manage your "
+                       + "organisation.",
             },
             StepTasks = new List<StepTask>
             {
@@ -84,76 +60,118 @@
             StepType = StepType.And,
             Description = new StepDescription
             {
-                Text = "Adding a new organisation can take up to three weeks to verify. You must create your user account before adding an organisation."
+                Text = "Adding a new organisation can take up to three weeks to verify. You must create your user "
+                       + "account before you can add an organisation."
             },
             StepTasks = new List<StepTask>
             {
-                new StepTask {TaskText = "Add an organisation", TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")},
-                new StepTask {TaskText = "Manage my organisations", TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")},
-            }
-        },
-        new StepViewModel
-        {
-            Title = "Understand how to calculate your gender pay gap",
-            StepType = StepType.Number,
-            StepNumber = 5,
-            StepTasks = new List<StepTask>
-            {
-                new StepTask {
-                    TaskText = "Find out how to calculate your data", 
-                    TaskUrl = "/reporting-step-by-step",
-                    OpenInNewTab = true
-                }
-            }
-        },
-        new StepViewModel
-        {
-            Title = "Learn how to diagnose your gender pay gap",
-            StepType = StepType.Number,
-            StepNumber = 6,
-            Description = new StepDescription
-            {
-                Text = "There are many contributing factors to the gender pay gap, and effective actions you can take to help close it."
-            },
-            StepTasks = new List<StepTask>
-            {
-                new StepTask {TaskText = "Find out what actions you can take to close your gender pay gap", TaskUrl = "/reporting-step-by-step"},
-                new StepTask {
-                    TaskText = "Create a gender pay gap action plan", 
-                    TaskUrl = "/reporting-step-by-step"
-                }
-            }
-        },
-        new StepViewModel
-        {
-            Title = "Report your gender pay gap data",
-            StepType = StepType.Number,
-            StepNumber = 7,
-            StepTasks = new List<StepTask>
-            {
-                new StepTask {
-                    TaskText = "Submit your gender pay gap data", 
-                    TaskUrl = @Global.StartUrl ?? Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation") },
-            }
-        },
-        new StepViewModel
-        {
-            Title = "Publish a statement and narrative response to your gender pay gap",
-            StepType = StepType.Number,
-            StepNumber = 8,
-            Description = new StepDescription
-            {
-                Text = "The statement must be published on your website, and on the Gender Pay Gap service."
-            },
-            StepTasks = new List<StepTask>
-            {
-                new StepTask {
-                    TaskText = "Find out what information you must publish", 
-                    TaskUrl = "/reporting-step-by-step",
-                    OpenInNewTab = true
+                new StepTask
+                {
+                    TaskText = "Add an organisation",
+                    TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")
+                },
+                new StepTask
+                {
+                    TaskText = "Manage my organisations",
+                    TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")
                 },
             }
         },
+        new StepViewModel
+        {
+            Title = "Prepare and calculate your gender pay gap information",
+            StepType = StepType.Number,
+            StepNumber = 3,
+            Description = new StepDescription
+            {
+                Html = @<text>
+                           <p class="govuk-body">
+                               To calculate your organisation's gender pay gap figures, you'll need to get information
+                               from your payroll system.
+                           </p>
+                           <p class="govuk-body">
+                               If your organisation is a business or charity it must also publish a 'written statement'.
+                           </p>
+                           <p class="govuk-body">
+                               You may also add a supporting narrative and action plan.
+                           </p>
+                        </text>
+            },
+            StepTasks = new List<StepTask>
+            {
+                new StepTask
+                {
+                    TaskText = "Find out what data you will need to gather",
+                    TaskUrl = ""
+                },
+                new StepTask
+                {
+                    TaskText = "Make your gender pay gap calculations",
+                    TaskUrl = "",
+                },
+                new StepTask
+                {
+                    TaskText = "Find out about the written statement and supporting narrative",
+                    TaskUrl = "",
+                }
+            }
+        },
+        new StepViewModel
+        {
+            Title = "Report your gender pay gap information",
+            StepType = StepType.Number,
+            StepNumber = 4,
+            Description = new StepDescription
+            {
+                Text = "By law, all employers with 250 or more employees are required to report their gender pay gap "
+                       + "data through this service. This must be reported for each organisation."
+            },
+            StepTasks = new List<StepTask>
+            {
+                new StepTask
+                {
+                    TaskText = "Report your gender pay gap data",
+                    TaskUrl = @Global.StartUrl ?? Url.Action(nameof(OrganisationController.ManageOrganisations),
+                        "Organisation")
+                },
+            }
+        },
+        new StepViewModel
+        {
+            Title = "Publish your gender pay gap report on your organisation's public facing website",
+            StepType = StepType.Number,
+            StepNumber = 5,
+            Description = new StepDescription
+            {
+                Html = @<text>
+                           <p class="govuk-body">
+                               You must publish your gender pay gap report on your organisation's public facing 
+                               website. If applicable, you must also publish your written statement.
+                           </p>
+                           <p class="govuk-body">
+                               You can also publish a supporting narrative and action plan on your website, and submit
+                               a website link to this when your report.
+                           </p>
+                           <p class="govuk-body">
+                               Providing a supporting narrative and action plan is discretionary.
+                           </p>
+                        </text>,
+
+            },
+            StepTasks = new List<StepTask>
+            {
+                new StepTask
+                {
+                    TaskText = "Find out what information you must publish",
+                    TaskUrl = ""
+                },
+                new StepTask
+                {
+                    TaskText = "View other organisation's gender pay gap reports and supporting narrative",
+                    TaskUrl = ""
+                },
+            }
+        }
     };
     if (Model.CurrentStep != null && Model.CurrentTask != null)
     {
