@@ -10,13 +10,3 @@
 .app-step-nav__list-item--active .app-step-nav__link {
   text-decoration: underline;
 }
-
-// When describing Steps, if you use the HTML description option, the content is not placed
-// in to the .app-step-nav__paragraph, but the element is still created.
-// This fix hides the unwanted element and works on the basis that the HTML description provided
-// will contain a p element.
-.app-step-nav__panel {
-  p:not(:only-of-type).app-step-nav__paragraph {
-    display: none;
-  }
-}

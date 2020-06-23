@@ -43,9 +43,16 @@
     <div class="app-step-nav__panel js-panel">
         @if (Model.Description != null)
         {
-            <p class="app-step-nav__paragraph">
-                @(Html.GovUkHtmlText(Model.Description))
-            </p>
+            @if (@Model.Description.Html != null)
+            {
+                @Html.GovUkHtmlText(Model.Description)
+            }
+            else
+            {
+                <p class="app-step-nav__paragraph">
+                    @(Html.GovUkHtmlText(Model.Description))
+                </p>
+            }
         }
 
         <ol class="app-step-nav__list" data-length=@(Model.StepTasks.Count)>
