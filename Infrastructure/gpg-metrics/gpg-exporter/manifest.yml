@@ -1,0 +1,13 @@
+---
+applications:
+- name: gpg-exporter
+  memory: 100M
+  routes:
+  - route: gpg-exporter.apps.internal
+
+  buildpacks:
+    - go_buildpack
+    
+  env:
+    GOPACKAGENAME: github.com/alphagov/paas-prometheus-exporter
+    API_ENDPOINT: https://api.london.cloud.service.gov.uk
