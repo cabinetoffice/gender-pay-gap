@@ -79,6 +79,7 @@ namespace GenderPayGap.Database
         public virtual DbSet<Feedback> Feedback { get; set; }
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
         public virtual DbSet<ReminderEmail> ReminderEmails { get; set; }
+        public virtual DbSet<DraftReturn> DraftReturns { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Text;
+using System;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Classes;
 using GenderPayGap.BusinessLogic.Models.Submit;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.BusinessLogic.Services
 {
@@ -30,18 +29,16 @@ namespace GenderPayGap.BusinessLogic.Services
 
         #region Constructor
 
-        public DraftFileBusinessLogic(IFileRepository fileRepository)
+        public DraftFileBusinessLogic(IDataRepository dataRepository)
         {
-            _fileRepository = fileRepository;
+            this.dataRepository = dataRepository;
         }
 
         #endregion
 
         #region attributes
 
-        private readonly IFileRepository _fileRepository;
-        private const string metaDataLastWrittenByUserId = "lastWrittenByUserId";
-        private const string metaDataLastWrittenTimeStamp = "lastWrittenTimeStamp";
+        private readonly IDataRepository dataRepository;
 
         #endregion
 
@@ -51,44 +48,37 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             var result = new Draft(organisationId, snapshotYear);
 
-            // When_Not_Json_Return_Null() // 1
-            if (!await _fileRepository.GetFileExistsAsync(result.DraftPath))
+            Draft originalDraftFromDb = CastDatabaseDraftReturnToDraft(await GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original));
+            Draft backupDraftFromDb = CastDatabaseDraftReturnToDraft(await GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Backup));
+
+            if (originalDraftFromDb == null)
             {
                 return null;
             }
-
-            ReturnViewModel deserialisedJsonReturnViewModel = await DeserialiseDraftContentAsync(result.DraftPath);
-
-            // When_Json_Has_Data_And_Not_Bak_File_Return_Draft() // 2
-            if (deserialisedJsonReturnViewModel != null && !await _fileRepository.GetFileExistsAsync(result.BackupDraftPath))
+            
+            if (originalDraftFromDb.ReturnViewModelContent != null && backupDraftFromDb == null)
             {
-                result.ReturnViewModelContent = deserialisedJsonReturnViewModel;
+                result.ReturnViewModelContent = originalDraftFromDb.ReturnViewModelContent;
                 return result;
             }
 
-            // When_Json_Empty_And_Not_Bak_File_Return_Null() // 3
-            if (deserialisedJsonReturnViewModel == null && !await _fileRepository.GetFileExistsAsync(result.BackupDraftPath))
+            if (originalDraftFromDb.ReturnViewModelContent == null && backupDraftFromDb == null)
             {
                 return null;
             }
-
-            // When_Json_Has_Data_And_Bak_File_Has_Data_Return_Bak_Draft_Info() // 4
-            ReturnViewModel deserialisedBakReturnViewModel = await DeserialiseDraftContentAsync(result.BackupDraftPath);
-
-            if (deserialisedJsonReturnViewModel != null && deserialisedBakReturnViewModel != null)
+            
+            if (originalDraftFromDb.ReturnViewModelContent != null && backupDraftFromDb.ReturnViewModelContent != null)
             {
-                result.ReturnViewModelContent = deserialisedBakReturnViewModel;
+                result.ReturnViewModelContent = backupDraftFromDb.ReturnViewModelContent;
                 return result;
             }
 
-            // When_Json_Has_Data_And_Bak_File_Empty_Return_Null() // 5
-            if (deserialisedJsonReturnViewModel != null && deserialisedBakReturnViewModel == null)
+            if (originalDraftFromDb.ReturnViewModelContent != null && backupDraftFromDb.ReturnViewModelContent == null)
             {
                 return null;
             }
 
-            // When_Json_Empty_And_Bak_File_Empty_Return_Null() // 6
-            if (deserialisedJsonReturnViewModel == null && deserialisedBakReturnViewModel == null)
+            if (originalDraftFromDb.ReturnViewModelContent == null && backupDraftFromDb.ReturnViewModelContent == null)
             {
                 return null;
             }
@@ -120,11 +110,10 @@ namespace GenderPayGap.BusinessLogic.Services
                 return draftFile;
             }
 
-            draft.HasDraftBeenModifiedDuringThisSession = default; // front end flag, reset before saving.
+            draftFile.HasDraftBeenModifiedDuringThisSession = default; // front end flag, reset before saving.
 
             draftFile.ReturnViewModelContent = postedReturnViewModel;
-            byte[] objectConvertedToBytesSequence = SerialiseReturnViewModel(draftFile);
-            await WriteAndTimestampAsync(draftFile, objectConvertedToBytesSequence, userIdRequestingAccess);
+            await WriteInDbAndTimestampAsync(draftFile, userIdRequestingAccess);
 
             return draftFile;
         }
@@ -141,32 +130,20 @@ namespace GenderPayGap.BusinessLogic.Services
 
             await SetMetadataAsync(draftExpectedToBeLocked, userIdRequestingLock);
 
-            await GetDraftAccessInformationAsync(userIdRequestingLock, draftExpectedToBeLocked);
+            await SetDraftAccessInformationAsync(userIdRequestingLock, draftExpectedToBeLocked);
         }
-
-        //private bool HasReturnViewModelChanged(Draft draftToBackup, ReturnViewModel postedReturnViewModel)
-        //{
-        //    if (!_fileRepository.GetFileExists(draftToBackup.DraftPath))
-        //        return false;
-
-        //    var storedReturnViewModel = DeserialiseDraftContent(draftToBackup.DraftPath);
-
-        //    if (!postedReturnViewModel.HasUserData())
-        //        return false;
-
-        //    return !postedReturnViewModel.AreDraftFieldsEqual(storedReturnViewModel);
-        //}
 
         public async Task DiscardDraftAsync(Draft draftToDiscard)
         {
-            await CheckBeforeDeleteAsync(draftToDiscard.DraftPath);
-            await CheckBeforeDeleteAsync(draftToDiscard.BackupDraftPath);
+            dataRepository.Delete(GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Original));
+            dataRepository.Delete(GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup));
+            await dataRepository.SaveChangesAsync();
         }
 
         public async Task RestartDraftAsync(long organisationId, int snapshotYear, long userIdRequestingRollback)
         {
             var draftToRollback = new Draft(organisationId, snapshotYear);
-            await GetDraftAccessInformationAsync(userIdRequestingRollback, draftToRollback);
+            await SetDraftAccessInformationAsync(userIdRequestingRollback, draftToRollback);
             if (!draftToRollback.IsUserAllowedAccess)
             {
                 return;
@@ -176,28 +153,42 @@ namespace GenderPayGap.BusinessLogic.Services
 
             if (hasRollbackSucceeded)
             {
-                await _fileRepository.CopyFileAsync(draftToRollback.DraftPath, draftToRollback.BackupDraftPath, true);
+                DraftReturn newBackupDraftReturn = await GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original);
+                newBackupDraftReturn.DraftReturnId = 0;
+                newBackupDraftReturn.DraftReturnStatus = DraftReturnStatus.Backup;
+                dataRepository.Insert(newBackupDraftReturn);
+                await dataRepository.SaveChangesAsync();
             }
         }
 
         public async Task<bool> RollbackDraftAsync(Draft draftToDiscard)
         {
-            if (!await _fileRepository.GetFileExistsAsync(draftToDiscard.BackupDraftPath))
+            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn backupDraftReturn = await GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
+            if (backupDraftReturn == null)
             {
                 return false;
             }
 
-            await CheckBeforeDeleteAsync(draftToDiscard.DraftPath);
-            await _fileRepository.CopyFileAsync(draftToDiscard.BackupDraftPath, draftToDiscard.DraftPath, true);
+            dataRepository.Delete(originalDraftReturn);
+            
+            DraftReturn newOriginalDraftReturn = backupDraftReturn;
+            newOriginalDraftReturn.DraftReturnId = 0;
+            newOriginalDraftReturn.DraftReturnStatus = DraftReturnStatus.Original;
+            dataRepository.Insert(newOriginalDraftReturn);
+            await dataRepository.SaveChangesAsync();
+
             await CommitDraftAsync(draftToDiscard);
 
             return true;
         }
-
         public async Task CommitDraftAsync(Draft draftToDiscard)
         {
             await SetMetadataAsync(draftToDiscard, 0);
-            await CheckBeforeDeleteAsync(draftToDiscard.BackupDraftPath);
+
+            DraftReturn backupDraftReturn = await GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
+            dataRepository.Delete(backupDraftReturn);
+            await dataRepository.SaveChangesAsync();
         }
 
         #endregion
@@ -206,67 +197,62 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private async Task<Draft> GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
         {
-            if (!await _fileRepository.GetFileExistsAsync(resultingDraft.DraftPath))
+            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn backupDraftReturn = await GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Backup);
+
+            if (originalDraftReturn == null)
             {
-                await WriteAndTimestampAsync(resultingDraft, new byte[] { }, userIdRequestingAccess);
-                await _fileRepository.CopyFileAsync(resultingDraft.DraftPath, resultingDraft.BackupDraftPath, true);
-                await GetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
+                dataRepository.Insert(new DraftReturn { DraftReturnStatus = DraftReturnStatus.Original, OrganisationId = resultingDraft.OrganisationId , SnapshotYear = resultingDraft.SnapshotYear, LastWrittenByUserId = userIdRequestingAccess });
+                dataRepository.Insert(new DraftReturn { DraftReturnStatus = DraftReturnStatus.Backup, OrganisationId = resultingDraft.OrganisationId, SnapshotYear = resultingDraft.SnapshotYear, LastWrittenByUserId = userIdRequestingAccess });
+                await SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
                 return resultingDraft;
             }
 
-            await GetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
+            await SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
 
             if (!resultingDraft.IsUserAllowedAccess)
             {
                 return resultingDraft;
             }
 
-            if (!await _fileRepository.GetFileExistsAsync(resultingDraft.BackupDraftPath))
+            if (backupDraftReturn == null)
             {
-                await _fileRepository.CopyFileAsync(resultingDraft.DraftPath, resultingDraft.BackupDraftPath, true);
+                DraftReturn newBackupDraftReturn = originalDraftReturn;
+                newBackupDraftReturn.DraftReturnId = 0;
+                newBackupDraftReturn.DraftReturnStatus = DraftReturnStatus.Backup;
+
+                dataRepository.Insert(newBackupDraftReturn);
+                await dataRepository.SaveChangesAsync();
             }
 
+            resultingDraft = CastDatabaseDraftReturnToDraft(originalDraftReturn);
+
             await SetMetadataAsync(resultingDraft, userIdRequestingAccess);
-            resultingDraft.ReturnViewModelContent = await DeserialiseDraftContentAsync(resultingDraft.DraftPath);
 
             return resultingDraft;
         }
 
-        private async Task CheckBeforeDeleteAsync(string draftFilePath)
-        {
-            if (await _fileRepository.GetFileExistsAsync(draftFilePath))
-            {
-                await _fileRepository.DeleteFileAsync(draftFilePath);
-            }
-        }
-
-        private async Task<string> CheckBeforeReadAsync(string draftFilePath)
-        {
-            return await _fileRepository.GetFileExistsAsync(draftFilePath)
-                ? await _fileRepository.ReadAsync(draftFilePath)
-                : string.Empty;
-        }
-
-        private async Task<DateTime?> CheckBeforeGetLastWriteTimeAsync(string draftFilePath)
-        {
-            if (await _fileRepository.GetFileExistsAsync(draftFilePath))
-            {
-                string metaData = await _fileRepository.GetMetaDataAsync(draftFilePath, metaDataLastWrittenTimeStamp);
-                return metaData.ToDateTime();
-            }
-
-            return null;
-        }
-
         private async Task SetMetadataAsync(Draft draft, long userIdRequestingAccess)
         {
-            await _fileRepository.SetMetaDataAsync(draft.DraftPath, metaDataLastWrittenByUserId, userIdRequestingAccess.ToString());
-            await _fileRepository.SetMetaDataAsync(draft.DraftPath, metaDataLastWrittenTimeStamp, VirtualDateTime.Now.ToString());
+            draft.LastWrittenByUserId = userIdRequestingAccess;
+            draft.LastWrittenDateTime = VirtualDateTime.Now;
+
+            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+            await SetDraftReturnFromDraft(originalDraftReturn, draft);
         }
 
-        private async Task GetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
+        private async Task SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            draft.LastWrittenDateTime = await CheckBeforeGetLastWriteTimeAsync(draft.DraftPath);
+            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+
+            if (originalDraftReturn == null)
+            {
+                draft.LastWrittenDateTime = VirtualDateTime.Now;
+            }
+            else
+            {
+                draft.LastWrittenDateTime = originalDraftReturn.LastWrittenDateTime;
+            }
 
             (bool IsAllowedAccess, long UserId) result = await GetIsUserAllowedAccessAsync(userRequestingAccessToDraft, draft);
             draft.IsUserAllowedAccess = result.IsAllowedAccess;
@@ -275,22 +261,26 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            if (!await _fileRepository.GetFileExistsAsync(draft.DraftPath))
+            DraftReturn draftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+            if (draftReturn == null)
             {
                 return (true, 0);
             }
 
             (bool IsAllowedAccess, long UserId) result =
-                await GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.DraftPath, userRequestingAccessToDraft);
+                await GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original, userRequestingAccessToDraft);
 
             return (result.IsAllowedAccess || !IsInUse(draft.LastWrittenDateTime), result.UserId);
         }
 
-        private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserTheLastPersonThatWroteOnTheFileAsync(string draftFilePath,
+        private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserTheLastPersonThatWroteOnTheFileAsync(long organisationId,
+            int snapshotYear,
+            DraftReturnStatus draftReturnStatus,
             long userId)
         {
-            string metaData = await _fileRepository.GetMetaDataAsync(draftFilePath, metaDataLastWrittenByUserId);
-            int lastAccessedByUserId = metaData.ToInt32();
+            DraftReturn draftReturn = await GetDraftReturnFromDatabase(organisationId, snapshotYear, draftReturnStatus);
+
+            long lastAccessedByUserId = draftReturn.LastWrittenByUserId ?? 0;
             return (lastAccessedByUserId == 0 || lastAccessedByUserId == userId, lastAccessedByUserId);
         }
 
@@ -300,67 +290,148 @@ namespace GenderPayGap.BusinessLogic.Services
                    && VirtualDateTime.Now.AddMinutes(-20) <= lastWrittenDateTime;
         }
 
-        private async Task<ReturnViewModel> DeserialiseDraftContentAsync(string draftFilePath)
+        private async Task WriteInDbAndTimestampAsync(Draft resultingDraft, long userIdRequestingAccess)
         {
-            string jsonDraftFileContents = await CheckBeforeReadAsync(draftFilePath);
-
-            #region json serialiser settings
-
-            var exceptions = new ConcurrentBag<Exception>();
-
-            var jsonSerializerSettings = new JsonSerializerSettings {
-                Error = delegate(object sender, ErrorEventArgs args) {
-                    exceptions.Add(new Exception(args.ErrorContext.Error.Message));
-                    args.ErrorContext.Handled = true;
-                }
-            };
-            if (exceptions.Count > 0)
-            {
-                throw new AggregateException($"Error De-serializing {draftFilePath}", exceptions);
-            }
-
-            #endregion
-
-            return JsonConvert.DeserializeObject<ReturnViewModel>(jsonDraftFileContents, jsonSerializerSettings);
-        }
-
-        private byte[] SerialiseReturnViewModel(Draft draft)
-        {
-            #region serialiser settings
-
-            var exceptions = new ConcurrentBag<Exception>();
-
-            var jsonSerializerSettings = new JsonSerializerSettings {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                Error = delegate(object sender, ErrorEventArgs args) {
-                    exceptions.Add(new Exception(args.ErrorContext.Error.Message));
-                    args.ErrorContext.Handled = true;
-                }
-            };
-            if (exceptions.Count > 0)
-            {
-                throw new AggregateException($"Error serializing {draft.DraftPath}", exceptions);
-            }
-
-            #endregion
-
-
-            string serializedObject = JsonConvert.SerializeObject(
-                draft.ReturnViewModelContent,
-                Formatting.Indented,
-                jsonSerializerSettings);
-
-            return Encoding.UTF8.GetBytes(serializedObject);
-        }
-
-        private async Task WriteAndTimestampAsync(Draft resultingDraft, byte[] contentToWrite, long userIdRequestingAccess)
-        {
-            await _fileRepository.WriteAsync(resultingDraft.DraftPath, contentToWrite);
             await SetMetadataAsync(resultingDraft, userIdRequestingAccess);
+
+            DraftReturn draftFromDb = await GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
+            await SetDraftReturnFromDraft(draftFromDb, resultingDraft);
         }
 
+        private async Task<DraftReturn> GetDraftReturnFromDatabase(long organisationId, int snapshotYear, DraftReturnStatus draftReturnStatus)
+        {
+            return await dataRepository.GetAll<DraftReturn>()
+                .FirstOrDefaultAsync(
+                    d => d.OrganisationId == organisationId
+                         && d.SnapshotYear == snapshotYear
+                         && d.DraftReturnStatus == draftReturnStatus);
+        }
+
+        private Draft CastDatabaseDraftReturnToDraft(DraftReturn draftReturn)
+        {
+            if (draftReturn == null)
+            {
+                return null;
+            }
+            Draft result = new Draft
+            {
+                OrganisationId = draftReturn.OrganisationId,
+                SnapshotYear = draftReturn.SnapshotYear,
+                DraftReturnStatus = draftReturn.DraftReturnStatus,
+                HasDraftBeenModifiedDuringThisSession = draftReturn.HasDraftBeenModifiedDuringThisSession ?? false,
+                LastWrittenByUserId = draftReturn.LastWrittenByUserId ?? 0,
+                LastWrittenDateTime = draftReturn.LastWrittenDateTime,
+                ReturnViewModelContent = new ReturnViewModel
+                {
+                    AccountingDate = draftReturn.AccountingDate ?? VirtualDateTime.Now,
+                    Address = draftReturn.Address,
+                    CompanyLinkToGPGInfo = draftReturn.CompanyLinkToGPGInfo,
+                    DiffMeanBonusPercent = draftReturn.DiffMeanBonusPercent,
+                    DiffMeanHourlyPayPercent = draftReturn.DiffMeanHourlyPayPercent,
+                    DiffMedianBonusPercent = draftReturn.DiffMedianBonusPercent,
+                    DiffMedianHourlyPercent = draftReturn.DiffMedianHourlyPercent,
+                    EHRCResponse = draftReturn.EHRCResponse,
+                    EncryptedOrganisationId = draftReturn.EncryptedOrganisationId,
+                    FemaleLowerPayBand = draftReturn.FemaleLowerPayBand,
+                    FemaleMedianBonusPayPercent = draftReturn.FemaleMedianBonusPayPercent,
+                    FemaleMiddlePayBand = draftReturn.FemaleMiddlePayBand,
+                    FemaleUpperPayBand = draftReturn.FemaleUpperPayBand,
+                    FemaleUpperQuartilePayBand = draftReturn.FemaleUpperQuartilePayBand,
+                    FirstName = draftReturn.FirstName,
+                    IsDifferentFromDatabase = draftReturn.IsDifferentFromDatabase ?? false,
+                    IsInScopeForThisReportYear = draftReturn.IsInScopeForThisReportYear ?? false,
+                    IsLateSubmission = draftReturn.IsLateSubmission ?? false,
+                    IsVoluntarySubmission = draftReturn.IsVoluntarySubmission ?? false,
+                    JobTitle = draftReturn.JobTitle,
+                    LastName = draftReturn.LastName,
+                    LateReason = draftReturn.LateReason,
+                    LatestAddress = draftReturn.LatestAddress,
+                    LatestOrganisationName = draftReturn.LatestOrganisationName,
+                    LatestSector = draftReturn.LatestSector,
+                    MaleMedianBonusPayPercent = draftReturn.MaleMedianBonusPayPercent,
+                    MaleMiddlePayBand = draftReturn.MaleMiddlePayBand,
+                    MaleUpperQuartilePayBand = draftReturn.MaleUpperQuartilePayBand,
+                    MaleUpperPayBand = draftReturn.MaleUpperPayBand,
+                    MaleLowerPayBand = draftReturn.MaleLowerPayBand,
+                    Modified = draftReturn.Modified,
+                    OrganisationId = draftReturn.OrganisationId,
+                    OrganisationName = draftReturn.OrganisationName,
+                    OrganisationSize = draftReturn.OrganisationSize ?? OrganisationSizes.NotProvided,
+                    OriginatingAction = draftReturn.OriginatingAction,
+                    ReportInfo = new Models.Organisation.ReportInfoModel
+                    {
+                        ReportingRequirement = draftReturn.ReportingRequirement ?? ScopeStatuses.Unknown,
+                        ReportingStartDate = draftReturn.ReportingStartDate ?? VirtualDateTime.Now,
+                        ReportModifiedDate = draftReturn.ReportModifiedDate ?? VirtualDateTime.Now,
+                    },
+                    ReturnId = draftReturn.ReturnId ?? 0,
+                    ReturnUrl = draftReturn.ReturnUrl,
+                    Sector = draftReturn.Sector,
+                    SectorType = draftReturn.SectorType ?? SectorTypes.Unknown,
+                    ShouldProvideLateReason = draftReturn.ShouldProvideLateReason ?? false
+                }
+
+            };
+            return result;
+        }
+
+        private async Task SetDraftReturnFromDraft(DraftReturn draftReturn, Draft draft)
+        {
+            if (draftReturn == null)
+            {
+                dataRepository.Insert(new DraftReturn { OrganisationId = draft.OrganisationId, SnapshotYear = draft.SnapshotYear, DraftReturnStatus = draft.DraftReturnStatus });
+                await dataRepository.SaveChangesAsync();
+                draftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draft.DraftReturnStatus);
+            }
+
+            draftReturn.AccountingDate = draft.ReturnViewModelContent?.AccountingDate;
+            draftReturn.Address = draft.ReturnViewModelContent?.Address;
+            draftReturn.CompanyLinkToGPGInfo = draft.ReturnViewModelContent?.CompanyLinkToGPGInfo;
+            draftReturn.DiffMeanBonusPercent = draft.ReturnViewModelContent?.DiffMeanBonusPercent;
+            draftReturn.DiffMeanHourlyPayPercent = draft.ReturnViewModelContent?.DiffMeanHourlyPayPercent;
+            draftReturn.DiffMedianBonusPercent = draft.ReturnViewModelContent?.DiffMedianBonusPercent;
+            draftReturn.DiffMedianHourlyPercent = draft.ReturnViewModelContent?.DiffMedianHourlyPercent;
+            draftReturn.EHRCResponse = draft.ReturnViewModelContent?.EHRCResponse;
+            draftReturn.EncryptedOrganisationId = draft.ReturnViewModelContent?.EncryptedOrganisationId;
+            draftReturn.FemaleLowerPayBand = draft.ReturnViewModelContent?.FemaleLowerPayBand;
+            draftReturn.FemaleMedianBonusPayPercent = draft.ReturnViewModelContent?.FemaleMedianBonusPayPercent;
+            draftReturn.FemaleMiddlePayBand = draft.ReturnViewModelContent?.FemaleMiddlePayBand;
+            draftReturn.FemaleUpperPayBand = draft.ReturnViewModelContent?.FemaleUpperPayBand;
+            draftReturn.FemaleUpperQuartilePayBand = draft.ReturnViewModelContent?.FemaleUpperQuartilePayBand;
+            draftReturn.FirstName = draft.ReturnViewModelContent?.FirstName;
+            draftReturn.HasDraftBeenModifiedDuringThisSession = draft.HasDraftBeenModifiedDuringThisSession;
+            draftReturn.IsDifferentFromDatabase = draft.ReturnViewModelContent?.IsDifferentFromDatabase;
+            draftReturn.IsInScopeForThisReportYear = draft.ReturnViewModelContent?.IsInScopeForThisReportYear;
+            draftReturn.IsLateSubmission = draft.ReturnViewModelContent?.IsLateSubmission;
+            draftReturn.IsVoluntarySubmission = draft.ReturnViewModelContent?.IsVoluntarySubmission;
+            draftReturn.JobTitle = draft.ReturnViewModelContent?.JobTitle;
+            draftReturn.LastName = draft.ReturnViewModelContent?.LastName;
+            draftReturn.LastWrittenByUserId = draft.LastWrittenByUserId;
+            draftReturn.LastWrittenDateTime = draft.LastWrittenDateTime;
+            draftReturn.LateReason = draft.ReturnViewModelContent?.LateReason;
+            draftReturn.LatestAddress = draft.ReturnViewModelContent?.LatestAddress;
+            draftReturn.LatestOrganisationName = draft.ReturnViewModelContent?.LatestOrganisationName;
+            draftReturn.LatestSector = draft.ReturnViewModelContent?.LatestSector;
+            draftReturn.MaleLowerPayBand = draft.ReturnViewModelContent?.MaleLowerPayBand;
+            draftReturn.MaleMedianBonusPayPercent = draft.ReturnViewModelContent?.MaleMedianBonusPayPercent;
+            draftReturn.MaleMiddlePayBand = draft.ReturnViewModelContent?.MaleMiddlePayBand;
+            draftReturn.MaleUpperPayBand = draft.ReturnViewModelContent?.MaleUpperPayBand;
+            draftReturn.MaleUpperQuartilePayBand = draft.ReturnViewModelContent?.MaleUpperQuartilePayBand;
+            draftReturn.Modified = draft.ReturnViewModelContent?.Modified ?? VirtualDateTime.Now;
+            draftReturn.OrganisationName = draft.ReturnViewModelContent?.OrganisationName;
+            draftReturn.OrganisationSize = draft.ReturnViewModelContent?.OrganisationSize;
+            draftReturn.OriginatingAction = draft.ReturnViewModelContent?.OriginatingAction;
+            draftReturn.ReportingRequirement = draft.ReturnViewModelContent?.ReportInfo.ReportingRequirement;
+            draftReturn.ReportingStartDate = draft.ReturnViewModelContent?.ReportInfo.ReportingStartDate;
+            draftReturn.ReportModifiedDate = draft.ReturnViewModelContent?.ReportInfo.ReportModifiedDate;
+            draftReturn.ReturnId = draft.ReturnViewModelContent?.ReturnId;
+            draftReturn.ReturnUrl = draft.ReturnViewModelContent?.ReturnUrl;
+            draftReturn.Sector = draft.ReturnViewModelContent?.Sector;
+            draftReturn.SectorType = draft.ReturnViewModelContent?.SectorType;
+            draftReturn.ShouldProvideLateReason = draft.ReturnViewModelContent?.ShouldProvideLateReason;
+
+            await dataRepository.SaveChangesAsync();
+        }
         #endregion
 
     }

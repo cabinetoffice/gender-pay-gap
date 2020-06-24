@@ -118,12 +118,6 @@ namespace GenderPayGap.BusinessLogic.Models.Submit
         public DateTime AccountingDate { get; set; }
         public DateTime Modified { get; set; }
 
-        //public virtual ICollection<ReturnStatus> ReturnStatuses { get; set; }
-
-        //[ForeignKey("OrganisationId")]
-        //public virtual Organisation Organisation { get; set; }
-
-
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Job title")]
         public string JobTitle { get; set; }
