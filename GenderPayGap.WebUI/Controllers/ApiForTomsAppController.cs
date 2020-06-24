@@ -12,13 +12,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Route("api")]
-    public class ApiController : Controller
+    [Route("api/toms-app")]
+    public class ApiForTomsAppController : Controller
     {
 
         private readonly IDataRepository dataRepository;
 
-        public ApiController(IDataRepository dataRepository)
+        public ApiForTomsAppController(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
@@ -130,6 +130,9 @@ namespace GenderPayGap.WebUI.Controllers
                     .OrderBy(r => r.Modified)
                     .First();
 
+                // Note: It seems a little odd to produce a record for each Return AND for each ReturnStatus
+                // Only a small number of Returns have more than one ReturnStatus, but this means that if a Return was Retired or Deleted,
+                // we will produce two records for it. I'm not sure if Tom's App deals with this correctly (there's a risk of double-counting)
                 foreach (ReturnStatus returnStatus in ret.ReturnStatuses)
                 {
                     var record = new
@@ -137,10 +140,15 @@ namespace GenderPayGap.WebUI.Controllers
                         OrganisationId = ret.OrganisationId,
                         latestReturnAccountingDate = ret.AccountingDate,
                         StatusId = $"{returnStatus.Status.ToString()} ({(int)returnStatus.Status})",
+
+                        // Note: These four fields are quite confusing and it could be good to check that Tom's App deals with them correctly
+                        // StatusDate and StatusDetails are from the ReturnStatus
+                        // latestReturnStatus and latestReturnStatusDate are from the Return
                         StatusDate = returnStatus.StatusDate,
                         StatusDetails = returnStatus.StatusDetails,
                         latestReturnStatus = $"{ret.Status.ToString()} ({(int)ret.Status})",
                         latestReturnStatusDate = ret.StatusDate,
+                        
                         dateFirstReportedInYear = firstReturnThisYear.Modified,
                         SubmittedBy = $"{ret.FirstName} {ret.LastName} [{ret.JobTitle}]",
                         LatestReturnLateReason = ret.LateReason,
