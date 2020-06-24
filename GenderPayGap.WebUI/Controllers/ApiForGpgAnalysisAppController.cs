@@ -63,6 +63,15 @@ namespace GenderPayGap.WebUI.Controllers
                     {
                         Return returnForYear = organisation.GetReturn(reportingYear);
 
+                        // Organisations are allowed multiple SIC codes
+                        // But, for this API, we just want 1 SIC code per organisation
+                        // We use this method to keep this API consistent with the database query
+                        // TODO: we should really filter out Retired SIC codes
+                        OrganisationSicCode firstSicCodeForOrganisation = organisation.OrganisationSicCodes
+                            .OrderBy(osc => osc.SicCodeId)
+                            .ThenBy(osc => osc.Source)
+                            .FirstOrDefault();
+
                         var record = new
                         {
                             OrganisationId = organisation.OrganisationId,
@@ -73,7 +82,7 @@ namespace GenderPayGap.WebUI.Controllers
                             SectorType = $"{organisation.SectorType.ToString()} ({(int)organisation.SectorType})",
                             ScopeStatus = $"{ScopeStatusToString(scopeForYear.ScopeStatus)} ({(int)scopeForYear.ScopeStatus})",
                             SnapshotDate = reportingYear,
-                            SicCodeSectionDescription = organisation.OrganisationSicCodes.FirstOrDefault()?.SicCode?.SicSection?.Description,
+                            SicCodeSectionDescription = firstSicCodeForOrganisation?.SicCode?.SicSection?.Description,
                             ReturnId = returnForYear?.ReturnId,
                             PublicSectorDescription = organisation.LatestPublicSectorType?.PublicSectorType?.Description,
                             OrganisationSize = returnForYear?.OrganisationSize.GetAttribute<DisplayAttribute>().Name
