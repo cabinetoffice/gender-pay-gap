@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using GenderPayGap.BusinessLogic.Models.Submit;
-using GenderPayGap.Core;
 
 namespace GenderPayGap.BusinessLogic.Classes
 {
@@ -11,15 +9,12 @@ namespace GenderPayGap.BusinessLogic.Classes
 
         #region Constructor
 
-        private Draft() { }
+        public Draft() { }
 
         public Draft(long organisationId, int snapshotYear)
         {
-            DraftFilename = GetDraftFileName(organisationId, snapshotYear, "json");
-            DraftPath = GetDraftFilePath(DraftFilename);
-
-            BackupDraftFilename = GetDraftFileName(organisationId, snapshotYear, "bak");
-            BackupDraftPath = GetDraftFilePath(BackupDraftFilename);
+            SnapshotYear = snapshotYear;
+            OrganisationId = organisationId;
         }
 
         public Draft(long organisationId,
@@ -37,11 +32,9 @@ namespace GenderPayGap.BusinessLogic.Classes
         #endregion
 
         #region Public methods
-
-        public string DraftFilename { get; set; }
-        public string DraftPath { get; set; }
-        public string BackupDraftFilename { get; set; }
-        public string BackupDraftPath { get; set; }
+        public Core.DraftReturnStatus DraftReturnStatus { get; set; }
+        public int SnapshotYear { get; set; }
+        public long OrganisationId { get; set; }
         public bool IsUserAllowedAccess { get; set; }
         public DateTime? LastWrittenDateTime { get; set; }
         public long LastWrittenByUserId { get; set; }
@@ -51,20 +44,6 @@ namespace GenderPayGap.BusinessLogic.Classes
         public bool HasContent()
         {
             return ReturnViewModelContent != null;
-        }
-
-        #endregion
-
-        #region Private methods
-
-        private string GetDraftFileName(long organisationId, int snapshotYear, string fileExtension)
-        {
-            return $"{organisationId}_{snapshotYear}.{fileExtension}";
-        }
-
-        private string GetDraftFilePath(string draftFileName)
-        {
-            return Path.Combine(Global.DataPath, Global.SaveDraftPath, draftFileName);
         }
 
         #endregion
