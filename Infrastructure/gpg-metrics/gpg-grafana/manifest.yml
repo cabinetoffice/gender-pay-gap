@@ -1,0 +1,18 @@
+---
+applications:
+  - name: gpg-grafana
+    memory: 512M
+
+    buildpacks:
+      - https://github.com/SpringerPE/cf-grafana-buildpack.git
+
+    env:
+      ADMIN_USER: 
+      ADMIN_PASS: 
+      SECRET_KEY: 
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_SSL_MODE: require
+      GF_DATABASE_HOST: 
+      GF_DATABASE_NAME: 
+      GF_DATABASE_USER: 
+      GF_DATABASE_PASSWORD: 
