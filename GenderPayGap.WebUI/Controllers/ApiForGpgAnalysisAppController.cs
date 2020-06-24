@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
+    /// <summary>
+    /// This is the API used by the GPG Analysis App (commonly known as Tom's App)
+    /// </summary>
     [Route("api/gpg-analysis-app")]
     public class ApiForGpgAnalysisAppController : Controller
     {
