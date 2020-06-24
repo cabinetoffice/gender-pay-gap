@@ -44,8 +44,10 @@ namespace GenderPayGap.WebUI.Controllers
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationScopes)
                 .Include(o => o.Returns)
-                .Include(o => o.OrganisationSicCodes)
                 .Include(o => o.LatestPublicSectorType)
+                .Include(o => o.OrganisationSicCodes)
+                .ThenInclude(osc => osc.SicCode)
+                .ThenInclude(sc => sc.SicSection)
                 .ToList();
 
             List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
