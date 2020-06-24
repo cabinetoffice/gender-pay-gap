@@ -12,13 +12,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Route("api/toms-app")]
-    public class ApiForTomsAppController : Controller
+    [Route("api/gpg-analysis-app")]
+    public class ApiForGpgAnalysisAppController : Controller
     {
 
         private readonly IDataRepository dataRepository;
 
-        public ApiForTomsAppController(IDataRepository dataRepository)
+        public ApiForGpgAnalysisAppController(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
@@ -27,10 +27,10 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("scopes-and-returns")]
         public IActionResult ScopesAndReturns(string password)
         {
-            string expectedPassword = Global.TomsAppApiPassword;
+            string expectedPassword = Global.GpgAnalysisAppApiPassword;
             if (string.IsNullOrWhiteSpace(expectedPassword))
             {
-                throw new ArgumentException("TomsAppApiPassword must be set to enable the API");
+                throw new ArgumentException("GpgAnalysisAppApiPassword must be set to enable the API");
             }
             if (password != expectedPassword)
             {
@@ -104,10 +104,10 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("submissions")]
         public IActionResult Submissions(string password)
         {
-            string expectedPassword = Global.TomsAppApiPassword;
+            string expectedPassword = Global.GpgAnalysisAppApiPassword;
             if (string.IsNullOrWhiteSpace(expectedPassword))
             {
-                throw new ArgumentException("TomsAppApiPassword must be set to enable the API");
+                throw new ArgumentException("GpgAnalysisAppApiPassword must be set to enable the API");
             }
             if (password != expectedPassword)
             {
