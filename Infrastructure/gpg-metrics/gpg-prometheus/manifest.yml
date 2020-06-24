@@ -1,0 +1,9 @@
+---
+applications:
+  - name: gpg-prometheus
+    memory: 512M
+    routes:
+      - route: gpg-prometheus.apps.internal
+
+    buildpacks:
+      - https://github.com/alphagov/prometheus-buildpack.git
