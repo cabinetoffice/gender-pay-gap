@@ -1,0 +1,2 @@
+# Define your grafana version here
+7.0.3
