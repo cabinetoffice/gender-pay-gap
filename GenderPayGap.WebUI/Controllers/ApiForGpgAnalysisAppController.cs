@@ -164,7 +164,7 @@ namespace GenderPayGap.WebUI.Controllers
                         latestReturnStatusDate = ret.StatusDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff"),
                         
                         dateFirstReportedInYear = firstReturnThisYear.Modified.ToString("yyyy-MM-dd HH:mm:ss.fffffff"),
-                        SubmittedBy = $"{ret.FirstName} {ret.LastName} [{ret.JobTitle}]",
+                        SubmittedBy = (ret.FirstName != null && ret.LastName != null && ret.JobTitle != null) ? $"{ret.FirstName} {ret.LastName} [{ret.JobTitle}]" : null,
                         LatestReturnLateReason = ret.LateReason,
                         ReturnModifiedFields = ret.Modifications,
                         EHRCResponse = ret.EHRCResponse.ToString().ToLower(),
