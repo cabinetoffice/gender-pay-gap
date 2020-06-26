@@ -152,22 +152,22 @@ namespace GenderPayGap.WebUI.Controllers
                     var record = new
                     {
                         OrganisationId = ret.OrganisationId,
-                        latestReturnAccountingDate = ret.AccountingDate,
+                        latestReturnAccountingDate = ret.AccountingDate.ToString("yyyy-MM-dd"),
                         StatusId = $"{returnStatus.Status.ToString()} ({(int)returnStatus.Status})",
 
                         // Note: These four fields are quite confusing and it could be good to check that Tom's App deals with them correctly
                         // StatusDate and StatusDetails are from the ReturnStatus
                         // latestReturnStatus and latestReturnStatusDate are from the Return
-                        StatusDate = returnStatus.StatusDate,
+                        StatusDate = returnStatus.StatusDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff"),
                         StatusDetails = returnStatus.StatusDetails,
                         latestReturnStatus = $"{ret.Status.ToString()} ({(int)ret.Status})",
-                        latestReturnStatusDate = ret.StatusDate,
+                        latestReturnStatusDate = ret.StatusDate.ToString("yyyy-MM-dd HH:mm:ss.fffffff"),
                         
-                        dateFirstReportedInYear = firstReturnThisYear.Modified,
+                        dateFirstReportedInYear = firstReturnThisYear.Modified.ToString("yyyy-MM-dd HH:mm:ss.fffffff"),
                         SubmittedBy = $"{ret.FirstName} {ret.LastName} [{ret.JobTitle}]",
                         LatestReturnLateReason = ret.LateReason,
                         ReturnModifiedFields = ret.Modifications,
-                        EHRCResponse = ret.EHRCResponse,
+                        EHRCResponse = ret.EHRCResponse.ToString().ToLower(),
                         DiffMeanBonusPercent = ret.DiffMeanBonusPercent,
                         DiffMeanHourlyPayPercent = ret.DiffMeanHourlyPayPercent,
                         DiffMedianBonusPercent = ret.DiffMedianBonusPercent,
