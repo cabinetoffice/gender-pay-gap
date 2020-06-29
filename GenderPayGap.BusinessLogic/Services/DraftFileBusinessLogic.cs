@@ -1,28 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Classes;
 using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.BusinessLogic.Services
 {
     public interface IDraftFileBusinessLogic
     {
 
-        Draft GetDraftIfAvailableAsync(long organisationId, int snapshotYear);
-        Task<Draft> GetExistingOrNewAsync(long organisationId, int snapshotYear, long userIdRequestingAccess);
-        Task<Draft> UpdateAsync(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
-        Task KeepDraftFileLockedToUserAsync(Draft draftExpectedToBeLocked, long userIdRequestingLock);
-        Task DiscardDraftAsync(Draft draftToDiscard);
-        Task<bool> RollbackDraftAsync(Draft draftToRevert);
-        Task RestartDraftAsync(long organisationId, int snapshotYear, long userIdRequestingRollback);
-        Task CommitDraftAsync(Draft draftToKeep);
+        Draft GetDraftIfAvailable(long organisationId, int snapshotYear);
+        Draft GetExistingOrNew(long organisationId, int snapshotYear, long userIdRequestingAccess);
+        Draft Update(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
+        void KeepDraftFileLockedToUser(Draft draftExpectedToBeLocked, long userIdRequestingLock);
+        void DiscardDraft(Draft draftToDiscard);
+        bool RollbackDraft(Draft draftToRevert);
+        void RestartDraft(long organisationId, int snapshotYear, long userIdRequestingRollback);
+        void CommitDraft(Draft draftToKeep);
 
     }
 
@@ -39,7 +37,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         #region public methods
 
-        public Draft GetDraftIfAvailableAsync(long organisationId, int snapshotYear)
+        public Draft GetDraftIfAvailable(long organisationId, int snapshotYear)
         {
             var result = new Draft(organisationId, snapshotYear);
 
@@ -67,15 +65,15 @@ namespace GenderPayGap.BusinessLogic.Services
         /// <param name="snapshotYear"></param>
         /// <param name="userIdRequestingAccess"></param>
         /// <returns></returns>
-        public async Task<Draft> GetExistingOrNewAsync(long organisationId, int snapshotYear, long userIdRequestingAccess)
+        public Draft GetExistingOrNew(long organisationId, int snapshotYear, long userIdRequestingAccess)
         {
             var resultingDraft = new Draft(organisationId, snapshotYear);
-            return await GetDraftOrCreateAsync(resultingDraft, userIdRequestingAccess);
+            return GetDraftOrCreateAsync(resultingDraft, userIdRequestingAccess);
         }
 
-        public async Task<Draft> UpdateAsync(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess)
+        public Draft Update(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess)
         {
-            Draft draftFile = await GetDraftOrCreateAsync(draft, userIdRequestingAccess);
+            Draft draftFile = GetDraftOrCreateAsync(draft, userIdRequestingAccess);
 
             if (!draftFile.IsUserAllowedAccess)
             {
@@ -85,14 +83,14 @@ namespace GenderPayGap.BusinessLogic.Services
             draft.HasDraftBeenModifiedDuringThisSession = default; // front end flag, reset before saving.
 
             draftFile.ReturnViewModelContent = postedReturnViewModel;
-            await WriteInDbAndTimestampAsync(draftFile, userIdRequestingAccess);
+            WriteInDbAndTimestamp(draftFile, userIdRequestingAccess);
 
             return draftFile;
         }
 
-        public async Task KeepDraftFileLockedToUserAsync(Draft draftExpectedToBeLocked, long userIdRequestingLock)
+        public void KeepDraftFileLockedToUser(Draft draftExpectedToBeLocked, long userIdRequestingLock)
         {
-            (bool IsAllowedAccess, long UserId) result = await GetIsUserAllowedAccessAsync(userIdRequestingLock, draftExpectedToBeLocked);
+            (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccessAsync(userIdRequestingLock, draftExpectedToBeLocked);
             draftExpectedToBeLocked.IsUserAllowedAccess = result.IsAllowedAccess;
 
             if (!draftExpectedToBeLocked.IsUserAllowedAccess)
@@ -102,25 +100,25 @@ namespace GenderPayGap.BusinessLogic.Services
 
             SetMetadataAsync(draftExpectedToBeLocked, userIdRequestingLock);
 
-            await SetDraftAccessInformationAsync(userIdRequestingLock, draftExpectedToBeLocked);
+            SetDraftAccessInformationAsync(userIdRequestingLock, draftExpectedToBeLocked);
         }
 
-        public async Task DiscardDraftAsync(Draft draftToDiscard)
+        public void DiscardDraft(Draft draftToDiscard)
         {
             DeleteDraft(draftToDiscard, DraftReturnStatus.Original);
             DeleteDraft(draftToDiscard, DraftReturnStatus.Backup);
         }
 
-        public async Task RestartDraftAsync(long organisationId, int snapshotYear, long userIdRequestingRollback)
+        public void RestartDraft(long organisationId, int snapshotYear, long userIdRequestingRollback)
         {
             var draftToRollback = new Draft(organisationId, snapshotYear);
-            await SetDraftAccessInformationAsync(userIdRequestingRollback, draftToRollback);
+            SetDraftAccessInformationAsync(userIdRequestingRollback, draftToRollback);
             if (!draftToRollback.IsUserAllowedAccess)
             {
                 return;
             }
 
-            bool hasRollbackSucceeded = await RollbackDraftAsync(draftToRollback);
+            bool hasRollbackSucceeded = RollbackDraft(draftToRollback);
 
             if (hasRollbackSucceeded)
             {
@@ -128,7 +126,7 @@ namespace GenderPayGap.BusinessLogic.Services
             }
         }
 
-        public async Task<bool> RollbackDraftAsync(Draft draftToDiscard)
+        public bool RollbackDraft(Draft draftToDiscard)
         {
             if (!DraftExists(draftToDiscard, DraftReturnStatus.Backup))
             {
@@ -138,12 +136,12 @@ namespace GenderPayGap.BusinessLogic.Services
             DeleteDraft(draftToDiscard, DraftReturnStatus.Original);
             CopyDraft(draftToDiscard, DraftReturnStatus.Backup, DraftReturnStatus.Original);
             
-            await CommitDraftAsync(draftToDiscard);
+            CommitDraft(draftToDiscard);
 
             return true;
         }
 
-        public async Task CommitDraftAsync(Draft draftToDiscard)
+        public void CommitDraft(Draft draftToDiscard)
         {
             SetMetadataAsync(draftToDiscard, 0);
             DeleteDraft(draftToDiscard, DraftReturnStatus.Backup);
@@ -153,17 +151,17 @@ namespace GenderPayGap.BusinessLogic.Services
 
         #region private methods
 
-        private async Task<Draft> GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
+        private Draft GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
         {
             if (!DraftExists(resultingDraft, DraftReturnStatus.Original))
             {
                 SaveNewEmptyDraftReturn(resultingDraft, DraftReturnStatus.Original, userIdRequestingAccess);
                 CopyDraft(resultingDraft, DraftReturnStatus.Original, DraftReturnStatus.Backup);
-                await SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
+                SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
                 return resultingDraft;
             }
 
-            await SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
+            SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
 
             if (!resultingDraft.IsUserAllowedAccess)
             {
@@ -238,16 +236,16 @@ namespace GenderPayGap.BusinessLogic.Services
             dataRepository.SaveChangesAsync().Wait();
         }
 
-        private async Task SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
+        private void SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
         {
             draft.LastWrittenDateTime = GetLastWriteTime(draft, DraftReturnStatus.Original);
 
-            (bool IsAllowedAccess, long UserId) result = await GetIsUserAllowedAccessAsync(userRequestingAccessToDraft, draft);
+            (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccessAsync(userRequestingAccessToDraft, draft);
             draft.IsUserAllowedAccess = result.IsAllowedAccess;
             draft.LastWrittenByUserId = result.UserId;
         }
 
-        private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
+        private (bool IsAllowedAccess, long UserId) GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
         {
             if (!DraftExists(draft, DraftReturnStatus.Original))
             {
@@ -255,12 +253,12 @@ namespace GenderPayGap.BusinessLogic.Services
             }
 
             (bool IsAllowedAccess, long UserId) result =
-                await GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original, userRequestingAccessToDraft);
+                GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original, userRequestingAccessToDraft);
 
             return (result.IsAllowedAccess || !IsInUse(draft.LastWrittenDateTime), result.UserId);
         }
 
-        private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserTheLastPersonThatWroteOnTheFileAsync(long organisationId,
+        private (bool IsAllowedAccess, long UserId) GetIsUserTheLastPersonThatWroteOnTheFileAsync(long organisationId,
             int snapshotYear,
             DraftReturnStatus draftReturnStatus,
             long userId)
@@ -293,26 +291,6 @@ namespace GenderPayGap.BusinessLogic.Services
                          && d.DraftReturnStatus == draftReturnStatus)
                 .OrderByDescending(dr => dr.DraftReturnId)
                 .FirstOrDefault();
-        }
-
-        private Draft CastDatabaseDraftReturnToDraft(DraftReturn draftReturn)
-        {
-            if (draftReturn == null)
-            {
-                return null;
-            }
-            Draft result = new Draft
-            {
-                OrganisationId = draftReturn.OrganisationId,
-                SnapshotYear = draftReturn.SnapshotYear,
-                DraftReturnStatus = draftReturn.DraftReturnStatus,
-                HasDraftBeenModifiedDuringThisSession = draftReturn.HasDraftBeenModifiedDuringThisSession ?? false,
-                LastWrittenByUserId = draftReturn.LastWrittenByUserId ?? 0,
-                LastWrittenDateTime = draftReturn.LastWrittenDateTime,
-                ReturnViewModelContent = CastDatabaseDraftReturnToReturnViewModel(draftReturn)
-
-            };
-            return result;
         }
 
         private static ReturnViewModel CastDatabaseDraftReturnToReturnViewModel(DraftReturn draftReturn)
@@ -431,7 +409,7 @@ namespace GenderPayGap.BusinessLogic.Services
             return draftReturn;
         }
 
-        private async Task WriteInDbAndTimestampAsync(Draft draftFile, long userIdRequestingAccess)
+        private void WriteInDbAndTimestamp(Draft draftFile, long userIdRequestingAccess)
         {
             DraftReturn draftReturn = SerialiseDraftAsDraftReturn(draftFile, DraftReturnStatus.Original);
             InsertOrUpdate(draftReturn);

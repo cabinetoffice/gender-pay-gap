@@ -584,42 +584,42 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         public async Task<Draft> GetDraftIfAvailableAsync(long organisationId, int snapshotYear)
         {
-            return _draftFileBusinessLogic.GetDraftIfAvailableAsync(organisationId, snapshotYear);
+            return _draftFileBusinessLogic.GetDraftIfAvailable(organisationId, snapshotYear);
         }
 
         public async Task UpdateDraftFileAsync(long userRequestingTheUpdate, ReturnViewModel returnViewModel)
         {
-            await _draftFileBusinessLogic.UpdateAsync(returnViewModel, returnViewModel.ReportInfo.Draft, userRequestingTheUpdate);
+            _draftFileBusinessLogic.Update(returnViewModel, returnViewModel.ReportInfo.Draft, userRequestingTheUpdate);
         }
 
         public async Task<Draft> GetDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingDraft)
         {
-            return await _draftFileBusinessLogic.GetExistingOrNewAsync(organisationId, snapshotYear, userIdRequestingDraft);
+            return _draftFileBusinessLogic.GetExistingOrNew(organisationId, snapshotYear, userIdRequestingDraft);
         }
 
         public async Task KeepDraftFileLockedToUserAsync(ReturnViewModel returnViewModel, long userIdRequestingLock)
         {
-            await _draftFileBusinessLogic.KeepDraftFileLockedToUserAsync(returnViewModel.ReportInfo.Draft, userIdRequestingLock);
+            _draftFileBusinessLogic.KeepDraftFileLockedToUser(returnViewModel.ReportInfo.Draft, userIdRequestingLock);
         }
 
         public async Task CommitDraftFileAsync(ReturnViewModel returnViewModel)
         {
-            await _draftFileBusinessLogic.CommitDraftAsync(returnViewModel.ReportInfo.Draft);
+            _draftFileBusinessLogic.CommitDraft(returnViewModel.ReportInfo.Draft);
         }
 
         public async Task RollbackDraftFileAsync(ReturnViewModel returnViewModel)
         {
-            await _draftFileBusinessLogic.RollbackDraftAsync(returnViewModel.ReportInfo.Draft);
+            _draftFileBusinessLogic.RollbackDraft(returnViewModel.ReportInfo.Draft);
         }
 
         public async Task RestartDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingDraft)
         {
-            await _draftFileBusinessLogic.RestartDraftAsync(organisationId, snapshotYear, userIdRequestingDraft);
+            _draftFileBusinessLogic.RestartDraft(organisationId, snapshotYear, userIdRequestingDraft);
         }
 
         public async Task DiscardDraftFileAsync(ReturnViewModel returnViewModel)
         {
-            await _draftFileBusinessLogic.DiscardDraftAsync(returnViewModel.ReportInfo.Draft);
+            _draftFileBusinessLogic.DiscardDraft(returnViewModel.ReportInfo.Draft);
         }
 
         #endregion
