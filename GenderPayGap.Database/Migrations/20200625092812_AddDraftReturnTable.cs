@@ -1,6 +1,6 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GenderPayGap.Database.Migrations
 {
@@ -13,7 +13,7 @@ namespace GenderPayGap.Database.Migrations
                 columns: table => new
                 {
                     DraftReturnId = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DraftReturnStatus = table.Column<int>(nullable: false),
                     OrganisationId = table.Column<long>(nullable: false),
                     SnapshotYear = table.Column<int>(nullable: false),
