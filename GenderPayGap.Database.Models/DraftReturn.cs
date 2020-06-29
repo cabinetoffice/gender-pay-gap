@@ -9,9 +9,9 @@ namespace GenderPayGap.Database.Models
 
         public DraftReturn() { }
 
-        public DraftReturn(DraftReturn clone)
+        public DraftReturn(DraftReturn clone, DraftReturnStatus draftReturnType)
         {
-            DraftReturnStatus = clone.DraftReturnStatus;
+            DraftReturnStatus = draftReturnType;
             OrganisationId = clone.OrganisationId;
             SnapshotYear = clone.SnapshotYear;
             DiffMeanHourlyPayPercent = clone.DiffMeanHourlyPayPercent;
