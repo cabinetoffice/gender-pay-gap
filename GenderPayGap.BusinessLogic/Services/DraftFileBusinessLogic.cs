@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Classes;
@@ -28,20 +29,13 @@ namespace GenderPayGap.BusinessLogic.Services
     public class DraftFileBusinessLogic : IDraftFileBusinessLogic
     {
 
-        #region Constructor
+        private readonly IDataRepository dataRepository;
 
         public DraftFileBusinessLogic(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
 
-        #endregion
-
-        #region attributes
-
-        private readonly IDataRepository dataRepository;
-
-        #endregion
 
         #region public methods
 
@@ -49,22 +43,19 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             var result = new Draft(organisationId, snapshotYear);
 
-            Draft originalDraftFromDb = CastDatabaseDraftReturnToDraft(GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original));
-            Draft backupDraftFromDb = CastDatabaseDraftReturnToDraft(GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Backup));
+            if (DraftExists(result, DraftReturnStatus.Original))
+            {
+                if (DraftExists(result, DraftReturnStatus.Backup))
+                {
+                    result.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(result, DraftReturnStatus.Backup);
+                    return result;
+                }
 
-            if (originalDraftFromDb == null)
-            {
-                return null;
-            }
-            
-            if (backupDraftFromDb == null)
-            {
-                result.ReturnViewModelContent = originalDraftFromDb.ReturnViewModelContent;
+                result.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(result, DraftReturnStatus.Original);
                 return result;
             }
 
-            result.ReturnViewModelContent = backupDraftFromDb.ReturnViewModelContent;
-            return result;
+            return null;
         }
 
         /// <summary>
@@ -91,7 +82,7 @@ namespace GenderPayGap.BusinessLogic.Services
                 return draftFile;
             }
 
-            draftFile.HasDraftBeenModifiedDuringThisSession = default; // front end flag, reset before saving.
+            draft.HasDraftBeenModifiedDuringThisSession = default; // front end flag, reset before saving.
 
             draftFile.ReturnViewModelContent = postedReturnViewModel;
             await WriteInDbAndTimestampAsync(draftFile, userIdRequestingAccess);
@@ -109,16 +100,15 @@ namespace GenderPayGap.BusinessLogic.Services
                 return;
             }
 
-            await SetMetadataAsync(draftExpectedToBeLocked, userIdRequestingLock);
+            SetMetadataAsync(draftExpectedToBeLocked, userIdRequestingLock);
 
             await SetDraftAccessInformationAsync(userIdRequestingLock, draftExpectedToBeLocked);
         }
 
         public async Task DiscardDraftAsync(Draft draftToDiscard)
         {
-            dataRepository.Delete(GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Original));
-            dataRepository.Delete(GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup));
-            await dataRepository.SaveChangesAsync();
+            DeleteDraft(draftToDiscard, DraftReturnStatus.Original);
+            DeleteDraft(draftToDiscard, DraftReturnStatus.Backup);
         }
 
         public async Task RestartDraftAsync(long organisationId, int snapshotYear, long userIdRequestingRollback)
@@ -134,42 +124,29 @@ namespace GenderPayGap.BusinessLogic.Services
 
             if (hasRollbackSucceeded)
             {
-                DraftReturn newBackupDraftReturn = GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original);
-                newBackupDraftReturn.DraftReturnId = 0;
-                newBackupDraftReturn.DraftReturnStatus = DraftReturnStatus.Backup;
-                dataRepository.Insert(newBackupDraftReturn);
-                await dataRepository.SaveChangesAsync();
+                CopyDraft(draftToRollback, DraftReturnStatus.Original, DraftReturnStatus.Backup);
             }
         }
 
         public async Task<bool> RollbackDraftAsync(Draft draftToDiscard)
         {
-            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Original);
-            DraftReturn backupDraftReturn = GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
-            if (backupDraftReturn == null)
+            if (!DraftExists(draftToDiscard, DraftReturnStatus.Backup))
             {
                 return false;
             }
 
-            dataRepository.Delete(originalDraftReturn);
+            DeleteDraft(draftToDiscard, DraftReturnStatus.Original);
+            CopyDraft(draftToDiscard, DraftReturnStatus.Backup, DraftReturnStatus.Original);
             
-            DraftReturn newOriginalDraftReturn = new DraftReturn(backupDraftReturn);
-            newOriginalDraftReturn.DraftReturnId = 0;
-            newOriginalDraftReturn.DraftReturnStatus = DraftReturnStatus.Original;
-            dataRepository.Insert(newOriginalDraftReturn);
-            await dataRepository.SaveChangesAsync();
-
             await CommitDraftAsync(draftToDiscard);
 
             return true;
         }
+
         public async Task CommitDraftAsync(Draft draftToDiscard)
         {
-            await SetMetadataAsync(draftToDiscard, 0);
-
-            DraftReturn backupDraftReturn = GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
-            dataRepository.Delete(backupDraftReturn);
-            await dataRepository.SaveChangesAsync();
+            SetMetadataAsync(draftToDiscard, 0);
+            DeleteDraft(draftToDiscard, DraftReturnStatus.Backup);
         }
 
         #endregion
@@ -178,13 +155,10 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private async Task<Draft> GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
         {
-            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
-            DraftReturn backupDraftReturn = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Backup);
-
-            if (originalDraftReturn == null)
+            if (!DraftExists(resultingDraft, DraftReturnStatus.Original))
             {
-                dataRepository.Insert(new DraftReturn { DraftReturnStatus = DraftReturnStatus.Original, OrganisationId = resultingDraft.OrganisationId , SnapshotYear = resultingDraft.SnapshotYear, LastWrittenByUserId = userIdRequestingAccess });
-                dataRepository.Insert(new DraftReturn { DraftReturnStatus = DraftReturnStatus.Backup, OrganisationId = resultingDraft.OrganisationId, SnapshotYear = resultingDraft.SnapshotYear, LastWrittenByUserId = userIdRequestingAccess });
+                SaveNewEmptyDraftReturn(resultingDraft, DraftReturnStatus.Original, userIdRequestingAccess);
+                CopyDraft(resultingDraft, DraftReturnStatus.Original, DraftReturnStatus.Backup);
                 await SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
                 return resultingDraft;
             }
@@ -196,44 +170,77 @@ namespace GenderPayGap.BusinessLogic.Services
                 return resultingDraft;
             }
 
-            if (backupDraftReturn == null)
+            if (!DraftExists(resultingDraft, DraftReturnStatus.Backup))
             {
-                DraftReturn newBackupDraftReturn = new DraftReturn(originalDraftReturn);
-                newBackupDraftReturn.DraftReturnId = 0;
-                newBackupDraftReturn.DraftReturnStatus = DraftReturnStatus.Backup;
-
-                dataRepository.Insert(newBackupDraftReturn);
-                await dataRepository.SaveChangesAsync();
+                CopyDraft(resultingDraft, DraftReturnStatus.Original, DraftReturnStatus.Backup);
             }
 
-            resultingDraft = CastDatabaseDraftReturnToDraft(originalDraftReturn);
-
-            await SetMetadataAsync(resultingDraft, userIdRequestingAccess);
+            SetMetadataAsync(resultingDraft, userIdRequestingAccess);
+            resultingDraft.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(resultingDraft, DraftReturnStatus.Original);
 
             return resultingDraft;
         }
 
-        private async Task SetMetadataAsync(Draft draft, long userIdRequestingAccess)
+        private void DeleteDraft(Draft draft, DraftReturnStatus draftType)
         {
-            draft.LastWrittenByUserId = userIdRequestingAccess;
-            draft.LastWrittenDateTime = VirtualDateTime.Now;
+            dataRepository.Delete(GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draftType));
+            dataRepository.SaveChangesAsync().Wait();
+        }
 
+        private void SaveNewEmptyDraftReturn(Draft resultingDraft, DraftReturnStatus draftType, long userIdRequestingAccess)
+        {
+            var newEmptyDraftReturn = new DraftReturn
+            {
+                DraftReturnStatus = draftType,
+                OrganisationId = resultingDraft.OrganisationId,
+                SnapshotYear = resultingDraft.SnapshotYear,
+                LastWrittenByUserId = userIdRequestingAccess
+            };
+
+            dataRepository.Insert(newEmptyDraftReturn);
+            dataRepository.SaveChangesAsync().Wait();
+        }
+
+        private void CopyDraft(Draft draft, DraftReturnStatus fromType, DraftReturnStatus toType)
+        {
+            DraftReturn draftToCopy = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, fromType);
+
+            var newDraftReturn = new DraftReturn(draftToCopy, toType);
+
+            InsertOrUpdate(newDraftReturn);
+        }
+
+        private bool DraftExists(Draft draft, DraftReturnStatus draftType)
+        {
+            DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draftType);
+
+            return draftReturn != null;
+        }
+
+        private DateTime? GetLastWriteTime(Draft draft, DraftReturnStatus draftType)
+        {
+            if (DraftExists(draft, draftType))
+            {
+                DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draftType);
+                return originalDraftReturn.LastWrittenDateTime;
+            }
+
+            return null;
+        }
+
+        private void SetMetadataAsync(Draft draft, long userIdRequestingAccess)
+        {
             DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
-            await SetDraftReturnFromDraft(originalDraftReturn, draft);
+
+            originalDraftReturn.LastWrittenByUserId = userIdRequestingAccess;
+            originalDraftReturn.LastWrittenDateTime = VirtualDateTime.Now;
+
+            dataRepository.SaveChangesAsync().Wait();
         }
 
         private async Task SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
-
-            if (originalDraftReturn == null)
-            {
-                draft.LastWrittenDateTime = VirtualDateTime.Now;
-            }
-            else
-            {
-                draft.LastWrittenDateTime = originalDraftReturn.LastWrittenDateTime;
-            }
+            draft.LastWrittenDateTime = GetLastWriteTime(draft, DraftReturnStatus.Original);
 
             (bool IsAllowedAccess, long UserId) result = await GetIsUserAllowedAccessAsync(userRequestingAccessToDraft, draft);
             draft.IsUserAllowedAccess = result.IsAllowedAccess;
@@ -242,8 +249,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
-            if (draftReturn == null)
+            if (!DraftExists(draft, DraftReturnStatus.Original))
             {
                 return (true, 0);
             }
@@ -271,21 +277,22 @@ namespace GenderPayGap.BusinessLogic.Services
                    && VirtualDateTime.Now.AddMinutes(-20) <= lastWrittenDateTime;
         }
 
-        private async Task WriteInDbAndTimestampAsync(Draft resultingDraft, long userIdRequestingAccess)
+        private ReturnViewModel LoadDraftReturnAsReturnViewModel(Draft resultingDraft, DraftReturnStatus draftType)
         {
-            await SetMetadataAsync(resultingDraft, userIdRequestingAccess);
-
-            DraftReturn draftFromDb = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
-            await SetDraftReturnFromDraft(draftFromDb, resultingDraft);
+            DraftReturn draftReturnFromDatabase = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, draftType);
+            ReturnViewModel returnViewModel = CastDatabaseDraftReturnToReturnViewModel(draftReturnFromDatabase);
+            return returnViewModel;
         }
 
         private DraftReturn GetDraftReturnFromDatabase(long organisationId, int snapshotYear, DraftReturnStatus draftReturnStatus)
         {
             return dataRepository.GetAll<DraftReturn>()
-                .FirstOrDefault(
+                .Where(
                     d => d.OrganisationId == organisationId
                          && d.SnapshotYear == snapshotYear
-                         && d.DraftReturnStatus == draftReturnStatus);
+                         && d.DraftReturnStatus == draftReturnStatus)
+                .OrderByDescending(dr => dr.DraftReturnId)
+                .FirstOrDefault();
         }
 
         private Draft CastDatabaseDraftReturnToDraft(DraftReturn draftReturn)
@@ -302,117 +309,152 @@ namespace GenderPayGap.BusinessLogic.Services
                 HasDraftBeenModifiedDuringThisSession = draftReturn.HasDraftBeenModifiedDuringThisSession ?? false,
                 LastWrittenByUserId = draftReturn.LastWrittenByUserId ?? 0,
                 LastWrittenDateTime = draftReturn.LastWrittenDateTime,
-                ReturnViewModelContent = new ReturnViewModel
-                {
-                    AccountingDate = draftReturn.AccountingDate ?? VirtualDateTime.Now,
-                    Address = draftReturn.Address,
-                    CompanyLinkToGPGInfo = draftReturn.CompanyLinkToGPGInfo,
-                    DiffMeanBonusPercent = draftReturn.DiffMeanBonusPercent,
-                    DiffMeanHourlyPayPercent = draftReturn.DiffMeanHourlyPayPercent,
-                    DiffMedianBonusPercent = draftReturn.DiffMedianBonusPercent,
-                    DiffMedianHourlyPercent = draftReturn.DiffMedianHourlyPercent,
-                    EHRCResponse = draftReturn.EHRCResponse,
-                    EncryptedOrganisationId = draftReturn.EncryptedOrganisationId,
-                    FemaleLowerPayBand = draftReturn.FemaleLowerPayBand,
-                    FemaleMedianBonusPayPercent = draftReturn.FemaleMedianBonusPayPercent,
-                    FemaleMiddlePayBand = draftReturn.FemaleMiddlePayBand,
-                    FemaleUpperPayBand = draftReturn.FemaleUpperPayBand,
-                    FemaleUpperQuartilePayBand = draftReturn.FemaleUpperQuartilePayBand,
-                    FirstName = draftReturn.FirstName,
-                    IsDifferentFromDatabase = draftReturn.IsDifferentFromDatabase ?? false,
-                    IsInScopeForThisReportYear = draftReturn.IsInScopeForThisReportYear ?? false,
-                    IsLateSubmission = draftReturn.IsLateSubmission ?? false,
-                    IsVoluntarySubmission = draftReturn.IsVoluntarySubmission ?? false,
-                    JobTitle = draftReturn.JobTitle,
-                    LastName = draftReturn.LastName,
-                    LateReason = draftReturn.LateReason,
-                    LatestAddress = draftReturn.LatestAddress,
-                    LatestOrganisationName = draftReturn.LatestOrganisationName,
-                    LatestSector = draftReturn.LatestSector,
-                    MaleMedianBonusPayPercent = draftReturn.MaleMedianBonusPayPercent,
-                    MaleMiddlePayBand = draftReturn.MaleMiddlePayBand,
-                    MaleUpperQuartilePayBand = draftReturn.MaleUpperQuartilePayBand,
-                    MaleUpperPayBand = draftReturn.MaleUpperPayBand,
-                    MaleLowerPayBand = draftReturn.MaleLowerPayBand,
-                    Modified = draftReturn.Modified,
-                    OrganisationId = draftReturn.OrganisationId,
-                    OrganisationName = draftReturn.OrganisationName,
-                    OrganisationSize = draftReturn.OrganisationSize ?? OrganisationSizes.NotProvided,
-                    OriginatingAction = draftReturn.OriginatingAction,
-                    ReportInfo = new Models.Organisation.ReportInfoModel
-                    {
-                        ReportingRequirement = draftReturn.ReportingRequirement ?? ScopeStatuses.Unknown,
-                        ReportingStartDate = draftReturn.ReportingStartDate ?? VirtualDateTime.Now,
-                        ReportModifiedDate = draftReturn.ReportModifiedDate ?? VirtualDateTime.Now,
-                    },
-                    ReturnId = draftReturn.ReturnId ?? 0,
-                    ReturnUrl = draftReturn.ReturnUrl,
-                    Sector = draftReturn.Sector,
-                    SectorType = draftReturn.SectorType ?? SectorTypes.Unknown,
-                    ShouldProvideLateReason = draftReturn.ShouldProvideLateReason ?? false
-                }
+                ReturnViewModelContent = CastDatabaseDraftReturnToReturnViewModel(draftReturn)
 
             };
             return result;
         }
 
-        private async Task SetDraftReturnFromDraft(DraftReturn draftReturn, Draft draft)
+        private static ReturnViewModel CastDatabaseDraftReturnToReturnViewModel(DraftReturn draftReturn)
         {
             if (draftReturn == null)
             {
-                dataRepository.Insert(new DraftReturn { OrganisationId = draft.OrganisationId, SnapshotYear = draft.SnapshotYear, DraftReturnStatus = draft.DraftReturnStatus });
-                await dataRepository.SaveChangesAsync();
-                draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draft.DraftReturnStatus);
+                return null;
+            }
+            return new ReturnViewModel
+            {
+                AccountingDate = draftReturn.AccountingDate ?? VirtualDateTime.Now,
+                Address = draftReturn.Address,
+                CompanyLinkToGPGInfo = draftReturn.CompanyLinkToGPGInfo,
+                DiffMeanBonusPercent = draftReturn.DiffMeanBonusPercent,
+                DiffMeanHourlyPayPercent = draftReturn.DiffMeanHourlyPayPercent,
+                DiffMedianBonusPercent = draftReturn.DiffMedianBonusPercent,
+                DiffMedianHourlyPercent = draftReturn.DiffMedianHourlyPercent,
+                EHRCResponse = draftReturn.EHRCResponse,
+                EncryptedOrganisationId = draftReturn.EncryptedOrganisationId,
+                FemaleLowerPayBand = draftReturn.FemaleLowerPayBand,
+                FemaleMedianBonusPayPercent = draftReturn.FemaleMedianBonusPayPercent,
+                FemaleMiddlePayBand = draftReturn.FemaleMiddlePayBand,
+                FemaleUpperPayBand = draftReturn.FemaleUpperPayBand,
+                FemaleUpperQuartilePayBand = draftReturn.FemaleUpperQuartilePayBand,
+                FirstName = draftReturn.FirstName,
+                IsDifferentFromDatabase = draftReturn.IsDifferentFromDatabase ?? false,
+                IsInScopeForThisReportYear = draftReturn.IsInScopeForThisReportYear ?? false,
+                IsLateSubmission = draftReturn.IsLateSubmission ?? false,
+                IsVoluntarySubmission = draftReturn.IsVoluntarySubmission ?? false,
+                JobTitle = draftReturn.JobTitle,
+                LastName = draftReturn.LastName,
+                LateReason = draftReturn.LateReason,
+                LatestAddress = draftReturn.LatestAddress,
+                LatestOrganisationName = draftReturn.LatestOrganisationName,
+                LatestSector = draftReturn.LatestSector,
+                MaleMedianBonusPayPercent = draftReturn.MaleMedianBonusPayPercent,
+                MaleMiddlePayBand = draftReturn.MaleMiddlePayBand,
+                MaleUpperQuartilePayBand = draftReturn.MaleUpperQuartilePayBand,
+                MaleUpperPayBand = draftReturn.MaleUpperPayBand,
+                MaleLowerPayBand = draftReturn.MaleLowerPayBand,
+                Modified = draftReturn.Modified,
+                OrganisationId = draftReturn.OrganisationId,
+                OrganisationName = draftReturn.OrganisationName,
+                OrganisationSize = draftReturn.OrganisationSize ?? OrganisationSizes.NotProvided,
+                OriginatingAction = draftReturn.OriginatingAction,
+                ReportInfo = new Models.Organisation.ReportInfoModel
+                {
+                    ReportingRequirement = draftReturn.ReportingRequirement ?? ScopeStatuses.Unknown,
+                    ReportingStartDate = draftReturn.ReportingStartDate ?? VirtualDateTime.Now,
+                    ReportModifiedDate = draftReturn.ReportModifiedDate ?? VirtualDateTime.Now,
+                },
+                ReturnId = draftReturn.ReturnId ?? 0,
+                ReturnUrl = draftReturn.ReturnUrl,
+                Sector = draftReturn.Sector,
+                SectorType = draftReturn.SectorType ?? SectorTypes.Unknown,
+                ShouldProvideLateReason = draftReturn.ShouldProvideLateReason ?? false
+            };
+        }
+
+        private DraftReturn SerialiseDraftAsDraftReturn(Draft draft, DraftReturnStatus draftType)
+        {
+            var draftReturn = new DraftReturn
+            {
+                OrganisationId = draft.OrganisationId,
+                SnapshotYear = draft.SnapshotYear,
+
+                DraftReturnStatus = draftType,
+
+                AccountingDate = draft.ReturnViewModelContent?.AccountingDate,
+                Address = draft.ReturnViewModelContent?.Address,
+                CompanyLinkToGPGInfo = draft.ReturnViewModelContent?.CompanyLinkToGPGInfo,
+                DiffMeanBonusPercent = draft.ReturnViewModelContent?.DiffMeanBonusPercent,
+                DiffMeanHourlyPayPercent = draft.ReturnViewModelContent?.DiffMeanHourlyPayPercent,
+                DiffMedianBonusPercent = draft.ReturnViewModelContent?.DiffMedianBonusPercent,
+                DiffMedianHourlyPercent = draft.ReturnViewModelContent?.DiffMedianHourlyPercent,
+                EHRCResponse = draft.ReturnViewModelContent?.EHRCResponse,
+                EncryptedOrganisationId = draft.ReturnViewModelContent?.EncryptedOrganisationId,
+                FemaleLowerPayBand = draft.ReturnViewModelContent?.FemaleLowerPayBand,
+                FemaleMedianBonusPayPercent = draft.ReturnViewModelContent?.FemaleMedianBonusPayPercent,
+                FemaleMiddlePayBand = draft.ReturnViewModelContent?.FemaleMiddlePayBand,
+                FemaleUpperPayBand = draft.ReturnViewModelContent?.FemaleUpperPayBand,
+                FemaleUpperQuartilePayBand = draft.ReturnViewModelContent?.FemaleUpperQuartilePayBand,
+                FirstName = draft.ReturnViewModelContent?.FirstName,
+                HasDraftBeenModifiedDuringThisSession = draft.HasDraftBeenModifiedDuringThisSession,
+                IsDifferentFromDatabase = draft.ReturnViewModelContent?.IsDifferentFromDatabase,
+                IsInScopeForThisReportYear = draft.ReturnViewModelContent?.IsInScopeForThisReportYear,
+                IsLateSubmission = draft.ReturnViewModelContent?.IsLateSubmission,
+                IsVoluntarySubmission = draft.ReturnViewModelContent?.IsVoluntarySubmission,
+                JobTitle = draft.ReturnViewModelContent?.JobTitle,
+                LastName = draft.ReturnViewModelContent?.LastName,
+                LastWrittenByUserId = draft.LastWrittenByUserId,
+                LastWrittenDateTime = draft.LastWrittenDateTime,
+                LateReason = draft.ReturnViewModelContent?.LateReason,
+                LatestAddress = draft.ReturnViewModelContent?.LatestAddress,
+                LatestOrganisationName = draft.ReturnViewModelContent?.LatestOrganisationName,
+                LatestSector = draft.ReturnViewModelContent?.LatestSector,
+                MaleLowerPayBand = draft.ReturnViewModelContent?.MaleLowerPayBand,
+                MaleMedianBonusPayPercent = draft.ReturnViewModelContent?.MaleMedianBonusPayPercent,
+                MaleMiddlePayBand = draft.ReturnViewModelContent?.MaleMiddlePayBand,
+                MaleUpperPayBand = draft.ReturnViewModelContent?.MaleUpperPayBand,
+                MaleUpperQuartilePayBand = draft.ReturnViewModelContent?.MaleUpperQuartilePayBand,
+                Modified = draft.ReturnViewModelContent?.Modified ?? VirtualDateTime.Now,
+                OrganisationName = draft.ReturnViewModelContent?.OrganisationName,
+                OrganisationSize = draft.ReturnViewModelContent?.OrganisationSize,
+                OriginatingAction = draft.ReturnViewModelContent?.OriginatingAction,
+                ReportingRequirement = draft.ReturnViewModelContent?.ReportInfo.ReportingRequirement,
+                ReportingStartDate = draft.ReturnViewModelContent?.ReportInfo.ReportingStartDate,
+                ReportModifiedDate = draft.ReturnViewModelContent?.ReportInfo.ReportModifiedDate,
+                ReturnId = draft.ReturnViewModelContent?.ReturnId,
+                ReturnUrl = draft.ReturnViewModelContent?.ReturnUrl,
+                Sector = draft.ReturnViewModelContent?.Sector,
+                SectorType = draft.ReturnViewModelContent?.SectorType,
+                ShouldProvideLateReason = draft.ReturnViewModelContent?.ShouldProvideLateReason
+            };
+            
+            return draftReturn;
+        }
+
+        private async Task WriteInDbAndTimestampAsync(Draft draftFile, long userIdRequestingAccess)
+        {
+            DraftReturn draftReturn = SerialiseDraftAsDraftReturn(draftFile, DraftReturnStatus.Original);
+            InsertOrUpdate(draftReturn);
+            SetMetadataAsync(draftFile, userIdRequestingAccess);
+        }
+
+        private void InsertOrUpdate(DraftReturn draftToSave)
+        {
+            List<DraftReturn> matchingReturns = dataRepository.GetAll<DraftReturn>()
+                .Where(dr => dr.OrganisationId == draftToSave.OrganisationId)
+                .Where(dr => dr.SnapshotYear == draftToSave.SnapshotYear)
+                .Where(dr => dr.DraftReturnStatus == draftToSave.DraftReturnStatus)
+                .ToList();
+
+            foreach (DraftReturn matchingReturn in matchingReturns)
+            {
+                dataRepository.Delete(matchingReturn);
             }
 
-            draftReturn.AccountingDate = draft.ReturnViewModelContent?.AccountingDate;
-            draftReturn.Address = draft.ReturnViewModelContent?.Address;
-            draftReturn.CompanyLinkToGPGInfo = draft.ReturnViewModelContent?.CompanyLinkToGPGInfo;
-            draftReturn.DiffMeanBonusPercent = draft.ReturnViewModelContent?.DiffMeanBonusPercent;
-            draftReturn.DiffMeanHourlyPayPercent = draft.ReturnViewModelContent?.DiffMeanHourlyPayPercent;
-            draftReturn.DiffMedianBonusPercent = draft.ReturnViewModelContent?.DiffMedianBonusPercent;
-            draftReturn.DiffMedianHourlyPercent = draft.ReturnViewModelContent?.DiffMedianHourlyPercent;
-            draftReturn.EHRCResponse = draft.ReturnViewModelContent?.EHRCResponse;
-            draftReturn.EncryptedOrganisationId = draft.ReturnViewModelContent?.EncryptedOrganisationId;
-            draftReturn.FemaleLowerPayBand = draft.ReturnViewModelContent?.FemaleLowerPayBand;
-            draftReturn.FemaleMedianBonusPayPercent = draft.ReturnViewModelContent?.FemaleMedianBonusPayPercent;
-            draftReturn.FemaleMiddlePayBand = draft.ReturnViewModelContent?.FemaleMiddlePayBand;
-            draftReturn.FemaleUpperPayBand = draft.ReturnViewModelContent?.FemaleUpperPayBand;
-            draftReturn.FemaleUpperQuartilePayBand = draft.ReturnViewModelContent?.FemaleUpperQuartilePayBand;
-            draftReturn.FirstName = draft.ReturnViewModelContent?.FirstName;
-            draftReturn.HasDraftBeenModifiedDuringThisSession = draft.HasDraftBeenModifiedDuringThisSession;
-            draftReturn.IsDifferentFromDatabase = draft.ReturnViewModelContent?.IsDifferentFromDatabase;
-            draftReturn.IsInScopeForThisReportYear = draft.ReturnViewModelContent?.IsInScopeForThisReportYear;
-            draftReturn.IsLateSubmission = draft.ReturnViewModelContent?.IsLateSubmission;
-            draftReturn.IsVoluntarySubmission = draft.ReturnViewModelContent?.IsVoluntarySubmission;
-            draftReturn.JobTitle = draft.ReturnViewModelContent?.JobTitle;
-            draftReturn.LastName = draft.ReturnViewModelContent?.LastName;
-            draftReturn.LastWrittenByUserId = draft.LastWrittenByUserId;
-            draftReturn.LastWrittenDateTime = draft.LastWrittenDateTime;
-            draftReturn.LateReason = draft.ReturnViewModelContent?.LateReason;
-            draftReturn.LatestAddress = draft.ReturnViewModelContent?.LatestAddress;
-            draftReturn.LatestOrganisationName = draft.ReturnViewModelContent?.LatestOrganisationName;
-            draftReturn.LatestSector = draft.ReturnViewModelContent?.LatestSector;
-            draftReturn.MaleLowerPayBand = draft.ReturnViewModelContent?.MaleLowerPayBand;
-            draftReturn.MaleMedianBonusPayPercent = draft.ReturnViewModelContent?.MaleMedianBonusPayPercent;
-            draftReturn.MaleMiddlePayBand = draft.ReturnViewModelContent?.MaleMiddlePayBand;
-            draftReturn.MaleUpperPayBand = draft.ReturnViewModelContent?.MaleUpperPayBand;
-            draftReturn.MaleUpperQuartilePayBand = draft.ReturnViewModelContent?.MaleUpperQuartilePayBand;
-            draftReturn.Modified = draft.ReturnViewModelContent?.Modified ?? VirtualDateTime.Now;
-            draftReturn.OrganisationName = draft.ReturnViewModelContent?.OrganisationName;
-            draftReturn.OrganisationSize = draft.ReturnViewModelContent?.OrganisationSize;
-            draftReturn.OriginatingAction = draft.ReturnViewModelContent?.OriginatingAction;
-            draftReturn.ReportingRequirement = draft.ReturnViewModelContent?.ReportInfo.ReportingRequirement;
-            draftReturn.ReportingStartDate = draft.ReturnViewModelContent?.ReportInfo.ReportingStartDate;
-            draftReturn.ReportModifiedDate = draft.ReturnViewModelContent?.ReportInfo.ReportModifiedDate;
-            draftReturn.ReturnId = draft.ReturnViewModelContent?.ReturnId;
-            draftReturn.ReturnUrl = draft.ReturnViewModelContent?.ReturnUrl;
-            draftReturn.Sector = draft.ReturnViewModelContent?.Sector;
-            draftReturn.SectorType = draft.ReturnViewModelContent?.SectorType;
-            draftReturn.ShouldProvideLateReason = draft.ReturnViewModelContent?.ShouldProvideLateReason;
-
-            await dataRepository.SaveChangesAsync();
+            dataRepository.Insert(draftToSave);
+            dataRepository.SaveChangesAsync().Wait();
         }
+
         #endregion
 
     }
