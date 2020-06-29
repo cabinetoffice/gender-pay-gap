@@ -172,7 +172,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
             dataRepository.Delete(originalDraftReturn);
             
-            DraftReturn newOriginalDraftReturn = backupDraftReturn;
+            DraftReturn newOriginalDraftReturn = new DraftReturn(backupDraftReturn);
             newOriginalDraftReturn.DraftReturnId = 0;
             newOriginalDraftReturn.DraftReturnStatus = DraftReturnStatus.Original;
             dataRepository.Insert(newOriginalDraftReturn);
@@ -217,7 +217,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
             if (backupDraftReturn == null)
             {
-                DraftReturn newBackupDraftReturn = originalDraftReturn;
+                DraftReturn newBackupDraftReturn = new DraftReturn(originalDraftReturn);
                 newBackupDraftReturn.DraftReturnId = 0;
                 newBackupDraftReturn.DraftReturnStatus = DraftReturnStatus.Backup;
 
