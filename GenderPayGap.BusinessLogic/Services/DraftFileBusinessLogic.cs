@@ -15,10 +15,9 @@ namespace GenderPayGap.BusinessLogic.Services
 
         Draft GetDraftIfAvailable(long organisationId, int snapshotYear);
         Draft GetExistingOrNew(long organisationId, int snapshotYear, long userIdRequestingAccess);
-        Draft Update(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
+        Draft UpdateAndCommit(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
         void KeepDraftFileLockedToUser(Draft draftExpectedToBeLocked, long userIdRequestingLock);
         void DiscardDraft(Draft draftToDiscard);
-        void CommitDraft(Draft draftToKeep);
 
     }
 
@@ -63,7 +62,7 @@ namespace GenderPayGap.BusinessLogic.Services
             return GetDraftOrCreateAsync(resultingDraft, userIdRequestingAccess);
         }
 
-        public Draft Update(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess)
+        public Draft UpdateAndCommit(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess)
         {
             Draft draftFile = GetDraftOrCreateAsync(draft, userIdRequestingAccess);
 
@@ -75,7 +74,9 @@ namespace GenderPayGap.BusinessLogic.Services
             draft.HasDraftBeenModifiedDuringThisSession = default; // front end flag, reset before saving.
 
             draftFile.ReturnViewModelContent = postedReturnViewModel;
-            WriteInDbAndTimestamp(draftFile, userIdRequestingAccess);
+            WriteInDbAndTimestamp(draftFile);
+
+            SetMetadataAsync(draftFile, 0);
 
             return draftFile;
         }
@@ -108,11 +109,6 @@ namespace GenderPayGap.BusinessLogic.Services
             }
 
             dataRepository.SaveChangesAsync().Wait();
-        }
-
-        public void CommitDraft(Draft draftToDiscard)
-        {
-            SetMetadataAsync(draftToDiscard, 0);
         }
 
         #endregion
@@ -354,11 +350,10 @@ namespace GenderPayGap.BusinessLogic.Services
             return draftReturn;
         }
 
-        private void WriteInDbAndTimestamp(Draft draftFile, long userIdRequestingAccess)
+        private void WriteInDbAndTimestamp(Draft draftFile)
         {
             DraftReturn draftReturn = SerialiseDraftAsDraftReturn(draftFile);
             InsertOrUpdate(draftReturn);
-            SetMetadataAsync(draftFile, userIdRequestingAccess);
         }
 
         private void InsertOrUpdate(DraftReturn draftToSave)

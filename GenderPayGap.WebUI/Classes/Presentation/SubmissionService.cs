@@ -42,9 +42,8 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         #region DraftFile
 
-        Task UpdateDraftFileAsync(long userRequestingTheUpdate, ReturnViewModel returnViewModel);
+        void UpdateAndCommitDraftFile(long userRequestingTheUpdate, ReturnViewModel returnViewModel);
         Task KeepDraftFileLockedToUserAsync(ReturnViewModel returnViewModel, long userIdRequestingLock);
-        Task CommitDraftFileAsync(ReturnViewModel returnViewModel);
         Task DiscardDraftFileAsync(ReturnViewModel returnViewModel);
         Task<Draft> GetDraftIfAvailableAsync(long organisationId, int snapshotYear);
 
@@ -585,9 +584,9 @@ namespace GenderPayGap.WebUI.Classes.Services
             return _draftFileBusinessLogic.GetDraftIfAvailable(organisationId, snapshotYear);
         }
 
-        public async Task UpdateDraftFileAsync(long userRequestingTheUpdate, ReturnViewModel returnViewModel)
+        public void UpdateAndCommitDraftFile(long userRequestingTheUpdate, ReturnViewModel returnViewModel)
         {
-            _draftFileBusinessLogic.Update(returnViewModel, returnViewModel.ReportInfo.Draft, userRequestingTheUpdate);
+            _draftFileBusinessLogic.UpdateAndCommit(returnViewModel, returnViewModel.ReportInfo.Draft, userRequestingTheUpdate);
         }
 
         public async Task<Draft> GetDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingDraft)
@@ -598,11 +597,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         public async Task KeepDraftFileLockedToUserAsync(ReturnViewModel returnViewModel, long userIdRequestingLock)
         {
             _draftFileBusinessLogic.KeepDraftFileLockedToUser(returnViewModel.ReportInfo.Draft, userIdRequestingLock);
-        }
-
-        public async Task CommitDraftFileAsync(ReturnViewModel returnViewModel)
-        {
-            _draftFileBusinessLogic.CommitDraft(returnViewModel.ReportInfo.Draft);
         }
 
         public async Task DiscardDraftFileAsync(ReturnViewModel returnViewModel)

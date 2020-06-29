@@ -2298,7 +2298,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 returnViewModel.OrganisationId,
                 returnViewModel.AccountingDate.Year,
                 mockedUser.UserId);
-            actualDraftFile = testDraftFileFileBusinessLogic.Update(returnViewModel, actualDraftFile, mockedUser.UserId);
+            actualDraftFile = testDraftFileFileBusinessLogic.UpdateAndCommit(returnViewModel, actualDraftFile, mockedUser.UserId);
 
             returnViewModel.ReportInfo.Draft = actualDraftFile;
 
