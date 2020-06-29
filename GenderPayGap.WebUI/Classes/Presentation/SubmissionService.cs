@@ -584,7 +584,7 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         public async Task<Draft> GetDraftIfAvailableAsync(long organisationId, int snapshotYear)
         {
-            return await _draftFileBusinessLogic.GetDraftIfAvailableAsync(organisationId, snapshotYear);
+            return _draftFileBusinessLogic.GetDraftIfAvailableAsync(organisationId, snapshotYear);
         }
 
         public async Task UpdateDraftFileAsync(long userRequestingTheUpdate, ReturnViewModel returnViewModel)
