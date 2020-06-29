@@ -23,10 +23,6 @@ namespace GenderPayGap.WebUI.Classes.Services
     public interface ISubmissionService
     {
 
-        IDataRepository DataRepository { get; }
-
-        IScopeBusinessLogic ScopeBusinessLogic { get; }
-
         bool IsCurrentSnapshotYear(SectorTypes sector, int snapshotYear);
 
         bool IsHistoricSnapshotYear(SectorTypes sector, int snapshotYear);
@@ -34,16 +30,11 @@ namespace GenderPayGap.WebUI.Classes.Services
         bool IsValidSnapshotYear(int snapshotYear);
         DateTime GetCurrentSnapshotDate(SectorTypes sector = SectorTypes.Private);
         SubmissionChangeSummary GetSubmissionChangeSummary(Return stashedReturn, Return databaseReturn);
-        Task<Return> GetReturnFromDatabaseAsync(long organisationId, int snapshotYear = 0);
 
         Task<Return> GetSubmissionByIdAsync(long returnId);
 
         // presentation
         Task<ReturnViewModel> GetReturnViewModelAsync(long organisationId, int snapshotYear, long userId);
-
-        Task<ReportInfoModel> GetReportInfoModelWithLockedDraftAsync(Organisation organisation,
-            DateTime? returnModifiedDate,
-            int snapshotYear);
 
         Return CreateDraftSubmissionFromViewModel(ReturnViewModel stashedReturnViewModel);
 
@@ -52,7 +43,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         #region DraftFile
 
         Task UpdateDraftFileAsync(long userRequestingTheUpdate, ReturnViewModel returnViewModel);
-        Task<Draft> GetDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingDraft);
         Task KeepDraftFileLockedToUserAsync(ReturnViewModel returnViewModel, long userIdRequestingLock);
         Task CommitDraftFileAsync(ReturnViewModel returnViewModel);
         Task RestartDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingRollback);
