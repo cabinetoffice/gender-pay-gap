@@ -14,7 +14,7 @@ namespace GenderPayGap.BusinessLogic.Services
     public interface IDraftFileBusinessLogic
     {
 
-        Task<Draft> GetDraftIfAvailableAsync(long organisationId, int snapshotYear);
+        Draft GetDraftIfAvailableAsync(long organisationId, int snapshotYear);
         Task<Draft> GetExistingOrNewAsync(long organisationId, int snapshotYear, long userIdRequestingAccess);
         Task<Draft> UpdateAsync(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
         Task KeepDraftFileLockedToUserAsync(Draft draftExpectedToBeLocked, long userIdRequestingLock);
@@ -45,7 +45,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         #region public methods
 
-        public async Task<Draft> GetDraftIfAvailableAsync(long organisationId, int snapshotYear)
+        public Draft GetDraftIfAvailableAsync(long organisationId, int snapshotYear)
         {
             var result = new Draft(organisationId, snapshotYear);
 
@@ -57,34 +57,14 @@ namespace GenderPayGap.BusinessLogic.Services
                 return null;
             }
             
-            if (originalDraftFromDb.ReturnViewModelContent != null && backupDraftFromDb == null)
+            if (backupDraftFromDb == null)
             {
                 result.ReturnViewModelContent = originalDraftFromDb.ReturnViewModelContent;
                 return result;
             }
 
-            if (originalDraftFromDb.ReturnViewModelContent == null && backupDraftFromDb == null)
-            {
-                return null;
-            }
-            
-            if (originalDraftFromDb.ReturnViewModelContent != null && backupDraftFromDb.ReturnViewModelContent != null)
-            {
-                result.ReturnViewModelContent = backupDraftFromDb.ReturnViewModelContent;
-                return result;
-            }
-
-            if (originalDraftFromDb.ReturnViewModelContent != null && backupDraftFromDb.ReturnViewModelContent == null)
-            {
-                return null;
-            }
-
-            if (originalDraftFromDb.ReturnViewModelContent == null && backupDraftFromDb.ReturnViewModelContent == null)
-            {
-                return null;
-            }
-
-            throw new NotImplementedException();
+            result.ReturnViewModelContent = backupDraftFromDb.ReturnViewModelContent;
+            return result;
         }
 
         /// <summary>
