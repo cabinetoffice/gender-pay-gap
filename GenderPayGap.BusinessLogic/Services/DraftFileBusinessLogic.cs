@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.BusinessLogic.Classes;
 using GenderPayGap.BusinessLogic.Models.Submit;
@@ -48,8 +49,8 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             var result = new Draft(organisationId, snapshotYear);
 
-            Draft originalDraftFromDb = CastDatabaseDraftReturnToDraft(await GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original));
-            Draft backupDraftFromDb = CastDatabaseDraftReturnToDraft(await GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Backup));
+            Draft originalDraftFromDb = CastDatabaseDraftReturnToDraft(GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original));
+            Draft backupDraftFromDb = CastDatabaseDraftReturnToDraft(GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Backup));
 
             if (originalDraftFromDb == null)
             {
@@ -153,7 +154,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
             if (hasRollbackSucceeded)
             {
-                DraftReturn newBackupDraftReturn = await GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original);
+                DraftReturn newBackupDraftReturn = GetDraftReturnFromDatabase(organisationId, snapshotYear, DraftReturnStatus.Original);
                 newBackupDraftReturn.DraftReturnId = 0;
                 newBackupDraftReturn.DraftReturnStatus = DraftReturnStatus.Backup;
                 dataRepository.Insert(newBackupDraftReturn);
@@ -163,8 +164,8 @@ namespace GenderPayGap.BusinessLogic.Services
 
         public async Task<bool> RollbackDraftAsync(Draft draftToDiscard)
         {
-            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Original);
-            DraftReturn backupDraftReturn = await GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
+            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn backupDraftReturn = GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
             if (backupDraftReturn == null)
             {
                 return false;
@@ -186,7 +187,7 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             await SetMetadataAsync(draftToDiscard, 0);
 
-            DraftReturn backupDraftReturn = await GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
+            DraftReturn backupDraftReturn = GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear, DraftReturnStatus.Backup);
             dataRepository.Delete(backupDraftReturn);
             await dataRepository.SaveChangesAsync();
         }
@@ -197,8 +198,8 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private async Task<Draft> GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
         {
-            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
-            DraftReturn backupDraftReturn = await GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Backup);
+            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn backupDraftReturn = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Backup);
 
             if (originalDraftReturn == null)
             {
@@ -237,13 +238,13 @@ namespace GenderPayGap.BusinessLogic.Services
             draft.LastWrittenByUserId = userIdRequestingAccess;
             draft.LastWrittenDateTime = VirtualDateTime.Now;
 
-            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
             await SetDraftReturnFromDraft(originalDraftReturn, draft);
         }
 
         private async Task SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            DraftReturn originalDraftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
 
             if (originalDraftReturn == null)
             {
@@ -261,7 +262,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private async Task<(bool IsAllowedAccess, long UserId)> GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            DraftReturn draftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
             if (draftReturn == null)
             {
                 return (true, 0);
@@ -278,7 +279,7 @@ namespace GenderPayGap.BusinessLogic.Services
             DraftReturnStatus draftReturnStatus,
             long userId)
         {
-            DraftReturn draftReturn = await GetDraftReturnFromDatabase(organisationId, snapshotYear, draftReturnStatus);
+            DraftReturn draftReturn = GetDraftReturnFromDatabase(organisationId, snapshotYear, draftReturnStatus);
 
             long lastAccessedByUserId = draftReturn.LastWrittenByUserId ?? 0;
             return (lastAccessedByUserId == 0 || lastAccessedByUserId == userId, lastAccessedByUserId);
@@ -294,14 +295,14 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             await SetMetadataAsync(resultingDraft, userIdRequestingAccess);
 
-            DraftReturn draftFromDb = await GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn draftFromDb = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, DraftReturnStatus.Original);
             await SetDraftReturnFromDraft(draftFromDb, resultingDraft);
         }
 
-        private async Task<DraftReturn> GetDraftReturnFromDatabase(long organisationId, int snapshotYear, DraftReturnStatus draftReturnStatus)
+        private DraftReturn GetDraftReturnFromDatabase(long organisationId, int snapshotYear, DraftReturnStatus draftReturnStatus)
         {
-            return await dataRepository.GetAll<DraftReturn>()
-                .FirstOrDefaultAsync(
+            return dataRepository.GetAll<DraftReturn>()
+                .FirstOrDefault(
                     d => d.OrganisationId == organisationId
                          && d.SnapshotYear == snapshotYear
                          && d.DraftReturnStatus == draftReturnStatus);
@@ -381,7 +382,7 @@ namespace GenderPayGap.BusinessLogic.Services
             {
                 dataRepository.Insert(new DraftReturn { OrganisationId = draft.OrganisationId, SnapshotYear = draft.SnapshotYear, DraftReturnStatus = draft.DraftReturnStatus });
                 await dataRepository.SaveChangesAsync();
-                draftReturn = await GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draft.DraftReturnStatus);
+                draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draft.DraftReturnStatus);
             }
 
             draftReturn.AccountingDate = draft.ReturnViewModelContent?.AccountingDate;
