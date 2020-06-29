@@ -97,7 +97,16 @@ namespace GenderPayGap.BusinessLogic.Services
 
         public void DiscardDraft(Draft draftToDiscard)
         {
-            dataRepository.Delete(GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear));
+            List<DraftReturn> matchingReturns = dataRepository.GetAll<DraftReturn>()
+                .Where(dr => dr.OrganisationId == draftToDiscard.OrganisationId)
+                .Where(dr => dr.SnapshotYear == draftToDiscard.SnapshotYear)
+                .ToList();
+
+            foreach (DraftReturn matchingReturn in matchingReturns)
+            {
+                dataRepository.Delete(matchingReturn);
+            }
+
             dataRepository.SaveChangesAsync().Wait();
         }
 
@@ -167,10 +176,13 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
-            originalDraftReturn.LastWrittenByUserId = userIdRequestingAccess;
-            originalDraftReturn.LastWrittenDateTime = VirtualDateTime.Now;
+            if (originalDraftReturn != null)
+            {
+                originalDraftReturn.LastWrittenByUserId = userIdRequestingAccess;
+                originalDraftReturn.LastWrittenDateTime = VirtualDateTime.Now;
 
-            dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChangesAsync().Wait();
+            }
         }
 
         private void SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
