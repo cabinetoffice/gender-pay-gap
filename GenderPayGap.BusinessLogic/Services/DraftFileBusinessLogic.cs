@@ -18,8 +18,6 @@ namespace GenderPayGap.BusinessLogic.Services
         Draft Update(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
         void KeepDraftFileLockedToUser(Draft draftExpectedToBeLocked, long userIdRequestingLock);
         void DiscardDraft(Draft draftToDiscard);
-        bool RollbackDraft(Draft draftToRevert);
-        void RestartDraft(long organisationId, int snapshotYear, long userIdRequestingRollback);
         void CommitDraft(Draft draftToKeep);
 
     }
@@ -41,15 +39,9 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             var result = new Draft(organisationId, snapshotYear);
 
-            if (DraftExists(result, DraftReturnStatus.Original))
+            if (DraftExists(result))
             {
-                if (DraftExists(result, DraftReturnStatus.Backup))
-                {
-                    result.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(result, DraftReturnStatus.Backup);
-                    return result;
-                }
-
-                result.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(result, DraftReturnStatus.Original);
+                result.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(result);
                 return result;
             }
 
@@ -105,46 +97,13 @@ namespace GenderPayGap.BusinessLogic.Services
 
         public void DiscardDraft(Draft draftToDiscard)
         {
-            DeleteDraft(draftToDiscard, DraftReturnStatus.Original);
-            DeleteDraft(draftToDiscard, DraftReturnStatus.Backup);
-        }
-
-        public void RestartDraft(long organisationId, int snapshotYear, long userIdRequestingRollback)
-        {
-            var draftToRollback = new Draft(organisationId, snapshotYear);
-            SetDraftAccessInformationAsync(userIdRequestingRollback, draftToRollback);
-            if (!draftToRollback.IsUserAllowedAccess)
-            {
-                return;
-            }
-
-            bool hasRollbackSucceeded = RollbackDraft(draftToRollback);
-
-            if (hasRollbackSucceeded)
-            {
-                CopyDraft(draftToRollback, DraftReturnStatus.Original, DraftReturnStatus.Backup);
-            }
-        }
-
-        public bool RollbackDraft(Draft draftToDiscard)
-        {
-            if (!DraftExists(draftToDiscard, DraftReturnStatus.Backup))
-            {
-                return false;
-            }
-
-            DeleteDraft(draftToDiscard, DraftReturnStatus.Original);
-            CopyDraft(draftToDiscard, DraftReturnStatus.Backup, DraftReturnStatus.Original);
-            
-            CommitDraft(draftToDiscard);
-
-            return true;
+            dataRepository.Delete(GetDraftReturnFromDatabase(draftToDiscard.OrganisationId, draftToDiscard.SnapshotYear));
+            dataRepository.SaveChangesAsync().Wait();
         }
 
         public void CommitDraft(Draft draftToDiscard)
         {
             SetMetadataAsync(draftToDiscard, 0);
-            DeleteDraft(draftToDiscard, DraftReturnStatus.Backup);
         }
 
         #endregion
@@ -153,10 +112,9 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private Draft GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
         {
-            if (!DraftExists(resultingDraft, DraftReturnStatus.Original))
+            if (!DraftExists(resultingDraft))
             {
-                SaveNewEmptyDraftReturn(resultingDraft, DraftReturnStatus.Original, userIdRequestingAccess);
-                CopyDraft(resultingDraft, DraftReturnStatus.Original, DraftReturnStatus.Backup);
+                SaveNewEmptyDraftReturn(resultingDraft, userIdRequestingAccess);
                 SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
                 return resultingDraft;
             }
@@ -168,28 +126,16 @@ namespace GenderPayGap.BusinessLogic.Services
                 return resultingDraft;
             }
 
-            if (!DraftExists(resultingDraft, DraftReturnStatus.Backup))
-            {
-                CopyDraft(resultingDraft, DraftReturnStatus.Original, DraftReturnStatus.Backup);
-            }
-
             SetMetadataAsync(resultingDraft, userIdRequestingAccess);
-            resultingDraft.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(resultingDraft, DraftReturnStatus.Original);
+            resultingDraft.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(resultingDraft);
 
             return resultingDraft;
         }
 
-        private void DeleteDraft(Draft draft, DraftReturnStatus draftType)
-        {
-            dataRepository.Delete(GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draftType));
-            dataRepository.SaveChangesAsync().Wait();
-        }
-
-        private void SaveNewEmptyDraftReturn(Draft resultingDraft, DraftReturnStatus draftType, long userIdRequestingAccess)
+        private void SaveNewEmptyDraftReturn(Draft resultingDraft, long userIdRequestingAccess)
         {
             var newEmptyDraftReturn = new DraftReturn
             {
-                DraftReturnStatus = draftType,
                 OrganisationId = resultingDraft.OrganisationId,
                 SnapshotYear = resultingDraft.SnapshotYear,
                 LastWrittenByUserId = userIdRequestingAccess
@@ -199,27 +145,18 @@ namespace GenderPayGap.BusinessLogic.Services
             dataRepository.SaveChangesAsync().Wait();
         }
 
-        private void CopyDraft(Draft draft, DraftReturnStatus fromType, DraftReturnStatus toType)
+        private bool DraftExists(Draft draft)
         {
-            DraftReturn draftToCopy = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, fromType);
-
-            var newDraftReturn = new DraftReturn(draftToCopy, toType);
-
-            InsertOrUpdate(newDraftReturn);
-        }
-
-        private bool DraftExists(Draft draft, DraftReturnStatus draftType)
-        {
-            DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draftType);
+            DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
             return draftReturn != null;
         }
 
-        private DateTime? GetLastWriteTime(Draft draft, DraftReturnStatus draftType)
+        private DateTime? GetLastWriteTime(Draft draft)
         {
-            if (DraftExists(draft, draftType))
+            if (DraftExists(draft))
             {
-                DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, draftType);
+                DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
                 return originalDraftReturn.LastWrittenDateTime;
             }
 
@@ -228,7 +165,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private void SetMetadataAsync(Draft draft, long userIdRequestingAccess)
         {
-            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original);
+            DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
             originalDraftReturn.LastWrittenByUserId = userIdRequestingAccess;
             originalDraftReturn.LastWrittenDateTime = VirtualDateTime.Now;
@@ -238,7 +175,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private void SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            draft.LastWrittenDateTime = GetLastWriteTime(draft, DraftReturnStatus.Original);
+            draft.LastWrittenDateTime = GetLastWriteTime(draft);
 
             (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccessAsync(userRequestingAccessToDraft, draft);
             draft.IsUserAllowedAccess = result.IsAllowedAccess;
@@ -247,23 +184,22 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private (bool IsAllowedAccess, long UserId) GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
         {
-            if (!DraftExists(draft, DraftReturnStatus.Original))
+            if (!DraftExists(draft))
             {
                 return (true, 0);
             }
 
             (bool IsAllowedAccess, long UserId) result =
-                GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.OrganisationId, draft.SnapshotYear, DraftReturnStatus.Original, userRequestingAccessToDraft);
+                GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.OrganisationId, draft.SnapshotYear, userRequestingAccessToDraft);
 
             return (result.IsAllowedAccess || !IsInUse(draft.LastWrittenDateTime), result.UserId);
         }
 
         private (bool IsAllowedAccess, long UserId) GetIsUserTheLastPersonThatWroteOnTheFileAsync(long organisationId,
             int snapshotYear,
-            DraftReturnStatus draftReturnStatus,
             long userId)
         {
-            DraftReturn draftReturn = GetDraftReturnFromDatabase(organisationId, snapshotYear, draftReturnStatus);
+            DraftReturn draftReturn = GetDraftReturnFromDatabase(organisationId, snapshotYear);
 
             long lastAccessedByUserId = draftReturn.LastWrittenByUserId ?? 0;
             return (lastAccessedByUserId == 0 || lastAccessedByUserId == userId, lastAccessedByUserId);
@@ -275,20 +211,19 @@ namespace GenderPayGap.BusinessLogic.Services
                    && VirtualDateTime.Now.AddMinutes(-20) <= lastWrittenDateTime;
         }
 
-        private ReturnViewModel LoadDraftReturnAsReturnViewModel(Draft resultingDraft, DraftReturnStatus draftType)
+        private ReturnViewModel LoadDraftReturnAsReturnViewModel(Draft resultingDraft)
         {
-            DraftReturn draftReturnFromDatabase = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear, draftType);
+            DraftReturn draftReturnFromDatabase = GetDraftReturnFromDatabase(resultingDraft.OrganisationId, resultingDraft.SnapshotYear);
             ReturnViewModel returnViewModel = CastDatabaseDraftReturnToReturnViewModel(draftReturnFromDatabase);
             return returnViewModel;
         }
 
-        private DraftReturn GetDraftReturnFromDatabase(long organisationId, int snapshotYear, DraftReturnStatus draftReturnStatus)
+        private DraftReturn GetDraftReturnFromDatabase(long organisationId, int snapshotYear)
         {
             return dataRepository.GetAll<DraftReturn>()
                 .Where(
                     d => d.OrganisationId == organisationId
-                         && d.SnapshotYear == snapshotYear
-                         && d.DraftReturnStatus == draftReturnStatus)
+                         && d.SnapshotYear == snapshotYear)
                 .OrderByDescending(dr => dr.DraftReturnId)
                 .FirstOrDefault();
         }
@@ -350,14 +285,12 @@ namespace GenderPayGap.BusinessLogic.Services
             };
         }
 
-        private DraftReturn SerialiseDraftAsDraftReturn(Draft draft, DraftReturnStatus draftType)
+        private DraftReturn SerialiseDraftAsDraftReturn(Draft draft)
         {
             var draftReturn = new DraftReturn
             {
                 OrganisationId = draft.OrganisationId,
                 SnapshotYear = draft.SnapshotYear,
-
-                DraftReturnStatus = draftType,
 
                 AccountingDate = draft.ReturnViewModelContent?.AccountingDate,
                 Address = draft.ReturnViewModelContent?.Address,
@@ -411,7 +344,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private void WriteInDbAndTimestamp(Draft draftFile, long userIdRequestingAccess)
         {
-            DraftReturn draftReturn = SerialiseDraftAsDraftReturn(draftFile, DraftReturnStatus.Original);
+            DraftReturn draftReturn = SerialiseDraftAsDraftReturn(draftFile);
             InsertOrUpdate(draftReturn);
             SetMetadataAsync(draftFile, userIdRequestingAccess);
         }
@@ -421,7 +354,6 @@ namespace GenderPayGap.BusinessLogic.Services
             List<DraftReturn> matchingReturns = dataRepository.GetAll<DraftReturn>()
                 .Where(dr => dr.OrganisationId == draftToSave.OrganisationId)
                 .Where(dr => dr.SnapshotYear == draftToSave.SnapshotYear)
-                .Where(dr => dr.DraftReturnStatus == draftToSave.DraftReturnStatus)
                 .ToList();
 
             foreach (DraftReturn matchingReturn in matchingReturns)

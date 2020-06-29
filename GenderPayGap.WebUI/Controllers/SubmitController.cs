@@ -82,7 +82,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 return View("DraftConfirm", postedReturnViewModel);
             }
 
-            await submissionService.RollbackDraftFileAsync(postedReturnViewModel);
             return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
         }
 

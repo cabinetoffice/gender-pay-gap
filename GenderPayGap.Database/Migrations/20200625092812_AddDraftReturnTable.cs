@@ -14,7 +14,6 @@ namespace GenderPayGap.Database.Migrations
                 {
                     DraftReturnId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DraftReturnStatus = table.Column<int>(nullable: false),
                     OrganisationId = table.Column<long>(nullable: false),
                     SnapshotYear = table.Column<int>(nullable: false),
                     DiffMeanHourlyPayPercent = table.Column<decimal>(nullable: true),

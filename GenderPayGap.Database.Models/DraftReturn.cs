@@ -7,63 +7,8 @@ namespace GenderPayGap.Database.Models
     public class DraftReturn
     {
 
-        public DraftReturn() { }
-
-        public DraftReturn(DraftReturn clone, DraftReturnStatus draftReturnType)
-        {
-            DraftReturnStatus = draftReturnType;
-            OrganisationId = clone.OrganisationId;
-            SnapshotYear = clone.SnapshotYear;
-            DiffMeanHourlyPayPercent = clone.DiffMeanHourlyPayPercent;
-            DiffMedianHourlyPercent = clone.DiffMedianHourlyPercent;
-            DiffMeanBonusPercent = clone.DiffMeanBonusPercent;
-            DiffMedianBonusPercent = clone.DiffMedianBonusPercent;
-            MaleMedianBonusPayPercent = clone.MaleMedianBonusPayPercent;
-            FemaleMedianBonusPayPercent = clone.FemaleMedianBonusPayPercent;
-            MaleLowerPayBand = clone.MaleLowerPayBand;
-            FemaleLowerPayBand = clone.FemaleLowerPayBand;
-            MaleMiddlePayBand = clone.MaleMiddlePayBand;
-            FemaleMiddlePayBand = clone.FemaleMiddlePayBand;
-            MaleUpperPayBand = clone.MaleUpperPayBand;
-            FemaleUpperPayBand = clone.FemaleUpperPayBand;
-            MaleUpperQuartilePayBand = clone.MaleUpperQuartilePayBand;
-            FemaleUpperQuartilePayBand = clone.FemaleUpperQuartilePayBand;
-            ReturnId = clone.ReturnId;
-            EncryptedOrganisationId = clone.EncryptedOrganisationId;
-            SectorType = clone.SectorType;
-            AccountingDate = clone.AccountingDate;
-            Modified = clone.Modified;
-            JobTitle = clone.JobTitle;
-            FirstName = clone.FirstName;
-            LastName = clone.LastName;
-            CompanyLinkToGPGInfo = clone.CompanyLinkToGPGInfo;
-            ReturnUrl = clone.ReturnUrl;
-            OriginatingAction = clone.OriginatingAction;
-            Address = clone.Address;
-            LatestAddress = clone.LatestAddress;
-            OrganisationName = clone.OrganisationName;
-            LatestOrganisationName = clone.LatestOrganisationName;
-            OrganisationSize = clone.OrganisationSize;
-            Sector = clone.Sector;
-            LatestSector = clone.LatestSector;
-            IsDifferentFromDatabase = clone.IsDifferentFromDatabase;
-            IsVoluntarySubmission = clone.IsVoluntarySubmission;
-            IsLateSubmission = clone.IsLateSubmission;
-            ShouldProvideLateReason = clone.ShouldProvideLateReason;
-            IsInScopeForThisReportYear = clone.IsInScopeForThisReportYear;
-            LateReason = clone.LateReason;
-            EHRCResponse = clone.EHRCResponse;
-            LastWrittenDateTime = clone.LastWrittenDateTime;
-            LastWrittenByUserId = clone.LastWrittenByUserId;
-            HasDraftBeenModifiedDuringThisSession = clone.HasDraftBeenModifiedDuringThisSession;
-            ReportingStartDate = clone.ReportingStartDate;
-            ReportModifiedDate = clone.ReportModifiedDate;
-            ReportingRequirement = clone.ReportingRequirement;
-        }
-
         public long DraftReturnId { get; set; }
 
-        public DraftReturnStatus DraftReturnStatus { get; set; }
         public long OrganisationId { get; set; }
         public int SnapshotYear { get; set; }
 

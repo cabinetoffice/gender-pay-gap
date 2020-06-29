@@ -31,10 +31,6 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             {
                 await submissionService.DiscardDraftFileAsync(stashedReturnViewModel);
             }
-            else
-            {
-                await submissionService.RollbackDraftFileAsync(stashedReturnViewModel);
-            }
 
             return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
         }

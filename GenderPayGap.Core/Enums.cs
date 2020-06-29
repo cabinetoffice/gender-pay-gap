@@ -281,12 +281,6 @@ namespace GenderPayGap.Core
         Spam = 2
     }
 
-    public enum DraftReturnStatus
-    {
-        Original = 1,
-        Backup = 2
-    }
-
     public static class EnumHelper
     {
 
