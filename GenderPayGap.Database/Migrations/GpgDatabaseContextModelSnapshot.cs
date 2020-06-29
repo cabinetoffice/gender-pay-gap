@@ -109,8 +109,6 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<decimal?>("DiffMedianHourlyPercent");
 
-                    b.Property<int>("DraftReturnStatus");
-
                     b.Property<string>("EHRCResponse");
 
                     b.Property<string>("EncryptedOrganisationId");

@@ -275,8 +275,6 @@ namespace GenderPayGap.WebUI.Controllers
             // Clear the SubmitController stash
             this.ClearAllStashes();
 
-            await SubmissionService.RestartDraftFileAsync(organisationId, reportingStartYear, currentUser.UserId);
-
             var reportingRequirement =
                 await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, reportingStartYear);
             

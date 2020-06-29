@@ -45,8 +45,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         Task UpdateDraftFileAsync(long userRequestingTheUpdate, ReturnViewModel returnViewModel);
         Task KeepDraftFileLockedToUserAsync(ReturnViewModel returnViewModel, long userIdRequestingLock);
         Task CommitDraftFileAsync(ReturnViewModel returnViewModel);
-        Task RestartDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingRollback);
-        Task RollbackDraftFileAsync(ReturnViewModel returnViewModel);
         Task DiscardDraftFileAsync(ReturnViewModel returnViewModel);
         Task<Draft> GetDraftIfAvailableAsync(long organisationId, int snapshotYear);
 
@@ -605,16 +603,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         public async Task CommitDraftFileAsync(ReturnViewModel returnViewModel)
         {
             _draftFileBusinessLogic.CommitDraft(returnViewModel.ReportInfo.Draft);
-        }
-
-        public async Task RollbackDraftFileAsync(ReturnViewModel returnViewModel)
-        {
-            _draftFileBusinessLogic.RollbackDraft(returnViewModel.ReportInfo.Draft);
-        }
-
-        public async Task RestartDraftFileAsync(long organisationId, int snapshotYear, long userIdRequestingDraft)
-        {
-            _draftFileBusinessLogic.RestartDraft(organisationId, snapshotYear, userIdRequestingDraft);
         }
 
         public async Task DiscardDraftFileAsync(ReturnViewModel returnViewModel)

@@ -32,7 +32,6 @@ namespace GenderPayGap.BusinessLogic.Classes
         #endregion
 
         #region Public methods
-        public Core.DraftReturnStatus DraftReturnStatus { get; set; }
         public int SnapshotYear { get; set; }
         public long OrganisationId { get; set; }
         public bool IsUserAllowedAccess { get; set; }
