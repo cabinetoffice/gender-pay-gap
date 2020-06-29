@@ -120,6 +120,7 @@ namespace GenderPayGap.WebUI.Tests.Services
         }
 
         [Test]
+        [Ignore("This breaks in late-June and/or 1st-January each year because the date calculation in the test is wrong")]
         [Description("GetReportingYearOptions: Marks given years as checked or not checked")]
         public void GetReportingYearOptions_Marks_given_years_as_checked_or_not_checked()
         {
