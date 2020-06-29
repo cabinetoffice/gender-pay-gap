@@ -65,8 +65,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 return View(postedReturnViewModel.OriginatingAction, postedReturnViewModel);
             }
 
-            await submissionService.UpdateDraftFileAsync(currentUser.UserId, postedReturnViewModel);
-            await submissionService.CommitDraftFileAsync(postedReturnViewModel);
+            submissionService.UpdateAndCommitDraftFile(currentUser.UserId, postedReturnViewModel);
 
             return View("DraftComplete", postedReturnViewModel);
         }
