@@ -283,9 +283,10 @@ namespace GenderPayGap.Core
 
     public enum DraftReturnStatus
     {
-        Backup,
-        Original
+        Original = 1,
+        Backup = 2
     }
+
     public static class EnumHelper
     {
 
