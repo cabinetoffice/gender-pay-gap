@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 {
                     string filePath = $"App_Data\\draftReturns\\{currentOrganisationId}_{reportingYear}.json";
 
-                    if (fileRepository.GetFileExistsAsync(filePath).Result)
+                    if (fileRepository.GetFileExists(filePath))
                     {
                         string fileContents = fileRepository.Read(filePath);
 

@@ -21,22 +21,8 @@ namespace GenderPayGap.Core.Classes
             _rootDir = new DirectoryInfo(rootPath);
         }
 
-        public async Task<bool> GetFileExistsAsync(string filePath)
-        {
-            return await Task.Run(() => GetFileExists(filePath));
-        }
+        public bool GetFileExists(string filePath)
 
-        public async Task DeleteFileAsync(string filePath)
-        {
-            await Task.Run(() => DeleteFile(filePath));
-        }
-
-        public async Task CopyFileAsync(string sourceFilePath, string destinationFilePath, bool overwrite)
-        {
-            await Task.Run(() => CopyFile(sourceFilePath, destinationFilePath, overwrite));
-        }
-
-        public async Task<string> ReadAsync(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -48,55 +34,7 @@ namespace GenderPayGap.Core.Classes
                 filePath = Path.Combine(_rootDir.FullName, filePath);
             }
 
-            return await Task.Run(() => File.ReadAllText(filePath));
-        }
-
-        public async Task WriteAsync(string filePath, byte[] bytes)
-        {
-            await Task.Run(() => Write(filePath, bytes));
-        }
-
-        public string GetFullPath(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            return filePath;
-        }
-
-        public async Task<string> GetMetaDataAsync(string filePath, string key)
-        {
-            return await Task.Run(() => GetMetaData(filePath, key));
-        }
-
-        public Task SetMetaDataAsync(string filePath, string key, string value)
-        {
-            IDictionary<string, string> metaData = LoadMetaData(filePath);
-
-            if (metaData.ContainsKey(key) && metaData[key] == value)
-            {
-                return Task.CompletedTask;
-            }
-
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                metaData[key] = value;
-            }
-            else if (metaData.ContainsKey(key))
-            {
-                metaData.Remove(key);
-            }
-
-            SaveMetaData(filePath, metaData);
-
-            return Task.CompletedTask;
+            return File.Exists(filePath);
         }
 
         public void Write(string relativeFilePath, string csvFileContents)
@@ -121,8 +59,7 @@ namespace GenderPayGap.Core.Classes
             return File.ReadAllText(fullFilePath);
         }
 
-        private bool GetFileExists(string filePath)
-
+        private string GetFullPath(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -134,7 +71,7 @@ namespace GenderPayGap.Core.Classes
                 filePath = Path.Combine(_rootDir.FullName, filePath);
             }
 
-            return File.Exists(filePath);
+            return filePath;
         }
 
         private void CreateDirectory(string directoryPath)
@@ -181,207 +118,6 @@ namespace GenderPayGap.Core.Classes
             }
 
             return Directory.Exists(directoryPath);
-        }
-
-        private void DeleteFile(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            var retries = 0;
-            Retry:
-            try
-            {
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                string metaPath = filePath + ".metadata";
-                if (File.Exists(metaPath))
-                {
-                    File.Delete(metaPath);
-                }
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
-        }
-
-        private void CopyFile(string sourceFilePath, string destinationFilePath, bool overwrite)
-        {
-            if (string.IsNullOrWhiteSpace(sourceFilePath))
-            {
-                throw new ArgumentNullException(nameof(sourceFilePath));
-            }
-
-            if (!Path.IsPathRooted(sourceFilePath))
-            {
-                sourceFilePath = Path.Combine(_rootDir.FullName, sourceFilePath);
-            }
-
-            if (!File.Exists(sourceFilePath))
-            {
-                throw new FileNotFoundException($"Cannot find source file '{sourceFilePath}'");
-            }
-
-            if (string.IsNullOrWhiteSpace(destinationFilePath))
-            {
-                throw new ArgumentNullException(nameof(destinationFilePath));
-            }
-
-            if (!Path.IsPathRooted(destinationFilePath))
-            {
-                destinationFilePath = Path.Combine(_rootDir.FullName, destinationFilePath);
-            }
-
-            if (File.Exists(destinationFilePath) && !overwrite)
-            {
-                throw new Exception($"Destination file '{destinationFilePath}' exists.");
-            }
-
-            var retries = 0;
-            Retry:
-            try
-            {
-                File.Copy(sourceFilePath, destinationFilePath, true);
-                string sourceFileMetaPath = sourceFilePath + ".metadata";
-                string destinationFileMetaPath = destinationFilePath + ".metadata";
-
-                if (File.Exists(sourceFileMetaPath))
-                {
-                    File.Copy(sourceFileMetaPath, destinationFileMetaPath, true);
-                }
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
-        }
-
-        private void Write(string filePath, byte[] bytes)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            //Ensure the directory exists
-            string directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var retries = 0;
-            Retry:
-            try
-            {
-                File.WriteAllBytes(filePath, bytes);
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
-        }
-
-        private IDictionary<string, string> LoadMetaData(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException("Cant find file", filePath);
-            }
-
-            string metaPath = filePath + ".metadata";
-            string metaJson = File.Exists(metaPath) ? File.ReadAllText(metaPath) : null;
-            if (!string.IsNullOrWhiteSpace(metaJson))
-            {
-                var result = JsonConvert.DeserializeObject<Dictionary<string, string>>(metaJson);
-                return new Dictionary<string, string>(result, StringComparer.OrdinalIgnoreCase);
-            }
-
-            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        }
-
-        private void SaveMetaData(string filePath, IDictionary<string, string> metaData)
-
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            string metaPath = filePath + ".metadata";
-
-            string metaJson = null;
-            if (metaData != null && metaData.Count > 0 && metaData.Values.Any(kv => !string.IsNullOrWhiteSpace(kv)))
-            {
-                metaJson = JsonConvert.SerializeObject(metaData);
-            }
-
-            if (!string.IsNullOrWhiteSpace(metaJson))
-            {
-                File.WriteAllText(metaPath, metaJson);
-            }
-            else if (File.Exists(metaPath))
-            {
-                File.Delete(metaPath);
-            }
-        }
-
-        private string GetMetaData(string filePath, string key)
-        {
-            IDictionary<string, string> metaData = LoadMetaData(filePath);
-            return metaData.ContainsKey(key) ? metaData[key] : null;
         }
 
     }
