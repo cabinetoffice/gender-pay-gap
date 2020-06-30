@@ -1,10 +1,10 @@
 ﻿using System;
 using GenderPayGap.BusinessLogic;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Tests.Common.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using Moq;
 using NUnit.Framework;
 

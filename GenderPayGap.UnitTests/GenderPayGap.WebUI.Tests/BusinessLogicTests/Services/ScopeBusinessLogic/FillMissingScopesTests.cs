@@ -6,6 +6,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using Moq;
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
 
             // sut
-            scopeBusinessLogic = new BusinessLogic.ScopeBusinessLogic(mockDataRepository.Object);
+            scopeBusinessLogic = new WebUI.BusinessLogic.Services.ScopeBusinessLogic(mockDataRepository.Object);
         }
 
         private Mock<IDataRepository> mockDataRepository;

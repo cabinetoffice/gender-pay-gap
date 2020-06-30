@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {

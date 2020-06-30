@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using Moq;
 
 namespace GenderPayGap.BusinessLogic.Tests

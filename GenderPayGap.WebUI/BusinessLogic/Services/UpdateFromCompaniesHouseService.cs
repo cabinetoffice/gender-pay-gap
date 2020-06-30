@@ -11,7 +11,7 @@ using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 
-namespace GenderPayGap.BusinessLogic.Services
+namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
     public class UpdateFromCompaniesHouseService
     {

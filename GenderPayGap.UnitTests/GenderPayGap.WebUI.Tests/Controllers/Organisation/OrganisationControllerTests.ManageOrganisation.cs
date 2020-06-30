@@ -4,6 +4,7 @@ using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Organisation;
 using GenderPayGap.WebUI.Tests.TestHelpers;

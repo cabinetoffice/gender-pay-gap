@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.BusinessLogic.Classes;
-using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
+using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 
-namespace GenderPayGap.BusinessLogic.Services
+namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
     public interface IDraftFileBusinessLogic
     {
@@ -286,7 +287,7 @@ namespace GenderPayGap.BusinessLogic.Services
                 OrganisationName = draftReturn.OrganisationName,
                 OrganisationSize = draftReturn.OrganisationSize ?? OrganisationSizes.NotProvided,
                 OriginatingAction = draftReturn.OriginatingAction,
-                ReportInfo = new Models.Organisation.ReportInfoModel
+                ReportInfo = new ReportInfoModel
                 {
                     ReportingRequirement = draftReturn.ReportingRequirement ?? ScopeStatuses.Unknown,
                     ReportingStartDate = draftReturn.ReportingStartDate ?? VirtualDateTime.Now,

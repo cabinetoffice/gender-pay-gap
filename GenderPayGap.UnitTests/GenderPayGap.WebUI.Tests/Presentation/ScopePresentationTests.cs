@@ -10,6 +10,7 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Models.Scope;
 using MockQueryable.Moq;

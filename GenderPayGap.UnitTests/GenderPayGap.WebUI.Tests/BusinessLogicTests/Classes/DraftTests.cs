@@ -1,5 +1,5 @@
-﻿using GenderPayGap.BusinessLogic.Classes;
-using GenderPayGap.BusinessLogic.Models.Submit;
+﻿using GenderPayGap.WebUI.BusinessLogic.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using NUnit.Framework;
 
 namespace GenderPayGap.BusinessLogic.Tests.Classes

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc;
 using GenderPayGap.WebUI.Models;
 using System.Threading.Tasks;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 {

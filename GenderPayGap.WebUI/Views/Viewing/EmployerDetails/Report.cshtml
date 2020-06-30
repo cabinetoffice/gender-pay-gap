@@ -1,7 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Helpers
-@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 @{
     ViewBag.Title = $"{Model.OrganisationName} gender pay gap data for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year - GOV.UK";
     ViewBag.pageDescription = $"View gender pay gap data for {Model.OrganisationName} for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year and compare with other organisations";

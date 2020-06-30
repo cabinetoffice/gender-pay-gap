@@ -1,8 +1,8 @@
 ﻿using System;
-using GenderPayGap.BusinessLogic.Classes;
 using GenderPayGap.Core;
+using GenderPayGap.WebUI.BusinessLogic.Classes;
 
-namespace GenderPayGap.BusinessLogic.Models.Organisation
+namespace GenderPayGap.WebUI.BusinessLogic.Models.Organisation
 {
     /// <summary>
     /// </summary>

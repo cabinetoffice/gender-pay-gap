@@ -11,6 +11,7 @@ using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Organisation;
 using GenderPayGap.WebUI.Services;

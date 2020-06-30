@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Models.Compare;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
+using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using Moq;
 using NUnit.Framework;
 

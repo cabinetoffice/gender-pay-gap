@@ -10,6 +10,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.Tests.TestHelpers;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Register;

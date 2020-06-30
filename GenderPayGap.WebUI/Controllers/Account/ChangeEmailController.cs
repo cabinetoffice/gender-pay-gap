@@ -1,10 +1,10 @@
 ﻿using System;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;

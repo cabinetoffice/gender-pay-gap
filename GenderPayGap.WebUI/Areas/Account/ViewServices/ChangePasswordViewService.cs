@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

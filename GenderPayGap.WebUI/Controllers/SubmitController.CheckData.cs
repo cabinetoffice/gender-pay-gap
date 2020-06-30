@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Classes;
-using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.BusinessLogic.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Submit;
 using GenderPayGap.WebUI.Services;

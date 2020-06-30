@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.Account.Models;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.BusinessLogic.Models.Account;
 
 namespace GenderPayGap.WebUI.Areas.Account.ViewServices
 {

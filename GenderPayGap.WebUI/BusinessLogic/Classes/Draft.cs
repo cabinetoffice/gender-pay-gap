@@ -1,7 +1,7 @@
 ﻿using System;
-using GenderPayGap.BusinessLogic.Models.Submit;
+using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 
-namespace GenderPayGap.BusinessLogic.Classes
+namespace GenderPayGap.WebUI.BusinessLogic.Classes
 {
     [Serializable]
     public class Draft

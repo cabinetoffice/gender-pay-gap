@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes.Logger;
@@ -8,6 +7,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
