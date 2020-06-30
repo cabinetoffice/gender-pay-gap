@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.Core.Internal;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Api;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.ExternalServices;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
