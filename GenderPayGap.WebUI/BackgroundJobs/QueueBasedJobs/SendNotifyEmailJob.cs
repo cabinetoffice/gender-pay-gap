@@ -3,6 +3,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.QueueBasedJobs

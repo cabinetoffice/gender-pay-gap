@@ -8,6 +8,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
