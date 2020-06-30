@@ -42,25 +42,6 @@ namespace GenderPayGap.Core.Classes
             _rootDir = share.GetRootDirectoryReference();
         }
 
-        public bool GetFileExists(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            CloudFileDirectory directory = GetDirectoryAsync(Url.GetDirectoryName(filePath)).Result;
-            if (directory == null || !directory.ExistsAsync().Result)
-            {
-                return false;
-            }
-
-            CloudFile file = GetFileAsync(filePath).Result;
-            return file != null && file.ExistsAsync().Result;
-        }
-
         public void Write(string relativeFilePath, string csvFileContents)
         {
             string fullFilePath = GetFullPath(relativeFilePath);
@@ -93,32 +74,6 @@ namespace GenderPayGap.Core.Classes
 
             filePath = Url.DirToUrlSeparator(filePath);
             return filePath;
-        }
-
-        private async Task<CloudFileDirectory> GetDirectoryAsync(string directoryPath)
-        {
-            if (string.IsNullOrWhiteSpace(directoryPath))
-            {
-                throw new DirectoryNotFoundException($"Cannot find directory '{directoryPath}'");
-            }
-
-            directoryPath = Url.DirToUrlSeparator(directoryPath);
-
-            directoryPath = directoryPath.TrimI(@"/\");
-            return string.IsNullOrWhiteSpace(directoryPath) ? _rootDir : _rootDir.GetDirectoryReference(directoryPath);
-        }
-
-        private async Task<CloudFile> GetFileAsync(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            filePath = Url.DirToUrlSeparator(filePath);
-
-            filePath = filePath.TrimI(@"/\");
-            return _rootDir.GetFileReference(filePath);
         }
 
         private CloudFile GetFile(string filePath)

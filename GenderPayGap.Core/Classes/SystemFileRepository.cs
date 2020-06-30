@@ -21,22 +21,6 @@ namespace GenderPayGap.Core.Classes
             _rootDir = new DirectoryInfo(rootPath);
         }
 
-        public bool GetFileExists(string filePath)
-
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                filePath = Path.Combine(_rootDir.FullName, filePath);
-            }
-
-            return File.Exists(filePath);
-        }
-
         public void Write(string relativeFilePath, string csvFileContents)
         {
             string fullFilePath = GetFullPath(relativeFilePath);
