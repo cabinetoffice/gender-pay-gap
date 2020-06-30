@@ -145,22 +145,4 @@
     <Exec Command="dotnet transform-xdt --xml &quot;$(_SourceWebConfig)&quot; --transform &quot;$(_XdtTransform)&quot; --output &quot;$(_TargetWebConfig)&quot;" Condition="Exists('$(_XdtTransform)')" />
   </Target>
 
-  <!-- *** THIS IS REQUIRED TO DEPLY WEBJOBS WITH WEBUI ON AZURE *** -->
-  <PropertyGroup>
-    <MSDeployPackagePublishDependsOn>
-      CopyWebJobs;
-    </MSDeployPackagePublishDependsOn>
-
-    <WebJobProjects>$(MSBuildProjectDirectory)\..\GenderPayGap.WebJob\GenderPayGap.WebJob.csproj</WebJobProjects>
-
-    <LangVersion>7.1</LangVersion>
-
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningsAsErrors>NU1605;CS4014;LindhartAnalyserMissingAwaitWarning;</WarningsAsErrors>
-  </PropertyGroup>
-
-  <Target Name="CopyWebJobs">
-    <MSBuild Projects="$(WebJobProjects)" Targets="Restore;Build;Publish;" Properties="DeployOnBuild=true;Configuration=$(Configuration);WebPublishMethod=FileSystem;PublishUrl=$(PublishIntermediateOutputPath)" RunEachTargetSeparately="true" StopOnFirstFailure="true" />
-  </Target>
 </Project>
