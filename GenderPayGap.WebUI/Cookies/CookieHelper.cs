@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.Core.Models.Cookies
+namespace GenderPayGap.WebUI.Cookies
 {
     public class CookieHelper
     {
