@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
-    <ProjectReference Include="..\GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj" />
   </ItemGroup>
 
   <!-- Add support for Layer validation -->
