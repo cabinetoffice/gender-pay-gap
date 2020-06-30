@@ -75,7 +75,6 @@ namespace GenderPayGap.WebJob
             Encryption.SetDefaultEncryptionKey(WebJobGlobal.DefaultEncryptionKey);
 
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().SingleInstance();
-            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().SingleInstance();
 
             // BL Services
             builder.RegisterInstance(Config.Configuration).SingleInstance();
