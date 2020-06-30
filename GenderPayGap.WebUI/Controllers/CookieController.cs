@@ -1,5 +1,5 @@
 ﻿using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Models.Cookies;
+using GenderPayGap.WebUI.Cookies;
 using GenderPayGap.WebUI.Models.Cookie;
 using Microsoft.AspNetCore.Mvc;
 

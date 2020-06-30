@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Models.Cookies;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Cookies;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
