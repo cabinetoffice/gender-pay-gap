@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace GenderPayGap.Extensions
 {
@@ -44,18 +40,6 @@ namespace GenderPayGap.Extensions
             }
 
             return path;
-        }
-
-        public static string GetMimeMapping(string fileName)
-        {
-            var provider = new FileExtensionContentTypeProvider();
-            string contentType;
-            if (!provider.TryGetContentType(fileName, out contentType))
-            {
-                contentType = "application/octet-stream";
-            }
-
-            return contentType;
         }
 
     }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -16,15 +15,9 @@ namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
 
         Task<User> FindBySubjectIdAsync(long subjectId, params UserStatuses[] filterStatuses);
 
-        Task<User> FindBySubjectIdAsync(string subjectId, params UserStatuses[] filterStatuses);
-
         Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses);
 
         Task<List<User>> FindAllUsersByNameAsync(string name);
-
-        Task<User> AutoProvisionUserAsync(string provider, string providerUserId, List<Claim> list);
-
-        Task<User> FindByExternalProviderAsync(string provider, string providerUserId);
 
         void UpdateEmail(User userToUpdate, string newEmailAddress);
 

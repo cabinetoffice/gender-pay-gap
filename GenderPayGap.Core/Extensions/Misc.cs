@@ -16,11 +16,6 @@ namespace GenderPayGap.Extensions
     public static class Misc
     {
 
-        public static Assembly GetTopAssembly()
-        {
-            return Assembly.GetEntryAssembly();
-        }
-
         public static string CorrectNull(this object text)
         {
             var str = text as string;

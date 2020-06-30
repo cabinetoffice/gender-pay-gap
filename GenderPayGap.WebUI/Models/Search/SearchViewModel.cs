@@ -82,29 +82,6 @@ namespace GenderPayGap.WebUI.Models.Search
             }
         }
 
-        public int PagerStartIndex
-        {
-            get
-            {
-                if (Employers == null || Employers.PageCount <= 5)
-                {
-                    return 1;
-                }
-
-                if (Employers.CurrentPage < 4)
-                {
-                    return 1;
-                }
-
-                if (Employers.CurrentPage + 2 > Employers.PageCount)
-                {
-                    return Employers.PageCount - 4;
-                }
-
-                return Employers.CurrentPage - 2;
-            }
-        }
-        
         public List<string> SectorFilterInfo
         {
             get

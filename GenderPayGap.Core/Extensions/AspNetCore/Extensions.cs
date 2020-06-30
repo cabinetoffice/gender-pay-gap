@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace GenderPayGap.Extensions.AspNetCore
@@ -141,27 +140,6 @@ namespace GenderPayGap.Extensions.AspNetCore
         }
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
-        {
-            if (Config.IsLocal())
-            {
-                SetupLoggerToConsole();
-            }
-            else
-            {
-                if (Global.LogToApplicationInsight)
-                {
-                    SetupLoggerToApplicationInsight();
-                }
-                else
-                {
-                    webHostBuilder.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); });
-                }
-            }
-
-            Log.Information("Serilog logger setup complete");
-        }
-
-        public static void SetupSerilogLogger(IHostBuilder webHostBuilder)
         {
             if (Config.IsLocal())
             {

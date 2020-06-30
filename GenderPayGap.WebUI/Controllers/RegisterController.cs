@@ -304,7 +304,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (!ModelState.IsValid)
             {
-                this.CleanModelErrors<RegisterViewModel>();
+                this.CleanModelErrors<ResetViewModel>();
                 return View("PasswordReset", model);
             }
 
