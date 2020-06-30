@@ -5,12 +5,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using GenderPayGap.BusinessLogic.Account.Abstractions;
-using GenderPayGap.BusinessLogic.Account.Models;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.BusinessLogic.Models.Account;
 using GenderPayGap.WebUI.Services;
 using Microsoft.EntityFrameworkCore;
 

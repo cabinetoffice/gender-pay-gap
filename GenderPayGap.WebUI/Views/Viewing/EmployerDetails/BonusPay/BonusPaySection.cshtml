@@ -1,5 +1,5 @@
 ﻿@using GenderPayGap.WebUI.Models.Viewing
-@model GenderPayGap.BusinessLogic.Models.Submit.ReturnViewModel
+@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 @{
     decimal diffMedianBonus = Model.DiffMedianBonusPercent.HasValue ? Model.DiffMedianBonusPercent.Value : 0;
     var medianBonusChartModel = new VerticalBarChartModel

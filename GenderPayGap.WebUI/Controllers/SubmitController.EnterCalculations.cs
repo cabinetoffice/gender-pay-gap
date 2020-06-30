@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Models.Submit;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
 

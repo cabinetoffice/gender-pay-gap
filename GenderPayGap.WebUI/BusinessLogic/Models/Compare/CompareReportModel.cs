@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 
-namespace GenderPayGap.BusinessLogic.Models.Compare
+namespace GenderPayGap.WebUI.BusinessLogic.Models.Compare
 {
 
     [Serializable]

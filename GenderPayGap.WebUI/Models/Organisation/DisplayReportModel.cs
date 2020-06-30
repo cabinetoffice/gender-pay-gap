@@ -1,5 +1,5 @@
 ﻿using System;
-using GenderPayGap.BusinessLogic.Models.Organisation;
+using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 
 namespace GenderPayGap.WebUI.Models.Organisation
 {

@@ -1,8 +1,9 @@
-﻿using GenderPayGap.BusinessLogic.Models.Submit;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Tests.Common.TestHelpers;
+using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using Moq;
 using NUnit.Framework;
 

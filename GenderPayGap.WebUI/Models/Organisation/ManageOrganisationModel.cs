@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using GenderPayGap.BusinessLogic.Models.Organisation;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 
 namespace GenderPayGap.WebUI.Models.Organisation
 {

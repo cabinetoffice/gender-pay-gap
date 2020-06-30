@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using GenderPayGap.BusinessLogic.Models.Organisation;
 using GenderPayGap.Core;
+using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 
-namespace GenderPayGap.BusinessLogic.Models.Submit
+namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
 {
     [Serializable]
     public class ReturnViewModel

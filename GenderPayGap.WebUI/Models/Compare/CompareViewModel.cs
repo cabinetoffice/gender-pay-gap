@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using GenderPayGap.BusinessLogic.Models.Compare;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
 
 namespace GenderPayGap.WebUI.Models
 {

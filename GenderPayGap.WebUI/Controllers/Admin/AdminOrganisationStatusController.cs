@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using GenderPayGap.BusinessLogic;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;

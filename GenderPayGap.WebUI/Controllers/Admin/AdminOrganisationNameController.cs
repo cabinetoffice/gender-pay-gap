@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using GenderPayGap.BusinessLogic.Services;
 using GenderPayGap.Core;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes.Logger;

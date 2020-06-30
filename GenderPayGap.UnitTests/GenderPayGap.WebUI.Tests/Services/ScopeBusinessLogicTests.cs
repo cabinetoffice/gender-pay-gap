@@ -8,6 +8,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;

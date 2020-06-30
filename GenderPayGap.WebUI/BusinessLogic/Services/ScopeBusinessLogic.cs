@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.BusinessLogic.Models.Scope;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Models.Scope;
 using Microsoft.EntityFrameworkCore;
 
-namespace GenderPayGap.BusinessLogic
+namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
 
     public interface IScopeBusinessLogic
