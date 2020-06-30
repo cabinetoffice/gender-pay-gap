@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
   </ItemGroup>
 

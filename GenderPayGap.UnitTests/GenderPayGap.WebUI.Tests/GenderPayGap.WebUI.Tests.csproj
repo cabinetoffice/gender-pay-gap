@@ -57,7 +57,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GenderPayGap.BusinessLogic\GenderPayGap.BusinessLogic.csproj" />
-    <ProjectReference Include="..\..\GenderPayGap.Database.Models\GenderPayGap.Database.Models.csproj" />
     <ProjectReference Include="..\..\GenderPayGap.WebUI\GenderPayGap.WebUI.csproj" />
   </ItemGroup>
   
