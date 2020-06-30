@@ -9,8 +9,6 @@ namespace GenderPayGap.Core.Interfaces
     public interface IDataRepository : IDisposable, IDataTransaction
     {
 
-        IDbContext GetDbContext();
-
         void Delete<TEntity>(TEntity entity) where TEntity : class;
 
         TEntity Get<TEntity>(params object[] keyValues) where TEntity : class;

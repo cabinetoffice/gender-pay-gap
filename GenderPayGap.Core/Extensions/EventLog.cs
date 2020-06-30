@@ -179,18 +179,6 @@ namespace GenderPayGap.Extensions
             return outputList;
         }
 
-        public static Exception GetInnermostException(this Exception ex)
-        {
-            Exception innerException = null;
-            while (ex.InnerException != null)
-            {
-                innerException = ex.InnerException;
-                ex = ex.InnerException;
-            }
-
-            return innerException;
-        }
-
         public class ErrorDetails
         {
 

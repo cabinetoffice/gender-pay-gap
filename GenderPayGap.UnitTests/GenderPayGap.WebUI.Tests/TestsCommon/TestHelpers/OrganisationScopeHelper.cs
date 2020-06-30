@@ -15,11 +15,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             };
         }
 
-        public static OrganisationScope GetOrganisationScope_InScope(int snapshotYear, SectorTypes organisationSectorType)
-        {
-            return GetOrgScopeWithThisScope(snapshotYear, organisationSectorType, ScopeStatuses.InScope);
-        }
-
         public static OrganisationScope GetOrgScopeWithThisScope(int snapshotYear, SectorTypes organisationSectorType, ScopeStatuses scope)
         {
             if (snapshotYear == 0)

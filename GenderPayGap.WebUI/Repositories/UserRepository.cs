@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using GenderPayGap.Core;
@@ -26,11 +25,6 @@ namespace GenderPayGap.WebUI.Repositories
         {
             this.dataRepository = dataRepository ?? throw new ArgumentNullException(nameof(dataRepository));
             this.auditLogger = auditLogger;
-        }
-
-        public async Task<User> FindBySubjectIdAsync(string subjectId, params UserStatuses[] filterStatuses)
-        {
-            return await FindBySubjectIdAsync(subjectId.ToInt64(), filterStatuses);
         }
 
         public async Task<User> FindBySubjectIdAsync(long userId, params UserStatuses[] filterStatuses)
@@ -295,16 +289,6 @@ namespace GenderPayGap.WebUI.Repositories
                 userToRetire,
                 new { }, // There's no interesting details to include here
                 userToRetire);
-        }
-
-        public Task<User> AutoProvisionUserAsync(string provider, string providerUserId, List<Claim> list)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> FindByExternalProviderAsync(string provider, string providerUserId)
-        {
-            throw new NotImplementedException();
         }
 
         private bool CheckPasswordBasedOnHashingAlgorithm(User user, string password)

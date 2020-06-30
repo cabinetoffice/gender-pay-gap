@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
@@ -142,20 +139,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 100,
                 98,
                 testYear);
-        }
-
-        public static IEnumerable<Return> CreateTestReturns(IEnumerable<Organisation> testOrganisations, int testYear = 2017)
-        {
-            //Create the test returns
-            var results = new ConcurrentBag<Return>();
-            Parallel.ForEach(
-                testOrganisations,
-                testOrg => {
-                    Return returns = CreateTestReturn(testOrg);
-                    testOrg.Returns.Add(returns);
-                    results.Add(returns);
-                });
-            return results;
         }
 
         public static Return CreateLateReturn(Organisation organisation, DateTime snapshotDate, DateTime modifiedDate, OrganisationScope scope)

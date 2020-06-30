@@ -154,24 +154,6 @@ namespace GenderPayGap.WebUI.Services
             await AddEmailToQueue(notifyEmail);
         }
 
-        public async void SendCreateAccountPendingVerificationEmail(string emailAddress, string url)
-        {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"url", url}, 
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
-            };
-
-            var notifyEmail = new NotifyEmail
-            {
-                EmailAddress = emailAddress,
-                TemplateId = EmailTemplates.SendCreateAccountPendingVerificationEmail,
-                Personalisation = personalisation
-            };
-
-            await AddEmailToQueue(notifyEmail);
-        }
-
         public async void SendChangeEmailPendingVerificationEmail(string emailAddress, string url)
         {
             var personalisation = new Dictionary<string, dynamic>
@@ -471,7 +453,6 @@ namespace GenderPayGap.WebUI.Services
         public const string UserAddedToOrganisationEmail = "8513d426-1881-49db-92c2-11dd1fd7a30f";
         public const string SendPinEmail = "c320cf3e-d5a1-434e-95c6-84933063be8a";
         public const string SendSuccessfulSubmissionEmail = "9f690ae4-2913-4e98-b9c9-427080f210de";
-        public const string SendCreateAccountPendingVerificationEmail = "ed3672eb-4a88-4db4-ae80-2884e5e7c68e";
         public const string SendChangeEmailPendingVerificationEmail = "1ca62b42-d9aa-4f63-823b-971d8831cbc1";
         public const string SendChangeEmailCompletedVerificationEmail = "9d772c11-101a-4eb4-85cf-7b1f575770eb";
         public const string SendChangeEmailCompletedNotificationEmail = "be9cbf1a-1af1-47d8-bcd1-f1821ab61b14";

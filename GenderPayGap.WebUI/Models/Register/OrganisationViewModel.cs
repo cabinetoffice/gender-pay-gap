@@ -31,7 +31,6 @@ namespace GenderPayGap.WebUI.Models.Register
 
         public string ReviewCode { get; set; }
         public string CancellationReason { get; set; }
-        public bool IsSecurityCodeExpired { get; set; }
         public bool IsFastTrackAuthorised { get; set; }
 
         public SortedSet<int> GetSicCodeIds()

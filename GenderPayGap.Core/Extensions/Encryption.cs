@@ -429,11 +429,6 @@ namespace GenderPayGap.Extensions
             }
         }
 
-        public static string Decompress(string text, bool mandatory = false)
-        {
-            return Encoding.UTF8.GetString(Decompress(Encoding.UTF8.GetBytes(text)));
-        }
-
         /// <summary>
         ///     Decompresses the string.
         /// </summary>

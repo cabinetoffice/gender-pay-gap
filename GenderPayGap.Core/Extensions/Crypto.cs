@@ -46,14 +46,6 @@ namespace GenderPayGap.Extensions
             return calculatedChecksum;
         }
 
-        public static string GetSHA256Checksum(this string text)
-        {
-            byte[] checksumData = Encoding.UTF8.GetBytes(text);
-            byte[] hash = SHA256.Create().ComputeHash(checksumData);
-            string calculatedChecksum = Convert.ToBase64String(hash);
-            return calculatedChecksum;
-        }
-
         public static string GeneratePasscode(char[] charset, int passcodeLength)
         {
             //Ensure characters are distict and mixed up

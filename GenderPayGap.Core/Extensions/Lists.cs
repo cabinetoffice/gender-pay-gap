@@ -45,11 +45,6 @@ namespace GenderPayGap.Extensions
             return list.Split(separators.ToCharArray(), options);
         }
 
-        public static IEnumerable<string> DistinctI(this IEnumerable<string> list, bool ignoreCase = true)
-        {
-            return list.Distinct(ignoreCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture);
-        }
-
         public static IEnumerable<string> UniqueI(this IEnumerable<string> list, bool ignoreCase = true)
         {
             return list.Distinct(ignoreCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture);
@@ -74,11 +69,6 @@ namespace GenderPayGap.Extensions
             }
 
             return list.Any(i => source.ContainsI(i));
-        }
-
-        public static int IndexOfI(this IEnumerable<string> list, string text)
-        {
-            return list.ToList().FindIndex(l => l.EqualsI(text));
         }
 
         public static string ToQueryString(this NameValueCollection collection, bool allowDuplicateKeys = false)
@@ -154,11 +144,6 @@ namespace GenderPayGap.Extensions
             }
 
             return collection;
-        }
-
-        public static string ToDelimitedString<T>(string delimiter = ",", string appendage = null, params T[] list)
-        {
-            return list.ToDelimitedString(delimiter, appendage);
         }
 
         public static string ToDelimitedString<T>(this IEnumerable<T> list, string delimiter = ",", string appendage = null)
@@ -256,13 +241,6 @@ namespace GenderPayGap.Extensions
             }
 
             return new SortedSet<T>(list);
-        }
-
-        public static Dictionary<string, string> ConnectionStringToDictionary(this string connectionString)
-        {
-            return connectionString.Split(';')
-                .Select(t => t.Split(new[] {'='}, 2))
-                .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
         }
 
 
@@ -392,21 +370,6 @@ namespace GenderPayGap.Extensions
             {
                 action(item);
             }
-        }
-
-        public static void AddOrUpdate<T>(this IList<T> source, IList<T> replacements)
-        {
-            for (var i = 0; i < source.Count; i++)
-            {
-                int i2 = replacements.IndexOf(source[i]);
-                if (i2 > -1)
-                {
-                    source[i] = replacements[i2];
-                    replacements.RemoveAt(i2);
-                }
-            }
-
-            replacements.ForEach(item => source.Add(item));
         }
 
         public static IEnumerable<T> Flatten<T>(this IEnumerable<T> e, Func<T, IEnumerable<T>> f)

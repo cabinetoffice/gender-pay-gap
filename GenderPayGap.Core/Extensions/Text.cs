@@ -14,7 +14,6 @@ namespace GenderPayGap.Extensions
     {
 
         public const string NumberChars = "1234567890";
-        public const string UpperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         public static bool IsNumber(this string input)
         {
@@ -132,36 +131,6 @@ namespace GenderPayGap.Extensions
             return source;
         }
 
-        public static string TrimStartI(this string source, string trimChars)
-        {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(trimChars))
-            {
-                return source;
-            }
-
-            return source.TrimStartI(trimChars.ToCharArray());
-        }
-
-        public static string TrimStartI(this string source, params char[] trimChars)
-        {
-            if (string.IsNullOrEmpty(source))
-            {
-                return source;
-            }
-
-            return trimChars == null || trimChars.Length == 0 ? source.TrimStart() : source.TrimStart(trimChars);
-        }
-
-        public static string RemoveStartI(this string text, string prefix)
-        {
-            if (text.StartsWithI(prefix))
-            {
-                text = text.Substring(prefix.Length);
-            }
-
-            return text;
-        }
-
         public static string Strip(this string text, string excludeChars)
         {
             if (text == null)
@@ -264,29 +233,6 @@ namespace GenderPayGap.Extensions
             return includeWhenNoSeparator ? text : null;
         }
 
-        /// <summary>
-        ///     Returns all characters after the last occurrence of a string
-        /// </summary>
-        public static string AfterLast(this string text,
-            string separator,
-            StringComparison comparisionType = StringComparison.OrdinalIgnoreCase,
-            bool includeSeparator = false,
-            bool includeWhenNoSeparator = true)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return text;
-            }
-
-            int i = text.LastIndexOf(separator, text.Length - 1, comparisionType);
-            if (i > -1)
-            {
-                return text.Substring(includeSeparator ? i : i + 1);
-            }
-
-            return includeWhenNoSeparator ? text : null;
-        }
-
         public static bool EqualsI(this string original, params string[] target)
         {
             if (string.IsNullOrWhiteSpace(original))
@@ -341,16 +287,6 @@ namespace GenderPayGap.Extensions
             }
 
             return true;
-        }
-
-        public static bool ContainsAny(this string text, params char[] characters)
-        {
-            if (string.IsNullOrWhiteSpace(text) || characters == null || characters.Length < 1)
-            {
-                return false;
-            }
-
-            return text.IndexOfAny(characters) > -1;
         }
 
         public static bool EndsWithI(this string source, params string[] strings)
@@ -497,11 +433,6 @@ namespace GenderPayGap.Extensions
 
             string expression = "^" + Regex.Escape(pattern).Replace("\\*", ".*").Replace("\\?", ".").Replace("+", "\\+") + "$";
             return Regex.IsMatch(input, expression);
-        }
-
-        public static string ToShortString(this Guid guid)
-        {
-            return guid.ToString().Strip("- {}");
         }
 
         public static string EncodeUrlBase64(this string base64String)

@@ -62,11 +62,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             return GetOrganisationInAGivenScope(ScopeStatuses.InScope, employerRef, snapshotYear);
         }
 
-        public static Organisation GetOrganisationOutOfScope(string employerRef = null, int snapshotYear = 0)
-        {
-            return GetOrganisationInAGivenScope(ScopeStatuses.OutOfScope, employerRef, snapshotYear);
-        }
-
         public static Organisation GetOrganisationInAGivenScope(ScopeStatuses scope, string employerRef = null, int snapshotYear = 0)
         {
             Organisation org = GetPrivateOrganisation(employerRef);

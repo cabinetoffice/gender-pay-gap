@@ -9,13 +9,6 @@ namespace GenderPayGap.Tests.TestHelpers
     public static class UserHelper
     {
 
-        public static User CreateUser(string emailAddress)
-        {
-            User result = GetNotAdminUserWithVerifiedEmailAddress();
-            result.EmailAddress = emailAddress;
-            return result;
-        }
-
         public static User GetNotAdminUserWithoutVerifiedEmailAddress()
         {
             Guid id = Guid.NewGuid();
@@ -28,13 +21,6 @@ namespace GenderPayGap.Tests.TestHelpers
                 UserId = new Random().Next(5000, 9999),
                 Status = UserStatuses.Active
             };
-        }
-
-        internal static User GetSuperAdmin()
-        {
-            User user = GetNotAdminUserWithoutVerifiedEmailAddress();
-            user.EmailAddress = "SuperAdminUser@swi.re";
-            return user;
         }
 
         public static User GetNotAdminUserWithVerifiedEmailAddress()

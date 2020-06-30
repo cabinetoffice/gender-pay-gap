@@ -104,12 +104,10 @@ namespace GenderPayGap.Core
         public static string EmployerCodeChars => "123456789ABCDEFGHKLMNPQRSTUXYZ";
         public static string PINChars => "123456789ABCDEF";
         public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/guidance/gender-pay-gap-who-needs-to-report";
-        public static string SaveDraftPath => "draftReturns";
         public static int FirstReportingYear => 2017;
         public static int CompaniesHouseMaxRecords => 400;
         public static int MinIOThreads => 300;
         public static int MinWorkerThreads => 300;
-        public static string DataPath => "App_Data";
         public static string StartUrl =>
             Config.GetAppSetting("UseStartUrl").ToBoolean()
                 ? "https://www.gov.uk/report-gender-pay-gap-data"

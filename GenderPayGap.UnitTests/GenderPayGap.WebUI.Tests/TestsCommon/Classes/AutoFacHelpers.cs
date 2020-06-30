@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Autofac;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -42,17 +40,6 @@ namespace GenderPayGap.Tests.Common.Classes
             return mock;
         }
 
-
-        /// <summary>
-        ///     Registers an InMemory SQLRespository and populates with entities
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="dbObjects"></param>
-        public static void RegisterInMemoryTestDatabase(this ContainerBuilder builder, params object[] dbObjects)
-        {
-            GpgDatabaseContext dbContext = CreateInMemoryTestDatabase(dbObjects);
-            builder.Register(c => new SqlRepository(dbContext)).As<IDataRepository>().InstancePerLifetimeScope();
-        }
 
         public static GpgDatabaseContext CreateInMemoryTestDatabase(params object[] dbObjects)
         {

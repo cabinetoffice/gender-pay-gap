@@ -413,14 +413,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             controller.Url = mockUrlHelper.Object;
         }
 
-        public static void AddMockQuerystringValue(this Controller controller, string key, string value)
-        {
-            //controller.HttpContext.Request.Query.Append(new KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>(key,value));
-            //Set the querystring
-            Mock<HttpContext> mockHttpContext = controller.HttpContext.GetMockFromObject();
-            mockHttpContext.SetupGet(ctx => ctx.Request.Query[key]).Returns(value);
-        }
-
         public static void AssertCookieAdded(this Controller controller, string key, string value)
         {
             Mock<IResponseCookies> mockCookies = Mock.Get(controller.HttpContext.Response.Cookies);

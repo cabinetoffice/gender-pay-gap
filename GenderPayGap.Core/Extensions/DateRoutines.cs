@@ -198,29 +198,6 @@ namespace GenderPayGap.Extensions
 
             return defaultMaxDateTime ? DateTime.MaxValue : DateTime.MinValue;
         }
-        
-        public static DateTime FromShortestDateTime(this string shorterDateTime)
-        {
-            DateTime dateTime;
-            if (DateTime.TryParseExact(shorterDateTime, Time.ShortestDateFormat, null, DateTimeStyles.AssumeLocal, out dateTime))
-            {
-                return dateTime;
-            }
-
-            return DateTime.MinValue;
-        }
-        
-        public static int ToFourDigitYear(this int year)
-        {
-            try
-            {
-                return CultureInfo.CurrentCulture.Calendar.ToFourDigitYear(year);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return year;
-            }
-        }
 
         public static int ToTwoDigitYear(this int year)
         {
