@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GenderPayGap.Core.Classes
+namespace GenderPayGap.WebUI.ExternalServices
 {
     public class NotifyEmail
     {

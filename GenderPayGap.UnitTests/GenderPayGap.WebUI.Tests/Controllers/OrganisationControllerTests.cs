@@ -13,6 +13,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Organisation;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
