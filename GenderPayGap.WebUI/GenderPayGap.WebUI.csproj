@@ -107,10 +107,10 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.Network" Version="2.0.2.68" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.13" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\GenderPayGap.BusinessLogic\GenderPayGap.BusinessLogic.csproj" />
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
     <ProjectReference Include="..\GovUkDesignSystem\GovUkDesignSystem.csproj" />
