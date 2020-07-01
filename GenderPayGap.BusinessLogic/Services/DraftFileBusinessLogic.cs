@@ -117,7 +117,7 @@ namespace GenderPayGap.BusinessLogic.Services
 
         private Draft GetDraftOrCreate(Draft resultingDraft, long userIdRequestingAccess)
         {
-            if (!DraftExists(resultingDraft))
+            if (!DraftExistsAndHasData(resultingDraft))
             {
                 SaveNewEmptyDraftReturn(resultingDraft, userIdRequestingAccess);
                 SetDraftAccessInformation(userIdRequestingAccess, resultingDraft);
@@ -146,7 +146,7 @@ namespace GenderPayGap.BusinessLogic.Services
                 LastWrittenByUserId = userIdRequestingAccess
             };
 
-            dataRepository.Insert(newEmptyDraftReturn);
+            InsertOrUpdate(newEmptyDraftReturn);
             dataRepository.SaveChangesAsync().Wait();
         }
 
