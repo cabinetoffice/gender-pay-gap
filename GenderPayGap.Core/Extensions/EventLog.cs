@@ -16,8 +16,6 @@ namespace GenderPayGap.Extensions
         private static Assembly _TopAssembly;
         public static string LogSource;
 
-        public static System.Diagnostics.EventLog Log;
-
         static EventLog()
         {
             LogSource = TopAssembly.GetName().Name;
