@@ -56,7 +56,6 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
     <PackageReference Include="AutoMapper" Version="8.1.0" />
-    <PackageReference Include="CompareNETObjects" Version="4.59.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="2.2.0" />
     <PackageReference Include="System.Diagnostics.EventLog" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
