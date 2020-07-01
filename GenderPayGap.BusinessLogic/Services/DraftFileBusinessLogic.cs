@@ -38,7 +38,7 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             var result = new Draft(organisationId, snapshotYear);
 
-            if (DraftExists(result))
+            if (DraftExistsAndHasData(result))
             {
                 result.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(result);
                 return result;
@@ -155,6 +155,13 @@ namespace GenderPayGap.BusinessLogic.Services
             DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
             return draftReturn != null;
+        }
+
+        private bool DraftExistsAndHasData(Draft draft)
+        {
+            DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
+
+            return draftReturn != null && draftReturn.SectorType != SectorTypes.Unknown;
         }
 
         private DateTime? GetLastWriteTime(Draft draft)
