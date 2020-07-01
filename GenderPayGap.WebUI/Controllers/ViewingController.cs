@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
-using AutoMapper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
@@ -158,7 +157,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // generate result view model
-            var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
+            var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
             SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
             ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
 
@@ -186,7 +185,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // generate result view model
-            var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
+            var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
             SearchViewModel model = await ViewingService.SearchAsync(searchParams, "relevance");
 
             ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
@@ -437,7 +436,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // generate compare list
-            var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
+            var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
 
             // set maximum search size
             searchParams.Page = 1;
@@ -460,6 +459,20 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         #endregion
+
+        private EmployerSearchParameters SearchResultsQueryToEmployerSearchParameters(SearchResultsQuery searchQuery)
+        {
+            return new EmployerSearchParameters
+            {
+                Keywords = searchQuery.search,
+                Page = searchQuery.p,
+                FilterSicSectionIds = searchQuery.s ?? new List<char>(),
+                FilterEmployerSizes = searchQuery.es ?? new List<int>(),
+                FilterReportedYears = searchQuery.y ?? new List<int>(),
+                FilterReportingStatus = searchQuery.st ?? new List<int>(),
+                SearchType = searchQuery.t
+            };
+        }
 
     }
 }

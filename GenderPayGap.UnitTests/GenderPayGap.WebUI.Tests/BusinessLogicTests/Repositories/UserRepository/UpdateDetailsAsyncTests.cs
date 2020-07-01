@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -23,10 +22,6 @@ namespace Repositories.UserRepository
         [SetUp]
         public void BeforeEach()
         {
-            // init mapper
-            Mapper.Reset();
-            Mapper.Initialize(config => config.AddMaps(typeof(GenderPayGap.WebUI.Repositories.UserRepository).Assembly));
-
             // mock data 
             mockDataRepo = new Mock<IDataRepository>().SetupGetAll(UserHelpers.CreateUsers());
 

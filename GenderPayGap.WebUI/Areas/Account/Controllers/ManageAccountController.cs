@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.Resources;
@@ -31,7 +30,16 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // map the user to the view model
-            var model = Mapper.Map<ManageAccountViewModel>(currentUser);
+            var model = new ManageAccountViewModel
+            {
+                FirstName = currentUser.Firstname,
+                LastName = currentUser.Lastname,
+                JobTitle = currentUser.JobTitle,
+                EmailAddress = currentUser.EmailAddress,
+                ContactPhoneNumber = currentUser.ContactPhoneNumber,
+                SendUpdates = currentUser.SendUpdates,
+                AllowContact = currentUser.AllowContact
+            };
 
             // check if we have any successful changes
             if (TempData.ContainsKey(nameof(AccountResources.ChangeDetailsSuccessAlert)))

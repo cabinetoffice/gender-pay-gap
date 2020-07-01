@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.WebUI.Classes.Presentation;
@@ -73,7 +72,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
                 }
 
                 // generate result view model
-                var searchParams = Mapper.Map<EmployerSearchParameters>(searchQuery);
+                var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
                 SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
 
                     ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
@@ -101,5 +100,20 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
                 return new HttpNotFoundResult();
             }
         }
+
+        private EmployerSearchParameters SearchResultsQueryToEmployerSearchParameters(SearchResultsQuery searchQuery)
+        {
+            return new EmployerSearchParameters
+            {
+                Keywords = searchQuery.search,
+                Page = searchQuery.p,
+                FilterSicSectionIds = searchQuery.s,
+                FilterEmployerSizes = searchQuery.es,
+                FilterReportedYears = searchQuery.y,
+                FilterReportingStatus = searchQuery.st,
+                SearchType = searchQuery.t
+            };
+        }
+
     }
 }
