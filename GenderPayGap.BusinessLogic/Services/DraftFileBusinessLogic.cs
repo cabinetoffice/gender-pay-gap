@@ -59,12 +59,12 @@ namespace GenderPayGap.BusinessLogic.Services
         public Draft GetExistingOrNew(long organisationId, int snapshotYear, long userIdRequestingAccess)
         {
             var resultingDraft = new Draft(organisationId, snapshotYear);
-            return GetDraftOrCreateAsync(resultingDraft, userIdRequestingAccess);
+            return GetDraftOrCreate(resultingDraft, userIdRequestingAccess);
         }
 
         public Draft UpdateAndCommit(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess)
         {
-            Draft draftFile = GetDraftOrCreateAsync(draft, userIdRequestingAccess);
+            Draft draftFile = GetDraftOrCreate(draft, userIdRequestingAccess);
 
             if (!draftFile.IsUserAllowedAccess)
             {
@@ -76,14 +76,14 @@ namespace GenderPayGap.BusinessLogic.Services
             draftFile.ReturnViewModelContent = postedReturnViewModel;
             WriteInDbAndTimestamp(draftFile);
 
-            SetMetadataAsync(draftFile, 0);
+            SetMetadata(draftFile, 0);
 
             return draftFile;
         }
 
         public void KeepDraftFileLockedToUser(Draft draftExpectedToBeLocked, long userIdRequestingLock)
         {
-            (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccessAsync(userIdRequestingLock, draftExpectedToBeLocked);
+            (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccess(userIdRequestingLock, draftExpectedToBeLocked);
             draftExpectedToBeLocked.IsUserAllowedAccess = result.IsAllowedAccess;
 
             if (!draftExpectedToBeLocked.IsUserAllowedAccess)
@@ -91,9 +91,9 @@ namespace GenderPayGap.BusinessLogic.Services
                 return;
             }
 
-            SetMetadataAsync(draftExpectedToBeLocked, userIdRequestingLock);
+            SetMetadata(draftExpectedToBeLocked, userIdRequestingLock);
 
-            SetDraftAccessInformationAsync(userIdRequestingLock, draftExpectedToBeLocked);
+            SetDraftAccessInformation(userIdRequestingLock, draftExpectedToBeLocked);
         }
 
         public void DiscardDraft(Draft draftToDiscard)
@@ -115,23 +115,23 @@ namespace GenderPayGap.BusinessLogic.Services
 
         #region private methods
 
-        private Draft GetDraftOrCreateAsync(Draft resultingDraft, long userIdRequestingAccess)
+        private Draft GetDraftOrCreate(Draft resultingDraft, long userIdRequestingAccess)
         {
             if (!DraftExists(resultingDraft))
             {
                 SaveNewEmptyDraftReturn(resultingDraft, userIdRequestingAccess);
-                SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
+                SetDraftAccessInformation(userIdRequestingAccess, resultingDraft);
                 return resultingDraft;
             }
 
-            SetDraftAccessInformationAsync(userIdRequestingAccess, resultingDraft);
+            SetDraftAccessInformation(userIdRequestingAccess, resultingDraft);
 
             if (!resultingDraft.IsUserAllowedAccess)
             {
                 return resultingDraft;
             }
 
-            SetMetadataAsync(resultingDraft, userIdRequestingAccess);
+            SetMetadata(resultingDraft, userIdRequestingAccess);
             resultingDraft.ReturnViewModelContent = LoadDraftReturnAsReturnViewModel(resultingDraft);
 
             return resultingDraft;
@@ -168,7 +168,7 @@ namespace GenderPayGap.BusinessLogic.Services
             return null;
         }
 
-        private void SetMetadataAsync(Draft draft, long userIdRequestingAccess)
+        private void SetMetadata(Draft draft, long userIdRequestingAccess)
         {
             DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
@@ -181,16 +181,16 @@ namespace GenderPayGap.BusinessLogic.Services
             }
         }
 
-        private void SetDraftAccessInformationAsync(long userRequestingAccessToDraft, Draft draft)
+        private void SetDraftAccessInformation(long userRequestingAccessToDraft, Draft draft)
         {
             draft.LastWrittenDateTime = GetLastWriteTime(draft);
 
-            (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccessAsync(userRequestingAccessToDraft, draft);
+            (bool IsAllowedAccess, long UserId) result = GetIsUserAllowedAccess(userRequestingAccessToDraft, draft);
             draft.IsUserAllowedAccess = result.IsAllowedAccess;
             draft.LastWrittenByUserId = result.UserId;
         }
 
-        private (bool IsAllowedAccess, long UserId) GetIsUserAllowedAccessAsync(long userRequestingAccessToDraft, Draft draft)
+        private (bool IsAllowedAccess, long UserId) GetIsUserAllowedAccess(long userRequestingAccessToDraft, Draft draft)
         {
             if (!DraftExists(draft))
             {
@@ -198,12 +198,12 @@ namespace GenderPayGap.BusinessLogic.Services
             }
 
             (bool IsAllowedAccess, long UserId) result =
-                GetIsUserTheLastPersonThatWroteOnTheFileAsync(draft.OrganisationId, draft.SnapshotYear, userRequestingAccessToDraft);
+                GetIsUserTheLastPersonThatWroteOnTheFile(draft.OrganisationId, draft.SnapshotYear, userRequestingAccessToDraft);
 
             return (result.IsAllowedAccess || !IsInUse(draft.LastWrittenDateTime), result.UserId);
         }
 
-        private (bool IsAllowedAccess, long UserId) GetIsUserTheLastPersonThatWroteOnTheFileAsync(long organisationId,
+        private (bool IsAllowedAccess, long UserId) GetIsUserTheLastPersonThatWroteOnTheFile(long organisationId,
             int snapshotYear,
             long userId)
         {
