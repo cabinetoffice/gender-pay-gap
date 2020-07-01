@@ -161,7 +161,7 @@ namespace GenderPayGap.BusinessLogic.Services
         {
             DraftReturn draftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
-            return draftReturn != null && draftReturn.SectorType != SectorTypes.Unknown;
+            return draftReturn != null && draftReturn.SectorType.HasValue;
         }
 
         private DateTime? GetLastWriteTime(Draft draft)
