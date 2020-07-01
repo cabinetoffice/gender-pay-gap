@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace GenderPayGap.Core.Interfaces
+namespace GenderPayGap.Database
 {
     public interface IDbContext : IDisposable
     {
