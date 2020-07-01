@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -136,7 +135,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 i++;
                 if (!line.Contains('='))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{line}' does not contain '=' character");
+                    writer.WriteLine($"{i}: ERROR: '{line}' does not contain '=' character");
                     continue;
                 }
 
@@ -148,7 +147,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 if (processed.Contains(employerRef))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' duplicate organisation");
+                    writer.WriteLine($"{i}: ERROR: '{employerRef}' duplicate organisation");
                     continue;
                 }
 
@@ -166,13 +165,13 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                     if (!newValue.IsCompanyNumber())
                     {
-                        writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' Invalid company number '{newValue}'");
+                        writer.WriteLine($"{i}: ERROR: '{employerRef}' Invalid company number '{newValue}'");
                         continue;
                     }
 
                     if (processedCoNos.Contains(newValue))
                     {
-                        writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' duplicate company number '{newValue}'");
+                        writer.WriteLine($"{i}: ERROR: '{employerRef}' duplicate company number '{newValue}'");
                         continue;
                     }
 
@@ -183,7 +182,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerRef);
                 if (org == null)
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
+                    writer.WriteLine($"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
                     continue;
                 }
 
@@ -192,14 +191,13 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 if (oldValue == newValue)
                 {
                     writer.WriteLine(
-                        Color.Orange,
                         $"{i}: WARNING '{employerRef}' '{org.OrganisationName}' Company Number='{org.CompanyNumber}' already set to '{oldValue}'");
                 }
                 else if (!string.IsNullOrWhiteSpace(newValue)
                          && await DataRepository.GetAll<Organisation>()
                              .AnyAsync(o => o.CompanyNumber == newValue && o.OrganisationId != org.OrganisationId))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR '{employerRef}' Another organisation exists with this company number");
+                    writer.WriteLine($"{i}: ERROR '{employerRef}' Another organisation exists with this company number");
                     continue;
                 }
                 else
@@ -251,7 +249,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 i++;
                 if (line.Contains('='))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{line}' contains '=' character");
+                    writer.WriteLine($"{i}: ERROR: '{line}' contains '=' character");
                     continue;
                 }
 
@@ -263,7 +261,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 if (processed.Contains(employerRef))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' duplicate organisation");
+                    writer.WriteLine($"{i}: ERROR: '{employerRef}' duplicate organisation");
                     continue;
                 }
 
@@ -275,7 +273,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerRef);
                 if (org == null)
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
+                    writer.WriteLine($"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
                     continue;
                 }
 
@@ -314,7 +312,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 if (oldSector == newSector && sicCodes.Any(s => s.SicCodeId == 1 && s.Retired == null) && !badReturnDates && !badScopeDates)
                 {
                     writer.WriteLine(
-                        Color.Orange,
                         $"{i}: WARNING: '{employerRef}' '{org.OrganisationName}' sector already set to '{oldSector}'");
                 }
                 else
@@ -454,7 +451,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 i++;
                 if (line.Contains('='))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{line}' contains '=' character");
+                    writer.WriteLine($"{i}: ERROR: '{line}' contains '=' character");
                     continue;
                 }
 
@@ -466,7 +463,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 if (processed.Contains(employerRef))
                 {
-                    writer.WriteLine(Color.Red, $"{i}: '{employerRef}' duplicate organisation");
+                    writer.WriteLine($"{i}: '{employerRef}' duplicate organisation");
                     continue;
                 }
 
@@ -478,7 +475,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerRef);
                 if (org == null)
                 {
-                    writer.WriteLine(Color.Red, $"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
+                    writer.WriteLine($"{i}: ERROR: '{employerRef}' Cannot find organisation with this employer reference");
                     continue;
                 }
 
@@ -517,7 +514,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 if (oldSector == newSector && !sicCodes.Any(s => s.SicCodeId == 1) && !badReturnDates && !badScopeDates)
                 {
                     writer.WriteLine(
-                        Color.Orange,
                         $"{i}: WARNING: '{employerRef}' '{org.OrganisationName}' sector already set to '{oldSector}'");
                 }
                 else
@@ -602,7 +598,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             if (string.IsNullOrWhiteSpace(@return.ResponsiblePerson))
                             {
                                 writer.WriteLine(
-                                    Color.Orange,
                                     $"    WARNING: No personal responsible for '{employerRef}' for data submited for year '{oldDate.Year}'");
                             }
                         }
