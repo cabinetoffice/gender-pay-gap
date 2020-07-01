@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -517,11 +515,6 @@ namespace GenderPayGap.Extensions
                        "Scotland",
                        "Wales",
                        "Northern Ireland");
-        }
-
-        public static void WriteLine(this StringWriter writer, Color color, string text, string tagName = "span")
-        {
-            writer.WriteLine($"<{tagName} style=\"color:{ColorTranslator.ToHtml(color)}\">{text}</{tagName}>");
         }
 
         public static string ToAbbr(this string s, string separator = "", int minLength = 3, params string[] excludeWords)
