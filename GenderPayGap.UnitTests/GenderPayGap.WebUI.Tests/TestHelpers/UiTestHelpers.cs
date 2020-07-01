@@ -7,7 +7,6 @@ using System.Net;
 using System.Security.Claims;
 using Autofac;
 using Autofac.Features.AttributeFilters;
-using AutoMapper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -337,15 +336,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterInstance(environmentMock.Object).As<IHostingEnvironment>().SingleInstance();
 
             IContainer container = builder.Build();
-
-            Mapper.Reset();
-            Mapper.Initialize(
-                config => {
-                    // allows auto mapper to inject our dependencies
-                    config.ConstructServicesUsing(container.Resolve);
-                    // register all out mapper profiles (classes/mappers/*)
-                    config.AddMaps(typeof(Program).Assembly);
-                });
 
             return container;
         }

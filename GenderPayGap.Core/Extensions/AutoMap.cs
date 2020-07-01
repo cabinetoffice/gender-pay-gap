@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using KellermanSoftware.CompareNetObjects;
@@ -8,6 +9,7 @@ namespace GenderPayGap.Extensions
     public static class AutoMap
     {
 
+        [Obsolete("We are trying to reduce the use of Automapper. Please don't use this")]
         public static S GetClone<S>(this S source)
         {
             if (source == null || source.Equals(default(S)))
@@ -20,7 +22,7 @@ namespace GenderPayGap.Extensions
             return iMapper.Map<S, S>(source);
         }
 
-        public static T Convert<S, T>(this S source)
+        private static T Convert<S, T>(this S source)
         {
             if (source == null || source.Equals(default(S)) || source.Equals(default(T)))
             {
@@ -59,6 +61,7 @@ namespace GenderPayGap.Extensions
         /// </param>
         /// <param name="ignoreObjectTypes">If true, objects will be compared ignore their type diferences. The default is false.</param>
         /// <returns></returns>
+        [Obsolete("We are trying to reduce the use of Automapper. Please don't use this")]
         public static IEnumerable<Diff> GetDifferences<S, T>(this S oldObject,
             T newObject,
             IEnumerable<string> membersToIgnore = null,

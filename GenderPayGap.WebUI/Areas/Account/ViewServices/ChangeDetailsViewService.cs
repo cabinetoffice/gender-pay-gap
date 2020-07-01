@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoMapper;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
@@ -22,7 +21,15 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
         public bool ChangeDetails(ChangeDetailsViewModel newDetails, User currentUser)
         {
             // map to business domain model
-            var mappedDetails = Mapper.Map<UpdateDetailsModel>(newDetails);
+            var mappedDetails = new UpdateDetailsModel
+            {
+                FirstName = newDetails.FirstName,
+                LastName = newDetails.LastName,
+                JobTitle = newDetails.JobTitle,
+                ContactPhoneNumber = newDetails.ContactPhoneNumber,
+                SendUpdates = newDetails.SendUpdates,
+                AllowContact = newDetails.AllowContact
+            };
 
             // execute update details
             return UserRepository.UpdateDetails(currentUser, mappedDetails);

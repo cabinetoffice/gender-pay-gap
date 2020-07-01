@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -177,7 +176,16 @@ namespace GenderPayGap.WebUI.Repositories
             }
 
             // check we have changes
-            var originalDetails = Mapper.Map<UpdateDetailsModel>(userToUpdate);
+            var originalDetails = new UpdateDetailsModel
+            {
+                FirstName = userToUpdate.Firstname,
+                LastName = userToUpdate.Lastname,
+                JobTitle = userToUpdate.JobTitle,
+                ContactPhoneNumber = userToUpdate.ContactPhoneNumber,
+                SendUpdates = userToUpdate.SendUpdates,
+                AllowContact = userToUpdate.AllowContact
+            };
+
             if (originalDetails.Equals(changeDetails))
             {
                 return false;

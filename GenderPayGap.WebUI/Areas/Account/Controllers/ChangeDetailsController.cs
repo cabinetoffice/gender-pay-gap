@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;
@@ -45,7 +44,15 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // map the user to the edit view model
-            var model = Mapper.Map<ChangeDetailsViewModel>(currentUser);
+            var model = new ChangeDetailsViewModel
+            {
+                FirstName = currentUser.Firstname,
+                LastName = currentUser.Lastname,
+                JobTitle = currentUser.JobTitle,
+                ContactPhoneNumber = currentUser.ContactPhoneNumber,
+                SendUpdates = currentUser.SendUpdates,
+                AllowContact = currentUser.AllowContact
+            };
 
             return View(model);
         }
