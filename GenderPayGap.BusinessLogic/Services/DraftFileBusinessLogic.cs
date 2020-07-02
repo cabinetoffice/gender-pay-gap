@@ -254,17 +254,17 @@ namespace GenderPayGap.BusinessLogic.Services
                 AccountingDate = draftReturn.AccountingDate ?? VirtualDateTime.Now,
                 Address = draftReturn.Address,
                 CompanyLinkToGPGInfo = draftReturn.CompanyLinkToGPGInfo,
-                DiffMeanBonusPercent = draftReturn.DiffMeanBonusPercent,
-                DiffMeanHourlyPayPercent = draftReturn.DiffMeanHourlyPayPercent,
-                DiffMedianBonusPercent = draftReturn.DiffMedianBonusPercent,
-                DiffMedianHourlyPercent = draftReturn.DiffMedianHourlyPercent,
+                DiffMeanBonusPercent = NormaliseDecimal(draftReturn.DiffMeanBonusPercent),
+                DiffMeanHourlyPayPercent = NormaliseDecimal(draftReturn.DiffMeanHourlyPayPercent),
+                DiffMedianBonusPercent = NormaliseDecimal(draftReturn.DiffMedianBonusPercent),
+                DiffMedianHourlyPercent = NormaliseDecimal(draftReturn.DiffMedianHourlyPercent),
                 EHRCResponse = draftReturn.EHRCResponse,
                 EncryptedOrganisationId = draftReturn.EncryptedOrganisationId,
-                FemaleLowerPayBand = draftReturn.FemaleLowerPayBand,
-                FemaleMedianBonusPayPercent = draftReturn.FemaleMedianBonusPayPercent,
-                FemaleMiddlePayBand = draftReturn.FemaleMiddlePayBand,
-                FemaleUpperPayBand = draftReturn.FemaleUpperPayBand,
-                FemaleUpperQuartilePayBand = draftReturn.FemaleUpperQuartilePayBand,
+                FemaleLowerPayBand = NormaliseDecimal(draftReturn.FemaleLowerPayBand),
+                FemaleMedianBonusPayPercent = NormaliseDecimal(draftReturn.FemaleMedianBonusPayPercent),
+                FemaleMiddlePayBand = NormaliseDecimal(draftReturn.FemaleMiddlePayBand),
+                FemaleUpperPayBand = NormaliseDecimal(draftReturn.FemaleUpperPayBand),
+                FemaleUpperQuartilePayBand = NormaliseDecimal(draftReturn.FemaleUpperQuartilePayBand),
                 FirstName = draftReturn.FirstName,
                 IsDifferentFromDatabase = draftReturn.IsDifferentFromDatabase ?? false,
                 IsInScopeForThisReportYear = draftReturn.IsInScopeForThisReportYear ?? false,
@@ -276,11 +276,11 @@ namespace GenderPayGap.BusinessLogic.Services
                 LatestAddress = draftReturn.LatestAddress,
                 LatestOrganisationName = draftReturn.LatestOrganisationName,
                 LatestSector = draftReturn.LatestSector,
-                MaleMedianBonusPayPercent = draftReturn.MaleMedianBonusPayPercent,
-                MaleMiddlePayBand = draftReturn.MaleMiddlePayBand,
-                MaleUpperQuartilePayBand = draftReturn.MaleUpperQuartilePayBand,
-                MaleUpperPayBand = draftReturn.MaleUpperPayBand,
-                MaleLowerPayBand = draftReturn.MaleLowerPayBand,
+                MaleMedianBonusPayPercent = NormaliseDecimal(draftReturn.MaleMedianBonusPayPercent),
+                MaleMiddlePayBand = NormaliseDecimal(draftReturn.MaleMiddlePayBand),
+                MaleUpperQuartilePayBand = NormaliseDecimal(draftReturn.MaleUpperQuartilePayBand),
+                MaleUpperPayBand = NormaliseDecimal(draftReturn.MaleUpperPayBand),
+                MaleLowerPayBand = NormaliseDecimal(draftReturn.MaleLowerPayBand),
                 Modified = draftReturn.Modified,
                 OrganisationId = draftReturn.OrganisationId,
                 OrganisationName = draftReturn.OrganisationName,
@@ -298,6 +298,14 @@ namespace GenderPayGap.BusinessLogic.Services
                 SectorType = draftReturn.SectorType ?? SectorTypes.Unknown,
                 ShouldProvideLateReason = draftReturn.ShouldProvideLateReason ?? false
             };
+        }
+
+        private static decimal? NormaliseDecimal(decimal? input)
+        {
+            // In the drafts, some numbers are stored as decimals with exactly 2 decimal places (e.g. 5.00)
+            // The controller does some validation to check that the numbers entered only have 1 decimal place (e.g. 5.0)
+            // This calculation removes any trailing 0s, so 5.00 becomes 5.0, and 12.30 becomes 12.3
+            return input / 1.000000000m;
         }
 
         private DraftReturn SerialiseDraftAsDraftReturn(Draft draft)
