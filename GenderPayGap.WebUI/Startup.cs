@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Web;
 using Autofac;
@@ -179,24 +180,11 @@ namespace GenderPayGap.WebUI
                     (p, ctx) => p.ParameterType == typeof(HttpClient),
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(ICompaniesHouseAPI)));
 
-            // use the 'azureStorageConnectionString' and 'AzureStorageShareName' when connecting to a remote storage
-            string azureStorageConnectionString = Global.AzureStorageConnectionString;
-            Console.WriteLine($"AzureStorageConnectionString: {azureStorageConnectionString}");
-
-            // validate we have a storage connection
-            if (string.IsNullOrWhiteSpace(azureStorageConnectionString))
-            {
-                throw new InvalidOperationException("No Azure Storage connection specified. Check the config.");
-            }
-
             if (!Config.IsLocal())
             {
-                string azureStorageShareName = "common";
-                builder.Register(
-                        c => new AzureFileRepository(
-                            azureStorageConnectionString,
-                            azureStorageShareName,
-                            new ExponentialRetry(TimeSpan.FromMilliseconds(500), 10)))
+                VcapAwsS3Bucket fileStorageBucketConfiguration = Global.VcapServices.AwsS3Bucket.First(b => b.Name.EndsWith("-filestorage"));
+
+                builder.Register(c => new AwsFileRepository(fileStorageBucketConfiguration))
                     .As<IFileRepository>()
                     .SingleInstance();
             }

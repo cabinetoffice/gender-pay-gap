@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.12.1" />
     <PackageReference Include="Autofac" Version="4.9.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.111.11" />
     <PackageReference Include="Kent.Cryptography.Obfuscation" Version="2.0.0" />
     <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
