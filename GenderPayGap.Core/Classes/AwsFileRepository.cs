@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -60,7 +61,7 @@ namespace GenderPayGap.Core.Classes
             string secretKey = vcapAwsS3Bucket.Credentials.AwsSecretAccessKey;
 
             var credentials = new BasicAWSCredentials(accessKey, secretKey);
-            var amazonS3Client = new AmazonS3Client(credentials);
+            var amazonS3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(vcapAwsS3Bucket.Credentials.Region));
 
             return amazonS3Client;
         }
