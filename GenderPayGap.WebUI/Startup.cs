@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
-using System.Xml.Linq;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Features.AttributeFilters;
@@ -28,14 +26,12 @@ using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
-using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -119,7 +115,7 @@ namespace GenderPayGap.WebUI
             //Add the distributed redis cache
             AddRedisCache(services);
 
-            AddDataProtectionKeyStorage(services);
+            DataProtectionKeysHelper.AddDataProtectionKeyStorage(services);
 
             //This may now be required 
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
@@ -178,36 +174,6 @@ namespace GenderPayGap.WebUI
                     throw new ArgumentNullException("VCAP_SERVICES", "Cannot find 'VCAP_SERVICES' config setting");
                 }
             }
-        }
-
-        private static void AddDataProtectionKeyStorage(IServiceCollection services)
-        {
-            services.AddDataProtection()
-                .AddKeyManagementOptions(options => options.XmlRepository = new CustomDataProtectionKeyRepository());
-        }
-
-        private class CustomDataProtectionKeyRepository : IXmlRepository
-        {
-
-            public IReadOnlyCollection<XElement> GetAllElements()
-            {
-                IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
-                return dataRepository.GetAll<DataProtectionKey>().Select(dpk => XElement.Parse(dpk.Xml)).ToList();
-            }
-
-            public void StoreElement(XElement element, string friendlyName)
-            {
-                var dataProtectionKey = new DataProtectionKey
-                {
-                    FriendlyName = friendlyName,
-                    Xml = element.ToString()
-                };
-
-                IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
-                dataRepository.Insert(dataProtectionKey);
-                dataRepository.SaveChangesAsync().Wait();
-            }
-
         }
 
         // ConfigureContainer is where you can register things directly
