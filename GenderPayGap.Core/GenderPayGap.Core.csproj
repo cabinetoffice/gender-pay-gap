@@ -22,6 +22,7 @@
     <PackageReference Include="Kent.Cryptography.Obfuscation" Version="2.0.0" />
     <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
 
