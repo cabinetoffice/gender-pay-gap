@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
-using GenderPayGap.Extensions.AspNetCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace GenderPayGap.Database
 {
-    public partial class GpgDatabaseContext : IDbContext
+    public partial class GpgDatabaseContext : IDbContext, IDataProtectionKeyContext
     {
         
         // Switches between using Postgres and SQL Server for local DB during development
@@ -81,6 +79,9 @@ namespace GenderPayGap.Database
         public virtual DbSet<ReminderEmail> ReminderEmails { get; set; }
         public virtual DbSet<DraftReturn> DraftReturns { get; set; }
 
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; } // This is used to store "data protection" keys - used in anti-forgery tokens
+
+
         public async Task<int> SaveChangesAsync()
         {
             #region Validate the new or changed entities
@@ -142,7 +143,7 @@ namespace GenderPayGap.Database
             //Use lazy loading for related virtual items
             optionsBuilder.UseLazyLoadingProxies();
         }
-        
+
     }
 
 }

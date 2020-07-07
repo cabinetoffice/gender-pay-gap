@@ -15,7 +15,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Extensions.AspNetCore;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
@@ -38,6 +37,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Logging;
@@ -188,17 +188,21 @@ namespace GenderPayGap.WebUI
             }
             else
             {
-                //Use blob storage to persist data protection keys equivalent to old MachineKeys
-                string storageConnectionString = Global.AzureStorageConnectionString;
-                if (string.IsNullOrWhiteSpace(storageConnectionString))
+                if (Global.UsePostgresDb)
                 {
-                    throw new ArgumentNullException("AzureStorage", "Cannot find 'AzureStorage' ConnectionString");
+                    services.AddDbContext<GpgDatabaseContext>(
+                        optionsBuilder =>
+                            optionsBuilder.UseNpgsql(Global.DatabaseConnectionString, options => options.EnableRetryOnFailure()));
+                }
+                else
+                {
+                    services.AddDbContext<GpgDatabaseContext>(
+                        optionsBuilder =>
+                            optionsBuilder.UseSqlServer(Global.DatabaseConnectionString, options => options.EnableRetryOnFailure()));
                 }
 
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-
                 services.AddDataProtection()
-                    .PersistKeysToAzureBlobStorage(storageAccount, "/data-protection/keys.xml");
+                    .PersistKeysToDbContext<GpgDatabaseContext>();
             }
         }
 
