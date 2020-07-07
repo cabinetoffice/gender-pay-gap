@@ -17,7 +17,6 @@ namespace GenderPayGap.Core
         #region Secrets / connection strings / API keys
 
         public static string DatabaseConnectionString => Config.GetConnectionString("GpgDatabase");
-        public static string AzureStorageConnectionString => Config.GetConnectionString("AzureStorage");
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);

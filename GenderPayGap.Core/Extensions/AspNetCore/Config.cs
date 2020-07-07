@@ -43,11 +43,6 @@ namespace GenderPayGap.Extensions.AspNetCore
 
                     if (string.IsNullOrWhiteSpace(_EnvironmentName))
                     {
-                        _EnvironmentName = Environment.GetEnvironmentVariable("AzureWebJobsEnv");
-                    }
-
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName))
-                    {
                         _EnvironmentName = Environment.GetEnvironmentVariable("Environment"); //This is used by webjobs SDK v3 
                     }
 
