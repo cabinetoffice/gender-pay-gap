@@ -118,6 +118,8 @@ namespace GenderPayGap.WebUI
             //Add the distributed redis cache
             AddRedisCache(services);
 
+            AddDataProtectionKeyStorage(services);
+
             //This may now be required 
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
 
@@ -144,20 +146,13 @@ namespace GenderPayGap.WebUI
             return new AutofacServiceProvider(Global.ContainerIoC);
         }
 
-        public static IServiceCollection AddRedisCache(IServiceCollection services, string applicationDiscriminator = null)
+        private static void AddRedisCache(IServiceCollection services, string applicationDiscriminator = null)
         {
             //Add distributed cache service backed by Redis cache
             if (Debugger.IsAttached || Config.IsEnvironment("Local"))
             {
                 //Use a memory cache
                 services.AddDistributedMemoryCache();
-                services.AddDataProtection(
-                    options => {
-                        if (!string.IsNullOrWhiteSpace(applicationDiscriminator))
-                        {
-                            options.ApplicationDiscriminator = applicationDiscriminator;
-                        }
-                    });
             }
             else
             {
@@ -181,7 +176,18 @@ namespace GenderPayGap.WebUI
                 {
                     throw new ArgumentNullException("VCAP_SERVICES", "Cannot find 'VCAP_SERVICES' config setting");
                 }
+            }
+        }
 
+        private static void AddDataProtectionKeyStorage(IServiceCollection services)
+        {
+            //Add distributed cache service backed by Redis cache
+            if (Debugger.IsAttached || Config.IsEnvironment("Local"))
+            {
+                services.AddDataProtection();
+            }
+            else
+            {
                 //Use blob storage to persist data protection keys equivalent to old MachineKeys
                 string storageConnectionString = Global.AzureStorageConnectionString;
                 if (string.IsNullOrWhiteSpace(storageConnectionString))
@@ -191,23 +197,9 @@ namespace GenderPayGap.WebUI
 
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 
-                //var redis = ConnectionMultiplexer.Connect(redisConnectionString);
-                services.AddDataProtection(
-                        options => {
-                            if (!string.IsNullOrWhiteSpace(applicationDiscriminator))
-                            {
-                                options.ApplicationDiscriminator = applicationDiscriminator;
-                            }
-                        })
+                services.AddDataProtection()
                     .PersistKeysToAzureBlobStorage(storageAccount, "/data-protection/keys.xml");
-                //.PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
-                /* 
-                 * May need to add .SetApplicationName("shared app name") to force IDSrv4 and WebUI to use same keys
-                 * May need to add .DisableAutomaticKeyGeneration(); on IDSrv4 and WebUI for when key expires after 90 days to prevent one app from resetting keys
-                 */
             }
-
-            return services;
         }
 
         // ConfigureContainer is where you can register things directly
