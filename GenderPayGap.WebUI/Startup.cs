@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -31,6 +32,7 @@ using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +41,10 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Newtonsoft.Json.Serialization;
+using StackExchange.Redis;
 
 namespace GenderPayGap.WebUI
 {
@@ -112,7 +116,7 @@ namespace GenderPayGap.WebUI
                 });
 
             //Add the distributed redis cache
-            services.AddRedisCache();
+            AddRedisCache(services);
 
             //This may now be required 
             services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
@@ -138,6 +142,72 @@ namespace GenderPayGap.WebUI
 
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(Global.ContainerIoC);
+        }
+
+        public static IServiceCollection AddRedisCache(IServiceCollection services, string applicationDiscriminator = null)
+        {
+            //Add distributed cache service backed by Redis cache
+            if (Debugger.IsAttached || Config.IsEnvironment("Local"))
+            {
+                //Use a memory cache
+                services.AddDistributedMemoryCache();
+                services.AddDataProtection(
+                    options => {
+                        if (!string.IsNullOrWhiteSpace(applicationDiscriminator))
+                        {
+                            options.ApplicationDiscriminator = applicationDiscriminator;
+                        }
+                    });
+            }
+            else
+            {
+                if (Global.VcapServices != null && Global.VcapServices.Redis != null)
+                {
+                    VcapRedis redisConfiguration = Global.VcapServices.Redis.First(b => b.Name.EndsWith("-cache"));
+
+                    services.AddStackExchangeRedisCache(
+                        options =>
+                        {
+                            options.ConfigurationOptions = new ConfigurationOptions
+                            {
+                                EndPoints = { { redisConfiguration.Credentials.Host, redisConfiguration.Credentials.Port } },
+                                Password = redisConfiguration.Credentials.Password,
+                                Ssl = redisConfiguration.Credentials.TlsEnabled,
+                                AbortOnConnectFail = false
+                            };
+                        });
+                }
+                else
+                {
+                    throw new ArgumentNullException("VCAP_SERVICES", "Cannot find 'VCAP_SERVICES' config setting");
+                }
+
+                //Use blob storage to persist data protection keys equivalent to old MachineKeys
+                string storageConnectionString = Global.AzureStorageConnectionString;
+                if (string.IsNullOrWhiteSpace(storageConnectionString))
+                {
+                    throw new ArgumentNullException("AzureStorage", "Cannot find 'AzureStorage' ConnectionString");
+                }
+
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
+
+                //var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+                services.AddDataProtection(
+                        options => {
+                            if (!string.IsNullOrWhiteSpace(applicationDiscriminator))
+                            {
+                                options.ApplicationDiscriminator = applicationDiscriminator;
+                            }
+                        })
+                    .PersistKeysToAzureBlobStorage(storageAccount, "/data-protection/keys.xml");
+                //.PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
+                /* 
+                 * May need to add .SetApplicationName("shared app name") to force IDSrv4 and WebUI to use same keys
+                 * May need to add .DisableAutomaticKeyGeneration(); on IDSrv4 and WebUI for when key expires after 90 days to prevent one app from resetting keys
+                 */
+            }
+
+            return services;
         }
 
         // ConfigureContainer is where you can register things directly
