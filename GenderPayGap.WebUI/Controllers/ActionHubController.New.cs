@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;

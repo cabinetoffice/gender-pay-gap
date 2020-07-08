@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI.Controllers.Administration;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Administration

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
@@ -9,13 +7,11 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.Tests.TestHelpers;
 using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using NUnit.Framework;
 
 namespace GenderPayGap.Tests

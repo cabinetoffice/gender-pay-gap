@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Register;

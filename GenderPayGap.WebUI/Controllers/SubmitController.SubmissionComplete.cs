@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.Classes;

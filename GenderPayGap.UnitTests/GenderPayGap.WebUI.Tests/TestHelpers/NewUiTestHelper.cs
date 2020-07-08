@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Security.Claims;
 using Autofac;
 using AutoMapper;
-using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;

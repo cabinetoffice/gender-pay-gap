@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Data;
 using System.IO;
-using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Core.Classes

@@ -1,6 +1,5 @@
 using System;
 using GenderPayGap.Core;
-using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GenderPayGap.Database.Migrations

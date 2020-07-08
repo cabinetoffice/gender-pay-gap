@@ -9,7 +9,6 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,5 @@
 ﻿using Autofac;
 using GenderPayGap.Core;
-using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;

@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using Serilog;

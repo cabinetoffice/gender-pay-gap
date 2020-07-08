@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using AutoMapper;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Areas.Account.Abstractions;

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.ExternalServices;
 using Notify.Models.Responses;
 
