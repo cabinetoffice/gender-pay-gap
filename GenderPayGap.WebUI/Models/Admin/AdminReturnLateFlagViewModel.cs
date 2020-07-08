@@ -1,4 +1,3 @@
-using System;
 using GenderPayGap.Database;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;

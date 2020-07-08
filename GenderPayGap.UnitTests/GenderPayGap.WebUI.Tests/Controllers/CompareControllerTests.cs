@@ -1,4 +1,8 @@
-﻿using GenderPayGap.BusinessLogic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -6,6 +10,8 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
+using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
@@ -14,13 +20,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 
 namespace GenderPayGap.WebUI.Tests.Controllers
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
-using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Search.CachedObjects
 {

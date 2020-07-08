@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 
 namespace GenderPayGap.Database
 {

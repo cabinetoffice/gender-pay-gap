@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.ExternalServices;

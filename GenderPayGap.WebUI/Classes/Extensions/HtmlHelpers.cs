@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes.Attributes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;

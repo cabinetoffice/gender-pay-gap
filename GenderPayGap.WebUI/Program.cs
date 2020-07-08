@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore;

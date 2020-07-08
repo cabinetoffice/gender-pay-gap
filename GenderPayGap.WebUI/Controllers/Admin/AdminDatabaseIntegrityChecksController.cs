@@ -10,7 +10,6 @@ using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {

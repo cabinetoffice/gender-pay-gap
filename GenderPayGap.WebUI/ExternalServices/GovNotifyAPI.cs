@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using Newtonsoft.Json;
 using Notify.Client;

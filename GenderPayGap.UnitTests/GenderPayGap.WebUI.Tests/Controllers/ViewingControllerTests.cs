@@ -2,7 +2,6 @@
 using System.Net;
 using System.Threading.Tasks;
 using Autofac;
-using GenderPayGap.BusinessLogic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;

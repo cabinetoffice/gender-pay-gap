@@ -1,6 +1,5 @@
 ﻿using Cryptography.Obfuscation;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 
 namespace GenderPayGap.Core.Classes
 {

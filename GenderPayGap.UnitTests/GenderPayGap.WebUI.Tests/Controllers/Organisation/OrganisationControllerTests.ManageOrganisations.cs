@@ -1,6 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.Tests.TestHelpers;

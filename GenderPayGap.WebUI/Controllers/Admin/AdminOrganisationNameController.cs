@@ -5,7 +5,6 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;

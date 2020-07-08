@@ -4,7 +4,6 @@ using System.Web;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

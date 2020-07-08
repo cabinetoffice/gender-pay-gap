@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using GenderPayGap.Core;
 
 namespace GenderPayGap.WebUI.Classes
 {

@@ -1,5 +1,4 @@
-﻿using GenderPayGap.Core.Classes;
-using GenderPayGap.WebUI.BackgroundJobs.QueueBasedJobs;
+﻿using GenderPayGap.WebUI.BackgroundJobs.QueueBasedJobs;
 using GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs;
 using GenderPayGap.WebUI.ExternalServices;
 using Hangfire;

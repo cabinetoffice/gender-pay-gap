@@ -1,24 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Extensions;
-using GenderPayGap.BusinessLogic;
+using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using Moq;
-using NUnit.Framework;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc;
-using GenderPayGap.WebUI.Models;
-using System.Threading.Tasks;
-using GenderPayGap.WebUI.BusinessLogic.Services;
+using Microsoft.AspNetCore.Routing;
+using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 {
