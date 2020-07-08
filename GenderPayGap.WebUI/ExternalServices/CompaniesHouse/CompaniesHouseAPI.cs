@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
-using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace GenderPayGap.Core.API
+namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
 {
     public interface ICompaniesHouseAPI
     {
