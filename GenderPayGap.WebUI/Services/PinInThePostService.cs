@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.WebUI.ExternalServices;
 using Microsoft.AspNetCore.Mvc;
 using Notify.Models.Responses;
 

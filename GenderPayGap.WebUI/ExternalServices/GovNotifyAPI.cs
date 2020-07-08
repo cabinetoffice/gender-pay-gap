@@ -1,14 +1,25 @@
 using System.Collections.Generic;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
 using Notify.Client;
 using Notify.Exceptions;
 using Notify.Models.Responses;
 
-namespace GenderPayGap.Core.Classes
+namespace GenderPayGap.WebUI.ExternalServices
 {
+    public interface IGovNotifyAPI
+    {
+
+        EmailNotificationResponse SendEmail(NotifyEmail notifyEmail);
+
+        LetterNotificationResponse SendLetter(string templateId,
+            Dictionary<string, dynamic> personalisation,
+            string clientReference = null);
+
+    }
+
     public class GovNotifyAPI : IGovNotifyAPI
     {
 
