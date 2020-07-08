@@ -7,6 +7,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
+using GenderPayGap.WebUI.ExternalServices;
 
 namespace GenderPayGap.WebUI.Services
 {
