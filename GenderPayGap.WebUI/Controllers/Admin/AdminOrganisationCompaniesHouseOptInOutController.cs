@@ -1,11 +1,11 @@
 ﻿using System;
 using GenderPayGap.Core;
-using GenderPayGap.Core.API;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.ExternalServices;
+using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;

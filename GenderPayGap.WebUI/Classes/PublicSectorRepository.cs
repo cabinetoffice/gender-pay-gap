@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
-using GenderPayGap.Core.API;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.ExternalServices;
+using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap

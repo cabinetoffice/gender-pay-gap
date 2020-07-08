@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.Core.Models.CompaniesHouse
+namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
 {
     public class CompaniesHouseCompany
     {
