@@ -3,11 +3,10 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 
-namespace GenderPayGap.Core.Classes
+namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
     public class AwsFileRepository : IFileRepository
     {

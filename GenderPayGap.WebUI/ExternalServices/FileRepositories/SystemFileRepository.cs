@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
-using Newtonsoft.Json;
 
-namespace GenderPayGap.Core.Classes
+namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
     public class SystemFileRepository : IFileRepository
     {
