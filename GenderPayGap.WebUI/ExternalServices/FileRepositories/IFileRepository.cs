@@ -1,4 +1,4 @@
-﻿namespace GenderPayGap.Core.Interfaces
+﻿namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
     public interface IFileRepository
     {
