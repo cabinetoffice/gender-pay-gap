@@ -5,6 +5,7 @@ using Autofac;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,15 +29,32 @@ namespace GenderPayGap.WebUI.Helpers
         public IReadOnlyCollection<XElement> GetAllElements()
         {
             IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
-            return dataRepository.GetAll<DataProtectionKey>().Select(dpk => XElement.Parse(dpk.Xml)).ToList();
+            
+            List<DataProtectionKey> dataProtectionKeys = dataRepository.GetAll<DataProtectionKey>()
+                .ToList();
+
+            List<XElement> keysAdXmlElements = dataProtectionKeys
+                .Select(dpk =>
+                {
+                    string encryptedKey = dpk.Xml;
+                    string unencryptedString = Encryption.DecryptData(encryptedKey);
+                    XElement xmlElement = XElement.Parse(unencryptedString);
+                    return xmlElement;
+                })
+                .ToList();
+
+            return keysAdXmlElements;
         }
 
         public void StoreElement(XElement element, string friendlyName)
         {
+            string serialisedKey = element.ToString();
+            string encryptedKey = Encryption.EncryptData(serialisedKey);
+
             var dataProtectionKey = new DataProtectionKey
             {
                 FriendlyName = friendlyName,
-                Xml = element.ToString()
+                Xml = encryptedKey
             };
 
             IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
