@@ -274,7 +274,19 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         public static bool SicCodesEqual(IEnumerable<OrganisationSicCode> sicCodes, IEnumerable<string> companiesHouseSicCodes)
         {
-            return new HashSet<int>(sicCodes.Select(sic => sic.SicCodeId)).SetEquals(companiesHouseSicCodes.Select(sic => int.Parse(sic)));
+            List<int> sicCodeIdsFromDatabase = sicCodes
+                .Select(sic => sic.SicCodeId)
+                .ToList();
+
+            if (companiesHouseSicCodes == null)
+            {
+                companiesHouseSicCodes = new List<string>();
+            }
+            List<int> sicCodeIdsFromCompaniesHouse = companiesHouseSicCodes
+                .Select(sic => int.Parse(sic))
+                .ToList();
+
+            return new HashSet<int>(sicCodeIdsFromDatabase).SetEquals(sicCodeIdsFromCompaniesHouse);
         }
 
     }
