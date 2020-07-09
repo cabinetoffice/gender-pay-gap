@@ -71,6 +71,8 @@
 
     <PackageReference Include="AWSSDK.S3" Version="3.3.111.11" />
 
+    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
+
     <PackageReference Include="Hangfire" Version="1.7.11" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
     <PackageReference Include="HangFire.Autofac" Version="2.3.1" />
