@@ -87,8 +87,8 @@ namespace Repositories.UserRepository
         }
 
         private static object[] ThrowsErrorWhenArgumentIsNullCases = {
-            new object[] {null, null, "Value cannot be null.\r\nParameter name: userToUpdate"},
-            new object[] {new User(), null, "Value cannot be null.\r\nParameter name: changeDetails"}
+            new object[] {null, null, "Value cannot be null. (Parameter 'userToUpdate')"},
+            new object[] {new User(), null, "Value cannot be null. (Parameter 'changeDetails')" }
         };
 
         [TestCaseSource(nameof(ThrowsErrorWhenArgumentIsNullCases))]
