@@ -7,7 +7,6 @@ using System.Web;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Features.AttributeFilters;
-using AutoMapper;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
@@ -50,8 +49,6 @@ namespace GenderPayGap.WebUI
 
         public static Action<IServiceCollection> ConfigureTestServices;
         public static Action<ContainerBuilder> ConfigureTestContainer;
-
-        private static bool AutoMapperInitialised;
 
         // ConfigureServices is where you register dependencies. This gets
         // called by the runtime before the ConfigureContainer method, below.
@@ -308,18 +305,6 @@ namespace GenderPayGap.WebUI
             ConfigureTestContainer?.Invoke(builder);
 
             IContainer container = builder.Build();
-            if (!AutoMapperInitialised)
-            {
-                Mapper.Initialize(
-                    config =>
-                    {
-                        // allows auto mapper to inject our dependencies
-                        config.ConstructServicesUsing(container.Resolve);
-                        // register all out mapper profiles (classes/mappers/*)
-                        config.AddMaps(typeof(Program).Assembly);
-                        AutoMapperInitialised = true;
-                    });
-            }
 
             HangfireConfigurationHelper.ConfigureIOC(container);
 
