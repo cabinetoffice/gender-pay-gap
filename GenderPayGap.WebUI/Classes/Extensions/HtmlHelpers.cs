@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 
 namespace GenderPayGap.WebUI.Classes
@@ -35,7 +35,7 @@ namespace GenderPayGap.WebUI.Classes
             string errorClassName,
             string noErrorClassName = null)
         {
-            string expressionText = ExpressionHelper.GetExpressionText(expression);
+            string expressionText = GetModelExpressionProvider(htmlHelper).GetExpressionText(expression);
             string fullHtmlFieldName = htmlHelper.ViewContext.ViewData
                 .TemplateInfo.GetFullHtmlFieldName(expressionText);
 
@@ -127,12 +127,13 @@ namespace GenderPayGap.WebUI.Classes
             return await helper.PartialAsync("_ValidationSummary");
         }
 
-        private static Dictionary<string, object> CustomAttributesFor<TModel, TProperty>(Expression<Func<TModel, TProperty>> expression,
+        private static Dictionary<string, object> CustomAttributesFor<TModel, TProperty>(IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
             object htmlAttributes = null)
         {
             Type containerType = typeof(TModel);
 
-            string propertyName = ExpressionHelper.GetExpressionText(expression);
+            string propertyName = GetModelExpressionProvider(htmlHelper).GetExpressionText(expression);
             PropertyInfo propertyInfo = containerType.GetPropertyInfo(propertyName);
 
             var displayNameAttribute =
@@ -247,11 +248,16 @@ namespace GenderPayGap.WebUI.Classes
             return htmlAttr;
         }
 
+        private static ModelExpressionProvider GetModelExpressionProvider<TModel>(IHtmlHelper<TModel> htmlHelper)
+        {
+            return htmlHelper.ViewContext.HttpContext.RequestServices.GetService(typeof(ModelExpressionProvider)) as ModelExpressionProvider;
+        }
+
         public static IHtmlContent CustomEditorFor<TModel, TProperty>(this IHtmlHelper<TModel> helper,
             Expression<Func<TModel, TProperty>> expression,
             object htmlAttributes = null)
         {
-            Dictionary<string, object> htmlAttr = CustomAttributesFor(expression, htmlAttributes);
+            Dictionary<string, object> htmlAttr = CustomAttributesFor(helper, expression, htmlAttributes);
 
             return helper.EditorFor(expression, null, new {htmlAttributes = htmlAttr});
         }
@@ -261,7 +267,7 @@ namespace GenderPayGap.WebUI.Classes
             object value,
             object htmlAttributes = null)
         {
-            Dictionary<string, object> htmlAttr = CustomAttributesFor(expression, htmlAttributes);
+            Dictionary<string, object> htmlAttr = CustomAttributesFor(helper, expression, htmlAttributes);
 
             return helper.RadioButtonFor(expression, value, htmlAttr);
         }
