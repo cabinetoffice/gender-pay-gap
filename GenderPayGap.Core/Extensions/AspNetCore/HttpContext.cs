@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
 
 namespace System.Web
 {
@@ -27,13 +26,11 @@ namespace System.Web
         {
             if (maxSeconds > 0)
             {
-                context.Response.Headers[HeaderNames.CacheControl] = $"public,max-age={maxSeconds}";
+                context.Response.Headers["Cache-Control"] = $"public,max-age={maxSeconds}";
             }
             else
             {
-                context.Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue {
-                    NoCache = true, NoStore = true, MaxAge = new TimeSpan(0), MustRevalidate = true
-                };
+                context.Response.Headers["Cache-Control"] = $"no-cache,no-store,max-age=0,must-revalidate";
             }
         }
 

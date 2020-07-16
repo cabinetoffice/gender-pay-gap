@@ -85,7 +85,11 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
 
             //Get value from session
-            byte[] bytes = _httpContextAccessor.HttpContext.Session.Get(key);
+            if (!_httpContextAccessor.HttpContext.Session.TryGetValue(key, out byte[] bytes))
+            {
+                return default;
+            }
+
             if (bytes == null || bytes.Length == 0)
             {
                 return default;
@@ -121,16 +125,10 @@ namespace GenderPayGap.Extensions.AspNetCore
             else
             {
                 str = JsonConvert.SerializeObject(value);
-                if (str.Length > 250)
-                {
-                    byte[] bytes = Encoding.UTF8.GetBytes(str);
-                    _httpContextAccessor.HttpContext.Session.Set(key, bytes);
-                    Dirty = true;
-                    return;
-                }
             }
 
-            _httpContextAccessor.HttpContext.Session.SetString(key, str);
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+            _httpContextAccessor.HttpContext.Session.Set(key, bytes);
             Dirty = true;
         }
 
