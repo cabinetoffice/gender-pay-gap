@@ -2,10 +2,15 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using Autofac.Extensions.DependencyInjection;
+using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace GenderPayGap.WebUI
 {
@@ -51,10 +56,103 @@ namespace GenderPayGap.WebUI
 
         public static IWebHost BuildWebHost(string[] args)
         {
-            IWebHostBuilder webHostBuilder = WebHost.CreateDefaultBuilder(args)
-                .UseGpgConfiguration(typeof(Startup));
+            IWebHostBuilder webHostBuilder = WebHost.CreateDefaultBuilder(args);
+            UseGpgConfiguration(webHostBuilder, typeof(Startup));
 
             return webHostBuilder.Build();
+        }
+
+        /// <summary>
+        ///     Build the Web Host
+        /// </summary>
+        /// <param name="hostBuilder"></param>
+        /// <param name="startupType"></param>
+        /// <returns></returns>
+        public static void UseGpgConfiguration(IWebHostBuilder webHostBuilder,
+            Type startupType = null,
+            string contentRoot = null,
+            string webRoot = null)
+        {
+            webHostBuilder.ConfigureKestrel(
+                    options =>
+                    {
+                        options.AddServerHeader = false;
+                        //options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+                    })
+                .ConfigureAppConfiguration(ConfigureAppConfiguration)
+                .UseApplicationInsights(Global.ApplicationInsightsInstrumentationKey)
+                .CaptureStartupErrors(true) // Add this line to capture startup errors
+                .UseEnvironment(Config.EnvironmentName) //Set the environment name
+                .UseSetting(
+                    WebHostDefaults.DetailedErrorsKey,
+                    "true") //When enabled (or when the Environment is set to Development), the app captures detailed exceptions.
+                .ConfigureServices(
+                    services => services
+                        .AddAutofac()); /// This call allows for ConfigureContainer to be supported in Startup with a strongly-typed ContainerBuilder
+
+            if (!string.IsNullOrWhiteSpace(contentRoot))
+            {
+                webHostBuilder.UseContentRoot(contentRoot); //Specify the root path of the content
+            }
+
+            if (!string.IsNullOrWhiteSpace(webRoot))
+            {
+                webHostBuilder.UseWebRoot(webRoot); //Specify the root path of the site
+            }
+
+            if (startupType != null)
+            {
+                webHostBuilder.UseStartup(startupType);
+            }
+
+            SetupSerilogLogger(webHostBuilder);
+        }
+
+        /// <summary>
+        ///     Use the Config extension class for Configuration
+        /// </summary>
+        /// <param name="builderContext"></param>
+        /// <param name="configBuilder"></param>
+        private static void ConfigureAppConfiguration(WebHostBuilderContext builderContext, IConfigurationBuilder configBuilder)
+        {
+            Config.EnvironmentName = builderContext.HostingEnvironment.EnvironmentName;
+            Console.WriteLine($"Environment: {Config.EnvironmentName}");
+
+            //Build the configuration
+            Config.Configuration = Config.Build(configBuilder);
+            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
+        }
+
+        public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
+        {
+            if (Config.IsLocal())
+            {
+                SetupLoggerToConsole();
+            }
+            else
+            {
+                if (Global.LogToApplicationInsight)
+                {
+                    SetupLoggerToApplicationInsight();
+                }
+                else
+                {
+                    webHostBuilder.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); });
+                }
+            }
+
+            Log.Information("Serilog logger setup complete");
+        }
+
+        private static void SetupLoggerToConsole()
+        {
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        }
+
+        private static void SetupLoggerToApplicationInsight()
+        {
+            Log.Logger = new LoggerConfiguration().WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
+                .CreateLogger();
         }
 
     }
