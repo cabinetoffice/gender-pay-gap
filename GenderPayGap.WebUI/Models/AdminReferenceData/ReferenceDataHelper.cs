@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 
 namespace GenderPayGap.WebUI.Models.AdminReferenceData {
@@ -35,13 +37,16 @@ namespace GenderPayGap.WebUI.Models.AdminReferenceData {
             {
                 using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
                 {
-                    using (var csvReader = new CsvReader(reader))
+                    var csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture)
                     {
-                        csvReader.Configuration.WillThrowOnMissingField = false;
-                        csvReader.Configuration.TrimFields = true;
-                        csvReader.Configuration.IgnoreQuotes = false;
+                        IgnoreQuotes = false,
+                        TrimOptions = TrimOptions.InsideQuotes
+                    };
+
+                    using (var csvReader = new CsvReader(reader, csvConfiguration))
+                    {
                         csvReader.ReadHeader();
-                        string[] fieldHeaders = csvReader.FieldHeaders;
+                        string[] fieldHeaders = csvReader.Context.HeaderRecord;
 
                         if (!fieldHeaders.SequenceEqual(expectedHeadings))
                         {

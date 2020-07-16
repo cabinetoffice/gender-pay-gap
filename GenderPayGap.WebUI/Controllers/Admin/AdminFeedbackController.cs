@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
@@ -55,7 +56,7 @@ namespace GenderPayGap.WebUI.Controllers
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream))
             {
-                using (var csv = new CsvWriter(writer))
+                using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
                 {
                     csv.WriteRecords(feedback.ToList());
                 }

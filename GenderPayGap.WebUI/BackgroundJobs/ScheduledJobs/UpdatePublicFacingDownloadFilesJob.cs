@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
@@ -98,7 +99,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void SaveCsvFile(IEnumerable records, string relativeFilePath)
         {
-            var csvConfiguration = new CsvConfiguration { QuoteAllFields = true, TrimFields = true, TrimHeaders = true };
+            var csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes };
 
             using (var memoryStream = new MemoryStream())
             using (var streamReader = new StreamReader(memoryStream))

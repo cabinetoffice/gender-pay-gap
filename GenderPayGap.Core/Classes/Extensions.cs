@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -60,7 +61,7 @@ namespace GenderPayGap.Core.Classes
                 {
                     using (var textWriter = new StreamWriter(stream))
                     {
-                        var config = new CsvConfiguration {QuoteAllFields = true, TrimFields = true, TrimHeaders = true};
+                        var config = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes };
                         using (var writer = new CsvWriter(textWriter, config))
                         {
                             // Write columns
