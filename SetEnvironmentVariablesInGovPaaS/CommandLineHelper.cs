@@ -1,4 +1,7 @@
-﻿namespace SetEnvironmentVariablesInGovPaaS
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+
+namespace SetEnvironmentVariablesInGovPaaS
 {
     public static class CommandLineHelper
     {
