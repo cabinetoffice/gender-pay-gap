@@ -55,13 +55,12 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         private List<Organisation> GetOrganisationsToPurge(DateTime deadline)
         {
             return dataRepository.GetAll<Organisation>()
-                .Where(
-                    o => o.Created < deadline
-                         && !o.Returns.Any()
-                         && !o.OrganisationScopes.Any(sc => sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.OutOfScope)
-                         && !o.UserOrganisations.Any(
-                             uo => uo.Method == RegistrationMethods.Manual || uo.PINConfirmedDate != null || uo.PINSentDate > deadline)
-                         && !o.OrganisationAddresses.Any(a => a.CreatedByUserId == -1))
+                .Where(o => o.Status != OrganisationStatuses.Deleted)
+                .Where(o => o.Created < deadline)
+                .Where(o => !o.Returns.Any())
+                .Where(o => !o.OrganisationScopes.Any(sc => sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.OutOfScope))
+                .Where(o => !o.UserOrganisations.Any(uo => uo.Method == RegistrationMethods.Manual || uo.PINConfirmedDate != null || uo.PINSentDate > deadline))
+                .Where(o => !o.OrganisationAddresses.Any(a => a.CreatedByUserId == -1))
                 .ToList();
         }
 
