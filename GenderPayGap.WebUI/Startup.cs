@@ -77,8 +77,7 @@ namespace GenderPayGap.WebUI
             //Allow creation of a static http context anywhere
             services.AddHttpContextAccessor();
 
-            //Create the MVC service
-            services.AddMvc(
+            services.AddControllersWithViews(
                     options =>
                     {
                         options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
@@ -89,15 +88,23 @@ namespace GenderPayGap.WebUI
                         options.Filters.Add<ErrorHandlingFilter>();
                     })
                 .AddControllersAsServices() // Add controllers as services so attribute filters be resolved in contructors.
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                // Set the default resolver to use Pascalcase instead of the default camelCase which may break Ajaz responses
-                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
-                .AddRazorOptions(
-                    // we need to explicitly set AllowRecompilingViewsOnFileChange because we use a custom environment "Local" for local dev 
-                    // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-compilation?view=aspnetcore-2.2#runtime-compilation
-                    options => options.AllowRecompilingViewsOnFileChange = Config.IsLocal())
+                .AddJsonOptions(options =>
+                {
+                    // By default, ASP.Net's JSON serialiser converts property names to camelCase (because javascript typically uses camelCase)
+                    // But, some of our javascript code uses PascalCase (e.g. the homepage auto-complete)
+                    // These options tell ASP.Net to use the original C# property names, without changing the case
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                })
                 .AddDataAnnotationsLocalization(
                     options => { options.DataAnnotationLocalizerProvider = DataAnnotationLocalizerProvider.DefaultResourceHandler; });
+
+            IMvcBuilder mvcBuilder = services.AddRazorPages();
+
+            if (Config.IsLocal())
+            {
+                mvcBuilder.AddRazorRuntimeCompilation();
+            }
 
             //Add antiforgery token by default to forms
             services.AddAntiforgery();
@@ -370,12 +377,14 @@ namespace GenderPayGap.WebUI
                     });
             }
 
+            app.UseRouting();
             app.UseResponseCaching();
             app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters
             app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseSession(); //Must be before UseMvC or any middleware which requires session
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
-            
+            app.UseAuthorization();
+
             var cookiePolicyOptions = new CookiePolicyOptions
             {
                 MinimumSameSitePolicy = SameSiteMode.Strict,
@@ -383,7 +392,10 @@ namespace GenderPayGap.WebUI
             app.UseCookiePolicy(cookiePolicyOptions);
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
-            app.UseMvcWithDefaultRoute();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             HangfireConfigurationHelper.ConfigureApp(app);
 
