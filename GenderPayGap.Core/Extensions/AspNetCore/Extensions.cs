@@ -76,11 +76,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
         }
 
-        public static bool IsValidField(this ModelStateDictionary modelState, string key)
-        {
-            return modelState[key] == null || modelState[key].ValidationState == ModelValidationState.Valid;
-        }
-
         /// <summary>
         ///     Removes null header or ensures header is set to correct value
         ///     ///

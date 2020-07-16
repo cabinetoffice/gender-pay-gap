@@ -5235,5 +5235,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
     }
 
+    internal static class SubmissionCOntrollerTestHelpers
+    {
+        public static bool IsValidField(this ModelStateDictionary modelState, string key)
+        {
+            return modelState[key] == null || modelState[key].ValidationState == ModelValidationState.Valid;
+        }
+    }
+
 
 }
