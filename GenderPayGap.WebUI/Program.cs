@@ -6,7 +6,6 @@ using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -151,7 +150,7 @@ namespace GenderPayGap.WebUI
 
         private static void SetupLoggerToApplicationInsight()
         {
-            Log.Logger = new LoggerConfiguration().WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces)
+            Log.Logger = new LoggerConfiguration().WriteTo.ApplicationInsights(Global.ApplicationInsightsInstrumentationKey, TelemetryConverter.Traces)
                 .CreateLogger();
         }
 
