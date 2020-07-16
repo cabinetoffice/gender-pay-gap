@@ -40,7 +40,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Logging;
 using Newtonsoft.Json.Serialization;
 using StackExchange.Redis;
 
@@ -328,8 +327,6 @@ namespace GenderPayGap.WebUI
             app.UseMiddleware<ExceptionMiddleware>();
             if (Config.IsLocal())
             {
-                IdentityModelEventSource.ShowPII = true;
-
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
