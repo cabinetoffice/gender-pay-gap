@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace GenderPayGap.WebUI.Classes
 {
@@ -60,7 +62,8 @@ namespace GenderPayGap.WebUI.Classes
 
             if (!context.Metadata.IsComplexType && context.Metadata.ModelType == typeof(string))
             {
-                return new TrimmingModelBinder(new SimpleTypeModelBinder(context.Metadata.ModelType));
+                var loggerFactory = context.Services.GetRequiredService<ILoggerFactory>();
+                return new TrimmingModelBinder(new SimpleTypeModelBinder(context.Metadata.ModelType, loggerFactory));
             }
 
             return null;
