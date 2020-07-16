@@ -56,22 +56,7 @@ namespace GenderPayGap.WebUI
         public static IWebHost BuildWebHost(string[] args)
         {
             IWebHostBuilder webHostBuilder = WebHost.CreateDefaultBuilder(args);
-            UseGpgConfiguration(webHostBuilder, typeof(Startup));
 
-            return webHostBuilder.Build();
-        }
-
-        /// <summary>
-        ///     Build the Web Host
-        /// </summary>
-        /// <param name="hostBuilder"></param>
-        /// <param name="startupType"></param>
-        /// <returns></returns>
-        public static void UseGpgConfiguration(IWebHostBuilder webHostBuilder,
-            Type startupType = null,
-            string contentRoot = null,
-            string webRoot = null)
-        {
             webHostBuilder.ConfigureKestrel(
                     options =>
                     {
@@ -89,22 +74,11 @@ namespace GenderPayGap.WebUI
                     services => services
                         .AddAutofac()); /// This call allows for ConfigureContainer to be supported in Startup with a strongly-typed ContainerBuilder
 
-            if (!string.IsNullOrWhiteSpace(contentRoot))
-            {
-                webHostBuilder.UseContentRoot(contentRoot); //Specify the root path of the content
-            }
-
-            if (!string.IsNullOrWhiteSpace(webRoot))
-            {
-                webHostBuilder.UseWebRoot(webRoot); //Specify the root path of the site
-            }
-
-            if (startupType != null)
-            {
-                webHostBuilder.UseStartup(startupType);
-            }
+            webHostBuilder.UseStartup<Startup>();
 
             SetupSerilogLogger(webHostBuilder);
+
+            return webHostBuilder.Build();
         }
 
         /// <summary>
