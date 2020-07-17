@@ -163,8 +163,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             return dataRepository
                 .GetAll<User>()
-                .Where(u => string.Equals(u.EmailAddress, emailAddress, StringComparison.CurrentCultureIgnoreCase))
-                .FirstOrDefault(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active);
+                .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active)
+                .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - string.Equals cannot be translated */ )
+                .FirstOrDefault(u => string.Equals(u.EmailAddress, emailAddress, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private User CreateNewUser(CreateUserAccountViewModel viewModel)

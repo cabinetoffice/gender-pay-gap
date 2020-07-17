@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -28,13 +28,14 @@ namespace GenderPayGap.WebUI.Repositories
 
         public async Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses)
         {
-            return await dataRepository.GetAll<User>()
+            return dataRepository.GetAll<User>()
+                .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)
                 // filter by email address
                 .Where(user => user.EmailAddress.ToLower() == email.ToLower())
                 // skip or filter by user status
                 .Where(user => filterStatuses.Length == 0 || filterStatuses.Contains(user.Status))
                 // return first match otherwise null
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
         public async Task<bool> CheckPasswordAsync(User user, string password)
