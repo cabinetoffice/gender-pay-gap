@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -26,17 +26,6 @@ namespace GenderPayGap.WebUI.Repositories
             this.auditLogger = auditLogger;
         }
 
-        public async Task<User> FindBySubjectIdAsync(long userId, params UserStatuses[] filterStatuses)
-        {
-            return await dataRepository.GetAll<User>()
-                // filter by user id
-                .Where(x => x.UserId == userId)
-                // skip or filter by user status
-                .Where(user => filterStatuses.Length == 0 || filterStatuses.Contains(user.Status))
-                // return first match otherwise null
-                .FirstOrDefaultAsync();
-        }
-
         public async Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses)
         {
             return await dataRepository.GetAll<User>()
@@ -46,17 +35,6 @@ namespace GenderPayGap.WebUI.Repositories
                 .Where(user => filterStatuses.Length == 0 || filterStatuses.Contains(user.Status))
                 // return first match otherwise null
                 .FirstOrDefaultAsync();
-        }
-
-        public async Task<List<User>> FindAllUsersByNameAsync(string name)
-        {
-            string nameForSearch = name?.ToLower();
-
-            IQueryable<User> foundUsers = dataRepository
-                .GetAll<User>()
-                .Where(x => x.Fullname.ToLower().Contains(nameForSearch) || x.ContactFullname.ToLower().Contains(nameForSearch));
-
-            return await foundUsers.ToListAsync();
         }
 
         public async Task<bool> CheckPasswordAsync(User user, string password)

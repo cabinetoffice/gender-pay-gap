@@ -13,11 +13,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
 
         Task<bool> CheckPasswordAsync(User user, string password);
 
-        Task<User> FindBySubjectIdAsync(long subjectId, params UserStatuses[] filterStatuses);
-
         Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses);
-
-        Task<List<User>> FindAllUsersByNameAsync(string name);
 
         void UpdateEmail(User userToUpdate, string newEmailAddress);
 
