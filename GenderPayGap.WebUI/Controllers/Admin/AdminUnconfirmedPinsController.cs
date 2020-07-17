@@ -36,14 +36,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("unconfirmed-pins")]
-        public async Task<IActionResult> UnconfirmedPins()
+        public IActionResult UnconfirmedPins()
         {
-            List<UserOrganisation> model = await dataRepository.GetAll<UserOrganisation>()
+            List<UserOrganisation> model = dataRepository.GetAll<UserOrganisation>()
                 .Where(uo => uo.Method == RegistrationMethods.PinInPost)
                 .Where(uo => uo.PINConfirmedDate == null)
                 .Where(uo => uo.PIN != null)
                 .OrderByDescending(uo => uo.PINConfirmedDate.Value)
-                .ToListAsync();
+                .ToList();
+
             return View("../Admin/UnconfirmedPins", model);
         }
 

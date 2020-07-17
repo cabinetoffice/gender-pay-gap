@@ -4047,7 +4047,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(user.ContactPhoneNumber == stashedModel.ContactPhoneNumber, "Wrong contact phone");
 
             //Check sic codes
-            Assert.That(sics.Select(s => s.SicCodeId).ToDelimitedString(", ") == stashedModel.SicCodeIds, "Wrong sic codes saved");
+            Assert.AreEqual(stashedModel.SicCodeIds, sics.Select(s => s.SicCodeId).OrderBy(sid => sid).ToDelimitedString(", "), "Wrong sic codes saved");
             Assert.That(org.GetSicSource() == stashedModel.SicSource, "Wrong sic source saved");
 
             //Check user org
@@ -4220,7 +4220,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(user.ContactPhoneNumber == stashedModel.ContactPhoneNumber, "Wrong contact phone");
 
             //Check sic codes
-            Assert.That(sics.Select(s => s.SicCodeId).ToDelimitedString(", ") == stashedModel.SicCodeIds, "Wrong sic codes saved");
+            Assert.AreEqual(stashedModel.SicCodeIds, sics.Select(s => s.SicCodeId).OrderBy(sid => sid).ToDelimitedString(", "), "Wrong sic codes saved");
             Assert.That(org.GetSicSource() == stashedModel.SicSource, "Wrong sic source saved");
 
             //Check user org
