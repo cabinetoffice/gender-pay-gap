@@ -160,16 +160,21 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             List<long> basketOrgIds = encBasketOrgIds.Select(x => _obfuscator.DeObfuscate(x).ToInt64()).ToList();
 
             // query against scopes and filter by basket ids
-            IQueryable<OrganisationScope> dbScopesQuery = _DataRepository.GetAll<OrganisationScope>()
-                .Where(os => os.Status == ScopeRowStatuses.Active && os.SnapshotDate.Year == year)
-                .Where(r => basketOrgIds.Contains(r.OrganisationId));
+            List<OrganisationScope> dbScopesQuery = _DataRepository.GetAll<OrganisationScope>()
+                .Where(os => os.Status == ScopeRowStatuses.Active)
+                .Where(os => os.SnapshotDate.Year == year)
+                .Where(os => basketOrgIds.Contains(os.OrganisationId))
+                .ToList();
 
             // query submitted returns for current year
-            IQueryable<Return> dbReturnsQuery = _DataRepository.GetAll<Return>()
-                .Where(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate.Year == year);
+            List<Return> dbReturnsQuery = _DataRepository.GetAll<Return>()
+                .Where(r => r.Status == ReturnStatuses.Submitted)
+                .Where(r => r.AccountingDate.Year == year)
+                .Where(r => basketOrgIds.Contains(r.OrganisationId))
+                .ToList();
 
             // finally, generate the left join sql statement between scopes and returns
-            var dbResults = await dbScopesQuery.GroupJoin(
+            var dbResults = dbScopesQuery.GroupJoin(
                     // join
                     dbReturnsQuery,
                     // on
@@ -180,7 +185,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                     // into
                     (Scope, Return) => new {Scope, Return = Return.LastOrDefault()})
                 // execute on sql server and return results into memory
-                .ToListAsync();
+                .ToList();
 
             // build the compare reports list
             List<CompareReportModel> compareReports = dbResults.Select(

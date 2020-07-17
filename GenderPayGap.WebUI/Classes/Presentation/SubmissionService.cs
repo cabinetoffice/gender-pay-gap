@@ -386,10 +386,9 @@ namespace GenderPayGap.WebUI.Classes.Services
             }
 
             return await DataRepository.GetAll<Return>()
-                .Where(
-                    s => s.Status == ReturnStatuses.Submitted
-                         && s.AccountingDate.Year == snapshotYear
-                         && s.OrganisationId == organisationId)
+                .Where(s => s.Status == ReturnStatuses.Submitted)
+                .Where(s => s.AccountingDate.Year == snapshotYear)
+                .Where(s => s.OrganisationId == organisationId)
                 .OrderByDescending(s => s.ReturnId)
                 .FirstOrDefaultAsync();
         }

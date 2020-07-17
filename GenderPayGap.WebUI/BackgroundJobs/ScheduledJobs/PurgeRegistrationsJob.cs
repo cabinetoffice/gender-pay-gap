@@ -34,9 +34,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnconfirmedPinDays);
 
             List<UserOrganisation> registrations = dataRepository.GetAll<UserOrganisation>()
-                .Where(uo => uo.PINConfirmedDate == null &&
-                             uo.PINSentDate != null &&
-                             uo.PINSentDate.Value < deadline)
+                .Where(uo => uo.PINConfirmedDate == null)
+                .Where(uo => uo.PINSentDate != null)
+                .Where(uo => uo.PINSentDate.Value < deadline)
                 .ToList();
 
             foreach (UserOrganisation registration in registrations)

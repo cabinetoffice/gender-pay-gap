@@ -61,10 +61,9 @@ namespace GenderPayGap
                 var localResults = new List<Organisation>();
 
                 orgs = await _DataRepository.GetAll<Organisation>()
-                    .Where(
-                        o => o.SectorType == SectorTypes.Private
-                             && o.Status == OrganisationStatuses.Active
-                             && o.OrganisationAddresses.Count > 0)
+                    .Where(o => o.SectorType == SectorTypes.Private)
+                    .Where(o => o.Status == OrganisationStatuses.Active)
+                    .Where(o => o.OrganisationAddresses.Count > 0)
                     .ToListAsync();
 
                 if (searchText.IsCompanyNumber())

@@ -41,7 +41,9 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         
         public IEnumerable<Return> GetAllSubmissionsByOrganisationIdAndSnapshotYear(long organisationId, int snapshotYear)
         {
-            return DataRepository.GetAll<Return>().Where(s => s.OrganisationId == organisationId && s.AccountingDate.Year == snapshotYear);
+            return DataRepository.GetAll<Return>()
+                .Where(s => s.OrganisationId == organisationId)
+                .Where(s => s.AccountingDate.Year == snapshotYear);
         }
 
         public ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert)

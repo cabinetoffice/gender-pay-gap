@@ -498,7 +498,9 @@ namespace GenderPayGap.WebUI.Controllers
                 if (org == null && !string.IsNullOrWhiteSpace(employer.CompanyNumber))
                 {
                     org = DataRepository.GetAll<Organisation>()
-                        .FirstOrDefault(o => o.CompanyNumber != null && o.CompanyNumber == employer.CompanyNumber);
+                        .Where(o => o.CompanyNumber != null)
+                        .Where(o => o.CompanyNumber == employer.CompanyNumber)
+                        .FirstOrDefault();
                 }
 
                 if (org == null && !string.IsNullOrWhiteSpace(employer.EmployerReference))
@@ -525,7 +527,9 @@ namespace GenderPayGap.WebUI.Controllers
 
                     //Ensure user is not already registered for this organisation
                     UserOrganisation userOrg = DataRepository.GetAll<UserOrganisation>()
-                        .FirstOrDefault(uo => uo.OrganisationId == org.OrganisationId && uo.UserId == currentUser.UserId);
+                        .Where(uo => uo.OrganisationId == org.OrganisationId)
+                        .Where(uo => uo.UserId == currentUser.UserId)
+                        .FirstOrDefault();
                     if (userOrg != null)
                     {
                         AddModelError(userOrg.PINConfirmedDate == null ? 3021 : 3020);

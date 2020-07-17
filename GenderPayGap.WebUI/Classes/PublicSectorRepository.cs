@@ -29,7 +29,8 @@ namespace GenderPayGap
         {
             var result = new PagedResult<EmployerRecord>();
             List<Organisation> searchResults = await _DataRepository.GetAll<Organisation>()
-                .Where(o => o.SectorType == SectorTypes.Public && o.Status == OrganisationStatuses.Active)
+                .Where(o => o.SectorType == SectorTypes.Public)
+                .Where(o => o.Status == OrganisationStatuses.Active)
                 .ToListAsync();
             List<Organisation> searchResultsList = searchResults.Where(o => o.OrganisationName.ContainsI(searchText))
                 .OrderBy(o => o.OrganisationName)

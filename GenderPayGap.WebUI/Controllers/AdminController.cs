@@ -80,11 +80,10 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 DataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
-                    .Where(
-                        uo => uo.PINConfirmedDate == null
-                              && uo.Method == RegistrationMethods.Manual
-                              && uo.Address.IsUkAddress.HasValue
-                              && uo.Address.IsUkAddress.Value == false)
+                    .Where(uo => uo.PINConfirmedDate == null)
+                    .Where(uo => uo.Method == RegistrationMethods.Manual)
+                    .Where(uo => uo.Address.IsUkAddress.HasValue)
+                    .Where(uo => uo.Address.IsUkAddress.Value == false)
                     .OrderBy(uo => uo.Modified)
                     .ToList();
 
@@ -92,10 +91,9 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 DataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
-                    .Where(
-                        uo => uo.PINConfirmedDate == null
-                              && uo.Method == RegistrationMethods.Manual
-                              && uo.Organisation.SectorType == SectorTypes.Public)
+                    .Where(uo => uo.PINConfirmedDate == null)
+                    .Where(uo => uo.Method == RegistrationMethods.Manual)
+                    .Where(uo => uo.Organisation.SectorType == SectorTypes.Public)
                     .OrderBy(uo => uo.Modified)
                     .ToList();
 
@@ -103,7 +101,8 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                 DataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
-                    .Where(uo => uo.PINConfirmedDate == null && uo.Method == RegistrationMethods.Manual)
+                    .Where(uo => uo.PINConfirmedDate == null)
+                    .Where(uo => uo.Method == RegistrationMethods.Manual)
                     .OrderBy(uo => uo.Modified)
                     .ToList();
 

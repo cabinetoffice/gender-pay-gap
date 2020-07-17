@@ -86,7 +86,9 @@ namespace GenderPayGap.WebUI.Controllers
             long userId)
         {
             UserOrganisation userOrg = dataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefault(u => u.UserId == userId && u.OrganisationId == organisationId);
+                .Where(u => u.UserId == userId)
+                .Where(u => u.OrganisationId == organisationId)
+                .FirstOrDefault();
 
             ValidateUserOrganisationForRemoval(userOrg);
 
@@ -118,7 +120,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             // Remove user organisation 
             UserOrganisation userOrg = dataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefault(u => u.UserId == viewModel.UserId && u.OrganisationId == viewModel.OrganisationId);
+                    .Where(u => u.UserId == viewModel.UserId)
+                    .Where(u => u.OrganisationId == viewModel.OrganisationId)
+                    .FirstOrDefault();
             dataRepository.Delete(userOrg);
 
             await dataRepository.SaveChangesAsync();

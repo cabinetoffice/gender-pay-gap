@@ -57,7 +57,10 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the user oganisation
-            userOrg = DataRepository.GetAll<UserOrganisation>().FirstOrDefault(uo => uo.UserId == userId && uo.OrganisationId == orgId);
+            userOrg = DataRepository.GetAll<UserOrganisation>()
+                .Where(uo => uo.UserId == userId)
+                .Where(uo => uo.OrganisationId == orgId)
+                .FirstOrDefault();
 
             if (userOrg == null)
             {
@@ -217,10 +220,9 @@ namespace GenderPayGap.WebUI.Controllers
             if (!string.IsNullOrWhiteSpace(model.CompanyNumber))
             {
                 results = DataRepository.GetAll<Organisation>()
-                    .Where(
-                        o => o.OrganisationId != userOrg.OrganisationId
-                             && o.SectorType == SectorTypes.Private
-                             && o.CompanyNumber == model.CompanyNumber)
+                    .Where(o => o.OrganisationId != userOrg.OrganisationId)
+                    .Where(o => o.SectorType == SectorTypes.Private)
+                    .Where(o => o.CompanyNumber == model.CompanyNumber)
                     .Select(o => o.OrganisationId);
                 if (results.Any())
                 {
@@ -231,10 +233,9 @@ namespace GenderPayGap.WebUI.Controllers
             if (!string.IsNullOrWhiteSpace(model.CharityNumber))
             {
                 results = DataRepository.GetAll<OrganisationReference>()
-                    .Where(
-                        r => r.OrganisationId != userOrg.OrganisationId
-                             && r.ReferenceName.ToLower() == "charity number"
-                             && r.ReferenceValue.ToLower() == model.CharityNumber.ToLower())
+                    .Where(r => r.OrganisationId != userOrg.OrganisationId)
+                    .Where(r => r.ReferenceName.ToLower() == "charity number")
+                    .Where(r => r.ReferenceValue.ToLower() == model.CharityNumber.ToLower())
                     .Select(r => r.OrganisationId);
                 if (results.Any())
                 {
@@ -245,10 +246,9 @@ namespace GenderPayGap.WebUI.Controllers
             if (!string.IsNullOrWhiteSpace(model.MutualNumber))
             {
                 results = DataRepository.GetAll<OrganisationReference>()
-                    .Where(
-                        r => r.OrganisationId != userOrg.OrganisationId
-                             && r.ReferenceName.ToLower() == "mutual number"
-                             && r.ReferenceValue.ToLower() == model.MutualNumber.ToLower())
+                    .Where(r => r.OrganisationId != userOrg.OrganisationId)
+                    .Where(r => r.ReferenceName.ToLower() == "mutual number")
+                    .Where(r => r.ReferenceValue.ToLower() == model.MutualNumber.ToLower())
                     .Select(r => r.OrganisationId);
                 if (results.Any())
                 {
@@ -259,10 +259,9 @@ namespace GenderPayGap.WebUI.Controllers
             if (!string.IsNullOrWhiteSpace(model.OtherName) && !string.IsNullOrWhiteSpace(model.OtherValue))
             {
                 results = DataRepository.GetAll<OrganisationReference>()
-                    .Where(
-                        r => r.OrganisationId != userOrg.OrganisationId
-                             && r.ReferenceName.ToLower() == model.OtherName.ToLower()
-                             && r.ReferenceValue.ToLower() == model.OtherValue.ToLower())
+                    .Where(r => r.OrganisationId != userOrg.OrganisationId)
+                    .Where(r => r.ReferenceName.ToLower() == model.OtherName.ToLower())
+                    .Where(r => r.ReferenceValue.ToLower() == model.OtherValue.ToLower())
                     .Select(r => r.OrganisationId);
                 if (results.Any())
                 {
@@ -277,7 +276,8 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 string orgName = model.OrganisationName.ToLower().ReplaceI("limited", "").ReplaceI("ltd", "");
                 results = DataRepository.GetAll<Organisation>()
-                    .Where(o => o.OrganisationId != userOrg.OrganisationId && o.OrganisationName.ToLower().Contains(orgName))
+                    .Where(o => o.OrganisationId != userOrg.OrganisationId)
+                    .Where(o => o.OrganisationName.ToLower().Contains(orgName))
                     .Select(o => o.OrganisationId);
                 if (results.Any())
                 {

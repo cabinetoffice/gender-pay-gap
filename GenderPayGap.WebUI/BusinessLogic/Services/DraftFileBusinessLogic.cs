@@ -237,9 +237,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         private DraftReturn GetDraftReturnFromDatabase(long organisationId, int snapshotYear)
         {
             return dataRepository.GetAll<DraftReturn>()
-                .Where(
-                    d => d.OrganisationId == organisationId
-                         && d.SnapshotYear == snapshotYear)
+                .Where(dr => dr.OrganisationId == organisationId)
+                .Where(dr => dr.SnapshotYear == snapshotYear)
                 .OrderByDescending(dr => dr.DraftReturnId)
                 .FirstOrDefault();
         }
