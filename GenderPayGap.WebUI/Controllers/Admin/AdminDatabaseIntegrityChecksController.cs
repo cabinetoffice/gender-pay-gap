@@ -27,141 +27,102 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("database-integrity-checks")]
-        public async Task<IActionResult> DatabaseIntegrityChecks()
+        public IActionResult DatabaseIntegrityChecks()
         {
             return View("DatabaseIntegrityChecks");
         }
         
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-name")]
-        public async Task<IActionResult> ActiveOrganisationsWithTheSameName()
+        public IActionResult ActiveOrganisationsWithTheSameName()
         {
-            var activeOrganisationsWithTheSameName = new List<string>();
-            List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active).ToList();
+            List<string> duplicateOrganisationNames =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => o.Status == OrganisationStatuses.Active /* Choose just the active organisations */)
+                    .Select(o => o.OrganisationName /* Just get their names (makes the query run faster) */)
+                    .GroupBy(on => on /* Group by the names */)
+                    .Select(grouping => new {Name = grouping.Key, Count = grouping.Count()})
+                    .Where(nameAndCount => nameAndCount.Count > 1)
+                    .Select(nameAndCount => nameAndCount.Name)
+                    .ToList();
 
-            var duplicateNames = activeOrganisations.GroupBy(x => x.OrganisationName)
-                .Select(x => new {Name = x.Key, Count = x.Count()})
-                .Where(x => x.Count > 1);
-
-            foreach (var duplicate in duplicateNames)
-            {
-                activeOrganisationsWithTheSameName.Add(duplicate.Name);
-            }
-
-            return PartialView("ActiveOrganisationsWithTheSameName", activeOrganisationsWithTheSameName);
+            return PartialView("ActiveOrganisationsWithTheSameName", duplicateOrganisationNames);
         }
         
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number")]
-        public async Task<IActionResult> ActiveOrganisationsWithTheSameCompanyNumber()
+        public IActionResult ActiveOrganisationsWithTheSameCompanyNumber()
         {
-            var activeOrganisationsWithTheSameCompanyNumber = new List<string>();
-            List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active).ToList();
+            List<string> duplicateOrganisationCompanyNumbers =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => o.Status == OrganisationStatuses.Active /* Choose just the active organisations */)
+                    .Select(o => o.CompanyNumber /* Just get their company numbers (makes the query run faster) */)
+                    .GroupBy(cn => cn /* Group by the company number */)
+                    .Select(grouping => new {CompanyNumber = grouping.Key, Count = grouping.Count()})
+                    .Where(nameAndCompanyNumber => nameAndCompanyNumber.Count > 1)
+                    .Where(nameAndCompanyNumber => nameAndCompanyNumber.CompanyNumber != null)
+                    .Select(nameAndCompanyNumber => nameAndCompanyNumber.CompanyNumber)
+                    .ToList();
 
-            var duplicateCompanyNumbers = activeOrganisations.GroupBy(x => x.CompanyNumber)
-                .Select(x => new {CompanyNumber = x.Key, Count = x.Count()})
-                .Where(x => x.Count > 1);
-
-            foreach (var duplicate in duplicateCompanyNumbers)
-            {
-                if (duplicate.CompanyNumber != null)
-                {
-                    activeOrganisationsWithTheSameCompanyNumber.Add(duplicate.CompanyNumber);
-                }
-            }
-
-            return PartialView("ActiveOrganisationsWithTheSameCompanyNumber", activeOrganisationsWithTheSameCompanyNumber);
+            return PartialView("ActiveOrganisationsWithTheSameCompanyNumber", duplicateOrganisationCompanyNumbers);
         }
 
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveAddresses()
+        public IActionResult OrganisationsWithMultipleActiveAddresses()
         {
-            var organisationsWithMultipleActiveAddresses = new List<Organisation>();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses).ToList();
-
-            foreach (Organisation organisation in organisations)
-            {
-                int numberOfActiveAddresses = organisation.OrganisationAddresses
-                    .Count(oa => oa.Status == AddressStatuses.Active);
-                if (numberOfActiveAddresses > 2)
-                {
-                    organisationsWithMultipleActiveAddresses.Add(organisation);
-                }
-            }
+            List<Organisation> organisationsWithMultipleActiveAddresses =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => o.OrganisationAddresses.Count(oa => oa.Status == AddressStatuses.Active) > 2)
+                    .ToList();
 
             return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
         }
         
         [HttpGet("database-integrity-checks/organisations-without-an-active-address")]
-        public async Task<IActionResult> OrganisationsWithoutAnActiveAddress()
+        public IActionResult OrganisationsWithoutAnActiveAddress()
         {
-            var organisationsWithoutAnActiveAddress = new List<Organisation>();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses).ToList();
-            foreach (Organisation organisation in organisations)
-            {
-                IEnumerable<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
-                    .Where(oa => oa.Status == AddressStatuses.Active);
-                if (!activeAddresses.Any())
-                {
-                    organisationsWithoutAnActiveAddress.Add(organisation);
-                }
-            }
+            List<Organisation> organisationsWithoutAnActiveAddress =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => !o.OrganisationAddresses.Any(oa => oa.Status == AddressStatuses.Active))
+                    .ToList();
 
             return PartialView("OrganisationsWithoutAnActiveAddress", organisationsWithoutAnActiveAddress);
         }
         
         [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active")]
-        public async Task<IActionResult> OrganisationsWhereLatestAddressIsNotActive()
+        public IActionResult OrganisationsWhereLatestAddressIsNotActive()
         {
-            var organisationsWhereLatestAddressIsNotActive = new List<Organisation>();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationAddresses).ToList();
-            foreach (Organisation organisation in organisations)
-            {
-                OrganisationAddress latestAddress = organisation.GetLatestAddress();
-                IEnumerable<OrganisationAddress> activeAddresses = organisation.OrganisationAddresses
-                    .Where(oa => oa.Status == AddressStatuses.Active);
-                if (!activeAddresses.Contains(latestAddress))
-                {
-                    organisationsWhereLatestAddressIsNotActive.Add(organisation);
-                }
-            }
+            List<Organisation> organisationsWhereLatestAddressIsNotActive =
+                dataRepository.GetAll<Organisation>()
+                    .Include(o => o.OrganisationAddresses)
+                    .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - o.GetLatestAddress() cannot be translated */)
+                    .Where(o => o.GetLatestAddress() != null)
+                    .Where(o => o.GetLatestAddress().Status != AddressStatuses.Active)
+                    .ToList();
 
             return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
         
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveScopesForASingleYear()
+        public IActionResult OrganisationsWithMultipleActiveScopesForASingleYear()
         {
-            var organisationsWithMultipleActiveScopesForASingleYear = new List<Organisation>();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes).ToList();
-            foreach (Organisation organisation in organisations)
-            {
-                IEnumerable<OrganisationScope> activeScopes = organisation.OrganisationScopes
-                    .Where(os => os.Status == ScopeRowStatuses.Active);
-
-                bool multipleActiveScopesForYear = activeScopes
-                    .GroupBy(scope => scope.SnapshotDate)
-                    .Any(g => g.Count() > 1);
-
-                if (multipleActiveScopesForYear)
-                {
-                    organisationsWithMultipleActiveScopesForASingleYear.Add(organisation);
-                }
-            }
+            List<Organisation> organisationsWithMultipleActiveScopesForASingleYear =
+                dataRepository.GetAll<Organisation>()
+                    .Where(
+                        o => o.OrganisationScopes
+                            .Where(scope => scope.Status == ScopeRowStatuses.Active)
+                            .GroupBy(scope => scope.SnapshotDate)
+                            .Any(grouping => grouping.Count() > 1))
+                    .ToList();
 
             return PartialView("OrganisationsWithMultipleActiveScopesForASingleYear", organisationsWithMultipleActiveScopesForASingleYear);
         }
 
         [HttpGet("database-integrity-checks/organisations-with-no-active-scope-for-every-year")]
-        public async Task<IActionResult> OrganisationsWithNoActiveScopeForEveryYear()
+        public IActionResult OrganisationsWithNoActiveScopeForEveryYear()
         {
             var organisationsWithNoActiveScopeForEveryYear = new List<Organisation>();
             List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes).ToList();
+                .Include(o => o.OrganisationScopes)
+                .ToList();
 
             foreach (Organisation organisation in organisations)
             {
@@ -196,79 +157,46 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-returns-for-a-single-year")]
-        public async Task<IActionResult> OrganisationsWithMultipleActiveReturnsForASingleYear()
+        public IActionResult OrganisationsWithMultipleActiveReturnsForASingleYear()
         {
-            var organisationsWithMultipleActiveReturnsForASingleYear = new List<Organisation>();
-            List<Organisation> organisations = dataRepository.GetAll<Organisation>()
-                .Include(o => o.Returns).ToList();
+            List<Organisation> organisationsWithMultipleActiveReturnsForASingleYear =
+                dataRepository.GetAll<Organisation>()
+                    .Where(
+                        o => o.Returns
+                            .Where(r => r.Status == ReturnStatuses.Submitted)
+                            .GroupBy(r => r.AccountingDate.Year)
+                            .Any(g => g.Count() > 1))
+                    .ToList();
 
-            foreach (Organisation organisation in organisations)
-            {
-                IEnumerable<Return> activeReturns = organisation.Returns
-                    .Where(r => r.Status == ReturnStatuses.Submitted);
-
-                bool multipleActiveReturnsForYear = activeReturns
-                    .GroupBy(r => r.AccountingDate.Year)
-                    .Any(g => g.Count() > 1);
-
-                if (multipleActiveReturnsForYear)
-                {
-                    organisationsWithMultipleActiveReturnsForASingleYear.Add(organisation);
-                }
-            }
-
-            return PartialView(
-                "OrganisationsWithMultipleActiveReturnsForASingleYear",
-                organisationsWithMultipleActiveReturnsForASingleYear);
+            return PartialView("OrganisationsWithMultipleActiveReturnsForASingleYear", organisationsWithMultipleActiveReturnsForASingleYear);
         }
 
         [HttpGet("database-integrity-checks/public-sector-organisations-without-a-public-sector-type")]
-        public async Task<IActionResult> PublicSectorOrganisationsWithoutAPublicSectorType()
+        public IActionResult PublicSectorOrganisationsWithoutAPublicSectorType()
         {
-            var publicSectorOrganisationsWithoutAPublicSectorType = new List<Organisation>();
-            List<Organisation> activePublicOrganisations = dataRepository
-                .GetAll<Organisation>()
-                .Where(o => o.SectorType == SectorTypes.Public)
-                .Where(o => o.Status == OrganisationStatuses.Active)
-                .Include(o => o.OrganisationScopes).ToList();
-
-            foreach (Organisation organisation in activePublicOrganisations)
-            {
-                bool isInScope = organisation.GetCurrentScope() != null &&
-                                 (organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope ||
-                                  organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope);
-
-                if (isInScope && organisation.LatestPublicSectorType == null)
-                {
-                    publicSectorOrganisationsWithoutAPublicSectorType.Add(organisation);
-                }
-            }
+            List<Organisation> publicSectorOrganisationsWithoutAPublicSectorType =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => o.Status == OrganisationStatuses.Active)
+                    .Where(o => o.SectorType == SectorTypes.Public)
+                    .Where(o => o.LatestPublicSectorType == null)
+                    .Include(o => o.OrganisationScopes)
+                    .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - o.GetCurrentScope() cannot be translated */)
+                    .Where(o => o.GetCurrentScope() != null)
+                    .Where(o => o.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || o.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope)
+                    .ToList();
 
             return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
         }
 
         [HttpGet("database-integrity-checks/private-sector-organisations-with-a-public-sector-type")]
-        public async Task<IActionResult> PrivateSectorOrganisationsWithAPublicSectorType()
+        public IActionResult PrivateSectorOrganisationsWithAPublicSectorType()
         {
-            var privateSectorOrganisationsWithAPublicSectorType = new List<Organisation>();
-            List<Organisation> activePrivateOrganisations = dataRepository
-                .GetAll<Organisation>()
-                .Where(o => o.SectorType == SectorTypes.Private)
-                .Where(o => o.Status == OrganisationStatuses.Active)
-                .Include(o => o.OrganisationScopes)
-                .ToList();
-
-            foreach (Organisation organisation in activePrivateOrganisations)
-            {
-                bool isInScope = organisation.GetCurrentScope() != null &&
-                                 (organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || 
-                                  organisation.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope);
-
-                if (isInScope && organisation.LatestPublicSectorType != null)
-                {
-                    privateSectorOrganisationsWithAPublicSectorType.Add(organisation);
-                }
-            }
+            List<Organisation> privateSectorOrganisationsWithAPublicSectorType =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => o.Status == OrganisationStatuses.Active)
+                    .Where(o => o.SectorType == SectorTypes.Private)
+                    .Where(organisation => organisation.LatestPublicSectorType != null)
+                    .ToList();
 
             return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
         }
