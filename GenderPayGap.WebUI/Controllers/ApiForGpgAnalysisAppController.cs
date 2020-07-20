@@ -40,11 +40,26 @@ namespace GenderPayGap.WebUI.Controllers
                 return Unauthorized();
             }
 
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithScopes = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes)
+                .ToList();
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithReturns = dataRepository.GetAll<Organisation>()
+                .Include(o => o.Returns)
+                .ToList();
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithPublicSectorTypes = dataRepository.GetAll<Organisation>()
+                .Include(o => o.LatestPublicSectorType)
+                .ToList();
+
             List<Organisation> organisations = dataRepository
                 .GetAll<Organisation>()
-                .Include(o => o.OrganisationScopes)
-                .Include(o => o.Returns)
-                .Include(o => o.LatestPublicSectorType)
+                //.Include(o => o.OrganisationScopes) // Moved into separate pre-load query
+                //.Include(o => o.Returns) // Moved into separate pre-load query
+                //.Include(o => o.LatestPublicSectorType) // Moved into separate pre-load query
                 .Include(o => o.OrganisationSicCodes)
                 .ThenInclude(osc => osc.SicCode)
                 .ThenInclude(sc => sc.SicSection)

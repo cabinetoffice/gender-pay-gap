@@ -457,13 +457,33 @@ namespace GenderPayGap.WebUI.Controllers
 
         public static FileContentResult GenerateEhrcAllOrganisationsForYearFile(IDataRepository dataRepository, int year)
         {
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithAddresses = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses)
+                .ToList();
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithScopes = dataRepository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes)
+                .ToList();
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithReturns = dataRepository.GetAll<Organisation>()
+                .Include(o => o.Returns)
+                .ToList();
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithUserOrgs = dataRepository.GetAll<Organisation>()
+                .Include(o => o.UserOrganisations)
+                .ToList();
+
             List<Organisation> organisations = dataRepository
                 .GetAll<Organisation>()
-                .Include(org => org.OrganisationAddresses)
+                //.Include(org => org.OrganisationAddresses) // Moved into separate pre-load query
                 .Include(org => org.OrganisationSicCodes)
-                .Include(org => org.OrganisationScopes)
-                .Include(org => org.Returns)
-                .Include(org => org.UserOrganisations)
+                //.Include(org => org.OrganisationScopes) // Moved into separate pre-load query
+                //.Include(org => org.Returns) // Moved into separate pre-load query
+                //.Include(org => org.UserOrganisations) // Moved into separate pre-load query
                 .ToList();
 
             var records = organisations.Select(

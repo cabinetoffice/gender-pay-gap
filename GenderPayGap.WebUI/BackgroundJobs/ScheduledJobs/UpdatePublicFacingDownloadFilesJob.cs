@@ -55,21 +55,28 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void UpdateDownloadFilesInner()
         {
-            CustomLogger.Information($"UpdateDownloadFiles: Loading Returns");
+            CustomLogger.Information($"UpdateDownloadFiles: Loading Organisations");
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
             List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.OrganisationAddresses)
                 .Include(o => o.OrganisationSicCodes)
-                .Include(o => o.Returns)
                 .ToList();
 
+            CustomLogger.Information($"UpdateDownloadFiles: Loading Returns");
+            List<Return> allReturns = dataRepository.GetAll<Return>()
+                .Where(r => r.Organisation.Status == OrganisationStatuses.Active)
+                .Include(r => r.Organisation)
+                .ToList();
+
+            CustomLogger.Information($"UpdateDownloadFiles: Creating downloads for each year");
             foreach (int year in ReportingYearsHelper.GetReportingYears())
             {
                 CustomLogger.Information($"UpdateDownloadFiles: Creating download for year {year}");
 
                 CustomLogger.Information($"UpdateDownloadFiles: - Filtering Returns");
-                List<Return> returns = activeOrganisations.SelectMany(o => o.Returns)
+                List<Return> returns = allReturns
                     .Where(r => r.AccountingDate.Year == year)
                     .Where(r => r.Status == ReturnStatuses.Submitted)
                     .ToList();

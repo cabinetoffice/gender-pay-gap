@@ -61,16 +61,38 @@ namespace GenderPayGap.WebUI.Search
         {
             DateTime start = DateTime.Now;
 
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithNames = repository.GetAll<Organisation>()
+                .Include(o => o.OrganisationNames)
+                .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Names: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithReturns = repository.GetAll<Organisation>()
+                .Include(o => o.Returns)
+                .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Returns: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithScopes = repository.GetAll<Organisation>()
+                .Include(o => o.OrganisationScopes)
+                .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Scopes: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+
             List<Organisation> allOrganisations = repository
                 .GetAll<Organisation>()
-                .Include(o => o.OrganisationNames)
+                //.Include(o => o.OrganisationNames) // Moved into separate pre-load query 
+                //.Include(o => o.Returns) // Moved into separate pre-load query 
+                //.Include(o => o.OrganisationScopes) // Moved into separate pre-load query 
                 .Include(o => o.OrganisationSicCodes)
                 .ThenInclude(osc => osc.SicCode)
                 .ThenInclude(sc => sc.SicSection)
                 .ToList();
 
             CustomLogger.Information($"Search Repository: Time taken to load Organisations: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
-            start = DateTime.Now;
 
             List<SearchCachedOrganisation> searchCachedOrganisations = allOrganisations
                 .Select(
