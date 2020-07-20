@@ -53,6 +53,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs
                 ScheduledJobIds.SetPresumedScopesJobId,
                 j => j.SetPresumedScopes(),
                 "50 4 * * *" /* 04:50 once per day */);
+
+            RecurringJob.AddOrUpdate<BackupDatabase>(
+                ScheduledJobIds.BackupDatabaseJobId,
+                j => j.CreateDatabaseBackup(),
+                "20 5 * * *" /* 05:20 once per day */);
         }
 
         public void AddEmailToQueue(NotifyEmail notifyEmail)
@@ -71,5 +76,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs
         public const string PurgeRegistrationsJobId = "PURG_REGISTRATIONS_JOB";
         public const string PurgeOrganisationsJobId = "PURGE_ORGANISATIONS_JOB";
         public const string SetPresumedScopesJobId = "SET_PRESUMED_SCOPES_JOB";
+        public const string BackupDatabaseJobId = "BACKUP_DATABASE_JOB";
     }
 }
