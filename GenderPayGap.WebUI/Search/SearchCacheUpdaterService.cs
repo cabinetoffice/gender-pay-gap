@@ -17,7 +17,7 @@ namespace GenderPayGap.WebUI.Search {
             timer = new Timer(
                 DoWork,
                 null,
-                dueTime: TimeSpan.FromSeconds(0), // How long to wait before the cache is first updated 
+                dueTime: TimeSpan.FromSeconds(20), // How long to wait before the cache is first updated 
                 period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
 
             CustomLogger.Information("Started timer (SearchRepository.StartCacheUpdateThread)");
@@ -29,7 +29,14 @@ namespace GenderPayGap.WebUI.Search {
         {
             CustomLogger.Information("Starting cache update (SearchRepository.StartCacheUpdateThread)");
 
-            SearchRepository.LoadSearchDataIntoCache();
+            try
+            {
+                SearchRepository.LoadSearchDataIntoCache();
+            }
+            catch (Exception ex)
+            {
+                CustomLogger.Error($"Error during cache update (SearchRepository.StartCacheUpdateThread): {ex.Message} {ex.StackTrace}", ex);
+            }
 
             CustomLogger.Information("Finished cache update (SearchRepository.StartCacheUpdateThread)");
         }

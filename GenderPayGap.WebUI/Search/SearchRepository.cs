@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -58,13 +59,20 @@ namespace GenderPayGap.WebUI.Search
 
         private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
         {
-            return repository
+            DateTime start = DateTime.Now;
+
+            List<Organisation> allOrganisations = repository
                 .GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
-                .Include(o => o.Returns)
-                .Include(o => o.OrganisationScopes)
                 .Include(o => o.OrganisationSicCodes)
-                .ToList()
+                .ThenInclude(osc => osc.SicCode)
+                .ThenInclude(sc => sc.SicSection)
+                .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Organisations: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            start = DateTime.Now;
+
+            List<SearchCachedOrganisation> searchCachedOrganisations = allOrganisations
                 .Select(
                     o =>
                     {
@@ -105,6 +113,10 @@ namespace GenderPayGap.WebUI.Search
                             };
                     })
                 .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to convert Organisations into SearchCachedOrganisations: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+
+            return searchCachedOrganisations;
         }
 
         private static bool GetIncludeInViewingService(Organisation organisation)
@@ -117,7 +129,9 @@ namespace GenderPayGap.WebUI.Search
 
         private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
         {
-            return repository
+            DateTime start = DateTime.Now;
+
+            var allUsers = repository
                 .GetAll<User>()
                 .Select(
                     u => new SearchCachedUser
@@ -128,6 +142,10 @@ namespace GenderPayGap.WebUI.Search
                         Status = u.Status
                     })
                 .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Users: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+
+            return allUsers;
         }
 
     }
