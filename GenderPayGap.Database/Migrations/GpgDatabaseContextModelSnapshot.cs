@@ -472,12 +472,10 @@ namespace GenderPayGap.Database.Migrations
                         .HasName("PK_dbo.Organisations");
 
                     b.HasIndex("CompanyNumber")
-                        .IsUnique()
-                        .HasFilter("([CompanyNumber] IS NOT NULL)");
+                        .IsUnique();
 
                     b.HasIndex("EmployerReference")
-                        .IsUnique()
-                        .HasFilter("([EmployerReference] IS NOT NULL)");
+                        .IsUnique();
 
                     b.HasIndex("LatestPublicSectorTypeId");
 

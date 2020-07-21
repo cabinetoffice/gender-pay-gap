@@ -130,11 +130,11 @@ namespace GenderPayGap.Database
 
                     entity.HasIndex(e => e.CompanyNumber)
                         .IsUnique()
-                        .HasFilter("([CompanyNumber] IS NOT NULL)");
+                        .HasFilter(null);
 
                     entity.HasIndex(e => e.EmployerReference)
                         .IsUnique()
-                        .HasFilter("([EmployerReference] IS NOT NULL)");
+                        .HasFilter(null);
 
                     entity.HasIndex(e => e.OrganisationName);
 
