@@ -88,7 +88,9 @@ namespace GenderPayGap.Core.Models
                    + $"Port={Credentials.Port};"
                    + $"Database={Credentials.DatabaseName};"
                    + $"User Id={Credentials.Username};"
-                   + $"Password={Credentials.Password};";
+                   + $"Password={Credentials.Password};"
+                   + $"SSL=true;"
+                   + $"SslMode=Require;";
         }
 
     }
