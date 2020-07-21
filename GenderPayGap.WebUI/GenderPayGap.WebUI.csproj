@@ -111,10 +111,6 @@
   </ItemGroup>
 
 
-  <!-- *** THIS IS REQUIRED TO TRANSFORM Web.Config on publish *** -->
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.DotNet.Xdt.Tools" Version="2.0.0" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Update="Areas\Account\Resources\AccountResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -128,7 +124,19 @@
       <LastGenOutput>AccountResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="buildpack.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="manifest.yml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
+  <!-- *** THIS IS REQUIRED TO TRANSFORM Web.Config on publish *** -->
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.DotNet.Xdt.Tools" Version="2.0.0" />
+  </ItemGroup>
   <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
     <PropertyGroup>
       <_SourceWebConfig>$(MSBuildThisFileDirectory)Web.config</_SourceWebConfig>
