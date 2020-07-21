@@ -17,4 +17,4 @@ LOCAL_PORT=7210
 # Start of script
 
 # Run the Conduit.sh command with the above environment variables set
-./Conduit.sh $PAAS_ENV_SHORTNAME $LOCAL_PORT
+./Conduit.sh $PAAS_ENV_SHORTNAME $PAAS_SERVICE $LOCAL_PORT
