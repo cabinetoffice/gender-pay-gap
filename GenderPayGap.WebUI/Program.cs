@@ -74,6 +74,11 @@ namespace GenderPayGap.WebUI
                     services => services
                         .AddAutofac()); /// This call allows for ConfigureContainer to be supported in Startup with a strongly-typed ContainerBuilder
 
+            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PORT")))
+            {
+                webHostBuilder.UseUrls($"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT")}/");
+            }
+
             webHostBuilder.UseStartup<Startup>();
 
             SetupSerilogLogger(webHostBuilder);
