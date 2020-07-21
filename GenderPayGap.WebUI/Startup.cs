@@ -122,7 +122,7 @@ namespace GenderPayGap.WebUI
             DataProtectionKeysHelper.AddDataProtectionKeyStorage(services);
 
             //This may now be required 
-            services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
+            //services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -328,7 +328,7 @@ namespace GenderPayGap.WebUI
                 app.UseStatusCodePagesWithReExecute("/error/{0}");
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             //app.UseResponseCompression(); //Disabled to use IIS compression which has better performance (see https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.1)
             app.UseStaticFiles(
                 new StaticFileOptions
