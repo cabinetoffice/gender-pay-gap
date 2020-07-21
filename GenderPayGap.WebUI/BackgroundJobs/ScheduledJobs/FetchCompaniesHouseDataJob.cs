@@ -55,9 +55,12 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     .Select(org => org.OrganisationId)
                     .FirstOrDefault();
 
-                CustomLogger.Information($"Start update companies house data organisation id: {organisationId}. Run id: {runId}");
-                updateFromCompaniesHouseService.UpdateOrganisationDetails(organisationId);
-                CustomLogger.Information($"End update companies house data organisation id: {organisationId}. Run id: {runId}");
+                if (organisationId != 0)
+                {
+                    CustomLogger.Information($"Start update companies house data organisation id: {organisationId}. Run id: {runId}");
+                    updateFromCompaniesHouseService.UpdateOrganisationDetails(organisationId);
+                    CustomLogger.Information($"End update companies house data organisation id: {organisationId}. Run id: {runId}");
+                }
             }
         }
 
