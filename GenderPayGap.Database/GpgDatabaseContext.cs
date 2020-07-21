@@ -21,8 +21,6 @@ namespace GenderPayGap.Database
         
         public GpgDatabaseContext(string connectionString = null, bool useMigrations = false)
         {
-            Database.SetCommandTimeout(TimeSpan.FromSeconds(90));
-
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
                 ConnectionString = connectionString;
@@ -32,6 +30,8 @@ namespace GenderPayGap.Database
             {
                 EnsureMigrated();
             }
+
+            Database.SetCommandTimeout(TimeSpan.FromSeconds(90));
         }
 
         public GpgDatabaseContext(DbContextOptions<GpgDatabaseContext> options, bool useMigrations = false) : base(options)
