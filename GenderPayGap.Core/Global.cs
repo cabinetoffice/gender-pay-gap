@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
@@ -16,7 +17,22 @@ namespace GenderPayGap.Core
 
         #region Secrets / connection strings / API keys
 
-        public static string DatabaseConnectionString => Config.GetConnectionString("GpgDatabase");
+        public static string DatabaseConnectionString
+        {
+            get
+            {
+                if (Global.VcapServices != null && Global.VcapServices.Postgres != null)
+                {
+                    VcapPostgres postgresConfiguration = Global.VcapServices.Postgres.First(b => b.Name.EndsWith("-db"));
+                    return postgresConfiguration.GetConnectionString();
+                }
+                else
+                {
+                    return Config.GetConnectionString("GpgDatabase");
+                }
+            }
+        }
+
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
@@ -64,7 +80,7 @@ namespace GenderPayGap.Core
         public static int MaxNumCallsCompaniesHouseApiPerFiveMins => Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
 
         public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
-        public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+        public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
         #endregion
 
         #region Settings that change per deployment slot
@@ -72,7 +88,7 @@ namespace GenderPayGap.Core
         #endregion
 
         #region Settings that change per hosting environment (Azure/PaaS)
-        public static bool UsePostgresDb => Config.GetAppSetting("UsePostgresDb").ToBoolean();
+        public static bool UsePostgresDb => (Global.VcapServices != null && Global.VcapServices.Postgres != null);
         #endregion
 
         #region Settings that change per environment / slot / hosting environment (Azure/PaaS)

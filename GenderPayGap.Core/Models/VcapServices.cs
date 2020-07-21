@@ -12,6 +12,9 @@ namespace GenderPayGap.Core.Models
         [JsonProperty("redis")]
         public List<VcapRedis> Redis { get; set; }
 
+        [JsonProperty("postgres")]
+        public List<VcapPostgres> Postgres { get; set; }
+
     }
 
     public class VcapAwsS3Bucket
@@ -67,6 +70,46 @@ namespace GenderPayGap.Core.Models
 
         [JsonProperty("tls_enabled")]
         public bool TlsEnabled { get; set; }
+
+    }
+
+    public class VcapPostgres
+    {
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("credentials")]
+        public VcapPostgresCredentials Credentials { get; set; }
+
+        public string GetConnectionString()
+        {
+            return $"Server={Credentials.Host};"
+                   + $"Port={Credentials.Port};"
+                   + $"Database={Credentials.DatabaseName};"
+                   + $"User Id={Credentials.Username};"
+                   + $"Password={Credentials.Password};";
+        }
+
+    }
+
+    public class VcapPostgresCredentials
+    {
+
+        [JsonProperty("host")]
+        public string Host { get; set; }
+
+        [JsonProperty("port")]
+        public int Port { get; set; }
+
+        [JsonProperty("name")]
+        public string DatabaseName { get; set; }
+
+        [JsonProperty("username")]
+        public string Username { get; set; }
+
+        [JsonProperty("password")]
+        public string Password { get; set; }
 
     }
 }
