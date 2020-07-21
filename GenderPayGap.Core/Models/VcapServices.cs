@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Core.Models
@@ -89,8 +90,9 @@ namespace GenderPayGap.Core.Models
                    + $"Database={Credentials.DatabaseName};"
                    + $"User Id={Credentials.Username};"
                    + $"Password={Credentials.Password};"
-                   + $"SSL=true;"
-                   + $"SslMode=Require;";
+                   + (Config.IsLocal()
+                       ? ""
+                       : "SslMode=Require;Trust Server Certificate=true");
         }
 
     }
