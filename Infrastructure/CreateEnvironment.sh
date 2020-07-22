@@ -139,6 +139,16 @@ cf v3-set-health-check "gender-pay-gap-${PAAS_ENV_SHORTNAME}" http --endpoint "/
 
 
 
+#-------------------
+# Logit.io log drain
+# - Create the log drain service (built by logit.io)
+cf create-user-provided-service logit-ssl-drain -l syslog-tls://0f5c243f-b55b-478f-be38-a7bb80036274-ls.logit.io:18298
+
+# - Bind app to logit.io drain
+cf bind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" logit-ssl-drain
+
+
+
 # Wait for user input - just to make sure the window doens't close without them noticing
 echo ""
 echo ""
