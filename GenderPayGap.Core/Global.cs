@@ -36,7 +36,6 @@ namespace GenderPayGap.Core
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
-        public static string ApplicationInsightsInstrumentationKey => Config.GetAppSetting("APPINSIGHTS-INSTRUMENTATIONKEY");
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
         public static string AdminEmails => Config.GetAppSetting("AdminEmails");
         public static VcapServices VcapServices =>
@@ -88,10 +87,6 @@ namespace GenderPayGap.Core
 
         #region Settings that change per hosting environment (Azure/PaaS)
         public static bool UsePostgresDb => (Global.VcapServices != null && Global.VcapServices.Postgres != null);
-        #endregion
-
-        #region Settings that change per environment / slot / hosting environment (Azure/PaaS)
-        public static bool LogToApplicationInsight => Config.GetAppSetting("LogToApplicationInsight").ToBoolean();
         #endregion
 
 
