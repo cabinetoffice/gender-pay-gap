@@ -64,7 +64,6 @@ namespace GenderPayGap.WebUI
                         //options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
                     })
                 .ConfigureAppConfiguration(ConfigureAppConfiguration)
-                .UseApplicationInsights(Global.ApplicationInsightsInstrumentationKey)
                 .CaptureStartupErrors(true) // Add this line to capture startup errors
                 .UseEnvironment(Config.EnvironmentName) //Set the environment name
                 .UseSetting(
@@ -109,14 +108,7 @@ namespace GenderPayGap.WebUI
             }
             else
             {
-                if (Global.LogToApplicationInsight)
-                {
-                    SetupLoggerToApplicationInsight();
-                }
-                else
-                {
-                    webHostBuilder.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); });
-                }
+                webHostBuilder.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); });
             }
 
             Log.Information("Serilog logger setup complete");
@@ -125,12 +117,6 @@ namespace GenderPayGap.WebUI
         private static void SetupLoggerToConsole()
         {
             Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-        }
-
-        private static void SetupLoggerToApplicationInsight()
-        {
-            Log.Logger = new LoggerConfiguration().WriteTo.ApplicationInsights(Global.ApplicationInsightsInstrumentationKey, TelemetryConverter.Traces)
-                .CreateLogger();
         }
 
     }
