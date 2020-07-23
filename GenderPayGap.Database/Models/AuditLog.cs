@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using GenderPayGap.Core;
@@ -16,6 +16,15 @@ namespace GenderPayGap.Database.Models
         public AuditedAction Action { get; set; }
         [JsonProperty]
         public DateTime CreatedDate { get; set; }
+        [JsonProperty]
+        public string DetailsString { get; set; }
+
+        [JsonProperty]
+        public long? OrganisationId { get; set; }
+        [JsonProperty]
+        public long? OriginalUserId { get; set; }
+        [JsonProperty]
+        public long? ImpersonatedUserId { get; set; }
 
         public virtual Organisation Organisation { get; set; }
 
@@ -24,9 +33,6 @@ namespace GenderPayGap.Database.Models
 
         [ForeignKey("ImpersonatedUserId")]
         public virtual User ImpersonatedUser { get; set; }
-
-        [JsonProperty]
-        public string DetailsString { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> Details
