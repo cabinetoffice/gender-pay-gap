@@ -6,12 +6,17 @@ using Newtonsoft.Json;
 
 namespace GenderPayGap.Database.Models
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class AuditLog
     {
 
+        [JsonProperty]
         public long AuditLogId { get; set; }
+        [JsonProperty]
         public AuditedAction Action { get; set; }
+        [JsonProperty]
         public DateTime CreatedDate { get; set; }
+
         public virtual Organisation Organisation { get; set; }
 
         [ForeignKey("OriginalUserId")]
@@ -20,6 +25,7 @@ namespace GenderPayGap.Database.Models
         [ForeignKey("ImpersonatedUserId")]
         public virtual User ImpersonatedUser { get; set; }
 
+        [JsonProperty]
         public string DetailsString { get; set; }
 
         [NotMapped]

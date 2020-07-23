@@ -30,6 +30,7 @@ namespace GenderPayGap.Core
                 : null;
         public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
         public static string GpgAnalysisAppApiPassword => Config.GetAppSetting("GpgAnalysisAppApiPassword");
+        public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
 
         #endregion
 
