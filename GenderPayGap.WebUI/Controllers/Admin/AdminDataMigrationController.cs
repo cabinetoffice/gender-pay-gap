@@ -413,7 +413,7 @@ namespace GenderPayGap.WebUI.Controllers
     public class AdminMigrationTopAndBottomOfView
     {
 
-        public const string TopOfView = @"
+        public static string TopOfView = @"
 
 <!DOCTYPE html>
 
@@ -433,7 +433,7 @@ namespace GenderPayGap.WebUI.Controllers
     <link rel=""apple-touch-icon"" sizes=""152x152"" href=""/assets/images/govuk-apple-touch-icon-152x152.png"">
     <link rel=""apple-touch-icon"" href=""/assets/images/govuk-apple-touch-icon.png"">
 
-    <link href=""/compiled/app-3ac629b25dd5e3ba1a352e7e94328b7ced52a5079ace392449e0ab7db09108bc.css"" rel=""stylesheet"" />
+    <link href=""" + StaticAssetsVersioningHelper.GetAppCssFilename() + @""" rel=""stylesheet"" />
 
     <meta property=""og:image"" content=""/assets/images/govuk-opengraph-image.png"">
 </head>

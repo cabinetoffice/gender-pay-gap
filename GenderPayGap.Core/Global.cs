@@ -63,6 +63,7 @@ namespace GenderPayGap.Core
             get => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean(false);
             set => Config.SetAppSetting("EnableSubmitAlerts", value.ToString());
         }
+        public static bool DisableSearchCache => Config.GetAppSetting("DisableSearchCache").ToBoolean();
 
         #endregion
 
