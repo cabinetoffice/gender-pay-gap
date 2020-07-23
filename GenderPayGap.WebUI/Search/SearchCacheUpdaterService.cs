@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using Microsoft.Extensions.Hosting;
 
@@ -14,11 +15,14 @@ namespace GenderPayGap.WebUI.Search {
         {
             CustomLogger.Information("Starting timer (SearchRepository.StartCacheUpdateThread)");
 
-            timer = new Timer(
-                DoWork,
-                null,
-                dueTime: TimeSpan.FromSeconds(20), // How long to wait before the cache is first updated 
-                period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
+            if (!Global.DisableSearchCache)
+            {
+                timer = new Timer(
+                    DoWork,
+                    null,
+                    dueTime: TimeSpan.FromSeconds(20), // How long to wait before the cache is first updated 
+                    period: TimeSpan.FromMinutes(1));  // How often is the cache updated 
+            }
 
             CustomLogger.Information("Started timer (SearchRepository.StartCacheUpdateThread)");
 
