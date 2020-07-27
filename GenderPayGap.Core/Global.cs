@@ -39,6 +39,7 @@ namespace GenderPayGap.Core
         #region Settings that we expect to want to update at short notice
 
         public static bool MaintenanceMode => Config.GetAppSetting("MaintenanceMode").ToBoolean(false);
+        public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSetting("MaintenanceModeUpAgainTime")?.ToDateTime();
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>
             JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement", "[]"));
         public static DateTime ActionHubSwitchOverDate => Config.GetAppSetting("ActionHubSwitchOverDate").ToDateTime();
