@@ -76,7 +76,7 @@ namespace GenderPayGap.Core.Classes.ErrorMessages
             {
                 if (_DefaultSection == null)
                 {
-                    string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}App_Data\\CustomErrorMessages.config";
+                    string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}App_Data/CustomErrorMessages.config";
                     var map = new ExeConfigurationFileMap {ExeConfigFilename = filePath};
                     Configuration config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
                     ConfigurationSection theSection = config.GetSection("CustomErrorMessages");
