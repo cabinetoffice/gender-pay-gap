@@ -82,6 +82,7 @@ namespace GenderPayGap.Core
 
         public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+        public static TimeSpan TimeToKeepBackupFiles => TimeSpan.FromDays(Config.GetAppSetting("DaysToKeepBackupFiles").ToInt32(35));
         #endregion
 
         #region Settings that change per deployment slot

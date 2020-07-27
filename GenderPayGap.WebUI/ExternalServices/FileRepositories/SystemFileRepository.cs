@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using GenderPayGap.Extensions;
 
@@ -16,7 +18,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             _rootDir = new DirectoryInfo(rootPath);
         }
 
-        public void Write(string relativeFilePath, string csvFileContents)
+        public void Write(string relativeFilePath, string fileContents)
         {
             string fullFilePath = GetFullPath(relativeFilePath);
 
@@ -28,7 +30,22 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 CreateDirectory(directory);
             }
 
-            File.WriteAllText(fullFilePath, csvFileContents);
+            File.WriteAllText(fullFilePath, fileContents);
+        }
+
+        public void Write(string relativeFilePath, byte[] fileContents)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            string directory = Path.GetDirectoryName(fullFilePath);
+
+            // Create the folder (if it's missing)
+            if (!GetDirectoryExists(directory))
+            {
+                CreateDirectory(directory);
+            }
+
+            File.WriteAllBytes(fullFilePath, fileContents);
         }
 
         public string Read(string relativeFilePath)
@@ -36,6 +53,24 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             string fullFilePath = GetFullPath(relativeFilePath);
 
             return File.ReadAllText(fullFilePath);
+        }
+
+        public List<string> GetFiles(string relativeDirectoryPath)
+        {
+            string directoryFilePath = GetFullPath(relativeDirectoryPath);
+
+            string[] filePaths = Directory.GetFiles(directoryFilePath);
+
+            List<string> fileNames = filePaths.Select(fp => Path.GetFileName(fp)).ToList();
+
+            return fileNames;
+        }
+
+        public void Delete(string relativeFilePath)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            File.Delete(fullFilePath);
         }
 
         private string GetFullPath(string filePath)
