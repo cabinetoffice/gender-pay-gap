@@ -1,11 +1,18 @@
-﻿namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
+﻿using System.Collections.Generic;
+
+namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
     public interface IFileRepository
     {
 
-        void Write(string relativeFilePath, string csvFileContents);
+        void Write(string relativeFilePath, string fileContents);
+        void Write(string relativeFilePath, byte[] fileContents);
 
         string Read(string relativeFilePath);
+
+        List<string> GetFiles(string relativeDirectoryPath);
+
+        void Delete(string relativeFilePath);
 
     }
 }

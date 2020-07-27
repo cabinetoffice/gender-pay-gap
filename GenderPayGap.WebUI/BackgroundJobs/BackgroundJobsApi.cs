@@ -22,6 +22,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs
                 j => j.FetchCompaniesHouseData(),
                 "*/5 * * * *" /* every 5 minutes */);
 
+            RecurringJob.AddOrUpdate<BackupDatabaseToJsonFileJob>(
+                ScheduledJobIds.BackupDatabaseToJsonFileJobId,
+                j => j.RunBackup(),
+                "*/15 * * * *" /* every 15 minutes */);
+
             // Hourly jobs
             RecurringJob.AddOrUpdate<UpdatePublicFacingDownloadFilesJob>(
                 ScheduledJobIds.UpdatePublicFacingDownloadFilesJobId,
@@ -65,6 +70,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs
     internal class ScheduledJobIds
     {
         public const string FetchCompaniesHouseDataJobId = "FETCH_COMPANIES_HOUSE_DATA_JOB";
+        public const string BackupDatabaseToJsonFileJobId = "BACKUP_DATABASE_TO_JSON_FILE_JOB";
         public const string UpdatePublicFacingDownloadFilesJobId = "UPDATE_PUBLIC_FACING_DOWNLOAD_FILES_JOB";
         public const string SendReminderEmailsJobId = "SET_REMINDER_EMAILS_JOB";
         public const string PurgeUsersJobId = "PURGE_USERS_JOB";
