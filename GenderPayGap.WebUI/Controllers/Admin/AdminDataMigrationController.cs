@@ -343,6 +343,31 @@ namespace GenderPayGap.WebUI.Controllers
             InsertData(allData.AuditLogs);
             InsertData(allData.Returns);
             InsertData(allData.ReturnStatuses);
+
+            string updateSequencesSql = @"
+                SELECT setval('""AuditLogs_AuditLogId_seq""', (SELECT max(""AuditLogId"") FROM ""AuditLogs""), true);
+                SELECT setval('""DataProtectionKeys_Id_seq""', (SELECT max(""Id"") FROM ""DataProtectionKeys""), true);
+                SELECT setval('""DraftReturns_DraftReturnId_seq""', (SELECT max(""DraftReturnId"") FROM ""DraftReturns""), true);
+                SELECT setval('""Feedback_FeedbackId_seq""', (SELECT max(""FeedbackId"") FROM ""Feedback""), true);
+                SELECT setval('""OrganisationAddresses_AddressId_seq""', (SELECT max(""AddressId"") FROM ""OrganisationAddresses""), true);
+                SELECT setval('""OrganisationNames_OrganisationNameId_seq""', (SELECT max(""OrganisationNameId"") FROM ""OrganisationNames""), true);
+                SELECT setval('""OrganisationPublicSectorTypes_OrganisationPublicSectorTypeI_seq""', (SELECT max(""OrganisationPublicSectorTypeId"") FROM ""OrganisationPublicSectorTypes""), true);
+                SELECT setval('""OrganisationReferences_OrganisationReferenceId_seq""', (SELECT max(""OrganisationReferenceId"") FROM ""OrganisationReferences""), true);
+                SELECT setval('""Organisations_OrganisationId_seq""', (SELECT max(""OrganisationId"") FROM ""Organisations""), true);
+                SELECT setval('""OrganisationScopes_OrganisationScopeId_seq""', (SELECT max(""OrganisationScopeId"") FROM ""OrganisationScopes""), true);
+                SELECT setval('""OrganisationSicCodes_OrganisationSicCodeId_seq""', (SELECT max(""OrganisationSicCodeId"") FROM ""OrganisationSicCodes""), true);
+                SELECT setval('""OrganisationStatus_OrganisationStatusId_seq""', (SELECT max(""OrganisationStatusId"") FROM ""OrganisationStatus""), true);
+                SELECT setval('""PublicSectorTypes_PublicSectorTypeId_seq""', (SELECT max(""PublicSectorTypeId"") FROM ""PublicSectorTypes""), true);
+                SELECT setval('""ReminderEmails_ReminderEmailId_seq""', (SELECT max(""ReminderEmailId"") FROM ""ReminderEmails""), true);
+                SELECT setval('""Returns_ReturnId_seq""', (SELECT max(""ReturnId"") FROM ""Returns""), true);
+                SELECT setval('""ReturnStatus_ReturnStatusId_seq""', (SELECT max(""ReturnStatusId"") FROM ""ReturnStatus""), true);
+                SELECT setval('""Users_UserId_seq""', (SELECT max(""UserId"") FROM ""Users""), true);
+                SELECT setval('""UserStatus_UserStatusId_seq""', (SELECT max(""UserStatusId"") FROM ""UserStatus""), true);
+            ";
+
+            WriteParagraph($"About to update sequences");
+            dataRepository.ExecuteRawSql(updateSequencesSql);
+            WriteParagraph($"Updated sequences");
         }
 
         private void InsertData<T>(List<T> items) where T : class
