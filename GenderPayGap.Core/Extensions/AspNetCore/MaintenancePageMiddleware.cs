@@ -23,7 +23,7 @@ namespace GenderPayGap.Extensions.AspNetCore
             //Redirect to holding mage if in maintenance mode
             if (_enabled && !httpContext.GetUri().PathAndQuery.StartsWithI(@"/error/service-unavailable"))
             {
-                httpContext.Response.Redirect(@"/error/service-unavailable", true);
+                httpContext.Response.Redirect(@"/error/service-unavailable", permanent: false);
             }
 
             await _next.Invoke(httpContext);

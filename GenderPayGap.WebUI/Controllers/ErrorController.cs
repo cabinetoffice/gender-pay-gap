@@ -1,4 +1,6 @@
-﻿using GenderPayGap.Core.Classes.Logger;
+﻿using System;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
@@ -68,9 +70,10 @@ namespace GenderPayGap.WebUI.Controllers
         [Route("/error/service-unavailable")]
         public IActionResult ServiceUnavailable()
         {
-            var model = new ErrorViewModel(1119);
+            DateTime? dateAndTimeWhenWeExpectServiceToResume = Global.MaintenanceModeUpAgainTime;
+
             Response.StatusCode = 503;
-            return View("CustomError", model);
+            return View("ServiceUnavailable", dateAndTimeWhenWeExpectServiceToResume);
         }
 
     }

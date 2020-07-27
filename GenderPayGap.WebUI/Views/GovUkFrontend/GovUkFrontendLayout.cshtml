@@ -55,81 +55,88 @@
 
     @{
         List<HeaderNavigationViewModel> headerNavigationLinks;
-        if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
+        if (ViewBag.ServiceUnavailable == true)
         {
-            headerNavigationLinks = new List<HeaderNavigationViewModel>
-            {
-                new HeaderNavigationViewModel
-                {
-                    Text = "Search and compare",
-                    Href = Url.Action("SearchResults", "Viewing")
-                },
-                new HeaderNavigationViewModel
-                {
-                    Text = "Download",
-                    Href = Url.Action("Download", "Viewing")
-                },
-                new HeaderNavigationViewModel
-                {
-                    Text = "Close the gap",
-                    Href = Url.Action("Overview", "ActionHub")
-                },
-                new HeaderNavigationViewModel
-                {
-                    Text = "Employer guidance",
-                    Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
-                }
-            };
+            headerNavigationLinks = new List<HeaderNavigationViewModel>();
         }
         else
         {
-             headerNavigationLinks = new List<HeaderNavigationViewModel>
+            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
             {
-                new HeaderNavigationViewModel
+                headerNavigationLinks = new List<HeaderNavigationViewModel>
                 {
-                    Text = "Search and compare",
-                    Href = Url.Action("SearchResults", "Viewing")
-                },
-                new HeaderNavigationViewModel
-                {
-                    Text = "Download",
-                    Href = Url.Action("Download", "Viewing")
-                },
-                new HeaderNavigationViewModel
-                {
-                    Text = "Close the gap",
-                    Href = Url.Action("Overview", "ActionHub")
-                }
-            };
-        }
-        
-        string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
-        if (controllerName.StartsWith("Admin"))
-        {
-            headerNavigationLinks.Add(new HeaderNavigationViewModel
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Search and compare",
+                        Href = Url.Action("SearchResults", "Viewing")
+                    },
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Download",
+                        Href = Url.Action("Download", "Viewing")
+                    },
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Close the gap",
+                        Href = Url.Action("Overview", "ActionHub")
+                    },
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Employer guidance",
+                        Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
+                    }
+                };
+            }
+            else
             {
-                Text = "Admin",
-                Href = Url.Action("Home", "Admin")
-            });
-        }
+                headerNavigationLinks = new List<HeaderNavigationViewModel>
+                {
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Search and compare",
+                        Href = Url.Action("SearchResults", "Viewing")
+                    },
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Download",
+                        Href = Url.Action("Download", "Viewing")
+                    },
+                    new HeaderNavigationViewModel
+                    {
+                        Text = "Close the gap",
+                        Href = Url.Action("Overview", "ActionHub")
+                    }
+                };
+            }
 
-        if (User.Identity.IsAuthenticated)
-        {
-            headerNavigationLinks.Add(new HeaderNavigationViewModel
+            string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
+            if (controllerName.StartsWith("Admin"))
             {
-                Text = "Sign out",
-                Href = Url.Action("Logout", "Login"),
-                Classes = "sign-out-link"
-            });
-        }
-        else
-        {
-            headerNavigationLinks.Add(new HeaderNavigationViewModel
+                headerNavigationLinks.Add(new HeaderNavigationViewModel
+                {
+                    Text = "Admin",
+                    Href = Url.Action("Home", "Admin")
+                });
+            }
+
+            if (User.Identity.IsAuthenticated)
             {
-                Text = "Sign in",
-                Href = Url.Action("ManageOrganisations", "Organisation"),
-                Classes = "sign-out-link"
-            });
+                headerNavigationLinks.Add(new HeaderNavigationViewModel
+                {
+                    Text = "Sign out",
+                    Href = Url.Action("Logout", "Login"),
+                    Classes = "sign-out-link"
+                });
+            }
+            else
+            {
+                headerNavigationLinks.Add(new HeaderNavigationViewModel
+                {
+                    Text = "Sign in",
+                    Href = Url.Action("ManageOrganisations", "Organisation"),
+                    Classes = "sign-out-link"
+                });
+            }
         }
 
         @(Html.GovUkHeader(new HeaderViewModel
@@ -145,11 +152,14 @@
 
     <div class="govuk-width-container">
         
-        @(Html.GovUkPhaseBanner(new PhaseBannerViewModel
+        @if (ViewBag.ServiceUnavailable != true)
         {
-            Phase = "Beta",
-            Html = @<text>This is a new service – your <a class="govuk-link" href="@Url.Action("SendFeedbackGet", "Feedback")">feedback</a> will help us to improve it.</text>
-        }))
+            @(Html.GovUkPhaseBanner(new PhaseBannerViewModel
+            {
+                Phase = "Beta",
+                Html = @<text>This is a new service – your <a class="govuk-link" href="@Url.Action("SendFeedbackGet", "Feedback")">feedback</a> will help us to improve it.</text>
+            }))
+        }
 
         @(RenderSection("BeforeMain", false))
 
