@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,10 +33,12 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 try
                 {
-                    string tempFilePath = $"pg_temp_backup_{startTime}.bak";
-                    PostgreSqlDump(tempFilePath);
-                    
-                    string filePath = Path.Combine(Global.DatabaseBackupsLocation, $"GPG_database_backup_{startTime}.bak");
+                    string tempFileName = $"pg_temp_backup_{startTime.ToString("yyyy-dd-M--HH-mm-ss")}.bak";
+                    PostgreSqlDump(tempFileName);
+
+                    string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string tempFilePath = Path.Combine(executableLocation, tempFileName);
+                    string filePath = Path.Combine(Global.DatabaseBackupsLocation, $"GPG_database_backup_{startTime.ToString("yyyy-dd-M--HH-mm-ss")}.bak");
                     fileRepository.Write(filePath, File.ReadAllText(tempFilePath));
 
                     File.Delete(tempFilePath);
