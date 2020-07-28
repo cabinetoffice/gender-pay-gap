@@ -134,6 +134,9 @@ cf bind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME
 # - Bind app to Redis cache
 cf bind-service "gender-pay-gap-${PAAS_ENV_SHORTNAME}" "gpg-${PAAS_ENV_SHORTNAME}-cache"
 
+# - Add health check
+cf v3-set-health-check "gender-pay-gap-${PAAS_ENV_SHORTNAME}" http --endpoint "//health-check"
+
 
 
 # Wait for user input - just to make sure the window doens't close without them noticing
