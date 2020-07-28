@@ -26,6 +26,7 @@ namespace GenderPayGap.Database.Models
         [JsonProperty]
         public long? ImpersonatedUserId { get; set; }
 
+        [ForeignKey("OrganisationId")]
         public virtual Organisation Organisation { get; set; }
 
         [ForeignKey("OriginalUserId")]
