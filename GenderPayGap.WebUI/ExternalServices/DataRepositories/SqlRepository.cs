@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -38,6 +39,16 @@ namespace GenderPayGap.Core.Classes
         public void Insert<TEntity>(TEntity entity) where TEntity : class
         {
             GetEntities<TEntity>().Add(entity);
+        }
+
+        public void Insert<TEntity>(List<TEntity> entities) where TEntity : class
+        {
+            GetEntities<TEntity>().AddRange(entities);
+        }
+
+        public void ExecuteRawSql(string sql)
+        {
+            GetDbContext().GetDatabase().ExecuteSqlRaw(sql);
         }
 
         public IDbContext GetDbContext()
