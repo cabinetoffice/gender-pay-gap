@@ -8,11 +8,19 @@ using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class BackupDatabase
     {
+
+        private readonly IFileRepository fileRepository;
+
+        public BackupDatabase(IFileRepository fileRepository)
+        {
+            this.fileRepository = fileRepository;
+        }
 
         public void CreateDatabaseBackup()
         {
@@ -24,7 +32,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 try
                 {
-                    PostgreSqlDump($"pg_backup_{startTime}.bak");
+                    string tempFilePath = $"pg_temp_backup_{startTime}.bak";
+                    PostgreSqlDump(tempFilePath);
+                    
+                    string filePath = Path.Combine(Global.DatabaseBackupsLocation, $"GPG_database_backup_{startTime}.bak");
+                    fileRepository.Write(filePath, File.ReadAllText(tempFilePath));
+
+                    File.Delete(tempFilePath);
 
                     JobHelpers.LogFunctionEnd(runId, nameof(BackupDatabase), startTime);
                 }

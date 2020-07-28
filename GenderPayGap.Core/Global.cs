@@ -103,6 +103,7 @@ namespace GenderPayGap.Core
         public static int PurgeUnusedOrganisationDays => 30;
         public static int PurgeUnconfirmedPinDays => PinInPostExpiryDays + 30;
         public static string DownloadsLocation => "Downloads";
+        public static string DatabaseBackupsLocation => "DatabaseBackups";
         public static string EmployerCodeChars => "123456789ABCDEFGHKLMNPQRSTUXYZ";
         public static string PINChars => "123456789ABCDEF";
         public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/guidance/gender-pay-gap-who-needs-to-report";
