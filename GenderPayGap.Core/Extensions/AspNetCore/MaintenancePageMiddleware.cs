@@ -20,7 +20,7 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         public async Task Invoke(HttpContext httpContext)
         {
-            //Redirect to holding mage if in maintenance mode
+            // Redirect to holding page if in maintenance mode
             if (_enabled && !httpContext.GetUri().PathAndQuery.StartsWithI(@"/error/service-unavailable"))
             {
                 httpContext.Response.Redirect(@"/error/service-unavailable", permanent: false);
