@@ -54,59 +54,32 @@
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
     @{
-        List<HeaderNavigationViewModel> headerNavigationLinks;
-        if (ViewBag.ServiceUnavailable == true)
+        List<HeaderNavigationViewModel> headerNavigationLinks = new List<HeaderNavigationViewModel>();
+        if (ViewBag.ServiceUnavailable != true)
         {
-            headerNavigationLinks = new List<HeaderNavigationViewModel>();
-        }
-        else
-        {
+            headerNavigationLinks.Add(new HeaderNavigationViewModel
+            {
+                Text = "Search and compare",
+                Href = Url.Action("SearchResults", "Viewing")
+            });
+            headerNavigationLinks.Add(new HeaderNavigationViewModel
+            {
+                Text = "Download",
+                Href = Url.Action("Download", "Viewing")
+            });
+            headerNavigationLinks.Add(new HeaderNavigationViewModel
+            {
+                Text = "Close the gap",
+                Href = Url.Action("Overview", "ActionHub")
+            });
+
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
             {
-                headerNavigationLinks = new List<HeaderNavigationViewModel>
+                headerNavigationLinks.Add(new HeaderNavigationViewModel
                 {
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Search and compare",
-                        Href = Url.Action("SearchResults", "Viewing")
-                    },
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Download",
-                        Href = Url.Action("Download", "Viewing")
-                    },
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Close the gap",
-                        Href = Url.Action("Overview", "ActionHub")
-                    },
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Employer guidance",
-                        Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
-                    }
-                };
-            }
-            else
-            {
-                headerNavigationLinks = new List<HeaderNavigationViewModel>
-                {
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Search and compare",
-                        Href = Url.Action("SearchResults", "Viewing")
-                    },
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Download",
-                        Href = Url.Action("Download", "Viewing")
-                    },
-                    new HeaderNavigationViewModel
-                    {
-                        Text = "Close the gap",
-                        Href = Url.Action("Overview", "ActionHub")
-                    }
-                };
+                    Text = "Employer guidance",
+                    Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
+                });
             }
 
             string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
