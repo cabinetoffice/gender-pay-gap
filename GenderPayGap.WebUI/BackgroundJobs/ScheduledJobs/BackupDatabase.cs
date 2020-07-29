@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -57,7 +57,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         {
             Environment.SetEnvironmentVariable("PGPASSWORD", DatabasePassword());
 
-            string dumpCommand = "pg_dump -Fc"
+            string dumpCommand = "pg_executable\\pg_dump -Fc"
                                  + " -h "
                                  + DatabaseHost()
                                  + " -p "
