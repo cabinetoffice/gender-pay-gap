@@ -7,9 +7,9 @@
 
 @await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
 <div class="grid-row">
-    <div style="margin-top: 15px;"> 
-        <partial name="/Views/Components/CovidMessage.cshtml"/> 
-    </div> 
+    <div style="margin-top: 15px;">
+        <partial name="/Views/Components/CovidMessage.cshtml"/>
+    </div>
 </div>
 <div class="grid-row">
     <div class="column-full">
@@ -25,62 +25,63 @@
             <li>Declare whether your organisation is required to report for each reporting year </li>
         </ul>
 
-        <table class="organisations-table" summary="A list of organisations registered to your account" style="margin-top: 30px">
-            <thead>
-            <tr>
-                <th class="org-name" scope="col">Organisation name</th>
-                <th scope="col">Registration Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (UserOrganisation userOrg in Model)
-            {
-                string encOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
-
-                <tr>
-                    @if (userOrg.PINSentDate != null && userOrg.PINConfirmedDate == null)
+        @if (!hasRegisteredOrgs)
+        {
+            <div class="govuk-body">
+                There are no organisations registered to your account.
+            </div>
+        }
+        else
+        {
+            <table class="organisations-table" summary="A list of organisations registered to your account" style="margin-top: 30px">
+                <thead>
+                    <tr>
+                        <th class="org-name" scope="col">Organisation name</th>
+                        <th scope="col">Registration Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (UserOrganisation userOrg in Model)
                     {
-                        <th scope="row">
-                            <a id="ActivateOrg-@(encOrgId)" href="@(Url.Action("ActivateOrganisation", "Organisation", new {id = encOrgId}))">
-                                <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
-                            </a>
-                        </th>
-                        <td data-prefix="Status">
-                            Awaiting activation PIN
-                        </td>
-                    }
-                    else if (userOrg.PINSentDate == null && userOrg.PINConfirmedDate == null)
-                    {
-                        <th scope="row">
-                            <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
-                        </th>
-                        <td data-prefix="Status">
-                            Awaiting registration approval
-                        </td>
-                    }
-                    else
-                    {
-                        <th scope="row">
-                            <a id="ManageOrg-@(encOrgId)" href="@Url.Action("ManageOrganisation", "Organisation", new {id = encOrgId})">
-                                <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
-                            </a>
-                        </th>
-                        <td data-prefix="Status">
-                            <span>Registration complete</span>
-                        </td>
-                    }
-                </tr>
-            }
+                        string encOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
 
-            @if (hasRegisteredOrgs == false)
-            {
-                <tr>
-                    <td colspan="2" style="border-bottom : none">There are no organisations registered to your account.</td>
-                </tr>
-            }
-
-            </tbody>
-        </table>
+                        <tr>
+                            @if (userOrg.PINSentDate != null && userOrg.PINConfirmedDate == null)
+                            {
+                                <th scope="row">
+                                    <a id="ActivateOrg-@(encOrgId)" href="@(Url.Action("ActivateOrganisation", "Organisation", new {id = encOrgId}))">
+                                        <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
+                                    </a>
+                                </th>
+                                <td data-prefix="Status">
+                                    Awaiting activation PIN
+                                </td>
+                            }
+                            else if (userOrg.PINSentDate == null && userOrg.PINConfirmedDate == null)
+                            {
+                                <th scope="row">
+                                    <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
+                                </th>
+                                <td data-prefix="Status">
+                                    Awaiting registration approval
+                                </td>
+                            }
+                            else
+                            {
+                                <th scope="row">
+                                    <a id="ManageOrg-@(encOrgId)" href="@Url.Action("ManageOrganisation", "Organisation", new {id = encOrgId})">
+                                        <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
+                                    </a>
+                                </th>
+                                <td data-prefix="Status">
+                                    <span>Registration complete</span>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
 
     </div>
 
@@ -106,5 +107,5 @@
     </div>
 
 </div>
-<hr style="border: 1px solid black; background: black;"/>
+<hr style="background: black; border: 1px solid black;"/>
 <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>

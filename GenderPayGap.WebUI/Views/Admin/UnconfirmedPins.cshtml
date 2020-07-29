@@ -42,54 +42,62 @@
         <input class="govuk-input govuk-input govuk-!-width-two-thirds" id="search-pitp" type="text">
     </div>
 
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">User</th>
-            <th scope="col" class="govuk-table__header">Organisation</th>
-            <th scope="col" class="govuk-table__header">Letter ID</th>
-            <th scope="col" class="govuk-table__header">PIN / Expiry</th>
-            <th scope="col" class="govuk-table__header">Actions</th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body" id="pitp-data-rows">
-        @foreach (UserOrganisation userOrganisation in Model)
-        {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">
-                    @(userOrganisation.User.Fullname)
-                    <br/>
-                    @(userOrganisation.User.EmailAddress)
-                </td>
-                <td class="govuk-table__cell">
-                    @(userOrganisation.Organisation.OrganisationName)
-                </td>
-                <td class="govuk-table__cell govuk-!-font-size-16">
-                    @(userOrganisation.PITPNotifyLetterId)
-                </td>
-                <td class="govuk-table__cell">
-                    <span class="govuk-!-font-weight-bold">
-                        @(userOrganisation.PIN)
-                    </span>
-                    <br/>
-                    <span class="govuk-!-font-size-16">
-                        @(userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays).ToString("ddd d MMM yyyy"))
-                    </span>
-                </td>
-                <td class="govuk-table__cell">
-                    <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
-                                 new { userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId }))"
-                       class="govuk-link">
-                        Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
-                    </a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-
+    @if (!Model.Any())
+    {
+        <div class="govuk-body">
+            No unconfirmed PINs
+        </div>
+    }
+    else
+    {
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">User</th>
+                    <th scope="col" class="govuk-table__header">Organisation</th>
+                    <th scope="col" class="govuk-table__header">Letter ID</th>
+                    <th scope="col" class="govuk-table__header">PIN / Expiry</th>
+                    <th scope="col" class="govuk-table__header">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body" id="pitp-data-rows">
+                @foreach (UserOrganisation userOrganisation in Model)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            @(userOrganisation.User.Fullname)
+                            <br/>
+                            @(userOrganisation.User.EmailAddress)
+                        </td>
+                        <td class="govuk-table__cell">
+                            @(userOrganisation.Organisation.OrganisationName)
+                        </td>
+                        <td class="govuk-table__cell govuk-!-font-size-16">
+                            @(userOrganisation.PITPNotifyLetterId)
+                        </td>
+                        <td class="govuk-table__cell">
+                            <span class="govuk-!-font-weight-bold">
+                                @(userOrganisation.PIN)
+                            </span>
+                            <br/>
+                            <span class="govuk-!-font-size-16">
+                                @(userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays).ToString("ddd d MMM yyyy"))
+                            </span>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
+                                         new {userId = userOrganisation.User.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                               class="govuk-link">
+                                Send PIN <span class="govuk-visually-hidden"> to @(userOrganisation.User.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
     <script>
-        (function () {
+        (function() {
             var searchBox = document.getElementById('search-pitp');
 
             function showRow(rowTrElement, searchText) {
@@ -109,7 +117,7 @@
             function filterResults() {
                 var searchText = searchBox.value.toLowerCase();
 
-                document.querySelectorAll('#pitp-data-rows tr').forEach(function (trElement) {
+                document.querySelectorAll('#pitp-data-rows tr').forEach(function(trElement) {
                     trElement.style.display = (showRow(trElement, searchText)
                         ? ''
                         : 'none');

@@ -63,29 +63,38 @@ else
     </span>
 }
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Status</th>
-            <th scope="col" class="govuk-table__header">Changed on date</th>
-            <th scope="col" class="govuk-table__header">User</th>
-            <th scope="col" class="govuk-table__header">Details</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        @foreach (OrganisationStatus status in Model.OrganisationStatuses.OrderByDescending(s => s.StatusDate))
-        {
+@if (!Model.OrganisationStatuses.Any())
+{
+    <div class="govuk-body">
+        No organisation statuses
+    </div>
+}
+else
+{
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@(status.Status)</td>
-                <td class="govuk-table__cell">@(status.StatusDate.ToString("d MMM yyyy"))</td>
-                <td class="govuk-table__cell">
-                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
-                       class="govuk-link">
-                        @(status.ByUser.Fullname)
-                    </a>
-                </td>
-                <td class="govuk-table__cell">@(status.StatusDetails)</td>
+                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header">Changed on date</th>
+                <th scope="col" class="govuk-table__header">User</th>
+                <th scope="col" class="govuk-table__header">Details</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (OrganisationStatus status in Model.OrganisationStatuses.OrderByDescending(s => s.StatusDate))
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">@(status.Status)</td>
+                    <td class="govuk-table__cell">@(status.StatusDate.ToString("d MMM yyyy"))</td>
+                    <td class="govuk-table__cell">
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
+                           class="govuk-link">
+                            @(status.ByUser.Fullname)
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">@(status.StatusDetails)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
