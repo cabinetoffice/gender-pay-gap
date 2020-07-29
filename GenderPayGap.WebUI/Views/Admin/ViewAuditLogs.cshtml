@@ -56,17 +56,25 @@
 <span class="govuk-caption-xl">Administration</span>
 <h1 class="govuk-heading-xl">
     Audit logs
-    <br />
+    <br/>
     <span class="govuk-!-font-size-27">
         for
         @(userOrOrganisationName)
     </span>
 </h1>
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Date</th>
+@if (!Model.AuditLogs.Any())
+{
+    <div class="govuk-body">
+        No audit logs
+    </div>
+}
+else
+{
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Date</th>
                 @if (Model.Organisation == null) // i.e. if this audit page is in the context of a User
                 {
                     // If this audit page is in the context of a User
@@ -74,44 +82,65 @@
                     // so we must show which Organisation each item relates to
                     <th scope="col" class="govuk-table__header">Organisation</th>
                 }
-            <th scope="col" class="govuk-table__header">User</th>
-            <th scope="col" class="govuk-table__header">Action</th>
-            <th scope="col" class="govuk-table__header" colspan="2">Details</th>
-        </tr>
-    </thead>
+                <th scope="col" class="govuk-table__header">User</th>
+                <th scope="col" class="govuk-table__header">Action</th>
+                <th scope="col" class="govuk-table__header" colspan="2">Details</th>
+            </tr>
+        </thead>
 
-    <tbody class="govuk-table__body">
-        @foreach (AuditLog item in Model.AuditLogs)
-        {
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
-                    <span style="white-space: nowrap;">
-                        @(item.CreatedDate.ToString("d MMM yyyy"))
-                    </span>
-                    <span style="white-space: nowrap;">
-                        @(item.CreatedDate.ToString("HH:mm:ss"))
-                    </span>
-                </td>
-                @if (Model.Organisation == null) // i.e. if this audit page is in the context of a User
-                {
-                    // If this audit page is in the context of a User
-                    // then each item is in the context of an Organisation
-                    // so we must show which Organisation each item relates to
+        <tbody class="govuk-table__body">
+            @foreach (AuditLog item in Model.AuditLogs)
+            {
+                <tr class="govuk-table__row">
                     <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
-                        @if (item.Organisation != null)
-                        {
-                            <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = item.Organisation.OrganisationId})"
-                               class="govuk-link">
-                                @(item.Organisation.OrganisationName)
-                            </a>
-                        }
+                        <span style="white-space: nowrap;">
+                            @(item.CreatedDate.ToString("d MMM yyyy"))
+                        </span>
+                        <span style="white-space: nowrap;">
+                            @(item.CreatedDate.ToString("HH:mm:ss"))
+                        </span>
                     </td>
-                    // If this audit page is in the context of a User
-                    // then we also show the user who took the action
-                    // but only if it wasn't this current user
-                    <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
-                        @if (item.OriginalUser != Model.User)
-                        {
+                    @if (Model.Organisation == null) // i.e. if this audit page is in the context of a User
+                    {
+                        // If this audit page is in the context of a User
+                        // then each item is in the context of an Organisation
+                        // so we must show which Organisation each item relates to
+                        <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
+                            @if (item.Organisation != null)
+                            {
+                                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = item.Organisation.OrganisationId})"
+                                   class="govuk-link">
+                                    @(item.Organisation.OrganisationName)
+                                </a>
+                            }
+                        </td>
+                        // If this audit page is in the context of a User
+                        // then we also show the user who took the action
+                        // but only if it wasn't this current user
+                        <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
+                            @if (item.OriginalUser != Model.User)
+                            {
+                                <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = item.OriginalUser.UserId})"
+                                   class="govuk-link">
+                                    @(item.OriginalUser.Fullname)
+                                </a>
+
+                                @if (item.ImpersonatedUser != null)
+                                {
+                                    <br/>
+                                    <b>impersonating</b>
+                                    <br/>
+                                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = item.ImpersonatedUser.UserId})"
+                                       class="govuk-link">
+                                        @(item.ImpersonatedUser.Fullname)
+                                    </a>
+                                }
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
                             <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = item.OriginalUser.UserId})"
                                class="govuk-link">
                                 @(item.OriginalUser.Fullname)
@@ -127,67 +156,46 @@
                                     @(item.ImpersonatedUser.Fullname)
                                 </a>
                             }
-                        }
-                    </td>
-                }
-                else
-                {
+                        </td>
+                    }
                     <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
-                        <a href="@Url.Action("ViewUser", "AdminViewUser", new { id = item.OriginalUser.UserId })"
-                           class="govuk-link">
-                            @(item.OriginalUser.Fullname)
-                        </a>
-
-                        @if (item.ImpersonatedUser != null)
+                        @(EnumHelper.DisplayNameOf(item.Action))
+                    </td>
+                    <td class="govuk-table__cell">
+                        @if (item.Details.Count > 0)
                         {
-                            <br/>
-                            <b>impersonating</b>
-                            <br/>
-                            <a href="@Url.Action("ViewUser", "AdminViewUser", new { id = item.ImpersonatedUser.UserId })"
-                               class="govuk-link">
-                                @(item.ImpersonatedUser.Fullname)
-                            </a>
+                            KeyValuePair<string, string> detail = item.Details.First();
+                            <span>
+                                <b>@(detail.Key)</b>:
+                            </span>
                         }
                     </td>
-                }
-                <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
-                    @(EnumHelper.DisplayNameOf(item.Action))
-                </td>
-                <td class="govuk-table__cell">
-                    @if (item.Details.Count > 0)
-                    {
-                        KeyValuePair<string, string> detail = item.Details.First();
-                        <span>
-                            <b>@(detail.Key)</b>:
-                        </span>
-                    }
-                </td>
-                <td class="govuk-table__cell">
-                    @if (item.Details.Count > 0)
-                    {
-                        KeyValuePair<string, string> detail = item.Details.First();
-                        <span>
-                            @detail.Value
-                        </span>
-                    }
-                </td>
-            </tr>
-            @foreach (KeyValuePair<string, string> detail in item.Details.Skip(1))
-            {
-                <tr class="govuk-table__row">
                     <td class="govuk-table__cell">
-                        <span>
-                            <b>@(detail.Key)</b>:
-                        </span>
-                    </td>
-                    <td class="govuk-table__cell">
-                        <span>
-                            @(detail.Value)
-                        </span>
+                        @if (item.Details.Count > 0)
+                        {
+                            KeyValuePair<string, string> detail = item.Details.First();
+                            <span>
+                                @detail.Value
+                            </span>
+                        }
                     </td>
                 </tr>
+                @foreach (KeyValuePair<string, string> detail in item.Details.Skip(1))
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <span>
+                                <b>@(detail.Key)</b>:
+                            </span>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <span>
+                                @(detail.Value)
+                            </span>
+                        </td>
+                    </tr>
+                }
             }
-
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+}

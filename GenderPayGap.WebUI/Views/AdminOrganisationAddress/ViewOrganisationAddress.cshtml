@@ -46,47 +46,57 @@
 
 @(Html.GovUkButton(new ButtonViewModel
 {
-    Href = Url.Action("ChangeAddressGet", "AdminOrganisationAddress", new { id = Model.OrganisationId }),
+    Href = Url.Action("ChangeAddressGet", "AdminOrganisationAddress", new {id = Model.OrganisationId}),
     Text = "Change address"
 }))
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header"></th>
-            <th scope="col" class="govuk-table__header">Address</th>
-            <th scope="col" class="govuk-table__header">Changed to this address on date</th>
-            <th scope="col" class="govuk-table__header">Source</th>
-            <th scope="col" class="govuk-table__header">Status</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        @{
-            List<OrganisationAddress> addresses = Model.OrganisationAddresses.OrderByDescending(a => a.Created).ToList();
-        }
-        @for (int i = 0; i < addresses.Count; i++)
-        {
-            var address = addresses[i];
 
+@if (!Model.OrganisationAddresses.Any())
+{
+    <div class="govuk-body">
+        No organisation addresses
+    </div>
+}
+else
+{
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                @if (i == 0)
-                {
-                    <th scope="row" class="govuk-table__header">
-                        Current address
-                    </th>
-                }
-                else if (i == 1)
-                {
-                    <th scope="row" class="govuk-table__header" rowspan="@(addresses.Count - 1)">
-                        Previous addresses
-                    </th>
-                }
-                
-                <td class="govuk-table__cell">@(address.GetAddressString())</td>
-                <td class="govuk-table__cell">@(address.Created.ToString("d MMM yyyy"))</td>
-                <td class="govuk-table__cell">@(address.Source)</td>
-                <td class="govuk-table__cell">@(address.Status)</td>
+                <th scope="col" class="govuk-table__header"></th>
+                <th scope="col" class="govuk-table__header">Address</th>
+                <th scope="col" class="govuk-table__header">Changed to this address on date</th>
+                <th scope="col" class="govuk-table__header">Source</th>
+                <th scope="col" class="govuk-table__header">Status</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="govuk-table__body">
+            @{
+                List<OrganisationAddress> addresses = Model.OrganisationAddresses.OrderByDescending(a => a.Created).ToList();
+            }
+            @for (var i = 0; i < addresses.Count; i++)
+            {
+                OrganisationAddress address = addresses[i];
+
+                <tr class="govuk-table__row">
+                    @if (i == 0)
+                    {
+                        <th scope="row" class="govuk-table__header">
+                            Current address
+                        </th>
+                    }
+                    else if (i == 1)
+                    {
+                        <th scope="row" class="govuk-table__header" rowspan="@(addresses.Count - 1)">
+                            Previous addresses
+                        </th>
+                    }
+
+                    <td class="govuk-table__cell">@(address.GetAddressString())</td>
+                    <td class="govuk-table__cell">@(address.Created.ToString("d MMM yyyy"))</td>
+                    <td class="govuk-table__cell">@(address.Source)</td>
+                    <td class="govuk-table__cell">@(address.Status)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

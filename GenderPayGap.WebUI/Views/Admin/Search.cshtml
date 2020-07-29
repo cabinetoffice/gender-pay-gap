@@ -64,7 +64,7 @@
                            aria-describedby="search-query-hint">
                     <input type="submit" value="Search" class="admin-search-button"/>
                 </div>
-                
+
                 <div class="admin-search-orderby">
                     <fieldset class="govuk-fieldset">
                         <div class="govuk-radios govuk-radios--small govuk-radios--inline">
@@ -93,7 +93,7 @@
                     </fieldset>
 
                 </div>
-                
+
             </div>
         </form>
         <script>
@@ -121,43 +121,52 @@
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <table class="govuk-table">
-                        <tbody class="govuk-table__body">
-                            @foreach (AdminSearchResultOrganisationViewModel organisation in Model.SearchResults.OrganisationResults)
-                            {
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId}))"
-                                           class="govuk-link">
-                                            @organisation.OrganisationName
-                                        </a>
+                    @if (!Model.SearchResults.OrganisationResults.Any())
+                    {
+                        <div class="govuk-body">
+                            No organisations
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (AdminSearchResultOrganisationViewModel organisation in Model.SearchResults.OrganisationResults)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId}))"
+                                               class="govuk-link">
+                                                @organisation.OrganisationName
+                                            </a>
 
-                                        @foreach (string previousName in organisation.OrganisationPreviousNames)
-                                        {
-                                            <br/>
-                                            @:previously @previousName
-                                        }
+                                            @foreach (string previousName in organisation.OrganisationPreviousNames)
+                                            {
+                                                <br/>
+                                                @:previously @previousName
+                                            }
 
-                                        @if (organisation.EmployerRef != null)
-                                        {
-                                            <br/>
-                                            @:Employer ref: <b>@(organisation.EmployerRef)</b>
-                                        }
-                                        @if (organisation.CompanyNumber != null)
-                                        {
-                                            <br/>
-                                            @:Company number: <b>@(organisation.CompanyNumber)</b>
-                                        }
-                                        @if (organisation.Status != OrganisationStatuses.Active)
-                                        {
-                                            <br/>
-                                            <span class="govuk-!-font-weight-bold">(@(organisation.Status))</span>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                            @if (organisation.EmployerRef != null)
+                                            {
+                                                <br/>
+                                                @:Employer ref: <b>@(organisation.EmployerRef)</b>
+                                            }
+                                            @if (organisation.CompanyNumber != null)
+                                            {
+                                                <br/>
+                                                @:Company number: <b>@(organisation.CompanyNumber)</b>
+                                            }
+                                            @if (organisation.Status != OrganisationStatuses.Active)
+                                            {
+                                                <br/>
+                                                <span class="govuk-!-font-weight-bold">(@(organisation.Status))</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
                 </div>
             </details>
 
@@ -174,29 +183,38 @@
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <table class="govuk-table">
-                        <tbody class="govuk-table__body">
-                            @foreach (AdminSearchResultUserViewModel user in Model.SearchResults.UserResults)
-                            {
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
-                                           class="govuk-link">
-                                            @user.UserFullName
-                                        </a>
-                                        <br/>
-                                        @user.UserEmailAddress
-
-                                        @if (user.Status != UserStatuses.Active)
-                                        {
+                    @if (!Model.SearchResults.UserResults.Any())
+                    {
+                        <div class="govuk-body">
+                            No users
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (AdminSearchResultUserViewModel user in Model.SearchResults.UserResults)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                                               class="govuk-link">
+                                                @user.UserFullName
+                                            </a>
                                             <br/>
-                                            <span class="govuk-!-font-weight-bold">(@(user.Status))</span>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                            @user.UserEmailAddress
+
+                                            @if (user.Status != UserStatuses.Active)
+                                            {
+                                                <br/>
+                                                <span class="govuk-!-font-weight-bold">(@(user.Status))</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
                 </div>
             </details>
         }

@@ -45,57 +45,66 @@
     </span>
 </h1>
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Year</th>
-            <th scope="col" class="govuk-table__header">Scope</th>
-            <th scope="col" class="govuk-table__header">Details</th>
-            <th scope="col" class="govuk-table__header">Reason</th>
-            <th scope="col" class="govuk-table__header">Read Guidance</th>
-            <th scope="col" class="govuk-table__header">Changed on date</th>
-            <th scope="col" class="govuk-table__header">Status</th>
-            <th scope="col" class="govuk-table__header">Actions</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        @{ DateTime previousSnapshotDate = DateTime.MinValue; }
-        @foreach (OrganisationScope scope in Model.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).ThenByDescending(s => s.ScopeStatusDate))
-        {
+@if (!Model.OrganisationScopes.Any())
+{
+    <div class="govuk-body">
+        No organisation scopes
+    </div>
+}
+else
+{
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                @if (scope.SnapshotDate == previousSnapshotDate)
-                {
-                    @* Omit this TD, a TD above has a rowspan that covers this row *@
-                }
-                else
-                {
-                    <th scope="row" class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
-                        @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year))
-                    </th>
-                }
-                <td class="govuk-table__cell">@(scope.ScopeStatus)</td>
-                <td class="govuk-table__cell">@(scope.StatusDetails)</td>
-                <td class="govuk-table__cell">@(scope.Reason)</td>
-                <td class="govuk-table__cell">
-                    @(scope.ReadGuidance.HasValue ? scope.ReadGuidance.Value ? "Yes" : "No" : "-")
-                </td>
-                <td class="govuk-table__cell">@(scope.ScopeStatusDate.ToString("d MMM yyyy"))</td>
-                <td class="govuk-table__cell">@(scope.Status)</td>
-                @if (scope.SnapshotDate == previousSnapshotDate)
-                {
-                    @* Omit this TD, a TD above has a rowspan that covers this row *@
-                }
-                else
-                {
-                    <td class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
-                        <a href="@Url.Action("ChangeScopeGet", "AdminOrganisationScope", new {id = scope.OrganisationId, year = scope.SnapshotDate.Year})"
-                           class="govuk-link">
-                            Change <span class="govuk-visually-hidden"> scope for @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year))</span>
-                        </a>
-                    </td>
-                }
+                <th scope="col" class="govuk-table__header">Year</th>
+                <th scope="col" class="govuk-table__header">Scope</th>
+                <th scope="col" class="govuk-table__header">Details</th>
+                <th scope="col" class="govuk-table__header">Reason</th>
+                <th scope="col" class="govuk-table__header">Read Guidance</th>
+                <th scope="col" class="govuk-table__header">Changed on date</th>
+                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header">Actions</th>
             </tr>
-            previousSnapshotDate = scope.SnapshotDate;
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody class="govuk-table__body">
+            @{ var previousSnapshotDate = DateTime.MinValue; }
+            @foreach (OrganisationScope scope in Model.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).ThenByDescending(s => s.ScopeStatusDate))
+            {
+                <tr class="govuk-table__row">
+                    @if (scope.SnapshotDate == previousSnapshotDate)
+                    {
+                        @* Omit this TD, a TD above has a rowspan that covers this row *@
+                    }
+                    else
+                    {
+                        <th scope="row" class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
+                            @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year))
+                        </th>
+                    }
+                    <td class="govuk-table__cell">@(scope.ScopeStatus)</td>
+                    <td class="govuk-table__cell">@(scope.StatusDetails)</td>
+                    <td class="govuk-table__cell">@(scope.Reason)</td>
+                    <td class="govuk-table__cell">
+                        @(scope.ReadGuidance.HasValue ? scope.ReadGuidance.Value ? "Yes" : "No" : "-")
+                    </td>
+                    <td class="govuk-table__cell">@(scope.ScopeStatusDate.ToString("d MMM yyyy"))</td>
+                    <td class="govuk-table__cell">@(scope.Status)</td>
+                    @if (scope.SnapshotDate == previousSnapshotDate)
+                    {
+                        @* Omit this TD, a TD above has a rowspan that covers this row *@
+                    }
+                    else
+                    {
+                        <td class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
+                            <a href="@Url.Action("ChangeScopeGet", "AdminOrganisationScope", new {id = scope.OrganisationId, year = scope.SnapshotDate.Year})"
+                               class="govuk-link">
+                                Change <span class="govuk-visually-hidden"> scope for @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year))</span>
+                            </a>
+                        </td>
+                    }
+                </tr>
+                previousSnapshotDate = scope.SnapshotDate;
+            }
+        </tbody>
+    </table>
+}

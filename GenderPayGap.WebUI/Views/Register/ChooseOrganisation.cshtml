@@ -1,7 +1,6 @@
 ﻿@{
     ViewBag.Title = "Choose your organisation - Gender pay gap reporting service";
 }
-
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Models.Register
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
@@ -17,11 +16,11 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.SectorType)
 
-        <input type="submit" style="display:none" name="command" value="search">
+        <input type="submit" style="display: none" name="command" value="search">
         <div class="grid-row">
-            <div style="margin-top: 15px;"> 
-                <partial name="/Views/Components/CovidMessage.cshtml"/> 
-            </div> 
+            <div style="margin-top: 15px;">
+                <partial name="/Views/Components/CovidMessage.cshtml"/>
+            </div>
         </div>
         <div class="grid-row">
             <div class="column-two-thirds">
@@ -63,7 +62,7 @@
                             if (Model.LastPrivateSearchRemoteTotal == -1)
                             {
                                 <div class="subsection panel-indent">
-                                    <div class="bold-small"><span class="error-message" style="display:inline">There was a problem searching the Companies&nbsp;House service. </span><br/>If you cant find your organisation below, please use the search button to try again.</div>
+                                    <div class="bold-small"><span class="error-message" style="display: inline">There was a problem searching the Companies&nbsp;House service. </span><br/>If you cant find your organisation below, please use the search button to try again.</div>
                                 </div>
                             }
                             else if (Model.Employers.VirtualRecordTotal != Model.Employers.ActualRecordTotal)
@@ -72,30 +71,30 @@
                                     <div class="bold-small">Showing @Model.Employers.VirtualRecordTotal.ToString("N0") of @Model.Employers.ActualRecordTotal.ToString("N0") results. Please refine your search or enter your company number.</div>
                                 </div>
                             }
-                            
-                            if(!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration))
+
+                            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration))
                             {
                                 <div class="column-two-thirds">
                                     <p>
-                                        Please choose your organisation and we'll send an activation PIN to its 
-                                        registered address. Only organisations registered at Companies House 
+                                        Please choose your organisation and we'll send an activation PIN to its
+                                        registered address. Only organisations registered at Companies House
                                         are listed here.
                                     </p>
                                 </div>
                             }
                         }
-                        
-                        if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) 
+
+                        if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration)
                             || Model.SectorType == SectorTypes.Public)
                         {
                             <div class="column-two-thirds" style="margin-bottom: 30px;">
                                 <p>
                                     Once your request to add an organisation to your account has been approved, the
-                                    Government Equalities Office will email you within 5 days to confirm that you are 
+                                    Government Equalities Office will email you within 5 days to confirm that you are
                                     now able to report your gender pay gap data on behalf of that organisation.
                                 </p>
                                 <p>
-                                    You will then be able to sign in and submit your gender pay gap data from your 
+                                    You will then be able to sign in and submit your gender pay gap data from your
                                     Gender pay gap service account.
                                 </p>
                             </div>
@@ -103,37 +102,37 @@
                         <table class="search search3" summary="A list organisations that match your search">
                             <caption class="visuallyhidden">Customer and Business search listing</caption>
                             <thead>
-                            <tr>
-                                <th scope="col">Organisation name and registered address</th>
-                                @if (Model.SectorType == SectorTypes.Private)
-                                {
-                                    <th scope="col">Registered number</th>
-                                }
-
-                                <th scope="col">&nbsp;</th>
-
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @for (var i = 0; i < Model.Employers.Results.Count; i++)
-                            {
-                                <tr style="background-color:@(Model.Employers.Results[i].OrganisationId > 0 ? "inherit" : "#d2e5f5")">
-                                    <td>
-                                        @Model.Employers.Results[i].OrganisationName <span>@Model.Employers.Results[i].GetFullAddress()</span>
-                                    </td>
+                                <tr>
+                                    <th scope="col">Organisation name and registered address</th>
                                     @if (Model.SectorType == SectorTypes.Private)
                                     {
-                                        <td>
-                                            @Model.Employers.Results[i].CompanyNumber
-                                        </td>
+                                        <th scope="col">Registered number</th>
                                     }
-                                    <td>
-                                        <button type="submit" class="link-button" name="command" value="employer_@i">
-                                            Choose&nbsp;organisation<span class="govuk-visually-hidden"> @Model.Employers.Results[i].OrganisationName</span>
-                                        </button>
-                                    </td>
+
+                                    <th scope="col">&nbsp;</th>
+
                                 </tr>
-                            }
+                            </thead>
+                            <tbody>
+                                @for (var i = 0; i < Model.Employers.Results.Count; i++)
+                                {
+                                    <tr style="background-color: @(Model.Employers.Results[i].OrganisationId > 0 ? "inherit" : "#d2e5f5")">
+                                        <td>
+                                            @Model.Employers.Results[i].OrganisationName <span>@Model.Employers.Results[i].GetFullAddress()</span>
+                                        </td>
+                                        @if (Model.SectorType == SectorTypes.Private)
+                                        {
+                                            <td>
+                                                @Model.Employers.Results[i].CompanyNumber
+                                            </td>
+                                        }
+                                        <td>
+                                            <button type="submit" class="link-button" name="command" value="employer_@i">
+                                                Choose&nbsp;organisation<span class="govuk-visually-hidden"> @Model.Employers.Results[i].OrganisationName</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
 

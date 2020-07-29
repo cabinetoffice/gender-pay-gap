@@ -95,79 +95,88 @@
                     the organisation
                 </h3>
 
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">User</th>
-                            <th scope="col" class="govuk-table__header">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
+                @if (Model.NewStatus != OrganisationStatuses.Active || !Model.InactiveUserOrganisations.Any())
+                {
+                    <div class="govuk-body">
+                        No inactive users
+                    </div>
+                }
+                else
+                {
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">User</th>
+                                <th scope="col" class="govuk-table__header">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
 
-                        @if (Model.NewStatus == OrganisationStatuses.Active)
-                        {
-                            @foreach (InactiveUserOrganisation userOrganisation in Model.InactiveUserOrganisations)
+                            @if (Model.NewStatus == OrganisationStatuses.Active)
                             {
-                                User user = userOrganisation.User;
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
-                                           class="govuk-link">
-                                            @(user.Fullname)
-                                        </a>
-                                        <br/>
-                                        @(user.EmailAddress)
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
-                                        {
-                                            @:Awaiting activation PIN
-                                        }
-                                        else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
-                                        {
-                                            @:Awaiting registration approval
-                                        }
-                                        else
-                                        {
-                                            @:Registration complete
-                                        }
-                                    </td>
-                                </tr>
+                                @foreach (InactiveUserOrganisation userOrganisation in Model.InactiveUserOrganisations)
+                                {
+                                    User user = userOrganisation.User;
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                                               class="govuk-link">
+                                                @(user.Fullname)
+                                            </a>
+                                            <br/>
+                                            @(user.EmailAddress)
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+                                            {
+                                                @:Awaiting activation PIN
+                                            }
+                                            else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                                            {
+                                                @:Awaiting registration approval
+                                            }
+                                            else
+                                            {
+                                                @:Registration complete
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
-                        }
-                        else
-                        {
-                            @foreach (UserOrganisation userOrganisation in Model.Organisation.UserOrganisations)
+                            else
                             {
-                                User user = userOrganisation.User;
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
-                                           class="govuk-link">
-                                            @(user.Fullname)
-                                        </a>
-                                        <br/>
-                                        @(user.EmailAddress)
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
-                                        {
-                                            @:Awaiting activation PIN
-                                        }
-                                        else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
-                                        {
-                                            @:Awaiting registration approval
-                                        }
-                                        else
-                                        {
-                                            @:Registration complete
-                                        }
-                                    </td>
-                                </tr>
+                                @foreach (UserOrganisation userOrganisation in Model.Organisation.UserOrganisations)
+                                {
+                                    User user = userOrganisation.User;
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                                               class="govuk-link">
+                                                @(user.Fullname)
+                                            </a>
+                                            <br/>
+                                            @(user.EmailAddress)
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+                                            {
+                                                @:Awaiting activation PIN
+                                            }
+                                            else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                                            {
+                                                @:Awaiting registration approval
+                                            }
+                                            else
+                                            {
+                                                @:Registration complete
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                }
             }
             <div class="govuk-form-group">
                 @(Html.GovUkButton(new ButtonViewModel

@@ -21,13 +21,13 @@
         crumbs.Add(new CrumbViewModel
         {
             Text = Model.Organisation.OrganisationName,
-            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
         });
 
         crumbs.Add(new CrumbViewModel
         {
             Text = "SIC codes history",
-            Href = Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new { id = Model.Organisation.OrganisationId })
+            Href = Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new {id = Model.Organisation.OrganisationId})
         });
 
         crumbs.Add(new CrumbViewModel
@@ -48,97 +48,112 @@
         <span class="govuk-caption-xl">Administration</span>
         <h1 class="govuk-heading-xl">
             Change SIC codes
-            <br />
+            <br/>
             <span class="govuk-!-font-size-27">
                 for @(Model.Organisation.OrganisationName)
             </span>
         </h1>
-        
+
         @(Html.GovUkErrorSummary())
 
         <h2 class="govuk-heading-l">
             This organisation has different SIC codes registered with Companies House
         </h2>
 
-        <form method="post" action="@Url.Action("ChangeSicCodesPost", "AdminOrganisationSicCodes", new { id = Model.Organisation.OrganisationId })">
+        <form method="post" action="@Url.Action("ChangeSicCodesPost", "AdminOrganisationSicCodes", new {id = Model.Organisation.OrganisationId})">
             @(Html.AntiForgeryToken())
             @(Html.Hidden(nameof(ChangeOrganisationSicCodesViewModel.Action),
                 ManuallyChangeOrganisationSicCodesActions.OfferCompaniesHouseSicCodesAnswer))
 
             @foreach (int sicCodeId in Model.SicCodeIdsToAdd)
             {
-                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToAdd))" value="@(sicCodeId)" />
+                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToAdd))" value="@(sicCodeId)"/>
             }
             @foreach (int sicCodeId in Model.SicCodeIdsToRemove)
             {
-                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToRemove))" value="@(sicCodeId)" />
+                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToRemove))" value="@(sicCodeId)"/>
             }
             @foreach (string sicCodeId in Model.SicCodeIdsFromCoHo)
             {
-                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsFromCoHo))" value="@(sicCodeId)" />
+                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsFromCoHo))" value="@(sicCodeId)"/>
             }
-            
+
             <h2 class="govuk-heading-m">Current SIC codes</h2>
 
-            <table class="govuk-table">
-                <tbody class="govuk-table__body">
-                    @{
-                        List<OrganisationSicCode> currentSicCodes = Model.Organisation.OrganisationSicCodes
-                            .Where(osc => !osc.Retired.HasValue)
-                            .OrderBy(osc => osc.SicCode.SicCodeId)
-                            .ToList();
-                    }
-
-                    @foreach (OrganisationSicCode organisationSicCode in currentSicCodes)
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                <b>@(organisationSicCode.SicCode.SicCodeId)</b>
-                                @(organisationSicCode.SicCode.Description)
-                                <br />
-                                <span class="govuk-body-s">
-                                    part of: @(organisationSicCode.SicCode.SicSection.Description)
-                                </span>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            @{
+                List<OrganisationSicCode> currentSicCodes = Model.Organisation.OrganisationSicCodes
+                    .Where(osc => !osc.Retired.HasValue)
+                    .OrderBy(osc => osc.SicCode.SicCodeId)
+                    .ToList();
+            }
+            @if (!currentSicCodes.Any())
+            {
+                <div class="govuk-body">
+                    No current SIC codes
+                </div>
+            }
+            else
+            {
+                <table class="govuk-table">
+                    <tbody class="govuk-table__body">
+                        @foreach (OrganisationSicCode organisationSicCode in currentSicCodes)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <b>@(organisationSicCode.SicCode.SicCodeId)</b>
+                                    @(organisationSicCode.SicCode.Description)
+                                    <br/>
+                                    <span class="govuk-body-s">
+                                        part of: @(organisationSicCode.SicCode.SicSection.Description)
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
 
             <h2 class="govuk-heading-m">SIC codes from Companies House</h2>
+            @if (!Model.SicCodesFromCoHo.Any())
+            {
+                <div class="govuk-body">
+                    No SIC codes from Companies House
+                </div>
+            }
+            else
+            {
+                <table class="govuk-table">
+                    <tbody class="govuk-table__body">
+                        @foreach (KeyValuePair<string, SicCode> sicCodeIdAndSicCodeFromCoho in Model.SicCodesFromCoHo)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <b>@(sicCodeIdAndSicCodeFromCoho.Key)</b>
 
-            <table class="govuk-table">
-                <tbody class="govuk-table__body">
-                    @foreach (KeyValuePair<string, SicCode> sicCodeIdAndSicCodeFromCoho in Model.SicCodesFromCoHo)
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                <b>@(sicCodeIdAndSicCodeFromCoho.Key)</b>
-                                
-                                @if (sicCodeIdAndSicCodeFromCoho.Value == null)
-                                {
-                                    <span>
-                                        This SIC code does not appear in our database and <b>will not be imported!</b>
-                                    </span>
-                                }
-                                else
-                                {
-                                    @(sicCodeIdAndSicCodeFromCoho.Value.Description)
-                                    <br />
-                                    <span class="govuk-body-s">
-                                        part of: @(sicCodeIdAndSicCodeFromCoho.Value.SicSection.Description)
-                                    </span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
+                                    @if (sicCodeIdAndSicCodeFromCoho.Value == null)
+                                    {
+                                        <span>
+                                            This SIC code does not appear in our database and <b>will not be imported!</b>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @(sicCodeIdAndSicCodeFromCoho.Value.Description)
+                                        <br/>
+                                        <span class="govuk-body-s">
+                                            part of: @(sicCodeIdAndSicCodeFromCoho.Value.SicSection.Description)
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
 
             @(Html.GovUkRadiosFor(
                 m => m.AcceptCompaniesHouseSicCodes,
-                fieldsetOptions: new FieldsetViewModel
+                new FieldsetViewModel
                 {
                     Legend = new LegendViewModel
                     {
@@ -147,14 +162,14 @@
                     },
                     Classes = "govuk-!-margin-top-6"
                 }
-            ))
+                ))
 
             @(Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"
             }))
-            
+
             <p class="govuk-body">
                 <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
