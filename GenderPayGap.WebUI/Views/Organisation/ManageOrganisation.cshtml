@@ -11,9 +11,9 @@
 
 @await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
 <div class="grid-row">
-    <div style="margin-top: 15px;"> 
-        <partial name="/Views/Components/CovidMessage.cshtml"/> 
-    </div> 
+    <div style="margin-top: 15px;">
+        <partial name="/Views/Components/CovidMessage.cshtml"/>
+    </div>
 </div>
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -29,7 +29,7 @@
                     </dt>
                 </div>
                 <div>
-                    <dt style="font-weight: lighter; font-size: 0.8em; color: gray;">
+                    <dt style="color: gray; font-size: 0.8em; font-weight: lighter;">
                         @Html.Raw(currentOrg.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
                     </dt>
                 </div>
@@ -60,19 +60,14 @@
             Manage reports
         </h2>
 
-        <div class="gpg-manage-reports">
-
-            <div class="gpg-manage-reports__head">
-                <div class="gpg-manage-reports__desc">
-                    Year
-                </div>
-                <div class="gpg-manage-reports__desc">
-                    Reporting requirement
-                </div>
-                <div class="gpg-manage-reports__desc gpg-manage-reports__desc--action">
-                    Report status
-                </div>
-            </div>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Year</th>
+                    <th scope="col" class="govuk-table__header">Reporting requirement</th>
+                    <th scope="col" class="govuk-table__header">Report status</th>
+                </tr>
+            </thead>
 
             @for (int i = Model.ReportInfoModels.Count - 1, editScopeCount = Global.EditableScopeCount; i >= 0; i--, editScopeCount--)
             {
@@ -90,9 +85,7 @@
                 };
                 @await Html.PartialAsync("DisplayReportSection", displayReportModel)
             }
-
-        </div>
-
+        </table>
     </div>
 </div>
 
