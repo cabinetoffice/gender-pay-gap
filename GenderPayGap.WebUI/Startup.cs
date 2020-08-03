@@ -39,7 +39,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Newtonsoft.Json.Serialization;
 using StackExchange.Redis;
 
 namespace GenderPayGap.WebUI
@@ -120,9 +119,6 @@ namespace GenderPayGap.WebUI
             AddRedisCache(services);
 
             DataProtectionKeysHelper.AddDataProtectionKeyStorage(services);
-
-            //This may now be required 
-            //services.AddHttpsRedirection(options => { options.HttpsPort = 443; });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -377,6 +373,15 @@ namespace GenderPayGap.WebUI
             app.UseCookiePolicy(cookiePolicyOptions);
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
             app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
+
+            if (!string.IsNullOrWhiteSpace(Global.BasicAuthUsername)
+                && !string.IsNullOrWhiteSpace(Global.BasicAuthPassword))
+            {
+                // Add HTTP Basic Authentication in our non-production environments to make sure people don't accidentally stumble across the site
+                // The site will still also be secured by the usual login/cookie auth - this is just an extra layer to make the site not publicly accessible
+                app.UseMiddleware<BasicAuthMiddleware>();
+            }
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

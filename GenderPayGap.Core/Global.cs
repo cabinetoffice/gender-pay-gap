@@ -45,6 +45,8 @@ namespace GenderPayGap.Core
         public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
         public static string GpgAnalysisAppApiPassword => Config.GetAppSetting("GpgAnalysisAppApiPassword");
         public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
+        public static string BasicAuthUsername => Config.GetAppSetting("BasicAuthUsername");
+        public static string BasicAuthPassword => Config.GetAppSetting("BasicAuthPassword");
 
         #endregion
 
