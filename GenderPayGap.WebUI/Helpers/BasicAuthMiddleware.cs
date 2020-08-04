@@ -19,6 +19,12 @@ namespace GenderPayGap.WebUI.Helpers
 
         public async Task Invoke(HttpContext httpContext)
         {
+            if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
+            {
+                await _next.Invoke(httpContext);
+                return;
+            }
+
             // Add HTTP Basic Authentication in our non-production environments to make sure people don't accidentally stumble across the site
             // The site will still also be secured by the usual login/cookie auth - this is just an extra layer to make the site not publicly accessible
             try
