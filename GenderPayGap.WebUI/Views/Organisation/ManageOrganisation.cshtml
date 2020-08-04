@@ -10,13 +10,13 @@
 }
 
 @await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
-<div class="grid-row">
-    <div style="margin-top: 15px;">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full" style="margin-top: 15px;">
         <partial name="/Views/Components/CovidMessage.cshtml"/>
     </div>
 </div>
-<div class="grid-row">
-    <div class="column-two-thirds">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="heading-large">
             <span class="heading-secondary">Reporting as @currentOrg.OrganisationName</span>
             Manage your organisation's reporting
@@ -37,25 +37,23 @@
         </div>
     </div>
 </div>
-<div class="grid-row">
-    <div class="column-full">
-        <details>
-            <summary>
-                <span class="summary">Need to make changes to your organisation details?</span>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">Need to make changes to your organisation details?</span>
             </summary>
-            <div class="panel panel-border-narrow">
-                <p>
-                    If you are a private or voluntary organisation and need to change your organisation name,
-                    sector information, or address you should do this via Companies House.
-                    Changes that you make will automatically be reflected on this site.
-                    If this information is not available on Companies House, please contact <a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a>
-                </p>
+            <div class="govuk-details__text">
+                If you are a private or voluntary organisation and need to change your organisation name,
+                sector information, or address you should do this via Companies House.
+                Changes that you make will automatically be reflected on this site.
+                If this information is not available on Companies House, please contact <a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a>
             </div>
         </details>
     </div>
 </div>
-<div class="grid-row">
-    <div class="column-full">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <h2 class="heading-medium">
             Manage reports
         </h2>
@@ -87,6 +85,13 @@
             }
         </table>
 
+        </div>
+
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         <h2 class="heading-medium">
             Registered users
         </h2>
