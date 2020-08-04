@@ -12,11 +12,11 @@
 
 <tr class="govuk-table__row">
 
-    <td class="govuk-table__cell govuk-!-font-weight-bold">
+    <td class="govuk-table__cell govuk-!-font-weight-bold govuk-!-font-size-19">
         @year
     </td>
 
-    <td class="govuk-table__cell">
+    <td class="govuk-table__cell govuk-!-font-size-19">
         <div>
             @if (reportInfoModel.NotRequiredToReport)
             {
@@ -37,7 +37,7 @@
         }
     </td>
 
-    <td class="govuk-table__cell">
+    <td class="govuk-table__cell govuk-!-font-size-19">
         @{
             bool isReportAvailable = reportInfoModel.ReportModifiedDate != null;
             bool isDraftAvailable = reportInfoModel.HasDraftContent();
