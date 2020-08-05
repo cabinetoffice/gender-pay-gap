@@ -20,7 +20,7 @@
                     <span class="error-message" style="font-size: 16px">The maximum number of employers you can compare is @CompareViewService.MaxCompareBasketCount</span>
                 </div>
             }
-            <div>
+            <div role="status">
                 Your comparison list contains <strong>@(compareCount) employer@(compareCount != 1 ? "s" : "")</strong>
             </div>
             @if (hasMaximumItemsInBasket)
