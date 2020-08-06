@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.Core
+@using GenderPayGap.Core
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.BusinessLogic.Models.Organisation
 @using GenderPayGap.WebUI.Models.Organisation
@@ -29,7 +29,7 @@
                     </dt>
                 </div>
                 <div>
-                    <dt style="color: gray; font-size: 0.8em; font-weight: lighter;">
+                    <dt class="govuk-caption-m govuk-!-font-size-14">
                         @Html.Raw(currentOrg.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
                     </dt>
                 </div>
@@ -84,12 +84,8 @@
                 @await Html.PartialAsync("DisplayReportSection", displayReportModel)
             }
         </table>
-
-        </div>
-
     </div>
 </div>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h2 class="heading-medium">
