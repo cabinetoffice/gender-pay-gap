@@ -114,15 +114,13 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Redirect()
+        public IActionResult Redirect()
         {
-            await WebTracker.TrackPageViewAsync(this);
-
             return RedirectToActionPermanent("Index");
         }
 
         [HttpGet("azure-uptime-pinger")]
-        public async Task<IActionResult> AzureUptimePingerEndpoint()
+        public IActionResult AzureUptimePingerEndpoint()
         {
             return RedirectToActionPermanent("Index");
         }
