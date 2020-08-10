@@ -242,8 +242,8 @@ a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3); }
 
 a:focus {
-  background-color: #ffbf47;
-  outline: 3px solid #ffbf47; }
+  background-color: #ffdd00;
+  outline: 3px solid #ffdd00; }
 
 /* Make skiplinks visible when they are tabbed to */
 .skiplink {
@@ -271,7 +271,7 @@ textarea:focus,
 select:focus,
 button:focus,
 #global-header input:focus {
-  outline: 3px solid #ffbf47; }
+  outline: 3px solid #ffdd00; }
 
 #global-header h1 a:focus {
   background-color: transparent;

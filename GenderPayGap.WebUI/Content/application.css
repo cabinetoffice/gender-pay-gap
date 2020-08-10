@@ -1433,7 +1433,7 @@ details summary:hover {
 
 /* line 18, /app/govuk_modules/govuk-elements-sass/elements/_details.scss */
 details summary:focus {
-  outline: 3px solid #ffbf47;
+  outline: 3px solid #ffdd00;
 }
 
 /* line 24, /app/govuk_modules/govuk-elements-sass/elements/_details.scss */
@@ -1840,7 +1840,7 @@ textarea {
 
 /* line 72, /app/govuk_modules/govuk-elements-sass/elements/forms/_form-block-labels.scss */
 .js-enabled label.focused {
-  outline: 3px solid #ffbf47;
+  outline: 3px solid #ffdd00;
 }
 
 /* line 79, /app/govuk_modules/govuk-elements-sass/elements/forms/_form-block-labels.scss */
@@ -1954,7 +1954,7 @@ input[type=number] {
 
 /* line 71, /app/govuk_modules/govuk-elements-sass/elements/forms/_form-validation.scss */
 .error-summary:focus {
-  outline: 3px solid #ffbf47;
+  outline: 3px solid #ffdd00;
 }
 
 /* line 75, /app/govuk_modules/govuk-elements-sass/elements/forms/_form-validation.scss */
@@ -3138,15 +3138,15 @@ span.status-tag {
 }
 
 .multiple-choice [type=radio]:focus + label::before {
-  -webkit-box-shadow: 0 0 0 4px #ffbf47;
-  -moz-box-shadow: 0 0 0 4px #ffbf47;
-  box-shadow: 0 0 0 4px #ffbf47;
+  -webkit-box-shadow: 0 0 0 4px #ffdd00;
+  -moz-box-shadow: 0 0 0 4px #ffdd00;
+  box-shadow: 0 0 0 4px #ffdd00;
 }
 
 .multiple-choice [type=checkbox]:focus + label::before {
-  -webkit-box-shadow: 0 0 0 3px #ffbf47;
-  -moz-box-shadow: 0 0 0 3px #ffbf47;
-  box-shadow: 0 0 0 3px #ffbf47;
+  -webkit-box-shadow: 0 0 0 3px #ffdd00;
+  -moz-box-shadow: 0 0 0 3px #ffdd00;
+  box-shadow: 0 0 0 3px #ffdd00;
 }
 
 .multiple-choice input:checked + label::after {

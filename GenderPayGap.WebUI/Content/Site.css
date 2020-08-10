@@ -600,7 +600,7 @@ input[type=submit] {
 }
 
 .finder .govuk-option-select:focus {
-    outline: 3px solid #ffbf47;
+    outline: 3px solid #ffdd00;
 }
 
 .finder .govuk-option-select .container-head {

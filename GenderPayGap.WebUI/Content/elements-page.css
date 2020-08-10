@@ -781,7 +781,7 @@ hr {
 }
 
 .button:focus {
-    outline: 3px solid #ffbf47;
+    outline: 3px solid #ffdd00;
 }
 
 .button[disabled="disabled"] {
@@ -1334,7 +1334,7 @@ details {
         }
 
         details summary:focus {
-            outline: 3px solid #ffbf47;
+            outline: 3px solid #ffdd00;
         }
 
     details .summary {
@@ -1680,7 +1680,7 @@ textarea {
 }
 
 .js-enabled label.focused {
-    outline: 3px solid #ffbf47;
+    outline: 3px solid #ffdd00;
 }
 
 .js-enabled .focused input:focus {
@@ -1776,7 +1776,7 @@ input[type="number"] {
 }
 
 .error-summary:focus {
-    outline: 3px solid #ffbf47;
+    outline: 3px solid #ffdd00;
 }
 
 .error-summary .error-summary-heading {
@@ -2169,7 +2169,7 @@ input[type="number"] {
 }
 
 .swatch-yellow {
-    background-color: #ffbf47;
+    background-color: #ffdd00;
 }
 
 .swatch-green {
@@ -2213,7 +2213,7 @@ input[type="number"] {
 }
 
 .swatch-focus {
-    background-color: #ffbf47;
+    background-color: #ffdd00;
 }
 
 .swatch-button-colour {
