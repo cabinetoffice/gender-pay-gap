@@ -54,7 +54,19 @@ namespace GenderPayGap.WebUI.Helpers
         private static void SendUnauthorisedResponse(HttpContext httpContext)
         {
             httpContext.Response.StatusCode = 401;
-            httpContext.Response.Headers.Add("WWW-Authenticate", "Basic realm=\"Gender Pay Gap service\"");
+            AddOrUpdateHeader(httpContext, "WWW-Authenticate", "Basic realm=\"Gender Pay Gap service\"");
+        }
+
+        private static void AddOrUpdateHeader(HttpContext httpContext, string headerName, string headerValue)
+        {
+            if (httpContext.Response.Headers.ContainsKey(headerName))
+            {
+                httpContext.Response.Headers[headerName] = headerValue;
+            }
+            else
+            {
+                httpContext.Response.Headers.Add(headerName, headerValue);
+            }
         }
 
 
