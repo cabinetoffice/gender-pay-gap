@@ -27,13 +27,13 @@
         new {employerIdentifier = Model.OrganisationIdEncrypted, returnUrl = ViewBag.ReturnUrl}
         );
 }
-<div class="comparison-button-container no-print">
+<div class="govuk-grid-column-one-third">
     @if (CompareViewService.BasketContains(Model.OrganisationIdEncrypted))
     {
-        <a class="button button-comparison-list-remove" id="AddRemoveEmployer@(Model.OrganisationIdEncrypted)" href="@removeEmployerUrl" data-js-url="@removeEmployerJsUrl" data-js-targets="#comparison-basket">Remove <span class="visuallyhidden">@Model.OrganisationName </span>from compare</a>
+        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="AddRemoveEmployer@(Model.OrganisationIdEncrypted)" href="@removeEmployerUrl" data-js-url="@removeEmployerJsUrl" data-js-targets="#comparison-basket">Remove <span class="visuallyhidden">@Model.OrganisationName </span>from compare</button>
     }
     else
     {
-        <a class="button button-comparison-list-add" id="AddRemoveEmployer@(Model.OrganisationIdEncrypted)" href="@addEmployerUrl" data-js-url="@addEmployerJsUrl" data-js-targets="#comparison-basket">Add <span class="visuallyhidden">@Model.OrganisationName </span>to compare</a>
+        <button class="govuk-button" data-module="govuk-button" id="AddRemoveEmployer@(Model.OrganisationIdEncrypted)" href="@addEmployerUrl" data-js-url="@addEmployerJsUrl" data-js-targets="#comparison-basket">Add <span class="visuallyhidden">@Model.OrganisationName </span>to compare</button>
     }
 </div>
