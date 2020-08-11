@@ -22,9 +22,9 @@
 
 <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
 <div class="grid-row">
-    <div style="margin-top: 15px;"> 
-        <partial name="/Views/Components/CovidMessage.cshtml"/> 
-    </div> 
+    <div style="margin-top: 15px;">
+        <partial name="/Views/Components/CovidMessage.cshtml"/>
+    </div>
 </div>
 <div class="grid-row">
     <div class="column-full">
@@ -45,8 +45,8 @@
             </div>
         </div>
 
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <dl class="metadata employer-report-metadata">
                     <div>
                         <dt class="metadata-text-label">Address</dt>
@@ -57,9 +57,10 @@
                         <dd class="metadata-text-value">@organisation.GetSicSectorsString()</dd>
                     </div>
                 </dl>
-                <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
-                <hr>
             </div>
+        </div>
+        <div class="govuk-grid-row">
+            <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
         </div>
 
         <div class="grid-row">
@@ -89,7 +90,7 @@
                         <thead></thead>
                         <tbody>
                             <tr>
-                                <td style="border-bottom: none;  width: 300px;">
+                                <td style="border-bottom: none; width: 300px;">
                                     <span class="heading-small">@report.GetReportingPeriod()</span>
                                 </td>
                                 <td style="border-bottom: none;">
@@ -101,11 +102,11 @@
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
                                         @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
-                                            .Contains(report.AccountingDate.Year) 
+                                            .Contains(report.AccountingDate.Year)
                                              && report.AccountingDate.Year == 2019)
                                         {
                                             <span>
-                                                The deadline for 2019/20 
+                                                The deadline for 2019/20
                                                 @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
                                                 @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
                                                 Coronavirus (COVID-19), enforcement of reporting deadlines does not
@@ -127,7 +128,7 @@
                                                 <span>Not required to report</span>
                                             }
                                         }
-                                        
+
                                     </td>
                                 </tr>
                             }
@@ -135,7 +136,7 @@
                             {
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
-                                        <a style = "font-size: 19px!important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))"> 
+                                        <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
                                             View Report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
                                         </a>
                                     </td>
@@ -151,7 +152,7 @@
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
 
-                                        <div class="heading-xsmall" style="font-weight:bold">Person responsible</div>
+                                        <div class="heading-xsmall" style="font-weight: bold">Person responsible</div>
                                         <div>
                                             <span>@report.FirstName @report.LastName</span>
                                         </div>
@@ -168,7 +169,7 @@
                 </div>
             </div>
         }
-        <hr style="border: 1px solid black; background: black;"/>
+        <hr style="background: black; border: 1px solid black;"/>
         <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
         <hr/>
     </div>
@@ -177,13 +178,13 @@
 @section Scripts {
     <script>
 
-        (function () {
+        (function() {
             "use strict";
 
             GOVUK.details.addDetailsPolyfill();
 
             new GOVUK.Ajaxify({
-                onError: function (errorCode, error, errorThrown) {
+                onError: function(errorCode, error, errorThrown) {
                     window.location.href = '/error/1146';
                 }
             });
