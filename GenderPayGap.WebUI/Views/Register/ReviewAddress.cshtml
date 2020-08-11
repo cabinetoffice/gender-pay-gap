@@ -5,7 +5,7 @@
 
 <div class="breadcrumbs dynamic-content default-content" style="display: block;">
     <ol>
-        <li style="display: block; padding-top: 0.75em; padding-bottom: 0;">
+        <li style="display: block; padding-bottom: 0; padding-top: 0.75em;">
             &lt;
             @Html.ActionLink("Back to Pending Registrations", "PendingRegistrations", "Admin")
         </li>
@@ -24,121 +24,102 @@
     @Html.HiddenFor(model => model.ReviewCode)
     @Html.HiddenFor(model => model.ManualAddress)
 
-    <div class="grid-row">
-        <div class="column-two-thirds">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             @await Html.CustomValidationSummaryAsync()
             <h1 class="heading-large">
                 <span>Approve existing employer application - with change of address</span>
             </h1>
-            <table class="confirm-details">
-                <tbody>
-                <tr>
-                    <td colspan="3">
-                        <br>
-                        <span class="heading-medium">Person registering to report and change address</span>
-                    </td>
-                </tr>
-                <tr class="row dynamic-content publicManual privateManual" style="display: table-row;">
-                    <td>
-                        Your name
-                    </td>
-                    <td>
-                        <!-- Default Dynamic Section -->
-                        @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)
-                    </td>
-                    <td></td>
-                </tr>
-
-                <tr class="row dynamic-content publicManual ">
-                    <td>
-                        Contact Email
-                    </td>
-                    <td>
-                        <!-- Default Dynamic Section -->
-                        @Model.ContactEmailAddress
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="row dynamic-content publicManual ">
-                    <td>
-                        Registered Email
-                    </td>
-                    <td>
-                        <!-- Default Dynamic Section -->
-                        @Model.EmailAddress
-                    </td>
-                    <td></td>
-                </tr>
-                <tr class="row dynamic-content publicManual privateManual" style="display: table-row;">
-                    <td>
-                        Telephone
-                    </td>
-                    <td>
-                        <!-- Default Dynamic Section -->
-                        @Model.ContactPhoneNumber
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <br>
-                        <span class="heading-medium">Organisation being registered</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Organisation
-                    </td>
-                    <td>
-                        @Model.OrganisationName
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        Business&nbsp;Sectors (SIC&nbsp;Codes)
-                    </td>
-                    <td colspan="2">
-                        @await Html.PartialAsync("_SicCodeList", Model.SicCodes)
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top;">
-                        <span class="heading-medium">New address</span>
-                    </td>
-                    <td>
-                        @Html.Raw(Model.GetFullAddress().Replace(",", ",<br/>"))
-                    </td>
-                    <td></td>
-                </tr>
-                @if (!string.IsNullOrWhiteSpace(Model.RegisteredAddress))
-                {
-                    <tr>
-                        <td style="vertical-align: top;">
-                            <span class="heading-medium">Old address</span>
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-!-margin-bottom-2">Person registering to report and change address</caption>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Your name
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)
                         </td>
-                        <td>
-                            @Html.Raw(Model.RegisteredAddress.Replace(",", ",<br/>"))
-                        </td>
-                        <td></td>
                     </tr>
-                }
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Contact Email
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.ContactEmailAddress
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Registered Email
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.EmailAddress
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Telephone
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.ContactPhoneNumber
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <tr>
-                    <td colspan="3">
-                        <br>
-                        <span class="heading-medium">References</span>
-                    </td>
-                </tr>
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-!-margin-bottom-2">Organisation being registered</caption>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Organisation
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.OrganisationName
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Business&nbsp;Sectors (SIC&nbsp;Codes)
+                        </th>
+                        <td class="govuk-table__cell">
+                            @await Html.PartialAsync("_SicCodeList", Model.SicCodes)
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            <span class="heading-medium">New address</span>
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Html.Raw(Model.GetFullAddress().Replace(",", ",<br/>"))
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrWhiteSpace(Model.RegisteredAddress))
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                <span class="heading-medium">Old address</span>
+                            </th>
+                            <td class="govuk-table__cell">
+                                @Html.Raw(Model.RegisteredAddress.Replace(",", ",<br/>"))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-                @await Html.PartialAsync("DisplayReference", new {name = "Company number", value = Model.CompanyNumber})
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-!-margin-bottom-2">References</caption>
+                <tbody class="govuk-table__body">
 
-                @await Html.PartialAsync("DisplayReference", new {name = "Charity number", value = Model.CharityNumber, defaultValue = ""})
+                    @await Html.PartialAsync("DisplayReference", new {name = "Company number", value = Model.CompanyNumber})
 
-                @await Html.PartialAsync("DisplayReference", new {name = "Mutual partnership number", value = Model.MutualNumber, defaultValue = ""})
+                    @await Html.PartialAsync("DisplayReference", new {name = "Charity number", value = Model.CharityNumber, defaultValue = ""})
 
-                @await Html.PartialAsync("DisplayReference", new {name = Model.OtherName, value = Model.OtherValue, defaultValue = ""})
+                    @await Html.PartialAsync("DisplayReference", new {name = "Mutual partnership number", value = Model.MutualNumber, defaultValue = ""})
+
+                    @await Html.PartialAsync("DisplayReference", new {name = Model.OtherName, value = Model.OtherValue, defaultValue = ""})
 
                 </tbody>
             </table>

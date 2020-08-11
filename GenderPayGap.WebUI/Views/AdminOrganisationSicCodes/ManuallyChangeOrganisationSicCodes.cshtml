@@ -87,6 +87,12 @@
                 @(CurrentState())
 
                 <table class="govuk-table">
+                    <thead class="govuk-table__head govuk-visually-hidden">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">SIC code</th>
+                            <th scope="col" class="govuk-table__header">Action</th>
+                        </tr>
+                    </thead>
                     <tbody class="govuk-table__body">
                         @foreach (SicCode sicCode in Model.SicCodesToAdd)
                         {
@@ -165,6 +171,12 @@
                 @(CurrentState())
 
                 <table class="govuk-table">
+                    <thead class="govuk-table__head govuk-visually-hidden">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">SIC code</th>
+                            <th scope="col" class="govuk-table__header">Action</th>
+                        </tr>
+                    </thead>
                     <tbody class="govuk-table__body">
                         @foreach (SicCode sicCode in Model.SicCodesToKeep)
                         {
@@ -172,7 +184,7 @@
                                 <td class="govuk-table__cell">
                                     <b>@(sicCode.SicCodeId)</b>
                                     @(sicCode.Description)
-                                    <br/>
+                                    <br />
                                     <span class="govuk-body-s">
                                         part of: @(sicCode.SicSection.Description)
                                     </span>
@@ -211,6 +223,12 @@
                 @(CurrentState())
 
                 <table class="govuk-table">
+                    <thead class="govuk-table__head govuk-visually-hidden">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">SIC code</th>
+                            <th scope="col" class="govuk-table__header">Action</th>
+                        </tr>
+                    </thead>
                     <tbody class="govuk-table__body">
                         @foreach (SicCode sicCode in Model.SicCodesToRemove)
                         {
@@ -218,7 +236,7 @@
                                 <td class="govuk-table__cell">
                                     <b>@(sicCode.SicCodeId)</b>
                                     @(sicCode.Description)
-                                    <br/>
+                                    <br />
                                     <span class="govuk-body-s">
                                         part of: @(sicCode.SicSection.Description)
                                     </span>

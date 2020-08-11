@@ -80,153 +80,134 @@
             <h1 class="heading-large">
                 Confirm your organisation’s details
             </h1>
-            <table class="confirm-details">
-                <thead>
-                <tr>
-                    <th class="question">
-                    </th>
-                    <th class="answer">
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <table class="govuk-table">
                 @if (Model.ManualRegistration)
                 {
-                    <tr class="dynamic-content privateManual publicManual" style="display: table-row;">
-                        <td colspan="2">
-                            Organisation you’re reporting for
-                        </td>
-                    </tr>
+                    <caption class="govuk-table__caption govuk-!-margin-bottom-2">Organisation you’re reporting for</caption>
                 }
-                <tr>
-                    <td>
-                        Organisation name
-                    </td>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Organisation name
+                        </th>
 
-                    <td>
-                        @if (!string.IsNullOrWhiteSpace(ViewBag.LastOrg) && ViewBag.LastOrg != Model.OrganisationName)
-                        {
-                            <span style="color:red">@Model.OrganisationName</span>
-                        }
-                        else
-                        {
-                            <span>@Model.OrganisationName</span>
-                        }
-                    </td>
-                </tr>
-
-                @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
-                {
-                    <tr>
-                        <td>
-                            Company number
-                        </td>
-                        <td>
-                            @(Model.CompanyNumber)
-                        </td>
-                    </tr>
-                }
-                @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                {
-                    <tr>
-                        <td>
-                            Charity number
-                        </td>
-                        <td>
-                            @(Model.CharityNumber)
-                        </td>
-                    </tr>
-                }
-                @if (!string.IsNullOrWhiteSpace(Model.MutualNumber))
-                {
-                    <tr>
-                        <td>
-                            Mutual partnership number
-                        </td>
-                        <td>
-                            @(Model.MutualNumber)
-                        </td>
-                    </tr>
-                }
-                @if (!string.IsNullOrWhiteSpace(Model.OtherName))
-                {
-                    <tr>
-                        <td>
-                            @(Model.OtherName)
-                        </td>
-                        <td>
-                            @(Model.OtherValue)
-                        </td>
-                    </tr>
-                }
-
-                <tr>
-                    <td>
-                        Registered address
-                    </td>
-                    <td>
-                        @Model.GetFullAddress()
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        Business&nbsp;Sectors (SIC&nbsp;Codes)
-                    </td>
-                    <td>
-                        @if (Model.SicCodes != null && Model.SicCodes.Count > 0)
-                        {
-                            @await Html.PartialAsync("_SicCodeList", Model.SicCodes)
-                        }
-                        else
-                        {
-                            <span>None</span>
-                        }
-                    </td>
-                </tr>
-
-                @if (!string.IsNullOrWhiteSpace(Model.ContactFirstName) || !string.IsNullOrWhiteSpace(Model.ContactFirstName))
-                {
-                    <tr class="row dynamic-content publicManual privateManual" style="display: table-row;">
-                        <td>
-                            <br>Your contact details
-                        </td>
-                        <td>
-                            <!-- Default Dynamic Section -->
-                        </td>
-                    </tr>
-                    <tr class="row dynamic-content publicManual privateManual" style="display: table-row;">
-                        <td>
-                            Your name
-                        </td>
-                        <td>
-                            <!-- Default Dynamic Section -->
-                            @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)
+                        <td class="govuk-table__cell">
+                            @if (!string.IsNullOrWhiteSpace(ViewBag.LastOrg) && ViewBag.LastOrg != Model.OrganisationName)
+                            {
+                                <span style="color: red">@Model.OrganisationName</span>
+                            }
+                            else
+                            {
+                                <span>@Model.OrganisationName</span>
+                            }
                         </td>
                     </tr>
 
-                    <tr class="row dynamic-content publicManual ">
-                        <td>
-                            Email
-                        </td>
-                        <td>
-                            <!-- Default Dynamic Section -->
-                            @Model.ContactEmailAddress
+                    @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                Company number
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.CompanyNumber)
+                            </td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                Charity number
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.CharityNumber)
+                            </td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.MutualNumber))
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                Mutual partnership number
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.MutualNumber)
+                            </td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.OtherName))
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                @(Model.OtherName)
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.OtherValue)
+                            </td>
+                        </tr>
+                    }
+
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Registered address
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.GetFullAddress()
                         </td>
                     </tr>
-                    <tr class="row dynamic-content publicManual privateManual" style="display: table-row;">
-                        <td>
-                            Telephone
-                        </td>
-                        <td>
-                            <!-- Default Dynamic Section -->
-                            @Model.ContactPhoneNumber
+
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Business&nbsp;Sectors (SIC&nbsp;Codes)
+                        </th>
+                        <td class="govuk-table__cell">
+                            @if (Model.SicCodes != null && Model.SicCodes.Count > 0)
+                            {
+                                @await Html.PartialAsync("_SicCodeList", Model.SicCodes)
+                            }
+                            else
+                            {
+                                <span>None</span>
+                            }
                         </td>
                     </tr>
-                }
+
                 </tbody>
             </table>
+
+            @if (!string.IsNullOrWhiteSpace(Model.ContactFirstName) || !string.IsNullOrWhiteSpace(Model.ContactFirstName))
+            {
+                <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-!-margin-bottom-2">Your contact details</caption>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                Your name
+                            </th>
+                            <td class="govuk-table__cell">
+                                @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                Email
+                            </th>
+                            <td class="govuk-table__cell">
+                                @Model.ContactEmailAddress
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="row">
+                                Telephone
+                            </th>
+                            <td class="govuk-table__cell">
+                                @Model.ContactPhoneNumber
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
 
             @if (!Model.IsUkAddress.HasValue && !Model.ManualRegistration && Model.SectorType != SectorTypes.Public)
             {

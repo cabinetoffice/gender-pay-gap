@@ -150,6 +150,7 @@
                                     <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year, returnId = returnForYear.ReturnId})"
                                        class="govuk-link">
                                         Delete
+                                        <span class="govuk-visually-hidden"> the return for @(returnForYear.GetReportingPeriod()) modified on @(returnForYear.Modified.ToString("d MMM yyyy HH:mm"))</span>
                                     </a>
                                 }
                             </td>
