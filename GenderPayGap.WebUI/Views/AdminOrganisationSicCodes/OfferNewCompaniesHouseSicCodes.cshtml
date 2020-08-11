@@ -78,23 +78,32 @@
                 <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsFromCoHo))" value="@(sicCodeId)"/>
             }
 
-            <h2 class="govuk-heading-m">Current SIC codes</h2>
-
             @{
                 List<OrganisationSicCode> currentSicCodes = Model.Organisation.OrganisationSicCodes
                     .Where(osc => !osc.Retired.HasValue)
                     .OrderBy(osc => osc.SicCode.SicCodeId)
                     .ToList();
             }
+
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                Current SIC codes
+            </h3>
             @if (!currentSicCodes.Any())
             {
-                <div class="govuk-body">
+                <p class="govuk-body">
                     No current SIC codes
-                </div>
+                </p>
             }
             else
             {
                 <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-padding-0">
+                                <span class=" govuk-visually-hidden">Current SIC codes</span>
+                            </th>
+                        </tr>
+                    </thead>
                     <tbody class="govuk-table__body">
                         @foreach (OrganisationSicCode organisationSicCode in currentSicCodes)
                         {
@@ -113,16 +122,25 @@
                 </table>
             }
 
-            <h2 class="govuk-heading-m">SIC codes from Companies House</h2>
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                SIC codes from Companies House
+            </h3>
             @if (!Model.SicCodesFromCoHo.Any())
             {
-                <div class="govuk-body">
+                <p class="govuk-body">
                     No SIC codes from Companies House
-                </div>
+                </p>
             }
             else
             {
                 <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header govuk-!-padding-0">
+                                <span class=" govuk-visually-hidden">SIC codes from Companies House</span>
+                            </th>
+                        </tr>
+                    </thead>
                     <tbody class="govuk-table__body">
                         @foreach (KeyValuePair<string, SicCode> sicCodeIdAndSicCodeFromCoho in Model.SicCodesFromCoHo)
                         {
@@ -150,7 +168,6 @@
                     </tbody>
                 </table>
             }
-
             @(Html.GovUkRadiosFor(
                 m => m.AcceptCompaniesHouseSicCodes,
                 new FieldsetViewModel

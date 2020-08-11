@@ -130,6 +130,13 @@
                     else
                     {
                         <table class="govuk-table">
+                            <thead class="govuk-table__head govuk-visually-hidden">
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header" scope="col">
+                                        Organisation
+                                    </th>
+                                </tr>
+                            </thead>
                             <tbody class="govuk-table__body">
                                 @foreach (AdminSearchResultOrganisationViewModel organisation in Model.SearchResults.OrganisationResults)
                                 {
@@ -192,6 +199,13 @@
                     else
                     {
                         <table class="govuk-table">
+                            <thead class="govuk-visually-hidden">
+                                <tr>
+                                    <th scope="col">
+                                        User
+                                    </th>
+                                </tr>
+                            </thead>
                             <tbody class="govuk-table__body">
                                 @foreach (AdminSearchResultUserViewModel user in Model.SearchResults.UserResults)
                                 {

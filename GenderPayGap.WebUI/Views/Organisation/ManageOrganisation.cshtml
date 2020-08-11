@@ -111,34 +111,41 @@
                 The following people are registered to report gender pay gap data for this organisation.
             </p>
         }
-
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <table class="organisations-table">
-                    @foreach (UserOrganisation assocUserOrg in Model.AssociatedUserOrgs)
-                    {
-                        string userFullname = assocUserOrg.User.Fullname;
-                        string encUserId = Encryption.EncryptQuerystring(assocUserOrg.UserId.ToString());
-                        <tr>
-                            <td style="border: none;" class="org-name">@userFullname</td>
-                            <td style="border: none;">
-                                <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = encUserId}))">
-                                    Remove user <span class="visually-hidden">@userFullname</span> from reporting
+        
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col">User</th>
+                            <th class="govuk-table__header" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (UserOrganisation assocUserOrg in Model.AssociatedUserOrgs)
+                        {
+                            string userFullname = assocUserOrg.User.Fullname;
+                            string encUserId = Encryption.EncryptQuerystring(assocUserOrg.UserId.ToString());
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">@userFullname</td>
+                                <td class="govuk-table__cell">
+                                    <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = encUserId}))">
+                                        Remove user <span class="visually-hidden">@userFullname</span> from reporting
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                @controller.CurrentUser.Fullname <span>(You)</span>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = Encryption.EncryptQuerystring(controller.CurrentUser.UserId.ToString())}))">
+                                    Remove user <span class="visually-hidden">@controller.CurrentUser.Fullname (You)</span> from reporting
                                 </a>
                             </td>
                         </tr>
-                    }
-
-                    <tr>
-                        <td style="border: none;" class="org-name">
-                            @controller.CurrentUser.Fullname <span>(You)</span>
-                        </td>
-                        <td style="border: none;">
-                            <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = Encryption.EncryptQuerystring(controller.CurrentUser.UserId.ToString())}))">
-                                Remove user <span class="visually-hidden">@controller.CurrentUser.Fullname (You)</span> from reporting
-                            </a>
-                        </td>
-                    </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

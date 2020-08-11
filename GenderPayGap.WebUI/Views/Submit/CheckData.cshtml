@@ -4,10 +4,10 @@
 @using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 <div class="grid-row">
-        <div style="margin-top: 15px;"> 
-            <partial name="/Views/Components/CovidMessage.cshtml"/> 
-        </div> 
+    <div style="margin-top: 15px;">
+        <partial name="/Views/Components/CovidMessage.cshtml"/>
     </div>
+</div>
 <div class="grid-row">
 <div class="column-two-thirds">
 @using (Html.BeginForm())
@@ -74,414 +74,414 @@
 
     <table class="table gpg-data">
         <thead>
-        <tr>
-            <th colspan="2">
-                <span>Hourly rate</span>
-            </th>
-            <th class="question" colspan="3">
-                <span class="edit">
-                    <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "HourlyPay")"> 
-                        Edit<span class="visually-hidden"> hourly rate</span>
-                    </a>
-                </span>
-            </th>
-        </tr>
+            <tr>
+                <th colspan="2">
+                    <span>Hourly rate</span>
+                </th>
+                <th class="question" colspan="3">
+                    <span class="edit">
+                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "HourlyPay")">
+                            Edit<span class="visually-hidden"> hourly rate</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>
-                Difference in mean hourly rate of pay
-            </td>
-            <td class="numeric" colspan="2">
-                <span id="DisplayDiffMeanHourlyPayPercent">
-                    @if (Model.DiffMeanHourlyPayPercent.HasValue)
-                    {
-                        @Html.ValueFor(model => model.DiffMeanHourlyPayPercent)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Difference in median hourly rate of pay
-            </td>
-            <td class="numeric" colspan="2">
-                <span id="DisplayDiffMedianHourlyPercent">
-                    @if (Model.DiffMedianHourlyPercent.HasValue)
-                    {
-                        @Html.ValueFor(model => model.DiffMedianHourlyPercent)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    Difference in mean hourly rate of pay
+                </td>
+                <td class="numeric" colspan="2">
+                    <span id="DisplayDiffMeanHourlyPayPercent">
+                        @if (Model.DiffMeanHourlyPayPercent.HasValue)
+                        {
+                            @Html.ValueFor(model => model.DiffMeanHourlyPayPercent)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Difference in median hourly rate of pay
+                </td>
+                <td class="numeric" colspan="2">
+                    <span id="DisplayDiffMedianHourlyPercent">
+                        @if (Model.DiffMedianHourlyPercent.HasValue)
+                        {
+                            @Html.ValueFor(model => model.DiffMedianHourlyPercent)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
 
         </tbody>
     </table>
     <table class="table gpg-data">
         <thead>
-        <tr>
-            <th colspan="2">
-                <span>Bonus pay</span>
-            </th>
-            <th>
-                <span class="edit">
-                    <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "BonusPay")">
-                        Edit<span class="visually-hidden"> bonus pay</span>
-                    </a>
-                </span>
-            </th>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="numeric">
-                <strong>Male</strong>
-            </td>
-            <td class="numeric">
-                <strong>Female</strong>
-            </td>
-        </tr>
+            <tr>
+                <th colspan="2">
+                    <span>Bonus pay</span>
+                </th>
+                <th>
+                    <span class="edit">
+                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "BonusPay")">
+                            Edit<span class="visually-hidden"> bonus pay</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
+            <tr>
+                <td></td>
+                <th class="numeric govuk-!-font-size-16" scope="col">
+                    <strong>Male</strong>
+                </th>
+                <th class="numeric govuk-!-font-size-16" scope="col">
+                    <strong>Female</strong>
+                </th>
+            </tr>
         </thead>
         <tbody>
-        <tr>
-            <td style="vertical-align: bottom;">
-                Percentage of employees who received bonus pay
-            </td>
-            <td class="numeric">
-                <span id="DisplayMaleMedianBonusPayPercent">
-                    @if (Model.MaleMedianBonusPayPercent.HasValue)
-                    {
-                        @Html.ValueFor(model => model.MaleMedianBonusPayPercent)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-            <td class="numeric">
-                <span id="DisplayFemaleMedianBonusPayPercent">
-                    @if (Model.FemaleMedianBonusPayPercent.HasValue)
-                    {
-                        @Html.ValueFor(model => model.FemaleMedianBonusPayPercent)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Difference in mean bonus pay
-            </td>
-            <td class="numeric" colspan="2">
-                <span id="DisplayDiffMeanBonusPercent">
-                    @if (Model.DiffMeanBonusPercent.HasValue)
-                    {
-                        @Html.ValueFor(model => model.DiffMeanBonusPercent)
-                        @:%
-                    }
-                    else if (Model.MaleMedianBonusPayPercent == 0)
-                    {
-                        <span>Not applicable</span>
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Difference in median bonus pay
-            </td>
-            <td class="numeric" colspan="2">
-                <span id="DisplayDiffMedianBonusPercent">
-                    @if (Model.DiffMedianBonusPercent.HasValue)
-                    {
-                        @Html.ValueFor(model => model.DiffMedianBonusPercent)
-                        @:%
-                    }
-                    else if (Model.MaleMedianBonusPayPercent == 0)
-                    {
-                        <span>Not applicable</span>
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
+            <tr>
+                <td style="vertical-align: bottom;">
+                    Percentage of employees who received bonus pay
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleMedianBonusPayPercent">
+                        @if (Model.MaleMedianBonusPayPercent.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleMedianBonusPayPercent)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleMedianBonusPayPercent">
+                        @if (Model.FemaleMedianBonusPayPercent.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleMedianBonusPayPercent)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Difference in mean bonus pay
+                </td>
+                <td class="numeric" colspan="2">
+                    <span id="DisplayDiffMeanBonusPercent">
+                        @if (Model.DiffMeanBonusPercent.HasValue)
+                        {
+                            @Html.ValueFor(model => model.DiffMeanBonusPercent)
+                            @:%
+                        }
+                        else if (Model.MaleMedianBonusPayPercent == 0)
+                        {
+                            <span>Not applicable</span>
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Difference in median bonus pay
+                </td>
+                <td class="numeric" colspan="2">
+                    <span id="DisplayDiffMedianBonusPercent">
+                        @if (Model.DiffMedianBonusPercent.HasValue)
+                        {
+                            @Html.ValueFor(model => model.DiffMedianBonusPercent)
+                            @:%
+                        }
+                        else if (Model.MaleMedianBonusPayPercent == 0)
+                        {
+                            <span>Not applicable</span>
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
         </tbody>
     </table>
     <table class="table gpg-data">
         <thead>
-        <tr>
-            <th colspan="2">
-                <span>Employees by pay quartile</span>
-            </th>
-            <th>
-                <span class="edit">
-                    <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "PayQuartiles")">
-                        Edit<span class="visually-hidden"> pay quartiles</span>
-                    </a>
-                </span>
-            </th>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="numeric">
-                <strong>Male</strong>
-            </td>
-            <td class="numeric">
-                <strong>Female</strong>
-            </td>
-        </tr>
+            <tr>
+                <th colspan="2">
+                    <span>Employees by pay quartile</span>
+                </th>
+                <th>
+                    <span class="edit">
+                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "PayQuartiles")">
+                            Edit<span class="visually-hidden"> pay quartiles</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="numeric govuk-!-font-size-16" scope="col">
+                    <strong>Male</strong>
+                </td>
+                <td class="numeric govuk-!-font-size-16" scope="col">
+                    <strong>Female</strong>
+                </td>
+            </tr>
         </thead>
         <tbody>
 
-        <tr>
-            <td>
-                Upper quartile
-            </td>
-            <td class="numeric">
-                <span id="DisplayMaleUpperQuartilePayBand">
-                    @if (Model.MaleUpperQuartilePayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.MaleUpperQuartilePayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-            <td class="numeric">
-                <span id="DisplayFemaleUpperQuartilePayBand">
-                    @if (Model.FemaleUpperQuartilePayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.FemaleUpperQuartilePayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Upper middle quartile
-            </td>
-            <td class="numeric">
-                <span id="DisplayMaleUpperPayBand">
-                    @if (Model.MaleUpperPayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.MaleUpperPayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-            <td class="numeric">
-                <span id="DisplayFemaleUpperPayBand">
-                    @if (Model.FemaleUpperPayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.FemaleUpperPayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Lower middle quartile
-            </td>
-            <td class="numeric">
-                <span id="DisplayMaleMiddlePayBand">
-                    @if (Model.MaleMiddlePayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.MaleMiddlePayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-            <td class="numeric">
-                <span id="DisplayFemaleMiddlePayBand">
-                    @if (Model.FemaleMiddlePayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.FemaleMiddlePayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Lower quartile
-            </td>
-            <td class="numeric">
-                <span id="DisplayMaleLowerPayBand">
-                    @if (Model.MaleLowerPayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.MaleLowerPayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-            <td class="numeric">
-                <span id="DisplayFemaleLowerPayBand">
-                    @if (Model.FemaleLowerPayBand.HasValue)
-                    {
-                        @Html.ValueFor(model => model.FemaleLowerPayBand)
-                        @:%
-                    }
-                    else
-                    {
-                        <span class="gpg-data__status--notcompleted">Not completed</span>
-                    }
-                </span>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    Upper quartile
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleUpperQuartilePayBand">
+                        @if (Model.MaleUpperQuartilePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleUpperQuartilePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleUpperQuartilePayBand">
+                        @if (Model.FemaleUpperQuartilePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleUpperQuartilePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Upper middle quartile
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleUpperPayBand">
+                        @if (Model.MaleUpperPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleUpperPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleUpperPayBand">
+                        @if (Model.FemaleUpperPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleUpperPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lower middle quartile
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleMiddlePayBand">
+                        @if (Model.MaleMiddlePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleMiddlePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleMiddlePayBand">
+                        @if (Model.FemaleMiddlePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleMiddlePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lower quartile
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleLowerPayBand">
+                        @if (Model.MaleLowerPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleLowerPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleLowerPayBand">
+                        @if (Model.FemaleLowerPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleLowerPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
         </tbody>
     </table>
     if (Model.SectorType != SectorTypes.Public)
     {
         <table class="table gpg-data">
             <thead>
-            <tr>
-                <th class="question" colspan="3">
-                    Person responsible in your organisation
-                    <span class="edit">
-                        <a id="ChangePersonResponsible" href="@Url.Action("PersonResponsible", new {returnUrl = "CheckData"})">
-                            Edit<span class="visually-hidden"> person responsible in your organisation</span>
-                        </a>
-                    </span>
-                </th>
-            </tr>
+                <tr>
+                    <th class="question" colspan="3">
+                        Person responsible in your organisation
+                        <span class="edit">
+                            <a id="ChangePersonResponsible" href="@Url.Action("PersonResponsible", new {returnUrl = "CheckData"})">
+                                Edit<span class="visually-hidden"> person responsible in your organisation</span>
+                            </a>
+                        </span>
+                    </th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <td id="DisplayPersonResponsible" colspan="3">
-                    @if (!string.IsNullOrEmpty(Model.FirstName))
-                    {
-                        <span>
-                            <span id="DisplayFirstName">@Html.ValueFor(model => model.FirstName)</span>&nbsp;<span id="DisplayLastName">@Html.ValueFor(model => model.LastName)</span>
-                        </span>
-                        <br/>
-                        <span id="DisplayJobTitle">@Html.ValueFor(model => model.JobTitle)</span>
-                    }
-                    else
-                    {
-                        <div class="gpg-data__status--notcompleted">
-                            <span id="PersonResponsible">Not completed</span>
-                        </div>
-                    }
-                </td>
-            </tr>
+                <tr>
+                    <td id="DisplayPersonResponsible" colspan="3">
+                        @if (!string.IsNullOrEmpty(Model.FirstName))
+                        {
+                            <span>
+                                <span id="DisplayFirstName">@Html.ValueFor(model => model.FirstName)</span>&nbsp;<span id="DisplayLastName">@Html.ValueFor(model => model.LastName)</span>
+                            </span>
+                            <br/>
+                            <span id="DisplayJobTitle">@Html.ValueFor(model => model.JobTitle)</span>
+                        }
+                        else
+                        {
+                            <div class="gpg-data__status--notcompleted">
+                                <span id="PersonResponsible">Not completed</span>
+                            </div>
+                        }
+                    </td>
+                </tr>
             </tbody>
         </table>
     }
     <table class="table gpg-data">
         <thead>
-        <tr>
-            <th class="question" colspan="3">
-                Size of your organisation
-                <span class="edit">
-                    <a id="ChangeOrganisationSize" href="@Url.Action("OrganisationSize", new {returnUrl = "CheckData"})">
-                        Edit<span class="visually-hidden"> size of your organisation</span>
-                    </a>
-                </span>
-            </th>
-        </tr>
+            <tr>
+                <th class="question" colspan="3">
+                    Size of your organisation
+                    <span class="edit">
+                        <a id="ChangeOrganisationSize" href="@Url.Action("OrganisationSize", new {returnUrl = "CheckData"})">
+                            Edit<span class="visually-hidden"> size of your organisation</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
         </thead>
         <tbody>
-        <tr class="row" colspan="3">
-            <td>
-                Number of employees within your organisation
-            </td>
-            <td id="DisplayOrganisationSize">
-                <span class="@(Model.OrganisationSize == OrganisationSizes.NotProvided ? "gpg-data__status--notprovided" : "")">
-                    @(Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name)
-                </span>
-            </td>
-        </tr>
+            <tr class="row" colspan="3">
+                <td>
+                    Number of employees within your organisation
+                </td>
+                <td id="DisplayOrganisationSize">
+                    <span class="@(Model.OrganisationSize == OrganisationSizes.NotProvided ? "gpg-data__status--notprovided" : "")">
+                        @(Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name)
+                    </span>
+                </td>
+            </tr>
         </tbody>
     </table>
     <table class="table gpg-data">
         <thead>
-        <tr>
-            <th class="question" colspan="3">
-                Link to your gender pay gap information
-                <span class="edit">
-                    <a id="ChangeEmployerWebsite" href="@Url.Action("EmployerWebsite", new {returnUrl = "CheckData"})">
-                        Edit<span class="visually-hidden"> link to your gender pay gap information</span>
-                    </a>
-                </span>
-            </th>
-        </tr>
+            <tr>
+                <th class="question" colspan="3">
+                    Link to your gender pay gap information
+                    <span class="edit">
+                        <a id="ChangeEmployerWebsite" href="@Url.Action("EmployerWebsite", new {returnUrl = "CheckData"})">
+                            Edit<span class="visually-hidden"> link to your gender pay gap information</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
         </thead>
         <tbody>
-        <tr>
-            <td colspan="3">
-                @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
-                {
-                    try // This try-catch is here because of a bug in AnchorTagHelper
+            <tr>
+                <td colspan="3">
+                    @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
                     {
-                        <a id="DisplayCompanyLinkToGPGInfo" style="word-break: break-all" href='@Html.ValueFor(model => model.CompanyLinkToGPGInfo)' target="_blank">
-                            @Html.ValueFor(model => model.CompanyLinkToGPGInfo)
-                            <span class="visually-hidden">(opens in a new window)</span>
-                        </a>
+                        try // This try-catch is here because of a bug in AnchorTagHelper
+                        {
+                            <a id="DisplayCompanyLinkToGPGInfo" style="word-break: break-all" href='@Html.ValueFor(model => model.CompanyLinkToGPGInfo)' target="_blank">
+                                @Html.ValueFor(model => model.CompanyLinkToGPGInfo)
+                                <span class="visually-hidden">(opens in a new window)</span>
+                            </a>
+                        }
+                        catch (ArgumentException)
+                        {
+                            @(Model.CompanyLinkToGPGInfo)
+                        }
                     }
-                    catch (ArgumentException)
+                    else
                     {
-                        @(Model.CompanyLinkToGPGInfo)
+                        <div class="gpg-data__status--notprovided">
+                            <span id="CompanyLinkToGPGInfo">Not provided</span>
+                        </div>
                     }
-                }
-                else
-                {
-                    <div class="gpg-data__status--notprovided">
-                        <span id="CompanyLinkToGPGInfo">Not provided</span>
-                    </div>
-                }
-            </td>
-        </tr>
+                </td>
+            </tr>
         </tbody>
     </table>
 
