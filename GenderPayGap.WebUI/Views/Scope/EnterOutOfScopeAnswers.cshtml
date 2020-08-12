@@ -38,7 +38,7 @@
             <div id="ReasonGroup" class="form-group @reasonErrorClass">
                 <fieldset>
                     <legend>
-                        <h1 class="heading-medium" style="margin-top: 15px">
+                        <h2 class="heading-medium" style="margin-top: 15px">
                             Why is your organisation not required to report their gender pay gap data for
                             @if (Model.IsChangeJourney)
                             {
@@ -48,7 +48,7 @@
                             {
                                 <span> both snapshot dates @(Model.AccountingDate.AddYears(-1).ToFriendlyDate()) and @(Model.AccountingDate.Year)?</span>
                             }
-                        </h1>
+                        </h2>
                         @Html.ValidationMessage(nameof(EnterAnswersViewModel.Reason), "", new {id = "ReasonError", @class = "error-message"})
                         @if (Model.EnterAnswers.Reason == "Other")
                         {
@@ -73,9 +73,9 @@
             <div id="ReadGuidanceGroup" class="form-group @Html.SetErrorClass(nameof(EnterAnswersViewModel.ReadGuidance), "error")">
                 <fieldset class="inline">
                     <legend>
-                        <h1 class="heading-medium" style="margin-top: 15px">
+                        <h2 class="heading-medium" style="margin-top: 15px">
                             Have you read our guidance, which explains who needs to report?
-                        </h1>
+                        </h2>
                         <p class="form-hint">If you would like to read the guidance then you can find it <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener noreferrer"><span class="visually-hidden">Find the guidance</span>here<span class="visually-hidden">(opens in a new window)</span></a></p>
                         @Html.ValidationMessage(nameof(EnterAnswersViewModel.ReadGuidance), "", new {id = "ReadGuidanceError", @class = "error-message"})
                     </legend>

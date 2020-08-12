@@ -57,9 +57,9 @@
             <div id="EHRCResponseGroup" class="form-group @Html.SetErrorClass(model => model.EHRCResponse, "error")">
                 <fieldset class="inline">
                     <legend>
-                        <h1 class="heading-medium">
+                        <h2 class="heading-medium">
                             Have you received a letter about a breach of the regulations from the Equality and Human Rights Commission?
-                        </h1>
+                        </h2>
                         @Html.ValidationMessageFor(model => model.EHRCResponse, "", new {id = "EHRCResponseGroup", @class = "error-message"})
                     </legend>
                     <div class="multiple-choice">
