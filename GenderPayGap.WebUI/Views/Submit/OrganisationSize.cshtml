@@ -63,9 +63,9 @@
                 <div id="OrganisationSizeGroup" class="form-group @Html.SetErrorClass(model => model.OrganisationSize, "error")">
                     <fieldset>
                         <legend>
-                            <h1 class="heading-medium">
+                            <h2 class="heading-medium">
                                 How many employees are there in your organisation?
-                            </h1>
+                            </h2>
                             @Html.ValidationMessageFor(model => model.OrganisationSize, "", new {id = "OrganisationSizeError", @class = "error-message"})
                         </legend>
                         @foreach (OrganisationSizes orgSize in Enum.GetValues(typeof(OrganisationSizes)))

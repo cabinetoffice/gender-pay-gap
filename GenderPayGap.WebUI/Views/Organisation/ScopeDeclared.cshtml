@@ -10,9 +10,9 @@
                 <span class="heading-secondary">@Model.OrganisationName</span>
             </h1>
             <div class="govuk-box-highlight">
-                <h1 class="bold-large">
+                <h2 class="bold-large">
                     You've confirmed your organisation is <span> @(Model.ScopeStatus == ScopeStatuses.OutOfScope ? "not " : "")required to report for snapshot date @Model.SnapshotDate.ToString("d MMMM yyyy").</span>
-                </h1>
+                </h2>
             </div>
             <p>
                 Press continue to manage your organisation.
