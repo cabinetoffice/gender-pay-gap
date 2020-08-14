@@ -19,13 +19,13 @@
         crumbs.Add(new CrumbViewModel
         {
             Text = Model.Organisation.OrganisationName,
-            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })
+            Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
         });
 
         crumbs.Add(new CrumbViewModel
         {
             Text = "Address history",
-            Href = Url.Action("ViewAddressHistory", "AdminOrganisationAddress", new { id = Model.Organisation.OrganisationId })
+            Href = Url.Action("ViewAddressHistory", "AdminOrganisationAddress", new {id = Model.Organisation.OrganisationId})
         });
 
         crumbs.Add(new CrumbViewModel
@@ -46,7 +46,7 @@
         <span class="govuk-caption-xl">Administration</span>
         <h1 class="govuk-heading-xl">
             Change address
-            <br />
+            <br/>
             <span class="govuk-!-font-size-27">
                 for @(Model.Organisation.OrganisationName)
             </span>
@@ -56,7 +56,7 @@
             Check the new address
         </h2>
 
-        <form method="post" action="@Url.Action("ChangeAddressPost", "AdminOrganisationAddress", new { id = Model.Organisation.OrganisationId })">
+        <form method="post" action="@Url.Action("ChangeAddressPost", "AdminOrganisationAddress", new {id = Model.Organisation.OrganisationId})">
             @(Html.AntiForgeryToken())
             @(Html.HiddenFor(m => m.Action))
             @(Html.HiddenFor(m => m.Reason))
@@ -64,7 +64,9 @@
             <table class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header govuk-visually-hidden">Address component</th>
+                        <th scope="col" class="govuk-table__header">
+                            <span class="govuk-visually-hidden">Address component</span>
+                        </th>
                         <th scope="col" class="govuk-table__header">Old address</th>
                         <th scope="col" class="govuk-table__header">New address</th>
                     </tr>
@@ -152,15 +154,15 @@
                     </tr>
                 </tbody>
             </table>
-            
+
             @(Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm and save",
                 Classes = "govuk-!-margin-bottom-4"
             }))
-            
+
             <p class="govuk-body">
-                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new { id = Model.Organisation.OrganisationId })"
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
                     Cancel and return to organisation page
                 </a>
