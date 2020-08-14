@@ -111,7 +111,7 @@
                 The following people are registered to report gender pay gap data for this organisation.
             </p>
         }
-        
+
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <table class="govuk-table">
@@ -127,8 +127,8 @@
                             string userFullname = assocUserOrg.User.Fullname;
                             string encUserId = Encryption.EncryptQuerystring(assocUserOrg.UserId.ToString());
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">@userFullname</td>
-                                <td class="govuk-table__cell">
+                                <td class="govuk-table__cell govuk-!-font-size-19">@userFullname</td>
+                                <td class="govuk-table__cell govuk-!-font-size-19">
                                     <a href="@(Url.Action("RemoveOrganisation", new {orgId = Model.EncCurrentOrgId, userId = encUserId}))">
                                         Remove user <span class="visually-hidden">@userFullname</span> from reporting
                                     </a>

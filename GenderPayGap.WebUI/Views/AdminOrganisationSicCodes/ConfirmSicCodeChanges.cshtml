@@ -77,100 +77,118 @@
             Check the new SIC codes
         </h2>
 
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-font-size-27">SIC codes to add</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (SicCode sicCode in Model.SicCodesToAdd)
-                {
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+            SIC codes to add
+        </h3>
+        @if (Model.SicCodesToAdd.Count == 0)
+        {
+            <p class="govuk-body">
+                No SIC codes to add
+            </p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head govuk-visually-hidden">
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <b>@sicCode.SicCodeId</b>
-                            @sicCode.Description
-                            <br/>
-                            <span class="govuk-body-s">
-                                part of: @sicCode.SicSection.Description
-                            </span>
-                            <input type="hidden" name="@nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToAdd)" value="@sicCode.SicCodeId"/>
-                        </td>
+                        <th scope="col" class="govuk-table__header govuk-!-padding-0">
+                            <span class=" govuk-visually-hidden">SIC codes to add</span>
+                        </th>
                     </tr>
-                }
-                @if (Model.SicCodesToAdd.Count == 0)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            No SIC codes to add
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (SicCode sicCode in Model.SicCodesToAdd)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <b>@sicCode.SicCodeId</b>
+                                @sicCode.Description
+                                <br/>
+                                <span class="govuk-body-s">
+                                    part of: @sicCode.SicSection.Description
+                                </span>
+                                <input type="hidden" name="@nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToAdd)" value="@sicCode.SicCodeId"/>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
 
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-font-size-27">SIC codes to keep</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (SicCode sicCode in Model.SicCodesToKeep)
-                {
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+            SIC codes to keep
+        </h3>
+        @if (Model.SicCodesToKeep.Count == 0)
+        {
+            <p class="govuk-body">
+                No SIC codes to add
+            </p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <b>@(sicCode.SicCodeId)</b>
-                            @(sicCode.Description)
-                            <br/>
-                            <span class="govuk-body-s">
-                                part of: @(sicCode.SicSection.Description)
-                            </span>
-                        </td>
+                        <th scope="col" class="govuk-table__header govuk-!-padding-0">
+                            <span class=" govuk-visually-hidden">SIC codes to keep</span>
+                        </th>
                     </tr>
-                }
-                @if (Model.SicCodesToKeep.Count == 0)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            No SIC codes to keep
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (SicCode sicCode in Model.SicCodesToKeep)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <b>@(sicCode.SicCodeId)</b>
+                                @(sicCode.Description)
+                                <br/>
+                                <span class="govuk-body-s">
+                                    part of: @(sicCode.SicSection.Description)
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
 
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-font-size-27">SIC codes to remove</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (SicCode sicCode in Model.SicCodesToRemove)
-                {
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+            SIC codes to remove
+        </h3>
+        @if (Model.SicCodesToRemove.Count == 0)
+        {
+            <p class="govuk-body">
+                No SIC codes to remove
+            </p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <b>@(sicCode.SicCodeId)</b>
-                            @(sicCode.Description)
-                            <br/>
-                            <span class="govuk-body-s">
-                                part of: @(sicCode.SicSection.Description)
-                            </span>
-                            <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToRemove))" value="@(sicCode.SicCodeId)"/>
-                        </td>
+                        <th scope="col" class="govuk-table__header govuk-!-padding-0">
+                            <span class=" govuk-visually-hidden">SIC codes to remove</span>
+                        </th>
                     </tr>
-                }
-                @if (Model.SicCodesToRemove.Count == 0)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            No SIC codes to remove
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (SicCode sicCode in Model.SicCodesToRemove)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <b>@(sicCode.SicCodeId)</b>
+                                @(sicCode.Description)
+                                <br/>
+                                <span class="govuk-body-s">
+                                    part of: @(sicCode.SicSection.Description)
+                                </span>
+                                <input type="hidden" name="@(nameof(ChangeOrganisationSicCodesViewModel.SicCodeIdsToRemove))" value="@(sicCode.SicCodeId)"/>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
 
         <form method="post" action="@Url.Action("ChangeSicCodesPost", "AdminOrganisationSicCodes")">
             @(Html.AntiForgeryToken())
