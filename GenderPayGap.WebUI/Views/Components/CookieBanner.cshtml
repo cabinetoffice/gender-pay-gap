@@ -14,13 +14,17 @@
         <p class="cookie-banner-body">
             You’ve accepted all cookies. You can <a class="cookie-banner-link" href="@Url.Action("CookieSettingsGet", "Cookie")" tabindex="-1">change your cookie settings</a> at any time.
         </p>
-        <button id="cookie-banner-hide-button" class="cookie-banner-link cookie-banner-hide-button" tabindex="-1">Hide</button>
+        <button id="cookie-banner-hide-button" class="cookie-banner-link cookie-banner-hide-button" tabindex="-1">Hide<span class="govuk-visually-hidden"> cookie preferences</span></button>
     </div>
 </div>
 <script>
-    (function () {
+    (function() {
         function setCookie(cookieName, cookieValue) {
-            document.cookie = cookieName + "=" + encodeURIComponent(JSON.stringify(cookieValue)) + "; max-age=31536000; path=/; Secure; SameSite=Strict";
+            document.cookie =
+                cookieName +
+                "=" +
+                encodeURIComponent(JSON.stringify(cookieValue)) +
+                "; max-age=31536000; path=/; Secure; SameSite=Strict";
         }
 
         function acceptAllCookiesButtonClicked(event) {
@@ -42,12 +46,13 @@
             @* Hide the initial cookie warning message, and make the link/button un-tabbable *@
             document.getElementById('cookie-banner-inital-message').style.display = 'none';
             document.querySelectorAll('#cookie-banner-initial-message a, #cookie-banner-initial-message input')
-                .forEach(function (element) { element.tabIndex = -1; });
+                .forEach(function(element) { element.tabIndex = -1; });
 
             @* Show the confirmation message, and make the link/button tabbable *@
             document.getElementById('cookie-banner-confirmation-message').style.display = 'block';
-            document.querySelectorAll('#cookie-banner-confirmation-message a, #cookie-banner-confirmation-message button')
-                .forEach(function (element) { element.tabIndex = 0; });
+            document.querySelectorAll(
+                    '#cookie-banner-confirmation-message a, #cookie-banner-confirmation-message button')
+                .forEach(function(element) { element.tabIndex = 0; });
 
             @* Initialise and send Google Analytics *@
             window.initialiseGoogleAnalytics && window.initialiseGoogleAnalytics();
@@ -55,18 +60,20 @@
             window.sendGovUkPageView && window.sendGovUkPageView();
         }
 
-        document.getElementById('cookie-banner-accept-all-form').addEventListener("submit", acceptAllCookiesButtonClicked);
+        document.getElementById('cookie-banner-accept-all-form')
+            .addEventListener("submit", acceptAllCookiesButtonClicked);
 
         function hideCookieConfirmationClicked() {
             document.getElementById('cookie-banner').style.display = 'none';
         }
+
         document.getElementById('cookie-banner-hide-button').addEventListener("click", hideCookieConfirmationClicked);
 
         function getCookie(name) {
             try {
                 var nameWithEquals = name + "=";
                 var cookies = document.cookie.split(';');
-                for(var i = 0; i < cookies.length; i++) {
+                for (var i = 0; i < cookies.length; i++) {
                     var cookie = cookies[i];
                     while (cookie.charAt(0) === ' ') {
                         cookie = cookie.substring(1, cookie.length);
@@ -77,7 +84,8 @@
                         return cookieValue;
                     }
                 }
-            } catch (e) { /* If there's an error, return null */ } 
+            } catch (e) { /* If there's an error, return null */
+            }
             return null;
         }
 

@@ -3,53 +3,56 @@
 
 <tbody class="compare-table">
 
-@{ var isOddRow = true; }
+    @{ var isOddRow = true; }
 
-@foreach (CompareReportModel compareReport in Model.CompareReports)
-{
-    <tr class="row @(isOddRow ? "" : "row-even")">
-        <td class="LeftmostColumn">
-            <div class="OrganisationName">
-                <button type="submit" name="command" value="@(compareReport.EncOrganisationId == null ? "employer" : "report"):@compareReport.EncOrganisationId" class="link-button">@compareReport.OrganisationName</button>
-            </div>
+    @foreach (CompareReportModel compareReport in Model.CompareReports)
+    {
+        <tr class="row @(isOddRow ? "" : "row-even")">
+            <td class="LeftmostColumn">
+                <div class="OrganisationName">
+                    <button type="submit" name="command" value="@(compareReport.EncOrganisationId == null ? "employer" : "report"):@compareReport.EncOrganisationId" class="link-button">
+                        <span class="govuk-visually-hidden">View </span>
+                        @compareReport.OrganisationName
+                    </button>
+                </div>
 
-            <div class="RemoveLink no-print">
-                <a href="@Url.Action("RemoveEmployer", "Compare", new {employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl})">Remove <span class="visually-hidden">@compareReport.OrganisationName from comparison</span></a>
-            </div>
-        </td>
-
-        @if (!compareReport.HasReported)
-        {
-            <td class="cell cell--text" colspan="11">
-                @(compareReport.RequiredToReport
-                    ? "Employer has not reported for this year"
-                    : "Not required to report")
+                <div class="RemoveLink no-print">
+                    <a href="@Url.Action("RemoveEmployer", "Compare", new {employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl})">Remove <span class="visually-hidden">@compareReport.OrganisationName from comparison</span></a>
+                </div>
             </td>
-        }
-        else
-        {
-            <td class="cell cell--text">@compareReport.OrganisationSizeName</td>
-            <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMeanHourlyPayPercent"))">@(Model.FormatValue(compareReport.DiffMeanHourlyPayPercent))</td>
-            <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMedianHourlyPercent"))">@(Model.FormatValue(compareReport.DiffMedianHourlyPercent))</td>
-            <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleLowerPayBand"))">@(Model.FormatValue(compareReport.FemaleLowerPayBand))</td>
-            <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleMiddlePayBand"))">@(Model.FormatValue(compareReport.FemaleMiddlePayBand))</td>
-            <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperPayBand"))">@(Model.FormatValue(compareReport.FemaleUpperPayBand))</td>
-            <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperQuartilePayBand"))">@(Model.FormatValue(compareReport.FemaleUpperQuartilePayBand))</td>
 
-            if (compareReport.HasBonusesPaid == false)
+            @if (!compareReport.HasReported)
             {
-                <td class="cell cell--text" colspan="4">No bonuses were paid</td>
+                <td class="cell cell--text" colspan="11">
+                    @(compareReport.RequiredToReport
+                        ? "Employer has not reported for this year"
+                        : "Not required to report")
+                </td>
             }
             else
             {
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleMedianBonusPayPercent"))">@(Model.FormatValue(compareReport.FemaleMedianBonusPayPercent))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("MaleMedianBonusPayPercent"))">@(Model.FormatValue(compareReport.MaleMedianBonusPayPercent))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMeanBonusPercent"))">@(Model.FormatValue(compareReport.DiffMeanBonusPercent))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMedianBonusPercent"))">@(Model.FormatValue(compareReport.DiffMedianBonusPercent))</td>
+                <td class="cell cell--text">@compareReport.OrganisationSizeName</td>
+                <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMeanHourlyPayPercent"))">@(Model.FormatValue(compareReport.DiffMeanHourlyPayPercent))</td>
+                <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMedianHourlyPercent"))">@(Model.FormatValue(compareReport.DiffMedianHourlyPercent))</td>
+                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleLowerPayBand"))">@(Model.FormatValue(compareReport.FemaleLowerPayBand))</td>
+                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleMiddlePayBand"))">@(Model.FormatValue(compareReport.FemaleMiddlePayBand))</td>
+                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperPayBand"))">@(Model.FormatValue(compareReport.FemaleUpperPayBand))</td>
+                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperQuartilePayBand"))">@(Model.FormatValue(compareReport.FemaleUpperQuartilePayBand))</td>
+
+                if (compareReport.HasBonusesPaid == false)
+                {
+                    <td class="cell cell--text" colspan="4">No bonuses were paid</td>
+                }
+                else
+                {
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleMedianBonusPayPercent"))">@(Model.FormatValue(compareReport.FemaleMedianBonusPayPercent))</td>
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("MaleMedianBonusPayPercent"))">@(Model.FormatValue(compareReport.MaleMedianBonusPayPercent))</td>
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMeanBonusPercent"))">@(Model.FormatValue(compareReport.DiffMeanBonusPercent))</td>
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMedianBonusPercent"))">@(Model.FormatValue(compareReport.DiffMedianBonusPercent))</td>
+                }
             }
-        }
-    </tr>
-    /* toggle for next row */
-    isOddRow = !isOddRow;
-}
+        </tr>
+        /* toggle for next row */
+        isOddRow = !isOddRow;
+    }
 </tbody>
