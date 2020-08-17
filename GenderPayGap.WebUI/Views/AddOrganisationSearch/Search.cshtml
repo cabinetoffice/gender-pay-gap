@@ -1,0 +1,34 @@
+﻿@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchViewModel
+@{
+    ViewBag.Title = "Find organisation - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @Html.GovUkBackLink(new BackLinkViewModel
+    {
+        Text = "TODO TODO TODO TODO TODO TODO",
+        Href = Url.Action("ChooseSector", "AddOrganisationChooseSector",
+                new AddOrganisationChooseSectorViewModel
+                {
+                    Sector = Model.Sector
+                }),
+
+        // Not all the "Back" links in this journey will use the default browser behaviour
+        //  so we should control all of them explicitly
+        OverrideWithJavascript = false
+    })
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Find organisation
+        </h1>
+
+    </div>
+</div>
