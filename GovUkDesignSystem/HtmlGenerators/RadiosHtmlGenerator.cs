@@ -13,11 +13,12 @@ namespace GovUkDesignSystem.HtmlGenerators
 {
     internal static class RadiosHtmlGenerator
     {
-        public static IHtmlContent GenerateHtml<TModel, TProperty>(
-            IHtmlHelper<TModel> htmlHelper,
+        public static IHtmlContent GenerateHtml<TModel, TProperty>(IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> propertyLambdaExpression,
             FieldsetViewModel fieldsetOptions = null,
-            HintViewModel hintOptions = null)
+            HintViewModel hintOptions = null,
+            Dictionary<TProperty, LabelViewModel> itemLabelOptions = null,
+            Dictionary<TProperty, HintViewModel> itemHintOptions = null)
             where TModel : GovUkViewModel
         {
             PropertyInfo property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
@@ -39,16 +40,29 @@ namespace GovUkDesignSystem.HtmlGenerators
                     bool isEnumValueCurrentlySelected = enumValue.ToString() == currentlySelectedValue.ToString();
                     string radioLabelText = GetRadioLabelText(enumType, enumValue);
 
-                    return new RadioItemViewModel
+                    var radioItemViewModel = new RadioItemViewModel
                     {
                         Value = enumValue.ToString(),
                         Id = $"GovUk_Radio_{propertyName}_{enumValue}",
                         Checked = isEnumValueCurrentlySelected,
-                        Label = new LabelViewModel
-                        {
-                            Text = radioLabelText
-                        }
+                        Label = new LabelViewModel()
                     };
+
+                    if (itemLabelOptions != null && itemLabelOptions.TryGetValue((TProperty)enumValue, out LabelViewModel labelViewModel))
+                    {
+                        radioItemViewModel.Label = labelViewModel;
+                    }
+                    if (radioItemViewModel.Label.Text == null && radioItemViewModel.Label.Html == null)
+                    {
+                        radioItemViewModel.Label.Text = radioLabelText;
+                    }
+
+                    if (itemHintOptions != null && itemHintOptions.TryGetValue((TProperty)enumValue, out HintViewModel hintViewModel))
+                    {
+                        radioItemViewModel.Hint = hintViewModel;
+                    }
+
+                    return radioItemViewModel;
                 })
                 .Cast<ItemViewModel>()
                 .ToList();
