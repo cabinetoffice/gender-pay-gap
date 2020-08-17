@@ -9,7 +9,7 @@
     <div class="container-head js-container-head">
         <div class="option-select-label">@(Model.Label)</div>
     </div>
-    <div class="options-container" id="@(Model.Id)" style="max-height: @(maxHeight)">
+    <div class="options-container" id="@(Model.Id)" aria-label="@(Model.Label)" style="max-height: @(maxHeight)">
         <div class="js-auto-height-inner">
             <fieldset>
                 <legend>@(Model.Label)</legend>
