@@ -72,7 +72,8 @@ namespace GovUkDesignSystem
             Expression<Func<TModel, List<TPropertyListItem>>> propertyLambdaExpression,
             FieldsetViewModel fieldsetOptions = null,
             HintViewModel hintOptions = null,
-            Dictionary<TPropertyListItem, Func<object, object>> conditionalOptions = null)
+            Dictionary<TPropertyListItem, Func<object, object>> conditionalOptions = null,
+            Dictionary<TPropertyListItem, HintViewModel> itemHintOptions = null)
             where TModel : GovUkViewModel
             where TPropertyListItem : struct, IConvertible // A fairly good check that TPropertyListItem is an Enum
         {
@@ -81,7 +82,8 @@ namespace GovUkDesignSystem
                 propertyLambdaExpression,
                 fieldsetOptions,
                 hintOptions,
-                conditionalOptions);
+                conditionalOptions,
+                itemHintOptions);
         }
 
         public static IHtmlContent GovUkCheckboxItem(
@@ -246,14 +248,18 @@ namespace GovUkDesignSystem
             this IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> propertyLambdaExpression,
             FieldsetViewModel fieldsetOptions = null,
-            HintViewModel hintOptions = null)
+            HintViewModel hintOptions = null,
+            Dictionary<TProperty, LabelViewModel> itemLabelOptions = null,
+            Dictionary<TProperty, HintViewModel> itemHintOptions = null)
             where TModel : GovUkViewModel
         {
             return RadiosHtmlGenerator.GenerateHtml(
                 htmlHelper,
                 propertyLambdaExpression,
                 fieldsetOptions,
-                hintOptions);
+                hintOptions,
+                itemLabelOptions,
+                itemHintOptions);
         }
 
         public static IHtmlContent GovUkRadioItem(

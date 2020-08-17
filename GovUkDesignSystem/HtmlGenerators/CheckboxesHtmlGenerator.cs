@@ -18,7 +18,8 @@ namespace GovUkDesignSystem.HtmlGenerators
             Expression<Func<TModel, List<TPropertyListItem>>> propertyLambdaExpression,
             FieldsetViewModel fieldsetOptions = null,
             HintViewModel hintOptions = null,
-            Dictionary<TPropertyListItem, Func<object, object>> conditionalOptions = null)
+            Dictionary<TPropertyListItem, Func<object, object>> conditionalOptions = null,
+            Dictionary<TPropertyListItem, HintViewModel> itemHintOptions = null)
             where TModel : GovUkViewModel
             where TPropertyListItem : struct, IConvertible
         {
@@ -57,7 +58,11 @@ namespace GovUkDesignSystem.HtmlGenerators
                     if (conditionalOptions != null && conditionalOptions.TryGetValue(enumValue, out Func<object, object> conditionalHtml))
                     {
                         checkboxItemViewModel.Conditional = new Conditional {Html = conditionalHtml};
-
+                    }
+                    
+                    if (itemHintOptions != null && itemHintOptions.TryGetValue(enumValue, out HintViewModel hintViewModel))
+                    {
+                        checkboxItemViewModel.Hint = hintViewModel;
                     }
                     
                     return checkboxItemViewModel;
