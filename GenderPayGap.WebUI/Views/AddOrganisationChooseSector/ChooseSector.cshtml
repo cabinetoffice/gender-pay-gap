@@ -1,0 +1,126 @@
+﻿@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationChooseSectorViewModel
+@{
+    ViewBag.Title = "What type of organisation you would like to add? - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @Html.GovUkBackLink(new BackLinkViewModel
+    {
+        Text = "Back",
+        Href = Url.Action("ManageOrganisations", "Organisation"),
+        
+        // Not all the "Back" links in this journey will use the default browser behaviour
+        //  so we should control all of them explicitly
+        OverrideWithJavascript = false
+    })
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <form method="get"
+              action="@Url.Action("ChooseSector", "AddOrganisationChooseSector")">
+            
+            @(Html.GovUkErrorSummary())
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        What type of organisation you would like to add?
+                    </h1>
+                </legend>
+
+                @(Html.GovUkRadiosFor(
+                    m => m.Sector,
+                    itemLabelOptions: new Dictionary<AddOrganisationSector?, LabelViewModel>
+                    {
+                        {
+                            AddOrganisationSector.Public,
+                            new LabelViewModel
+                            {
+                                Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
+                            }
+                        },
+                        {
+                            AddOrganisationSector.Private,
+                            new LabelViewModel
+                            {
+                                Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
+                            }
+                        },
+                    },
+                    itemHintOptions: new Dictionary<AddOrganisationSector?, HintViewModel>
+                    {
+                        {
+                            AddOrganisationSector.Public,
+                            new HintViewModel
+                            {
+                                Html = @<text>
+                                           This includes:
+                                           <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
+                                               <li>Most government departments</li>
+                                               <li>The armed forces</li>
+                                               <li>Local authorities</li>
+                                               <li>NHS bodies</li>
+                                               <li>Universities</li>
+                                               <li>Most schools, including academies and multi-academy trusts (except private and independent schools)</li>
+                                           </ul>
+                                        </text>
+                            }
+                        },
+                        {
+                            AddOrganisationSector.Private,
+                            new HintViewModel
+                            {
+                                Html = @<text>
+                                           This includes:
+                                           <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
+                                               <li>Limited companies</li>
+                                               <li>Limited liability partnerships</li>
+                                               <li>Charities</li>
+                                               <li>Independent and private schools</li>
+                                           </ul>
+                                        </text>
+                            }
+                        },
+                    }))
+
+            </fieldset>
+
+            <div class="govuk-inset-text">
+                If you are not sure what type of organisation you are, please read the
+                <a href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview#public-sector-organisations---who-must-report-and-publish"
+                   target="_blank"
+                   class="govuk-link">
+                    guidance on gender pay gap regulations
+                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>
+            </div>
+
+            @{
+                Model.Validate = true;
+                @(Html.HiddenFor(m => m.Validate))
+            }
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ManageOrganisations", "Organisation")"
+                   class="govuk-link">
+                    Cancel
+                </a>
+            </p>
+
+        </form>
+        
+
+    </div>
+</div>
