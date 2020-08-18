@@ -73,7 +73,8 @@
                 @(Html.GovUkTextInputFor(
                     m => m.Name,
                     labelOptions: new LabelViewModel { Text = "What is their name?" },
-                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" }
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
+                    autocomplete: "organization"
                 ))
             </fieldset>
 

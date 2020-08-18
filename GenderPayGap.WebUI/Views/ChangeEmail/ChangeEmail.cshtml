@@ -28,7 +28,8 @@
                 type: "email",
                 labelOptions: new LabelViewModel { Text = "New email address" },
                 classes: "govuk-input--width-20",
-                formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" }
+                formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
+                autocomplete: "email"
                 ))
         
             @(Html.GovUkButton(new ButtonViewModel
