@@ -70,7 +70,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
             LoginHelper.Login(HttpContext, user.UserId, userRole);
 
-            if (ReturnUrlIsAllowed(viewModel))
+            if (ReturnUrlIsAllowed(viewModel.ReturnUrl))
             {
                 return Redirect(viewModel.ReturnUrl);
             }
@@ -84,18 +84,18 @@ namespace GenderPayGap.WebUI.Controllers.Login
             }
         }
 
-        private bool ReturnUrlIsAllowed(LoginViewModel viewModel)
+        private bool ReturnUrlIsAllowed(string returnUrl)
         {
             string fullUrlToHomepage = Url.Action("Index", "Viewing", new { }, "https"); // i.e. (on Prod) https://gender-pay-gap.service.gov.uk/
 
-            return viewModel.ReturnUrl != null
-                   && (viewModel.ReturnUrl.StartsWith(fullUrlToHomepage)
-                       || Url.IsLocalUrl(viewModel.ReturnUrl));
+            return returnUrl != null
+                   && (returnUrl.StartsWith(fullUrlToHomepage)
+                       || Url.IsLocalUrl(returnUrl));
         }
 
 
         [HttpGet("logout")]
-        public IActionResult Logout()
+        public IActionResult Logout(string redirectUrl)
         {
             // "LoginHelper.Logout(...)" (below) logs out the user
             // But, they are still logged in for the full duration of this request
@@ -103,7 +103,15 @@ namespace GenderPayGap.WebUI.Controllers.Login
             //
             // To prevent this problem, we redirect the user (so they make a new request)
             // In the second request, they are logged out, so everything is displayed properly
-            IActionResult suggestedResult = RedirectToAction("LoggedOut", "Login");
+            IActionResult suggestedResult;
+            if (ReturnUrlIsAllowed(redirectUrl))
+            {
+                suggestedResult = Redirect(redirectUrl);
+            }
+            else
+            {
+                suggestedResult = RedirectToAction("LoggedOut", "Login");
+            }
 
             return LoginHelper.Logout(HttpContext, suggestedResult);
         }
