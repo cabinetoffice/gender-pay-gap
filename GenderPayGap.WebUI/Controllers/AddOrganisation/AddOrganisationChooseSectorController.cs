@@ -1,4 +1,5 @@
-﻿using GenderPayGap.WebUI.Helpers;
+﻿using GenderPayGap.Core.Interfaces;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
@@ -10,10 +11,21 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
     [Route("add-organisation")]
     public class AddOrganisationChooseSectorController : Controller
     {
+        
+        private readonly IDataRepository dataRepository;
+
+        public AddOrganisationChooseSectorController(IDataRepository dataRepository)
+        {
+            this.dataRepository = dataRepository;
+        }
+
 
         [HttpGet("choose-sector")]
         public IActionResult ChooseSector(AddOrganisationChooseSectorViewModel viewModel)
         {
+            ControllerHelper.ThrowIfUserAccountRetired(User, dataRepository);
+            ControllerHelper.ThrowIfEmailNotVerified(User, dataRepository);
+
             if (viewModel.Validate == true)
             {
                 viewModel.ParseAndValidateParameters(Request, m => m.Sector);
