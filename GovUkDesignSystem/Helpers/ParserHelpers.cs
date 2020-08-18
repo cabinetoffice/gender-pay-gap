@@ -24,7 +24,7 @@ namespace GovUkDesignSystem.Helpers
 
         public static void SaveUnparsedValueFromRequestToModel(GovUkViewModel model, HttpRequest httpRequest, string parameterName)
         {
-            StringValues unparsedValuesFromRequestForThisProperty = httpRequest.Form[parameterName];
+            StringValues unparsedValuesFromRequestForThisProperty = HttpRequestParameterHelper.GetRequestParameter(httpRequest, parameterName);
 
             model.AddUnparsedValues(parameterName, unparsedValuesFromRequestForThisProperty);
         }

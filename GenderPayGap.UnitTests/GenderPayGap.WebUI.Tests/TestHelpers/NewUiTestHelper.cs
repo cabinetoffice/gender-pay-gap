@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             requestMock.SetupGet(x => x.Cookies).Returns(requestCookies);
             requestMock.SetupGet(x => x.Headers).Returns(requestHeaders);
             requestMock.SetupGet(req => req.Form).Returns(requestForm);
-            
+
             //Mock HttpResponse
             var responseMock = new Mock<HttpResponse>();
             var responseHeaders = new HeaderDictionary();
@@ -102,6 +102,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             httpContextMock.SetupGet(ctx => ctx.Request).Returns(requestMock.Object);
             httpContextMock.SetupGet(ctx => ctx.Request.Cookies).Returns(requestCookies);
             httpContextMock.SetupGet(ctx => ctx.Request.HttpContext).Returns(httpContextMock.Object);
+            httpContextMock.SetupGet(ctx => ctx.Request.HasFormContentType).Returns(true);
             httpContextMock.SetupGet(ctx => ctx.Request.Form).Returns(requestForm);
             
             httpContextMock.SetupGet(ctx => ctx.Request.Scheme).Returns(uri.Scheme);
