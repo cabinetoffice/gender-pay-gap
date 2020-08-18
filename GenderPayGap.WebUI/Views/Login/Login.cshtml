@@ -39,14 +39,16 @@
                 type: "email",
                 labelOptions: new LabelViewModel { Text = "Email address" },
                 classes: "govuk-input--width-20",
-                formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" }
+                formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
+                autocomplete: "email"
                 ))
             
             @(Html.GovUkTextInputFor(
                 m => m.Password,
                 type: "password",
                 labelOptions: new LabelViewModel { Text = "Password" },
-                classes: "govuk-input--width-20"
+                classes: "govuk-input--width-20",
+                autocomplete: "current-password"
                 ))
             
             @(Html.GovUkButton(new ButtonViewModel

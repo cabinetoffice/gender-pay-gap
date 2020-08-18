@@ -44,13 +44,15 @@
 
             @(Html.GovUkTextInputFor(
                 m => m.Hostname,
-                labelOptions: new LabelViewModel { Text = "Hostname of remote server" }
+                labelOptions: new LabelViewModel { Text = "Hostname of remote server" },
+                autocomplete: "username"
             ))
 
             @(Html.GovUkTextInputFor(
                 m => m.Password,
                 type: "password",
-                labelOptions: new LabelViewModel { Text = "Password" }
+                labelOptions: new LabelViewModel { Text = "Password" },
+                autocomplete: "current-password"
             ))
             
             <div class="govuk-panel govuk-panel--confirmation" id="firefoxWarning">

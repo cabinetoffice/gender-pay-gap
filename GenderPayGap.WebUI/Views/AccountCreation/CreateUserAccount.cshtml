@@ -9,10 +9,10 @@
 }
 
 @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-    {
-    @section BeforeMain {
-        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
-    }   
+{
+@section BeforeMain {
+    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+}
 }
 
 <div class="govuk-grid-row">
@@ -36,126 +36,132 @@
             @Html.ActionLink("sign in", nameof(OrganisationController.ManageOrganisations),
                 "Organisation").
         </p>
-        
+
         <form method="POST" action="@Url.Action("CreateUserAccountPost", "AccountCreation")" class="govuk-!-margin-top-8">
-                @Html.AntiForgeryToken()
-                <div class="govuk-form-group">
+            @Html.AntiForgeryToken()
+            <div class="govuk-form-group">
 
-                    @(Html.GovUkErrorSummary(new[]
-                    {
-                        nameof(CreateUserAccountViewModel.EmailAddress),
-                        nameof(CreateUserAccountViewModel.ConfirmEmailAddress),
-                        nameof(CreateUserAccountViewModel.FirstName),
-                        nameof(CreateUserAccountViewModel.LastName),
-                        nameof(CreateUserAccountViewModel.JobTitle),
-                        nameof(CreateUserAccountViewModel.Password),
-                        nameof(CreateUserAccountViewModel.ConfirmPassword),
-                        
-                    }))
+                @(Html.GovUkErrorSummary(new[]
+                {
+                    nameof(CreateUserAccountViewModel.EmailAddress),
+                    nameof(CreateUserAccountViewModel.ConfirmEmailAddress),
+                    nameof(CreateUserAccountViewModel.FirstName),
+                    nameof(CreateUserAccountViewModel.LastName),
+                    nameof(CreateUserAccountViewModel.JobTitle),
+                    nameof(CreateUserAccountViewModel.Password),
+                    nameof(CreateUserAccountViewModel.ConfirmPassword)
+                }))
 
-                    <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
-                        <legend class="govuk-fieldset__legend">
-                            <h2 class="govuk-heading-m">Email address</h2>
-                        </legend>
+                <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
+                    <legend class="govuk-fieldset__legend">
+                        <h2 class="govuk-heading-m">Email address</h2>
+                    </legend>
 
-                        @(Html.GovUkTextInputFor(
-                            m => m.EmailAddress,
-                            new LabelViewModel {Text = "Enter an email address that you can access"},
-                            new HintViewModel {Text = "The service will send you an email to verify your identity"},
-                            classes: "govuk-input--width-20"
-                            ))
+                    @(Html.GovUkTextInputFor(
+                        m => m.EmailAddress,
+                        new LabelViewModel {Text = "Enter an email address that you can access"},
+                        new HintViewModel {Text = "The service will send you an email to verify your identity"},
+                        classes: "govuk-input--width-20",
+                        autocomplete: "email"
+                        ))
 
-                        @(Html.GovUkTextInputFor(
-                            m => m.ConfirmEmailAddress,
-                            new LabelViewModel {Text = "Confirm your email address"},
-                            classes: "govuk-input--width-20"
-                            ))
+                    @(Html.GovUkTextInputFor(
+                        m => m.ConfirmEmailAddress,
+                        new LabelViewModel {Text = "Confirm your email address"},
+                        classes: "govuk-input--width-20",
+                        autocomplete: "email"
+                        ))
 
-                    </fieldset>
+                </fieldset>
 
-                    <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
-                        <legend class="govuk-fieldset__legend">
-                            <h2 class="govuk-heading-m">Your details</h2>
-                        </legend>
+                <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
+                    <legend class="govuk-fieldset__legend">
+                        <h2 class="govuk-heading-m">Your details</h2>
+                    </legend>
 
-                        @(Html.GovUkTextInputFor(
-                            m => m.FirstName,
-                            new LabelViewModel {Text = "First name"},
-                            classes: "govuk-input--width-20"
-                            ))
+                    @(Html.GovUkTextInputFor(
+                        m => m.FirstName,
+                        new LabelViewModel {Text = "First name"},
+                        classes: "govuk-input--width-20",
+                        autocomplete: "given-name"
+                        ))
 
-                        @(Html.GovUkTextInputFor(
-                            m => m.LastName,
-                            new LabelViewModel {Text = "Last name"},
-                            classes: "govuk-input--width-20"
-                            ))
+                    @(Html.GovUkTextInputFor(
+                        m => m.LastName,
+                        new LabelViewModel {Text = "Last name"},
+                        classes: "govuk-input--width-20",
+                        autocomplete: "family-name"
+                        ))
 
-                        @(Html.GovUkTextInputFor(
-                            m => m.JobTitle,
-                            new LabelViewModel {Text = "Job title"},
-                            classes: "govuk-input--width-20"
-                            ))
-                    </fieldset>
+                    @(Html.GovUkTextInputFor(
+                        m => m.JobTitle,
+                        new LabelViewModel {Text = "Job title"},
+                        classes: "govuk-input--width-20",
+                        autocomplete: "organization-title"
+                        ))
+                </fieldset>
 
-                    <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
-                        <legend class="govuk-fieldset__legend">
-                            <h2 class="govuk-heading-m">Create a password</h2>
-                        </legend>
-
-                        <p class="govuk-body">
-                            Your password must be at least 8 characters long.
-                        </p>
-                        <p class="govuk-body">
-                            It must also have at least one of each of the following:
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>
-                                    lower-case letter
-                                </li>
-                                <li>
-                                    capital letter and
-                                </li>
-                                <li>
-                                    number
-                                </li>
-
-                            </ul>
-                        </p>
-
-                        @(Html.GovUkTextInputFor(
-                            m => m.Password,
-                            new LabelViewModel {Text = "Password"},
-                            type: "password",
-                            classes: "govuk-input--width-20"
-                            ))
-
-                        @(Html.GovUkTextInputFor(
-                            m => m.ConfirmPassword,
-                            new LabelViewModel {Text = "Confirm your password"},
-                            type: "password",
-                            classes: "govuk-input--width-20"
-                            ))
-                    </fieldset>
+                <fieldset class="govuk-fieldset govuk-!-margin-bottom-9">
+                    <legend class="govuk-fieldset__legend">
+                        <h2 class="govuk-heading-m">Create a password</h2>
+                    </legend>
 
                     <p class="govuk-body">
-                        We will only use your contact details to send you information relating
-                        to gender pay gap reporting and, with your consent, for the following purpose:
+                        Your password must be at least 8 characters long.
+                    </p>
+                    <p class="govuk-body">
+                        It must also have at least one of each of the following:
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>
+                                lower-case letter
+                            </li>
+                            <li>
+                                capital letter and
+                            </li>
+                            <li>
+                                number
+                            </li>
+
+                        </ul>
                     </p>
 
-                    @(Html.GovUkCheckboxItemFor(m => m.SendUpdates,
-                        new LabelViewModel {Text = "I would like to receive information about webinars, events, and new guidance"}))
+                    @(Html.GovUkTextInputFor(
+                        m => m.Password,
+                        new LabelViewModel {Text = "Password"},
+                        type: "password",
+                        classes: "govuk-input--width-20",
+                        autocomplete: "new-password"
+                        ))
 
-                    @(Html.GovUkCheckboxItemFor(m => m.AllowContact,
-                        new LabelViewModel {Text = "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"}))
+                    @(Html.GovUkTextInputFor(
+                        m => m.ConfirmPassword,
+                        new LabelViewModel {Text = "Confirm your password"},
+                        type: "password",
+                        classes: "govuk-input--width-20",
+                        autocomplete: "new-password"
+                        ))
+                </fieldset>
+
+                <p class="govuk-body">
+                    We will only use your contact details to send you information relating
+                    to gender pay gap reporting and, with your consent, for the following purpose:
+                </p>
+
+                @(Html.GovUkCheckboxItemFor(m => m.SendUpdates,
+                    new LabelViewModel {Text = "I would like to receive information about webinars, events, and new guidance"}))
+
+                @(Html.GovUkCheckboxItemFor(m => m.AllowContact,
+                    new LabelViewModel {Text = "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"}))
 
 
-                    @(Html.GovUkButton(new ButtonViewModel
-                    {
-                        Text = "Continue",
-                        Classes = "govuk-!-margin-top-9"
-                    }))
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Continue",
+                    Classes = "govuk-!-margin-top-9"
+                }))
 
-                </div>
-            </form>
+            </div>
+        </form>
     </div>
     @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
     {
