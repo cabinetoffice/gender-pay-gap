@@ -72,8 +72,7 @@ namespace GovUkDesignSystem
             Expression<Func<TModel, List<TPropertyListItem>>> propertyLambdaExpression,
             FieldsetViewModel fieldsetOptions = null,
             HintViewModel hintOptions = null,
-            Dictionary<TPropertyListItem, Func<object, object>> conditionalOptions = null
-            )
+            Dictionary<TPropertyListItem, Func<object, object>> conditionalOptions = null)
             where TModel : GovUkViewModel
             where TPropertyListItem : struct, IConvertible // A fairly good check that TPropertyListItem is an Enum
         {
@@ -129,7 +128,7 @@ namespace GovUkDesignSystem
             where TModel : GovUkViewModel
         {
             // Give 'optionalOrderOfPropertiesInTheView' a default value (of an empty array)
-            var orderOfPropertyNamesInTheView = optionalOrderOfPropertyNamesInTheView ?? new string[0];
+            string[] orderOfPropertyNamesInTheView = optionalOrderOfPropertyNamesInTheView ?? new string[0];
 
             return ErrorSummaryHtmlGenerator.GenerateHtml(htmlHelper, orderOfPropertyNamesInTheView);
         }
@@ -140,7 +139,7 @@ namespace GovUkDesignSystem
         {
             return htmlHelper.Partial("/GovUkDesignSystemComponents/Fieldset.cshtml", fieldsetViewModel);
         }
-        
+
         public static async Task<IHtmlContent> GovUkFileUpload(
             this IHtmlHelper htmlHelper,
             FileUploadViewModel fileUploadViewModel)
@@ -154,8 +153,7 @@ namespace GovUkDesignSystem
             LabelViewModel labelOptions = null,
             HintViewModel hintOptions = null,
             FormGroupViewModel formGroupOptions = null,
-            string classes = null
-            )
+            string classes = null)
             where TModel : GovUkViewModel
         {
             return await FileUploadHtmlGenerator.GenerateHtml(
@@ -312,7 +310,8 @@ namespace GovUkDesignSystem
             FormGroupViewModel formGroupOptions = null,
             string classes = null,
             TextInputAppendixViewModel textInputAppendix = null,
-            string type = "text")
+            string type = "text",
+            string autocomplete = null)
             where TModel : GovUkViewModel
         {
             return TextInputHtmlGenerator.GenerateHtml(
@@ -323,7 +322,8 @@ namespace GovUkDesignSystem
                 formGroupOptions,
                 classes,
                 textInputAppendix,
-                type);
+                type,
+                autocomplete);
         }
 
         public static IHtmlContent GovUkTextInputFor<TModel>(
@@ -333,7 +333,9 @@ namespace GovUkDesignSystem
             HintViewModel hintOptions = null,
             FormGroupViewModel formGroupOptions = null,
             string classes = null,
-            TextInputAppendixViewModel textInputAppendix = null)
+            TextInputAppendixViewModel textInputAppendix = null,
+            string type = "text",
+            string autocomplete = null)
             where TModel : GovUkViewModel
         {
             return TextInputHtmlGenerator.GenerateHtml(
@@ -343,7 +345,9 @@ namespace GovUkDesignSystem
                 hintOptions,
                 formGroupOptions,
                 classes,
-                textInputAppendix);
+                textInputAppendix,
+                type,
+                autocomplete);
         }
 
     }
