@@ -16,7 +16,7 @@ namespace GovUkDesignSystem.Parsers
             HttpRequest httpRequest)
         {
             string propertyName = $"GovUk_Checkbox_{property.Name}";
-            StringValues parameterValues = httpRequest.Form[propertyName];
+            StringValues parameterValues = HttpRequestParameterHelper.GetRequestParameter(httpRequest, propertyName);
 
             ThrowIfPropertyTypeIsNotListOfEnums(property);
 

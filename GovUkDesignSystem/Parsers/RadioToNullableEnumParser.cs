@@ -14,7 +14,7 @@ namespace GovUkDesignSystem.Parsers
             HttpRequest httpRequest)
         {
             string propertyName = $"GovUk_Radio_{property.Name}";
-            StringValues parameterValues = httpRequest.Form[propertyName];
+            StringValues parameterValues = HttpRequestParameterHelper.GetRequestParameter(httpRequest, propertyName);
 
             ThrowIfPropertyTypeIsNotNullableEnum(property);
             ParserHelpers.ThrowIfMoreThanOneValue(parameterValues, property);

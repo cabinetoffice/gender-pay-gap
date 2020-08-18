@@ -17,7 +17,7 @@ namespace GovUkDesignSystem.Parsers
         {
             string parameterName = $"GovUk_Text_{property.Name}";
 
-            StringValues parameterValues = httpRequest.Form[parameterName];
+            StringValues parameterValues = HttpRequestParameterHelper.GetRequestParameter(httpRequest, parameterName);
 
             ParserHelpers.ThrowIfMoreThanOneValue(parameterValues, property);
             ParserHelpers.SaveUnparsedValueFromRequestToModel(model, httpRequest, parameterName);
