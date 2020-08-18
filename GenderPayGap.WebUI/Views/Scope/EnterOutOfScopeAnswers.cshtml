@@ -101,12 +101,12 @@
                     <div id="FirstNameGroup" class="form-group @(Html.SetErrorClass(nameof(EnterAnswersViewModel.FirstName), "error")) ">
                         @Html.LabelFor(model => model.EnterAnswers.FirstName, "First name", new {@class = "form-label"})
                         @Html.ValidationMessage(nameof(EnterAnswersViewModel.FirstName), "", new {id = "FirstNameError", @class = "error-message"})
-                        <input name="@nameof(EnterAnswersViewModel.FirstName)" class="form-control" value="@(Model.EnterAnswers.FirstName)"/>
+                        <input name="@nameof(EnterAnswersViewModel.FirstName)" class="form-control" value="@(Model.EnterAnswers.FirstName)" autocomplete="given-name"/>
                     </div>
                     <div id="LastNameGroup" class="form-group @Html.SetErrorClass(nameof(EnterAnswersViewModel.LastName), "error") ">
                         @Html.LabelFor(model => model.EnterAnswers.LastName, "Last name", new {@class = "form-label"})
                         @Html.ValidationMessage(nameof(EnterAnswersViewModel.LastName), "", new {id = "LastNameError", @class = "error-message"})
-                        <input name="@nameof(EnterAnswersViewModel.LastName)" class="form-control" value="@(Model.EnterAnswers.LastName)"/>
+                        <input name="@nameof(EnterAnswersViewModel.LastName)" class="form-control" value="@(Model.EnterAnswers.LastName)" autocomplete="family-name"/>
                     </div>
                 </fieldset>
 
@@ -115,12 +115,12 @@
                     <div id="EmailAddressGroup" class="form-group @Html.SetErrorClass(nameof(EnterAnswersViewModel.EmailAddress), "error") ">
                         @Html.LabelFor(model => model.EnterAnswers.EmailAddress, "Enter your email address", new {@class = "form-label"})
                         @Html.ValidationMessage(nameof(EnterAnswersViewModel.EmailAddress), null, new {id = "EmailAddressError", @class = "error-message"})
-                        <input type="email" name="@nameof(EnterAnswersViewModel.EmailAddress)" class="form-control" value="@(Model.EnterAnswers.EmailAddress)"/>
+                        <input type="email" name="@nameof(EnterAnswersViewModel.EmailAddress)" class="form-control" value="@(Model.EnterAnswers.EmailAddress)" autocomplete="email"/>
                     </div>
                     <div id="ConfirmEmailAddressGroup" class="form-group @Html.SetErrorClass(nameof(EnterAnswersViewModel.ConfirmEmailAddress), "error") ">
                         @Html.LabelFor(model => model.EnterAnswers.ConfirmEmailAddress, "Confirm your email address", new {@class = "form-label"})
                         @Html.ValidationMessage(nameof(EnterAnswersViewModel.ConfirmEmailAddress), "", new {id = "ConfirmEmailAddressError", @class = "error-message"})
-                        <input type="email" name="@nameof(EnterAnswersViewModel.ConfirmEmailAddress)" class="form-control" value="@(Model.EnterAnswers.ConfirmEmailAddress)"/>
+                        <input type="email" name="@nameof(EnterAnswersViewModel.ConfirmEmailAddress)" class="form-control" value="@(Model.EnterAnswers.ConfirmEmailAddress)" autocomplete="email"/>
                     </div>
                 </fieldset>
             }
