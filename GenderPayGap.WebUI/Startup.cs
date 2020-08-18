@@ -23,6 +23,7 @@ using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
