@@ -23,7 +23,7 @@ namespace GenderPayGap.WebUI.Helpers
             }
         }
 
-        public static void ThrowIfUserAccountRetired(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository)
+        public static void ThrowIfUserAccountRetiredOrEmailNotVerified(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository)
         {
             User gpgUser = GetGpgUserFromAspNetUser(aspDotNetUser, dataRepository);
 
@@ -32,11 +32,6 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 throw new UserAccountRetiredException();
             }
-        }
-
-        public static void ThrowIfEmailNotVerified(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository)
-        {
-            User gpgUser = GetGpgUserFromAspNetUser(aspDotNetUser, dataRepository);
 
             if (gpgUser.EmailVerifiedDate == null ||
                 gpgUser.EmailVerifiedDate == DateTime.MinValue)
