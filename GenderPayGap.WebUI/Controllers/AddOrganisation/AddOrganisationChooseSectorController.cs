@@ -23,8 +23,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("choose-sector")]
         public IActionResult ChooseSector(AddOrganisationChooseSectorViewModel viewModel)
         {
-            ControllerHelper.ThrowIfUserAccountRetired(User, dataRepository);
-            ControllerHelper.ThrowIfEmailNotVerified(User, dataRepository);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             if (viewModel.Validate == true)
             {
