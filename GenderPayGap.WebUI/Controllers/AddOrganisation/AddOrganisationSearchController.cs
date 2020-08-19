@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +23,8 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("{sector}/search")]
         public IActionResult Search(AddOrganisationSearchViewModel viewModel)
         {
+            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
+
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             return View("Search", viewModel);

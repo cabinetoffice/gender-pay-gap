@@ -24,4 +24,10 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public DateTime? EmailVerifySendDate { get; set; }
     }
 
+    public class PageNotFoundException : CustomErrorPageException
+    {
+        public override string ViewName => "../Errors/404";
+        public override int StatusCode => 404;
+    }
+
 }

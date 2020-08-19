@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using GovUkDesignSystem.Parsers;
@@ -23,6 +24,8 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("choose-sector")]
         public IActionResult ChooseSector(AddOrganisationChooseSectorViewModel viewModel)
         {
+            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
+
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             if (viewModel.Validate == true)
