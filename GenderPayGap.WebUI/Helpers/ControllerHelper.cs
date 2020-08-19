@@ -44,5 +44,13 @@ namespace GenderPayGap.WebUI.Helpers
             }
         }
 
+        public static void Throw404IfFeatureDisabled(FeatureFlag featureFlag)
+        {
+            if (!FeatureFlagHelper.IsFeatureEnabled(featureFlag))
+            {
+                throw new PageNotFoundException();
+            }
+        }
+
     }
 }
