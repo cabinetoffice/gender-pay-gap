@@ -1,4 +1,5 @@
 ﻿using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
@@ -65,6 +66,8 @@ namespace GenderPayGap.WebUI.Controllers.Login
                 viewModel.AddErrorFor(m => m.Password, "Incorrect email address or password. Please double-check and try again");
                 return View("Login", viewModel);
             }
+
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
 
             string userRole = user.IsAdministrator() ? LoginRoles.GpgAdmin : LoginRoles.GpgEmployer;
 
