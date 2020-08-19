@@ -26,7 +26,11 @@ namespace GenderPayGap.WebUI.Helpers
         public static void ThrowIfUserAccountRetiredOrEmailNotVerified(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository)
         {
             User gpgUser = GetGpgUserFromAspNetUser(aspDotNetUser, dataRepository);
+            ThrowIfUserAccountRetiredOrEmailNotVerified(gpgUser);
+        }
 
+        public static void ThrowIfUserAccountRetiredOrEmailNotVerified(User gpgUser)
+        {
             if (gpgUser.Status == UserStatuses.Retired ||
                 gpgUser.Status == UserStatuses.Unknown)
             {
