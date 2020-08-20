@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchViewModel
@@ -10,14 +10,14 @@
 @section BeforeMain {
     @Html.GovUkBackLink(new BackLinkViewModel
     {
-        Text = "TODO TODO TODO TODO TODO TODO",
+        Text = "Back",
         Href = Url.Action("ChooseSector", "AddOrganisationChooseSector",
                 new AddOrganisationChooseSectorViewModel
                 {
                     Sector = Model.Sector
                 }),
 
-        // Not all the "Back" links in this journey will use the default browser behaviour
+        // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
         OverrideWithJavascript = false
     })
