@@ -52,7 +52,7 @@
     <div class="govuk-grid-column-two-thirds">
 
         <form method="get"
-              action="@Url.Action("Search", "AddOrganisationSearch")">
+              action="@Url.Action("Search", "AddOrganisationSearch", new { Sector = Model.Sector.ToString().ToLower() })">
 
             <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
@@ -60,13 +60,23 @@
                         Find your organisation
                     </label>
                 </h1>
-                <div id="query-hint" class="govuk-hint">
-                    You can search for an organisation by:
-                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
-                        <li>registered name</li>
-                        <li>Companies House number</li>
-                    </ul>
-                </div>
+
+                @if (Model.Sector == AddOrganisationSector.Private)
+                {
+                    <div id="query-hint" class="govuk-hint">
+                        You can search for an organisation by:
+                        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
+                            <li>registered name</li>
+                            <li>Companies House number</li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div id="query-hint" class="govuk-hint">
+                        You can search for an organisation by their registered name
+                    </div>
+                }
 
                 <div class="gpg-search-box">
                     <input type="text"
@@ -149,7 +159,10 @@
 
                         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
                             <li>Try refining your search</li>
-                            <li>Try searching by your organisation's Companies House number</li>
+                            @if (Model.Sector == AddOrganisationSector.Private)
+                            {
+                                <li>Try searching by your organisation's Companies House number</li>
+                            }
                         </ul>
                     </div>
                 }
