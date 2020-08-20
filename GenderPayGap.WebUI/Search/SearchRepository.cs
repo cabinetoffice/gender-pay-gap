@@ -131,7 +131,8 @@ namespace GenderPayGap.WebUI.Search
                                 ReportedLate = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Any(r => r.IsLateSubmission),
                                 SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
                                 SicCodeSynonyms = sicCodeSynonyms,
-                                IncludeInViewingService = GetIncludeInViewingService(o)
+                                IncludeInViewingService = GetIncludeInViewingService(o),
+                                Sector = o.SectorType
                             };
                     })
                 .ToList();
