@@ -1,4 +1,4 @@
-@using GenderPayGap.WebUI.Models.AddOrganisation
+﻿@using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchViewModel
@@ -12,10 +12,10 @@
     {
         Text = "Back",
         Href = Url.Action("ChooseSector", "AddOrganisationChooseSector",
-                new AddOrganisationChooseSectorViewModel
-                {
-                    Sector = Model.Sector
-                }),
+            new AddOrganisationChooseSectorViewModel
+            {
+                Sector = Model.Sector
+            }),
 
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
@@ -23,12 +23,198 @@
     })
 }
 
+@{
+    object cantFindYourOrganisationSection =
+        new Func<object, object>
+        (@<text>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Can't find your organisation?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        If your organisation is not listed, you can tell us the details of the organisaton you want to add.
+                    </p>
+                    <p class="govuk-body">
+                        <a href="@Url.Action("Manual", "AddOrganisationManual")"
+                           class="govuk-link">
+                            Provide details of the organisation
+                        </a>
+                    </p>
+                </div>
+            </details>
+         </text>)(null);
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">
-            Find organisation
-        </h1>
+        <form method="get"
+              action="@Url.Action("Search", "AddOrganisationSearch")">
+
+            <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--xl" for="query">
+                        Find your organisation
+                    </label>
+                </h1>
+                <div id="query-hint" class="govuk-hint">
+                    You can search for an organisation by:
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
+                        <li>registered name</li>
+                        <li>Companies House number</li>
+                    </ul>
+                </div>
+
+                <div class="admin-search-box">
+                    <input type="text"
+                           name="query"
+                           id="query"
+                           class="govuk-input admin-search-input"
+                           value="@(Model.Query)"
+                           aria-describedby="query-hint">
+                    <input type="submit" value="Search" class="admin-search-button" />
+                </div>
+            </div>
+
+        </form>
+
+        @if (Model.SearchResults == null)
+        {
+            // If Model.SearchResults == null, then we are on the search "homepage"
+
+            <div class="govuk-inset-text govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                The registered name is sometimes different to the commonly-known brand name
+                (e.g. for <i>Currys PC World</i>, you would search for the registered name of the company, <i>DSG Retail Limited</i>)
+            </div>
+        }
+        else
+        {
+            // If Model.SearchResults != null, we are on the "search results" page
+            // Note, we might have 0 results, but that will be an empty list, not null
+
+            <h2 class="govuk-visually-hidden">
+                Search results
+            </h2>
+
+            if (Model.SearchResults.Count == 0)
+            {
+                <p class="govuk-body">
+                    Your search
+                    <span class="govuk-!-font-weight-bold">
+                        @(Model.Query)
+                    </span>
+                    did not match any organisations
+                </p>
+
+                <div class="govuk-inset-text">
+                    Suggestions:
+
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
+                        <li>Check the spelling of the organisation name</li>
+                        <li>
+                            Check you are searching for the
+                            <span class="govuk-!-font-weight-bold">registered name</span>
+                            of the organisation.
+                            <br />
+                            The registered name is sometimes different to the commonly-known brand name
+                            (e.g. to add Currys PC World, you would search for the registered name of the company, DSG Retail Limited)
+                        </li>
+                    </ul>
+                </div>
+
+                @(cantFindYourOrganisationSection)
+            }
+            else
+            {
+                <p class="govuk-body">
+                    Your search
+                    <span class="govuk-!-font-weight-bold">
+                        @(Model.Query)
+                    </span>
+                    matched
+                    <span class="govuk-!-font-weight-bold">
+                        @(Model.TooManyResults ? "more than" : "")
+                        @(Model.SearchResults.Count)
+                    </span>
+                    organisation@(Model.SearchResults.Count == 1 ? "" : "s")
+                </p>
+
+                @if (Model.TooManyResults)
+                {
+                    <div class="govuk-inset-text govuk-!-margin-top-0">
+                        Suggestions:
+
+                        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
+                            <li>Try refining your search</li>
+                            <li>Try searching by your organisation's Companies House number</li>
+                        </ul>
+                    </div>
+                }
+
+                <p class="govuk-body">
+                    Choose your organisation from the list below
+                </p>
+
+                @(cantFindYourOrganisationSection)
+
+                <ul class="govuk-list add-organisation-search-list">
+                    @foreach (AddOrganisationSearchResult organisation in Model.SearchResults)
+                    {
+                        <li>
+                            <div>
+                                <span class="govuk-!-font-weight-bold">
+                                    @(organisation.OrganisationName)
+                                </span>
+                                <br/>
+                                
+                                <span class="govuk-visually-hidden">Address:</span>
+                                @(organisation.OrganisationAddress)
+                                
+                                <span class="govuk-!-font-size-16">
+                                    @foreach (AddOrganisationSearchResultOrganisationIdentifier identifier in organisation.Identifiers)
+                                    {
+                                        <br/>
+                                        // ":" is a special character in C# Razor
+                                        // To show an actual ":", we need to write "@::"
+                                        @(identifier.IdentifierType)@:: @(identifier.Identifier)
+                                    }
+                                </span>
+                            </div>
+                            <div class="add-organisation-add-button">
+                                @{
+                                    object foundParams = organisation.EncryptedOrganisationId != null
+                                        ? (object)new {id = organisation.EncryptedOrganisationId}
+                                        : (object)new { companyNumber = organisation.CompanyNumber };
+                                }
+                                <a href="@Url.Action("Found", "AddOrganisationFound", foundParams)"
+                                   class="govuk-link govuk-!-padding-2">
+                                    Add
+                                    <span class="govuk-visually-hidden">
+                                        @(organisation.OrganisationName)
+                                    </span>
+                                </a>
+                            </div>
+                        </li>
+                    }
+                </ul>
+
+                @if (Model.SearchResults.Count > 10)
+                {
+                    // In the case where there's lots of search results...
+                    //   If you scroll down to the bottom of the page and haven't found your organisation
+                    //   there's nothing to help you succeed
+                    //   So, in this case, it could be helpful to show the "Can't find your organisation" button again
+                    //
+                    // In the case where there's only a few search results...
+                    //   The "Can't find your organisation" button is still visible / not far off the page,
+                    //   even when you've scrolled right to the bottom
+                    @(cantFindYourOrganisationSection)
+                }
+            }
+        }
 
     </div>
 </div>
