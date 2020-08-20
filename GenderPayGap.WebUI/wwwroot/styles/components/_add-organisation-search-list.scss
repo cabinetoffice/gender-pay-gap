@@ -1,0 +1,21 @@
+﻿
+.add-organisation-search-list {
+    li {
+        list-style-type: none;
+        border-bottom: 1px solid $govuk-border-colour;
+        padding: 10px 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .add-organisation-add-button {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        &:first-child {
+            border-top: 1px solid $govuk-border-colour;
+        }
+    }
+}
