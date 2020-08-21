@@ -14,15 +14,15 @@ namespace GenderPayGap.WebUI.Search
     public static class RankValueHelper
     {
         
-        public static List<RankedName> GetRankedNames(SearchCachedOrganisation organisation,
+        public static List<RankedName> GetRankedNames(List<SearchReadyValue> organisationNames,
             List<string> searchTerms,
             string query,
             bool queryContainsPunctuation)
         {
             var names = new List<RankedName>();
-            for (var nameIndex = 0; nameIndex < organisation.OrganisationNames.Count; nameIndex++)
+            for (var nameIndex = 0; nameIndex < organisationNames.Count; nameIndex++)
             {
-                SearchReadyValue name = organisation.OrganisationNames[nameIndex];
+                SearchReadyValue name = organisationNames[nameIndex];
                 names.Add(CalculateRankForName(name, searchTerms, query, queryContainsPunctuation, nameIndex));
             }
 

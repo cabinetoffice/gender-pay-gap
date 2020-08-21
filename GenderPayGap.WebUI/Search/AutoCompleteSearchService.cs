@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.Search
                 Names = new List<RankedName>()
             };
             
-            autoCompleteOrganisation.Names = RankValueHelper.GetRankedNames(organisation, searchTerms, query, queryContainsPunctuation);
+            autoCompleteOrganisation.Names = RankValueHelper.GetRankedNames(organisation.OrganisationNames, searchTerms, query, queryContainsPunctuation);
 
             autoCompleteOrganisation.TopName = autoCompleteOrganisation.Names
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)

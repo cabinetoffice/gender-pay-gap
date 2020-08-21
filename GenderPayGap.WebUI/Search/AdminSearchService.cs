@@ -110,7 +110,7 @@ namespace GenderPayGap.WebUI.Search
             };
 
             rankedAdminSearchOrganisation.Names =
-                RankValueHelper.GetRankedNames(organisation, searchTerms, query, queryContainsPunctuation);
+                RankValueHelper.GetRankedNames(organisation.OrganisationNames, searchTerms, query, queryContainsPunctuation);
             
             rankedAdminSearchOrganisation.TopName = rankedAdminSearchOrganisation.Names
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)

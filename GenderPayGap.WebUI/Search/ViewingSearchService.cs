@@ -262,7 +262,7 @@ namespace GenderPayGap.WebUI.Search
             var rankedViewingSearchOrganisation = new RankedViewingSearchOrganisation {Names = new List<RankedName>()};
 
             rankedViewingSearchOrganisation.Names =
-                RankValueHelper.GetRankedNames(organisation, searchTerms, query, queryContainsPunctuation);
+                RankValueHelper.GetRankedNames(organisation.OrganisationNames, searchTerms, query, queryContainsPunctuation);
 
             rankedViewingSearchOrganisation.TopName = rankedViewingSearchOrganisation.Names
                 .RankHelperOrderByListOfDoubles(name => name.Ranks)
