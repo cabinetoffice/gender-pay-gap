@@ -3,6 +3,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
+using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +15,14 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly AddOrganisationSearchService searchService;
 
-        public AddOrganisationSearchController(IDataRepository dataRepository)
+        public AddOrganisationSearchController(
+            IDataRepository dataRepository,
+            AddOrganisationSearchService searchService)
         {
             this.dataRepository = dataRepository;
+            this.searchService = searchService;
         }
 
 
@@ -30,26 +35,49 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (!string.IsNullOrWhiteSpace(viewModel.Query))
             {
-                if (viewModel.Query.Contains("softwire"))
+                if (viewModel.Sector == AddOrganisationSector.Public)
                 {
-                    viewModel.SearchResults = ThreeSoftwires();
-                }
-                else if (viewModel.Query == "limited")
-                {
-                    viewModel.SearchResults = LotsOfCompanies();
-                    viewModel.TooManyResults = true;
+                    viewModel.SearchResults = searchService.SearchPublic(viewModel.Query);
                 }
                 else
                 {
-                    // An empty list of results means "no results"
-                    // A NULL list of results means "you haven't searched yet"
-                    viewModel.SearchResults = new List<AddOrganisationSearchResult>();
+                    viewModel.SearchResults = new AddOrganisationSearchResults
+                    {
+                        SearchResults = GetSearchResults(viewModel.Query, viewModel.Sector)
+                    };
+
+                    if (viewModel.SearchResults.SearchResults.Count > 299)
+                    {
+                        viewModel.SearchResults.TooManyResults = true;
+                    }
                 }
 
                 return View("Search", viewModel);
             }
 
             return View("Search", viewModel);
+        }
+
+
+        private static List<AddOrganisationSearchResult> GetSearchResults(string query, AddOrganisationSector viewModelSector)
+        {
+            List<AddOrganisationSearchResult> searchResults;
+            if (query.Contains("softwire"))
+            {
+                searchResults = ThreeSoftwires();
+            }
+            else if (query == "limited")
+            {
+                searchResults = LotsOfCompanies();
+            }
+            else
+            {
+                // An empty list of results means "no results"
+                // A NULL list of results means "you haven't searched yet"
+                searchResults = new List<AddOrganisationSearchResult>();
+            }
+
+            return searchResults;
         }
 
         private static List<AddOrganisationSearchResult> ThreeSoftwires()
@@ -98,7 +126,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             };
         }
 
-        private List<AddOrganisationSearchResult> LotsOfCompanies()
+        private static List<AddOrganisationSearchResult> LotsOfCompanies()
         {
             var organisations = new List<AddOrganisationSearchResult>
             {

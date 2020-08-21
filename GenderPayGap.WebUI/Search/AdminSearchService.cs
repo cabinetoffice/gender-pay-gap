@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.Search
 
         #region Search Organisations
 
-        private List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query,
+        private static List<AdminSearchResultOrganisationViewModel> SearchOrganisations(string query,
             List<string> searchTerms,
             bool queryContainsPunctuation,
             bool orderByRelevance)
@@ -69,7 +69,7 @@ namespace GenderPayGap.WebUI.Search
             return results;
         }
 
-        private List<SearchCachedOrganisation> GetMatchingOrganisations(
+        private static List<SearchCachedOrganisation> GetMatchingOrganisations(
             List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
             string query,
@@ -142,7 +142,7 @@ namespace GenderPayGap.WebUI.Search
             return rankedAdminSearchOrganisation;
         }
         
-        private List<RankedAdminSearchOrganisation> OrderOrganisationsByRank(List<RankedAdminSearchOrganisation> organisationsWithRankings)
+        private static List<RankedAdminSearchOrganisation> OrderOrganisationsByRank(List<RankedAdminSearchOrganisation> organisationsWithRankings)
         {
             return organisationsWithRankings
                 .RankHelperOrderByListOfDoubles(org => org.TopName.Ranks)
@@ -168,7 +168,7 @@ namespace GenderPayGap.WebUI.Search
 
         #region Search Users
 
-        private List<AdminSearchResultUserViewModel> SearchUsers(string query,
+        private static List<AdminSearchResultUserViewModel> SearchUsers(string query,
             List<string> searchTerms,
             bool queryContainsPunctuation,
             bool orderByRelevance)
@@ -188,7 +188,7 @@ namespace GenderPayGap.WebUI.Search
             return results;
         }
 
-        private List<SearchCachedUser> GetMatchingUsers(List<SearchCachedUser> allUsers, List<string> searchTerms)
+        private static List<SearchCachedUser> GetMatchingUsers(List<SearchCachedUser> allUsers, List<string> searchTerms)
         {
             return allUsers
                 .Where(user => user.FullName.Matches(searchTerms) || user.EmailAddress.Matches(searchTerms))
@@ -269,7 +269,7 @@ namespace GenderPayGap.WebUI.Search
             return 0;   
         }
         
-        private List<RankedAdminSearchUser> OrderUsersByRank(List<RankedAdminSearchUser> usersWithRankings)
+        private static List<RankedAdminSearchUser> OrderUsersByRank(List<RankedAdminSearchUser> usersWithRankings)
         {
             return usersWithRankings
                 .RankHelperOrderByListOfDoubles(user => user.TopValue.Ranks)
@@ -277,12 +277,12 @@ namespace GenderPayGap.WebUI.Search
                 .ToList();
         }
 
-        private List<RankedAdminSearchUser> OrderUsersAlphabetically(List<RankedAdminSearchUser> usersWithRankings)
+        private static List<RankedAdminSearchUser> OrderUsersAlphabetically(List<RankedAdminSearchUser> usersWithRankings)
         {
             return usersWithRankings.OrderBy(u => u.AdminSearchResult.UserFullName).ToList();
         }
 
-        private List<AdminSearchResultUserViewModel> ConvertUsersToSearchResults(
+        private static List<AdminSearchResultUserViewModel> ConvertUsersToSearchResults(
             List<RankedAdminSearchUser> users
         )
         {

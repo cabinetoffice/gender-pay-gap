@@ -58,6 +58,10 @@
                 <h1 class="govuk-label-wrapper">
                     <label class="govuk-label govuk-label--xl" for="query">
                         Find your organisation
+                        <br/>
+                        <span class="govuk-!-font-size-36">
+                            (@(Model.Sector == AddOrganisationSector.Public ? "public sector" : "private sector"))
+                        </span>
                     </label>
                 </h1>
 
@@ -109,7 +113,7 @@
                 Search results
             </h2>
 
-            if (Model.SearchResults.Count == 0)
+            if (Model.SearchResults.SearchResults.Count == 0)
             {
                 <p class="govuk-body">
                     Your search
@@ -146,13 +150,13 @@
                     </span>
                     matched
                     <span class="govuk-!-font-weight-bold">
-                        @(Model.TooManyResults ? "more than" : "")
-                        @(Model.SearchResults.Count)
+                        @(Model.SearchResults.TooManyResults ? "more than" : "")
+                        @(Model.SearchResults.SearchResults.Count)
                     </span>
-                    organisation@(Model.SearchResults.Count == 1 ? "" : "s")
+                    organisation@(Model.SearchResults.SearchResults.Count == 1 ? "" : "s")
                 </p>
 
-                @if (Model.TooManyResults)
+                @if (Model.SearchResults.TooManyResults)
                 {
                     <div class="govuk-inset-text govuk-!-margin-top-0">
                         Suggestions:
@@ -174,7 +178,7 @@
                 @(cantFindYourOrganisationSection)
 
                 <ul class="govuk-list add-organisation-search-list">
-                    @foreach (AddOrganisationSearchResult organisation in Model.SearchResults)
+                    @foreach (AddOrganisationSearchResult organisation in Model.SearchResults.SearchResults)
                     {
                         <li>
                             <div>
@@ -214,7 +218,7 @@
                     }
                 </ul>
 
-                @if (Model.SearchResults.Count > 10)
+                @if (Model.SearchResults.SearchResults.Count > 10)
                 {
                     // In the case where there's lots of search results...
                     //   If you scroll down to the bottom of the page and haven't found your organisation

@@ -12,11 +12,14 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public string Query { get; set; }
 
         [BindNever]
-        public List<AddOrganisationSearchResult> SearchResults { get; set; }
-        
-        [BindNever]
-        public bool TooManyResults { get; set; }
+        public AddOrganisationSearchResults SearchResults { get; set; }
 
+    }
+
+    public class AddOrganisationSearchResults
+    {
+        public List<AddOrganisationSearchResult> SearchResults { get; set; }
+        public bool TooManyResults { get; set; }
     }
 
     public class AddOrganisationSearchResult
@@ -25,7 +28,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public string OrganisationAddress { get; set; }
         public string EncryptedOrganisationId { get; set; }
         public string CompanyNumber { get; set; }
-        public List<AddOrganisationSearchResultOrganisationIdentifier> Identifiers { get; set; }
+        public List<AddOrganisationSearchResultOrganisationIdentifier> Identifiers { get; set; } = new List<AddOrganisationSearchResultOrganisationIdentifier>();
     }
 
     public class AddOrganisationSearchResultOrganisationIdentifier
