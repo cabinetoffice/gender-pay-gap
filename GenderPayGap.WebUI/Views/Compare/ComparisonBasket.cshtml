@@ -10,9 +10,8 @@
     }
 }
 
-    <div id="comparison-basket" class="no-print show-empty js-stick-at-top-when-scrolling @(compareCount < 1 ? "visuallyhidden" : "")" data-basket-count="@(compareCount)">
+<div id="comparison-basket" class="no-print show-empty js-stick-at-top-when-scrolling @(compareCount < 1 ? "visuallyhidden aria-hidden=\"true\"" : "")" data-basket-count="@(compareCount)">
     <div class="comparison-basket-row grid-row">
-
         <div class="column-half" style="@(Model.CanViewCompare ? "padding-top: .5em;" : "")">
             @if (hasMaximumItemsInBasket)
             {
@@ -20,9 +19,12 @@
                     <span class="error-message" style="font-size: 16px">The maximum number of employers you can compare is @CompareViewService.MaxCompareBasketCount</span>
                 </div>
             }
-            <div role="status">
-                Your comparison list contains <strong>@(compareCount) employer@(compareCount != 1 ? "s" : "")</strong>
-            </div>
+            @if (compareCount > 0)
+            {
+                <div role="status">
+                    Your comparison list contains <strong>@(compareCount) employer@(compareCount != 1 ? "s" : "")</strong>
+                </div>
+            }
             @if (hasMaximumItemsInBasket)
             {
                 <div>
@@ -33,7 +35,7 @@
 
         <div class="column-half">
             <ul class="list list-inline list-right">
-                @if (Model.CanAddEmployers)
+                @if (compareCount > 0 && Model.CanAddEmployers)
                 {
                     <li>
                         <a href="@SearchViewService.GetLastSearchUrl()">Add another employer</a>
