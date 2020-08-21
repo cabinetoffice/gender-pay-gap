@@ -10,7 +10,11 @@
     }
 }
 
-<div id="comparison-basket" class="no-print show-empty js-stick-at-top-when-scrolling @(compareCount < 1 ? "visuallyhidden aria-hidden=\"true\"" : "")" data-basket-count="@(compareCount)">
+<div id="comparison-basket"
+     class="no-print show-empty js-stick-at-top-when-scrolling @(compareCount < 1 ? "visuallyhidden" : "")"
+     aria-hidden="@(compareCount < 1 ? "true" : null)"
+     data-basket-count="@(compareCount)">
+
     <div class="comparison-basket-row grid-row">
         <div class="column-half" style="@(Model.CanViewCompare ? "padding-top: .5em;" : "")">
             @if (hasMaximumItemsInBasket)
