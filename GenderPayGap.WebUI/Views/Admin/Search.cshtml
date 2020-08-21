@@ -31,7 +31,7 @@
     }))
 }
 
-<div class="govuk-grid-row admin-search-page">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <span class="govuk-caption-xl">Administration</span>
         <form method="GET" action="@(Url.Action("SearchGet", "AdminSearch"))" id="search-form">
@@ -55,17 +55,17 @@
                         <span class="govuk-visually-hidden">Error:</span> @(Model.Error)
                     </span>
                 }
-                <div class="admin-search-box">
+                <div class="gpg-search-box">
                     <input type="text"
                            name="query"
                            id="search-query"
-                           class="govuk-input @(Model.Error != null ? "govuk-input--error" : "") admin-search-input"
+                           class="govuk-input @(Model.Error != null ? "govuk-input--error" : "")"
                            value="@(Model.SearchQuery)"
                            aria-describedby="search-query-hint">
-                    <input type="submit" value="Search" class="admin-search-button"/>
+                    <input type="submit" value="Search" class="gpg-search-button"/>
                 </div>
 
-                <div class="admin-search-orderby">
+                <div>
                     <fieldset class="govuk-fieldset">
                         <div class="govuk-radios govuk-radios--small govuk-radios--inline">
                             <div class="govuk-radios__item" style="padding-left: 0;">
