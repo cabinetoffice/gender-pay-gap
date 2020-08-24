@@ -3,20 +3,25 @@ using GenderPayGap.Database;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
     public class ChangeOrganisationSicCodesViewModel : GovUkViewModel
     {
 
-        #region Not mapped, only used for displaying information in the views
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Database.Organisation Organisation { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<SicCode> SicCodesToAdd { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<SicCode> SicCodesToKeep { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<SicCode> SicCodesToRemove { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Dictionary<string, SicCode> SicCodesFromCoHo { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public ChangeOrganisationSicCodesConfirmationType? ConfirmationType { get; set; }
-        #endregion
 
         #region Used for hidden inputs - to keep track of the current state
         public List<string> SicCodeIdsFromCoHo { get; set; }

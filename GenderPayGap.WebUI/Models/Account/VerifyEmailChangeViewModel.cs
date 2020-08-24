@@ -1,17 +1,18 @@
 ﻿using GenderPayGap.Database;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
     public class VerifyEmailChangeViewModel : GovUkViewModel
     {
 
-        #region Only used to send data to the view
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public User User { get; set; }
 
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public string NewEmailAddress { get; set; }
-        #endregion
 
 
         public string Code { get; set; }

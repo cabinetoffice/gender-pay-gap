@@ -2,13 +2,14 @@
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
     public class ChangeOrganisationAddressViewModel : GovUkViewModel
     {
 
-        // Not mapped, only used for displaying information in the views
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Database.Organisation Organisation { get; set; }
 
         public ManuallyChangeOrganisationAddressViewModelActions Action { get; set; }
