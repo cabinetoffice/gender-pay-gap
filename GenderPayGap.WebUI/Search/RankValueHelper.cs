@@ -99,8 +99,14 @@ namespace GenderPayGap.WebUI.Search
             {
                 double prefixAmount = (double) query.Length / (double) word.Length;
 
+                // In the Add Organisation search, we use this method on names that come from the Companies House API
+                // In that case, the company name might not appear in SearchRepository.OrganisationNameWords (our corpus of words)
+                // We don't want this ranking to fail, so let's say it appears 1 time
+                // 1 is a fairly decent guess, because it's probably an unpopular word (if it's nowhere in our corpus of words)
+                int appearancesOfWordInCorpus = SearchRepository.OrganisationNameWords.ContainsKey(word) ? SearchRepository.OrganisationNameWords[word] : 1;
+
                 double popularityOfWord =
-                    1 - ((double) SearchRepository.OrganisationNameWords[word] / (double) SearchRepository.MaxOrganisationNameWords);
+                    1 - ((double) appearancesOfWordInCorpus / (double) SearchRepository.MaxOrganisationNameWords);
 
                 double startOfSearchness = ((double) 4) / (searchTermIndex + wordIndex + nameIndex + 4);
 
