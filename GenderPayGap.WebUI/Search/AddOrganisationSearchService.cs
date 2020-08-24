@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -63,9 +63,8 @@ namespace GenderPayGap.WebUI.Search
                     {
                         bool nameMatches = SearchHelper
                             .CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms, queryContainsPunctuation);
-                        bool employerRefMatches = organisation.EmployerReference == query;
                         bool companyNumberMatches = organisation.CompanyNumber == query;
-                        return nameMatches || employerRefMatches || companyNumberMatches;
+                        return nameMatches || companyNumberMatches;
                     })
                 .Select(organisation => new RankedAddOrganisationSearchOrganisation
                 {
