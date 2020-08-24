@@ -20,6 +20,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
         Task<PagedResult<EmployerRecord>> SearchEmployersAsync(string searchText, int page, int pageSize);
         Task<string> GetSicCodesAsync(string companyNumber);
         Task<CompaniesHouseCompany> GetCompanyAsync(string companyNumber);
+        List<CompaniesHouseSearchResultCompany> SearchCompanies(string query);
 
     }
 
@@ -135,6 +136,30 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
             {
                 throw new Exception(
                     $"The response from the companies house api returned an invalid json object.\n\nCompanyNumber = {companyNumber}\nResponse = {json}",
+                    ex.InnerException ?? ex);
+            }
+        }
+
+        public List<CompaniesHouseSearchResultCompany> SearchCompanies(string query)
+        {
+            // capture any serialization errors
+            string json = null;
+            try
+            {
+                HttpResponseMessage response = _httpClient.GetAsync($"/search/companies?q={query}&items_per_page=100").Result;
+                // Migration to dotnet core work around return status codes until over haul of this API client
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpException(response.StatusCode);
+                }
+
+                json = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<CompaniesHouseSearchResult>(json).Results;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    $"The response from the companies house api returned an invalid json object.\n\nQuery = {query}\nResponse = {json}",
                     ex.InnerException ?? ex);
             }
         }
