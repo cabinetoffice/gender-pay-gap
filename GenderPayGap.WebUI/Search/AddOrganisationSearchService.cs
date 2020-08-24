@@ -57,6 +57,7 @@ namespace GenderPayGap.WebUI.Search
         {
             return allOrganisations
                 .Where(organisation => organisation.Sector == sector)
+                .Where(organisation => organisation.Status == OrganisationStatuses.Active)
                 .Where(
                     organisation =>
                     {
