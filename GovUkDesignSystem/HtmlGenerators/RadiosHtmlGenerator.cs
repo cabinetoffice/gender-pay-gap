@@ -18,7 +18,8 @@ namespace GovUkDesignSystem.HtmlGenerators
             FieldsetViewModel fieldsetOptions = null,
             HintViewModel hintOptions = null,
             Dictionary<TProperty, LabelViewModel> itemLabelOptions = null,
-            Dictionary<TProperty, HintViewModel> itemHintOptions = null)
+            Dictionary<TProperty, HintViewModel> itemHintOptions = null,
+            string classes = null)
             where TModel : GovUkViewModel
         {
             PropertyInfo property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
@@ -73,7 +74,8 @@ namespace GovUkDesignSystem.HtmlGenerators
                 IdPrefix = $"GovUk_{propertyName}",
                 Items = radios,
                 Fieldset = fieldsetOptions,
-                Hint = hintOptions
+                Hint = hintOptions,
+                Classes = classes
             };
             if (model.HasErrorFor(property))
             {

@@ -250,7 +250,8 @@ namespace GovUkDesignSystem
             FieldsetViewModel fieldsetOptions = null,
             HintViewModel hintOptions = null,
             Dictionary<TProperty, LabelViewModel> itemLabelOptions = null,
-            Dictionary<TProperty, HintViewModel> itemHintOptions = null)
+            Dictionary<TProperty, HintViewModel> itemHintOptions = null,
+            string classes = null)
             where TModel : GovUkViewModel
         {
             return RadiosHtmlGenerator.GenerateHtml(
@@ -259,7 +260,8 @@ namespace GovUkDesignSystem
                 fieldsetOptions,
                 hintOptions,
                 itemLabelOptions,
-                itemHintOptions);
+                itemHintOptions,
+                classes);
         }
 
         public static IHtmlContent GovUkRadioItem(
