@@ -73,11 +73,29 @@ namespace GenderPayGap.WebUI.Search
             List<RankedAddOrganisationSearchOrganisation> matchingOrganisations = MergeMatchingOrganisations(matchingOrganisationsFromDatabase, matchingOrganisationsFromCompaniesHouse);
 
             List<RankedAddOrganisationSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
+            ReduceRankingOfCompaniesHouseOrganisationsThatDoNotMatchEverySearchTermInQuery(organisationsWithRankings, searchTerms, query, queryContainsPunctuation);
             List<RankedAddOrganisationSearchOrganisation> rankedOrganisations = OrderOrganisationsByRank(organisationsWithRankings);
 
             AddOrganisationSearchResults results = ConvertOrganisationsToSearchResults(rankedOrganisations);
 
             return results;
+        }
+
+        private void ReduceRankingOfCompaniesHouseOrganisationsThatDoNotMatchEverySearchTermInQuery(
+            List<RankedAddOrganisationSearchOrganisation> organisationsWithRankings,
+            List<string> searchTerms,
+            string query,
+            bool queryContainsPunctuation)
+        {
+            foreach (RankedAddOrganisationSearchOrganisation organisation in organisationsWithRankings)
+            {
+                if (!SearchHelper.AnyNameMatchesSearchTerms(organisation.OrganisationNames, searchTerms, queryContainsPunctuation))
+                {
+                    // No names for this organisation have matched ALL the search terms
+                    // Reduce the rankings by half
+                    organisation.TopName.Ranks = organisation.TopName.Ranks.Select(rank => rank / 2).ToList();
+                }
+            }
         }
 
         private static List<RankedAddOrganisationSearchOrganisation> GetMatchingOrganisationsFromDatabase(List<SearchCachedOrganisation> allOrganisations,

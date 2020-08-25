@@ -17,7 +17,15 @@ namespace GenderPayGap.WebUI.Search
             List<string> searchTerms,
             bool queryContainsPunctuation)
         {
-            return organisation.OrganisationNames.Any(on => on.Matches(searchTerms, queryContainsPunctuation));
+            return AnyNameMatchesSearchTerms(organisation.OrganisationNames, searchTerms, queryContainsPunctuation);
+        }
+
+        public static bool AnyNameMatchesSearchTerms(
+            List<SearchReadyValue> names,
+            List<string> searchTerms,
+            bool queryContainsPunctuation)
+        {
+            return names.Any(name => name.Matches(searchTerms, queryContainsPunctuation));
         }
 
         public static bool OrganisationSicCodesMatchSearchTerms(
