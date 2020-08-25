@@ -1,0 +1,42 @@
+﻿@using GenderPayGap.Core
+@{
+    ViewBag.Title = "Accessibility Statement - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div id="contact-us-content" class="grid-row">
+    <div class="column-two-thirds">
+
+        <h1 class="heading-large ">
+            Contact Us
+        </h1>
+        <h2 class="heading-medium">Email</h2>
+        <p>
+            If you are an employer you can contact the gender pay gap team about the service or registration issues you're having at <a href="mailto:@(Global.GpgReportingEmail)" target="_blank">@Global.GpgReportingEmail</a>
+        </p>
+
+        <h2 class="heading-medium">Online</h2>
+        <p>If you would like to leave general feedback on the service please complete this <a href="@Url.Action("SendFeedbackGet", "Feedback")">online feedback form</a>.</p>
+        <p>Read our <a href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview" target="_blank" rel="noopener noreferrer">guidance to gender pay gap reporting<span class="visually-hidden">(opens in a new window)</span></a>.</p>
+
+        <h2 class="heading-medium">Post</h2>
+        <p>
+            Write to the Government Equalities Office:
+        </p>
+        <div class="panel">
+            <address style="font-style: normal">
+                Gender pay gap team<br/>
+                Government Equalities Office<br/>
+                6th Floor, Sanctuary Buildings<br/>
+                Great Smith Street<br/>
+                London<br/>
+                SW1P 3BT
+            </address>
+        </div>
+        <p></p>
+        <p class="script-only" style="text-align:center;">
+            <button class="button" onclick="windowClose()">Close Window</button>
+        </p>
+
+    </div>
+</div>
