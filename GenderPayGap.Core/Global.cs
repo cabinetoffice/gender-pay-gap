@@ -100,6 +100,7 @@ namespace GenderPayGap.Core
         public static string GpgReportingEmail => "gpg.reporting@cabinetoffice.gov.uk";
         public static string DataControllerEmail => "publiccorrespondence@cabinetoffice.gov.uk";
         public static string DataProtectionOfficerEmail => "dpo@cabinetoffice.gov.uk";
+        public static string InformationCommissionerEmail => "casework@ico.org.uk";
         public static int StaticCacheSeconds => 86400;
         public static DateTime PrivacyChangedDate => DateTime.Parse("2019-09-23");
         public static DateTime PrivateAccountingDate => DateTime.Parse("2017-04-05");

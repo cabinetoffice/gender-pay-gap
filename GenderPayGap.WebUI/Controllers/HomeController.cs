@@ -55,7 +55,7 @@ namespace GenderPayGap.WebUI.Controllers
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("~/privacy-policy")]
-        public async Task<IActionResult> PrivacyPolicy(string command)
+        public async Task<IActionResult> PrivacyPolicyPost()
         {
             if (!User.Identity.IsAuthenticated)
             {
