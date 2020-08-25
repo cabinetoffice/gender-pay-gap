@@ -1,0 +1,118 @@
+﻿@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationFoundViewModel
+@{
+    UserOrganisation userOrg = Model.ExistingUserOrganisation;
+    string encryptedOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
+
+    ViewBag.Title = userOrg.PINConfirmedDate.HasValue
+        ? "You are already registered - Gender pay gap service"
+        : "You are already registering - Gender pay gap service";
+
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        string resultId = Model.Id != null
+            ? $"search-result-id-{Model.Id}"
+            : $"search-result-coho-{Model.CompanyNumber}";
+    }
+    @(Html.GovUkBackLink(new BackLinkViewModel
+    {
+        Text = "Back",
+        Href = Url.Action("Search", "AddOrganisationSearch",
+            new
+            {
+                Sector = Model.Sector.ToString().ToLower(),
+                query = Model.Query
+            }) + $"#{resultId}",
+        
+        // Note: some of the "Back" links in this journey can't use the default browser behaviour
+        //  so we should control all of them explicitly
+        OverrideWithJavascript = false
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @if (userOrg.PINConfirmedDate.HasValue)
+        {
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title govuk-!-font-size-36">
+                    You are already registered to report on behalf of @(userOrg.Organisation.OrganisationName)
+                </h1>
+            </div>
+
+            <p class="govuk-body">
+                <a href="@(Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrgId}))"
+                   class="govuk-link">
+                    Go to @(userOrg.Organisation.OrganisationName)
+                </a>
+            </p>
+
+            <p class="govuk-body">
+                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                   class="govuk-link">
+                    Back to your organisations
+                </a>
+            </p>
+
+        }
+        else if (userOrg.PINSentDate.HasValue)
+        {
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title govuk-!-font-size-36">
+                    You are already registering to report on behalf of @(userOrg.Organisation.OrganisationName)
+                </h1>
+                <div class="govuk-panel__body govuk-!-font-size-27">
+                    We've sent you a PIN by post
+                </div>
+                <div class="govuk-panel__body govuk-!-font-size-27 govuk-!-margin-top-3">
+                    Follow the instructions in the letter to complete your registration
+                </div>
+            </div>
+
+            <p class="govuk-body">
+                If you have received the PIN letter, please
+                <a href="@(Url.Action("ActivateOrganisation", "Organisation", new {id = encryptedOrgId}))"
+                   class="govuk-link">
+                    continue your registration using your PIN.
+                </a>
+            </p>
+
+            <p class="govuk-body">
+                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                   class="govuk-link">
+                    Back to your organisations
+                </a>
+            </p>
+
+        }
+        else
+        {
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title govuk-!-font-size-36">
+                    You are already registering to report on behalf of @(userOrg.Organisation.OrganisationName)
+                </h1>
+                <div class="govuk-panel__body govuk-!-font-size-27">
+                    We're reviewing your registration request
+                </div>
+                <div class="govuk-panel__body govuk-!-font-size-27 govuk-!-margin-top-3">
+                    We'll be in touch shortly
+                </div>
+            </div>
+
+            <p class="govuk-body">
+                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                   class="govuk-link">
+                    Back to your organisations
+                </a>
+            </p>
+
+        }
+
+    </div>
+</div>

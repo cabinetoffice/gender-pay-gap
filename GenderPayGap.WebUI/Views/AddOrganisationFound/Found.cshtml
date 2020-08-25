@@ -1,28 +1,142 @@
-﻿@using GovUkDesignSystem
+﻿@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationFoundViewModel
 @{
     ViewBag.Title = "Confirm your organisation's details - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {
-    @Html.GovUkBackLink(new BackLinkViewModel
+    @{
+        string resultId = Model.Id != null
+            ? $"search-result-id-{Model.Id}"
+            : $"search-result-coho-{Model.CompanyNumber}";
+    }
+    @(Html.GovUkBackLink(new BackLinkViewModel
     {
-        Text = "TODO TODO TODO TODO TODO TODO TODO TODO",
-        Href = Url.Action("ManageOrganisations", "Organisation"),
+        Text = "Back",
+        Href = Url.Action("Search", "AddOrganisationSearch",
+            new
+            {
+                Sector = Model.Sector.ToString().ToLower(),
+                query = Model.Query
+            }) + $"#{resultId}",
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
         OverrideWithJavascript = false
-    })
+    }))
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
+
+        @(Html.GovUkErrorSummary())
+
         <h1 class="govuk-heading-xl">
             Confirm your organisation's details
         </h1>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Organisation name</th>
+                    <td class="govuk-table__cell">@(Model.Name)</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Registered address</th>
+                    <td class="govuk-table__cell">
+                        @for (int i = 0; i < Model.AddressLines.Count; i++)
+                        {
+                            string addressLine = Model.AddressLines[i];
+                            bool lastLine = i == Model.AddressLines.Count - 1;
+
+                            @($"{addressLine.Trim()}{(lastLine ? "" : ",")}")
+                            @if (!lastLine)
+                            {
+                                <br />
+                            }
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Sector</th>
+                    <td class="govuk-table__cell">
+                        @(Model.Sector == AddOrganisationSector.Public ? "Public sector" : "Private sector")
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">SIC codes</th>
+                    <td class="govuk-table__cell">
+                        @foreach (SicCode sicCode in Model.SicCodes)
+                        {
+                            <div>
+                                <span class="govuk-!-font-weight-bold">
+                                    @(sicCode.SicCodeId)
+                                </span>
+                                @(sicCode.Description)
+                                <br />
+                                <span class="govuk-body-s">
+                                    part of: @(sicCode.SicSection.Description)
+                                </span>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         
+        <form method="post"
+              action="@Url.Action("FoundPost", "AddOrganisationFound")">
+
+            @if (Model.Id != null)
+            {
+                @(Html.HiddenFor(m => m.Id))
+            }
+            else if (Model.CompanyNumber != null)
+            {
+                @(Html.HiddenFor(m => m.CompanyNumber))
+            }
+
+            @(Html.HiddenFor(m => m.Query))
+
+            @if (Model.IsUkAddress.HasValue)
+            {
+                @(Html.HiddenFor(m => m.IsUkAddress))
+            }
+            else
+            {
+                @(Html.GovUkRadiosFor(
+                    m => m.IsUkAddress,
+                    fieldsetOptions: new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "Is this a UK address?",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-!-margin-top-4"
+                    },
+                    classes: "govuk-radios--inline"
+                    ))
+            }
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Confirm",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                   class="govuk-link">
+                    Cancel and return to Manage Organisation page
+                </a>
+            </p>
+
+        </form>
+
     </div>
 </div>
