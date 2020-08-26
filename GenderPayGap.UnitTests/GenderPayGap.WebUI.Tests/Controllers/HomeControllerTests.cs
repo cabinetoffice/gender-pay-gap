@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
-using GenderPayGap.WebUI.Models.Home;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -34,13 +33,12 @@ namespace GenderPayGap.Tests
                 EmailVerifiedDate = VirtualDateTime.Now
             };
 
-            var mockModel = new PrivacyStatementModel {Accept = "Yes"};
             string testDate = VirtualDateTime.Now.ToString();
 
             var controller = UiTestHelper.GetController<HomeController>(-1, mockRouteData, mockUser);
 
             // Act
-            var result = await controller.PrivacyPolicy("Continue") as RedirectToActionResult;
+            var result = await controller.PrivacyPolicyPost() as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
