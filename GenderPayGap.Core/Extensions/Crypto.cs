@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace GenderPayGap.Extensions
@@ -64,6 +65,16 @@ namespace GenderPayGap.Extensions
             Parallel.For(0, chars.Length, i => { chars[i] = charset[randomData[i] % charset.Length]; });
 
             return new string(chars);
+        }
+
+        public static string GeneratePinInThePost()
+        {
+            return GeneratePasscode(Global.PINChars.ToCharArray(), 7);
+        }
+
+        public static string GenerateEmployerReference()
+        {
+            return GeneratePasscode(Global.EmployerCodeChars.ToCharArray(), 8);
         }
 
     }
