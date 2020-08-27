@@ -1,0 +1,57 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminImpersonateUserViewModel
+
+@{
+    ViewBag.Title = "Administration: Impersonation";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            &lt;
+            @Html.ActionLink("Back to Administration home", "Home")
+        </li>
+    </ol>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            @(Html.GovUkErrorSummary())
+
+            <span class="govuk-caption-xl">Administration</span>
+            <h1 class="govuk-heading-xl">Impersonate user</h1>
+
+            <legend class="govuk-visually-hidden">Email</legend>
+            <p class="govuk-body">Enter the email address of the user you wish to impersonate.</p>
+
+            @(Html.GovUkTextInputFor(
+                m => m.EmailAddress,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "Email address",
+                    Classes = "govuk-label--m"
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-6"
+                }
+                ))
+
+            <fieldset class="govuk-fieldset">
+                <div class="govuk-form-group">
+                    @(Html.GovUkButton(new ButtonViewModel
+                    {
+                        Text = "Impersonate"
+                    }))
+                </div>
+            </fieldset>
+        }
+    </div>
+
+</div>
