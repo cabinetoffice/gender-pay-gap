@@ -25,6 +25,22 @@ namespace GenderPayGap.WebUI.Services
             this.govNotifyApi = govNotifyApi;
         }
 
+        public bool GenerateAndSendPinInThePostAndUpdateUserOrganisationWithLetterId(UserOrganisation userOrganisation, Controller controller)
+        {
+            string pin = Crypto.GeneratePinInThePost();
+
+            bool sendSuccess = SendPinInThePost(controller, userOrganisation, pin, out string letterId);
+
+            if (sendSuccess)
+            {
+                userOrganisation.PIN = pin;
+                userOrganisation.PINSentDate = VirtualDateTime.Now;
+                userOrganisation.PITPNotifyLetterId = letterId;
+            }
+
+            return sendSuccess;
+        }
+
         public bool SendPinInThePost(Controller controller, UserOrganisation userOrganisation, string pin, out string letterId)
         {
             string userFullNameAndJobTitle = $"{userOrganisation.User.Fullname} ({userOrganisation.User.JobTitle})";
