@@ -134,66 +134,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
         public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
 
         #endregion
-        
-        #region Action Impersonate
-
-        [HttpGet("impersonate")]
-        public async Task<IActionResult> Impersonate(string emailAddress)
-        {
-            if (!string.IsNullOrWhiteSpace(emailAddress))
-            {
-                return await ImpersonatePost(emailAddress);
-            }
-
-            return View("Impersonate");
-        }
-
-        [HttpPost("impersonate")]
-        [PreventDuplicatePost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ImpersonatePost(string emailAddress)
-        {
-            //Ignore case of email address
-            emailAddress = emailAddress?.ToLower();
-
-            if (string.IsNullOrWhiteSpace(emailAddress) || !emailAddress.IsEmailAddress())
-            {
-                ModelState.AddModelError("", "You must enter a valid email address");
-                return View("Impersonate");
-            }
-
-            //Ensure we get a valid user from the database
-            User currentUser = DataRepository.FindUser(User);
-            if (currentUser == null || !currentUser.IsAdministrator())
-            {
-                throw new IdentityNotMappedException();
-            }
-
-            // find the latest active user by email
-            User impersonatedUser = await UserRepository.FindByEmailAsync(emailAddress, UserStatuses.Active);
-            if (impersonatedUser == null)
-            {
-                ModelState.AddModelError("", "This user does not exist");
-                return View("Impersonate");
-            }
-
-            if (impersonatedUser.IsAdministrator())
-            {
-                ModelState.AddModelError("", "Impersonating other administrators is not permitted");
-                return View("Impersonate");
-            }
-
-            LoginHelper.LoginWithImpersonation(
-                HttpContext,
-                impersonatedUser.UserId,
-                LoginRoles.GpgEmployer,
-                currentUser.UserId);
-
-            //Refresh page to ensure identity is passed in cookie
-            return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
-        }
-
-        #endregion
 
     }
 }
