@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -68,14 +68,15 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 .Where(uo => uo.UserId == user.UserId)
                 .FirstOrDefault();
 
-            if (existingUserOrganisation == null)
+            if (existingUserOrganisation != null)
             {
-                PopulateViewModelBasedOnOrganisation(viewModel, organisation);
-                return View("Found", viewModel);
+                AddOrganisationAlreadyRegisteringViewModel alreadyRegisteringViewModel =
+                    CreateAlreadyRegisteringViewModel(viewModel, existingUserOrganisation);
+                return View("AlreadyRegistering", alreadyRegisteringViewModel);
             }
 
-            PopulateViewModelBasedOnExistingUserOrganisation(viewModel, existingUserOrganisation);
-            return View("AlreadyRegistering", viewModel);
+            PopulateViewModelBasedOnOrganisation(viewModel, organisation);
+            return View("Found", viewModel);
         }
 
         private IActionResult FoundGetWithCompanyNumber(AddOrganisationFoundViewModel viewModel)
@@ -253,17 +254,25 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 .ToList();
         }
 
-        private void PopulateViewModelBasedOnExistingUserOrganisation(
-            AddOrganisationFoundViewModel viewModel,
+        private AddOrganisationAlreadyRegisteringViewModel CreateAlreadyRegisteringViewModel(
+            AddOrganisationFoundViewModel foundViewModel,
             UserOrganisation existingUserOrganisation)
         {
+            var alreadyRegisteringViewModel = new AddOrganisationAlreadyRegisteringViewModel
+            {
+                Id = foundViewModel.Id,
+                Query = foundViewModel.Query
+            };
+
             // Sector
-            viewModel.Sector = existingUserOrganisation.Organisation.SectorType == SectorTypes.Public
+            alreadyRegisteringViewModel.Sector = existingUserOrganisation.Organisation.SectorType == SectorTypes.Public
                 ? AddOrganisationSector.Public
                 : AddOrganisationSector.Private;
 
             // UserOrganisation
-            viewModel.ExistingUserOrganisation = existingUserOrganisation;
+            alreadyRegisteringViewModel.ExistingUserOrganisation = existingUserOrganisation;
+
+            return alreadyRegisteringViewModel;
         }
         #endregion
     }

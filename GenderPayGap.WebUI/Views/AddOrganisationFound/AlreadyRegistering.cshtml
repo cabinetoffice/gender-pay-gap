@@ -1,7 +1,7 @@
 ﻿@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationFoundViewModel
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationAlreadyRegisteringViewModel
 @{
     UserOrganisation userOrg = Model.ExistingUserOrganisation;
     string encryptedOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
@@ -14,12 +14,7 @@
 }
 
 @section BeforeMain {
-    @{
-        string resultId = Model.Id != null
-            ? $"search-result-id-{Model.Id}"
-            : $"search-result-coho-{Model.CompanyNumber}";
-    }
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = Url.Action("Search", "AddOrganisationSearch",
@@ -27,12 +22,12 @@
             {
                 Sector = Model.Sector.ToString().ToLower(),
                 query = Model.Query
-            }) + $"#{resultId}",
+            }) + $"#search-result-id-{Model.Id}",
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
         OverrideWithJavascript = false
-    }))
+    })
 }
 
 <div class="govuk-grid-row">
