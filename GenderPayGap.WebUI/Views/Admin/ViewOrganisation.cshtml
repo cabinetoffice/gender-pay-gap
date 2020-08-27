@@ -359,7 +359,7 @@ else
                     <td class="govuk-table__cell">
                         @if (userStatus == "REGISTERED")
                         {
-                            <a href="@(Url.Action("ImpersonatePost", "Admin", new {emailAddress = user.EmailAddress}))"
+                            <a href="@(Url.Action("ImpersonatePost", "AdminImpersonateUser", new {emailAddress = user.EmailAddress}))"
                                class="govuk-link">
                                 Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
                             </a>
