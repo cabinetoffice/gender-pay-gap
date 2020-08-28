@@ -145,7 +145,7 @@ namespace GenderPayGap.WebUI.Controllers
                     await DataRepository.SaveChangesAsync();
 
                     // Try and send the PIN in post
-                    if (pinInThePostService.SendPinInThePost(this, userOrg, pin, out string letterId))
+                    if (pinInThePostService.SendPinInThePost(Url, userOrg, pin, out string letterId))
                     {
                         userOrg.PITPNotifyLetterId = letterId;
                         await DataRepository.SaveChangesAsync();
