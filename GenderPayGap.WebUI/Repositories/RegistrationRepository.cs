@@ -6,6 +6,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Repositories
 {
@@ -14,13 +15,19 @@ namespace GenderPayGap.WebUI.Repositories
 
         private readonly IDataRepository dataRepository;
         private readonly AuditLogger auditLogger;
+        private readonly PinInThePostService pinInThePostService;
+        private readonly EmailSendingService emailSendingService;
 
         public RegistrationRepository(
             IDataRepository dataRepository,
-            AuditLogger auditLogger)
+            AuditLogger auditLogger,
+            PinInThePostService pinInThePostService,
+            EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
+            this.pinInThePostService = pinInThePostService;
+            this.emailSendingService = emailSendingService;
         }
 
         public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire)
@@ -89,6 +96,82 @@ namespace GenderPayGap.WebUI.Repositories
                 userOrgToUnregister.User);
         }
 
+
+        public UserOrganisation CreateRegistration(Organisation organisation, User user, IUrlHelper urlHelper)
+        {
+            var userOrganisation = new UserOrganisation
+            {
+                User = user,
+                Organisation = organisation,
+                Address = organisation.GetLatestAddress() // I don't know why we need an Address
+            };
+
+            DecideRegistrationMethod(userOrganisation);
+
+            if (userOrganisation.Method == RegistrationMethods.PinInPost)
+            {
+                bool pitpSuccess = pinInThePostService.GenerateAndSendPinInThePostAndUpdateUserOrganisationWithLetterId(userOrganisation, urlHelper);
+
+                if (!pitpSuccess)
+                {
+                    // Sending a Pin In The Post failed
+                    // Switch to Manual registration
+                    userOrganisation.Method = RegistrationMethods.Manual;
+                }
+            }
+
+            // Note: this is an IF, not an ELSE-IF, because we might change registration methods if PITP fails
+            if (userOrganisation.Method == RegistrationMethods.Manual)
+            {
+                if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.SendRegistrationReviewEmails))
+                {
+                    SendReviewRegistrationEmailToGeo(userOrganisation, urlHelper);
+                }
+            }
+
+            dataRepository.Insert(userOrganisation);
+            dataRepository.SaveChangesAsync().Wait();
+
+            return userOrganisation;
+        }
+
+        private static void DecideRegistrationMethod(UserOrganisation userOrganisation)
+        {
+            if (userOrganisation.Organisation.SectorType == SectorTypes.Public)
+            {
+                userOrganisation.Method = RegistrationMethods.Manual;
+            }
+            else if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration))
+            {
+                userOrganisation.Method = RegistrationMethods.Manual;
+            }
+            else if (userOrganisation.Organisation.GetLatestAddress()?.IsUkAddress != true)
+            {
+                userOrganisation.Method = RegistrationMethods.Manual;
+            }
+            else
+            {
+                userOrganisation.Method = RegistrationMethods.PinInPost;
+            }
+        }
+
+        private void SendReviewRegistrationEmailToGeo(UserOrganisation userOrganisation, IUrlHelper urlHelper)
+        {
+            User user = userOrganisation.User;
+            Organisation organisation = userOrganisation.Organisation;
+
+            string contactName = $"{user.Fullname} ({user.JobTitle})";
+            string reportingAddress = organisation.GetLatestAddress()?.GetAddressString();
+
+            string reviewCode = userOrganisation.GetReviewCode();
+            string reviewUrl = urlHelper.Action("ReviewRequest", "Register", new { code = reviewCode }, "https");
+
+            emailSendingService.SendGeoOrganisationRegistrationRequestEmail(
+                contactName,
+                organisation.OrganisationName,
+                reportingAddress,
+                reviewUrl);
+        }
 
     }
 }

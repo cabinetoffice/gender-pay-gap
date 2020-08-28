@@ -28,7 +28,7 @@ namespace Repositories.RegistrationRepository
 
             // service under test
             testRegistrationRepo =
-                new GenderPayGap.WebUI.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks);
+                new GenderPayGap.WebUI.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks, null, null);
         }
 
         private IDataRepository mockDataRepo;
