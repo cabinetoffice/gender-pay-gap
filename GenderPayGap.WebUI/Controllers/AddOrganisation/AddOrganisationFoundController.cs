@@ -1,14 +1,17 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
+using GenderPayGap.WebUI.Repositories;
+using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +25,19 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private readonly IDataRepository dataRepository;
         private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly OrganisationService organisationService;
+        private readonly RegistrationRepository registrationRepository;
 
         public AddOrganisationFoundController(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi)
+            ICompaniesHouseAPI companiesHouseApi,
+            OrganisationService organisationService,
+            RegistrationRepository registrationRepository)
         {
             this.dataRepository = dataRepository;
             this.companiesHouseApi = companiesHouseApi;
+            this.organisationService = organisationService;
+            this.registrationRepository = registrationRepository;
         }
 
 
@@ -127,38 +136,94 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
 
-            // If the value hasn't been bound, Parse And Validate it
+            // IsUkAddress can be set by a hidden input (in which case it will be bound automatically)
+            // Or it can be set by a GovUk_Radio button (in which case we need to use ParseAndValidate to get the value)
+            // So, if the value hasn't already been bound, ParseAndValidate it
             if (!viewModel.IsUkAddress.HasValue)
             {
                 viewModel.ParseAndValidateParameters(Request, m => m.IsUkAddress);
             }
 
-            // If it still doesn't has a value on, then show an error
+            // If IsUkAddress still doesn't has a value on, then show an error
             if (!viewModel.IsUkAddress.HasValue)
             {
                 PopulateViewModelBasedOnOrganisation(viewModel, organisation);
                 return View("Found", viewModel);
             }
 
-            throw new System.NotImplementedException();
+            organisationService.UpdateIsUkAddressIfItIsNotAlreadySet(organisation.OrganisationId, viewModel.GetIsUkAddressAsBoolean());
+
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            UserOrganisation existingUserOrganisation = organisation.UserOrganisations
+                .Where(uo => uo.UserId == user.UserId)
+                .FirstOrDefault();
+
+            if (existingUserOrganisation != null)
+            {
+                AddOrganisationAlreadyRegisteringViewModel alreadyRegisteringViewModel =
+                    CreateAlreadyRegisteringViewModel(viewModel, existingUserOrganisation);
+                return View("AlreadyRegistering", alreadyRegisteringViewModel);
+            }
+
+            UserOrganisation userOrganisation = registrationRepository.CreateRegistration(organisation, user, Url);
+
+            return RedirectToConfirmationPage(userOrganisation);
         }
 
         private IActionResult FoundPostWithCompanyNumber(AddOrganisationFoundViewModel viewModel)
         {
-            // If the value hasn't been bound, Parse And Validate it
+            // IsUkAddress can be set by a hidden input (in which case it will be bound automatically)
+            // Or it can be set by a GovUk_Radio button (in which case we need to use ParseAndValidate to get the value)
+            // So, if the value hasn't already been bound, ParseAndValidate it
             if (!viewModel.IsUkAddress.HasValue)
             {
                 viewModel.ParseAndValidateParameters(Request, m => m.IsUkAddress);
             }
 
-            // If it still doesn't has a value on, then show an error
+            // If IsUkAddress still doesn't has a value on, then show an error
             if (!viewModel.IsUkAddress.HasValue)
             {
                 PopulateViewModelBasedOnCompanyNumber(viewModel);
                 return View("Found", viewModel);
             }
 
-            throw new System.NotImplementedException();
+            Organisation existingOrganisation = dataRepository.GetAll<Organisation>()
+                .Where(o => o.CompanyNumber == viewModel.CompanyNumber)
+                .FirstOrDefault();
+
+            // We expect an ID for organisations that are in our database
+            // We expect a Company Number for organisations that are not in our database (but are in the Companies House API)
+            // If we've been given a Company Number, but the organisation IS in our database,
+            //   then redirect to this same page, but using the correct ID
+            if (existingOrganisation != null)
+            {
+                return RedirectToAction(
+                    "FoundGet",
+                    "AddOrganisationFound",
+                    new
+                    {
+                        id = existingOrganisation.GetEncryptedId(),
+                        query = viewModel.Query
+                    });
+            }
+
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            Organisation organisation = organisationService.ImportOrganisationFromCompaniesHouse(viewModel.CompanyNumber, user);
+
+            organisationService.UpdateIsUkAddressIfItIsNotAlreadySet(organisation.OrganisationId, viewModel.GetIsUkAddressAsBoolean());
+
+            UserOrganisation userOrganisation = registrationRepository.CreateRegistration(organisation, user, Url);
+
+            return RedirectToConfirmationPage(userOrganisation);
+        }
+
+        private IActionResult RedirectToConfirmationPage(UserOrganisation userOrganisation)
+        {
+            string confirmationId = $"{userOrganisation.UserId}:{userOrganisation.OrganisationId}";
+            string encryptedConfirmationId = Encryption.EncryptQuerystring(confirmationId);
+            return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { id = encryptedConfirmationId });
         }
         #endregion POST
 

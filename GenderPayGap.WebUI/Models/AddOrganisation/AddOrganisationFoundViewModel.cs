@@ -1,8 +1,7 @@
+﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
-using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -35,6 +34,21 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select whether or not this is a UK address")]
         public AddOrganisationFoundViewModelIsUkAddress? IsUkAddress { get; set; }
+
+        public bool? GetIsUkAddressAsBoolean()
+        {
+            switch (IsUkAddress)
+            {
+                case AddOrganisationFoundViewModelIsUkAddress.Yes:
+                    return true;
+                case AddOrganisationFoundViewModelIsUkAddress.No:
+                    return false;
+                case null:
+                    return null;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
     }
 
