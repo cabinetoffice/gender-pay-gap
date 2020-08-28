@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs
 
             RecurringJob.AddOrUpdate<AnonymiseThreeYearOldFeedbackJob>(
                 ScheduledJobIds.AnonymiseThreeYearOldFeedbackJobId,
-                j => j.AnonymiseFeedback(),
+                j => j.AnonymiseFeedbackAction(),
                 "20 5 * * *" /* 05:20 once per day */);
         }
 

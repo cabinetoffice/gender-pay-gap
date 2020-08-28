@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
@@ -17,25 +18,39 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             this.dataRepository = dataRepository;
         }
 
-        public void AnonymiseFeedback()
+        public void AnonymiseFeedbackAction()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId, nameof(AnonymiseFeedback), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(AnonymiseFeedbackAction), startTime);
 
             try
             {
-                // TODO: Add clever stuff here
+                DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
 
-                JobHelpers.LogFunctionEnd(runId, nameof(AnonymiseFeedback), startTime);
+                List<Feedback> feedback = dataRepository.GetAll<Feedback>()
+                    .Where(f => DateTime.Compare(f.CreatedDate, threeYearsAgo) <= 0)
+                    .ToList();
+
+                foreach (Feedback feedbackItem in feedback)
+                {
+                    AnonymiseFeedback(feedbackItem);
+                }
+
+                JobHelpers.LogFunctionEnd(runId, nameof(AnonymiseFeedbackAction), startTime);
             }
             catch (Exception ex)
             {
-                JobHelpers.LogFunctionError(runId, nameof(AnonymiseFeedback), startTime, ex);
+                JobHelpers.LogFunctionError(runId, nameof(AnonymiseFeedbackAction), startTime, ex);
 
                 //Rethrow the error
                 throw;
             }
+        }
+
+        public void AnonymiseFeedback(Feedback feedback)
+        {
+            // TODO: Anonymise individual feedback item here (check what to anonymise to)
         }
 
     }
