@@ -82,22 +82,20 @@ namespace GenderPayGap.WebUI.Services
 
         public static List<string> GetAddressInFourLineFormat(Organisation organisation)
         {
-            List<string> address = GetAddressComponentsWithoutRepeatsOrUnnecessaryComponents(organisation);
+            List<string> address = GetAddressComponentsWithoutRepeatsOrUnnecessaryComponents(organisation.GetLatestAddress());
 
             ReduceAddressToAtMostFourLines(address);
 
             return address;
         }
 
-        private static List<string> GetAddressComponentsWithoutRepeatsOrUnnecessaryComponents(Organisation organisation)
+        public static List<string> GetAddressComponentsWithoutRepeatsOrUnnecessaryComponents(OrganisationAddress organisationAddress)
         {
             var address = new List<string>();
 
-            OrganisationAddress latestAddress = organisation.GetLatestAddress();
-
-            if (!string.IsNullOrWhiteSpace(latestAddress.PoBox))
+            if (!string.IsNullOrWhiteSpace(organisationAddress.PoBox))
             {
-                string poBox = latestAddress.PoBox;
+                string poBox = organisationAddress.PoBox;
                 if (!poBox.Contains("PO Box", StringComparison.OrdinalIgnoreCase))
                 {
                     poBox = $"PO Box {poBox}";
@@ -106,38 +104,38 @@ namespace GenderPayGap.WebUI.Services
                 address.Add("PO Box " + poBox);
             }
 
-            if (!string.IsNullOrWhiteSpace(latestAddress.Address1))
+            if (!string.IsNullOrWhiteSpace(organisationAddress.Address1))
             {
-                address.Add(latestAddress.Address1);
+                address.Add(organisationAddress.Address1);
             }
 
-            if (!string.IsNullOrWhiteSpace(latestAddress.Address2))
+            if (!string.IsNullOrWhiteSpace(organisationAddress.Address2))
             {
-                address.Add(latestAddress.Address2);
+                address.Add(organisationAddress.Address2);
             }
 
-            if (!string.IsNullOrWhiteSpace(latestAddress.Address3))
+            if (!string.IsNullOrWhiteSpace(organisationAddress.Address3))
             {
-                address.Add(latestAddress.Address3);
+                address.Add(organisationAddress.Address3);
             }
 
-            if (!string.IsNullOrWhiteSpace(latestAddress.TownCity))
+            if (!string.IsNullOrWhiteSpace(organisationAddress.TownCity))
             {
-                address.Add(latestAddress.TownCity);
+                address.Add(organisationAddress.TownCity);
             }
 
-            if (!string.IsNullOrWhiteSpace(latestAddress.County))
+            if (!string.IsNullOrWhiteSpace(organisationAddress.County))
             {
-                address.Add(latestAddress.County);
+                address.Add(organisationAddress.County);
             }
 
             // Gov.UK Notify can only send post to the UK, so there's no need
             // to have 'UK' or 'United Kingdom' as part of the address
-            if (!string.IsNullOrWhiteSpace(latestAddress.Country)
-                && latestAddress.Country.ToUpper() != "UNITED KINGDOM"
-                && latestAddress.Country.ToUpper() != "UK")
+            if (!string.IsNullOrWhiteSpace(organisationAddress.Country)
+                && organisationAddress.Country.ToUpper() != "UNITED KINGDOM"
+                && organisationAddress.Country.ToUpper() != "UK")
             {
-                address.Add(latestAddress.Country);
+                address.Add(organisationAddress.Country);
             }
 
             return address;
