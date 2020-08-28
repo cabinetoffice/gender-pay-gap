@@ -25,11 +25,11 @@ namespace GenderPayGap.WebUI.Services
             this.govNotifyApi = govNotifyApi;
         }
 
-        public bool GenerateAndSendPinInThePostAndUpdateUserOrganisationWithLetterId(UserOrganisation userOrganisation, Controller controller)
+        public bool GenerateAndSendPinInThePostAndUpdateUserOrganisationWithLetterId(UserOrganisation userOrganisation, IUrlHelper urlHelper)
         {
             string pin = Crypto.GeneratePinInThePost();
 
-            bool sendSuccess = SendPinInThePost(controller, userOrganisation, pin, out string letterId);
+            bool sendSuccess = SendPinInThePost(urlHelper, userOrganisation, pin, out string letterId);
 
             if (sendSuccess)
             {
@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Services
             return sendSuccess;
         }
 
-        public bool SendPinInThePost(Controller controller, UserOrganisation userOrganisation, string pin, out string letterId)
+        public bool SendPinInThePost(IUrlHelper urlHelper, UserOrganisation userOrganisation, string pin, out string letterId)
         {
             string userFullNameAndJobTitle = $"{userOrganisation.User.Fullname} ({userOrganisation.User.JobTitle})";
 
@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Services
 
             string postCode = userOrganisation.Organisation.GetLatestAddress().PostCode;
 
-            string returnUrl = controller.Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
+            string returnUrl = urlHelper.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);
 
 
