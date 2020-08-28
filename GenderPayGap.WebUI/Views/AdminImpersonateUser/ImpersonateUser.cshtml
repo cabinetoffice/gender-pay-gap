@@ -7,14 +7,27 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-<div class="govuk-breadcrumbs">
-    <ol class="govuk-breadcrumbs__list">
-        <li class="govuk-breadcrumbs__list-item">
-            &lt;
-            @Html.ActionLink("Back to Administration home", "Home")
-        </li>
-    </ol>
-</div>
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+{
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = "Impersonate User"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
