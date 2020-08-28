@@ -14,10 +14,7 @@ namespace GenderPayGap.Database
     public partial class GpgDatabaseContext : IDbContext
     {
         
-        // Switches between using Postgres and SQL Server for local DB during development
-        public static string ConnectionString = Global.UsePostgresDb
-            ? @"Server=127.0.0.1;Port=5432;Database=GpgDatabase;User Id=gpg_user;Password=local_gpg_database;" 
-            : @"Server=(localdb)\ProjectsV13;Database=GpgDatabase;Trusted_Connection=True;";
+        public static string ConnectionString = @"Server=127.0.0.1;Port=5432;Database=GpgDatabase;User Id=gpg_user;Password=local_gpg_database;";
         
         public GpgDatabaseContext(string connectionString = null, bool useMigrations = false)
         {
@@ -131,14 +128,7 @@ namespace GenderPayGap.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                if (Global.UsePostgresDb)
-                {
-                    optionsBuilder.UseNpgsql(ConnectionString, options => options.EnableRetryOnFailure());
-                }
-                else
-                {
-                    optionsBuilder.UseSqlServer(ConnectionString, options => options.EnableRetryOnFailure());
-                }
+                optionsBuilder.UseNpgsql(ConnectionString, options => options.EnableRetryOnFailure());
             }
 
             //Use lazy loading for related virtual items

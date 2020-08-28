@@ -89,10 +89,6 @@ namespace GenderPayGap.Core
         public static bool BackgroundJobsEnabled => Config.GetAppSetting("WEBJOBS_STOPPED").ToInt32(0) == 0;
         #endregion
 
-        #region Settings that change per hosting environment (Azure/PaaS)
-        public static bool UsePostgresDb => (Global.VcapServices != null && Global.VcapServices.Postgres != null);
-        #endregion
-
 
 
         #region Settings that change rarely / we only expect to change alongside a code change, but might be used in lots of places (could be constants)

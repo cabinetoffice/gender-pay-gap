@@ -14,15 +14,8 @@ namespace GenderPayGap.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<GpgDatabaseContext>();
 
-            if (Global.UsePostgresDb)
-            {
-                optionsBuilder.UseNpgsql(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
-            }
-            else
-            {
-                optionsBuilder.UseSqlServer(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());   
-            }
-            
+            optionsBuilder.UseNpgsql(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
+
             return new GpgDatabaseContext(optionsBuilder.Options);
         }
 
