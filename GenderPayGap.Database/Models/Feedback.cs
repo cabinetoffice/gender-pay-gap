@@ -31,6 +31,9 @@ namespace GenderPayGap.Database.Models
         [JsonProperty]
         public DateTime CreatedDate { get; set; }
 
+        [JsonProperty]
+        public bool HasBeenAnonymised { get; set; }
+
         #region HowDidYouHearAboutGpg
 
         [JsonProperty]
