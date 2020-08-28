@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Services;
@@ -23,16 +22,13 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private readonly IDataRepository dataRepository;
         private readonly ICompaniesHouseAPI companiesHouseApi;
-        private readonly IObfuscator obfuscator;
 
         public AddOrganisationFoundController(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi,
-            IObfuscator obfuscator)
+            ICompaniesHouseAPI companiesHouseApi)
         {
             this.dataRepository = dataRepository;
             this.companiesHouseApi = companiesHouseApi;
-            this.obfuscator = obfuscator;
         }
 
 
@@ -59,8 +55,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private IActionResult FoundGetWithId(AddOrganisationFoundViewModel viewModel)
         {
-            long organisationId = obfuscator.DeObfuscate(viewModel.Id);
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
@@ -130,8 +125,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private IActionResult FoundPostWithId(AddOrganisationFoundViewModel viewModel)
         {
-            long organisationId = obfuscator.DeObfuscate(viewModel.Id);
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
 
             // If the value hasn't been bound, Parse And Validate it
             if (!viewModel.IsUkAddress.HasValue)
