@@ -30,6 +30,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 List<Feedback> feedback = dataRepository.GetAll<Feedback>()
                     .Where(f => DateTime.Compare(f.CreatedDate, threeYearsAgo) <= 0)
+                    .Where(f => !f.HasBeenAnonymised)
                     .ToList();
 
                 foreach (Feedback feedbackItem in feedback)
@@ -73,6 +74,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             feedback.Details = string.IsNullOrWhiteSpace(feedback.Details)
                 ? "not supplied"
                 : "supplied";
+
+            feedback.HasBeenAnonymised = true;
 
             dataRepository.SaveChangesAsync().Wait();
         }
