@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Models.Admin;
@@ -12,6 +13,13 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
     {
 
         public string Id { get; set; }
+        [BindNever]
+        public int DeObfuscatedId
+        {
+            get => Obfuscator.DeObfuscate(Id);
+            set => Id = Obfuscator.Obfuscate(value);
+        }
+
         public string CompanyNumber { get; set; }
         public string Query { get; set; }
 
