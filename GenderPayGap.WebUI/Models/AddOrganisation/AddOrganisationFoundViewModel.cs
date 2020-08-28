@@ -13,10 +13,10 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
 
         public string Id { get; set; }
         [BindNever]
-        public int DeObfuscatedId
+        public long DeObfuscatedId
         {
             get => Obfuscator.DeObfuscate(Id);
-            set => Id = Obfuscator.Obfuscate(value);
+            set => Id = Obfuscator.Obfuscate((int) value);
         }
 
         public string CompanyNumber { get; set; }
