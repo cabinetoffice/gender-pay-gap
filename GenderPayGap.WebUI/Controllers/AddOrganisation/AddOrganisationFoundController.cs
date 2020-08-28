@@ -223,7 +223,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             string confirmationId = $"{userOrganisation.UserId}:{userOrganisation.OrganisationId}";
             string encryptedConfirmationId = Encryption.EncryptQuerystring(confirmationId);
-            return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { id = encryptedConfirmationId });
+            return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { confirmationId = encryptedConfirmationId });
         }
         #endregion POST
 

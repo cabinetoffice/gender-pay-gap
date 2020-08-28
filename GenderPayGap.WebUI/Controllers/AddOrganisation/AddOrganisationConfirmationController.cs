@@ -1,5 +1,10 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using System;
+using System.Linq;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +26,40 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
 
         [HttpGet("confirmation")]
-        public IActionResult Confirmation(string id)
+        public IActionResult Confirmation(string confirmationId)
         {
-            string userIdAndOrganisationId = Encryption.DecryptQuerystring(id);
-            long userId = long.Parse(userIdAndOrganisationId.Split(":")[0]);
-            long organisationId = long.Parse(userIdAndOrganisationId.Split(":")[1]);
+            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
 
-            return Json(new {userId, organisationId, from = "AddOrganisationConfirmationController"});
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+
+            UserOrganisation userOrganisation = LoadUserOrganisationWithConfirmationId(confirmationId);
+
+            return View("Confirmation", userOrganisation);
+        }
+
+        private UserOrganisation LoadUserOrganisationWithConfirmationId(string confirmationId)
+        {
+            try
+            {
+                string userIdAndOrganisationId = Encryption.DecryptQuerystring(confirmationId);
+                long userId = long.Parse(userIdAndOrganisationId.Split(":")[0]);
+                long organisationId = long.Parse(userIdAndOrganisationId.Split(":")[1]);
+
+                UserOrganisation userOrganisation = dataRepository.GetAll<UserOrganisation>()
+                    .Where(uo => uo.UserId == userId && uo.OrganisationId == organisationId)
+                    .FirstOrDefault();
+
+                if (userOrganisation == null)
+                {
+                    throw new PageNotFoundException();
+                }
+
+                return userOrganisation;
+            }
+            catch (Exception e)
+            {
+                throw new PageNotFoundException();
+            }
         }
 
     }
