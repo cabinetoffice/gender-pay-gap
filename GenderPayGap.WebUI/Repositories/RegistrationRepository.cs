@@ -9,14 +9,18 @@ using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.Repositories
 {
-
     public class RegistrationRepository
     {
 
-        public RegistrationRepository(IDataRepository dataRepository, AuditLogger auditLogger)
+        private readonly IDataRepository dataRepository;
+        private readonly AuditLogger auditLogger;
+
+        public RegistrationRepository(
+            IDataRepository dataRepository,
+            AuditLogger auditLogger)
         {
-            DataRepository = dataRepository ?? throw new ArgumentNullException(nameof(dataRepository));
-            AuditLogger = auditLogger ?? throw new ArgumentNullException(nameof(auditLogger));
+            this.dataRepository = dataRepository;
+            this.auditLogger = auditLogger;
         }
 
         public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire)
@@ -33,13 +37,13 @@ namespace GenderPayGap.WebUI.Repositories
                 userOrgToUnregister.Organisation.UserOrganisations.Remove(userOrgToUnregister);
 
                 // Remove user organisation
-                DataRepository.Delete(userOrgToUnregister);
+                dataRepository.Delete(userOrgToUnregister);
             }
 
             foreach (Organisation organisation in organisationsToAuditLog)
             {
                 // log unregistered via closed account
-                AuditLogger.AuditChangeToOrganisation(
+                auditLogger.AuditChangeToOrganisation(
                     AuditedAction.RegistrationLog,
                     organisation,
                     new { Status = "Unregistered closed account" },
@@ -47,7 +51,7 @@ namespace GenderPayGap.WebUI.Repositories
             }
 
             // save changes to database
-            await DataRepository.SaveChangesAsync();
+            await dataRepository.SaveChangesAsync();
         }
 
         public async Task RemoveRegistrationAsync(UserOrganisation userOrgToUnregister, User actionByUser)
@@ -73,46 +77,18 @@ namespace GenderPayGap.WebUI.Repositories
             string status = (userOrgToUnregister.UserId == actionByUser.UserId) ? "Unregistered self" : "Unregistered";
 
             // Remove user organisation
-            DataRepository.Delete(userOrgToUnregister);
+            dataRepository.Delete(userOrgToUnregister);
 
             // Save changes to database
-            await DataRepository.SaveChangesAsync();
+            await dataRepository.SaveChangesAsync();
 
-
-            AuditLogger.AuditChangeToOrganisation(
+            auditLogger.AuditChangeToOrganisation(
                 AuditedAction.RegistrationLog,
                 organisationToLog,
                 new { Status = status },
                 userOrgToUnregister.User);
         }
 
-        #region Dependencies
-
-        public IDataRepository DataRepository { get; }
-
-        public AuditLogger AuditLogger { get; set; }
-
-        #endregion
-
-        #region IDataTransaction
-
-        public async Task BeginTransactionAsync(Func<Task> delegateAction)
-        {
-            await DataRepository.BeginTransactionAsync(delegateAction);
-        }
-
-        public void CommitTransaction()
-        {
-            DataRepository.CommitTransaction();
-        }
-
-        public void RollbackTransaction()
-        {
-            DataRepository.RollbackTransaction();
-        }
-
-        #endregion
 
     }
-
 }
