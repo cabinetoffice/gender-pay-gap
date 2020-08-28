@@ -1,0 +1,165 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Services
+@model UserOrganisation
+@{
+    UserOrganisation userOrg = Model;
+    string encryptedOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
+
+    if (userOrg.PINConfirmedDate.HasValue)
+    {
+        ViewBag.Title = "You are already registered - Gender pay gap service";
+    }
+    else if (userOrg.PINSentDate.HasValue)
+    {
+        ViewBag.Title = "We're sending you a PIN by post - Gender pay gap service";
+    }
+    else
+    {
+        ViewBag.Title = "We've got your details, we'll review them and email you to confirm - Gender pay gap service";
+    }
+
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @if (userOrg.PINConfirmedDate.HasValue)
+        {
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title govuk-!-font-size-36">
+                    You are already registered to report on behalf of @(userOrg.Organisation.OrganisationName)
+                </h1>
+            </div>
+
+            <h2 class="govuk-heading-m govuk-!-padding-top-2">
+                More options
+            </h2>
+            <ul class="govuk-list">
+                <li>
+                    <a href="@(Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrgId}))"
+                       class="govuk-link">
+                        Go to @(userOrg.Organisation.OrganisationName)
+                    </a>
+                </li>
+                <li>
+                    <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                       class="govuk-link">
+                        Manage your organisations
+                    </a>
+                </li>
+            </ul>
+
+        }
+        else if (userOrg.PINSentDate.HasValue)
+        {
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title govuk-!-font-size-36">
+                    We're sending you a PIN by post
+                </h1>
+                <div class="govuk-panel__body govuk-!-font-size-27 govuk-!-margin-top-3">
+                    Follow the instructions in the letter to complete your registration
+                </div>
+            </div>
+
+            <h2 class="govuk-heading-m govuk-!-padding-top-2">
+                We're sending a PIN by post to the following name &amp; address:
+            </h2>
+            <p class="govuk-body">
+                @(Model.User.Firstname) @(Model.User.Lastname)<br />
+                @{
+                    List<string> address = PinInThePostService.GetAddressComponentsWithoutRepeatsOrUnnecessaryComponents(Model.Organisation.GetLatestAddress());
+                }
+                @foreach (string addressLine in address)
+                {
+                    @(addressLine)<br />
+                }
+            </p>
+
+            <h2 class="govuk-heading-m">
+                What happens next
+            </h2>
+            <p class="govuk-body">
+                Your PIN should arrive within 7 days.
+            </p>
+
+            <p class="govuk-body">
+                When you get it, sign in to the
+                <a href="@Url.Action("ActivateService", "Register")">Gender pay gap reporting service</a>.
+                Use the PIN to activate the service.
+            </p>
+
+            <h2 class="govuk-heading-m">
+                More options
+            </h2>
+            <ul class="govuk-list">
+                <li>
+                    <a href="@Url.Action("ChooseSector", "AddOrganisationChooseSector")"
+                       class="govuk-link">
+                        Add another organisation to your account
+                    </a>
+                </li>
+                <li>
+                    <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                       class="govuk-link">
+                        Manage your organisations
+                    </a>
+                </li>
+            </ul>
+
+        }
+        else
+        {
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title govuk-!-font-size-36">
+                    We've got your details.
+                </h1>
+                <div class="govuk-panel__body govuk-!-font-size-27">
+                    We'll review them and email you to confirm.
+                </div>
+            </div>
+
+            <h2 class="govuk-heading-m govuk-!-padding-top-2">
+                What happens next
+            </h2>
+            <p class="govuk-body">
+                The Government Equalities Office will review your details and email you within 5 working days to confirm your organisation.
+            </p>
+            <p class="govuk-body">
+                If we need more information to complete this process, we will email you.
+            </p>
+
+            <h2 class="govuk-heading-m">
+                If you haven't heard back from us after 5 days
+            </h2>
+            <p class="govuk-body">
+                Please check your junk email folder. If you are still unable to locate an email from us, you can contact is at
+                <a href="mailto:@(Global.GpgReportingEmail)"
+                   class="govuk-link">
+                    @(Global.GpgReportingEmail)
+                </a>
+            </p>
+
+            <h2 class="govuk-heading-m">
+                More options
+            </h2>
+            <ul class="govuk-list">
+                <li>
+                    <a href="@Url.Action("ChooseSector", "AddOrganisationChooseSector")"
+                       class="govuk-link">
+                        Add another organisation to your account
+                    </a>
+                </li>
+                <li>
+                    <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                       class="govuk-link">
+                        Manage your organisations
+                    </a>
+                </li>
+            </ul>
+
+        }
+
+    </div>
+</div>
