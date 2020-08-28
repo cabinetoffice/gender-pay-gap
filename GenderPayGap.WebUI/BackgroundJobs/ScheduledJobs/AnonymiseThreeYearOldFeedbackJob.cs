@@ -50,7 +50,31 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void AnonymiseFeedback(Feedback feedback)
         {
-            // TODO: Anonymise individual feedback item here (check what to anonymise to)
+            feedback.OtherSourceText = string.IsNullOrWhiteSpace(feedback.OtherSourceText)
+                ? "not supplied"
+                : "supplied";
+
+            feedback.OtherReasonText = string.IsNullOrWhiteSpace(feedback.OtherReasonText)
+                ? "not supplied"
+                : "supplied";
+
+            feedback.OtherPersonText = string.IsNullOrWhiteSpace(feedback.OtherPersonText)
+                ? "not supplied"
+                : "supplied";
+
+            feedback.EmailAddress = string.IsNullOrWhiteSpace(feedback.EmailAddress)
+                ? "not supplied"
+                : "supplied";
+
+            feedback.PhoneNumber = string.IsNullOrWhiteSpace(feedback.PhoneNumber)
+                ? "not supplied"
+                : "supplied";
+
+            feedback.Details = string.IsNullOrWhiteSpace(feedback.Details)
+                ? "not supplied"
+                : "supplied";
+
+            dataRepository.SaveChangesAsync().Wait();
         }
 
     }
