@@ -63,6 +63,12 @@ namespace GenderPayGap.WebUI.BackgroundJobs
                 ScheduledJobIds.AnonymiseThreeYearOldFeedbackJobId,
                 j => j.AnonymiseFeedbackAction(),
                 "20 5 * * *" /* 05:20 once per day */);
+
+
+            RecurringJob.AddOrUpdate<SendIntentionToRetireAccountEmailsJob>(
+                ScheduledJobIds.SendIntentionToRetireAccountEmailsJobId,
+                j => j.SendIntentionToRetireAccountEmails(),
+                "" /* TODO Agree this with Jacob & Tor */);
         }
 
         public void AddEmailToQueue(NotifyEmail notifyEmail)
@@ -83,6 +89,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs
         public const string PurgeOrganisationsJobId = "PURGE_ORGANISATIONS_JOB";
         public const string SetPresumedScopesJobId = "SET_PRESUMED_SCOPES_JOB";
         public const string AnonymiseThreeYearOldFeedbackJobId = "ANONYMISE_THREE_YEAR_OLD_FEEDBACK_JOB";
+        public const string SendIntentionToRetireAccountEmailsJobId = "SEND_INTENTION_TO_RETIRE_ACCOUNT_EMAILS_JOB";
 
     }
 }
