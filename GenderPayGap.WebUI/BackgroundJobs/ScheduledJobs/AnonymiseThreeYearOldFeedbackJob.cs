@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
@@ -26,17 +25,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             try
             {
-                DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
-
-                List<Feedback> feedback = dataRepository.GetAll<Feedback>()
-                    .Where(f => DateTime.Compare(f.CreatedDate, threeYearsAgo) <= 0)
-                    .Where(f => !f.HasBeenAnonymised)
-                    .ToList();
-
-                foreach (Feedback feedbackItem in feedback)
-                {
-                    AnonymiseFeedback(feedbackItem);
-                }
+                GetAndAnonymiseFeedback();
 
                 JobHelpers.LogFunctionEnd(runId, nameof(AnonymiseFeedbackAction), startTime);
             }
@@ -49,35 +38,40 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             }
         }
 
-        public void AnonymiseFeedback(Feedback feedback)
+        public void GetAndAnonymiseFeedback()
         {
-            feedback.OtherSourceText = string.IsNullOrWhiteSpace(feedback.OtherSourceText)
-                ? "not supplied"
-                : "supplied";
+            DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
 
-            feedback.OtherReasonText = string.IsNullOrWhiteSpace(feedback.OtherReasonText)
-                ? "not supplied"
-                : "supplied";
+            List<Feedback> feedbackItemsToAnonymise = dataRepository.GetAll<Feedback>()
+                .Where(f => f.CreatedDate < threeYearsAgo)
+                .Where(f => !f.HasBeenAnonymised)
+                .ToList();
 
-            feedback.OtherPersonText = string.IsNullOrWhiteSpace(feedback.OtherPersonText)
-                ? "not supplied"
-                : "supplied";
-
-            feedback.EmailAddress = string.IsNullOrWhiteSpace(feedback.EmailAddress)
-                ? "not supplied"
-                : "supplied";
-
-            feedback.PhoneNumber = string.IsNullOrWhiteSpace(feedback.PhoneNumber)
-                ? "not supplied"
-                : "supplied";
-
-            feedback.Details = string.IsNullOrWhiteSpace(feedback.Details)
-                ? "not supplied"
-                : "supplied";
-
-            feedback.HasBeenAnonymised = true;
+            foreach (Feedback feedbackItem in feedbackItemsToAnonymise)
+            {
+                AnonymiseFeedbackItem(feedbackItem);
+            }
 
             dataRepository.SaveChangesAsync().Wait();
+        }
+
+        public void AnonymiseFeedbackItem(Feedback feedback)
+        {
+            feedback.OtherSourceText = Anonymise(feedback.OtherSourceText);
+            feedback.OtherReasonText = Anonymise(feedback.OtherReasonText);
+            feedback.OtherPersonText = Anonymise(feedback.OtherPersonText);
+            feedback.EmailAddress = Anonymise(feedback.EmailAddress);
+            feedback.PhoneNumber = Anonymise(feedback.PhoneNumber);
+            feedback.Details = Anonymise(feedback.Details);
+
+            feedback.HasBeenAnonymised = true;
+        }
+
+        private static string Anonymise(string original)
+        {
+            return string.IsNullOrWhiteSpace(original)
+                ? "not supplied"
+                : "supplied";
         }
 
     }
