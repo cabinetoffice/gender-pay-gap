@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -58,10 +59,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             {
                 // TODO: Update loginUrl
                 string daysRemaining = user.LoginDate == threeYearsAgoMinusThirtyDays ? "30" : "7";
-                emailSendingService.SendAccountRetirementNotificationEmail(user.ContactEmailAddress, daysRemaining, "example url");
+                emailSendingService.SendAccountRetirementNotificationEmail(user.EmailAddress, daysRemaining, "example url");
             }
 
-            dataRepository.SaveChangesAsync().Wait();
         }
 
         public void RetireUsers()
@@ -74,7 +74,40 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (User user in usersToRetire)
             {
-                // TODO: Retire user
+                user.Firstname = $"User{user.UserId}";
+                user.Lastname = $"User{user.UserId}";
+                user.JobTitle = "Anonymised";
+                user.EmailAddress = "Anonymised";
+                user.ContactFirstName = "Anonymised";
+                user.ContactLastName = "Anonymised";
+                user.ContactJobTitle = "Anonymised";
+                user.ContactOrganisation = "Anonymised";
+                user.ContactEmailAddress = "Anonymised";
+                user.ContactPhoneNumber = "Anonymised";
+                user.Salt = "Anonymised";
+                user.PasswordHash = "Anonymised";
+                user.Status = UserStatuses.Retired;
+
+                List<AuditedAction> actionsToAnonymise = new List<AuditedAction>(new []
+                    {
+                        AuditedAction.UserChangeEmailAddress, 
+                        AuditedAction.UserChangeName, 
+                        AuditedAction.UserChangeJobTitle, 
+                        AuditedAction.UserChangePhoneNumber, 
+                        AuditedAction.PurgeRegistration, 
+                        AuditedAction.PurgeUser, 
+                        AuditedAction.RegistrationLog
+                    });
+
+                List<AuditLog> userAuditLogs = dataRepository.GetAll<AuditLog>()
+                    .Where(al => al.OriginalUserId == user.UserId || al.ImpersonatedUserId == user.UserId)
+                    .Where(al => actionsToAnonymise.Contains(al.Action))
+                    .ToList();
+
+                foreach (AuditLog auditLog in userAuditLogs)
+                {
+                    auditLog.DetailsString = "Anonymised";
+                }
             }
 
             dataRepository.SaveChangesAsync().Wait();
