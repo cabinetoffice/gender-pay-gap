@@ -65,9 +65,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs
                 "20 5 * * *" /* 05:20 once per day */);
 
 
-            RecurringJob.AddOrUpdate<SendIntentionToRetireAccountEmailsJob>(
+            RecurringJob.AddOrUpdate<NotifyUsersAndRetireInactiveAccountsJob>(
                 ScheduledJobIds.SendIntentionToRetireAccountEmailsJobId,
-                j => j.SendIntentionToRetireAccountEmails(),
+                j => j.NotifyUsersAndRetireInactiveAccounts(),
                 "50 5 * * *" /* 5:50 once per day */);
         }
 
