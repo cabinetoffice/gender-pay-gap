@@ -70,6 +70,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             List<User> usersToRetire = dataRepository.GetAll<User>()
                 .Where(u => u.LoginDate < threeYearsAgo)
+                .Where(u => u.Status != UserStatuses.Retired)
                 .ToList();
 
             foreach (User user in usersToRetire)
