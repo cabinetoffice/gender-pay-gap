@@ -376,6 +376,25 @@ namespace GenderPayGap.WebUI.Services
             }
         }
 
+        public async void SendAccountRetirementNotificationEmail(string emailAddress, string daysRemaining, string loginUrl)
+        {
+            var personalisation = new Dictionary<string, dynamic>
+            {
+                {"DaysRemaining", daysRemaining},
+                {"LoginLink", loginUrl},
+                {"Environment", GetEnvironmentNameForTestEnvironments()}
+            };
+
+            var notifyEmail = new NotifyEmail
+            {
+                EmailAddress = emailAddress,
+                TemplateId = EmailTemplates.SendAccountRetirementNotificationEmail,
+                Personalisation = personalisation
+            };
+
+            await AddEmailToQueue(notifyEmail);
+        }
+
         private async Task<bool> AddEmailToQueue(NotifyEmail notifyEmail)
         {
             try
@@ -464,6 +483,7 @@ namespace GenderPayGap.WebUI.Services
         public const string SendGeoOrganisationRegistrationRequestEmail = "3683b65f-9f50-44b8-ae4b-4ae1e84f1a1f";
         public const string SendGeoFirstTimeDataSubmissionEmail = "fecf5ef0-9ecf-494d-891d-8e00847bff31";
         public const string ReminderEmail = "db15432c-9eda-4df4-ac67-290c7232c546";
+        public const string SendAccountRetirementNotificationEmail = "1ce9f1be-1fa2-421c-a967-675341e418b8";
 
     }
 
