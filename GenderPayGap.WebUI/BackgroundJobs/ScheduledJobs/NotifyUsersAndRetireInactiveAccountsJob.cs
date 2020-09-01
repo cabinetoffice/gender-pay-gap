@@ -6,33 +6,38 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
-    public class SendIntentionToRetireAccountEmailsJob
+    public class NotifyUsersAndRetireInactiveAccountsJob
     {
         private readonly IDataRepository dataRepository;
+        private readonly EmailSendingService emailSendingService;
 
-        public SendIntentionToRetireAccountEmailsJob(IDataRepository dataRepository)
+        public NotifyUsersAndRetireInactiveAccountsJob(IDataRepository dataRepository, EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
+            this.emailSendingService = emailSendingService;
         }
 
-        public void SendIntentionToRetireAccountEmails()
+        public void NotifyUsersAndRetireInactiveAccounts()
         {
             var runId = JobHelpers.CreateRunId();
             var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId, nameof(SendIntentionToRetireAccountEmails), startTime);
+            JobHelpers.LogFunctionStart(runId, nameof(NotifyUsersAndRetireInactiveAccounts), startTime);
 
             try
             {
                 SendReminderEmails();
 
-                JobHelpers.LogFunctionEnd(runId, nameof(SendIntentionToRetireAccountEmails), startTime);
+                RetireUsers();
+
+                JobHelpers.LogFunctionEnd(runId, nameof(NotifyUsersAndRetireInactiveAccounts), startTime);
             }
             catch (Exception ex)
             {
-                JobHelpers.LogFunctionError(runId, nameof(SendIntentionToRetireAccountEmails), startTime, ex);
+                JobHelpers.LogFunctionError(runId, nameof(NotifyUsersAndRetireInactiveAccounts), startTime, ex);
 
                 //Rethrow the error
                 throw;
@@ -45,22 +50,15 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             DateTime threeYearsAgoMinusThirtyDays = threeYearsAgo.AddDays(30);
             DateTime threeYearsAgoMinusSevenDays = threeYearsAgo.AddDays(7);
 
-            List<User> usersToSendThirtyDayReminders = dataRepository.GetAll<User>()
-                .Where(u => u.LoginDate == threeYearsAgoMinusThirtyDays)
+            List<User> usersToSendReminders = dataRepository.GetAll<User>()
+                .Where(u => u.LoginDate == threeYearsAgoMinusThirtyDays || u.LoginDate == threeYearsAgoMinusSevenDays)
                 .ToList();
 
-            List<User> usersToSendSevenDayReminders = dataRepository.GetAll<User>()
-                .Where(u => u.LoginDate == threeYearsAgoMinusSevenDays)
-                .ToList();
-
-            foreach (User user in usersToSendThirtyDayReminders)
+            foreach (User user in usersToSendReminders)
             {
-                // TODO: Send 30 day reminder email
-            }
-
-            foreach (User user in usersToSendSevenDayReminders)
-            {
-                // TODO: Send 7 day reminder email
+                // TODO: Update loginUrl
+                string daysRemaining = user.LoginDate == threeYearsAgoMinusThirtyDays ? "30" : "7";
+                emailSendingService.SendAccountRetirementNotificationEmail(user.ContactEmailAddress, daysRemaining, "example url");
             }
 
             dataRepository.SaveChangesAsync().Wait();
@@ -78,6 +76,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             {
                 // TODO: Retire user
             }
+
+            dataRepository.SaveChangesAsync().Wait();
 
         }
     }
