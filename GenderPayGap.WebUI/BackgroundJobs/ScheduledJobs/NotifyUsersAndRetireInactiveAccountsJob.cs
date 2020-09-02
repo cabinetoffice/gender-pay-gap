@@ -70,7 +70,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             List<User> usersToRetire = dataRepository.GetAll<User>()
                 .Where(u => u.LoginDate < threeYearsAgo)
-                .Where(u => u.Status != UserStatuses.Retired)
+                .Where(u => !u.HasBeenAnonymised)
                 .ToList();
 
             foreach (User user in usersToRetire)
@@ -87,9 +87,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 user.ContactPhoneNumber = "Anonymised";
                 user.Salt = "Anonymised";
                 user.PasswordHash = "Anonymised";
+
+                user.HasBeenAnonymised = true;
                 user.Status = UserStatuses.Retired;
 
-                List<AuditedAction> actionsToAnonymise = new List<AuditedAction>(new []
+                var actionsToAnonymise = new List<AuditedAction>(new []
                     {
                         AuditedAction.UserChangeEmailAddress, 
                         AuditedAction.UserChangeName, 
