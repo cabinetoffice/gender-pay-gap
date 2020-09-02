@@ -45,7 +45,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             }
         }
 
-        public void SendReminderEmails()
+        private void SendReminderEmails()
         {
             DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
             DateTime threeYearsAgoMinusThirtyDays = threeYearsAgo.AddDays(30);
@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         }
 
-        public void RetireUsers()
+        private void RetireUsers()
         {
             DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
 
