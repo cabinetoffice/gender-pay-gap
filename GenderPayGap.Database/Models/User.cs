@@ -92,6 +92,8 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime? AcceptedPrivacyStatement { get; set; }
 
+        [JsonProperty]
+        public bool HasBeenAnonymised { get; set; }
 
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
         public virtual ICollection<UserStatus> UserStatuses { get; set; }
