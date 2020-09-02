@@ -85,6 +85,16 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         #endregion
+        
+        #region Accessibility Statement
+        
+        [HttpGet("~/accessibility-statement")]
+        public IActionResult AccessibilityStatement()
+        {
+            return View("AccessibilityStatement");
+        }
+        
+        #endregion
 
     }
 }
