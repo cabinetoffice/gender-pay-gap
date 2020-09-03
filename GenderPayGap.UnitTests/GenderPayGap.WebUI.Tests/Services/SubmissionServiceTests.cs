@@ -131,7 +131,7 @@ namespace GenderPayGap.Tests
             // Act
             Draft actualDraft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             // Assert
@@ -169,7 +169,7 @@ namespace GenderPayGap.Tests
                 CompanyLinkToGPGInfo = "http://unittesting",
                 MinEmployees = 250,
                 MaxEmployees = 499,
-                Organisation = new Organisation { SectorType = SectorTypes.Private }
+                Organisation = new Organisation { Sector = OrganisationSectors.Private }
             };
 
             // Mocks
@@ -211,7 +211,7 @@ namespace GenderPayGap.Tests
                 MaleUpperQuartilePayBand = 89,
                 MaleMiddlePayBand = 88,
                 MaleUpperPayBand = 87,
-                Organisation = new Organisation { SectorType = SectorTypes.Private }
+                Organisation = new Organisation { Sector = OrganisationSectors.Private }
             };
 
             string[] figureProps = {
@@ -263,7 +263,7 @@ namespace GenderPayGap.Tests
         [Description("GetSubmissionChangeSummary: Detects when the organisation size has changed")]
         public void GetSubmissionChangeSummary_Detects_when_the_organisation_size_has_changed()
         {
-            var testOldReturn = new Return { Organisation = new Organisation { SectorType = SectorTypes.Private } };
+            var testOldReturn = new Return { Organisation = new Organisation { Sector = OrganisationSectors.Private } };
 
             // Mocks
             var testService = new SubmissionService(
@@ -297,7 +297,7 @@ namespace GenderPayGap.Tests
                 FirstName = "Test",
                 LastName = "User",
                 JobTitle = "QA",
-                Organisation = new Organisation { SectorType = SectorTypes.Private }
+                Organisation = new Organisation { Sector = OrganisationSectors.Private }
             };
 
             string[] personProps = { nameof(testOldReturn.FirstName), nameof(testOldReturn.LastName), nameof(testOldReturn.JobTitle) };
@@ -334,7 +334,7 @@ namespace GenderPayGap.Tests
         [Description("GetSubmissionChangeSummary: Detects when the website url has changed")]
         public void GetSubmissionChangeSummary_Detects_when_the_website_url_has_changed()
         {
-            var testOldReturn = new Return { CompanyLinkToGPGInfo = "", Organisation = new Organisation { SectorType = SectorTypes.Private } };
+            var testOldReturn = new Return { CompanyLinkToGPGInfo = "", Organisation = new Organisation { Sector = OrganisationSectors.Private } };
 
             // Mocks
             var testService = new SubmissionService(
@@ -424,7 +424,7 @@ namespace GenderPayGap.Tests
             int testYear = VirtualDateTime.Now.AddYears(-1).Year;
 
             // Mocks
-            var testOrganisation = new Organisation { OrganisationId = 524124, SectorType = SectorTypes.Private };
+            var testOrganisation = new Organisation { OrganisationId = 524124, Sector = OrganisationSectors.Private };
 
             mockDataRepo.Setup(dr => dr.GetAll<UserOrganisation>())
                 .Returns(
@@ -494,7 +494,7 @@ namespace GenderPayGap.Tests
                 MinEmployees = 250,
                 MaxEmployees = 499,
                 Status = ReturnStatuses.Submitted,
-                Organisation = new Organisation { SectorType = SectorTypes.Private }
+                Organisation = new Organisation { Sector = OrganisationSectors.Private }
             };
 
             // Mocks
@@ -589,7 +589,7 @@ namespace GenderPayGap.Tests
             mockService.CallBase = true;
 
             // Override GetCurrentReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsIn(SectorTypes.Private), It.IsIn(testSnapshotYear)))
+            mockService.Setup(ss => ss.GetSnapshotDate(It.IsIn(OrganisationSectors.Private), It.IsIn(testSnapshotYear)))
                 .Returns(new DateTime(currentSnapshotYear, 4, 5));
 
             // Sanity checks
@@ -597,7 +597,7 @@ namespace GenderPayGap.Tests
 
             // Assert
             SubmissionService testService = mockService.Object;
-            Expect(testService.IsCurrentSnapshotYear(SectorTypes.Private, testSnapshotYear) == false);
+            Expect(testService.IsCurrentSnapshotYear(OrganisationSectors.Private, testSnapshotYear) == false);
         }
 
         [Test]
@@ -615,7 +615,7 @@ namespace GenderPayGap.Tests
             mockService.CallBase = true;
 
             // Override GetReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsAny<SectorTypes>(), It.IsAny<int>()))
+            mockService.Setup(ss => ss.GetSnapshotDate(It.IsAny<OrganisationSectors>(), It.IsAny<int>()))
                 .Returns(new DateTime(currentSnapshotYear, 4, 5));
 
             // Sanity checks
@@ -623,7 +623,7 @@ namespace GenderPayGap.Tests
 
             // Assert
             SubmissionService testService = mockService.Object;
-            Expect(testService.IsCurrentSnapshotYear(SectorTypes.Private, testSnapshotYear));
+            Expect(testService.IsCurrentSnapshotYear(OrganisationSectors.Private, testSnapshotYear));
         }
 
     }

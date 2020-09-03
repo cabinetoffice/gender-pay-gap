@@ -11,11 +11,11 @@ namespace GenderPayGap.Database.ReturnTests
     public class IsLateSubmissionTests
     {
 
-        [TestCase(SectorTypes.Public, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.PresumedInScope)]
-        public void Is_True_When_ModifiedDate_Is_Late_And_InScope(SectorTypes sector, ScopeStatuses scopeStatus)
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.PresumedInScope)]
+        public void Is_True_When_ModifiedDate_Is_Late_And_InScope(OrganisationSectors sector, ScopeStatuses scopeStatus)
         {
             var totalYearOffsets = 4;
             for (var yearOffset = 0; yearOffset < totalYearOffsets; yearOffset++)
@@ -26,7 +26,7 @@ namespace GenderPayGap.Database.ReturnTests
                 DateTime nextSnapshotDate = snapshotDate.AddYears(1);
                 DateTime modifiedDate = nextSnapshotDate.AddDays(2);
 
-                Organisation testOrganisation = sector == SectorTypes.Private
+                Organisation testOrganisation = sector == OrganisationSectors.Private
                     ? OrganisationHelper.GetPrivateOrganisation()
                     : OrganisationHelper.GetPublicOrganisation();
 
@@ -42,15 +42,15 @@ namespace GenderPayGap.Database.ReturnTests
             }
         }
 
-        [TestCase(SectorTypes.Public, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.OutOfScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.PresumedOutOfScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.OutOfScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.PresumedOutOfScope)]
-        public void Is_False_When_ModifiedDate_Is_Not_Late_And_AnyScope(SectorTypes sector, ScopeStatuses scopeStatus)
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.OutOfScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.PresumedOutOfScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.OutOfScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.PresumedOutOfScope)]
+        public void Is_False_When_ModifiedDate_Is_Not_Late_And_AnyScope(OrganisationSectors sector, ScopeStatuses scopeStatus)
         {
             var totalYearOffsets = 4;
             for (var yearOffset = 0; yearOffset < totalYearOffsets; yearOffset++)
@@ -61,7 +61,7 @@ namespace GenderPayGap.Database.ReturnTests
                 DateTime nextSnapshotDate = snapshotDate.AddYears(1);
                 DateTime modifiedDate = nextSnapshotDate.AddDays(-1);
 
-                Organisation testOrganisation = sector == SectorTypes.Private
+                Organisation testOrganisation = sector == OrganisationSectors.Private
                     ? OrganisationHelper.GetPrivateOrganisation()
                     : OrganisationHelper.GetPublicOrganisation();
 
@@ -78,11 +78,11 @@ namespace GenderPayGap.Database.ReturnTests
         }
 
         [Test]
-        [TestCase(SectorTypes.Public, ScopeStatuses.OutOfScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.PresumedOutOfScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.OutOfScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.PresumedOutOfScope)]
-        public void Is_False_When_ModifiedDate_Is_Late_And_OutOfScope(SectorTypes sector, ScopeStatuses scopeStatus)
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.OutOfScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.PresumedOutOfScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.OutOfScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.PresumedOutOfScope)]
+        public void Is_False_When_ModifiedDate_Is_Late_And_OutOfScope(OrganisationSectors sector, ScopeStatuses scopeStatus)
         {
             var totalYearOffsets = 4;
 
@@ -94,7 +94,7 @@ namespace GenderPayGap.Database.ReturnTests
                 DateTime nextSnapshotDate = snapshotDate.AddYears(1);
                 DateTime modifiedDate = nextSnapshotDate.AddDays(2);
 
-                Organisation testOrganisation = sector == SectorTypes.Private
+                Organisation testOrganisation = sector == OrganisationSectors.Private
                     ? OrganisationHelper.GetPrivateOrganisation()
                     : OrganisationHelper.GetPublicOrganisation();
 

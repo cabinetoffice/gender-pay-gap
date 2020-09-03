@@ -127,13 +127,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             foreach (Organisation organisation in organisations)
             {
                 DateTime organisationCreationDate = organisation.Created;
-                DateTime accountingDateForCreationYear = organisation.SectorType.GetAccountingStartDate(organisationCreationDate.Year);
+                DateTime accountingDateForCreationYear = organisation.Sector.GetAccountingStartDate(organisationCreationDate.Year);
 
                 int firstRequiredAccountingDateYear = organisationCreationDate < accountingDateForCreationYear
                     ? accountingDateForCreationYear.AddYears(-1).Year
                     : accountingDateForCreationYear.Year;
 
-                int latestRequiredAccountingDateYear = organisation.SectorType.GetAccountingStartDate().Year;
+                int latestRequiredAccountingDateYear = organisation.Sector.GetAccountingStartDate().Year;
 
                 IEnumerable<int> requiredYears = Enumerable.Range(
                     firstRequiredAccountingDateYear,
@@ -177,7 +177,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Organisation> publicSectorOrganisationsWithoutAPublicSectorType =
                 dataRepository.GetAll<Organisation>()
                     .Where(o => o.Status == OrganisationStatuses.Active)
-                    .Where(o => o.SectorType == SectorTypes.Public)
+                    .Where(o => o.Sector == OrganisationSectors.Public)
                     .Where(o => o.LatestPublicSectorType == null)
                     .Include(o => o.OrganisationScopes)
                     .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - o.GetCurrentScope() cannot be translated */)
@@ -194,7 +194,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Organisation> privateSectorOrganisationsWithAPublicSectorType =
                 dataRepository.GetAll<Organisation>()
                     .Where(o => o.Status == OrganisationStatuses.Active)
-                    .Where(o => o.SectorType == SectorTypes.Private)
+                    .Where(o => o.Sector == OrganisationSectors.Private)
                     .Where(organisation => organisation.LatestPublicSectorType != null)
                     .ToList();
 

@@ -168,7 +168,7 @@ namespace GenderPayGap.WebUI.Controllers
                     "PIN Confirmed");
                 userOrg.ConfirmAttempts = 0;
 
-                model.AccountingDate = userOrg.Organisation.SectorType.GetAccountingStartDate();
+                model.AccountingDate = userOrg.Organisation.Sector.GetAccountingStartDate();
                 model.OrganisationId = userOrg.OrganisationId;
                 this.StashModel(model);
 
@@ -196,7 +196,7 @@ namespace GenderPayGap.WebUI.Controllers
                 new
                 {
                     Status = "PIN Confirmed",
-                    Sector = userOrg.Organisation.SectorType,
+                    Sector = userOrg.Organisation.Sector,
                     Organisation = userOrg.Organisation.OrganisationName,
                     CompanyNo = userOrg.Organisation.CompanyNumber,
                     Address = userOrg.Address.GetAddressString(),

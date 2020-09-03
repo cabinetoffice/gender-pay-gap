@@ -70,7 +70,7 @@ namespace GenderPayGap.Tests
             //ARRANGE:
             //create a user who does exist in the db
             var user = new User {UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now};
-            var org = new Organisation {OrganisationId = 1, SectorType = SectorTypes.Private, Status = OrganisationStatuses.Active};
+            var org = new Organisation {OrganisationId = 1, Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Active};
             var address = new OrganisationAddress {AddressId = 1, OrganisationId = 1, Organisation = org, Status = AddressStatuses.Pending};
             var pin = "ASDFG";
             var userOrg = new UserOrganisation {
@@ -472,7 +472,7 @@ namespace GenderPayGap.Tests
             //ARRANGE:
             //create a user who does exist in the db
             var user = new User {UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now};
-            var org = new Organisation {OrganisationId = 1, SectorType = SectorTypes.Private};
+            var org = new Organisation {OrganisationId = 1, Sector = OrganisationSectors.Private};
             var address = new OrganisationAddress {AddressId = 1, OrganisationId = 1, Organisation = org, Status = AddressStatuses.Pending};
             var orgScope = new OrganisationScope {
                 OrganisationId = org.OrganisationId,
@@ -519,7 +519,7 @@ namespace GenderPayGap.Tests
             routeData.Values.Add("Action", "OrganisationType");
             routeData.Values.Add("Controller", "Register");
 
-            var actualModel = new OrganisationViewModel {ManualRegistration = false, SectorType = SectorTypes.Private};
+            var actualModel = new OrganisationViewModel {ManualRegistration = false, SectorType = OrganisationSectors.Private};
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user /*, userOrganisation, organisation*/);
             controller.Bind(actualModel);
@@ -564,7 +564,7 @@ namespace GenderPayGap.Tests
             routeData.Values.Add("Action", "OrganisationType");
             routeData.Values.Add("Controller", "Register");
 
-            var actualModel = new OrganisationViewModel {ManualRegistration = false, SectorType = SectorTypes.Public};
+            var actualModel = new OrganisationViewModel {ManualRegistration = false, SectorType = OrganisationSectors.Public};
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user);
             controller.Bind(actualModel);
@@ -618,7 +618,7 @@ namespace GenderPayGap.Tests
             controller.StashModel(new OrganisationViewModel());
 
             // ACT
-            var result = controller.OrganisationType(new OrganisationViewModel {SectorType = SectorTypes.Unknown}) as ViewResult;
+            var result = controller.OrganisationType(new OrganisationViewModel {SectorType = OrganisationSectors.Unknown}) as ViewResult;
 
             // ASSERT
             Assert.NotNull(result);
@@ -685,7 +685,7 @@ namespace GenderPayGap.Tests
                 Employers = new PagedResult<EmployerRecord>(),
                 SearchText = "smith ltd",
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 CompanyNumber = "456GT657",
                 Country = "UK",
                 Postcode = "nw1 5re"
@@ -793,7 +793,7 @@ namespace GenderPayGap.Tests
                 Employers = new PagedResult<EmployerRecord>(),
                 SearchText = "5 Boroughs Partnership NHS Foundation Trust",
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public
+                SectorType = OrganisationSectors.Public
             };
 
 

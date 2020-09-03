@@ -78,7 +78,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     org.EmployerReference,
                     org.CompanyNumber,
                     org.OrganisationName,
-                    org.SectorType,
+                    SectorType = org.Sector,
                     org.Status,
                     SicCodes = org.GetSicSectionIdsString(),
                     SicSource = org.GetSicSource(),

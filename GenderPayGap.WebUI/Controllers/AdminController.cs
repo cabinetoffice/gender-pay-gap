@@ -93,7 +93,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     .Where(uo => uo.User.Status == UserStatuses.Active)
                     .Where(uo => uo.PINConfirmedDate == null)
                     .Where(uo => uo.Method == RegistrationMethods.Manual)
-                    .Where(uo => uo.Organisation.SectorType == SectorTypes.Public)
+                    .Where(uo => uo.Organisation.Sector == OrganisationSectors.Public)
                     .OrderBy(uo => uo.Modified)
                     .ToList();
 

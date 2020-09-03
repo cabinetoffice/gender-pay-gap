@@ -28,6 +28,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
         }
+        
+        [HttpGet("organisation/{id}/sector")]
+        public IActionResult ViewSectorHistory(long id)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+
+            return View("ViewOrganisationSector", organisation);
+        }
 
         [HttpGet("organisation/{id}/change-public-sector-classification")]
         public IActionResult ChangePublicSectorClassificationGet(long id)

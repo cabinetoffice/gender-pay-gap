@@ -132,7 +132,7 @@ namespace GenderPayGap.WebUI.Search
                                 SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
                                 SicCodeSynonyms = sicCodeSynonyms,
                                 IncludeInViewingService = GetIncludeInViewingService(o),
-                                Sector = o.SectorType
+                                Sector = o.Sector
                             };
                     })
                 .ToList();

@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers
             //TODO validate the submitted fields
             ModelState.Clear();
 
-            if (!model.SectorType.EqualsI(SectorTypes.Private, SectorTypes.Public))
+            if (!model.SectorType.EqualsI(OrganisationSectors.Private, OrganisationSectors.Public))
             {
                 AddModelError(3005, "SectorType");
                 this.CleanModelErrors<OrganisationViewModel>();
@@ -178,7 +178,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             switch (model.SectorType)
             {
-                case SectorTypes.Private:
+                case OrganisationSectors.Private:
                     try
                     {
                         model.Employers = await PrivateSectorRepository.SearchAsync(
@@ -208,7 +208,7 @@ namespace GenderPayGap.WebUI.Controllers
                     }
 
                     break;
-                case SectorTypes.Public:
+                case OrganisationSectors.Public:
                     model.Employers = await PublicSectorRepository.SearchAsync(
                         model.SearchText,
                         1,
@@ -403,7 +403,7 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 switch (model.SectorType)
                 {
-                    case SectorTypes.Private:
+                    case OrganisationSectors.Private:
                         try
                         {
                             model.Employers = await PrivateSectorRepository.SearchAsync(
@@ -448,7 +448,7 @@ namespace GenderPayGap.WebUI.Controllers
 
                         break;
 
-                    case SectorTypes.Public:
+                    case OrganisationSectors.Public:
                         model.Employers = await PublicSectorRepository.SearchAsync(
                             model.SearchText,
                             nextPage,
@@ -478,13 +478,13 @@ namespace GenderPayGap.WebUI.Controllers
                 EmployerRecord employer = model.Employers.Results[employerIndex];
 
                 //Ensure employers from companies house have a sector
-                if (employer.SectorType == SectorTypes.Unknown)
+                if (employer.OrganisationSector == OrganisationSectors.Unknown)
                 {
-                    employer.SectorType = model.SectorType.Value;
+                    employer.OrganisationSector = model.SectorType.Value;
                 }
 
                 //Make sure user is fully registered for one private org before registering another 
-                if (model.SectorType == SectorTypes.Private
+                if (model.SectorType == OrganisationSectors.Private
                     && currentUser.UserOrganisations.Any()
                     && !currentUser.UserOrganisations.Any(uo => uo.PINConfirmedDate != null))
                 {
@@ -520,9 +520,9 @@ namespace GenderPayGap.WebUI.Controllers
                     }
 
                     //Make sure the found organisation is of the correct sector type
-                    if (org.SectorType != model.SectorType)
+                    if (org.Sector != model.SectorType)
                     {
-                        return View("CustomError", new ErrorViewModel(model.SectorType == SectorTypes.Private ? 1146 : 1147));
+                        return View("CustomError", new ErrorViewModel(model.SectorType == OrganisationSectors.Private ? 1146 : 1147));
                     }
 
                     //Ensure user is not already registered for this organisation
@@ -552,7 +552,7 @@ namespace GenderPayGap.WebUI.Controllers
 
 
                 //Make sure the organisation has an address
-                if (employer.SectorType == SectorTypes.Public)
+                if (employer.OrganisationSector == OrganisationSectors.Public)
                 {
                     model.ManualRegistration = false;
                     model.SelectedAuthorised = employer.IsAuthorised(currentUser.EmailAddress);
@@ -564,7 +564,7 @@ namespace GenderPayGap.WebUI.Controllers
                         return RedirectToAction("AddAddress");
                     }
                 }
-                else if (employer.SectorType == SectorTypes.Private && !employer.HasAnyAddress())
+                else if (employer.OrganisationSector == OrganisationSectors.Private && !employer.HasAnyAddress())
                 {
                     model.AddressReturnAction = nameof(ChooseOrganisation);
                     model.ManualRegistration = false;
@@ -975,7 +975,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return View("CustomError", new ErrorViewModel(1149));
             }
 
-            if (org.SectorType == SectorTypes.Private)
+            if (org.Sector == OrganisationSectors.Private)
             {
                 //Make sure they are fully registered for one before requesting another
                 if (currentUser.UserOrganisations.Any() && !currentUser.UserOrganisations.Any(uo => uo.PINConfirmedDate != null))
@@ -1000,7 +1000,7 @@ namespace GenderPayGap.WebUI.Controllers
             //if (org.LatestAddress != null) employer.ActiveAddressId = org.LatestAddress.AddressId;
 
             //Make sure the organisation has an address
-            if (employer.SectorType == SectorTypes.Public)
+            if (employer.OrganisationSector == OrganisationSectors.Public)
             {
                 model.ManualAuthorised = employer.IsAuthorised(currentUser.EmailAddress);
                 if (!model.ManualAuthorised || !employer.HasAnyAddress())
@@ -1008,7 +1008,7 @@ namespace GenderPayGap.WebUI.Controllers
                     model.ManualAddress = true;
                 }
             }
-            else if (employer.SectorType == SectorTypes.Private && !employer.HasAnyAddress())
+            else if (employer.OrganisationSector == OrganisationSectors.Private && !employer.HasAnyAddress())
             {
                 model.ManualAddress = true;
             }
@@ -1085,7 +1085,7 @@ namespace GenderPayGap.WebUI.Controllers
                     employer.SicSource = "CoHo";
                     try
                     {
-                        if (employer.SectorType == SectorTypes.Public)
+                        if (employer.OrganisationSector == OrganisationSectors.Public)
                         {
                             employer.SicCodeIds = await PublicSectorRepository.GetSicCodesAsync(employer.CompanyNumber);
                         }
@@ -1137,7 +1137,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
             }
 
-            if (employer != null && employer.SectorType == SectorTypes.Public || employer == null && model.SectorType == SectorTypes.Public)
+            if (employer != null && employer.OrganisationSector == OrganisationSectors.Public || employer == null && model.SectorType == OrganisationSectors.Public)
             {
                 if (model.SicCodes == null)
                 {
@@ -1163,7 +1163,7 @@ namespace GenderPayGap.WebUI.Controllers
                 model.NameSource = employer.NameSource;
                 ViewBag.LastOrg = model.OrganisationName;
                 model.OrganisationName = employer.OrganisationName;
-                model.SectorType = employer.SectorType;
+                model.SectorType = employer.OrganisationSector;
                 model.CompanyNumber = employer.CompanyNumber;
                 model.CharityNumber = employer.References.ContainsKey(nameof(model.CharityNumber))
                     ? employer.References[nameof(model.CharityNumber)]
@@ -1315,10 +1315,10 @@ namespace GenderPayGap.WebUI.Controllers
                 }
             }
 
-            SectorTypes? sector = employer == null ? model.SectorType : employer.SectorType;
+            OrganisationSectors? sector = employer == null ? model.SectorType : employer.OrganisationSector;
 
             //If manual registration then show confirm receipt
-            if (model.ManualRegistration || model.ManualAddress && (sector == SectorTypes.Private || !authorised || hasAddress))
+            if (model.ManualRegistration || model.ManualAddress && (sector == OrganisationSectors.Private || !authorised || hasAddress))
             {
                 string reviewCode = Encryption.EncryptQuerystring(
                     userOrg.UserId + ":" + userOrg.OrganisationId + ":" + VirtualDateTime.Now.ToSmallDateTime());
@@ -1327,7 +1327,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //If public sector or fasttracked then we are complete
-            if (sector == SectorTypes.Public || model.IsFastTrackAuthorised)
+            if (sector == OrganisationSectors.Public || model.IsFastTrackAuthorised)
             {
                 //Log the registration
                 auditLogger.AuditChangeToOrganisation(
@@ -1336,7 +1336,7 @@ namespace GenderPayGap.WebUI.Controllers
                     new
                     {
                         Status = "Public sector email confirmed",
-                        Sector = userOrg.Organisation.SectorType,
+                        Sector = userOrg.Organisation.Sector,
                         Organisation = userOrg.Organisation.OrganisationName,
                         CompanyNo = userOrg.Organisation.CompanyNumber,
                         Address = userOrg.Address.GetAddressString(),
@@ -1425,7 +1425,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (org == null)
             {
                 org = new Organisation();
-                org.SectorType = employer == null ? model.SectorType.Value : employer.SectorType;
+                org.Sector = employer == null ? model.SectorType.Value : employer.OrganisationSector;
                 org.CompanyNumber = employer == null ? model.CompanyNumber : employer.CompanyNumber;
                 org.DateOfCessation = employer == null ? model.DateOfCessation : employer.DateOfCessation;
                 org.Created = now;
@@ -1440,7 +1440,7 @@ namespace GenderPayGap.WebUI.Controllers
                     ScopeStatusDate = now,
                     Status = ScopeRowStatuses.Active,
                     StatusDetails = "Generated by the system",
-                    SnapshotDate = org.SectorType.GetAccountingStartDate()
+                    SnapshotDate = org.Sector.GetAccountingStartDate()
                 };
                 DataRepository.Insert(newScope);
                 org.OrganisationScopes.Add(newScope);
@@ -1561,7 +1561,7 @@ namespace GenderPayGap.WebUI.Controllers
                 newSicSource = employer.SicSource;
             }
 
-            if (org.SectorType == SectorTypes.Public)
+            if (org.Sector == OrganisationSectors.Public)
             {
                 newSicCodeIds.Add(1);
             }
@@ -1695,7 +1695,7 @@ namespace GenderPayGap.WebUI.Controllers
             var sendRequest = false;
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration)
                 || model.ManualRegistration
-                || model.ManualAddress && (org.SectorType == SectorTypes.Private || !authorised || hasAddress)
+                || model.ManualAddress && (org.Sector == OrganisationSectors.Private || !authorised || hasAddress)
                 || !model.IsUkAddress.HasValue
                 || !model.IsUkAddress.Value)
             {

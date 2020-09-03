@@ -62,7 +62,7 @@ namespace GenderPayGap.WebUI.Models.Register
         #region Search details
 
         [Required(AllowEmptyStrings = false)]
-        public SectorTypes? SectorType { get; set; }
+        public OrganisationSectors? SectorType { get; set; }
 
         [Required]
         [StringLength(

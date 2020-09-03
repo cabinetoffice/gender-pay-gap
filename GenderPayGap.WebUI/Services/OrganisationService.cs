@@ -52,12 +52,13 @@ namespace GenderPayGap.WebUI.Services
 
             Organisation organisation = new Organisation
             {
-                SectorType = SectorTypes.Private, // All companies imported from CoHo are private-sector
                 CompanyNumber = companyNumber,
                 EmployerReference = GenerateUniqueEmployerReference()
             };
 
             SetInitialStatus(organisation, requestingUser);
+            
+            SetInitialSector(organisation, requestingUser);
 
             AddOrganisationName(organisation, companiesHouseCompany.CompanyName);
 
@@ -106,6 +107,26 @@ namespace GenderPayGap.WebUI.Services
             organisation.OrganisationStatuses.Add(organisationStatus);
 
             dataRepository.Insert(organisationStatus);
+        }
+        
+        private void SetInitialSector(Organisation organisation, User user)
+        {
+            organisation.Sector = OrganisationSectors.Private;
+            organisation.SectorDate = DateTime.Now;
+            organisation.SectorDetails = "Imported from CoHo";
+
+            var organisationSector = new OrganisationSector
+            {
+                Organisation = organisation,
+                Sector = OrganisationSectors.Private,
+                SectorDate = VirtualDateTime.Now,
+                SectorDetails = "Imported from CoHo",
+                ByUser = user
+            };
+
+            organisation.OrganisationSectors.Add(organisationSector);
+
+            dataRepository.Insert(organisationSector);
         }
 
         private void AddOrganisationName(Organisation organisation, string name)
@@ -196,7 +217,7 @@ namespace GenderPayGap.WebUI.Services
 
         private void SetInitialScopes(Organisation organisation)
         {
-            DateTime currentYearSnapshotDate = organisation.SectorType.GetAccountingStartDate();
+            DateTime currentYearSnapshotDate = organisation.Sector.GetAccountingStartDate();
             SetInitialScopeForYear(organisation, currentYearSnapshotDate, ScopeStatuses.PresumedInScope);
 
             DateTime previousYearSnapshotDate = currentYearSnapshotDate.AddYears(-1);

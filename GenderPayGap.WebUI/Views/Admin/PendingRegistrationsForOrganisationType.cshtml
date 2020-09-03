@@ -32,7 +32,7 @@ else
                         @(userOrg.Address.GetAddressString())
                     </td>
                     <td class="govuk-table__cell">
-                        @(userOrg.Organisation.SectorType)
+                        @(userOrg.Organisation.Sector)
                     </td>
                     <td class="govuk-table__cell">
                         @(userOrg.User.ContactFullname.Coalesce(userOrg.User.Fullname)) (@(userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress)))

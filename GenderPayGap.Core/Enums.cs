@@ -70,7 +70,7 @@ namespace GenderPayGap.Core
 
     }
 
-    public enum SectorTypes
+    public enum OrganisationSectors
     {
 
         Unknown = 0,

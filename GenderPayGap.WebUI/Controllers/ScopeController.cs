@@ -250,7 +250,7 @@ namespace GenderPayGap.WebUI.Controllers
             await ScopePresentation.SaveScopesAsync(stateModel, snapshotYears);
 
             var organisation = DataRepository.Get<Organisation>(stateModel.OrganisationId);
-            DateTime currentSnapshotDate = organisation.SectorType.GetAccountingStartDate();
+            DateTime currentSnapshotDate = organisation.Sector.GetAccountingStartDate();
             if (stateModel.AccountingDate == currentSnapshotDate)
             {
                 IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations.Select(uo => uo.User.EmailAddress);
@@ -420,7 +420,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.StashModel(stateModel);
 
             var organisation = DataRepository.Get<Organisation>(stateModel.OrganisationId);
-            DateTime currentSnapshotDate = organisation.SectorType.GetAccountingStartDate();
+            DateTime currentSnapshotDate = organisation.Sector.GetAccountingStartDate();
             if (stateModel.AccountingDate == currentSnapshotDate)
             {
                 IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations.Select(uo => uo.User.EmailAddress);

@@ -26,7 +26,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 //OrganisationId = 123,
                 OrganisationName = organisationName,
                 OrganisationAddresses = new List<OrganisationAddress> { new OrganisationAddress() },
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = organisationStatus,
                 OrganisationStatuses = organisationStatuses ?? new List<OrganisationStatus>()
             };
@@ -35,14 +35,14 @@ namespace GenderPayGap.Tests.Common.TestHelpers
         public static Organisation GetPublicOrganisation(string employerRef = null)
         {
             Organisation organisation = GetConcreteOrganisation(employerRef);
-            organisation.SectorType = SectorTypes.Public;
+            organisation.Sector = OrganisationSectors.Public;
             return organisation;
         }
 
         public static Organisation GetPrivateOrganisation(string employerRef = null)
         {
             Organisation organisation = GetConcreteOrganisation(employerRef);
-            organisation.SectorType = SectorTypes.Private;
+            organisation.Sector = OrganisationSectors.Private;
             return organisation;
         }
 
@@ -51,7 +51,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             int someId = new Random().Next(1000, 9999);
             var mockedOrg = Mock.Of<Organisation>(org => org.OrganisationId == someId);
             mockedOrg.EmployerReference = employerRef ?? $"Org_{someId}";
-            mockedOrg.SectorType = SectorTypes.Private;
+            mockedOrg.Sector = OrganisationSectors.Private;
             mockedOrg.Status = OrganisationStatuses.Active;
             mockedOrg.OrganisationName = $"OrgName_{someId}";
             return mockedOrg;
@@ -66,7 +66,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
         {
             Organisation org = GetPrivateOrganisation(employerRef);
 
-            OrganisationScope organisationScope = OrganisationScopeHelper.GetOrgScopeWithThisScope(snapshotYear, org.SectorType, scope);
+            OrganisationScope organisationScope = OrganisationScopeHelper.GetOrgScopeWithThisScope(snapshotYear, org.Sector, scope);
             org.OrganisationScopes.Add(organisationScope);
             return org;
         }

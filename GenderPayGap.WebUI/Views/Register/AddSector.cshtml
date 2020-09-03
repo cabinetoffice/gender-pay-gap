@@ -65,7 +65,7 @@
                     </h1>
 
                     <div class="dynamic-content default-content">
-                        @if (Model.SectorType == SectorTypes.Private)
+                        @if (Model.SectorType == OrganisationSectors.Private)
                         {
                             <p>Please enter one or more Standard Industrial Classification (SIC) codes. These will determine the business sector under which your organisation will be reported.</p>
                         }
@@ -76,7 +76,7 @@
                         <p>@Html.ValueFor(model => model.OrganisationName)</p>
                         <div class="form-group @Html.SetErrorClass(model => model.SicCodeIds, " error")">
                             @Html.LabelFor(model => model.SicCodeIds, "SIC Codes", new {@class = "form-label col-md-2"})
-                            @if (Model.SectorType != SectorTypes.Private)
+                            @if (Model.SectorType != OrganisationSectors.Private)
                             {
                                 <span class="optional">(Optional)</span>
                             }

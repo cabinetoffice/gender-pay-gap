@@ -137,7 +137,7 @@ namespace GenderPayGap.WebUI.Repositories
 
         private static void DecideRegistrationMethod(UserOrganisation userOrganisation)
         {
-            if (userOrganisation.Organisation.SectorType == SectorTypes.Public)
+            if (userOrganisation.Organisation.Sector == OrganisationSectors.Public)
             {
                 userOrganisation.Method = RegistrationMethods.Manual;
             }

@@ -25,7 +25,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public List<char> SicSectionIds { get; set; }
         public List<SearchReadyValue> SicCodeSynonyms { get; set; }
         public bool IncludeInViewingService { get; set; }
-        public SectorTypes Sector { get; set; }
+        public OrganisationSectors Sector { get; set; }
 
     }
 }

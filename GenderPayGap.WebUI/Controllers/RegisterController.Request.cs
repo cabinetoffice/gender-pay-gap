@@ -104,7 +104,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             model.OrganisationName = userOrg.Organisation.OrganisationName;
             model.CompanyNumber = userOrg.Organisation.CompanyNumber;
-            model.SectorType = userOrg.Organisation.SectorType;
+            model.SectorType = userOrg.Organisation.Sector;
             model.SicCodes = userOrg.Organisation.GetSicCodes().Select(o => o.SicCode.SicCodeId).ToList();
 
             model.Address1 = userOrg.Address.Address1;
@@ -221,7 +221,7 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 results = DataRepository.GetAll<Organisation>()
                     .Where(o => o.OrganisationId != userOrg.OrganisationId)
-                    .Where(o => o.SectorType == SectorTypes.Private)
+                    .Where(o => o.Sector == OrganisationSectors.Private)
                     .Where(o => o.CompanyNumber == model.CompanyNumber)
                     .Select(o => o.OrganisationId);
                 if (results.Any())
@@ -530,7 +530,7 @@ namespace GenderPayGap.WebUI.Controllers
                     new
                     {
                         Status = "Manually registered",
-                        Sector = userOrg.Organisation.SectorType,
+                        Sector = userOrg.Organisation.Sector,
                         Organisation = userOrg.Organisation.OrganisationName,
                         CompanyNo = userOrg.Organisation.CompanyNumber,
                         Address = userOrg?.Address.GetAddressString(),
@@ -658,7 +658,7 @@ namespace GenderPayGap.WebUI.Controllers
                 new
                 {
                     Status = "Manually Rejected",
-                    Sector = userOrg.Organisation.SectorType,
+                    Sector = userOrg.Organisation.Sector,
                     Organisation = userOrg.Organisation.OrganisationName,
                     CompanyNo = userOrg.Organisation.CompanyNumber,
                     Address = userOrg?.Address.GetAddressString(),

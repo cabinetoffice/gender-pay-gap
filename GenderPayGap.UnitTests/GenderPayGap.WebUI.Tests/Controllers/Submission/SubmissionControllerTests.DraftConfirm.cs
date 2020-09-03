@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Public };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = 50,
                 MaleUpperPayBand = 50,
                 MaleUpperQuartilePayBand = 50,
-                SectorType = SectorTypes.Private
+                OrganisationSector = OrganisationSectors.Private
             };
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 new DraftFileBusinessLogic(MoqHelpers.CreateMockAsyncDataRepository().Object));
             returnViewModel.ReportInfo.Draft = await submissionServiceMock.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             // Act

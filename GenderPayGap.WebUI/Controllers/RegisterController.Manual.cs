@@ -110,7 +110,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return View(nameof(AddAddress), model);
             }
 
-            SectorTypes? sector = model.SectorType;
+            OrganisationSectors? sector = model.SectorType;
             var authorised = false;
             EmployerRecord employer = null;
             if (!model.ManualRegistration)
@@ -144,7 +144,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //When doing manual address only and user is already authorised redirect to confirm page
-            if (model.ManualAddress && sector == SectorTypes.Public && authorised && !employer.HasAnyAddress())
+            if (model.ManualAddress && sector == OrganisationSectors.Public && authorised && !employer.HasAnyAddress())
             {
                 //We don't need contact info if there is no address only when there is an address
                 model.ConfirmReturnAction = nameof(AddAddress);
@@ -372,7 +372,7 @@ namespace GenderPayGap.WebUI.Controllers
                 nameof(model.ContactPhoneNumber));
 
             //Exclude the SIC codes when public sector
-            if (model.SectorType != SectorTypes.Private)
+            if (model.SectorType != OrganisationSectors.Private)
             {
                 excludes.Add(nameof(model.SicCodeIds));
             }

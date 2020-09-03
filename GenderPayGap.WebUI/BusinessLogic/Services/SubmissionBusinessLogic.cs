@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         public ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert)
         {
             var model = new ReturnViewModel {
-                SectorType = reportToConvert.Organisation.SectorType,
+                OrganisationSector = reportToConvert.Organisation.Sector,
                 ReturnId = reportToConvert.ReturnId,
                 OrganisationId = reportToConvert.OrganisationId,
                 EncryptedOrganisationId = reportToConvert.Organisation.GetEncryptedId(),

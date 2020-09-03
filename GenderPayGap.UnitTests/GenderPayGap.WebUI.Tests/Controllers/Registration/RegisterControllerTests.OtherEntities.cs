@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var controller = UiTestHelper.GetController<RegisterController>(user.UserId, routeData, user);
 
-            var orgModel = new OrganisationViewModel {ManualRegistration = false, ManualAddress = true, SectorType = SectorTypes.Public};
+            var orgModel = new OrganisationViewModel {ManualRegistration = false, ManualAddress = true, SectorType = OrganisationSectors.Public};
 
             controller.StashModel(orgModel);
 
@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var org0 = new Organisation {
                 OrganisationId = 1,
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678"
             };
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 ManualAddress = true,
                 SelectedAuthorised = true,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,
@@ -178,7 +178,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SelectedEmployerIndex = 0,
                 SearchText = "smith",
                 ManualRegistration = true,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -221,7 +221,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var employerResult = new PagedResult<EmployerRecord>();
             employerResult.Results = new List<EmployerRecord>();
 
-            var model = new OrganisationViewModel {Employers = employerResult, ManualRegistration = true, SectorType = SectorTypes.Public};
+            var model = new OrganisationViewModel {Employers = employerResult, ManualRegistration = true, SectorType = OrganisationSectors.Public};
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user);
             // controller.Bind(model);
@@ -258,7 +258,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var employerResult = new PagedResult<EmployerRecord>();
             employerResult.Results = new List<EmployerRecord>();
 
-            var model = new OrganisationViewModel {Employers = employerResult, ManualRegistration = true, SectorType = SectorTypes.Private};
+            var model = new OrganisationViewModel {Employers = employerResult, ManualRegistration = true, SectorType = OrganisationSectors.Private};
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user);
             // controller.Bind(model);
@@ -301,7 +301,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = "smith",
                 ManualRegistration = false,
                 ManualAddress = true,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -373,7 +373,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 CancellationReason = "",
                 Employers = employerResult,
                 ManualRegistration = true,
-                SectorType = SectorTypes.Private
+                SectorType = OrganisationSectors.Private
             };
 
 
@@ -436,7 +436,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 CancellationReason = "",
                 Employers = employerResult,
                 ManualRegistration = true,
-                SectorType = SectorTypes.Public
+                SectorType = OrganisationSectors.Public
             };
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user);
@@ -505,7 +505,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = "Searchtext",
                 ManualRegistration = false,
                 SicCodes = new List<int>(),
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,
@@ -567,7 +567,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var employerResult = new PagedResult<EmployerRecord>();
             employerResult.Results = new List<EmployerRecord>();
 
-            var model = new OrganisationViewModel {Employers = employerResult, ManualRegistration = true, SectorType = SectorTypes.Private};
+            var model = new OrganisationViewModel {Employers = employerResult, ManualRegistration = true, SectorType = OrganisationSectors.Private};
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user);
             // controller.Bind(model);
@@ -634,7 +634,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SicSource = "CoHo",
                 SearchText = "Searchtext",
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,

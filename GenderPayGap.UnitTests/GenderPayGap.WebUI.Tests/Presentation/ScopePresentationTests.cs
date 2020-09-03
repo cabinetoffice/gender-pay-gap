@@ -247,18 +247,18 @@ namespace GenderPayGap.Tests
             testState.EnterCodes = new EnterCodesViewModel {EmployerReference = "ZXCV4567"};
 
             var organisations =
-                new List<Organisation> {new Organisation {EmployerReference = "ZXCV4567", SectorType = SectorTypes.Private}};
+                new List<Organisation> {new Organisation {EmployerReference = "ZXCV4567", Sector = OrganisationSectors.Private}};
             mockDataRepo.Setup(r => r.GetAll<Organisation>()).Returns(organisations.AsQueryable().BuildMock().Object);
 
             // greater than the current snapshot year
-            int testSnapshotYear = SectorTypes.Private.GetAccountingStartDate().Year + 1;
+            int testSnapshotYear = OrganisationSectors.Private.GetAccountingStartDate().Year + 1;
 
             var ex = Assert.ThrowsAsync<ArgumentOutOfRangeException>(
                 () => testScopePresentation.SavePresumedScopeAsync(testState, testSnapshotYear));
             Assert.That(ex.Message.Contains("(Parameter 'snapshotYear')"));
 
             // less than the prev snapshot year
-            testSnapshotYear -= SectorTypes.Private.GetAccountingStartDate().Year - 2;
+            testSnapshotYear -= OrganisationSectors.Private.GetAccountingStartDate().Year - 2;
             ex = Assert.ThrowsAsync<ArgumentOutOfRangeException>(
                 () => testScopePresentation.SavePresumedScopeAsync(testState, testSnapshotYear));
 
@@ -276,7 +276,7 @@ namespace GenderPayGap.Tests
         {
             var testOrg = new Organisation
             {
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 OrganisationAddresses = new List<OrganisationAddress> { new OrganisationAddress() }
             };
 

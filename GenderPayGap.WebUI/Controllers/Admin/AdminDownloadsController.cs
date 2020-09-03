@@ -52,7 +52,7 @@ namespace GenderPayGap.WebUI.Controllers
                         org.OrganisationId,
                         org.OrganisationName,
                         org.CompanyNumber,
-                        Sector = org.SectorType,
+                        Sector = org.Sector,
                         Status = org.Status,
                         Address = org.GetLatestAddress()?.GetAddressString(),
                         SicCodes = org.GetSicCodeIdsString(),
@@ -91,8 +91,8 @@ namespace GenderPayGap.WebUI.Controllers
                         org.OrganisationId,
                         org.OrganisationName,
                         Address = org.GetLatestAddress()?.GetAddressString(),
-                        Sector = org.SectorType,
-                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1),
+                        Sector = org.Sector,
+                        ReportingDeadline = org.Sector.GetAccountingStartDate().AddYears(1).AddDays(-1),
                     })
                 .ToList();
 
@@ -232,7 +232,7 @@ namespace GenderPayGap.WebUI.Controllers
 
                 OrganisationName = organisation.OrganisationName,
                 CompanyNumber = organisation.CompanyNumber,
-                SectorType = organisation.SectorType,
+                SectorType = organisation.Sector,
                 ScopeStatus = scopeForYear?.ScopeStatus.ToString() ?? "(no active scope)",
 
                 SnapshotDate = returnForYear.AccountingDate,
@@ -291,9 +291,9 @@ namespace GenderPayGap.WebUI.Controllers
                     {
                         org.OrganisationId,
                         org.OrganisationName,
-                        org.SectorType,
+                        SectorType = org.Sector,
                         Submitted = org.GetReturn(year) != null,
-                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                        ReportingDeadline = org.Sector.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
                         SubmittedDate = org.GetReturn(year)?.Created,
                         ModifiedDate = org.GetReturn(year)?.Modified,
                         org.GetReturn(year)?.LateReason
@@ -349,7 +349,7 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.UserId,
                         uo.Organisation.OrganisationName,
                         uo.Organisation.CompanyNumber,
-                        uo.Organisation.SectorType,
+                        SectorType = uo.Organisation.Sector,
                         uo.Method,
                         uo.User.Firstname,
                         uo.User.Lastname,
@@ -381,7 +381,7 @@ namespace GenderPayGap.WebUI.Controllers
                         uo.UserId,
                         uo.Organisation.OrganisationName,
                         uo.Organisation.CompanyNumber,
-                        uo.Organisation.SectorType,
+                        SectorType = uo.Organisation.Sector,
                         uo.Method,
                         uo.User.Firstname,
                         uo.User.Lastname,
@@ -493,7 +493,7 @@ namespace GenderPayGap.WebUI.Controllers
                         EmployerReference = o.EmployerReference,
                         OrganisationName = o.OrganisationName,
                         CompanyNo = o.CompanyNumber,
-                        Sector = o.SectorType,
+                        Sector = o.Sector,
                         Status = o.Status,
                         StatusDate = o.StatusDate,
                         StatusDetails = o.StatusDetails,

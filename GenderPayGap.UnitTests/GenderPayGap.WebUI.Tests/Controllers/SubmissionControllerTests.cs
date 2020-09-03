@@ -52,9 +52,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 EmailVerifiedDate = new DateTime(2017, 03, 13, 13, 23, 0)
             };
 
-            var organisation = new Organisation { OrganisationId = 1254, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = 1254, Sector = OrganisationSectors.Public };
 
-            DateTime currentYearAccountingStartDate = organisation.SectorType.GetAccountingStartDate();
+            DateTime currentYearAccountingStartDate = organisation.Sector.GetAccountingStartDate();
             var previousYearsAccountingStartYear = currentYearAccountingStartDate
                 .AddYears(-1)
                 .Year
@@ -74,7 +74,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var model = new ReturnViewModel
             {
-                SectorType = organisation.SectorType,
+                OrganisationSector = organisation.Sector,
                 ReportInfo = new ReportInfoModel
                 {
                     Draft = new Draft(organisation.OrganisationId, previousYearsAccountingStartYear)
@@ -117,9 +117,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 EmailVerifiedDate = new DateTime(2017, 04, 12, 18, 24, 0)
             };
 
-            var organisation = new Organisation { OrganisationId = 6812, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 6812, Sector = OrganisationSectors.Private };
 
-            DateTime currentYearAccountingStartDate = organisation.SectorType.GetAccountingStartDate();
+            DateTime currentYearAccountingStartDate = organisation.Sector.GetAccountingStartDate();
             var previousYearsAccountingStartYear = currentYearAccountingStartDate
                 .AddYears(-1)
                 .Year
@@ -139,7 +139,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var model = new ReturnViewModel
             {
-                SectorType = organisation.SectorType,
+                OrganisationSector = organisation.Sector,
                 ReportInfo = new ReportInfoModel
                 {
                     Draft = new Draft(organisation.OrganisationId, previousYearsAccountingStartYear)
@@ -181,7 +181,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 EmailAddress = "magnuski@hotmail.com",
                 EmailVerifiedDate = VirtualDateTime.Now
             };
-            var organisation = new Organisation { OrganisationId = new Random().Next(1000, 9999), SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = new Random().Next(1000, 9999), Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -215,7 +215,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 OrganisationId = 1,
                 OrganisationName = "test org name",
                 ReturnId = 1,
-                SectorType = SectorTypes.Private
+                OrganisationSector = OrganisationSectors.Private
             };
 
             #region We must load a draft if we are calling Enter calculations with a stashed model
@@ -226,7 +226,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -312,7 +312,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = mockedReturn.MaleMiddlePayBand,
                 MaleUpperPayBand = mockedReturn.MaleUpperPayBand,
                 MaleUpperQuartilePayBand = mockedReturn.MaleUpperQuartilePayBand,
-                SectorType = mockedReturn.Organisation.SectorType,
+                OrganisationSector = mockedReturn.Organisation.Sector,
                 LateReason = null
             };
 
@@ -416,8 +416,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                         actualReturnViewModel.ReturnId,
                         "ReturnId value does not match model");
                     Assert.AreEqual(
-                        expectedReturnViewModel.SectorType,
-                        actualReturnViewModel.SectorType,
+                        expectedReturnViewModel.OrganisationSector,
+                        actualReturnViewModel.OrganisationSector,
                         "SectorType value does not match model");
                 });
         }
@@ -429,7 +429,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -477,7 +477,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 PostCode = "PC1",
                 Status = AddressStatuses.Active
             };
-            var organisation = new Organisation { OrganisationId = testOrganisationId, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = testOrganisationId, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -488,7 +488,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             //mock return existing in the DB
-            DateTime testAccountingDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime testAccountingDate = OrganisationSectors.Private.GetAccountingStartDate();
 
             var @return = new Return
             {
@@ -538,7 +538,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -552,7 +552,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 userOrganisation,
                 @return);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
 
             controller.Bind(model);
 
@@ -596,7 +596,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 PostCode = "PC1",
                 Status = AddressStatuses.Active
             };
-            var organisation = new Organisation { OrganisationId = testOrganisationId, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = testOrganisationId, Sector = OrganisationSectors.Public };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -605,7 +605,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 PINConfirmedDate = VirtualDateTime.Now,
                 PIN = "1"
             };
-            DateTime testAccountingDate = SectorTypes.Public.GetAccountingStartDate();
+            DateTime testAccountingDate = OrganisationSectors.Public.GetAccountingStartDate();
 
             //mock return existing in the DB
             var @return = new Return
@@ -624,7 +624,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //mock entered 'return' at review CheckData view
             var model = new ReturnViewModel
             {
-                SectorType = SectorTypes.Public,
+                OrganisationSector = OrganisationSectors.Public,
                 AccountingDate = testAccountingDate,
                 CompanyLinkToGPGInfo = "http://www.gov.uk",
                 DiffMeanBonusPercent = 10,
@@ -653,7 +653,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -667,7 +667,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 userOrganisation,
                 @return);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Public.GetAccountingStartDate().Year;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Public.GetAccountingStartDate().Year;
 
             controller.Bind(model);
 
@@ -766,7 +766,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 PostCode = "PC1",
                 Status = AddressStatuses.Active
             };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -819,7 +819,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 userOrganisation,
                 @return);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
 
             controller.Bind(model);
             controller.StashModel(model);
@@ -843,7 +843,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             routeData.Values.Add("Controller", "Submit");
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user);
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
 
             //ACT:
             var result = await controller.CheckData(new ReturnViewModel()) as ViewResult;
@@ -1003,7 +1003,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             #endregion
@@ -1093,7 +1093,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             #endregion
@@ -1124,7 +1124,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 PostCode = "PC1",
                 Status = AddressStatuses.Active
             };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1177,7 +1177,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 userOrganisation,
                 @return);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
 
             controller.Bind(model);
 
@@ -1198,7 +1198,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             organisation.OrganisationId = new Random().Next(1000, 9999);
             var userOrganisation = new UserOrganisation
             {
@@ -1225,7 +1225,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -1345,7 +1345,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Public };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1361,7 +1361,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             string returnUrl = null;
 
-            var model = new ReturnViewModel { SectorType = SectorTypes.Public };
+            var model = new ReturnViewModel { OrganisationSector = OrganisationSectors.Public };
 
             #region We must load a draft if we are calling Enter calculations with a stashed model
 
@@ -1371,7 +1371,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -1439,7 +1439,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             //ARRANGE:
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1477,7 +1477,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -1547,7 +1547,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             //ARRANGE:
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1593,7 +1593,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -1621,7 +1621,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1675,7 +1675,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             controller.Bind(returnViewModel);
@@ -1716,7 +1716,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1770,7 +1770,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -1803,7 +1803,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ///TODO: create a real mock of the following (user, organisation and userOrganisation) 
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = new Random().Next(1000, 9999), SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = new Random().Next(1000, 9999), Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -1823,7 +1823,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             {
                 ReportInfo = new ReportInfoModel
                 {
-                    Draft = new Draft(organisation.OrganisationId, organisation.SectorType.GetAccountingStartDate().Year)
+                    Draft = new Draft(organisation.OrganisationId, organisation.Sector.GetAccountingStartDate().Year)
                     {
                         IsUserAllowedAccess = true
                     }
@@ -1983,7 +1983,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             routeData.Values.Add("action", "EnterCalculations");
             routeData.Values.Add("controller", "submit");
 
-            var model = new ReturnViewModel { ReturnId = 1, SectorType = SectorTypes.Private };
+            var model = new ReturnViewModel { ReturnId = 1, OrganisationSector = OrganisationSectors.Private };
 
             //Add a return to the mock repo to simulate one in the database
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation, @return);
@@ -2073,7 +2073,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ///TODO: create a real mock of the following (user, organisation and userOrganisation) 
             //ARRANGE:
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -2119,7 +2119,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             {
                 ReportInfo = new ReportInfoModel
                 {
-                    Draft = new Draft(organisation.OrganisationId, organisation.SectorType.GetAccountingStartDate().Year)
+                    Draft = new Draft(organisation.OrganisationId, organisation.Sector.GetAccountingStartDate().Year)
                     {
                         IsUserAllowedAccess = true
                     }
@@ -2230,7 +2230,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             expectedReturnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             #endregion
@@ -2285,8 +2285,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var returnViewModel = new ReturnViewModel
             {
                 OrganisationId = mockedOrganisation.OrganisationId,
-                AccountingDate = SectorTypes.Public.GetAccountingStartDate(),
-                SectorType = SectorTypes.Public,
+                AccountingDate = OrganisationSectors.Public.GetAccountingStartDate(),
+                OrganisationSector = OrganisationSectors.Public,
                 CompanyLinkToGPGInfo = "CompanyLinkToGPGInfo_554477",
                 ReportInfo = new ReportInfoModel()
             };
@@ -2319,7 +2319,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Assert
             Assert.AreEqual("CompanyLinkToGPGInfo_554477", actualReturnViewModel.CompanyLinkToGPGInfo);
             Assert.AreEqual("CompanyLinkToGPGInfo_554477", actualDraftFile.ReturnViewModelContent.CompanyLinkToGPGInfo);
-            Assert.AreEqual(SectorTypes.Public, actualDraftFile.ReturnViewModelContent.SectorType);
+            Assert.AreEqual(OrganisationSectors.Public, actualDraftFile.ReturnViewModelContent.OrganisationSector);
 
             // Clean up
             testDraftFileFileBusinessLogic.DiscardDraft(actualDraftFile);
@@ -2412,7 +2412,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //ARRANGE:
             ///TODO: create mock of the following (user, organisation and userOrganisation) 
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 0, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 0, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -2513,7 +2513,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Public };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -2547,7 +2547,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = 50,
                 MaleUpperPayBand = 50,
                 MaleUpperQuartilePayBand = 50,
-                SectorType = SectorTypes.Private
+                OrganisationSector = OrganisationSectors.Private
             };
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
@@ -2557,7 +2557,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var submissionServiceMock = new SubmissionService(null, null, new DraftFileBusinessLogic(testDataRepository));
             returnViewModel.ReportInfo.Draft = await submissionServiceMock.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             // Act
@@ -2596,7 +2596,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Public };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -2630,7 +2630,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = 50,
                 MaleUpperPayBand = 50,
                 MaleUpperQuartilePayBand = 50,
-                SectorType = SectorTypes.Private
+                OrganisationSector = OrganisationSectors.Private
             };
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
@@ -2640,7 +2640,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var submissionServiceMock = new SubmissionService(null, null, new DraftFileBusinessLogic(testDataRepository));
             returnViewModel.ReportInfo.Draft = await submissionServiceMock.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             // Act
@@ -2789,7 +2789,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ///TODO: create a real mock of the following (user, organisation and userOrganisation) 
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -2827,7 +2827,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = maleEquiValue,
                 MaleUpperPayBand = maleEquiValue,
                 MaleUpperQuartilePayBand = maleEquiValue,
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 ReportInfo = new ReportInfoModel()
             };
 
@@ -2839,15 +2839,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
-            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.Sector = OrganisationSectors.Private;
             controller.Bind(returnViewModel);
 
             controller.StashModel(returnViewModel);
@@ -2909,7 +2909,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = minOutOfRangeValue,
                 MaleUpperPayBand = minOutOfRangeValue,
                 MaleUpperQuartilePayBand = minOutOfRangeValue,
-                SectorType = SectorTypes.Private
+                OrganisationSector = OrganisationSectors.Private
             };
 
 
@@ -2999,7 +2999,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ///TODO: create a real mock of the following (user, organisation and userOrganisation) 
             //ARRANGE:
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -3037,7 +3037,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = maleEquiValue,
                 MaleUpperPayBand = maleEquiValue,
                 MaleUpperQuartilePayBand = maleEquiValue,
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 ReportInfo = new ReportInfoModel()
             };
 
@@ -3049,15 +3049,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
-            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.Sector = OrganisationSectors.Private;
             controller.Bind(returnViewModel);
 
             controller.StashModel(returnViewModel);
@@ -3081,7 +3081,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -3133,7 +3133,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 // size
                 OrganisationSize = OrganisationSizes.NotProvided,
                 OrganisationId = organisation.OrganisationId,
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 ReturnId = 0,
                 ReportInfo = new ReportInfoModel()
             };
@@ -3146,7 +3146,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -3155,8 +3155,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
-            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.Sector = OrganisationSectors.Private;
             controller.Bind(returnViewModel);
 
             controller.StashModel(returnViewModel);
@@ -3231,7 +3231,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Public };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Public };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -3270,7 +3270,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleUpperPayBand = 40,
                 MaleUpperQuartilePayBand = 20,
                 OrganisationId = organisation.OrganisationId,
-                SectorType = SectorTypes.Public,
+                OrganisationSector = OrganisationSectors.Public,
                 ReturnId = 0,
                 OrganisationSize = OrganisationSizes.Employees0To249,
                 ReportInfo = new ReportInfoModel()
@@ -3284,7 +3284,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -3293,8 +3293,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
-            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.Sector = OrganisationSectors.Private;
             controller.Bind(returnViewModel);
 
             controller.StashModel(returnViewModel);
@@ -3369,7 +3369,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ///TODO: create a real mock of the following (user, organisation and userOrganisation) 
             //ARRANGE:
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -3406,7 +3406,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = 40,
                 MaleUpperPayBand = 30,
                 MaleUpperQuartilePayBand = 50,
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 ReportInfo = new ReportInfoModel()
             };
 
@@ -3418,15 +3418,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
-            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.Sector = OrganisationSectors.Private;
             controller.Bind(returnViewModel);
 
             controller.StashModel(returnViewModel);
@@ -3487,7 +3487,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                     Assert.That(resultModel.ReturnId == returnViewModel.ReturnId, "Input value does not match model");
                     Assert.That(resultModel.ReturnUrl == returnViewModel.ReturnUrl, "Input value does not match model");
                     Assert.That(resultModel.Sector == returnViewModel.Sector, "Input value does not match model");
-                    Assert.That(resultModel.SectorType == returnViewModel.SectorType, "Input value does not match model");
+                    Assert.That(resultModel.OrganisationSector == returnViewModel.OrganisationSector, "Input value does not match model");
                     Assert.That(resultModel.FirstName == returnViewModel.FirstName, "Input value does not match model");
                     Assert.That(resultModel.JobTitle == returnViewModel.JobTitle, "Input value does not match model");
                     Assert.That(resultModel.LastName == returnViewModel.LastName, "Input value does not match model");
@@ -3632,7 +3632,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ///TODO: create mock of the following (user, organisation and userOrganisation) 
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -3668,7 +3668,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MaleMiddlePayBand = 40,
                 MaleUpperPayBand = 30,
                 MaleUpperQuartilePayBand = 50,
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 ReportInfo = new ReportInfoModel()
             };
 
@@ -3680,15 +3680,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
 
             var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
-            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.ReportingOrganisationStartYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.Sector = OrganisationSectors.Private;
             controller.Bind(returnViewModel);
 
             controller.StashModel(returnViewModel);
@@ -3749,7 +3749,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                     Assert.That(resultModel.ReturnId == returnViewModel.ReturnId, "Input value does not match model");
                     Assert.That(resultModel.ReturnUrl == returnViewModel.ReturnUrl, "Input value does not match model");
                     Assert.That(resultModel.Sector == returnViewModel.Sector, "Input value does not match model");
-                    Assert.That(resultModel.SectorType == returnViewModel.SectorType, "Input value does not match model");
+                    Assert.That(resultModel.OrganisationSector == returnViewModel.OrganisationSector, "Input value does not match model");
                     Assert.That(resultModel.FirstName == returnViewModel.FirstName, "Input value does not match model");
                     Assert.That(resultModel.JobTitle == returnViewModel.JobTitle, "Input value does not match model");
                     Assert.That(resultModel.LastName == returnViewModel.LastName, "Input value does not match model");
@@ -3816,7 +3816,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             #endregion
@@ -4038,7 +4038,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             model.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             #endregion
@@ -4171,7 +4171,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             mockRouteData.Values.Add("Controller", "Submit");
 
             DateTime dateTimeNow = VirtualDateTime.Now;
-            var testOrganisation = Mock.Of<Organisation>(org => org.SectorType == SectorTypes.Public);
+            var testOrganisation = Mock.Of<Organisation>(org => org.Sector == OrganisationSectors.Public);
             var testUserOrganisation =
                 Mock.Of<UserOrganisation>(x => x.PINConfirmedDate == dateTimeNow && x.Organisation == testOrganisation);
 
@@ -4198,7 +4198,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             mockRouteData.Values.Add("Controller", "Submit");
 
             DateTime dateTimeNow = VirtualDateTime.Now;
-            var testOrganisation = Mock.Of<Organisation>(org => org.SectorType == SectorTypes.Public);
+            var testOrganisation = Mock.Of<Organisation>(org => org.Sector == OrganisationSectors.Public);
             var testUserOrganisation =
                 Mock.Of<UserOrganisation>(x => x.PINConfirmedDate == dateTimeNow && x.Organisation == testOrganisation);
 
@@ -4239,7 +4239,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -4290,7 +4290,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -4383,7 +4383,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedOrganisation.Sector.GetAccountingStartDate().Year,
                 mockedUser.UserId);
 
             #endregion
@@ -4508,7 +4508,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 EmailAddress = "magnuski@hotmail.com",
                 EmailVerifiedDate = VirtualDateTime.Now
             };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             organisation.OrganisationId = new Random().Next(1000, 9999);
             var userOrganisation = new UserOrganisation
             {
@@ -4535,14 +4535,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
 
             var controller = UiTestHelper.GetController<SubmitController>(user.UserId, routeData, user, organisation, userOrganisation);
             controller.ReportingOrganisationId = organisation.OrganisationId;
-            controller.ReportingOrganisationStartYear = organisation.SectorType.GetAccountingStartDate().Year;
+            controller.ReportingOrganisationStartYear = organisation.Sector.GetAccountingStartDate().Year;
 
             controller.StashModel(returnViewModel);
 
@@ -4610,7 +4610,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -4761,7 +4761,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -4813,7 +4813,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
                 organisation.OrganisationId,
-                organisation.SectorType.GetAccountingStartDate().Year,
+                organisation.Sector.GetAccountingStartDate().Year,
                 user.UserId);
 
             #endregion
@@ -4857,7 +4857,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = null };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -4976,7 +4976,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,
@@ -5044,7 +5044,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         {
             // Arrange
             var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var organisation = new Organisation { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var userOrganisation = new UserOrganisation
             {
                 OrganisationId = organisation.OrganisationId,

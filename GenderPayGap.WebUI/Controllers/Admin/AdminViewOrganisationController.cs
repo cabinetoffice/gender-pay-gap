@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
             int firstReportingYear = Global.FirstReportingYear;
-            int currentReportingYear = SectorTypes.Public.GetAccountingStartDate().Year;
+            int currentReportingYear = OrganisationSectors.Public.GetAccountingStartDate().Year;
             int numberOfYears = currentReportingYear - firstReportingYear + 1;
             List<int> reportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList();
 

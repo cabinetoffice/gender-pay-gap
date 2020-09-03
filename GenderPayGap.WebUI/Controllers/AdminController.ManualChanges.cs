@@ -267,7 +267,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 processed.Add(employerRef);
 
-                var newSector = SectorTypes.Public;
+                var newSector = OrganisationSectors.Public;
 
                 Organisation org = await DataRepository.GetAll<Organisation>()
                     .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerRef);
@@ -277,7 +277,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     continue;
                 }
 
-                SectorTypes oldSector = org.SectorType;
+                OrganisationSectors oldSector = org.Sector;
 
                 var badReturnDates = false;
                 foreach (Return @return in org.Returns)
@@ -319,7 +319,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     if (oldSector != newSector)
                     {
                         //Change the sector type
-                        org.SectorType = newSector;
+                        org.Sector = newSector;
                         if (!test)
                         {
                             auditLogger.AuditChangeToOrganisation(
@@ -469,7 +469,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
                 processed.Add(employerRef);
 
-                var newSector = SectorTypes.Private;
+                var newSector = OrganisationSectors.Private;
 
                 Organisation org = await DataRepository.GetAll<Organisation>()
                     .FirstOrDefaultAsync(o => o.EmployerReference.ToUpper() == employerRef);
@@ -479,7 +479,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     continue;
                 }
 
-                SectorTypes oldSector = org.SectorType;
+                OrganisationSectors oldSector = org.Sector;
 
                 var badReturnDates = false;
                 foreach (Return @return in org.Returns)
@@ -521,7 +521,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     //Change the sector type
                     if (oldSector != newSector)
                     {
-                        org.SectorType = newSector;
+                        org.Sector = newSector;
                         if (!test)
                         {
                             auditLogger.AuditChangeToOrganisation(

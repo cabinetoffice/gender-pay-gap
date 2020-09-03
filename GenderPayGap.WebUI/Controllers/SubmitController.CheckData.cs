@@ -103,7 +103,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                     stashedReturnViewModel.IsDifferentFromDatabase = true;
                     // Recalculate to know if they're submitting late. This is because it is possible that a draft was created BEFORE the cut-off date ("should provide late reason" would have been marked as 'false') but are completing the submission process AFTER which is when we need them to provide a late reason and the flag is expected to be 'true'.
                     stashedReturnViewModel.ShouldProvideLateReason = submissionService.IsHistoricSnapshotYear(
-                        stashedReturnViewModel.SectorType,
+                        stashedReturnViewModel.OrganisationSector,
                         ReportingOrganisationStartYear.Value);
                 }
             }
@@ -147,7 +147,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             postedReturnViewModel.ReportInfo.Draft = stashedReturnViewModel.ReportInfo.Draft;
 
-            if (postedReturnViewModel.SectorType == SectorTypes.Public)
+            if (postedReturnViewModel.OrganisationSector == OrganisationSectors.Public)
             {
                 ModelState.Exclude(
                     nameof(postedReturnViewModel.FirstName),

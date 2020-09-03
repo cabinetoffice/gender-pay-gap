@@ -235,7 +235,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         public bool FillMissingScopes(Organisation org)
         {
             int firstYear = Global.FirstReportingYear;
-            DateTime currentSnapshotDate = org.SectorType.GetAccountingStartDate();
+            DateTime currentSnapshotDate = org.Sector.GetAccountingStartDate();
             int currentSnapshotYear = currentSnapshotDate.Year;
             var prevYearScope = ScopeStatuses.Unknown;
             var neverDeclaredScope = true;
@@ -307,7 +307,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             var orgsWithMissingScope = new HashSet<OrganisationMissingScope>();
             foreach (Organisation org in allOrgs)
             {
-                DateTime currentSnapshotDate = org.SectorType.GetAccountingStartDate();
+                DateTime currentSnapshotDate = org.Sector.GetAccountingStartDate();
                 int currentYear = currentSnapshotDate.Year;
                 var missingSnapshotYears = new List<int>();
 
@@ -427,7 +427,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         {
             if (snapshotYear == 0)
             {
-                snapshotYear = organisation.SectorType.GetAccountingStartDate().Year;
+                snapshotYear = organisation.Sector.GetAccountingStartDate().Year;
             }
 
             OrganisationScope orgScope = organisation.OrganisationScopes

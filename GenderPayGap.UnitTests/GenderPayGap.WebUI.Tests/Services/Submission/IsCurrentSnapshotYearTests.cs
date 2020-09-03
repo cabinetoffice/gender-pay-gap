@@ -25,11 +25,11 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
         }
 
-        [TestCase(SectorTypes.Private, 2017)]
-        [TestCase(SectorTypes.Public, 2017)]
-        [TestCase(SectorTypes.Private, 2018)]
-        [TestCase(SectorTypes.Public, 2018)]
-        public void ReturnsFalseWhenNotCurrentYear(SectorTypes testSector, int testYear)
+        [TestCase(OrganisationSectors.Private, 2017)]
+        [TestCase(OrganisationSectors.Public, 2017)]
+        [TestCase(OrganisationSectors.Private, 2018)]
+        [TestCase(OrganisationSectors.Public, 2018)]
+        public void ReturnsFalseWhenNotCurrentYear(OrganisationSectors testSector, int testYear)
         {
             // Arrange
             DateTime testSnapshotDate = testSector.GetAccountingStartDate();
@@ -58,9 +58,9 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             Assert.IsFalse(actual, "Expected IsCurrentSnapshotYear to return true");
         }
 
-        [TestCase(SectorTypes.Private)]
-        [TestCase(SectorTypes.Public)]
-        public void ReturnsTrueForCurrentYear(SectorTypes testSector)
+        [TestCase(OrganisationSectors.Private)]
+        [TestCase(OrganisationSectors.Public)]
+        public void ReturnsTrueForCurrentYear(OrganisationSectors testSector)
         {
             // Arrange
             DateTime testSnapshotDate = testSector.GetAccountingStartDate();

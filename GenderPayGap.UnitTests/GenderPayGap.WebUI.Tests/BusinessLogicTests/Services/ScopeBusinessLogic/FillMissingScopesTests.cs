@@ -33,12 +33,12 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         // sut
         private IScopeBusinessLogic scopeBusinessLogic;
 
-        [TestCase(SectorTypes.Private)]
-        [TestCase(SectorTypes.Public)]
-        public void PresumesOutOfScopeForSnapshotYearsBeforeOrgCreatedDate(SectorTypes testSectorType)
+        [TestCase(OrganisationSectors.Private)]
+        [TestCase(OrganisationSectors.Public)]
+        public void PresumesOutOfScopeForSnapshotYearsBeforeOrgCreatedDate(OrganisationSectors testOrganisationSector)
         {
             // setup
-            Organisation testOrg = CreateOrgWithNoScopes(1, testSectorType, VirtualDateTime.Now);
+            Organisation testOrg = CreateOrgWithNoScopes(1, testOrganisationSector, VirtualDateTime.Now);
 
             // act
             bool actualChanged = scopeBusinessLogic.FillMissingScopes(testOrg);
@@ -47,7 +47,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.IsTrue(actualChanged, "Expected change for missing scopes");
 
             // test the count of scopes set is correct
-            DateTime currentSnapshotDate = testOrg.SectorType.GetAccountingStartDate();
+            DateTime currentSnapshotDate = testOrg.Sector.GetAccountingStartDate();
             int expectedScopeCount = (currentSnapshotDate.Year - Global.FirstReportingYear) + 1;
             Assert.AreEqual(expectedScopeCount, testOrg.OrganisationScopes.Count);
 
@@ -63,13 +63,13 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.AreEqual(ScopeStatuses.PresumedInScope, actualScopesArray[actualScopesArray.Length - 1].ScopeStatus);
         }
 
-        [TestCase(SectorTypes.Private)]
-        [TestCase(SectorTypes.Public)]
-        public void PresumesInScopeForSnapshotYearsDuringAndAfterOrgCreatedDate(SectorTypes testSectorType)
+        [TestCase(OrganisationSectors.Private)]
+        [TestCase(OrganisationSectors.Public)]
+        public void PresumesInScopeForSnapshotYearsDuringAndAfterOrgCreatedDate(OrganisationSectors testOrganisationSector)
         {
             // setup
-            DateTime testCreatedDate = testSectorType.GetAccountingStartDate().AddYears(-1);
-            Organisation testOrg = CreateOrgWithNoScopes(1, testSectorType, testCreatedDate);
+            DateTime testCreatedDate = testOrganisationSector.GetAccountingStartDate().AddYears(-1);
+            Organisation testOrg = CreateOrgWithNoScopes(1, testOrganisationSector, testCreatedDate);
 
             // act
             bool actualChanged = scopeBusinessLogic.FillMissingScopes(testOrg);
@@ -78,7 +78,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.IsTrue(actualChanged, "Expected change for missing scopes");
 
             // test the count of scopes set is correct
-            DateTime currentSnapshotDate = testOrg.SectorType.GetAccountingStartDate();
+            DateTime currentSnapshotDate = testOrg.Sector.GetAccountingStartDate();
             int expectedScopeCount = (currentSnapshotDate.Year - Global.FirstReportingYear) + 1;
             Assert.AreEqual(expectedScopeCount, testOrg.OrganisationScopes.Count);
 
@@ -91,17 +91,17 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             }
         }
 
-        [TestCase(SectorTypes.Private, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
-        public void PreservesPresumedScopesFromPreviousYear(SectorTypes testSectorType,
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
+        public void PreservesPresumedScopesFromPreviousYear(OrganisationSectors testOrganisationSector,
             ScopeStatuses testDeclaredScopeStatus,
             ScopeStatuses expectedPresumedScopeStatus)
         {
             // setup
-            DateTime testSnapshotDate = testSectorType.GetAccountingStartDate(Global.FirstReportingYear);
-            Organisation testOrg = CreateOrgWithScopeForAllYears(1, testSectorType, testDeclaredScopeStatus, testSnapshotDate);
+            DateTime testSnapshotDate = testOrganisationSector.GetAccountingStartDate(Global.FirstReportingYear);
+            Organisation testOrg = CreateOrgWithScopeForAllYears(1, testOrganisationSector, testDeclaredScopeStatus, testSnapshotDate);
 
             // act
             bool actualChanged = scopeBusinessLogic.FillMissingScopes(testOrg);
@@ -110,18 +110,18 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.IsTrue(actualChanged, "Expected change to be true for missing scopes");
         }
 
-        [TestCase(SectorTypes.Private, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
-        [TestCase(SectorTypes.Public, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
-        public void PreservesDeclaredScopes(SectorTypes testSectorType,
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
+        [TestCase(OrganisationSectors.Public, ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope)]
+        public void PreservesDeclaredScopes(OrganisationSectors testOrganisationSector,
             ScopeStatuses testDeclaredScopeStatus,
             ScopeStatuses expectedPresumedScopeStatus)
         {
             // setup
-            DateTime testCreatedDate = testSectorType.GetAccountingStartDate(Global.FirstReportingYear);
+            DateTime testCreatedDate = testOrganisationSector.GetAccountingStartDate(Global.FirstReportingYear);
             Organisation testOrg = CreateOrgWithDeclaredAndPresumedScopes(
-                testSectorType,
+                testOrganisationSector,
                 testDeclaredScopeStatus,
                 testCreatedDate,
                 testCreatedDate);
@@ -143,15 +143,15 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             }
         }
 
-        private Organisation CreateOrgWithNoScopes(int testOrgId, SectorTypes testSector, DateTime testCreated)
+        private Organisation CreateOrgWithNoScopes(int testOrgId, OrganisationSectors testSector, DateTime testCreated)
         {
             return new Organisation {
-                OrganisationId = testOrgId, SectorType = testSector, Status = OrganisationStatuses.Active, Created = testCreated
+                OrganisationId = testOrgId, Sector = testSector, Status = OrganisationStatuses.Active, Created = testCreated
             };
         }
 
         private Organisation CreateOrgWithDeclaredAndPresumedScopes(
-            SectorTypes testSector,
+            OrganisationSectors testSector,
             ScopeStatuses testDeclaredScopeStatus,
             DateTime testCreated,
             DateTime testSnapshotDate)
@@ -180,12 +180,12 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         }
 
         private Organisation CreateOrgWithScopeForAllYears(int testOrgId,
-            SectorTypes testSector,
+            OrganisationSectors testSector,
             ScopeStatuses testScopeStatus,
             DateTime snapshotDate)
         {
             int firstYear = Global.FirstReportingYear;
-            int lastYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            int lastYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
 
             Organisation testOrg = CreateOrgWithNoScopes(testOrgId, testSector, VirtualDateTime.Now);
 

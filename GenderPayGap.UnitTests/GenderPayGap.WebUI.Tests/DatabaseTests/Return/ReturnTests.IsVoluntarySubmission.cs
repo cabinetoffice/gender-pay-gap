@@ -11,14 +11,14 @@ namespace GenderPayGap.Database.ReturnTests
     public class IsVoluntarySubmissionTests
     {
 
-        [TestCase(SectorTypes.Private, 249, ScopeStatuses.OutOfScope)]
-        [TestCase(SectorTypes.Private, 249, ScopeStatuses.PresumedOutOfScope)]
-        [TestCase(SectorTypes.Public, 249, ScopeStatuses.OutOfScope)]
-        [TestCase(SectorTypes.Public, 249, ScopeStatuses.PresumedOutOfScope)]
-        public void IsTrueWhenVoluntary(SectorTypes testSector, int testOrgSize, ScopeStatuses testScopeStatus)
+        [TestCase(OrganisationSectors.Private, 249, ScopeStatuses.OutOfScope)]
+        [TestCase(OrganisationSectors.Private, 249, ScopeStatuses.PresumedOutOfScope)]
+        [TestCase(OrganisationSectors.Public, 249, ScopeStatuses.OutOfScope)]
+        [TestCase(OrganisationSectors.Public, 249, ScopeStatuses.PresumedOutOfScope)]
+        public void IsTrueWhenVoluntary(OrganisationSectors testSector, int testOrgSize, ScopeStatuses testScopeStatus)
         {
             // Arrange 
-            Organisation testOrganisation = testSector == SectorTypes.Private
+            Organisation testOrganisation = testSector == OrganisationSectors.Private
                 ? OrganisationHelper.GetPrivateOrganisation()
                 : OrganisationHelper.GetPublicOrganisation();
 
@@ -38,52 +38,52 @@ namespace GenderPayGap.Database.ReturnTests
             Assert.IsTrue(actual);
         }
 
-        [TestCase(SectorTypes.Private, 0, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, 0, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, 0, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Private, 249, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, 249, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, 249, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Private, 499, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, 499, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, 499, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Private, 999, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, 999, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, 999, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Private, 4999, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, 4999, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, 4999, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Private, 19999, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, 19999, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, 19999, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Private, int.MaxValue, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Private, int.MaxValue, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Private, int.MaxValue, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, 0, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, 0, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, 0, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, 249, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, 249, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, 249, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, 499, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, 499, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, 499, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, 999, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, 999, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, 999, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, 4999, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, 4999, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, 4999, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, 19999, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, 19999, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, 19999, ScopeStatuses.Unknown)]
-        [TestCase(SectorTypes.Public, int.MaxValue, ScopeStatuses.InScope)]
-        [TestCase(SectorTypes.Public, int.MaxValue, ScopeStatuses.PresumedInScope)]
-        [TestCase(SectorTypes.Public, int.MaxValue, ScopeStatuses.Unknown)]
-        public void IsFalseWhenNotVoluntary(SectorTypes testSector, int testOrgSize, ScopeStatuses testScopeStatus)
+        [TestCase(OrganisationSectors.Private, 0, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, 0, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, 0, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Private, 249, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, 249, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, 249, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Private, 499, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, 499, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, 499, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Private, 999, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, 999, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, 999, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Private, 4999, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, 4999, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, 4999, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Private, 19999, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, 19999, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, 19999, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Private, int.MaxValue, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Private, int.MaxValue, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Private, int.MaxValue, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, 0, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, 0, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, 0, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, 249, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, 249, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, 249, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, 499, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, 499, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, 499, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, 999, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, 999, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, 999, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, 4999, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, 4999, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, 4999, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, 19999, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, 19999, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, 19999, ScopeStatuses.Unknown)]
+        [TestCase(OrganisationSectors.Public, int.MaxValue, ScopeStatuses.InScope)]
+        [TestCase(OrganisationSectors.Public, int.MaxValue, ScopeStatuses.PresumedInScope)]
+        [TestCase(OrganisationSectors.Public, int.MaxValue, ScopeStatuses.Unknown)]
+        public void IsFalseWhenNotVoluntary(OrganisationSectors testSector, int testOrgSize, ScopeStatuses testScopeStatus)
         {
             // Arrange 
-            Organisation testOrganisation = testSector == SectorTypes.Private
+            Organisation testOrganisation = testSector == OrganisationSectors.Private
                 ? OrganisationHelper.GetPrivateOrganisation()
                 : OrganisationHelper.GetPublicOrganisation();
 

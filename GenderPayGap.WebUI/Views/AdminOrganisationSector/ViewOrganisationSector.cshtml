@@ -1,0 +1,101 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.Database.Organisation
+
+@{
+    ViewBag.Title = $"Sector history - {Model.OrganisationName} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Sector history"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Sector history
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.OrganisationName)
+    </span>
+</h1>
+
+@if (Model.Status == OrganisationStatuses.Retired || Model.Status == OrganisationStatuses.Active || Model.Status == OrganisationStatuses.Deleted)
+{
+    // TODO: Make this go to the right place
+    @Html.GovUkButton(new ButtonViewModel
+    {
+        Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
+        Text = "Change sector"
+    })
+}
+else
+{
+    <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
+        Change sector
+    </button>
+    <span class="govuk-hint">
+        You cannot change sector of an organisation that is @(Model.Status)
+    </span>
+}
+
+@if (!Model.OrganisationSectors.Any())
+{
+    <div class="govuk-body">
+        No organisation sector information
+    </div>
+}
+else
+{
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Sector</th>
+                <th scope="col" class="govuk-table__header">Changed on date</th>
+                <th scope="col" class="govuk-table__header">User</th>
+                <th scope="col" class="govuk-table__header">Details</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (OrganisationSector status in Model.OrganisationSectors.OrderByDescending(s => s.SectorDate))
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">@(status.Sector)</td>
+                    <td class="govuk-table__cell">@(status.SectorDate.ToString("d MMM yyyy"))</td>
+                    <td class="govuk-table__cell">
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
+                           class="govuk-link">
+                            @(status.ByUser.Fullname)
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">@(status.SectorDetails)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

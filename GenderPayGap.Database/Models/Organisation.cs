@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using Newtonsoft.Json;
 
@@ -15,6 +16,7 @@ namespace GenderPayGap.Database
             OrganisationAddresses = new HashSet<OrganisationAddress>();
             OrganisationNames = new HashSet<OrganisationName>();
             OrganisationReferences = new HashSet<OrganisationReference>();
+            OrganisationSectors = new HashSet<OrganisationSector>();
             OrganisationScopes = new HashSet<OrganisationScope>();
             OrganisationSicCodes = new HashSet<OrganisationSicCode>();
             OrganisationStatuses = new HashSet<OrganisationStatus>();
@@ -29,7 +31,14 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public string OrganisationName { get; set; }
         [JsonProperty]
-        public SectorTypes SectorType { get; set; }
+        public OrganisationSectors Sector { get; set; }
+        
+        [JsonProperty]
+        public DateTime SectorDate { get; set; } = VirtualDateTime.Now;
+        
+        [JsonProperty]
+        public string SectorDetails { get; set; }
+        
         [JsonProperty]
         public OrganisationStatuses Status { get; set; }
         [JsonProperty]
@@ -56,6 +65,7 @@ namespace GenderPayGap.Database
         public virtual ICollection<OrganisationAddress> OrganisationAddresses { get; set; }
         public virtual ICollection<OrganisationName> OrganisationNames { get; set; }
         public virtual ICollection<OrganisationReference> OrganisationReferences { get; set; }
+        public virtual ICollection<OrganisationSector> OrganisationSectors { get; set; }
         public virtual ICollection<OrganisationScope> OrganisationScopes { get; set; }
         public virtual ICollection<OrganisationSicCode> OrganisationSicCodes { get; set; }
         public virtual ICollection<OrganisationStatus> OrganisationStatuses { get; set; }

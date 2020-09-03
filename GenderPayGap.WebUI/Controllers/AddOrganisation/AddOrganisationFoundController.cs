@@ -253,7 +253,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         private static void PopulateViewModelBasedOnOrganisation(AddOrganisationFoundViewModel viewModel, Organisation organisation)
         {
             // Sector
-            viewModel.Sector = organisation.SectorType == SectorTypes.Public
+            viewModel.Sector = organisation.Sector == OrganisationSectors.Public
                 ? AddOrganisationSector.Public
                 : AddOrganisationSector.Private;
 
@@ -324,7 +324,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             };
 
             // Sector
-            alreadyRegisteringViewModel.Sector = existingUserOrganisation.Organisation.SectorType == SectorTypes.Public
+            alreadyRegisteringViewModel.Sector = existingUserOrganisation.Organisation.Sector == OrganisationSectors.Public
                 ? AddOrganisationSector.Public
                 : AddOrganisationSector.Private;
 

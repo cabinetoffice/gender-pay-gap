@@ -113,7 +113,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         public long ReturnId { get; set; }
         public long OrganisationId { get; set; }
         public string EncryptedOrganisationId { get; set; }
-        public SectorTypes SectorType { get; set; }
+        public OrganisationSectors OrganisationSector { get; set; }
 
         public DateTime AccountingDate { get; set; }
         public DateTime Modified { get; set; }
@@ -196,7 +196,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
                                             && FemaleMoneyFromMeanHourlyRate >= 0
                                             && FemaleMoneyFromMedianHourlyRate >= 0;
 
-            if (SectorType == SectorTypes.Public)
+            if (OrganisationSector == OrganisationSectors.Public)
             {
                 return hasEnterCalculationsData;
             }

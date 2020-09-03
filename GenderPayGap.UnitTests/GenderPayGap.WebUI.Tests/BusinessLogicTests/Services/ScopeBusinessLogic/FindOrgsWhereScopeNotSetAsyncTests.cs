@@ -27,18 +27,18 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
 
             // setup data
-            DateTime currentPrivateSnapshotDate = SectorTypes.Private.GetAccountingStartDate();
-            DateTime currentPublicSnapshotDate = SectorTypes.Public.GetAccountingStartDate();
+            DateTime currentPrivateSnapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
+            DateTime currentPublicSnapshotDate = OrganisationSectors.Public.GetAccountingStartDate();
 
             testOrgs = new List<Organisation>();
-            testOrgs.Add(CreateOrgWithExistingScopeForAllYears(1, SectorTypes.Private, currentPrivateSnapshotDate));
-            testOrgs.Add(CreateOrgWithExistingScopeForAllYears(2, SectorTypes.Public, currentPublicSnapshotDate));
+            testOrgs.Add(CreateOrgWithExistingScopeForAllYears(1, OrganisationSectors.Private, currentPrivateSnapshotDate));
+            testOrgs.Add(CreateOrgWithExistingScopeForAllYears(2, OrganisationSectors.Public, currentPublicSnapshotDate));
 
-            testOrgs.Add(CreateOrgWithMissingScopesForAllYears(3, SectorTypes.Private));
-            testOrgs.Add(CreateOrgWithMissingScopesForAllYears(4, SectorTypes.Public));
+            testOrgs.Add(CreateOrgWithMissingScopesForAllYears(3, OrganisationSectors.Private));
+            testOrgs.Add(CreateOrgWithMissingScopesForAllYears(4, OrganisationSectors.Public));
 
-            testOrgs.Add(CreateOrgWithUnknownScopesForAllYears(5, SectorTypes.Private, currentPrivateSnapshotDate));
-            testOrgs.Add(CreateOrgWithUnknownScopesForAllYears(6, SectorTypes.Public, currentPublicSnapshotDate));
+            testOrgs.Add(CreateOrgWithUnknownScopesForAllYears(5, OrganisationSectors.Private, currentPrivateSnapshotDate));
+            testOrgs.Add(CreateOrgWithUnknownScopesForAllYears(6, OrganisationSectors.Public, currentPublicSnapshotDate));
 
             mockDataRepository.SetupGetAll(testOrgs);
 
@@ -66,9 +66,9 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             Assert.IsNull(actualMissingEntry, "Expected to return organisations who have missing scopes");
         }
 
-        [TestCase(3, SectorTypes.Private)]
-        [TestCase(4, SectorTypes.Public)]
-        public async Task FindsOrgsWhereScopeIsMissing(int expectedMissingOrgId, SectorTypes testSector)
+        [TestCase(3, OrganisationSectors.Private)]
+        [TestCase(4, OrganisationSectors.Public)]
+        public async Task FindsOrgsWhereScopeIsMissing(int expectedMissingOrgId, OrganisationSectors testSector)
         {
             // act
             HashSet<OrganisationMissingScope> actualMissingOrgScopes = await scopeBusinessLogic.FindOrgsWhereScopeNotSetAsync();
@@ -88,9 +88,9 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             }
         }
 
-        [TestCase(5, SectorTypes.Private)]
-        [TestCase(6, SectorTypes.Public)]
-        public async Task FindsOrgsWhereScopeIsUnknown(int expectedUnknownOrgId, SectorTypes testSector)
+        [TestCase(5, OrganisationSectors.Private)]
+        [TestCase(6, OrganisationSectors.Public)]
+        public async Task FindsOrgsWhereScopeIsUnknown(int expectedUnknownOrgId, OrganisationSectors testSector)
         {
             // act
             HashSet<OrganisationMissingScope> actualMissingOrgScopes = await scopeBusinessLogic.FindOrgsWhereScopeNotSetAsync();
@@ -110,9 +110,9 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             }
         }
 
-        private Organisation CreateOrgWithExistingScopeForAllYears(int testOrgId, SectorTypes testSector, DateTime testLastSnapshotDate)
+        private Organisation CreateOrgWithExistingScopeForAllYears(int testOrgId, OrganisationSectors testSector, DateTime testLastSnapshotDate)
         {
-            var mockOrg = new Organisation {OrganisationId = testOrgId, SectorType = testSector, Status = OrganisationStatuses.Active};
+            var mockOrg = new Organisation {OrganisationId = testOrgId, Sector = testSector, Status = OrganisationStatuses.Active};
 
             for (int year = Global.FirstReportingYear; year <= testLastSnapshotDate.Year; year++)
             {
@@ -130,14 +130,14 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
             return mockOrg;
         }
 
-        private Organisation CreateOrgWithMissingScopesForAllYears(int testOrgId, SectorTypes testSector)
+        private Organisation CreateOrgWithMissingScopesForAllYears(int testOrgId, OrganisationSectors testSector)
         {
-            return new Organisation {OrganisationId = testOrgId, SectorType = testSector, Status = OrganisationStatuses.Active};
+            return new Organisation {OrganisationId = testOrgId, Sector = testSector, Status = OrganisationStatuses.Active};
         }
 
-        private Organisation CreateOrgWithUnknownScopesForAllYears(int testOrgId, SectorTypes testSector, DateTime testLastSnapshotDate)
+        private Organisation CreateOrgWithUnknownScopesForAllYears(int testOrgId, OrganisationSectors testSector, DateTime testLastSnapshotDate)
         {
-            var mockOrg = new Organisation {OrganisationId = testOrgId, SectorType = testSector, Status = OrganisationStatuses.Active};
+            var mockOrg = new Organisation {OrganisationId = testOrgId, Sector = testSector, Status = OrganisationStatuses.Active};
 
             for (int year = Global.FirstReportingYear; year <= testLastSnapshotDate.Year; year++)
             {

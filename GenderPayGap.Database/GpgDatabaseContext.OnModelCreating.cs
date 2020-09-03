@@ -138,12 +138,12 @@ namespace GenderPayGap.Database
 
                     entity.HasIndex(e => e.OrganisationName);
 
-                    entity.HasIndex(e => e.SectorType);
+                    entity.HasIndex(e => e.Sector);
 
                     entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
-                    entity.Property(e => e.SectorType).HasColumnName("SectorTypeId");
+                    entity.Property(e => e.Sector).HasColumnName("SectorTypeId");
 
                     entity.Property(e => e.CompanyNumber).HasMaxLength(10);
 
@@ -232,6 +232,35 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.OrganisationSicCodes)
                         .HasForeignKey(d => d.SicCodeId)
                         .HasConstraintName("FK_dbo.OrganisationSicCodes_dbo.SicCodes_SicCodeId");
+                });
+
+            #endregion
+            
+            #region OrganisationSector
+
+            modelBuilder.Entity<OrganisationSector>(
+                entity => {
+                    entity.HasKey(e => e.OrganisationSectorId).HasName("PK_dbo.OrganisationSector");
+                    entity.HasIndex(e => e.ByUserId);
+
+                    entity.HasIndex(e => e.OrganisationId);
+
+                    entity.HasIndex(e => e.SectorDate);
+
+                    entity.Property(e => e.Sector).HasColumnName("SectorId");
+
+                    entity.Property(e => e.SectorDetails).HasMaxLength(255);
+
+                    entity.HasOne(d => d.Organisation)
+                        .WithMany(p => p.OrganisationSectors)
+                        .HasForeignKey(d => d.OrganisationId)
+                        .HasConstraintName("FK_dbo.OrganisationSector_dbo.Organisations_OrganisationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne(d => d.ByUser)
+                        .WithMany()
+                        .HasForeignKey(d => d.ByUserId)
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             #endregion

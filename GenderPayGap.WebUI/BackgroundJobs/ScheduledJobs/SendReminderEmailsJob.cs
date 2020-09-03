@@ -50,13 +50,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 return;
             }
 
-            SendReminderEmailsForSectorType(SectorTypes.Private, runId, startTime);
-            SendReminderEmailsForSectorType(SectorTypes.Public, runId, startTime);
+            SendReminderEmailsForSectorType(OrganisationSectors.Private, runId, startTime);
+            SendReminderEmailsForSectorType(OrganisationSectors.Public, runId, startTime);
 
             JobHelpers.LogFunctionEnd(runId, nameof(SendReminderEmails), startTime);
         }
 
-        private void SendReminderEmailsForSectorType(SectorTypes sector, string runId, DateTime startTime)
+        private void SendReminderEmailsForSectorType(OrganisationSectors sector, string runId, DateTime startTime)
         {
             if (IsAfterEarliestReminder(sector))
             {
@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
                     .Where(user => !user.ReminderEmails
-                            .Where(re => re.SectorType == sector)
+                            .Where(re => re.OrganisationSector == sector)
                             .Where(re => re.DateChecked > latestReminderEmailDate)
                             .Any());
 
@@ -89,13 +89,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             }
         }
 
-        private void CheckUserAndSendReminderEmailsForSectorType(User user, SectorTypes sector)
+        private void CheckUserAndSendReminderEmailsForSectorType(User user, OrganisationSectors sector)
         {
             List<Organisation> inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
                 .Where(uo => uo.PINConfirmedDate != null)
                 .Select(uo => uo.Organisation)
                 .Where(o => o.Status == OrganisationStatuses.Active)
-                .Where(o => o.SectorType == sector)
+                .Where(o => o.Sector == sector)
                 .Where(o => o.OrganisationScopes.Any(
                     s => s.Status == ScopeRowStatuses.Active &&
                          s.SnapshotDate == sector.GetAccountingStartDate() &&
@@ -113,16 +113,16 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         private void SendReminderEmailsForSectorType(
             User user,
             List<Organisation> inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport,
-            SectorTypes sectorType)
+            OrganisationSectors organisationSector)
         {
             try
             {
                 bool anyOrganisationsToEmailAbout = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Count > 0;
                 if (anyOrganisationsToEmailAbout)
                 {
-                    SendReminderEmail(user, sectorType, inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport);
+                    SendReminderEmail(user, organisationSector, inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport);
                 }
-                SaveReminderEmailRecord(user, sectorType, anyOrganisationsToEmailAbout);
+                SaveReminderEmailRecord(user, organisationSector, anyOrganisationsToEmailAbout);
             }
             catch (Exception ex)
             {
@@ -131,7 +131,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     new
                     {
                         user.UserId,
-                        SectorType = sectorType,
+                        SectorType = organisationSector,
                         OrganisationIds = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Select(o => o.OrganisationId),
                         Exception = ex.Message
                     });
@@ -139,25 +139,25 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         }
 
         private void SendReminderEmail(User user,
-            SectorTypes sectorType,
+            OrganisationSectors organisationSector,
             List<Organisation> organisations)
         {
             emailSendingService.SendReminderEmail(
                 emailAddress: user.EmailAddress,
-                deadlineDate: sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
-                daysUntilDeadline: sectorType.GetAccountingStartDate().AddYears(1).Subtract(VirtualDateTime.Now).Days,
+                deadlineDate: organisationSector.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                daysUntilDeadline: organisationSector.GetAccountingStartDate().AddYears(1).Subtract(VirtualDateTime.Now).Days,
                 organisationNames: GetOrganisationNameString(organisations),
                 organisationIsSingular: organisations.Count == 1,
                 organisationIsPlural: organisations.Count > 1,
-                sectorType: sectorType.ToString().ToLower());
+                sectorType: organisationSector.ToString().ToLower());
         }
 
-        private static void SaveReminderEmailRecord(User user, SectorTypes sectorType, bool wasAnEmailSent)
+        private static void SaveReminderEmailRecord(User user, OrganisationSectors organisationSector, bool wasAnEmailSent)
         {
             var reminderEmailRecord = new ReminderEmail
             {
                 UserId = user.UserId,
-                SectorType = sectorType,
+                OrganisationSector = organisationSector,
                 DateChecked = VirtualDateTime.Now,
                 EmailSent = wasAnEmailSent
             };
@@ -182,39 +182,39 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             return $"{organisations[0].OrganisationName} and {organisations.Count - 1} other organisations";
         }
 
-        private bool IsAfterEarliestReminder(SectorTypes sectorType)
+        private bool IsAfterEarliestReminder(OrganisationSectors organisationSector)
         {
-            return VirtualDateTime.Now > GetEarliestReminderDate(sectorType);
+            return VirtualDateTime.Now > GetEarliestReminderDate(organisationSector);
         }
 
-        private static DateTime GetEarliestReminderDate(SectorTypes sectorType)
+        private static DateTime GetEarliestReminderDate(OrganisationSectors organisationSector)
         {
             List<int> reminderEmailDays = GetReminderEmailDays();
             int earliestReminderDay = reminderEmailDays[reminderEmailDays.Count - 1];
 
-            DateTime deadlineDate = GetDeadlineDate(sectorType);
+            DateTime deadlineDate = GetDeadlineDate(organisationSector);
             return deadlineDate.AddDays(-earliestReminderDay);
         }
 
-        private static DateTime GetLatestReminderEmailDate(SectorTypes sectorType)
+        private static DateTime GetLatestReminderEmailDate(OrganisationSectors organisationSector)
         {
-            return GetReminderDates(sectorType)
+            return GetReminderDates(organisationSector)
                 .Where(reminderDate => reminderDate < VirtualDateTime.Now)
                 .OrderByDescending(reminderDate => reminderDate)
                 .FirstOrDefault();
         }
 
-        private static List<DateTime> GetReminderDates(SectorTypes sectorType)
+        private static List<DateTime> GetReminderDates(OrganisationSectors organisationSector)
         {
             List<int> reminderDays = GetReminderEmailDays();
-            DateTime deadlineDate = GetDeadlineDate(sectorType);
+            DateTime deadlineDate = GetDeadlineDate(organisationSector);
 
             return reminderDays.Select(reminderDay => deadlineDate.AddDays(-reminderDay)).ToList();
         }
 
-        private static DateTime GetDeadlineDate(SectorTypes sectorType)
+        private static DateTime GetDeadlineDate(OrganisationSectors organisationSector)
         {
-            return sectorType.GetAccountingStartDate().AddYears(1);
+            return organisationSector.GetAccountingStartDate().AddYears(1);
         }
 
         private static List<int> GetReminderEmailDays()

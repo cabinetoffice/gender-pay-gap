@@ -92,7 +92,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the current snapshot date
-            DateTime snapshotDate = SubmissionService.GetCurrentSnapshotDate(userOrg.Organisation.SectorType).AddYears(-1);
+            DateTime snapshotDate = SubmissionService.GetCurrentSnapshotDate(userOrg.Organisation.Sector).AddYears(-1);
             if (snapshotDate.Year < Global.FirstReportingYear)
             {
                 return new HttpBadRequestResult($"Snapshot year {snapshotDate.Year} is invalid");
@@ -263,10 +263,10 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // get the sector
-            SectorTypes sectorType = userOrg.Organisation.SectorType;
+            OrganisationSectors organisationSector = userOrg.Organisation.Sector;
 
             // Determine if this is for the previous reporting year
-            bool isPrevReportingYear = SubmissionService.IsCurrentSnapshotYear(sectorType, reportingStartYear) == false;
+            bool isPrevReportingYear = SubmissionService.IsCurrentSnapshotYear(organisationSector, reportingStartYear) == false;
 
             // Set the reporting session globals
             ReportingOrganisationId = organisationId;

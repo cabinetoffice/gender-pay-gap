@@ -220,7 +220,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (year == 0)
             {
-                year = SectorTypes.Private.GetAccountingStartDate().Year;
+                year = OrganisationSectors.Private.GetAccountingStartDate().Year;
             }
 
             string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");

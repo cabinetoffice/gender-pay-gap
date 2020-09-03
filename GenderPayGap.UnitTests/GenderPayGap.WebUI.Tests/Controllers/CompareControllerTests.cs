@@ -827,7 +827,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var firstReportingYear = Global.FirstReportingYear;
             var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
+            DateTime accountingDateTime = mockOrg.Sector.GetAccountingStartDate(firstReportingYear);
 
             //create the comparison data
             var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
@@ -879,7 +879,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var firstReportingYear = Global.FirstReportingYear;
 
             var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
+            DateTime accountingDateTime = mockOrg.Sector.GetAccountingStartDate(firstReportingYear);
 
             //create the comparison data
             var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
@@ -923,7 +923,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>(0, routeData);
             var firstReportingYear = Global.FirstReportingYear;
             var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
+            DateTime accountingDateTime = mockOrg.Sector.GetAccountingStartDate(firstReportingYear);
 
             //create the comparison data
             var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
@@ -976,7 +976,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var firstReportingYear = Global.FirstReportingYear;
 
             var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
+            DateTime accountingDateTime = mockOrg.Sector.GetAccountingStartDate(firstReportingYear);
 
             //create the comparison data
             var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();

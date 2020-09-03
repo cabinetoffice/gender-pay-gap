@@ -15,29 +15,29 @@ namespace GenderPayGap.Core.Classes
         /// <summary>
         ///     Returns the accounting start date for the specified sector and year
         /// </summary>
-        /// <param name="sectorType">The sector type of the organisation</param>
+        /// <param name="organisationSector">The sector type of the organisation</param>
         /// <param name="year">The starting year of the accounting period. If 0 then uses current accounting period</param>
-        public static DateTime GetAccountingStartDate(this SectorTypes sectorType, int year = 0)
+        public static DateTime GetAccountingStartDate(this OrganisationSectors organisationSector, int year = 0)
         {
             var tempDay = 0;
             var tempMonth = 0;
 
             DateTime now = VirtualDateTime.Now;
 
-            switch (sectorType)
+            switch (organisationSector)
             {
-                case SectorTypes.Private:
+                case OrganisationSectors.Private:
                     tempDay = Global.PrivateAccountingDate.Day;
                     tempMonth = Global.PrivateAccountingDate.Month;
                     break;
-                case SectorTypes.Public:
+                case OrganisationSectors.Public:
                     tempDay = Global.PublicAccountingDate.Day;
                     tempMonth = Global.PublicAccountingDate.Month;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
-                        nameof(sectorType),
-                        sectorType,
+                        nameof(organisationSector),
+                        organisationSector,
                         "Cannot calculate accounting date for this sector type");
             }
 

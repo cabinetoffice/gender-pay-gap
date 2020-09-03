@@ -34,6 +34,26 @@ namespace GenderPayGap.Database
                 return _obfuscator;
             }
         }
+        
+        public void SetSector(OrganisationSectors sector, long? byUserId = null, string details = null)
+        {
+            if (sector == Sector && details == SectorDetails)
+            {
+                return;
+            }
+
+            OrganisationSectors.Add(
+                new OrganisationSector {
+                    OrganisationId = OrganisationId,
+                    Sector = sector,
+                    SectorDate = VirtualDateTime.Now,
+                    SectorDetails = details,
+                    ByUserId = byUserId
+                });
+            Sector = sector;
+            SectorDate = VirtualDateTime.Now;
+            SectorDetails = details;
+        }
 
         public void SetStatus(OrganisationStatuses status, long? byUserId = null, string details = null)
         {
@@ -72,7 +92,7 @@ namespace GenderPayGap.Database
             {
                 return new EmployerRecord {
                     OrganisationId = OrganisationId,
-                    SectorType = SectorType,
+                    OrganisationSector = Sector,
                     OrganisationName = OrganisationName,
                     NameSource = GetName()?.Source,
                     EmployerReference = EmployerReference,
@@ -91,7 +111,7 @@ namespace GenderPayGap.Database
 
             return new EmployerRecord {
                 OrganisationId = OrganisationId,
-                SectorType = SectorType,
+                OrganisationSector = Sector,
                 OrganisationName = OrganisationName,
                 NameSource = GetName()?.Source,
                 EmployerReference = EmployerReference,
@@ -268,7 +288,7 @@ namespace GenderPayGap.Database
         {
             if (maxDate == null || maxDate.Value == DateTime.MinValue)
             {
-                maxDate = SectorType.GetAccountingStartDate().AddYears(1);
+                maxDate = Sector.GetAccountingStartDate().AddYears(1);
             }
 
             return OrganisationSicCodes.Where(s => s.Created < maxDate.Value && (s.Retired == null || s.Retired.Value > maxDate.Value));
@@ -292,7 +312,7 @@ namespace GenderPayGap.Database
         {
             if (maxDate == null || maxDate.Value == DateTime.MinValue)
             {
-                maxDate = SectorType.GetAccountingStartDate().AddYears(1);
+                maxDate = Sector.GetAccountingStartDate().AddYears(1);
             }
 
             return OrganisationSicCodes
@@ -327,7 +347,7 @@ namespace GenderPayGap.Database
         //Returns the latest return for the specified accounting year or the latest ever if no accounting year is 
         public Return GetReturn(int year = 0)
         {
-            DateTime accountingStartDate = SectorType.GetAccountingStartDate(year);
+            DateTime accountingStartDate = Sector.GetAccountingStartDate(year);
             return Returns
                 .Where(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate == accountingStartDate)
                 .OrderByDescending(r => r.StatusDate)
@@ -337,7 +357,7 @@ namespace GenderPayGap.Database
         //Returns the latest scope for the current accounting date
         public OrganisationScope GetCurrentScope()
         {
-            var accountingStartDate = SectorType.GetAccountingStartDate();
+            var accountingStartDate = Sector.GetAccountingStartDate();
 
             return GetScopeForYear(accountingStartDate);
         }
@@ -357,7 +377,7 @@ namespace GenderPayGap.Database
 
         public ScopeStatuses GetScopeStatus(int year = 0)
         {
-            DateTime accountingStartDate = SectorType.GetAccountingStartDate(year);
+            DateTime accountingStartDate = Sector.GetAccountingStartDate(year);
             return GetScopeStatus(accountingStartDate);
         }
 
@@ -376,7 +396,7 @@ namespace GenderPayGap.Database
         {
             if (maxDate == null || maxDate.Value == DateTime.MinValue)
             {
-                maxDate = SectorType.GetAccountingStartDate().AddYears(1);
+                maxDate = Sector.GetAccountingStartDate().AddYears(1);
             }
 
             return OrganisationNames.Where(n => n.Created < maxDate.Value).OrderByDescending(n => n.Created).FirstOrDefault();
@@ -431,7 +451,7 @@ namespace GenderPayGap.Database
             { 
                 var defaultReturn = new Return {
                     Organisation = this,
-                    AccountingDate = SectorType.GetAccountingStartDate(year),
+                    AccountingDate = Sector.GetAccountingStartDate(year),
                     Modified = VirtualDateTime.Now
                 };
                 defaultReturn.IsLateSubmission = defaultReturn.CalculateIsLateSubmission();
@@ -442,7 +462,7 @@ namespace GenderPayGap.Database
 
         public IEnumerable<int> GetRecentReportingYears(int recentCount)
         {
-            int endYear = SectorType.GetAccountingStartDate().Year;
+            int endYear = Sector.GetAccountingStartDate().Year;
             int startYear = endYear - (recentCount - 1);
             if (startYear < Global.FirstReportingYear)
             {

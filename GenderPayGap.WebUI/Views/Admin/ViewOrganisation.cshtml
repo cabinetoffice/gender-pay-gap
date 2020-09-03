@@ -158,11 +158,15 @@
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Sector</th>
             <td class="govuk-table__cell">
-                @(Model.Organisation.SectorType)
+                @(Model.Organisation.Sector)
             </td>
-            <td class="govuk-table__cell"></td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewSectorHistory", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId})" class="govuk-link">
+                    History <span class="govuk-visually-hidden"> of sectors</span> / change<span class="govuk-visually-hidden"> sector</span>
+                </a>
+            </td>
         </tr>
-        @if (Model.Organisation.SectorType == SectorTypes.Public)
+        @if (Model.Organisation.Sector == OrganisationSectors.Public)
         {
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Public sector classification</th>

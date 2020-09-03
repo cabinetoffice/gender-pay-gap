@@ -56,7 +56,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             Return result = GetSubmittedReturnWithAllDataPoints(userOrganisation.User);
             result.Organisation = userOrganisation.Organisation;
             result.OrganisationId = userOrganisation.Organisation.OrganisationId;
-            result.AccountingDate = userOrganisation.Organisation.SectorType.GetAccountingStartDate(snapshotYear);
+            result.AccountingDate = userOrganisation.Organisation.Sector.GetAccountingStartDate(snapshotYear);
             return result;
         }
 
@@ -70,7 +70,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             var newReturn = new Return();
             newReturn.Organisation = userOrganisation.Organisation;
             newReturn.OrganisationId = userOrganisation.OrganisationId;
-            newReturn.AccountingDate = userOrganisation.Organisation.SectorType.GetAccountingStartDate(snapshotYear);
+            newReturn.AccountingDate = userOrganisation.Organisation.Sector.GetAccountingStartDate(snapshotYear);
 
             return newReturn;
         }
@@ -103,7 +103,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 ReturnId = organisation.OrganisationId + 100,
                 Organisation = organisation,
                 OrganisationId = organisation.OrganisationId,
-                AccountingDate = organisation.SectorType.GetAccountingStartDate(testYear),
+                AccountingDate = organisation.Sector.GetAccountingStartDate(testYear),
                 Status = ReturnStatuses.Submitted,
                 DiffMeanHourlyPayPercent = 99,
                 DiffMedianHourlyPercent = 97,

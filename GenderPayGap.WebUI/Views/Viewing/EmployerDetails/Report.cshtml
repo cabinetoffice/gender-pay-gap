@@ -55,7 +55,7 @@
                     @string.Format("{0}{1}", Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name, Model.OrganisationSize != OrganisationSizes.NotProvided ? " employees" : "")
                 </dd>
             </div>
-            @if (Model.SectorType == SectorTypes.Private)
+            @if (Model.OrganisationSector == OrganisationSectors.Private)
             {
                 <div>
                     <dt class="metadata-text-label">Person responsible</dt>

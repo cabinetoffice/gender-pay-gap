@@ -131,7 +131,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         {
             // setup the filters
             int firstYear = Global.FirstReportingYear;
-            int currentYear = SectorTypes.Public.GetAccountingStartDate().Year;
+            int currentYear = OrganisationSectors.Public.GetAccountingStartDate().Year;
             
             var allYears = new List<int>();
             for (int year = firstYear; year <= currentYear; year++)

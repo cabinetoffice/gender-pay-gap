@@ -24,14 +24,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //ARRANGE:
             //create a user who does exist in the db
             var user = new User {UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now};
-            var org = new Organisation {OrganisationId = 1, SectorType = SectorTypes.Private, Status = OrganisationStatuses.Pending};
+            var org = new Organisation {OrganisationId = 1, Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Pending};
 
             //TODO: Refactoring to user the same Helpers (ie AddScopeStatus.AddScopeStatus)
             org.OrganisationScopes.Add(
                 new OrganisationScope {
                     Organisation = org,
                     ScopeStatus = ScopeStatuses.InScope,
-                    SnapshotDate = org.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                    SnapshotDate = org.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                     Status = ScopeRowStatuses.Active
                 });
 

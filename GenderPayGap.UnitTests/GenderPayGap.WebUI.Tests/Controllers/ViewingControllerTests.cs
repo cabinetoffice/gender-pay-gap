@@ -526,14 +526,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 202,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
             var report = new Return {
                 ReturnId = 101,
                 OrganisationId = org.OrganisationId,
                 Status = ReturnStatuses.Submitted,
-                AccountingDate = org.SectorType.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
+                AccountingDate = org.Sector.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
@@ -558,14 +558,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 202,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
             var report = new Return {
                 ReturnId = 101,
                 OrganisationId = org.OrganisationId,
                 Status = ReturnStatuses.Submitted,
-                AccountingDate = org.SectorType.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
+                AccountingDate = org.Sector.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
@@ -590,14 +590,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 202,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
             var report = new Return {
                 ReturnId = 101,
                 OrganisationId = org.OrganisationId,
                 Status = ReturnStatuses.Submitted,
-                AccountingDate = org.SectorType.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
+                AccountingDate = org.Sector.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
@@ -621,14 +621,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 202,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
             var report = new Return {
                 ReturnId = 101,
                 OrganisationId = org.OrganisationId,
                 Status = ReturnStatuses.Submitted,
-                AccountingDate = org.SectorType.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
+                AccountingDate = org.Sector.GetAccountingStartDate(Numeric.Rand(Global.FirstReportingYear, VirtualDateTime.Now.Year))
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
@@ -843,21 +843,21 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         public void ViewingController_Report_Status_Not_Submitted_returns_Gone(ReturnStatuses returnStatus)
         {
             // Arrange
-            var org = new Organisation {OrganisationId = 98754, Status = OrganisationStatuses.Active, SectorType = SectorTypes.Public};
+            var org = new Organisation {OrganisationId = 98754, Status = OrganisationStatuses.Active, Sector = OrganisationSectors.Public};
 
             var report1 = new Return {
                 ReturnId = 101,
                 OrganisationId = org.OrganisationId,
                 Status = returnStatus == ReturnStatuses.Retired ? ReturnStatuses.Deleted : ReturnStatuses.Retired,
                 StatusDate = VirtualDateTime.Now,
-                AccountingDate = org.SectorType.GetAccountingStartDate(Global.FirstReportingYear)
+                AccountingDate = org.Sector.GetAccountingStartDate(Global.FirstReportingYear)
             };
             var report2 = new Return {
                 ReturnId = 102,
                 OrganisationId = org.OrganisationId,
                 Status = returnStatus,
                 StatusDate = report1.StatusDate.AddSeconds(1),
-                AccountingDate = org.SectorType.GetAccountingStartDate(Global.FirstReportingYear)
+                AccountingDate = org.Sector.GetAccountingStartDate(Global.FirstReportingYear)
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(org.OrganisationId, null, org, report1, report2);
@@ -883,14 +883,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 6548,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
             var report = new Return {
                 ReturnId = 98754,
                 OrganisationId = org.OrganisationId,
                 Status = ReturnStatuses.Retired,
-                AccountingDate = org.SectorType.GetAccountingStartDate(Global.FirstReportingYear)
+                AccountingDate = org.Sector.GetAccountingStartDate(Global.FirstReportingYear)
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(default, null, org, report);
@@ -918,7 +918,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 6548,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
             var controller = UiTestHelper.GetController<ViewingController>(default, null, org);
@@ -957,10 +957,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var org = new Organisation {
                 OrganisationId = 202,
                 Status = OrganisationStatuses.Active,
-                SectorType = Numeric.Rand(0, 1) == 0 ? SectorTypes.Private : SectorTypes.Public
+                Sector = Numeric.Rand(0, 1) == 0 ? OrganisationSectors.Private : OrganisationSectors.Public
             };
 
-            DateTime testAccountingDate = org.SectorType.GetAccountingStartDate(Global.FirstReportingYear);
+            DateTime testAccountingDate = org.Sector.GetAccountingStartDate(Global.FirstReportingYear);
 
             org.OrganisationScopes = new[] {
                 new OrganisationScope {
@@ -997,7 +997,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             var expectedModel = new ReturnViewModel();
-            expectedModel.SectorType = report.Organisation.SectorType;
+            expectedModel.OrganisationSector = report.Organisation.Sector;
             expectedModel.ReturnId = report.ReturnId;
             expectedModel.OrganisationId = report.OrganisationId;
             expectedModel.EncryptedOrganisationId = report.Organisation.GetEncryptedId();

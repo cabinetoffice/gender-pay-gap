@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.ClearStash();
 
             //Get the current snapshot date
-            DateTime currentSnapshotDate = SubmissionService.GetCurrentSnapshotDate(userOrg.Organisation.SectorType);
+            DateTime currentSnapshotDate = SubmissionService.GetCurrentSnapshotDate(userOrg.Organisation.Sector);
 
             //Make sure we have an explicit scope for last and year for organisations new to this year
             if (userOrg.PINConfirmedDate != null && userOrg.Organisation.Created >= currentSnapshotDate)

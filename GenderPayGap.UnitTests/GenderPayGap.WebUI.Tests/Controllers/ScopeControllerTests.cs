@@ -44,7 +44,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             return new Organisation {
                 OrganisationId = organistationId,
                 OrganisationName = organisationName,
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = companyNumber.ToString()
             };
@@ -817,7 +817,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             ScopeController_ConfirmOutOfScopeDetails_POST_When_Authorised_and_InScope_Then_Generate_Cookie_and_SaveScope_Overrides_Contact_Details()
         {
             // Arrange
-            var testOrgs = new[] {new Organisation {OrganisationId = 432, SectorType = SectorTypes.Private}};
+            var testOrgs = new[] {new Organisation {OrganisationId = 432, Sector = OrganisationSectors.Private}};
             var testUserId = 135234;
             var testStateModel = new ScopingViewModel {
                 //PrevOrgScopeId = 123,
@@ -892,7 +892,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         public void ConfirmDetails_POST_When_Not_Authorised_and_InScope_Then_Preserve_Contact_Details()
         {
             // Arrange
-            var testOrgs = new[] {new Organisation {OrganisationId = 432, SectorType = SectorTypes.Private}};
+            var testOrgs = new[] {new Organisation {OrganisationId = 432, Sector = OrganisationSectors.Private}};
 
             var testStateModel = new ScopingViewModel {
                 //                PrevOrgScopeId = 123,
@@ -1043,7 +1043,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Arrange
             User mockUser = UserHelper.GetNotAdminUserWithoutVerifiedEmailAddress();
 
-            var mockOrg = new Organisation {SectorType = SectorTypes.Private};
+            var mockOrg = new Organisation {Sector = OrganisationSectors.Private};
             var mockUserOrg = new UserOrganisation {Organisation = mockOrg, User = mockUser};
 
             var controller = UiTestHelper.GetController<ScopeController>(-1, null, mockUser, mockOrg, mockUserOrg);

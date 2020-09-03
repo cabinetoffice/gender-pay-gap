@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Controllers
                             EmployerReference = organisation.EmployerReference,
                             CompanyNumber = organisation.CompanyNumber,
                             OrganisationStatus = $"{organisation.Status.ToString()} ({(int)organisation.Status})",
-                            SectorType = $"{organisation.SectorType.ToString()} ({(int)organisation.SectorType})",
+                            SectorType = $"{organisation.Sector.ToString()} ({(int)organisation.Sector})",
                             ScopeStatus = $"{ScopeStatusToString(scopeForYear.ScopeStatus)} ({(int)scopeForYear.ScopeStatus})",
                             SnapshotDate = reportingYear,
                             SicCodeSectionDescription = firstSicCodeForOrganisation?.SicCode?.SicSection?.Description,

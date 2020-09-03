@@ -51,7 +51,7 @@ namespace GenderPayGap.Database.Models
         [JsonProperty]
         public string EncryptedOrganisationId { get; set; }
         [JsonProperty]
-        public SectorTypes? SectorType { get; set; }
+        public OrganisationSectors? SectorType { get; set; }
 
         [JsonProperty]
         public DateTime? AccountingDate { get; set; }

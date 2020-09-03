@@ -455,7 +455,7 @@ namespace GenderPayGap.WebUI.Classes
                 return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
             }
 
-            if (userOrg.Organisation.SectorType == SectorTypes.Private)
+            if (userOrg.Organisation.Sector == OrganisationSectors.Private)
             {
                 if (userOrg.PINConfirmedDate.EqualsI(null, DateTime.MinValue))
                 {

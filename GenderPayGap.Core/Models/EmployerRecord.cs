@@ -16,7 +16,7 @@ namespace GenderPayGap.Core.Models
         public DateTime? DateOfCessation { get; set; }
 
         public string OrganisationName { get; set; }
-        public SectorTypes SectorType { get; set; }
+        public OrganisationSectors OrganisationSector { get; set; }
 
         public string NameSource { get; set; }
         public long ActiveAddressId { get; set; }

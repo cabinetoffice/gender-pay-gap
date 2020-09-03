@@ -37,14 +37,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                     OrganisationId = 123,
                     OrganisationName = "Org123",
                     OrganisationAddresses = new List<OrganisationAddress>{ new OrganisationAddress() },
-                    SectorType = SectorTypes.Private
+                    Sector = OrganisationSectors.Private
                 },
                 new Organisation
                 {
                     OrganisationId = 456,
                     OrganisationName = "Org456",
                     OrganisationAddresses = new List<OrganisationAddress>{ new OrganisationAddress() },
-                    SectorType = SectorTypes.Private
+                    Sector = OrganisationSectors.Private
                 }
             };
 
@@ -89,7 +89,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             {
                 OrganisationId = organistationId,
                 OrganisationName = organisationName,
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = companyNumber.ToString()
             };
@@ -180,7 +180,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testOrgId = "";
 
             // Act
-            DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime snapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
 
             // Act
             IActionResult actionResult = await controller.DeclareScope(testOrgId);
@@ -204,7 +204,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUserId = 2;
             var testOrgId = 123;
 
-            DateTime lastSnapshotDate = SectorTypes.Private.GetAccountingStartDate().AddYears(-1);
+            DateTime lastSnapshotDate = OrganisationSectors.Private.GetAccountingStartDate().AddYears(-1);
 
             var mockLastScope = new OrganisationScope
             {
@@ -250,7 +250,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUserId = 2;
             var testOrgId = 123;
 
-            DateTime lastSnapshotDate = SectorTypes.Private.GetAccountingStartDate().AddYears(-1);
+            DateTime lastSnapshotDate = OrganisationSectors.Private.GetAccountingStartDate().AddYears(-1);
 
             var mockLastScope = new OrganisationScope
             {
@@ -297,7 +297,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUserId = 2;
             var testOrgId = 123;
 
-            DateTime lastSnapshotDate = SectorTypes.Private.GetAccountingStartDate().AddYears(-1);
+            DateTime lastSnapshotDate = OrganisationSectors.Private.GetAccountingStartDate().AddYears(-1);
 
             var mockLastScope = new OrganisationScope
             {
@@ -348,7 +348,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MockUserOrganisations);
 
             string encOrgId = Encryption.EncryptQuerystring(testOrgId.ToString());
-            DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime snapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
 
             // Act
             IActionResult actionResult = await controller.DeclareScope(encOrgId);
@@ -378,7 +378,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MockUserOrganisations);
 
             string encOrgId = Encryption.EncryptQuerystring(testOrgId.ToString());
-            DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime snapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
 
             // Act
             IActionResult actionResult = await controller.DeclareScope(encOrgId);
@@ -405,7 +405,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MockUserOrganisations);
             var testOrgId = "";
             var model = new DeclareScopeModel();
-            DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime snapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
 
             // Act
             IActionResult actionResult = await controller.DeclareScope(model, testOrgId);
@@ -429,7 +429,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUserId = 2;
 
             var testOrgId = 123;
-            DateTime thisSnapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime thisSnapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
             DateTime lastSnapshotDate = thisSnapshotDate.AddYears(-1);
 
             var mockLastScope = new OrganisationScope
@@ -513,7 +513,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MockUserOrganisations);
 
             string encOrgId = Encryption.EncryptQuerystring(testOrgId.ToString());
-            DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime snapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
             var model = new DeclareScopeModel();
 
             // Act
@@ -544,7 +544,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 MockUserOrganisations);
 
             string encOrgId = Encryption.EncryptQuerystring(testOrgId.ToString());
-            DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
+            DateTime snapshotDate = OrganisationSectors.Private.GetAccountingStartDate();
             var model = new DeclareScopeModel();
 
             // Act
@@ -708,7 +708,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             {
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = SectorTypes.Private.GetAccountingStartDate()
+                SnapshotDate = OrganisationSectors.Private.GetAccountingStartDate()
             });
 
             UiTestHelper.MockBackgroundJobsApi
@@ -766,7 +766,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             {
                 Status = ScopeRowStatuses.Active,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = SectorTypes.Private.GetAccountingStartDate()
+                SnapshotDate = OrganisationSectors.Private.GetAccountingStartDate()
             });
 
             UiTestHelper.MockBackgroundJobsApi

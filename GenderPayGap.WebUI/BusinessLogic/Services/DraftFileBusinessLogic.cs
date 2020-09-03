@@ -295,7 +295,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 ReturnId = draftReturn.ReturnId ?? 0,
                 ReturnUrl = draftReturn.ReturnUrl,
                 Sector = draftReturn.Sector,
-                SectorType = draftReturn.SectorType ?? SectorTypes.Unknown,
+                OrganisationSector = draftReturn.SectorType ?? OrganisationSectors.Unknown,
                 ShouldProvideLateReason = draftReturn.ShouldProvideLateReason ?? false
             };
         }
@@ -358,7 +358,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 ReturnId = draft.ReturnViewModelContent?.ReturnId,
                 ReturnUrl = draft.ReturnViewModelContent?.ReturnUrl,
                 Sector = draft.ReturnViewModelContent?.Sector,
-                SectorType = draft.ReturnViewModelContent?.SectorType,
+                SectorType = draft.ReturnViewModelContent?.OrganisationSector,
                 ShouldProvideLateReason = draft.ReturnViewModelContent?.ShouldProvideLateReason
             };
             

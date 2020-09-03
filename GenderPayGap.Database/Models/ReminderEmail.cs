@@ -17,7 +17,7 @@ namespace GenderPayGap.Database.Models
         public long UserId { get; set; }
 
         [JsonProperty]
-        public SectorTypes SectorType { get; set; }
+        public OrganisationSectors OrganisationSector { get; set; }
 
         [JsonProperty]
         public DateTime DateChecked { get; set; }

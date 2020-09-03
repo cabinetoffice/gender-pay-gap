@@ -67,7 +67,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //ARRANGE:
             //create a user who does exist in the db
             var user = new User() { UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var org = new Organisation() { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var org = new Organisation() { OrganisationId = 1, Sector = OrganisationSectors.Private };
             var address = new OrganisationAddress() { AddressId = 1, OrganisationId = 1, Organisation = org, Status = AddressStatuses.Pending };
             var orgScope = new OrganisationScope() { OrganisationId = org.OrganisationId, RegisterStatus = RegisterStatuses.RegisterPending, ContactEmailAddress = user.EmailAddress };
 
@@ -111,7 +111,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var expectedModel = new OrganisationViewModel() {
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private
+                SectorType = OrganisationSectors.Private
             };
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user/*, userOrganisation, organisation*/);
@@ -159,7 +159,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var expectedModel = new OrganisationViewModel() {
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public
+                SectorType = OrganisationSectors.Public
             };
 
             var controller = UiTestHelper.GetController<RegisterController>(1, routeData, user);
@@ -247,7 +247,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 Employers = new PagedResult<EmployerRecord>() { },
                 SearchText = "smith ltd",
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 CompanyNumber = "456GT657",
                 Country = "UK",
                 Postcode = "nw1 5re"
@@ -355,7 +355,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 Employers = new PagedResult<EmployerRecord>() { },
                 SearchText = "5 Boroughs Partnership NHS Foundation Trust",
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public
+                SectorType = OrganisationSectors.Public
             };
 
 
@@ -447,8 +447,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Public  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Public  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -472,7 +472,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -524,8 +524,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",AddressSource="CoHo",Address1 = "13", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA13", Country = "UK", PostCode = "sw2  5gh", SectorType = SectorTypes.Public,EmailDomains="*@hotmail.com"  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",AddressSource="CoHo",Address1 = "13", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA13", Country = "UK", PostCode = "sw2  5gh", OrganisationSector = OrganisationSectors.Public,EmailDomains="*@hotmail.com"  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -548,7 +548,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -602,8 +602,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Public,EmailDomains="*@hotmail.com"  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Public,EmailDomains="*@hotmail.com"  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -626,7 +626,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -680,8 +680,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -704,7 +704,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -761,7 +761,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -782,7 +782,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -796,8 +796,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -827,7 +827,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -880,7 +880,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Retired, CompanyNumber = "0123QA12" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Retired, CompanyNumber = "0123QA12" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -902,7 +902,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -916,8 +916,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -947,7 +947,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -1000,7 +1000,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Active, CompanyNumber = "0123QA12" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Active, CompanyNumber = "0123QA12" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -1022,7 +1022,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -1036,8 +1036,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -1067,7 +1067,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -1118,7 +1118,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Public, Status = OrganisationStatuses.Active, CompanyNumber = "0123QA12" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Public, Status = OrganisationStatuses.Active, CompanyNumber = "0123QA12" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -1140,7 +1140,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -1154,8 +1154,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                     new EmployerRecord() { OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -1185,7 +1185,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -1239,7 +1239,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "0123QA12" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "0123QA12" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -1261,7 +1261,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -1274,9 +1274,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 {
                     new EmployerRecord() { OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                     new EmployerRecord() { OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
-                    new EmployerRecord() { OrganisationId = 1, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de", SectorType = SectorTypes.Private },
-                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                    new EmployerRecord() { OrganisationId = 1, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de", OrganisationSector = OrganisationSectors.Private },
+                    new EmployerRecord() { OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                    new EmployerRecord() { OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                     new EmployerRecord() { OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                     new EmployerRecord() { OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                     new EmployerRecord() { OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -1306,7 +1306,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 SearchText = employerResult.Results[selectedEmployerIndex].OrganisationName,
                 Employers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 SicCodes = new List<int>(),
                 ManualEmployers = new List<EmployerRecord>()
             };
@@ -1434,7 +1434,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
                 SearchText = "Searchtext",
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,
@@ -1494,7 +1494,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 CompanyNumber = "11223344",
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 OrganisationName = "ORIGINAL NAME",
                 OrganisationAddresses = new List<OrganisationAddress> { address },
                 Status = OrganisationStatuses.Active
@@ -1533,7 +1533,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
                 SearchText = "Searchtext",
                 ManualRegistration = true,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,
@@ -1599,7 +1599,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //ARRANGE:
             //1.Arrange the test setup variables
             var user = new User() { UserId = 1, EmailAddress = "test@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
-            var org = new Organisation() { OrganisationId = 1, CompanyNumber = "11223344", SectorType = SectorTypes.Public, OrganisationName = "ORIGINAL NAME", Status= OrganisationStatuses.Active };
+            var org = new Organisation() { OrganisationId = 1, CompanyNumber = "11223344", Sector = OrganisationSectors.Public, OrganisationName = "ORIGINAL NAME", Status= OrganisationStatuses.Active };
 
             //Set user email address verified code and expired sent date
             var routeData = new RouteData();
@@ -1634,7 +1634,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
                 SearchText = "Searchtext",
                 ManualRegistration = true,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,
@@ -1700,7 +1700,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 CompanyNumber = "11223344",
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 OrganisationName = "ORIGINAL NAME",
                 OrganisationAddresses = new List<OrganisationAddress> { address1 }
             };
@@ -1708,7 +1708,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var org2 = new Organisation()
             {
                 OrganisationId = 2,
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 OrganisationName = "ORIGINAL NAMEa",
                 OrganisationAddresses = new List<OrganisationAddress> { address2 }
             };
@@ -1762,7 +1762,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
                 SearchText = "Searchtext",
                 ManualRegistration = true,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 PINExpired = false,
                 PINSent = false,
                 SelectedEmployerIndex = 0,
@@ -1834,7 +1834,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var orgModel = new OrganisationViewModel() {
                 ManualRegistration = false,
                 ManualAddress = true,
-                SectorType = SectorTypes.Public
+                SectorType = OrganisationSectors.Public
             };
 
             controller.StashModel(orgModel);
@@ -1867,8 +1867,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 new EmployerRecord() {OrganisationId=1, OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                 new EmployerRecord() {OrganisationId=2, OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                 new EmployerRecord() {OrganisationId=3, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Public  },
-                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Public  },
+                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                 new EmployerRecord() {OrganisationId=6, OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                 new EmployerRecord() {OrganisationId=7, OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                 new EmployerRecord() {OrganisationId=8, OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -1899,7 +1899,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 var org = new Organisation() {
                     OrganisationId = employer.OrganisationId,
                     OrganisationName = employer.OrganisationName,
-                    SectorType = employer.SectorType,
+                    Sector = employer.OrganisationSector,
                     CompanyNumber = employer.CompanyNumber,
                     Status = OrganisationStatuses.Active
                 };
@@ -1921,7 +1921,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var stashedModel = new OrganisationViewModel() {
                 ManualEmployers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 CompanyNumber = "1234589",
                 CharityNumber = "ABCDEFG",
                 MutualNumber = "9876543",
@@ -1977,8 +1977,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 new EmployerRecord() {OrganisationId=1, OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                 new EmployerRecord() {OrganisationId=2, OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                 new EmployerRecord() {OrganisationId=3, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",AddressSource="CoHo",Address1 = "13", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA13", Country = "UK", PostCode = "sw2  5gh", SectorType = SectorTypes.Public,EmailDomains="*@hotmail.com"  },
-                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",AddressSource="CoHo",Address1 = "13", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA13", Country = "UK", PostCode = "sw2  5gh", OrganisationSector = OrganisationSectors.Public,EmailDomains="*@hotmail.com"  },
+                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                 new EmployerRecord() {OrganisationId=6, OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                 new EmployerRecord() {OrganisationId=7, OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                 new EmployerRecord() {OrganisationId=8, OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -2011,7 +2011,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 var org1 = new Organisation() {
                     OrganisationId = employer.OrganisationId,
                     OrganisationName = employer.OrganisationName,
-                    SectorType = employer.SectorType,
+                    Sector = employer.OrganisationSector,
                     CompanyNumber = employer.CompanyNumber,
                     Status = OrganisationStatuses.Active
                 };
@@ -2032,7 +2032,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var stashedModel = new OrganisationViewModel() {
                 ManualEmployers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 CompanyNumber = "1234589",
                 CharityNumber = "ABCDEFG",
                 MutualNumber = "9876543",
@@ -2091,8 +2091,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 new EmployerRecord() {OrganisationId=1, OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                 new EmployerRecord() {OrganisationId=2, OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                 new EmployerRecord() {OrganisationId=3, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Public,EmailDomains="*@hotmail.com"  },
-                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Public,EmailDomains="*@hotmail.com"  },
+                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                 new EmployerRecord() {OrganisationId=6, OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                 new EmployerRecord() {OrganisationId=7, OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                 new EmployerRecord() {OrganisationId=8, OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -2123,7 +2123,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 var org = new Organisation() {
                     OrganisationId = employer.OrganisationId,
                     OrganisationName = employer.OrganisationName,
-                    SectorType = employer.SectorType,
+                    Sector = employer.OrganisationSector,
                     CompanyNumber = employer.CompanyNumber,
                     Status = OrganisationStatuses.Active
                 };
@@ -2144,7 +2144,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var stashedModel = new OrganisationViewModel() {
                 ManualEmployers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
                 CompanyNumber = "1234589",
                 CharityNumber = "ABCDEFG",
                 MutualNumber = "9876543",
@@ -2202,8 +2202,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 new EmployerRecord() {OrganisationId=1, OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                 new EmployerRecord() {OrganisationId=2, OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                 new EmployerRecord() {OrganisationId=3, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                 new EmployerRecord() {OrganisationId=6, OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                 new EmployerRecord() {OrganisationId=7, OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                 new EmployerRecord() {OrganisationId=8, OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -2234,7 +2234,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 var org = new Organisation() {
                     OrganisationId = employer.OrganisationId,
                     OrganisationName = employer.OrganisationName,
-                    SectorType = employer.SectorType,
+                    Sector = employer.OrganisationSector,
                     CompanyNumber = employer.CompanyNumber,
                     Status = OrganisationStatuses.Active
                 };
@@ -2254,7 +2254,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var stashedModel = new OrganisationViewModel() {
                 ManualEmployers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 CompanyNumber = "1234589",
                 CharityNumber = "ABCDEFG",
                 MutualNumber = "9876543",
@@ -2311,8 +2311,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 new EmployerRecord() {OrganisationId=1, OrganisationName = "Acme  Inc", Address1 = "10", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA10", Country = "UK", PostCode = "w12  3we" },
                 new EmployerRecord() {OrganisationId=2, OrganisationName = "Beano Inc", Address1 = "11", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA11", Country = "UK", PostCode = "n12  4qw" },
                 new EmployerRecord() {OrganisationId=3, OrganisationName = "Smith ltd", Address1 = "12", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA12", Country = "UK", PostCode = "nw2  1de" },
-                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",SectorType = SectorTypes.Private  },
-                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",SectorType = SectorTypes.Public },
+                new EmployerRecord() {OrganisationId=4, OrganisationName = "Bedford Council",NameSource="CoHo",OrganisationSector = OrganisationSectors.Private  },
+                new EmployerRecord() {OrganisationId=5, OrganisationName = "Exeter Council", Address1 = "14", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA14", Country = "UK", PostCode = "se2  2bh",OrganisationSector = OrganisationSectors.Public },
                 new EmployerRecord() {OrganisationId=6, OrganisationName = "Serif ltd", Address1 = "15", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA15", Country = "UK", PostCode = "da2  6cd" },
                 new EmployerRecord() {OrganisationId=7, OrganisationName = "West ltd",  Address1 = "16", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA16", Country = "UK", PostCode = "cd2  1cs" },
                 new EmployerRecord() {OrganisationId=8, OrganisationName = "North ltd", Address1 = "17", Address2 = "EverGreen Terrace", CompanyNumber = "0123QA17", Country = "UK", PostCode = "e12  7xs" },
@@ -2331,7 +2331,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var stashedModel = new OrganisationViewModel() {
                 ManualEmployers = employerResult,
                 ManualRegistration = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 CompanyNumber = "1234589",
                 CharityNumber = "ABCDEFG",
                 MutualNumber = "9876543",
@@ -2412,7 +2412,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = null,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "123",
@@ -2492,7 +2492,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var employer = new EmployerRecord() {
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 CompanyNumber = "12345678",
                 SicCodeIds = "2100,10520",
                 SicSource = "CoHo"
@@ -2510,7 +2510,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = null,
                 OtherValue = null,
                 DateOfCessation = null,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = null,
                 Address1 = null,
@@ -2596,7 +2596,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var employer = new EmployerRecord() {
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Public,
+                OrganisationSector = OrganisationSectors.Public,
                 CompanyNumber = "12345678",
                 SicCodeIds = "2100,10520",
                 SicSource = "CoHo"
@@ -2615,7 +2615,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = null,
                 OtherValue = null,
                 DateOfCessation = null,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
 
                 AddressSource = null,
                 Address1 = null,
@@ -2700,7 +2700,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var employer = new EmployerRecord() {
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Private,
+                OrganisationSector = OrganisationSectors.Private,
                 CompanyNumber = "12345678",
                 SicCodeIds = "2100,10520",
                 Address1 = "123",
@@ -2709,7 +2709,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 PostCode = "e12 3eq"
             };
             controller.PrivateSectorRepository.Insert(employer);
-            var currentSnapshotDate = employer.SectorType.GetAccountingStartDate();
+            var currentSnapshotDate = employer.OrganisationSector.GetAccountingStartDate();
 
             //Set the initial model
             var stashedModel = new OrganisationViewModel() {
@@ -2722,7 +2722,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = null,
                 Address1 = null,
@@ -2861,7 +2861,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -2878,7 +2878,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -2907,7 +2907,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = null,
                 Address1 = null,
@@ -3044,7 +3044,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Public,
+                Sector = OrganisationSectors.Public,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -3061,7 +3061,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -3090,7 +3090,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = null,
                 Address1 = null,
@@ -3211,7 +3211,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -3228,7 +3228,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -3257,7 +3257,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "New address1",
@@ -3390,7 +3390,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Public,
+                Sector = OrganisationSectors.Public,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -3407,7 +3407,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -3436,7 +3436,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "New address1",
@@ -3569,7 +3569,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             {
                 OrganisationId = 1,
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Public,
+                Sector = OrganisationSectors.Public,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -3586,7 +3586,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -3615,7 +3615,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "New address1",
@@ -3740,7 +3740,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Public, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Public, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
 
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId };
             org0.OrganisationNames.Add(name);
@@ -3753,7 +3753,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -3782,7 +3782,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "New address1",
@@ -3911,7 +3911,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var org0 = new Organisation()
             {
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Private,
+                Sector = OrganisationSectors.Private,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -3938,7 +3938,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             employer.ActiveAddressId = address0.AddressId;
             controller.PrivateSectorRepository.Insert(employer);
 
-            var currentSnapshotDate = employer.SectorType.GetAccountingStartDate();
+            var currentSnapshotDate = employer.OrganisationSector.GetAccountingStartDate();
 
             //Set the initial model
             var stashedModel = new OrganisationViewModel() {
@@ -3951,7 +3951,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "New address1",
@@ -4084,7 +4084,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var org0 = new Organisation()
             {
                 OrganisationName = "Company1",
-                SectorType = SectorTypes.Public,
+                Sector = OrganisationSectors.Public,
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = "12345678",
                 OrganisationAddresses = new List<OrganisationAddress> { address0 }
@@ -4111,7 +4111,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             employer.ActiveAddressId = address0.AddressId;
             controller.PrivateSectorRepository.Insert(employer);
 
-            var currentSnapshotDate = employer.SectorType.GetAccountingStartDate();
+            var currentSnapshotDate = employer.OrganisationSector.GetAccountingStartDate();
 
             //Set the initial model
             var stashedModel = new OrganisationViewModel() {
@@ -4124,7 +4124,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 OtherName = "OtherName1",
                 OtherValue = "OtherValue1",
                 DateOfCessation = VirtualDateTime.Now,
-                SectorType = SectorTypes.Public,
+                SectorType = OrganisationSectors.Public,
 
                 AddressSource = user.EmailAddress,
                 Address1 = "New address1",
@@ -4253,7 +4253,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
             var sicCode1 = new SicCode() { SicCodeId = 2100, Description = "Desc1", SicSectionId = "A", SicSection = new SicSection() { SicSectionId = "A", Description = "Section1" } };
             var sicCode2 = new SicCode() { SicCodeId = 10520, Description = "Desc2", SicSectionId = "B", SicSection = new SicSection() { SicSectionId = "B", Description = "Section2" } };
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { OrganisationNameId = 1, Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -4274,7 +4274,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -4308,7 +4308,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //Set the initial model
             var stashedModel = new OrganisationViewModel() {
                 NoReference = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 ManualAddress = false,
                 SelectedAuthorised = false,
                 ManualRegistration = false,
@@ -4417,7 +4417,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var sicCode3 = new SicCode() { SicCodeId = 5000, Description = "Desc3", SicSectionId = "C", SicSection = new SicSection() { SicSectionId = "C", Description = "Section3" } };
             var sicCode4 = new SicCode() { SicCodeId = 6000, Description = "Desc4", SicSectionId = "D", SicSection = new SicSection() { SicSectionId = "D", Description = "Section4" } };
 
-            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", SectorType = SectorTypes.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
+            var org0 = new Organisation() { OrganisationId = 1, OrganisationName = "Company1", Sector = OrganisationSectors.Private, Status = OrganisationStatuses.Pending, CompanyNumber = "12345678" };
             org0.OrganisationAddresses.Add(address0);
             var name = new OrganisationName() { Name = org0.OrganisationName, Created = org0.Created, Organisation = org0, OrganisationId = org0.OrganisationId, Source = "CoHo" };
             org0.OrganisationNames.Add(name);
@@ -4438,7 +4438,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             org0.OrganisationScopes.Add(new OrganisationScope() {
                 Organisation = org0,
                 ScopeStatus = ScopeStatuses.InScope,
-                SnapshotDate = org0.SectorType.GetAccountingStartDate(VirtualDateTime.Now.Year),
+                SnapshotDate = org0.Sector.GetAccountingStartDate(VirtualDateTime.Now.Year),
                 Status = ScopeRowStatuses.Active
             });
 
@@ -4454,7 +4454,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
             var employer = new EmployerRecord {
                 OrganisationId = org0.OrganisationId,
-                SectorType = org0.SectorType,
+                OrganisationSector = org0.Sector,
                 OrganisationName = "New Org Name",
                 CompanyNumber = org0.CompanyNumber,
                 Address1 = "New Address1",
@@ -4473,7 +4473,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             //Set the initial model
             var stashedModel = new OrganisationViewModel() {
                 NoReference = false,
-                SectorType = SectorTypes.Private,
+                SectorType = OrganisationSectors.Private,
                 ManualAddress = false,
                 SelectedAuthorised = false,
                 ManualRegistration = false,

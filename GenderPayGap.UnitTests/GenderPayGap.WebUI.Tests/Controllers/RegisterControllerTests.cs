@@ -35,7 +35,7 @@ namespace GenderPayGap.Tests
             mockRouteData.Values.Add("Controller", "Register");
 
             var mockOrg = new Organisation {
-                OrganisationId = 52425, SectorType = SectorTypes.Private, OrganisationName = "Mock Organisation Ltd"
+                OrganisationId = 52425, Sector = OrganisationSectors.Private, OrganisationName = "Mock Organisation Ltd"
             };
 
             var mockUser = new User {UserId = 87654, EmailAddress = "mock@test.com", EmailVerifiedDate = VirtualDateTime.Now};

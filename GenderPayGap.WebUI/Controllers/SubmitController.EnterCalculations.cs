@@ -106,7 +106,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             this.StashModel(postedReturnViewModel);
 
             string actionUrl = returnUrl.EqualsI("CheckData") ? "CheckData" :
-                postedReturnViewModel.SectorType == SectorTypes.Public ? "OrganisationSize" : "PersonResponsible";
+                postedReturnViewModel.OrganisationSector == OrganisationSectors.Public ? "OrganisationSize" : "PersonResponsible";
 
             return RedirectToAction(actionUrl);
         }

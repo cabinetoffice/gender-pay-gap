@@ -33,7 +33,7 @@
             @Html.HiddenFor(model => model.MaleUpperPayBand)
             @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
             @Html.HiddenFor(model => model.AccountingDate)
-            @Html.HiddenFor(model => model.SectorType)
+            @Html.HiddenFor(model => model.OrganisationSector)
             @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
             @Html.HiddenFor(model => model.EHRCResponse)
             @Html.HiddenFor(model => model.LateReason)
@@ -47,7 +47,7 @@
             }
             else
             {
-                backLink = Url.Action(Model.SectorType == SectorTypes.Public ? "EnterCalculations" : "PersonResponsible");
+                backLink = Url.Action(Model.OrganisationSector == OrganisationSectors.Public ? "EnterCalculations" : "PersonResponsible");
             }
 
             <a class="link-back" href="@backLink">Back <span class="visuallyhidden"> to the previous step</span></a>

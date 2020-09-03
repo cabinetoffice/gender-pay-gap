@@ -22,12 +22,12 @@ namespace GenderPayGap.WebUI.Classes.Services
     public interface ISubmissionService
     {
 
-        bool IsCurrentSnapshotYear(SectorTypes sector, int snapshotYear);
+        bool IsCurrentSnapshotYear(OrganisationSectors sector, int snapshotYear);
 
-        bool IsHistoricSnapshotYear(SectorTypes sector, int snapshotYear);
+        bool IsHistoricSnapshotYear(OrganisationSectors sector, int snapshotYear);
 
         bool IsValidSnapshotYear(int snapshotYear);
-        DateTime GetCurrentSnapshotDate(SectorTypes sector = SectorTypes.Private);
+        DateTime GetCurrentSnapshotDate(OrganisationSectors sector = OrganisationSectors.Private);
         SubmissionChangeSummary GetSubmissionChangeSummary(Return stashedReturn, Return databaseReturn);
 
         Task<Return> GetSubmissionByIdAsync(long returnId);
@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Classes.Services
         public IDataRepository DataRepository { get; }
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
 
-        public bool IsCurrentSnapshotYear(SectorTypes sector, int snapshotYear)
+        public bool IsCurrentSnapshotYear(OrganisationSectors sector, int snapshotYear)
         {
             // Get the current reporting year
             int currentReportingStartYear = GetCurrentSnapshotDate(sector).Year;
@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             return snapshotYear == currentReportingStartYear;
         }
 
-        public bool IsHistoricSnapshotYear(SectorTypes sector, int snapshotYear)
+        public bool IsHistoricSnapshotYear(OrganisationSectors sector, int snapshotYear)
         {
             // Get the previous reporting year
             int currentReportingStartYear = GetCurrentSnapshotDate(sector).Year;
@@ -326,7 +326,7 @@ namespace GenderPayGap.WebUI.Classes.Services
 
             // is previous reporting start year
             bool isPrevReportingStartYear = IsHistoricSnapshotYear(
-                databaseReturn.Organisation.SectorType,
+                databaseReturn.Organisation.Sector,
                 databaseReturn.AccountingDate.Year);
 
             // check late reason for changes
@@ -412,7 +412,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             Return returnFromDatabase = await GetReturnFromDatabaseAsync(organisationId, snapshotYear);
 
             // should provide late reason
-            result.ShouldProvideLateReason = IsHistoricSnapshotYear(userOrganisationFromDatabase.Organisation.SectorType, snapshotYear);
+            result.ShouldProvideLateReason = IsHistoricSnapshotYear(userOrganisationFromDatabase.Organisation.Sector, snapshotYear);
 
             if (returnFromDatabase == null)
             {
@@ -429,10 +429,10 @@ namespace GenderPayGap.WebUI.Classes.Services
                 }
 
                 //Always create a new return if no previous return or latest last year 
-                result.AccountingDate = GetSnapshotDate(userOrganisationFromDatabase.Organisation.SectorType, snapshotYear);
+                result.AccountingDate = GetSnapshotDate(userOrganisationFromDatabase.Organisation.Sector, snapshotYear);
                 result.OrganisationId = organisationId;
                 result.EncryptedOrganisationId = userOrganisationFromDatabase.Organisation.GetEncryptedId();
-                result.SectorType = userOrganisationFromDatabase.Organisation.SectorType;
+                result.OrganisationSector = userOrganisationFromDatabase.Organisation.Sector;
                 return result;
             }
 
@@ -460,7 +460,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             result.CompanyLinkToGPGInfo = returnFromDatabase.CompanyLinkToGPGInfo;
             result.AccountingDate = returnFromDatabase.AccountingDate;
             result.OrganisationSize = returnFromDatabase.OrganisationSize;
-            result.SectorType = returnFromDatabase.Organisation.SectorType;
+            result.OrganisationSector = returnFromDatabase.Organisation.Sector;
             result.FormatDecimals();
             result.Modified = returnFromDatabase.Modified;
             //result.LatestOrganisationName = returnFromDatabase.LatestOrganisation?.OrganisationName;
@@ -500,7 +500,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             return reportInfo;
         }
 
-        public DateTime GetCurrentSnapshotDate(SectorTypes sector = SectorTypes.Private)
+        public DateTime GetCurrentSnapshotDate(OrganisationSectors sector = OrganisationSectors.Private)
         {
             // Get the current reporting period for the sector
             return GetSnapshotDate(sector);
@@ -550,7 +550,7 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         private async Task<ReportInfoModel> GetReport_InfoAsync(Organisation organisation, DateTime? returnModifiedDate, int snapshotYear)
         {
-            DateTime snapshotDate = GetSnapshotDate(organisation.SectorType, snapshotYear);
+            DateTime snapshotDate = GetSnapshotDate(organisation.Sector, snapshotYear);
             if (!IsValidSnapshotYear(snapshotDate.Year))
             {
                 return null;
@@ -569,7 +569,7 @@ namespace GenderPayGap.WebUI.Classes.Services
         // Wraps the enum SectorTypes.GetAccountingStartDate() method because we cant mock it
         // We cant change SectorTypes.GetAccountingStartDate() because it's used everywhere
         // But these virtual wrappers can be mocked and extended
-        public virtual DateTime GetSnapshotDate(SectorTypes sector = SectorTypes.Private, int snapshotYear = 0)
+        public virtual DateTime GetSnapshotDate(OrganisationSectors sector = OrganisationSectors.Private, int snapshotYear = 0)
         {
             // Get the reporting start date for the sector and reporting start year
             return sector.GetAccountingStartDate(snapshotYear);

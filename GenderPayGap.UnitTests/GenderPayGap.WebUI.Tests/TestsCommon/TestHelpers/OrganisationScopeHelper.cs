@@ -7,22 +7,22 @@ namespace GenderPayGap.Tests.Common.TestHelpers
     public class OrganisationScopeHelper
     {
 
-        public static OrganisationScope GetOrganisationScope(int snapshotYear, SectorTypes organisationSectorType)
+        public static OrganisationScope GetOrganisationScope(int snapshotYear, OrganisationSectors organisationOrganisationSector)
         {
             return new OrganisationScope {
-                SnapshotDate = SectorTypeHelper.GetSnapshotDateForSector(snapshotYear, organisationSectorType),
+                SnapshotDate = SectorTypeHelper.GetSnapshotDateForSector(snapshotYear, organisationOrganisationSector),
                 Status = ScopeRowStatuses.Active
             };
         }
 
-        public static OrganisationScope GetOrgScopeWithThisScope(int snapshotYear, SectorTypes organisationSectorType, ScopeStatuses scope)
+        public static OrganisationScope GetOrgScopeWithThisScope(int snapshotYear, OrganisationSectors organisationOrganisationSector, ScopeStatuses scope)
         {
             if (snapshotYear == 0)
             {
-                snapshotYear = organisationSectorType.GetAccountingStartDate().Year;
+                snapshotYear = organisationOrganisationSector.GetAccountingStartDate().Year;
             }
 
-            OrganisationScope org = GetOrganisationScope(snapshotYear, organisationSectorType);
+            OrganisationScope org = GetOrganisationScope(snapshotYear, organisationOrganisationSector);
             org.ScopeStatus = scope;
             return org;
         }

@@ -2,7 +2,7 @@
 @using GenderPayGap.Core.Classes
 @model CompareViewModel
 @{
-    int endYear = SectorTypes.Private.GetAccountingStartDate().Year;
+    int endYear = OrganisationSectors.Private.GetAccountingStartDate().Year;
     int startYear = endYear - (Global.ShowReportYearCount - 1);
     if (startYear < Global.FirstReportingYear)
     {

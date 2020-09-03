@@ -50,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 return View("CustomError", new ErrorViewModel(3040));
             }
 
-            if (stashedReturnViewModel.SectorType == SectorTypes.Public)
+            if (stashedReturnViewModel.OrganisationSector == OrganisationSectors.Public)
             {
                 ModelState.Remove(nameof(stashedReturnViewModel.FirstName));
                 ModelState.Remove(nameof(stashedReturnViewModel.LastName));

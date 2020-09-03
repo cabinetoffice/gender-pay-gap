@@ -31,7 +31,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             return new Organisation {
                 OrganisationId = organisationId,
                 OrganisationName = organisationName,
-                SectorType = SectorTypes.Private, /**/
+                Sector = OrganisationSectors.Private, /**/
                 Status = OrganisationStatuses.Active,
                 CompanyNumber = companyNumber.ToString()
             };
