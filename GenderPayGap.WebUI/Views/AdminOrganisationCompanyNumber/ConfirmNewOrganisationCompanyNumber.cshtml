@@ -1,5 +1,5 @@
-﻿@using GenderPayGap.BusinessLogic.Services
-@using GenderPayGap.Database
+﻿@using GenderPayGap.Database
+@using GenderPayGap.WebUI.BusinessLogic.Services
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -119,7 +119,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header govuk-!-width-one-third">New address</th>
                         @{ OrganisationAddress addressFromCoHo = UpdateFromCompaniesHouseService.CreateOrganisationAddressFromCompaniesHouseAddress(Model.CompaniesHouseCompany.RegisteredOfficeAddress); }
-                        <td class="govuk-table__cell">@(UpdateFromCompaniesHouseService.AddressMatches(addressFromCoHo, Model.Organisation.LatestAddress) ? "(Not changed)" : addressFromCoHo.GetAddressString())</td>
+                        <td class="govuk-table__cell">@(UpdateFromCompaniesHouseService.AddressInSet(addressFromCoHo, Model.Organisation.OrganisationAddresses) ? "(Not changed)" : addressFromCoHo.GetAddressString())</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header govuk-!-width-one-third">New SIC codes</th>
