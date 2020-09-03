@@ -167,7 +167,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         public static OrganisationAddress CreateOrganisationAddressFromCompaniesHouseAddress(CompaniesHouseAddress companiesHouseAddress)
         {
-            string premisesAndLine1 = GetAddressLineFromPremisesAndAddressLine1(companiesHouseAddress);
+            string premisesAndLine1 = companiesHouseAddress.GetAddressLineFromPremisesAndAddressLine1();
             bool? isUkAddress = null;
             if (PostcodesIoApi.IsValidPostcode(companiesHouseAddress?.PostalCode).Result)
             {
@@ -191,54 +191,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 Source = SourceOfChange,
                 IsUkAddress = isUkAddress
             };
-        }
-
-        private static string GetAddressLineFromPremisesAndAddressLine1(CompaniesHouseAddress companiesHouseAddress)
-        {
-            return companiesHouseAddress?.Premises == null
-                ? companiesHouseAddress?.AddressLine1
-                : companiesHouseAddress?.Premises + "," + companiesHouseAddress?.AddressLine1;
-        }
-
-        public static bool AddressMatches(OrganisationAddress firstOrganisationAddress, OrganisationAddress secondOrganisationAddress)
-        {
-            return string.Equals(
-                       firstOrganisationAddress.Address1,
-                       secondOrganisationAddress.Address1,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.Address2,
-                       secondOrganisationAddress.Address2,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.Address3,
-                       secondOrganisationAddress.Address3,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.TownCity,
-                       secondOrganisationAddress.TownCity,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.County,
-                       secondOrganisationAddress.County,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.Country,
-                       secondOrganisationAddress.Country,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.PostCode,
-                       secondOrganisationAddress.PostCode,
-                       StringComparison.Ordinal)
-                   && string.Equals(
-                       firstOrganisationAddress.PoBox,
-                       secondOrganisationAddress.PoBox,
-                       StringComparison.Ordinal);
-        }
-        
-        public static bool AddressInSet(OrganisationAddress organisationAddress, ICollection<OrganisationAddress> addressSet)
-        {
-            return addressSet.Contains(organisationAddress);
         }
 
         public void UpdateName(Organisation organisation, CompaniesHouseCompany organisationFromCompaniesHouse)

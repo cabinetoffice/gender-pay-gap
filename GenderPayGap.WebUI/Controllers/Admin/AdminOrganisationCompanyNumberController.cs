@@ -4,6 +4,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = "GPGadmin")]
+    [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
     public class AdminOrganisationCompanyNumberController : Controller
     {
@@ -47,18 +48,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 // CompanyNumber is empty - send them straight to ChangeCompanyNumber
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
-            else
-            {
-                // CompanyNumber is not empty - ask the user if they want to change or remove the CompanyNumber
-                return View("OfferChangeOrRemoveOrganisationCompanyNumber", viewModel);
-            }
+            // CompanyNumber is not empty - ask the user if they want to change or remove the CompanyNumber
+            return View("OfferChangeOrRemoveOrganisationCompanyNumber", viewModel);
         }
 
         [HttpPost("organisation/{id}/change-company-number")]
         public IActionResult ChangeCompanyNumberPost(long id, AdminOrganisationCompanyNumberViewModel viewModel)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
-
+            
             switch (viewModel.CurrentPage)
             {
                 case AdminOrganisationCompanyNumberViewModelCurrentPage.OfferChangeOrRemove:
@@ -87,11 +85,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("OfferChangeOrRemoveOrganisationCompanyNumber", viewModel);
             }
 
+            // If removing CompanyNumber
             if (viewModel.ChangeOrRemove == AdminOrganisationCompanyNumberChangeOrRemove.Remove)
             {
                 return View("RemoveOrganisationCompanyNumber", viewModel);
             }
 
+            // If changing CompanyNumber
             return View("ChangeOrganisationCompanyNumber", viewModel);
         }
 
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 {
                     OldCompanyNumber = organisation.CompanyNumber,
                     NewCompanyNumber = "(removed)",
-                    Reason = viewModel.Reason
+                    viewModel.Reason
                 }
             );
 
@@ -135,23 +135,23 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             string formattedCompanyNumber = viewModel.NewCompanyNumber.Trim().ToUpper();
 
-            if (formattedCompanyNumber == organisation.CompanyNumber?.Trim()?.ToUpper())
+            if (formattedCompanyNumber == organisation.CompanyNumber?.Trim().ToUpper())
             {
                 viewModel.AddErrorFor(m => m.NewCompanyNumber,
                     "Company number must be different to the current company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
 
+            // Check that another stored organisation doesn't have the same company number
             Organisation organisationWithSameNewCompanyNumber =
                 dataRepository.GetAll<Organisation>()
                     .FirstOrDefault(o => o.CompanyNumber == formattedCompanyNumber);
 
             if (organisationWithSameNewCompanyNumber != null)
             {
-                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                viewModel.AddErrorFor(
                     m => m.NewCompanyNumber,
-                    $"Another organisation ({organisationWithSameNewCompanyNumber.OrganisationName}, "
-                    + $"with id {organisationWithSameNewCompanyNumber.OrganisationId}) has this company number");
+                    $"Another organisation ({organisationWithSameNewCompanyNumber.OrganisationName}) has this company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
 
@@ -162,7 +162,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
             catch (Exception)
             {
-                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                viewModel.AddErrorFor(
                     m => m.NewCompanyNumber,
                     "Companies House API gave an error (maybe the API is down, or maybe the company number is invalid)");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
@@ -170,7 +170,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (companiesHouseCompany == null)
             {
-                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
+                viewModel.AddErrorFor(
                     m => m.NewCompanyNumber,
                     "Companies House didn't recognise this company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
@@ -204,8 +204,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 new
                 {
                     OldCompanyNumber = organisation.CompanyNumber,
-                    NewCompanyNumber = viewModel.NewCompanyNumber,
-                    Reason = viewModel.Reason
+                    viewModel.NewCompanyNumber,
+                    viewModel.Reason
                 }
             );
 

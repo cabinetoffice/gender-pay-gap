@@ -32,5 +32,11 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
         [JsonProperty("region")]
         public string Region { get; set; }
 
+        public string GetAddressLineFromPremisesAndAddressLine1()
+        {
+            return Premises == null
+                ? AddressLine1
+                : Premises + "," + AddressLine1;
+        }
     }
 }

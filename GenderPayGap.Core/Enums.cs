@@ -265,7 +265,7 @@ namespace GenderPayGap.Core
         [Display(Name = "Admin updated SIC codes")]
         AdminUpdatedSicCodes = 40,
         
-        [Display(Name = "Admin change organisation company number")]
+        [Display(Name = "Admin changed organisation company number")]
         AdminChangeOrganisationCompanyNumber = 41,
     }
 
