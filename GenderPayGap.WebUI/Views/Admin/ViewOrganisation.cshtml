@@ -101,7 +101,7 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ChangeCompanyNumberGet", "AdminOrganisationCompanyNumber", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
-                    @(string.IsNullOrWhiteSpace(Model.CompanyNumber) ? "Add" : "Change")
+                    @(string.IsNullOrWhiteSpace(Model.Organisation.CompanyNumber) ? "Add" : "Change")
                     <span class="govuk-visually-hidden"> company number</span>
                 </a>
             </td>

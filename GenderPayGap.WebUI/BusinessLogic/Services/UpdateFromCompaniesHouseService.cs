@@ -235,6 +235,11 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                        secondOrganisationAddress.PoBox,
                        StringComparison.Ordinal);
         }
+        
+        public static bool AddressInSet(OrganisationAddress organisationAddress, ICollection<OrganisationAddress> addressSet)
+        {
+            return addressSet.Contains(organisationAddress);
+        }
 
         public void UpdateName(Organisation organisation, CompaniesHouseCompany organisationFromCompaniesHouse)
         {

@@ -1,4 +1,4 @@
-﻿using GenderPayGap.Core.Models.CompaniesHouse;
+﻿using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;

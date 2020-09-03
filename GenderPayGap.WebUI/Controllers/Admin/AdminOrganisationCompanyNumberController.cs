@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.API;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models.CompaniesHouse;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Services;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -106,7 +106,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
 
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeOrganisationCompanyNumber,
                 organisation,
                 new
@@ -138,8 +137,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (formattedCompanyNumber == organisation.CompanyNumber?.Trim()?.ToUpper())
             {
-                viewModel.AddErrorFor<AdminOrganisationCompanyNumberViewModel, string>(
-                    m => m.NewCompanyNumber, 
+                viewModel.AddErrorFor(m => m.NewCompanyNumber,
                     "Company number must be different to the current company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
@@ -201,7 +199,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
 
             auditLogger.AuditChangeToOrganisation(
-                this,
                 AuditedAction.AdminChangeOrganisationCompanyNumber,
                 organisation,
                 new
