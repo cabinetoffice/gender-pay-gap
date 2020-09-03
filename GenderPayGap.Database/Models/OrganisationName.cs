@@ -20,6 +20,5 @@ namespace GenderPayGap.Database
         public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public virtual Organisation Organisation { get; set; }
-
     }
 }
