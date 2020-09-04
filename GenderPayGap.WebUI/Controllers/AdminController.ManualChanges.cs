@@ -320,6 +320,20 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     {
                         //Change the sector type
                         org.Sector = newSector;
+                        
+                        var organisationSector = new OrganisationSector
+                        {
+                            Organisation = org,
+                            Sector = newSector,
+                            SectorDate = VirtualDateTime.Now,
+                            SectorDetails = "Admin Executed Manual Changes",
+                            ByUser = null
+                        };
+
+                        org.OrganisationSectors.Add(organisationSector);
+
+                        DataRepository.Insert(organisationSector);
+                        
                         if (!test)
                         {
                             auditLogger.AuditChangeToOrganisation(
