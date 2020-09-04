@@ -88,10 +88,13 @@ else
                     <td class="govuk-table__cell">@(status.Sector)</td>
                     <td class="govuk-table__cell">@(status.SectorDate.ToString("d MMM yyyy"))</td>
                     <td class="govuk-table__cell">
-                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
-                           class="govuk-link">
-                            @(status.ByUser.Fullname)
-                        </a>
+                        @if (status.ByUser != null)
+                        {
+                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
+                               class="govuk-link">
+                                @(status.ByUser.Fullname)
+                            </a>
+                        }
                     </td>
                     <td class="govuk-table__cell">@(status.SectorDetails)</td>
                 </tr>
