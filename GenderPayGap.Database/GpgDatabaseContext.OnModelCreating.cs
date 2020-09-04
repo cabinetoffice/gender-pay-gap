@@ -247,7 +247,7 @@ namespace GenderPayGap.Database
 
                     entity.HasIndex(e => e.SectorDate);
 
-                    entity.Property(e => e.Sector).HasColumnName("SectorId");
+                    entity.Property(e => e.Sector).HasColumnName("SectorTypeId");
 
                     entity.Property(e => e.SectorDetails).HasMaxLength(255);
 
