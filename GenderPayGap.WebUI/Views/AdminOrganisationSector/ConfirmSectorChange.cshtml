@@ -1,0 +1,99 @@
+﻿@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeSectorViewModel
+
+@{
+    ViewBag.Title = "Change sector - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("Home", "Admin")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Sector history",
+                Href = Url.Action("ViewSectorHistory", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change sector"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Change sector
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.Organisation.OrganisationName)
+    </span>
+</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("ChangeSectorPost", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId})">
+            @(Html.AntiForgeryToken())
+
+            <input type="hidden" name="@(nameof(AdminChangeSectorViewModel.Action))" value="@(ChangeOrganisationSectorViewModelActions.ConfirmSectorChange)"/>
+            @(Html.HiddenFor(m => m.NewSector))
+            @(Html.HiddenFor(m => m.Reason))
+
+            <h2 class="govuk-heading-l">
+                Check the changes
+            </h2>
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Organisation name</th>
+                        <td class="govuk-table__cell">@(Model.Organisation.OrganisationName)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Current sector</th>
+                        <td class="govuk-table__cell">@(Model.Organisation.Sector)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">New sector</th>
+                        <td class="govuk-table__cell">@(Model.NewSector)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="govuk-form-group">
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
+                       class="govuk-link">
+                        Cancel and return to organisation page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>
