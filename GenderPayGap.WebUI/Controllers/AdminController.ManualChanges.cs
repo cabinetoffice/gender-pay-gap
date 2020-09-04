@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +18,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 {
     public partial class AdminController : BaseController
     {
-
         [HttpGet("manual-changes")]
         public IActionResult ManualChanges()
         {
@@ -35,21 +36,23 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             model.Tested = false;
             long count = 0;
             int? total = null;
-
+            
             model.SuccessMessage = null;
             using (var writer = new StringWriter())
             {
                 try
                 {
+                    User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, DataRepository);
+                    
                     switch (model.Command)
                     {
                         case "Please select..":
                             throw new ArgumentException("ERROR: You must first select a command");
                         case "Convert public to private":
-                            count = await ConvertPublicOrganisationsToPrivateAsync(model.Parameters, model.Comment, writer, test);
+                            count = await ConvertPublicOrganisationsToPrivateAsync(model.Parameters, model.Comment, writer, test, currentUser);
                             break;
                         case "Convert private to public":
-                            count = await ConvertPrivateOrganisationsToPublicAsync(model.Parameters, model.Comment, writer, test);
+                            count = await ConvertPrivateOrganisationsToPublicAsync(model.Parameters, model.Comment, writer, test, currentUser);
                             break;
                         case "Set organisation company number":
                             count = await SetOrganisationCompanyNumberAsync(model.Parameters, model.Comment, writer, test);
@@ -229,7 +232,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             return count;
         }
 
-        private async Task<int> ConvertPrivateOrganisationsToPublicAsync(string input, string comment, StringWriter writer, bool test)
+        private async Task<int> ConvertPrivateOrganisationsToPublicAsync(string input, string comment, StringWriter writer, bool test, User currentUser)
         {
             string methodName = nameof(ConvertPrivateOrganisationsToPublicAsync);
 
@@ -327,7 +330,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             Sector = newSector,
                             SectorDate = VirtualDateTime.Now,
                             SectorDetails = "Admin Executed Manual Changes",
-                            ByUser = null
+                            ByUser = currentUser
                         };
 
                         org.OrganisationSectors.Add(organisationSector);
@@ -445,7 +448,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
             return count;
         }
 
-        private async Task<int> ConvertPublicOrganisationsToPrivateAsync(string input, string comment, StringWriter writer, bool test)
+        private async Task<int> ConvertPublicOrganisationsToPrivateAsync(string input, string comment, StringWriter writer, bool test, User currentUser)
         {
             string methodName = nameof(ConvertPublicOrganisationsToPrivateAsync);
 
@@ -543,7 +546,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                             Sector = newSector,
                             SectorDate = VirtualDateTime.Now,
                             SectorDetails = "Admin Executed Manual Changes",
-                            ByUser = null
+                            ByUser = currentUser
                         };
 
                         org.OrganisationSectors.Add(organisationSector);
