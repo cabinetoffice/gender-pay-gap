@@ -322,21 +322,8 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     if (oldSector != newSector)
                     {
                         //Change the sector type
-                        org.Sector = newSector;
-                        
-                        var organisationSector = new OrganisationSector
-                        {
-                            Organisation = org,
-                            Sector = newSector,
-                            SectorDate = VirtualDateTime.Now,
-                            SectorDetails = "Admin Executed Manual Changes",
-                            ByUser = currentUser
-                        };
+                        org.SetSector(newSector, currentUser.UserId, comment);
 
-                        org.OrganisationSectors.Add(organisationSector);
-
-                        DataRepository.Insert(organisationSector);
-                        
                         if (!test)
                         {
                             auditLogger.AuditChangeToOrganisation(
@@ -538,20 +525,8 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     //Change the sector type
                     if (oldSector != newSector)
                     {
-                        org.Sector = newSector;
-                        
-                        var organisationSector = new OrganisationSector
-                        {
-                            Organisation = org,
-                            Sector = newSector,
-                            SectorDate = VirtualDateTime.Now,
-                            SectorDetails = "Admin Executed Manual Changes",
-                            ByUser = currentUser
-                        };
-
-                        org.OrganisationSectors.Add(organisationSector);
-
-                        DataRepository.Insert(organisationSector);
+                        //Change the sector type
+                        org.SetSector(newSector, currentUser.UserId, comment);
                         
                         if (!test)
                         {
