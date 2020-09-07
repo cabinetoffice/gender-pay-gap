@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core;
+﻿using System;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
@@ -69,7 +70,33 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 LoginRoles.GpgEmployer,
                 currentUser.UserId);
 
-            //Refresh page to ensure identity is passed in cookie
+            return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+        }
+
+        [HttpPost("impersonate/{userId}")]
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ImpersonateDirectPost(long userId)
+        {
+            User impersonatedUser = dataRepository.Get<User>(userId);
+            if (impersonatedUser == null)
+            {
+                throw new Exception($"Trying to impersonate user ({userId}) but this user does not exist");
+            }
+
+            if (impersonatedUser.IsAdministrator())
+            {
+                throw new Exception($"Trying to impersonate user ({userId}) but this user is an administrator");
+            }
+
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            LoginHelper.LoginWithImpersonation(
+                HttpContext,
+                impersonatedUser.UserId,
+                LoginRoles.GpgEmployer,
+                currentUser.UserId);
+
             return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
         }
 

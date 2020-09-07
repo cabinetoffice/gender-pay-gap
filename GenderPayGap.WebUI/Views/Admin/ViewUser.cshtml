@@ -183,9 +183,8 @@
 </table>
 
 <h2 class="govuk-heading-l">Impersonate User</h2>
-<form method="POST" action="@Url.Action("ImpersonatePost", "AdminImpersonateUser")">
+<form method="POST" action="@Url.Action("ImpersonateDirectPost", "AdminImpersonateUser", new { userId = Model.UserId })">
     @Html.AntiForgeryToken()
-    <input type="hidden" name="emailAddress" value="@(Model.EmailAddress)"/>
     <input type="submit" class="govuk-button" data-module="govuk-button" value="Impersonate"/>
 </form>
 

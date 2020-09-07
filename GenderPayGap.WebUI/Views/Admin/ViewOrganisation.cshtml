@@ -359,10 +359,20 @@ else
                     <td class="govuk-table__cell">
                         @if (userStatus == "REGISTERED")
                         {
-                            <a href="@(Url.Action("ImpersonatePost", "AdminImpersonateUser", new {emailAddress = user.EmailAddress}))"
-                               class="govuk-link">
-                                Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
-                            </a>
+                            <form method="POST"
+                                  action="@Url.Action("ImpersonateDirectPost", "AdminImpersonateUser", new { userId = user.UserId })"
+                                  style="display: inline"
+                                  gpg-module="impersonate-form">
+                                @Html.AntiForgeryToken()
+                                <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
+                                    Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                                </button>
+                                <a href="#"
+                                   class="govuk-link"
+                                   style="display: none">
+                                    Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                                </a>
+                            </form>
                         }
                         else if (userStatus == "AWAITING_PIN")
                         {
@@ -391,3 +401,23 @@ else
         </tbody>
     </table>
 }
+
+<script>
+    (function() {
+
+        var impersonateForms = document.querySelectorAll("form[gpg-module='impersonate-form']");
+
+        impersonateForms.forEach(function(impersonateForm) {
+            var impersonateButton = impersonateForm.querySelector("button");
+            impersonateButton.remove();
+
+            var impersonateLink = impersonateForm.querySelector("a");
+            impersonateLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                impersonateForm.submit();
+            });
+            impersonateLink.removeAttribute("style");
+        });
+
+    })();
+</script>
