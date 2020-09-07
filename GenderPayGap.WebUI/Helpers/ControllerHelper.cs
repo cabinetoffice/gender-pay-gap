@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
@@ -53,6 +55,17 @@ namespace GenderPayGap.WebUI.Helpers
             if (!FeatureFlagHelper.IsFeatureEnabled(featureFlag))
             {
                 throw new PageNotFoundException();
+            }
+        }
+
+        public static void ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository, long organisationId)
+        {
+            User gpgUser = GetGpgUserFromAspNetUser(aspDotNetUser, dataRepository);
+
+            UserOrganisation userOrg = gpgUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
+            if (userOrg == null)
+            {
+                throw new IncorrectPermissionsException();
             }
         }
 

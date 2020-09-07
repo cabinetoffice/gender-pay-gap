@@ -24,6 +24,16 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public DateTime? EmailVerifySendDate { get; set; }
     }
 
+    public class IncorrectPermissionsException : CustomErrorPageException
+    {
+
+        // TODO: Update this with a sensible view
+        public override string ViewName => "";
+
+        public override int StatusCode => 403;
+
+    }
+
     public class PageNotFoundException : CustomErrorPageException
     {
         public override string ViewName => "../Errors/404";
