@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
 
-        [HttpGet("~/ping")]
+        [HttpGet("ping")]
         public IActionResult Ping()
         {
             return new OkResult(); // OK = 200
@@ -38,7 +38,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         #endregion
 
-        [HttpGet("~/report-concerns")]
+        [HttpGet("report-concerns")]
         public IActionResult ReportConcerns()
         {
             return View(nameof(ReportConcerns));
@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         #region PrivacyPolicy
 
-        [HttpGet("~/privacy-policy")]
+        [HttpGet("privacy-policy")]
         public IActionResult PrivacyPolicy()
         {
             return View("PrivacyPolicy", null);
@@ -54,7 +54,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        [HttpPost("~/privacy-policy")]
+        [HttpPost("privacy-policy")]
         public async Task<IActionResult> PrivacyPolicyPost()
         {
             if (!User.Identity.IsAuthenticated)
@@ -88,7 +88,7 @@ namespace GenderPayGap.WebUI.Controllers
         
         #region Accessibility Statement
         
-        [HttpGet("~/accessibility-statement")]
+        [HttpGet("accessibility-statement")]
         public IActionResult AccessibilityStatement()
         {
             return View("AccessibilityStatement");
