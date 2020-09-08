@@ -180,19 +180,19 @@
             <div class="footer-meta-inner">
                 <ul>
                     <li>
-                        <a href="/contact-us">Contact Us</a>
+                        <a href="@(Url.Action("ContactUs", "Home"))">Contact Us</a>
                     </li>
                     <li>
-                        <a href="/cookies">Cookies</a>
+                        <a href="@(Url.Action("CookieDetails", "Cookie"))">Cookies</a>
                     </li>
                     <li>
-                        <a href="/privacy-policy">Privacy Policy</a>
+                        <a href="@(Url.Action("PrivacyPolicy", "Home"))">Privacy Policy</a>
                     </li>
                     <li>
-                        <a href="/report-concerns">Report Concerns</a>
+                        <a href="@(Url.Action("ReportConcerns", "Home"))">Report Concerns</a>
                     </li>
                     <li>
-                        <a href="/accessibility-statement">Accessibility Statement</a>
+                        <a href="@(Url.Action("AccessibilityStatement", "Home"))">Accessibility statement</a>
                     </li>
                     @if (Config.OffsetCurrentDateTimeForSite() != TimeSpan.Zero)
                     {
