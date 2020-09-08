@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.HttpResultModels;
+using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
@@ -15,7 +17,7 @@ namespace GenderPayGap.WebUI.Controllers
 {
     
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("organisation")]
+    [Route("organisation/{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
     public class ScopeNewController : Controller
     {
 
@@ -28,8 +30,9 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
-        [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
-        public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear, ScopingViewModel viewModel)
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear)
         {
             // Decrypt organisation ID param
             if (!encryptedOrganisationId.DecryptToParams(out List<string> requestParams))
@@ -41,22 +44,33 @@ namespace GenderPayGap.WebUI.Controllers
             // Check user has permissions to access this page
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            
-            // Get the latest scope for the reporting year
-            ScopeViewModel latestScope = null;
-            
-            if (viewModel.ThisScope.SnapshotDate.Year == reportingYear)
+
+            // Get Organisation and OrganisationScope for reporting year
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
+
+            return RedirectToAction(organisationScope.IsInScopeVariant()  ? "EnterOutOfScopeAnswers" : "ConfirmInScope", "ScopeNew");
+        }
+
+        [HttpGet("out")]
+        public IActionResult EnterOutOfScopeAnswers()
+        {
+            // When User is Admin then redirect to Admin\Home
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            if (currentUser != null && currentUser.IsAdministrator())
             {
-                latestScope = viewModel.ThisScope;
-            } else if (viewModel.LastScope.SnapshotDate.Year == reportingYear)
-            {
-                latestScope = viewModel.LastScope;
+                return RedirectToAction("Home", "Admin");
             }
             
-            //Set the in/out journey type
-            viewModel.IsOutOfScopeJourney = latestScope.ScopeStatus.IsAny(ScopeStatuses.PresumedInScope, ScopeStatuses.InScope);
+            return View("EnterOutOfScopeAnswers");
+        }
 
-            return RedirectToAction(viewModel.IsOutOfScopeJourney ? "EnterOutOfScopeAnswers" : "ConfirmInScope", "ScopeNew");
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out")]
+        public IActionResult EnterOutOfScopeAnswers(EnterAnswersViewModel enterAnswersModel)
+        {
+            return null;
         }
     }
 }

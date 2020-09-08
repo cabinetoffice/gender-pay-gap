@@ -43,5 +43,10 @@ namespace GenderPayGap.Database
 
         public virtual Organisation Organisation { get; set; }
 
+        public bool IsInScopeVariant()
+        {
+            return ScopeStatus == ScopeStatuses.InScope || ScopeStatus == ScopeStatuses.PresumedInScope;
+        }
+
     }
 }

@@ -67,6 +67,11 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 throw new IncorrectPermissionsException();
             }
+
+            if (!userOrg.PINConfirmedDate.HasValue)
+            {
+                // TODO Add sensible error
+            }
         }
 
     }
