@@ -141,10 +141,13 @@ else
                     else
                     {
                         <td class="govuk-table__cell" rowspan="@(Math.Max(item.Details.Count, 1))">
-                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = item.OriginalUser.UserId})"
-                               class="govuk-link">
-                                @(item.OriginalUser.Fullname)
-                            </a>
+                            @if (item.OriginalUser != null)
+                            {
+                                <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = item.OriginalUser.UserId})"
+                                   class="govuk-link">
+                                    @(item.OriginalUser.Fullname)
+                                </a>
+                            }
 
                             @if (item.ImpersonatedUser != null)
                             {

@@ -113,7 +113,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     OldCompanyNumber = organisation.CompanyNumber,
                     NewCompanyNumber = "(removed)",
                     viewModel.Reason
-                }
+                },
+                User
             );
 
             organisation.CompanyNumber = null;
@@ -206,7 +207,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     OldCompanyNumber = organisation.CompanyNumber,
                     viewModel.NewCompanyNumber,
                     viewModel.Reason
-                }
+                },
+                User
             );
 
             organisation.CompanyNumber = viewModel.NewCompanyNumber;
