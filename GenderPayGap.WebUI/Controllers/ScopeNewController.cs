@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +29,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
-        public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, string reportingYear)
+        public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear, ScopingViewModel viewModel)
         {
             // Decrypt organisation ID param
             if (!encryptedOrganisationId.DecryptToParams(out List<string> requestParams))
@@ -40,7 +42,21 @@ namespace GenderPayGap.WebUI.Controllers
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             
-            return null;
+            // Get the latest scope for the reporting year
+            ScopeViewModel latestScope = null;
+            
+            if (viewModel.ThisScope.SnapshotDate.Year == reportingYear)
+            {
+                latestScope = viewModel.ThisScope;
+            } else if (viewModel.LastScope.SnapshotDate.Year == reportingYear)
+            {
+                latestScope = viewModel.LastScope;
+            }
+            
+            //Set the in/out journey type
+            viewModel.IsOutOfScopeJourney = latestScope.ScopeStatus.IsAny(ScopeStatuses.PresumedInScope, ScopeStatuses.InScope);
+
+            return RedirectToAction(viewModel.IsOutOfScopeJourney ? "EnterOutOfScopeAnswers" : "ConfirmInScope", "ScopeNew");
         }
     }
 }
