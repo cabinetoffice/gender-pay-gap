@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Html
 @model GenderPayGap.WebUI.Models.Scope.ScopingViewModel
 @{
-    ViewBag.Title = "Tell us why your organisation is not in scope - Gender pay gap reporting service";
+    ViewBag.Title = "Tell us why your organisation is not in scope - Gender pay gap service";
     var controller = ViewData["Controller"] as BaseController;
     string backLink = Model.IsChangeJourney && Model.IsOutOfScopeJourney ? Model.StartUrl : Url.Action("ConfirmOutOfScopeDetails");
 
