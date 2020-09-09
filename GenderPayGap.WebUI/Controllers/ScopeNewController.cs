@@ -54,24 +54,10 @@ namespace GenderPayGap.WebUI.Controllers
             return View(organisationScope.IsInScopeVariant()  ? "OutOfScopeQuestions" : "ConfirmInScope", viewModel);
         }
 
-        [HttpGet("in/confirm")]
-        public IActionResult ConfirmInScope()
-        {
-            // When User is Admin then redirect to Admin\Home
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            if (currentUser != null && currentUser.IsAdministrator())
-            {
-                return RedirectToAction("Home", "Admin");
-            }
-
-            // else redirect to ConfirmDetails action
-            return View("ConfirmInScope");
-        }
-
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("out")]
-        public IActionResult EnterOutOfScopeAnswers(EnterAnswersViewModel enterAnswersModel)
+        public IActionResult EnterOutOfScopeAnswers(OutOfScopeViewModel viewModel)
         {
             return null;
         }
