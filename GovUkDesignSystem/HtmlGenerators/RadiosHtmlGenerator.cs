@@ -19,6 +19,7 @@ namespace GovUkDesignSystem.HtmlGenerators
             HintViewModel hintOptions = null,
             Dictionary<TProperty, LabelViewModel> itemLabelOptions = null,
             Dictionary<TProperty, HintViewModel> itemHintOptions = null,
+            Dictionary<TProperty, Func<object, object>> conditionalOptions = null,
             string classes = null)
             where TModel : GovUkViewModel
         {
@@ -48,6 +49,11 @@ namespace GovUkDesignSystem.HtmlGenerators
                         Checked = isEnumValueCurrentlySelected,
                         Label = new LabelViewModel()
                     };
+                    
+                    if (conditionalOptions != null && conditionalOptions.TryGetValue((TProperty)enumValue, out Func<object, object> conditionalHtml))
+                    {
+                        radioItemViewModel.Conditional = new Conditional {Html = conditionalHtml};
+                    }
 
                     if (itemLabelOptions != null && itemLabelOptions.TryGetValue((TProperty)enumValue, out LabelViewModel labelViewModel))
                     {
