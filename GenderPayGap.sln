@@ -16,8 +16,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenderPayGap.WebUI.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovUkDesignSystem", "GovUkDesignSystem\GovUkDesignSystem.csproj", "{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarmUp", "WarmUp\WarmUp.csproj", "{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{72B53450-285C-4716-8BF6-5885E53E617F}"
 	ProjectSection(SolutionItems) = preProject
 		Infrastructure\Conduit.sh = Infrastructure\Conduit.sh
@@ -71,10 +69,6 @@ Global
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE071C9E-B424-4F70-A1EC-6ECB15399C6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95E70733-073A-498E-8653-BE4626FEFA5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95E70733-073A-498E-8653-BE4626FEFA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E70733-073A-498E-8653-BE4626FEFA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
