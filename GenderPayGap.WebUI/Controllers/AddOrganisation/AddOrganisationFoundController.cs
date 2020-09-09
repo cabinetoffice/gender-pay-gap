@@ -270,14 +270,14 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             if (isUkAddress.HasValue)
             {
                 viewModel.IsUkAddress = isUkAddress.Value
-                    ? AddOrganisationFoundViewModelIsUkAddress.Yes
-                    : AddOrganisationFoundViewModelIsUkAddress.No;
+                    ? AddOrganisationIsUkAddress.Yes
+                    : AddOrganisationIsUkAddress.No;
             }
             else
             {
                 viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(organisationAddress?.PostCode).Result
-                    ? AddOrganisationFoundViewModelIsUkAddress.Yes
-                    : (AddOrganisationFoundViewModelIsUkAddress?) null;
+                    ? AddOrganisationIsUkAddress.Yes
+                    : (AddOrganisationIsUkAddress?) null;
             }
 
             // SicCodes
@@ -303,8 +303,8 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             // IsUkAddress
             string postCode = organisationFromCompaniesHouse.RegisteredOfficeAddress.PostalCode;
             viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(postCode).Result
-                ? AddOrganisationFoundViewModelIsUkAddress.Yes
-                : (AddOrganisationFoundViewModelIsUkAddress?) null;
+                ? AddOrganisationIsUkAddress.Yes
+                : (AddOrganisationIsUkAddress?) null;
 
             // SicCodes
             List<string> sicCodesFromCompaniesHouse = organisationFromCompaniesHouse.SicCodes ?? new List<string>();
