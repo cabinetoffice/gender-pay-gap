@@ -251,7 +251,8 @@ namespace GovUkDesignSystem
             HintViewModel hintOptions = null,
             Dictionary<TProperty, LabelViewModel> itemLabelOptions = null,
             Dictionary<TProperty, HintViewModel> itemHintOptions = null,
-            string classes = null)
+            string classes = null,
+            Dictionary<TProperty, Func<object, object>> conditionalOptions = null)
             where TModel : GovUkViewModel
         {
             return RadiosHtmlGenerator.GenerateHtml(
@@ -261,6 +262,7 @@ namespace GovUkDesignSystem
                 hintOptions,
                 itemLabelOptions,
                 itemHintOptions,
+                conditionalOptions,
                 classes);
         }
 
