@@ -6,7 +6,8 @@
     var reportDateFormatter = new GDSDateFormatter(reportInfoModel.ReportingStartDate);
     int linkId = reportDateFormatter.StartYear;
     long organisationId = Model.OrganisationId;
-    string encryptedOrganisationUid = Encryption.EncryptAsParams(organisationId.ToString());
+    string encryptedOrganisationId = Encryption.EncryptAsParams(organisationId.ToString());
+    string encryptedOrganisationIdQueryString = Encryption.EncryptQuerystring(organisationId.ToString());
     string scopeRequest = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString());
     string year = $"{reportInfoModel.ReportingStartDate.Year}/{(reportInfoModel.ReportingStartDate.Year + 1).ToTwoDigitYear()}";
 }
@@ -31,7 +32,7 @@
         @if (Model.CanChangeScope)
         {
             <div>
-                <a id="ChangeScope@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ChangeOrganisationScope", "ScopeNew", new { encryptedOrganisationUid, reportingYear = reportDateFormatter.StartYear }))">
+                <a href="@(Url.Action("ChangeOrganisationScope", "ScopeNew", new { encryptedOrganisationId = encryptedOrganisationIdQueryString, reportingYear = reportDateFormatter.StartYear }))">
                     Change<span class="visually-hidden"> scope for year @year</span>
                 </a>
             </div>

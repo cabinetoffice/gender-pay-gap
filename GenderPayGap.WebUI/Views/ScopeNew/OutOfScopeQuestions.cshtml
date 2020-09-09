@@ -1,0 +1,47 @@
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem
+@using Microsoft.EntityFrameworkCore.Infrastructure
+@model GenderPayGap.WebUI.Models.ScopeNew.OutOfScopeViewModel
+
+@{
+    ViewBag.Title = "Tell us why your organisation is not in scope - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change Scope (" + Model.ReportingYear + " Reporting Year)"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            
+        }
+    </div>
+</div>
