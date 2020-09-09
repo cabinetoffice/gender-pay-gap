@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<SicCode> SicCodes { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Select whether or not this is a UK address")]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Select yes if this organisation's address (above) is a UK address")]
         public AddOrganisationFoundViewModelIsUkAddress? IsUkAddress { get; set; }
 
         public bool? GetIsUkAddressAsBoolean()
