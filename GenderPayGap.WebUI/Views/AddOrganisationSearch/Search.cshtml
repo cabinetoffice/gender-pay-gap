@@ -1,4 +1,4 @@
-@using GenderPayGap.WebUI.Models.AddOrganisation
+﻿@using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchViewModel
@@ -38,7 +38,12 @@
                         If your organisation is not listed, you can tell us the details of the organisaton you want to add.
                     </p>
                     <p class="govuk-body">
-                        <a href="@Url.Action("ManualName", "AddOrganisationManualName")"
+                        <a href="@Url.Action("ManualName", "AddOrganisationManualName",
+                                     new AddOrganisationManualViewModel
+                                     {
+                                         Sector = Model.Sector,
+                                         Query = Model.Query
+                                     })"
                            class="govuk-link">
                             Provide details of the organisation
                         </a>

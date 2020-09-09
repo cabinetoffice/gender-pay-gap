@@ -1,0 +1,135 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
+@{
+    ViewBag.Title = "What is the registered address of the organisation? - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        Model.Validate = null; // Required to make the "Back" link work correctly
+    }
+    @Html.GovUkBackLink(new BackLinkViewModel
+    {
+        Text = "Back",
+        Href = Url.Action("ManualName", "AddOrganisationManualName", Model),
+        
+        // Note: some of the "Back" links in this journey can't use the default browser behaviour
+        //  so we should control all of them explicitly
+        OverrideWithJavascript = false
+    })
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        @(Html.GovUkErrorSummary())
+
+        <form method="get"
+              action="@Url.Action("ManualAddress", "AddOrganisationManualAddress")">
+            @(Html.HiddenFor(m => m.Sector))
+            @(Html.HiddenFor(m => m.Query))
+            @(Html.HiddenFor(m => m.OrganisationName))
+            @{
+                Model.Validate = true;
+                @(Html.HiddenFor(m => m.Validate))
+            }
+            
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        What is the registered address of the organisation?
+                    </h1>
+                </legend>
+
+                @(Html.GovUkTextInputFor(
+                    m => m.PoBox,
+                    labelOptions: new LabelViewModel { Text = "PO Box (optional)" },
+                    classes: "govuk-input--width-10"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.Address1,
+                    labelOptions: new LabelViewModel
+                    {
+                        Html = @<text>
+                                   Building and street <span class="govuk-visually-hidden">line 1 of 3</span>
+                                </text>
+                    },
+                    autocomplete: "address-line1"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.Address2,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "Building and street line 2 of 3",
+                        Classes = "govuk-visually-hidden"
+                    },
+                    autocomplete: "address-line2"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.Address3,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "Building and street line 3 of 3",
+                        Classes = "govuk-visually-hidden"
+                    },
+                    autocomplete: "address-line3"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.TownCity,
+                    labelOptions: new LabelViewModel { Text = "Town or city (optional)" },
+                    classes: "govuk-input--width-20",
+                    autocomplete: "address-level2"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.County,
+                    labelOptions: new LabelViewModel { Text = "County (optional)" },
+                    classes: "govuk-input--width-20",
+                    autocomplete: "address-level1"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.Country,
+                    labelOptions: new LabelViewModel { Text = "Country (optional)" },
+                    classes: "govuk-input--width-20",
+                    autocomplete: "country-name"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.PostCode,
+                    labelOptions: new LabelViewModel { Text = "Postcode (optional)" },
+                    classes: "govuk-input--width-10",
+                    autocomplete: "postal-code"
+                ))
+                
+                @(Html.GovUkRadiosFor(
+                    m => m.IsUkAddress,
+                    fieldsetOptions: new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "Is this a UK address?",
+                            Classes = "govuk-fieldset__legend--s govuk-!-font-weight-regular"
+                        }
+                    },
+                    classes: "govuk-radios--inline"
+                ))
+
+            </fieldset>
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ManageOrganisations", "Organisation")"
+                   class="govuk-link">
+                    Cancel and return to your organisations
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>
