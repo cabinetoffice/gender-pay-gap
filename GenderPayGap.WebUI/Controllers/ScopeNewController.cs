@@ -9,6 +9,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Scope;
+using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace GenderPayGap.WebUI.Controllers
 {
     
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("organisation/{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
+    [Route("organisation")]
     public class ScopeNewController : Controller
     {
 
@@ -31,16 +32,15 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
         public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear)
         {
             // Decrypt organisation ID param
-            if (!encryptedOrganisationId.DecryptToParams(out List<string> requestParams))
+            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
             {
                 return new HttpBadRequestResult($"Cannot decrypt request parameters '{encryptedOrganisationId}'");
             }
-            long organisationId = requestParams[0].ToInt64();
-            
+
             // Check user has permissions to access this page
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
@@ -48,12 +48,14 @@ namespace GenderPayGap.WebUI.Controllers
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
-
-            return RedirectToAction(organisationScope.IsInScopeVariant()  ? "EnterOutOfScopeAnswers" : "ConfirmInScope", "ScopeNew");
+            
+            OutOfScopeViewModel viewModel = new OutOfScopeViewModel {Organisation = organisation, ReportingYear = reportingYear};
+            
+            return View(organisationScope.IsInScopeVariant()  ? "OutOfScopeQuestions" : "ConfirmInScope", viewModel);
         }
 
-        [HttpGet("out")]
-        public IActionResult EnterOutOfScopeAnswers()
+        [HttpGet("in/confirm")]
+        public IActionResult ConfirmInScope()
         {
             // When User is Admin then redirect to Admin\Home
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
@@ -61,13 +63,14 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 return RedirectToAction("Home", "Admin");
             }
-            
-            return View("EnterOutOfScopeAnswers");
+
+            // else redirect to ConfirmDetails action
+            return View("ConfirmInScope");
         }
 
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out")]
+        [HttpPost("out")]
         public IActionResult EnterOutOfScopeAnswers(EnterAnswersViewModel enterAnswersModel)
         {
             return null;
