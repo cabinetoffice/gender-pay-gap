@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchViewModel
@@ -99,7 +99,7 @@
         {
             // If Model.SearchResults == null, then we are on the search "homepage"
 
-            <div class="govuk-inset-text govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+            <div class="govuk-inset-text govuk-!-margin-top-0">
                 The registered name is sometimes different to the commonly-known brand name
                 (e.g. for <i>Currys PC World</i>, you would search for the registered name of the company, <i>DSG Retail Limited</i>)
             </div>
@@ -235,6 +235,13 @@
                 }
             }
         }
+
+        <p class="govuk-body">
+            <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+               class="govuk-link">
+                Cancel and return to your organisations
+            </a>
+        </p>
 
     </div>
 </div>
