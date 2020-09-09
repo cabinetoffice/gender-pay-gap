@@ -1,5 +1,7 @@
-﻿@using GovUkDesignSystem
+﻿@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
 @{
     ViewBag.Title = "What is the name of the organisation? - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -8,8 +10,13 @@
 @section BeforeMain {
     @Html.GovUkBackLink(new BackLinkViewModel
     {
-        Text = "TODO TODO TODO TODO TODO TODO TODO TODO",
-        Href = Url.Action("ManageOrganisations", "Organisation"),
+        Text = "Back",
+        Href = Url.Action("Search", "AddOrganisationSearch",
+        new
+        {
+            Sector = Model.Sector.Value.ToString().ToLower() /* to make the URL look nice (lower case)*/,
+            Query = Model.Query
+        }),
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
@@ -20,9 +27,51 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        <h1 class="govuk-heading-xl">
-            What is the name of the organisation?
-        </h1>
-        
+        @(Html.GovUkErrorSummary())
+
+        <form method="get"
+              action="@Url.Action("ManualName", "AddOrganisationManualName")">
+            @(Html.HiddenFor(m => m.Sector))
+            @(Html.HiddenFor(m => m.Query))
+            @(Html.HiddenFor(m => m.PoBox))
+            @(Html.HiddenFor(m => m.Address1))
+            @(Html.HiddenFor(m => m.Address2))
+            @(Html.HiddenFor(m => m.Address3))
+            @(Html.HiddenFor(m => m.TownCity))
+            @(Html.HiddenFor(m => m.County))
+            @(Html.HiddenFor(m => m.Country))
+            @(Html.HiddenFor(m => m.PostCode))
+            @(Html.HiddenFor(m => m.IsUkAddress))
+            @{
+                Model.Validate = true;
+                @(Html.HiddenFor(m => m.Validate))
+            }
+            
+            @(Html.GovUkTextInputFor(
+                m => m.OrganisationName,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the name of the organisation?",
+                    IsPageHeading = true,
+                    Classes = "govuk-label--xl"
+                },
+                autocomplete: "organization"
+            ))
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ManageOrganisations", "Organisation")"
+                   class="govuk-link">
+                    Cancel and return to your organisations
+                </a>
+            </p>
+
+        </form>
+
     </div>
 </div>
