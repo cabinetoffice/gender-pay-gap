@@ -33,15 +33,15 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public List<SicCode> SicCodes { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select yes if this organisation's address (above) is a UK address")]
-        public AddOrganisationFoundViewModelIsUkAddress? IsUkAddress { get; set; }
+        public AddOrganisationIsUkAddress? IsUkAddress { get; set; }
 
         public bool? GetIsUkAddressAsBoolean()
         {
             switch (IsUkAddress)
             {
-                case AddOrganisationFoundViewModelIsUkAddress.Yes:
+                case AddOrganisationIsUkAddress.Yes:
                     return true;
-                case AddOrganisationFoundViewModelIsUkAddress.No:
+                case AddOrganisationIsUkAddress.No:
                     return false;
                 case null:
                     return null;
@@ -52,9 +52,4 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
 
     }
 
-    public enum AddOrganisationFoundViewModelIsUkAddress
-    {
-        Yes,
-        No
-    }
 }
