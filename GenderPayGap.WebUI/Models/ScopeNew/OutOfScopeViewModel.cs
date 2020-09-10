@@ -1,6 +1,8 @@
 ﻿using System;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
+using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.ScopeNew
 {
@@ -8,14 +10,25 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
     public class OutOfScopeViewModel : GovUkViewModel
     {
 
+        [BindNever]
         public Database.Organisation Organisation { get; set; }
         
+        [BindNever]
         public DateTime ReportingYear { get; set; }
 
+        [GovUkValidateRequired(
+            ErrorMessageIfMissing = "Select a reason why this organisation is out of scope."
+        )]
         public WhyOutOfScope? WhyOutOfScope { get; set; }
         
+        [GovUkValidateRequired(
+            ErrorMessageIfMissing = "Details."
+        )]
         public string WhyOutOfScopeDetails { get; set; }
         
+        [GovUkValidateRequired(
+            ErrorMessageIfMissing = "Please ensure you have read the guidance before continuing."
+        )]
         public HaveReadGuidance? HaveReadGuidance { get; set; }
     }
     
