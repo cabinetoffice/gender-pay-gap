@@ -11,6 +11,8 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Services;
+using GovUkDesignSystem;
+using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,13 +55,36 @@ namespace GenderPayGap.WebUI.Controllers
             
             return View(organisationScope.IsInScopeVariant()  ? "OutOfScopeQuestions" : "ConfirmInScope", viewModel);
         }
-
-        [PreventDuplicatePost]
-        [ValidateAntiForgeryToken]
-        [HttpPost("out")]
-        public IActionResult EnterOutOfScopeAnswers(OutOfScopeViewModel viewModel)
+        
+        [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out")]
+        public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
-            return null;
+            // Decrypt organisation ID param
+            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
+            {
+                return new HttpBadRequestResult($"Cannot decrypt request parameters '{encryptedOrganisationId}'");
+            }
+            
+            viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScope);
+            viewModel.ParseAndValidateParameters(Request, m => m.HaveReadGuidance);
+
+            if (viewModel.WhyOutOfScope == WhyOutOfScope.Other )
+            {
+                viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScopeDetails);
+            }
+            
+            if (viewModel.HasAnyErrors())
+            {
+                // Get Organisation and OrganisationScope for reporting year
+                Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+                OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
+
+                viewModel.Organisation = organisation;
+                viewModel.ReportingYear = organisationScope.SnapshotDate;
+                
+                return View("OutOfScopeQuestions", viewModel);
+            }
+            return View("ConfirmOutOfScope", viewModel);
         }
     }
 }
