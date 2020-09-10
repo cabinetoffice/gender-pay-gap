@@ -1,0 +1,112 @@
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem
+@using GenderPayGap.WebUI.Models.ScopeNew
+@using GenderPayGap.WebUI.Classes.Formatters
+@model GenderPayGap.WebUI.Models.ScopeNew.OutOfScopeViewModel
+
+@{
+    ViewBag.Title = "Confirm that your organisation is not in scope - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change Scope (" + Model.ReportingYear.Year + " Reporting Year)"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+@{
+    string reportingYearFormatted = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string whyOutOfScopeFormatted = Model.WhyOutOfScope == WhyOutOfScope.Under250 ? "My organisation had fewer than 250 employees on the " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+        : "Other: " + Model.WhyOutOfScopeDetails;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("ConfirmOutOfScopeAnswers", "ScopeNew", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
+            @(Html.AntiForgeryToken())
+            <h1 class="govuk-heading-xl">Review your information</h1>
+            
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Reporting Year
+                        </th>
+                        <td class="govuk-table__cell">
+                            @reportingYearFormatted
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Previous Scope
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.Organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate == Model.ReportingYear)?.ScopeStatus
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            New Scope
+                        </th>
+                        <td class="govuk-table__cell">
+                            OutOfScope
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Reason
+                        </th>
+                        <td class="govuk-table__cell">
+                            @whyOutOfScopeFormatted
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="govuk-body">
+                You are reminded that it is a legal obligation for relevant employers with 250 or more employees to report.
+                Please ensure that you have considered the appropriate guidance carefully before proceeding.
+                By submitting this notification, you are telling us that your organisation is not subject to the gender
+                pay gap regulations for this reporting year.
+            </p>
+            
+            <p class="govuk-body">
+                The information you provide may be shared with the Equality and Human Rights Commission for the purposes of enforcing compliance with the gender pay gap reporting requirements.
+            </p>
+            
+            @(Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Confirm"
+                }
+            ))
+        </form>
+    </div>
+</div>
+
