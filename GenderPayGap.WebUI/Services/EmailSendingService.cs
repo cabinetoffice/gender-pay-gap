@@ -376,12 +376,11 @@ namespace GenderPayGap.WebUI.Services
             }
         }
 
-        public async void SendAccountRetirementNotificationEmail(string emailAddress, string daysRemaining, string loginUrl)
+        public async void SendAccountRetirementNotificationEmail(string emailAddress, string daysRemaining)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"DaysRemaining", daysRemaining},
-                {"LoginLink", loginUrl},
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
