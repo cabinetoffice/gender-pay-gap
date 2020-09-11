@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -252,11 +252,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         #region Methods to populate the view-models (used by both GET and POST requests)
         private static void PopulateViewModelBasedOnOrganisation(AddOrganisationFoundViewModel viewModel, Organisation organisation)
         {
-            // Sector
-            viewModel.Sector = organisation.SectorType == SectorTypes.Public
-                ? AddOrganisationSector.Public
-                : AddOrganisationSector.Private;
-
             // Name
             viewModel.Name = organisation.OrganisationName;
 
@@ -284,15 +279,12 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             if (!string.IsNullOrWhiteSpace(organisation.CompanyNumber))
             {
                 viewModel.CompanyNumber = organisation.CompanyNumber;
-        }
+            }
         }
 
         private void PopulateViewModelBasedOnCompanyNumber(AddOrganisationFoundViewModel viewModel)
         {
             CompaniesHouseCompany organisationFromCompaniesHouse = companiesHouseApi.GetCompanyAsync(viewModel.CompanyNumber).Result;
-
-            // Sector
-            viewModel.Sector = AddOrganisationSector.Private;
 
             // Name
             viewModel.Name = organisationFromCompaniesHouse.CompanyName;
@@ -319,11 +311,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 Id = foundViewModel.Id,
                 Query = foundViewModel.Query
             };
-
-            // Sector
-            alreadyRegisteringViewModel.Sector = existingUserOrganisation.Organisation.SectorType == SectorTypes.Public
-                ? AddOrganisationSector.Public
-                : AddOrganisationSector.Private;
 
             // UserOrganisation
             alreadyRegisteringViewModel.ExistingUserOrganisation = existingUserOrganisation;

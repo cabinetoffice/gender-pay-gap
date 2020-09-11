@@ -21,10 +21,9 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
 
         public string CompanyNumber { get; set; }
         public string Query { get; set; }
-
         // Used to construct the Back link
-        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public AddOrganisationSector Sector { get; set; }
+
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public string Name { get; set; }
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

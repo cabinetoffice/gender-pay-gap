@@ -211,8 +211,8 @@
                             <div class="add-organisation-add-button">
                                 @{
                                     object foundParams = organisation.EncryptedOrganisationId != null
-                                        ? (object) new {id = organisation.EncryptedOrganisationId, query = Model.Query}
-                                        : (object) new {companyNumber = organisation.CompanyNumber, query = Model.Query};
+                                        ? (object) new {id = organisation.EncryptedOrganisationId, query = Model.Query, sector = Model.Sector}
+                                        : (object) new {companyNumber = organisation.CompanyNumber, query = Model.Query, sector = Model.Sector};
                                 }
                                 <a href="@Url.Action("FoundGet", "AddOrganisationFound", foundParams)"
                                    class="govuk-link govuk-!-padding-2">
