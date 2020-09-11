@@ -53,7 +53,14 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 }
                 else
                 {
-                    return RedirectToAction("ManualSicCodes", "AddOrganisationManualSicCodes", viewModel);
+                    if (viewModel.Sector.Value == AddOrganisationSector.Private)
+                    {
+                        return RedirectToAction("ManualSicCodes", "AddOrganisationManualSicCodes", viewModel);
+                    }
+                    else
+                    {
+                        return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+                    }
                 }
             }
 
