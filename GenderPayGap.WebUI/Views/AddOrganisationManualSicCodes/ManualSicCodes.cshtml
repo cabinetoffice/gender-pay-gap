@@ -12,11 +12,22 @@
         Model.Validate = null; // Required to make the "Back" link work correctly
         var temp = Model.SicSections; // Temporarily remove the SicSections (to make the "Back" link not ugly)
         Model.SicSections = null;
+
+        string backLinkHref;
+        if (Model.Editing == true)
+        {
+            Model.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
+            backLinkHref = Url.Action("ManualReview", "AddOrganisationManualReview", Model);
+        }
+        else
+        {
+            backLinkHref = Url.Action("ManualAddress", "AddOrganisationManualAddress", Model);
+        }
     }
     @Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
-        Href = Url.Action("ManualAddress", "AddOrganisationManualAddress", Model),
+        Href = backLinkHref,
 
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
@@ -58,6 +69,7 @@
 
         <form method="get"
               action="@Url.Action("ManualSicCodes", "AddOrganisationManualSicCodes")">
+            @(Html.HiddenFor(m => m.Editing))
             @(Html.HiddenFor(m => m.Sector))
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.OrganisationName))
@@ -92,7 +104,7 @@
                                 </span>
                                 <span class="add-organisation-manual-sic-codes-selected-count">
                                     @* This span gets populated by javascript with the count of checkboxes checked in this section
-                                        e.g. "3 added" *@
+                                e.g. "3 added" *@
                                 </span>
                             </h2>
                         </div>
@@ -126,8 +138,8 @@
                                                 <label class="govuk-label govuk-checkboxes__label"
                                                        aria-hidden="true">
                                                     @* This empty <label> is only here to allow the Gov Design System CSS to style the checkbox
-                                                        There is a real <label for=""> element later which actually links to this checkbox
-                                                        Note: the checkbox is only show if javascript is disabled! *@
+                                                There is a real <label for=""> element later which actually links to this checkbox
+                                                Note: the checkbox is only show if javascript is disabled! *@
                                                 </label>
                                             </div>
 

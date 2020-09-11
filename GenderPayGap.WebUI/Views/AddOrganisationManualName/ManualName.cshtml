@@ -1,4 +1,3 @@
-@using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
@@ -8,20 +7,33 @@
 }
 
 @section BeforeMain {
-    @Html.GovUkBackLink(new BackLinkViewModel
+    @{
+        string backLinkHref;
+        if (Model.Editing == true)
+        {
+            Model.Validate = null; // Required to make the "Back" link work correctly
+            Model.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
+            backLinkHref = Url.Action("ManualReview", "AddOrganisationManualReview", Model);
+        }
+        else
+        {
+            backLinkHref = Url.Action("Search", "AddOrganisationSearch",
+                new
+                {
+                    Sector = Model.Sector.Value.ToString().ToLower() /* to make the URL look nice (lower case)*/,
+                    Query = Model.Query
+                });
+        }
+    }
+    @(Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
-        Href = Url.Action("Search", "AddOrganisationSearch",
-        new
-        {
-            Sector = Model.Sector.Value.ToString().ToLower() /* to make the URL look nice (lower case)*/,
-            Query = Model.Query
-        }),
+        Href = backLinkHref,
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
         OverrideWithJavascript = false
-    })
+    }))
 }
 
 <div class="govuk-grid-row">
@@ -31,6 +43,7 @@
 
         <form method="get"
               action="@Url.Action("ManualName", "AddOrganisationManualName")">
+            @(Html.HiddenFor(m => m.Editing))
             @(Html.HiddenFor(m => m.Sector))
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.PoBox))

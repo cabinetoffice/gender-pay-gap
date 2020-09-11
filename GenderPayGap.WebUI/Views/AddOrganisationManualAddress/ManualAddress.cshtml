@@ -9,16 +9,26 @@
 @section BeforeMain {
     @{
         Model.Validate = null; // Required to make the "Back" link work correctly
+        string backLinkHref;
+        if (Model.Editing == true)
+        {
+            Model.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
+            backLinkHref = Url.Action("ManualReview", "AddOrganisationManualReview", Model);
+        }
+        else
+        {
+            backLinkHref = Url.Action("ManualName", "AddOrganisationManualName", Model);
+        }
     }
-    @Html.GovUkBackLink(new BackLinkViewModel
+    @(Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
-        Href = Url.Action("ManualName", "AddOrganisationManualName", Model),
+        Href = backLinkHref,
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
         OverrideWithJavascript = false
-    })
+    }))
 }
 
 <div class="govuk-grid-row">
@@ -28,6 +38,7 @@
 
         <form method="get"
               action="@Url.Action("ManualAddress", "AddOrganisationManualAddress")">
+            @(Html.HiddenFor(m => m.Editing))
             @(Html.HiddenFor(m => m.Sector))
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.OrganisationName))
