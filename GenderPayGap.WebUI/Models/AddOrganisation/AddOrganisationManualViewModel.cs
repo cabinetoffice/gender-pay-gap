@@ -11,11 +11,18 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<SicSection> SicSections { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public List<SicCode> SelectedSicCodes { get; set; }
 
         // This is a bool? (nullable) because it makes for better "Back" links
         //   e.g. in Views/AddOrganisation/Search.cshtml, we create a new AddOrganisationChooseSectorViewModel,
         //   but we only want to pass the Sector back to the previous page (we haven't specified a value for Validate)
         public bool? Validate { get; set; }
+
+        // This is a bool? (nullable) because it makes for better "Back" and "edit" links
+        //   e.g. in Views/AddOrganisation/Search.cshtml, we create a new AddOrganisationChooseSectorViewModel,
+        //   but we only want to pass the Sector back to the previous page (we haven't specified a value for Validate)
+        public bool? Editing { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Choose which type of organisation you would like to add")]
         public AddOrganisationSector? Sector { get; set; }

@@ -1,0 +1,198 @@
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.AddOrganisation
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
+@{
+    ViewBag.Title = "Confirm your organisation's details - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@{
+    var selectedSicCodesFromViewModel = Model.SelectedSicCodes; // Temporarily remove the SelectedSicCodes (to make various links not ugly)
+    Model.SelectedSicCodes = null;
+}
+
+@section BeforeMain {
+    @{
+        Model.Validate = null; // Required to make the "Back" link work correctly
+        Model.Editing = null; // Required to make the "Back" link work correctly
+    }
+    @Html.GovUkBackLink(new BackLinkViewModel
+    {
+        Text = "Back",
+        Href = Url.Action("ManualSicCodes", "AddOrganisationManualSicCodes", Model),
+
+        // Note: some of the "Back" links in this journey can't use the default browser behaviour
+        //  so we should control all of them explicitly
+        OverrideWithJavascript = false
+    })
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @(Html.GovUkErrorSummary())
+
+        <h1 class="govuk-heading-xl">
+            Confirm your organisation's details
+        </h1>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        Organisation name
+                    </th>
+                    <td class="govuk-table__cell">
+                        @(Model.OrganisationName)
+                    </td>
+                    <td class="govuk-table__cell">
+                        @{
+                            Model.Validate = null; // Required to make the "edit" link work correctly
+                            Model.Editing = true; // Required to make the "edit" link work correctly
+                        }
+                        <a href="@(Url.Action("ManualName", "AddOrganisationManualName", Model))"
+                           class="govuk-link">
+                            edit
+                            <span class="govuk-visually-hidden">organisation name</span>
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        Registered address
+                    </th>
+                    <td class="govuk-table__cell">
+                        @{
+                            var addressParts = new List<string>
+                            {
+                                Model.PoBox,
+                                Model.Address1,
+                                Model.Address2,
+                                Model.Address3,
+                                Model.TownCity,
+                                Model.County,
+                                Model.Country,
+                                Model.PostCode,
+                            };
+                            addressParts = addressParts.Where(ap => !string.IsNullOrWhiteSpace(ap)).ToList();
+                        }
+                        @foreach (string addressPart in addressParts)
+                        {
+                            @(addressPart)<br />
+                        }
+                        <br />
+                        <span class="govuk-!-font-weight-bold">
+                            Is this a UK address:
+                        </span>
+                        @(Model.IsUkAddress.HasValue ? Model.IsUkAddress.Value.ToString() : "not specified")
+                    </td>
+                    <td class="govuk-table__cell">
+                        @{
+                            Model.Validate = null; // Required to make the "edit" link work correctly
+                            Model.Editing = true; // Required to make the "edit" link work correctly
+                        }
+                        <a href="@(Url.Action("ManualAddress", "AddOrganisationManualAddress", Model))"
+                           class="govuk-link">
+                            edit
+                            <span class="govuk-visually-hidden">registered address</span>
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        Sector
+                    </th>
+                    <td class="govuk-table__cell">
+                        @(Model.Sector.HasValue ? $"{Model.Sector.Value} sector" : "not specified")
+                    </td>
+                    <td class="govuk-table__cell">
+                        @{
+                            Model.Validate = null; // Required to make the "edit" link work correctly
+                            Model.Editing = true; // Required to make the "edit" link work correctly
+                        }
+                        <a href="@Url.Action("ManualChooseSector", "AddOrganisationManualChooseSector", Model)"
+                           class="govuk-link">
+                            edit
+                            <span class="govuk-visually-hidden">sector</span>
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        SIC codes
+                    </th>
+                    <td class="govuk-table__cell">
+                        @foreach (SicCode sicCode in selectedSicCodesFromViewModel)
+                        {
+                            <b>@(sicCode.SicCodeId)</b>
+                            @(sicCode.Description)
+                            <br/>
+                            <span class="govuk-body-s">
+                                part of: @(sicCode.SicSection.Description)
+                            </span>
+                            <br/>
+                        }
+                    </td>
+                    <td class="govuk-table__cell">
+                        @{
+                            Model.Validate = null; // Required to make the "edit" link work correctly
+                            Model.Editing = true; // Required to make the "edit" link work correctly
+                        }
+                        <a href="@(Url.Action("ManualSicCodes", "AddOrganisationManualSicCodes", Model))"
+                           class="govuk-link">
+                            edit
+                            <span class="govuk-visually-hidden">SIC codes</span>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form method="get"
+              action="@(Url.Action("ManualName", "AddOrganisationManualName"))">
+            @(Html.HiddenFor(m => m.Sector))
+            @(Html.HiddenFor(m => m.Query))
+            @(Html.HiddenFor(m => m.OrganisationName))
+            @(Html.HiddenFor(m => m.PoBox))
+            @(Html.HiddenFor(m => m.Address1))
+            @(Html.HiddenFor(m => m.Address2))
+            @(Html.HiddenFor(m => m.Address3))
+            @(Html.HiddenFor(m => m.TownCity))
+            @(Html.HiddenFor(m => m.County))
+            @(Html.HiddenFor(m => m.Country))
+            @(Html.HiddenFor(m => m.PostCode))
+            @(Html.HiddenFor(m => m.IsUkAddress))
+            @if (Model.SicCodes != null)
+            {
+                @for (int i = 0; i < Model.SicCodes.Count; i++)
+                {
+                    <input type="hidden" name="@(nameof(Model.SicCodes))" value="@(Model.SicCodes[i])" />
+                }
+            }
+            @{
+                Model.Validate = true;
+                @(Html.HiddenFor(m => m.Validate))
+            }
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                   class="govuk-link">
+                    Cancel and return to your organisations
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+</div>
