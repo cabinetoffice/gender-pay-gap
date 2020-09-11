@@ -2,16 +2,19 @@
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
     public class AdminOrganisationCompanyNumberViewModel : GovUkViewModel
     {
 
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Database.Organisation Organisation { get; set; }
 
         public AdminOrganisationCompanyNumberViewModelCurrentPage CurrentPage { get; set; }
 
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public CompaniesHouseCompany CompaniesHouseCompany { get; set; }
 
 
