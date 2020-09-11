@@ -31,11 +31,18 @@
             @(Html.HiddenFor(m => m.Sector))
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.OrganisationName))
+            @if (Model.SicCodes != null)
+            {
+                @for (int i = 0; i < Model.SicCodes.Count; i++)
+                {
+                    <input type="hidden" name="@(nameof(Model.SicCodes))" value="@(Model.SicCodes[i])" />
+                }
+            }
             @{
                 Model.Validate = true;
                 @(Html.HiddenFor(m => m.Validate))
             }
-            
+
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                     <h1 class="govuk-fieldset__heading">
@@ -100,7 +107,6 @@
                     classes: "govuk-input--width-10",
                     autocomplete: "postal-code"
                 ))
-                
                 @(Html.GovUkRadiosFor(
                     m => m.IsUkAddress,
                     fieldsetOptions: new FieldsetViewModel

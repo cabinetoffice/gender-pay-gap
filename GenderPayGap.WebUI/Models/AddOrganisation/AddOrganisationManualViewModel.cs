@@ -1,10 +1,16 @@
-﻿using GovUkDesignSystem;
+﻿using System.Collections.Generic;
+using GenderPayGap.Database;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.AddOrganisation
 {
     public class AddOrganisationManualViewModel : GovUkViewModel
     {
+
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public List<SicSection> SicSections { get; set; }
 
         // This is a bool? (nullable) because it makes for better "Back" links
         //   e.g. in Views/AddOrganisation/Search.cshtml, we create a new AddOrganisationChooseSectorViewModel,
@@ -31,6 +37,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select yes if this organisation's address (above) is a UK address")]
         public AddOrganisationIsUkAddress? IsUkAddress { get; set; }
 
+        public List<int> SicCodes { get; set; }
 
     }
 }

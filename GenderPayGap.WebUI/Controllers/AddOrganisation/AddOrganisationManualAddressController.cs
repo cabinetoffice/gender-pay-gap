@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 }
 
                 viewModel.Validate = null; // Required to prevent the next page immediately trying to validate the (empty) address
-                return RedirectToAction("ManualName", "AddOrganisationManualName", viewModel);
+                return RedirectToAction("ManualSicCodes", "AddOrganisationManualSicCodes", viewModel);
 
             }
 
