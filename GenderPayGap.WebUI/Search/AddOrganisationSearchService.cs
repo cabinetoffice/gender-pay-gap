@@ -47,7 +47,7 @@ namespace GenderPayGap.WebUI.Search
 
             // Get matching organisations from our database
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
-            List<RankedAddOrganisationSearchOrganisation> matchingOrganisations = GetMatchingOrganisationsFromDatabase(allOrganisations, searchTerms, query, queryContainsPunctuation, SectorTypes.Public);
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisations = GetMatchingOrganisationsFromDatabase(allOrganisations, searchTerms, query, queryContainsPunctuation);
 
             List<RankedAddOrganisationSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
             List<RankedAddOrganisationSearchOrganisation> rankedOrganisations = OrderOrganisationsByRank(organisationsWithRankings);
@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.Search
 
             // Get matching organisations from our database
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
-            List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromDatabase = GetMatchingOrganisationsFromDatabase(allOrganisations, searchTerms, query, queryContainsPunctuation, SectorTypes.Private);
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromDatabase = GetMatchingOrganisationsFromDatabase(allOrganisations, searchTerms, query, queryContainsPunctuation);
 
             // Get matching organisations from Companies House API
             List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromCompaniesHouse = GetMatchingOrganisationsFromCompaniesHouse(query);
@@ -101,11 +101,9 @@ namespace GenderPayGap.WebUI.Search
         private static List<RankedAddOrganisationSearchOrganisation> GetMatchingOrganisationsFromDatabase(List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
             string query,
-            bool queryContainsPunctuation,
-            SectorTypes sector)
+            bool queryContainsPunctuation)
         {
             return allOrganisations
-                .Where(organisation => organisation.Sector == sector)
                 .Where(organisation => organisation.Status == OrganisationStatuses.Active)
                 .Where(
                     organisation =>
