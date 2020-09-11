@@ -52,18 +52,28 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             DateTime threeYearsAgoMinusSevenDays = threeYearsAgo.AddDays(7);
 
             List<User> usersToSendReminders = dataRepository.GetAll<User>()
-                .Where(u => u.LoginDate == threeYearsAgoMinusThirtyDays || u.LoginDate == threeYearsAgoMinusSevenDays)
+                .Where(u => InThirtyDayRange(u, threeYearsAgoMinusThirtyDays) || InSevenDayRange(u, threeYearsAgoMinusSevenDays) )
                 .ToList();
 
             foreach (User user in usersToSendReminders)
             {
                 // TODO: Update loginUrl
-                string daysRemaining = user.LoginDate == threeYearsAgoMinusThirtyDays ? "30" : "7";
-                emailSendingService.SendAccountRetirementNotificationEmail(user.EmailAddress, daysRemaining, "example url");
+                string daysRemaining = InThirtyDayRange(user, threeYearsAgoMinusThirtyDays) ? "30" : "7";
+                emailSendingService.SendAccountRetirementNotificationEmail(user.EmailAddress, daysRemaining);
             }
 
         }
 
+        private bool InThirtyDayRange(User user, DateTime threeYearsAgoMinusThirtyDays)
+        {
+            return user.LoginDate >= threeYearsAgoMinusThirtyDays && user.LoginDate < threeYearsAgoMinusThirtyDays.AddDays(1);
+        }
+        
+        private bool InSevenDayRange(User user, DateTime threeYearsAgoMinusSevenDays)
+        {
+            return user.LoginDate >= threeYearsAgoMinusSevenDays && user.LoginDate < threeYearsAgoMinusSevenDays.AddDays(1);
+        }
+        
         private void RetireUsers()
         {
             DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
@@ -75,46 +85,57 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (User user in usersToRetire)
             {
-                user.Firstname = $"User{user.UserId}";
-                user.Lastname = $"User{user.UserId}";
-                user.JobTitle = "Anonymised";
-                user.EmailAddress = "Anonymised";
-                user.ContactFirstName = "Anonymised";
-                user.ContactLastName = "Anonymised";
-                user.ContactJobTitle = "Anonymised";
-                user.ContactOrganisation = "Anonymised";
-                user.ContactEmailAddress = "Anonymised";
-                user.ContactPhoneNumber = "Anonymised";
-                user.Salt = "Anonymised";
-                user.PasswordHash = "Anonymised";
+                AnonymiseUser(user);
+                
+                AnonymiseAuditLogsForUser(user.UserId);
 
-                user.HasBeenAnonymised = true;
-                user.Status = UserStatuses.Retired;
-
-                var actionsToAnonymise = new List<AuditedAction>(new []
-                    {
-                        AuditedAction.UserChangeEmailAddress, 
-                        AuditedAction.UserChangeName, 
-                        AuditedAction.UserChangeJobTitle, 
-                        AuditedAction.UserChangePhoneNumber, 
-                        AuditedAction.PurgeRegistration, 
-                        AuditedAction.PurgeUser, 
-                        AuditedAction.RegistrationLog
-                    });
-
-                List<AuditLog> userAuditLogs = dataRepository.GetAll<AuditLog>()
-                    .Where(al => al.OriginalUserId == user.UserId || al.ImpersonatedUserId == user.UserId)
-                    .Where(al => actionsToAnonymise.Contains(al.Action))
-                    .ToList();
-
-                foreach (AuditLog auditLog in userAuditLogs)
-                {
-                    auditLog.DetailsString = "Anonymised";
-                }
+                dataRepository.SaveChangesAsync().Wait();
             }
+        }
 
-            dataRepository.SaveChangesAsync().Wait();
+        private void AnonymiseUser(User user)
+        {
+            user.Firstname = $"User{user.UserId}";
+            user.Lastname = $"User{user.UserId}";
+            user.JobTitle = "Anonymised";
+            user.EmailAddress = "Anonymised";
+            user.ContactFirstName = "Anonymised";
+            user.ContactLastName = "Anonymised";
+            user.ContactJobTitle = "Anonymised";
+            user.ContactOrganisation = "Anonymised";
+            user.ContactEmailAddress = "Anonymised";
+            user.ContactPhoneNumber = "Anonymised";
+            user.Salt = "Anonymised";
+            user.PasswordHash = "Anonymised";
 
+            user.HasBeenAnonymised = true;
+            
+            user.SetStatus(UserStatuses.Retired, user, "User retired by RetireInactiveAccountsJob");
+        }
+
+        private void AnonymiseAuditLogsForUser(long userId)
+        {
+            var actionsToAnonymise = new List<AuditedAction>
+            {
+                AuditedAction.UserChangeEmailAddress, 
+                AuditedAction.UserChangeName, 
+                AuditedAction.UserChangeJobTitle, 
+                AuditedAction.UserChangePhoneNumber, 
+                AuditedAction.PurgeRegistration, 
+                AuditedAction.PurgeUser, 
+                AuditedAction.RegistrationLog
+            };
+
+            List<AuditLog> userAuditLogs = dataRepository.GetAll<AuditLog>()
+                .Where(al => al.OriginalUserId == userId || al.ImpersonatedUserId == userId)
+                .Where(al => actionsToAnonymise.Contains(al.Action))
+                .ToList();
+
+            foreach (AuditLog auditLog in userAuditLogs)
+            {
+                auditLog.DetailsString = "Anonymised";
+            }
+        
         }
     }
 }
