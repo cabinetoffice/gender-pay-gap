@@ -61,6 +61,15 @@
                         }
                     </td>
                 </tr>
+
+                @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Company number</th>
+                        <td class="govuk-table__cell">@(Model.CompanyNumber)</td>
+                    </tr>
+
+                }
             </tbody>
         </table>
         

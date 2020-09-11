@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -279,6 +279,12 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     ? AddOrganisationIsUkAddress.Yes
                     : (AddOrganisationIsUkAddress?) null;
             }
+
+            // Company number
+            if (!string.IsNullOrWhiteSpace(organisation.CompanyNumber))
+            {
+                viewModel.CompanyNumber = organisation.CompanyNumber;
+        }
         }
 
         private void PopulateViewModelBasedOnCompanyNumber(AddOrganisationFoundViewModel viewModel)
