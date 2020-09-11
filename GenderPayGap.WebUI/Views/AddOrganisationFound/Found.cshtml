@@ -61,30 +61,6 @@
                         }
                     </td>
                 </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Sector</th>
-                    <td class="govuk-table__cell">
-                        @(Model.Sector == AddOrganisationSector.Public ? "Public sector" : "Private sector")
-                    </td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">SIC codes</th>
-                    <td class="govuk-table__cell">
-                        @foreach (SicCode sicCode in Model.SicCodes)
-                        {
-                            <div>
-                                <span class="govuk-!-font-weight-bold">
-                                    @(sicCode.SicCodeId)
-                                </span>
-                                @(sicCode.Description)
-                                <br />
-                                <span class="govuk-body-s">
-                                    part of: @(sicCode.SicSection.Description)
-                                </span>
-                            </div>
-                        }
-                    </td>
-                </tr>
             </tbody>
         </table>
         

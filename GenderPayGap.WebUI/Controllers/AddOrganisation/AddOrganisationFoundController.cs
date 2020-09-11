@@ -279,9 +279,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     ? AddOrganisationIsUkAddress.Yes
                     : (AddOrganisationIsUkAddress?) null;
             }
-
-            // SicCodes
-            viewModel.SicCodes = organisation.OrganisationSicCodes.Select(osc => osc.SicCode).ToList();
         }
 
         private void PopulateViewModelBasedOnCompanyNumber(AddOrganisationFoundViewModel viewModel)
@@ -305,12 +302,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(postCode).Result
                 ? AddOrganisationIsUkAddress.Yes
                 : (AddOrganisationIsUkAddress?) null;
-
-            // SicCodes
-            List<string> sicCodesFromCompaniesHouse = organisationFromCompaniesHouse.SicCodes ?? new List<string>();
-            viewModel.SicCodes = dataRepository.GetAll<SicCode>()
-                .Where(sicCode => sicCodesFromCompaniesHouse.Contains(sicCode.SicCodeId.ToString()))
-                .ToList();
         }
 
         private AddOrganisationAlreadyRegisteringViewModel CreateAlreadyRegisteringViewModel(
