@@ -1,0 +1,69 @@
+﻿
+#add-organisation-manual-sic-codes-list {
+
+    // Add missing display: for divs styles as tables
+    .govuk-table {
+        display: table;
+    }
+
+    .govuk-table__body {
+        display: table-row-group;
+    }
+
+    .govuk-table__row {
+        display: table-row;
+    }
+
+    .govuk-table__cell {
+        display: table-cell;
+    }
+
+    // Remove the bottom border from the last SIC Code in each SIC Section
+    .add-organisation-manual-sic-code:last-child > div {
+        border: none;
+    }
+
+    .govuk-accordion__section-heading {
+        display: flex;
+        align-items: center;
+    }
+
+    .add-organisation-manual-sic-codes-selected-count {
+        @include govuk-font($size: 16);
+        white-space: nowrap;
+        margin-right: 10px;
+    }
+
+    .add-organisation-manual-sic-code-link-remove {
+        display: none;
+    }
+
+    .add-organisation-manual-sic-code-checked {
+        .add-organisation-manual-sic-code-link-remove {
+            display: initial;
+        }
+
+        .add-organisation-manual-sic-code-link-add {
+            display: none;
+        }
+
+        .add-organisation-manual-sic-code-text {
+            font-weight: bold;
+        }
+    }
+}
+
+// Hide the "Add / Remove" button (and its surrounding <div>) if javascript is disabled
+#add-organisation-manual-sic-codes-list {
+    .add-organisation-manual-sic-code-link-wrapper {
+        display: none;
+    }
+}
+
+.js-enabled {
+    #add-organisation-manual-sic-codes-list {
+        .add-organisation-manual-sic-code-link-wrapper {
+            display: table-cell;
+        }
+    }
+}
