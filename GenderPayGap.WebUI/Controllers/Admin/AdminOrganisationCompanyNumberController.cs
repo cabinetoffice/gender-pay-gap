@@ -3,6 +3,7 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
@@ -21,15 +22,18 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private readonly IDataRepository dataRepository;
         private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly UpdateFromCompaniesHouseService updateFromCompaniesHouseService;
         private readonly AuditLogger auditLogger;
 
         public AdminOrganisationCompanyNumberController(
             IDataRepository dataRepository,
             ICompaniesHouseAPI companiesHouseApi,
+            UpdateFromCompaniesHouseService updateFromCompaniesHouseService,
             AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
             this.companiesHouseApi = companiesHouseApi;
+            this.updateFromCompaniesHouseService = updateFromCompaniesHouseService;
             this.auditLogger = auditLogger;
         }
 
@@ -197,7 +201,16 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             {
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
+            
+            // Update the organisation from Companies House and update details
+            updateFromCompaniesHouseService.UpdateOrganisationDetails(organisation.OrganisationId);
 
+            if (!organisation.OptedOutFromCompaniesHouseUpdate)
+            {
+                organisation.OptedOutFromCompaniesHouseUpdate = false;
+            }
+
+            // Audit the changes
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationCompanyNumber,
                 organisation,
