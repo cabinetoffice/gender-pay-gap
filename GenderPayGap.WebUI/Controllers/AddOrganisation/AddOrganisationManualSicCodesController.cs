@@ -33,7 +33,8 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             if (viewModel.Validate == true)
             {
                 viewModel.Validate = null; // Required to prevent the next page immediately trying to validate the (empty) address
-                return RedirectToAction("ManualAddress", "AddOrganisationManualAddress", viewModel);
+                viewModel.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
+                return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
             }
 
             viewModel.SicSections = dataRepository.GetAll<SicSection>().ToList();
