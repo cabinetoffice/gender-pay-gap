@@ -52,7 +52,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             DateTime threeYearsAgoMinusSevenDays = threeYearsAgo.AddDays(7);
 
             List<User> usersToSendReminders = dataRepository.GetAll<User>()
-                .Where(u => InThirtyDayRange(u, threeYearsAgoMinusThirtyDays) || InSevenDayRange(u, threeYearsAgoMinusSevenDays) )
+                .Where(u => u.LoginDate >= threeYearsAgoMinusThirtyDays && u.LoginDate < threeYearsAgoMinusThirtyDays.AddDays(1) || u.LoginDate >= threeYearsAgoMinusSevenDays && u.LoginDate < threeYearsAgoMinusSevenDays.AddDays(1) )
                 .ToList();
 
             foreach (User user in usersToSendReminders)
@@ -68,12 +68,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         {
             return user.LoginDate >= threeYearsAgoMinusThirtyDays && user.LoginDate < threeYearsAgoMinusThirtyDays.AddDays(1);
         }
-        
-        private bool InSevenDayRange(User user, DateTime threeYearsAgoMinusSevenDays)
-        {
-            return user.LoginDate >= threeYearsAgoMinusSevenDays && user.LoginDate < threeYearsAgoMinusSevenDays.AddDays(1);
-        }
-        
+
         private void RetireUsers()
         {
             DateTime threeYearsAgo = VirtualDateTime.Now.AddYears(-3);
@@ -88,9 +83,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 AnonymiseUser(user);
                 
                 AnonymiseAuditLogsForUser(user.UserId);
-
-                dataRepository.SaveChangesAsync().Wait();
             }
+            
+            dataRepository.SaveChangesAsync().Wait();
         }
 
         private void AnonymiseUser(User user)
