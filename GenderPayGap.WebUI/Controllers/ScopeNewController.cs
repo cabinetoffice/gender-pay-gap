@@ -9,6 +9,7 @@ using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Models.ScopeNew;
@@ -39,11 +40,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
         public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear)
         {
-            // Decrypt organisation ID param
-            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt request parameters '{encryptedOrganisationId}'");
-            }
+            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
 
             // Check user has permissions to access this page
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -61,12 +58,8 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out")]
         public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
-            // Decrypt organisation ID param
-            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt request parameters '{encryptedOrganisationId}'");
-            }
-            
+            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
+
             viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScope);
             viewModel.ParseAndValidateParameters(Request, m => m.HaveReadGuidance);
 
@@ -97,12 +90,8 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out/confirm")]
         public IActionResult ConfirmOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
-            // Decrypt organisation ID param
-            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt request parameters '{encryptedOrganisationId}'");
-            }
-            
+            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
+
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
@@ -147,6 +136,17 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             return RedirectToAction("ManageOrganisation", "Organisation", new { id = encryptedOrganisationId });
+        }
+
+        public long DecryptOrganisationId(string encryptedOrganisationId)
+        {
+            // Decrypt organisation ID param
+            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
+            {
+                throw new PageNotFoundException();
+            }
+
+            return organisationId;
         }
     }
 }

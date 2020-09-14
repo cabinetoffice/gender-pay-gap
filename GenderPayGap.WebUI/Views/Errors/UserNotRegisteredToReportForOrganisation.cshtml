@@ -1,0 +1,24 @@
+﻿@page
+@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Views.Errors.UserNotRegisteredToReportForOrganisation
+
+@{
+    ViewBag.Title = "Permission Denied - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            You don't have permission to report on behalf of this organisation
+        </h1>
+
+        @{
+            // TODO: Link this to the add organisation journey (once it's been built!)
+        }
+        <p class="govuk-body">If you have been sent this link by a colleague, you will need to add this organisation to your account</p>
+        
+        <p class="govuk-body">If you think you should be able to report on behalf of this organisation, contact <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">gpg.reporting@cabinetoffice.gov.uk</a></p>
+    </div>
+</div>

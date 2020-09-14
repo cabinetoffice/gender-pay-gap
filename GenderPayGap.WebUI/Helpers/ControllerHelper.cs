@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
@@ -62,15 +61,31 @@ namespace GenderPayGap.WebUI.Helpers
         {
             User gpgUser = GetGpgUserFromAspNetUser(aspDotNetUser, dataRepository);
 
+            Organisation dbOrg = dataRepository.Get<Organisation>(organisationId);
             UserOrganisation userOrg = gpgUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
+           
+            // If there's no organisation with the ID provided
+            if (dbOrg == null)
+            {
+                throw new PageNotFoundException();
+            }
+            
+            // If the organisation isn't active
+            if (dbOrg.Status != OrganisationStatuses.Active)
+            {
+                throw new UserIsNotRegisteredToReportForOrganisationException();
+            }
+            
+            // If the UserOrganisation doesn't exist
             if (userOrg == null)
             {
-                throw new IncorrectPermissionsException();
+                throw new UserIsNotRegisteredToReportForOrganisationException();
             }
 
+            // If organisation exists, but isn't active
             if (!userOrg.PINConfirmedDate.HasValue)
             {
-                // TODO Add sensible error
+                throw new UserIsNotRegisteredToReportForOrganisationException();
             }
         }
 
