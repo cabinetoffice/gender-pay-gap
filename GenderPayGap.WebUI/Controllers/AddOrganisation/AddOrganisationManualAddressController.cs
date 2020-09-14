@@ -45,26 +45,35 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     return View("ManualAddress", viewModel);
                 }
 
-                viewModel.Validate = null; // Required to prevent the next page immediately trying to validate the (empty) address
-                if (viewModel.Editing == true)
-                {
-                    viewModel.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
-                    return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
-                }
-                else
-                {
-                    if (viewModel.Sector.Value == AddOrganisationSector.Private)
-                    {
-                        return RedirectToAction("ManualSicCodes", "AddOrganisationManualSicCodes", viewModel);
-                    }
-                    else
-                    {
-                        return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
-                    }
-                }
+                return ProceedToNextPage(viewModel);
             }
 
             return View("ManualAddress", viewModel);
+        }
+
+        private IActionResult ProceedToNextPage(AddOrganisationManualViewModel viewModel)
+        {
+            viewModel.Validate = null; // Required to prevent the next page immediately trying to validate the (empty) address
+            if (viewModel.Editing == true)
+            {
+                // In the "Editing" flow, we go to each page, then back to the "Review" page
+                viewModel.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
+                return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+            }
+            else
+            {
+                // In the normal "non-Editing" flow, we go to each page in turn
+                if (viewModel.Sector.Value == AddOrganisationSector.Private)
+                {
+                    // For private-sector organisations, the next page is "SIC codes"
+                    return RedirectToAction("ManualSicCodes", "AddOrganisationManualSicCodes", viewModel);
+                }
+                else
+                {
+                    // For public-sector organisations, the next page is "Review"
+                    return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+                }
+            }
         }
 
     }
