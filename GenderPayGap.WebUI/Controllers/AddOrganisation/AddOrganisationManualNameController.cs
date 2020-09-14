@@ -37,19 +37,26 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     return View("ManualName", viewModel);
                 }
 
-                viewModel.Validate = null; // Required to prevent the next page immediately trying to validate the (empty) address
-                if (viewModel.Editing == true)
-                {
-                    viewModel.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
-                    return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
-                }
-                else
-                {
-                    return RedirectToAction("ManualAddress", "AddOrganisationManualAddress", viewModel);
-                }
+                return ProceedToNextPage(viewModel);
             }
 
             return View("ManualName", viewModel);
+        }
+
+        private IActionResult ProceedToNextPage(AddOrganisationManualViewModel viewModel)
+        {
+            viewModel.Validate = null; // Required to prevent the next page immediately trying to validate the (empty) address
+            if (viewModel.Editing == true)
+            {
+                // In the "Editing" flow, we go to each page, then back to the "Review" page
+                viewModel.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
+                return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+            }
+            else
+            {
+                // In the normal "non-Editing" flow, we go to each page in turn - the next page here is the Address page
+                return RedirectToAction("ManualAddress", "AddOrganisationManualAddress", viewModel);
+            }
         }
 
     }
