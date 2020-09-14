@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             {
                 // In the "Editing" flow, we go to each page, then back to the "Review" page
                 viewModel.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
-                return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+                return RedirectToAction("ManualConfirmGet", "AddOrganisationManualConfirm", viewModel);
             }
             else
             {
@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 else
                 {
                     // For public-sector organisations, the next page is "Review"
-                    return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+                    return RedirectToAction("ManualConfirmGet", "AddOrganisationManualConfirm", viewModel);
                 }
             }
         }
