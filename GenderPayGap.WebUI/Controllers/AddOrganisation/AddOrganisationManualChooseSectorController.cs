@@ -56,7 +56,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             }
             else
             {
-                return RedirectToAction("ManualReview", "AddOrganisationManualReview", viewModel);
+                return RedirectToAction("ManualConfirmGet", "AddOrganisationManualConfirm", viewModel);
             }
         }
 

@@ -13,7 +13,7 @@
         {
             Model.Validate = null; // Required to make the "Back" link work correctly
             Model.Editing = null; // To make the url look a bit nicer (the Review page implies we're editing so there's no need for "Editing" in the url)
-            backLinkHref = Url.Action("ManualReview", "AddOrganisationManualReview", Model);
+            backLinkHref = Url.Action("ManualConfirmGet", "AddOrganisationManualConfirm", Model);
         }
         else
         {

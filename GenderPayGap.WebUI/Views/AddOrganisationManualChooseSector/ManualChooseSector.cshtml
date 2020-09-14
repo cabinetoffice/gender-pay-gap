@@ -14,7 +14,7 @@
     @(Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
-        Href = Url.Action("ManualReview", "AddOrganisationManualReview", Model),
+        Href = Url.Action("ManualConfirmGet", "AddOrganisationManualConfirm", Model),
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly

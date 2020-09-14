@@ -12,19 +12,19 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("add-organisation")]
-    public class AddOrganisationManualReviewController : Controller
+    public class AddOrganisationManualConfirmController : Controller
     {
 
         private readonly IDataRepository dataRepository;
 
-        public AddOrganisationManualReviewController(IDataRepository dataRepository)
+        public AddOrganisationManualConfirmController(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
 
 
-        [HttpGet("manual/review")]
-        public IActionResult ManualReview(AddOrganisationManualViewModel viewModel)
+        [HttpGet("manual/confirm")]
+        public IActionResult ManualConfirmGet(AddOrganisationManualViewModel viewModel)
         {
             ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
 
@@ -45,7 +45,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 .ToList();
 
             viewModel.Editing = true;
-            return View("ManualReview", viewModel);
+            return View("ManualConfirm", viewModel);
         }
 
     }
