@@ -1,11 +1,14 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Database
+@using GenderPayGap.Database.Models
+@using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.Database.Organisation
+@using Newtonsoft.Json
+@model GenderPayGap.WebUI.Models.Admin.AdminSectorHistoryViewModel;
 
 @{
-    ViewBag.Title = $"Sector history - {Model.OrganisationName} - Administration - Gender pay gap service";
+    ViewBag.Title = $"Sector history - {Model.Organisation.OrganisationName} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -20,8 +23,8 @@
             },
             new CrumbViewModel
             {
-                Text = Model.OrganisationName,
-                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
             },
             new CrumbViewModel
             {
@@ -41,15 +44,15 @@
     Sector history
     <br/>
     <span class="govuk-!-font-size-27">
-        for @(Model.OrganisationName)
+        for @(Model.Organisation.OrganisationName)
     </span>
 </h1>
 
-@if (Model.Status == OrganisationStatuses.Retired || Model.Status == OrganisationStatuses.Active || Model.Status == OrganisationStatuses.Deleted)
+@if (Model.Organisation.Status == OrganisationStatuses.Retired || Model.Organisation.Status == OrganisationStatuses.Active || Model.Organisation.Status == OrganisationStatuses.Deleted)
 {
     @Html.GovUkButton(new ButtonViewModel
     {
-        Href = Url.Action("ChangeSectorGet", "AdminOrganisationSector", new {id = Model.OrganisationId}),
+        Href = Url.Action("ChangeSectorGet", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId}),
         Text = "Change sector"
     })
 }
@@ -59,11 +62,11 @@ else
         Change sector
     </button>
     <span class="govuk-hint">
-        You cannot change sector of an organisation that is @(Model.Status)
+        You cannot change sector of an organisation that is @(Model.Organisation.Status)
     </span>
 }
 
-@if (!Model.OrganisationSectors.Any())
+@if (!Model.SectorHistory.Any())
 {
     <div class="govuk-body">
         No organisation sector information
@@ -81,21 +84,18 @@ else
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (OrganisationSector status in Model.OrganisationSectors.OrderByDescending(s => s.SectorDate))
+            @foreach (AuditLog sector in Model.SectorHistory)
             {
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">@(status.Sector)</td>
-                    <td class="govuk-table__cell">@(status.SectorDate.ToString("d MMM yyyy"))</td>
+                    <td class="govuk-table__cell">@(JsonConvert.DeserializeObject<AdminChangeSectorAuditLogDetails>(sector.DetailsString).NewSector)</td>
+                    <td class="govuk-table__cell">@(sector.CreatedDate.ToString("d MMM yyyy"))</td>
                     <td class="govuk-table__cell">
-                        @if (status.ByUser != null)
-                        {
-                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = sector.ImpersonatedUser?.UserId ?? sector.OriginalUser.UserId})"
                                class="govuk-link">
-                                @(status.ByUser.Fullname)
+                                @(sector.ImpersonatedUser != null ? sector.ImpersonatedUser.Fullname : sector.OriginalUser.Fullname)
                             </a>
-                        }
                     </td>
-                    <td class="govuk-table__cell">@(status.SectorDetails)</td>
+                    <td class="govuk-table__cell">@(JsonConvert.DeserializeObject<AdminChangeSectorAuditLogDetails>(sector.DetailsString).Reason)</td>
                 </tr>
             }
         </tbody>

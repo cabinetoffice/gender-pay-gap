@@ -3,6 +3,7 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
@@ -33,9 +34,19 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("organisation/{id}/sector")]
         public IActionResult ViewSectorHistory(long id)
         {
+            var viewModel = new AdminSectorHistoryViewModel();
+            
             var organisation = dataRepository.Get<Organisation>(id);
+            var sectorHistory = dataRepository.GetAll<AuditLog>()
+                .Where(al => al.Action == AuditedAction.AdminChangedOrganisationSector)
+                .Where(al => al.Organisation.OrganisationId == id)
+                .OrderByDescending(al => al.CreatedDate)
+                .ToList();
 
-            return View("ViewOrganisationSector", organisation);
+            viewModel.Organisation = organisation;
+            viewModel.SectorHistory = sectorHistory;
+
+            return View("ViewOrganisationSector", viewModel);
         }
         
         [HttpGet("organisation/{id}/sector/change")]
@@ -194,16 +205,11 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private void ChangeSector(AdminChangeSectorViewModel viewModel, long organisationId)
         {
             var organisation = dataRepository.Get<Organisation>(organisationId);
-            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
             OrganisationSectors previousSector = organisation.Sector;
             OrganisationSectors newSector = viewModel.NewSector ?? OrganisationSectors.Unknown;
 
-            // Update the status
-            organisation.SetSector(
-                newSector,
-                currentUser.UserId,
-                viewModel.Reason);
+            organisation.Sector = newSector;
 
             // Remove SIC codes when company changes between sectors
             organisation.OrganisationSicCodes.Clear();
@@ -214,7 +220,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangedOrganisationSector,
                 organisation,
-                new {PreviousStatus = previousSector, NewStatus = newSector, viewModel.Reason},
+                new AdminChangeSectorAuditLogDetails {OldSector = previousSector, NewSector = newSector, Reason = viewModel.Reason},
                 User);
 
         }
