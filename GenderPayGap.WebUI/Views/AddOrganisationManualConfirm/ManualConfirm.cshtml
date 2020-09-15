@@ -51,11 +51,29 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">
+                    <th scope="row"
+                        class="govuk-table__header 
+                        @(Model.HasErrorFor(m => m.OrganisationName)
+                            ? "add-organisation-manual-confirm-error"
+                            : "")">
                         Organisation name
                     </th>
                     <td class="govuk-table__cell">
-                        @(Model.OrganisationName)
+                        @if (Model.HasErrorFor(m => m.OrganisationName))
+                        {
+                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.OrganisationName))-error">
+                                <span class="govuk-visually-hidden">Error</span>
+                                @(Model.GetErrorFor(m => m.OrganisationName))
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.OrganisationName))
+                        {
+                            @(Model.OrganisationName)
+                        }
+                        else
+                        {
+                            <span class="govuk-caption-m">Name missing</span>
+                        }
                     </td>
                     <td class="govuk-table__cell">
                         @{
@@ -71,13 +89,31 @@
                 </tr>
 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">
+                    <th scope="row"
+                        class="govuk-table__header
+                        @((Model.HasErrorFor(m => m.Address1) || Model.HasErrorFor(m => m.IsUkAddress))
+                            ? "add-organisation-manual-confirm-error"
+                            : "")">
                         Registered address
                     </th>
                     <td class="govuk-table__cell">
+                        @if (Model.HasErrorFor(m => m.Address1))
+                        {
+                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.Address1))-error">
+                                <span class="govuk-visually-hidden">Error</span>
+                                @(Model.GetErrorFor(m => m.Address1))
+                            </span>
+                        }
+                        @if (Model.HasErrorFor(m => m.IsUkAddress))
+                        {
+                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.IsUkAddress))-error">
+                                <span class="govuk-visually-hidden">Error</span>
+                                @(Model.GetErrorFor(m => m.IsUkAddress))
+                            </span>
+                        }
                         @{
                             var addressParts = new List<string>
-                            {
+                                                                            {
                                 Model.PoBox,
                                 Model.Address1,
                                 Model.Address2,
@@ -89,15 +125,29 @@
                             };
                             addressParts = addressParts.Where(ap => !string.IsNullOrWhiteSpace(ap)).ToList();
                         }
-                        @foreach (string addressPart in addressParts)
+                        @if (addressParts.Count > 0)
                         {
-                            @(addressPart)<br />
+                            @foreach (string addressPart in addressParts)
+                            {
+                                @(addressPart)<br />
+                            }
+                        }
+                        else
+                        {
+                            <span class="govuk-caption-m">Address missing</span>
                         }
                         <br />
                         <span class="govuk-!-font-weight-bold">
                             Is this a UK address:
                         </span>
-                        @(Model.IsUkAddress.HasValue ? Model.IsUkAddress.Value.ToString() : "not specified")
+                        @if (Model.IsUkAddress.HasValue)
+                        {
+                            @(Model.IsUkAddress.Value)
+                        }
+                        else
+                        {
+                            <span class="govuk-caption-m" style="display: inline;">not specified</span>
+                        }
                     </td>
                     <td class="govuk-table__cell">
                         @{
@@ -113,11 +163,29 @@
                 </tr>
                 
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">
+                    <th scope="row"
+                        class="govuk-table__header
+                        @(Model.HasErrorFor(m => m.Sector)
+                            ? "add-organisation-manual-confirm-error"
+                            : "")">
                         Sector
                     </th>
                     <td class="govuk-table__cell">
-                        @(Model.Sector.HasValue ? $"{Model.Sector.Value} sector" : "not specified")
+                        @if (Model.HasErrorFor(m => m.Sector))
+                        {
+                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.Sector))-error">
+                                <span class="govuk-visually-hidden">Error</span>
+                                @(Model.GetErrorFor(m => m.Sector))
+                            </span>
+                        }
+                        @if (Model.Sector.HasValue)
+                        {
+                            @(Model.Sector.Value)
+                        }
+                        else
+                        {
+                            <span class="govuk-caption-m">Sector missing</span>
+                        }
                     </td>
                     <td class="govuk-table__cell">
                         @{
@@ -139,15 +207,22 @@
                             SIC codes
                         </th>
                         <td class="govuk-table__cell">
-                            @foreach (SicCode sicCode in selectedSicCodesFromViewModel)
+                            @if (selectedSicCodesFromViewModel.Count > 0)
                             {
-                                <b>@(sicCode.SicCodeId)</b>
+                                @foreach (SicCode sicCode in selectedSicCodesFromViewModel)
+                                {
+                                    <b>@(sicCode.SicCodeId)</b>
                                 @(sicCode.Description)
                                 <br/>
                                 <span class="govuk-body-s">
                                     part of: @(sicCode.SicSection.Description)
-                                </span>
-                                <br/>
+                                    </span>
+                                    <br/>
+                                }
+                            }
+                            else
+                            {
+                                <span class="govuk-caption-m">No SIC codes selected</span>
                             }
                         </td>
                         <td class="govuk-table__cell">
@@ -188,15 +263,12 @@
                     <input type="hidden" name="@(nameof(Model.SicCodes))" value="@(sicCode)" />
                 }
             }
-            @{
-                Model.Validate = true;
-                @(Html.HiddenFor(m => m.Validate))
-            }
 
             @(Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
-                Classes = "govuk-!-margin-bottom-4"
+                Classes = "govuk-!-margin-bottom-4",
+                Disabled = Model.HasAnyErrors()
             }))
 
             <p class="govuk-body">
