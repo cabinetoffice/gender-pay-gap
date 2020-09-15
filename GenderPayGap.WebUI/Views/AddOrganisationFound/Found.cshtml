@@ -75,6 +75,8 @@
         
         <form method="post"
               action="@Url.Action("FoundPost", "AddOrganisationFound")">
+            
+            @(Html.AntiForgeryToken())
 
             @if (Model.Id != null)
             {
@@ -105,7 +107,7 @@
                         Classes = "govuk-!-margin-top-4"
                     },
                     classes: "govuk-radios--inline"
-                ))
+                    ))
             }
 
             @(Html.GovUkButton(new ButtonViewModel

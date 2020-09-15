@@ -49,6 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         }
 
         [HttpPost("manual/confirm")]
+        [ValidateAntiForgeryToken]
         public IActionResult ManualConfirmPost(AddOrganisationManualViewModel viewModel)
         {
             ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);

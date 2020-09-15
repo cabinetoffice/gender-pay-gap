@@ -242,43 +242,44 @@
             </tbody>
         </table>
 
-        <form method="post"
-              action="@Url.Action("ManualConfirmPost", "AddOrganisationManualConfirm")">
-            @(Html.HiddenFor(m => m.Sector))
-            @(Html.HiddenFor(m => m.Query))
-            @(Html.HiddenFor(m => m.OrganisationName))
-            @(Html.HiddenFor(m => m.PoBox))
-            @(Html.HiddenFor(m => m.Address1))
-            @(Html.HiddenFor(m => m.Address2))
-            @(Html.HiddenFor(m => m.Address3))
-            @(Html.HiddenFor(m => m.TownCity))
-            @(Html.HiddenFor(m => m.County))
-            @(Html.HiddenFor(m => m.Country))
-            @(Html.HiddenFor(m => m.PostCode))
-            @(Html.HiddenFor(m => m.IsUkAddress))
-            @if (Model.SicCodes != null)
+    <form method="post"
+          action="@Url.Action("ManualConfirmPost", "AddOrganisationManualConfirm")">
+        @(Html.AntiForgeryToken())
+        @(Html.HiddenFor(m => m.Sector))
+        @(Html.HiddenFor(m => m.Query))
+        @(Html.HiddenFor(m => m.OrganisationName))
+        @(Html.HiddenFor(m => m.PoBox))
+        @(Html.HiddenFor(m => m.Address1))
+        @(Html.HiddenFor(m => m.Address2))
+        @(Html.HiddenFor(m => m.Address3))
+        @(Html.HiddenFor(m => m.TownCity))
+        @(Html.HiddenFor(m => m.County))
+        @(Html.HiddenFor(m => m.Country))
+        @(Html.HiddenFor(m => m.PostCode))
+        @(Html.HiddenFor(m => m.IsUkAddress))
+        @if (Model.SicCodes != null)
+        {
+            @foreach (int sicCode in Model.SicCodes)
             {
-                @foreach (int sicCode in Model.SicCodes)
-                {
-                    <input type="hidden" name="@(nameof(Model.SicCodes))" value="@(sicCode)" />
-                }
+                <input type="hidden" name="@(nameof(Model.SicCodes))" value="@(sicCode)"/>
             }
+        }
 
-            @(Html.GovUkButton(new ButtonViewModel
-            {
-                Text = "Confirm",
-                Classes = "govuk-!-margin-bottom-4",
-                Disabled = Model.HasAnyErrors()
-            }))
+        @(Html.GovUkButton(new ButtonViewModel
+        {
+            Text = "Confirm",
+            Classes = "govuk-!-margin-bottom-4",
+            Disabled = Model.HasAnyErrors()
+        }))
 
-            <p class="govuk-body">
-                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
-                   class="govuk-link">
-                    Cancel and return to your organisations
-                </a>
-            </p>
+        <p class="govuk-body">
+            <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+               class="govuk-link">
+                Cancel and return to your organisations
+            </a>
+        </p>
 
-        </form>
+    </form>
 
     </div>
 </div>
