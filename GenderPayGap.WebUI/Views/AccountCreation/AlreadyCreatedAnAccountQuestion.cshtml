@@ -31,9 +31,7 @@
                 @(Html.GovUkErrorSummary())
 
                 @{
-                    string error = Model.GetErrorFor
-                        <AlreadyCreatedAnAccountViewModel, HaveYouAlreadyCreatedYourUserAccount?>
-                        (m => m.HaveYouAlreadyCreatedYourUserAccount);
+                    string error = Model.GetErrorFor(m => m.HaveYouAlreadyCreatedYourUserAccount);
                     ErrorMessageViewModel errorMessageViewModel = error != null
                         ? new ErrorMessageViewModel {Text = error} : null;
                 }
