@@ -113,6 +113,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         #region POST
         [HttpPost("found")]
+        [ValidateAntiForgeryToken]
         public IActionResult FoundPost(AddOrganisationFoundViewModel viewModel)
         {
             ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
