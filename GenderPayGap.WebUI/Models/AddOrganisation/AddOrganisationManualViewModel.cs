@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
@@ -45,6 +47,36 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public AddOrganisationIsUkAddress? IsUkAddress { get; set; }
 
         public List<int> SicCodes { get; set; }
+
+        public SectorTypes GetSectorType()
+        {
+            switch (Sector)
+            {
+                case AddOrganisationSector.Public:
+                    return SectorTypes.Public;
+                case AddOrganisationSector.Private:
+                    return SectorTypes.Private;
+                case null:
+                    return SectorTypes.Unknown;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public bool? GetIsUkAddressAsBoolean()
+        {
+            switch (IsUkAddress)
+            {
+                case AddOrganisationIsUkAddress.Yes:
+                    return true;
+                case AddOrganisationIsUkAddress.No:
+                    return false;
+                case null:
+                    return null;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
     }
 }

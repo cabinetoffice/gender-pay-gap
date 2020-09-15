@@ -212,10 +212,10 @@
                                 @foreach (SicCode sicCode in selectedSicCodesFromViewModel)
                                 {
                                     <b>@(sicCode.SicCodeId)</b>
-                                @(sicCode.Description)
-                                <br/>
-                                <span class="govuk-body-s">
-                                    part of: @(sicCode.SicSection.Description)
+                                    @(sicCode.Description)
+                                    <br/>
+                                    <span class="govuk-body-s">
+                                        part of: @(sicCode.SicSection.Description)
                                     </span>
                                     <br/>
                                 }
@@ -242,8 +242,8 @@
             </tbody>
         </table>
 
-        <form method="get"
-              action="@(Url.Action("ManualName", "AddOrganisationManualName"))">
+        <form method="post"
+              action="@Url.Action("ManualConfirmPost", "AddOrganisationManualConfirm")">
             @(Html.HiddenFor(m => m.Sector))
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.OrganisationName))

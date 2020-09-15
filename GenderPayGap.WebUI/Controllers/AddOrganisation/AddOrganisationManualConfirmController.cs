@@ -3,8 +3,11 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
+using GenderPayGap.WebUI.Repositories;
+using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +20,17 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly OrganisationService organisationService;
+        private readonly RegistrationRepository registrationRepository;
 
-        public AddOrganisationManualConfirmController(IDataRepository dataRepository)
+        public AddOrganisationManualConfirmController(
+            IDataRepository dataRepository,
+            OrganisationService organisationService,
+            RegistrationRepository registrationRepository)
         {
             this.dataRepository = dataRepository;
+            this.organisationService = organisationService;
+            this.registrationRepository = registrationRepository;
         }
 
 
@@ -36,6 +46,43 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             PopulateViewModel(viewModel);
 
             return View("ManualConfirm", viewModel);
+        }
+
+        [HttpPost("manual/confirm")]
+        public IActionResult ManualConfirmPost(AddOrganisationManualViewModel viewModel)
+        {
+            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
+
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+
+            ValidateManuallyEnteredOrganisationDetails(viewModel);
+
+            if (viewModel.HasAnyErrors())
+            {
+                return RedirectToAction("ManualConfirmGet", "AddOrganisationManualConfirm", viewModel);
+            }
+
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            Organisation organisation = organisationService.CreateOrganisationFromManualDataEntry(
+                viewModel.GetSectorType(),
+                viewModel.OrganisationName,
+                viewModel.PoBox,
+                viewModel.Address1,
+                viewModel.Address2,
+                viewModel.Address3,
+                viewModel.TownCity,
+                viewModel.County,
+                viewModel.Country,
+                viewModel.PostCode,
+                viewModel.GetIsUkAddressAsBoolean(),
+                null, // TODO ASK USER FOR COMPANY NUMBER
+                viewModel.SicCodes,
+                user);
+
+            UserOrganisation userOrganisation = registrationRepository.CreateRegistration(organisation, user, Url);
+
+            return RedirectToConfirmationPage(userOrganisation);
         }
 
         private static void ValidateManuallyEnteredOrganisationDetails(AddOrganisationManualViewModel viewModel)
@@ -71,6 +118,13 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             viewModel.SelectedSicCodes = dataRepository.GetAll<SicCode>()
                 .Where(sc => viewModel.SicCodes.Contains(sc.SicCodeId))
                 .ToList();
+        }
+
+        private IActionResult RedirectToConfirmationPage(UserOrganisation userOrganisation)
+        {
+            string confirmationId = $"{userOrganisation.UserId}:{userOrganisation.OrganisationId}";
+            string encryptedConfirmationId = Encryption.EncryptQuerystring(confirmationId);
+            return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { confirmationId = encryptedConfirmationId });
         }
 
     }
