@@ -103,7 +103,10 @@ namespace GenderPayGap.WebUI.Repositories
             {
                 User = user,
                 Organisation = organisation,
-                Address = organisation.GetLatestAddress() // I don't know why we need an Address
+
+                // The address isn't important for registering organisation that are already in our database, or are from Companies House
+                // But, for manual registrations, we use this to validate the address and mark the address as Active once it is approved
+                Address = organisation.GetLatestAddress()
             };
 
             DecideRegistrationMethod(userOrganisation);
@@ -137,7 +140,13 @@ namespace GenderPayGap.WebUI.Repositories
 
         private static void DecideRegistrationMethod(UserOrganisation userOrganisation)
         {
-            if (userOrganisation.Organisation.SectorType == SectorTypes.Public)
+            if (userOrganisation.Organisation.Status == OrganisationStatuses.Pending)
+            {
+                // Organisations will have the "Pending" status if they have been added via manual data entry (and thus should be manually reviewed)
+                // (Organisations will be "Active" if they already exist in our database, or if they are imported from CoHo)
+                userOrganisation.Method = RegistrationMethods.Manual;
+            }
+            else if (userOrganisation.Organisation.SectorType == SectorTypes.Public)
             {
                 userOrganisation.Method = RegistrationMethods.Manual;
             }

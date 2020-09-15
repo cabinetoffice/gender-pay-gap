@@ -57,13 +57,65 @@ namespace GenderPayGap.WebUI.Services
                 EmployerReference = GenerateUniqueEmployerReference()
             };
 
-            SetInitialStatus(organisation, requestingUser);
+            SetInitialStatus(organisation, requestingUser, 
+                OrganisationStatuses.Active /* Organisations imported from CoHo are trusted, so we set them to Active */);
 
             AddOrganisationName(organisation, companiesHouseCompany.CompanyName);
 
             AddOrganisationAddress(organisation, companiesHouseCompany.RegisteredOfficeAddress);
 
             AddOrganisationSicCodes(organisation, companiesHouseCompany.SicCodes);
+
+            SetInitialScopes(organisation);
+
+            dataRepository.Insert(organisation);
+            dataRepository.SaveChangesAsync().Wait();
+
+            return organisation;
+        }
+
+        public Organisation CreateOrganisationFromManualDataEntry(SectorTypes sector,
+            string organisationName,
+            string poBox,
+            string address1,
+            string address2,
+            string address3,
+            string townCity,
+            string county,
+            string country,
+            string postCode,
+            bool? isUkAddress,
+            string companyNumber,
+            List<int> sicCodes,
+            User requestingUser)
+        {
+            Organisation organisation = new Organisation
+            {
+                SectorType = sector,
+                CompanyNumber = companyNumber,
+                EmployerReference = GenerateUniqueEmployerReference()
+            };
+
+            SetInitialStatus(organisation, requestingUser, 
+                OrganisationStatuses.Pending /* Organisations that the user created manually  */);
+
+            AddOrganisationName(organisation, organisationName);
+
+            AddOrganisationAddress(
+                organisation,
+                requestingUser,
+                poBox,
+                address1,
+                address2,
+                address3,
+                townCity,
+                county,
+                country,
+                postCode,
+                isUkAddress
+            );
+
+            AddOrganisationSicCodes(organisation, sicCodes);
 
             SetInitialScopes(organisation);
 
@@ -88,16 +140,16 @@ namespace GenderPayGap.WebUI.Services
             return employerReference;
         }
 
-        private void SetInitialStatus(Organisation organisation, User user)
+        private void SetInitialStatus(Organisation organisation, User user, OrganisationStatuses status)
         {
-            organisation.Status = OrganisationStatuses.Pending;
+            organisation.Status = status;
             organisation.StatusDate = DateTime.Now;
             organisation.StatusDetails = "Imported from CoHo";
 
             var organisationStatus = new OrganisationStatus
             {
                 Organisation = organisation,
-                Status = OrganisationStatuses.Pending,
+                Status = status,
                 StatusDate = VirtualDateTime.Now,
                 StatusDetails = "Imported from CoHo",
                 ByUser = user
@@ -137,6 +189,45 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.Insert(organisationAddress);
         }
 
+        private void AddOrganisationAddress(Organisation organisation,
+            User user,
+            string poBox,
+            string address1,
+            string address2,
+            string address3,
+            string townCity,
+            string county,
+            string country,
+            string postCode,
+            bool? isUkAddress)
+        {
+            var organisationAddress = new OrganisationAddress
+            {
+                PoBox = poBox,
+                Address1 = address1,
+                Address2 = address2,
+                Address3 = address3,
+                TownCity = townCity,
+                County = county,
+                Country = country,
+                PostCode = postCode,
+                IsUkAddress = isUkAddress,
+
+                Created = VirtualDateTime.Now,
+                Source = "User",
+                Status = AddressStatuses.Pending,
+                StatusDetails = "Manually registered",
+                StatusDate = VirtualDateTime.Now,
+
+                Organisation = organisation,
+                CreatedByUserId = user.UserId
+            };
+
+            organisation.OrganisationAddresses.Add(organisationAddress);
+
+            dataRepository.Insert(organisationAddress);
+        }
+
         private void AddOrganisationSicCodes(Organisation organisation, List<string> sicCodes)
         {
             if (sicCodes != null)
@@ -144,6 +235,17 @@ namespace GenderPayGap.WebUI.Services
                 foreach (string sicCodeString in sicCodes)
                 {
                     AddOrganisationSicCode(organisation, sicCodeString);
+                }
+            }
+        }
+
+        private void AddOrganisationSicCodes(Organisation organisation, List<int> sicCodes)
+        {
+            if (sicCodes != null)
+            {
+                foreach (int sicCode in sicCodes)
+                {
+                    AddOrganisationSicCode(organisation, sicCode);
                 }
             }
         }
@@ -165,6 +267,11 @@ namespace GenderPayGap.WebUI.Services
                 return;
             }
 
+            AddOrganisationSicCode(organisation, sicCodeInt);
+        }
+
+        private void AddOrganisationSicCode(Organisation organisation, int sicCodeInt)
+        {
             SicCode sicCode = dataRepository.Get<SicCode>(sicCodeInt);
 
             if (sicCode == null)
@@ -175,9 +282,9 @@ namespace GenderPayGap.WebUI.Services
                     {
                         OrganisationName = organisation.OrganisationName,
                         CompanyNumber = organisation.CompanyNumber,
-                        SicCode = sicCodeString,
+                        SicCode = sicCodeInt,
                         Source = "CoHo",
-                        Error = $"SIC code ({sicCodeString}) not found in our database"
+                        Error = $"SIC code ({sicCodeInt}) not found in our database"
                     });
                 return;
             }
