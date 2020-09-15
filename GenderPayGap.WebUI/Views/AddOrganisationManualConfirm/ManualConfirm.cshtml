@@ -19,7 +19,7 @@
         Model.Editing = null; // Required to make the "Back" link work correctly
 
         string backLinkHref;
-        if (Model.Sector.Value == AddOrganisationSector.Private)
+        if (Model.Sector == AddOrganisationSector.Private)
         {
             backLinkHref = Url.Action("ManualSicCodes", "AddOrganisationManualSicCodes", Model);
         }
@@ -132,7 +132,7 @@
                     </td>
                 </tr>
 
-                @if (Model.Sector.Value == AddOrganisationSector.Private)
+                @if (Model.Sector == AddOrganisationSector.Private)
                 {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">
