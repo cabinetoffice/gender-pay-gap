@@ -73,19 +73,19 @@ namespace GenderPayGap.WebUI.Helpers
             // If the organisation isn't active
             if (dbOrg.Status != OrganisationStatuses.Active)
             {
-                throw new UserIsNotRegisteredToReportForOrganisationException();
+                throw new UserNotRegisteredToReportForOrganisationException();
             }
             
             // If the UserOrganisation doesn't exist
             if (userOrg == null)
             {
-                throw new UserIsNotRegisteredToReportForOrganisationException();
+                throw new UserNotRegisteredToReportForOrganisationException();
             }
 
             // If organisation exists, but isn't active
             if (!userOrg.PINConfirmedDate.HasValue)
             {
-                throw new UserIsNotRegisteredToReportForOrganisationException();
+                throw new UserNotRegisteredToReportForOrganisationException();
             }
         }
 

@@ -24,7 +24,7 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public DateTime? EmailVerifySendDate { get; set; }
     }
 
-    public class UserIsNotRegisteredToReportForOrganisationException : CustomErrorPageException
+    public class UserNotRegisteredToReportForOrganisationException : CustomErrorPageException
     {
         public override string ViewName => "";
 

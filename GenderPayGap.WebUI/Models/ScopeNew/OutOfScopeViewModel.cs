@@ -22,19 +22,25 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
         public WhyOutOfScope? WhyOutOfScope { get; set; }
         
         [GovUkValidateRequired(
-            ErrorMessageIfMissing = "Details."
+            ErrorMessageIfMissing = "Please provide a reason that this organisation is out of scope."
         )]
         public string WhyOutOfScopeDetails { get; set; }
         
         [GovUkValidateRequired(
-            ErrorMessageIfMissing = "Please ensure you have read the guidance before continuing."
+            ErrorMessageIfMissing = "Select yes if you have read the guidance."
         )]
         public HaveReadGuidance? HaveReadGuidance { get; set; }
     }
     
     public enum WhyOutOfScope
     {
-        [GovUkRadioCheckboxLabelText(Text = "My organisation had fewer than 250 employees")]
+        /*
+         * There would normally be an annotation here, but we want the label to read as
+         * "Why is your organisation not required to report their gender pay gap data for the [reporting year] reporting year?", so
+         * this needs to change slightly depending on the year for which the scope is being changed.
+         * The label is set in OutOfScopeQuestions.cshtml - an annotation may be needed here in future if this enum is used elsewhere
+         * without a changeable label.
+        */
         Under250 = 0,
 
         [GovUkRadioCheckboxLabelText(Text = "Other reason")]
@@ -44,9 +50,9 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
     public enum HaveReadGuidance
     {
         [GovUkRadioCheckboxLabelText(Text = "Yes")]
-        HaveReadGuidance = 0,
+        Yes = 0,
 
         [GovUkRadioCheckboxLabelText(Text = "No")]
-        HaveNotReadGuidance = 1
+        No = 1
     }
 }

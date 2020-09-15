@@ -48,9 +48,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-            OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
+            OrganisationScope organisationScope = organisation.GetScopeForYear(reportingYear);
             
-            OutOfScopeViewModel viewModel = new OutOfScopeViewModel {Organisation = organisation, ReportingYear = organisationScope.SnapshotDate};
+            var viewModel = new OutOfScopeViewModel {Organisation = organisation, ReportingYear = organisationScope.SnapshotDate};
             
             return View(organisationScope.IsInScopeVariant()  ? "OutOfScopeQuestions" : "ConfirmInScope", viewModel);
         }
@@ -68,11 +68,6 @@ namespace GenderPayGap.WebUI.Controllers
                 viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScopeDetails);
             }
 
-            if (viewModel.HaveReadGuidance == HaveReadGuidance.HaveNotReadGuidance)
-            {
-                viewModel.AddErrorFor(m => m.HaveReadGuidance, "Please read the guidance before you continue.");
-            }
-            
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
@@ -98,7 +93,7 @@ namespace GenderPayGap.WebUI.Controllers
             
             // Update OrganisationScope
             var reasonForChange = viewModel.WhyOutOfScope == WhyOutOfScope.Under250
-                ? viewModel.WhyOutOfScope.ToString()
+                ? "Under250"
                 : viewModel.WhyOutOfScopeDetails;
 
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
@@ -118,17 +113,17 @@ namespace GenderPayGap.WebUI.Controllers
                     Status = ScopeRowStatuses.Active,
                     SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear),
                     Reason = reasonForChange,
-                    ReadGuidance = viewModel.HaveReadGuidance == HaveReadGuidance.HaveReadGuidance
+                    ReadGuidance = viewModel.HaveReadGuidance == HaveReadGuidance.Yes
                 });
-            organisationScope.ScopeStatus = ScopeStatuses.OutOfScope;
-            organisationScope.ScopeStatusDate = DateTime.Now;
-            
+
             dataRepository.SaveChangesAsync().Wait();
             
             // Send emails if scope changed on current reporting year
             if (viewModel.ReportingYear == currentSnapshotDate)
             {
-                IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations.Select(uo => uo.User.EmailAddress);
+                IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
+                    .Where(uo => uo.PINConfirmedDate.HasValue)
+                    .Select(uo => uo.User.EmailAddress);
                 foreach (string emailAddress in emailAddressesForOrganisation)
                 {
                     emailSendingService.SendScopeChangeOutEmail(emailAddress, organisation.OrganisationName);

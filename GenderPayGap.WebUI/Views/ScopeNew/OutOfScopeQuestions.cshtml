@@ -13,6 +13,7 @@
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
 }
 
 @section BeforeMain {
@@ -21,7 +22,7 @@
         {
             new CrumbViewModel
             {
-                Text = "Manage Organisations",
+                Text = "Your Organisations",
                 Href = Url.Action("ManageOrganisations", "Organisation")
             },
             new CrumbViewModel
@@ -31,7 +32,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Change Scope (" + Model.ReportingYear.Year + " Reporting Year)"
+                Text = "Change Scope (Reporting Year " + reportingYearsString + ")"
             }
         };
     }
@@ -70,7 +71,7 @@
                 {
                     Legend = new LegendViewModel
                     {
-                        Text = "Why is your organisation not required to report their gender pay gap data for the " + Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2,2) + " reporting year?",
+                        Text = "Why is your organisation not required to report their gender pay gap data for the " + reportingYearsString + " reporting year?",
                         Classes = "govuk-fieldset__legend--m"
                     },
                     Classes = "govuk-!-margin-top-6"
@@ -81,7 +82,7 @@
                         WhyOutOfScope.Under250,
                         new LabelViewModel
                         {
-                            Text = "My organisation had fewer than 250 employees on the " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+                            Text = "My organisation had fewer than 250 employees on " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
                         }
                     }
                 },
@@ -101,7 +102,18 @@
                 },
                 new HintViewModel
                 {
-                    Html = @<p>If you would like to read the guidance then you can find it <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener noreferrer"><span class="govuk-visually-hidden">Find the guidance </span>here<span class="govuk-visually-hidden">(opens in a new window)</span></a></p>
+                    Html = @<text>
+                               If you would like to read the guidance then you can find it 
+                               <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener noreferrer">
+                                   <span class="govuk-visually-hidden">
+                                       Find the guidance
+                                   </span>
+                                   here
+                                   <span class="govuk-visually-hidden">
+                                       (opens in a new window)
+                                   </span>
+                               </a>
+                            </text>
                 }
                 ))
             
@@ -110,7 +122,13 @@
                 {
                     Text = "Continue"
                 }
-            ))
+                ))
+            
+            <p>
+                <a class="govuk-link" href="@Url.Action("ManageOrganisations", "Organisation")">
+                    Cancel
+                </a>
+            </p>
 
         </form>
     </div>
