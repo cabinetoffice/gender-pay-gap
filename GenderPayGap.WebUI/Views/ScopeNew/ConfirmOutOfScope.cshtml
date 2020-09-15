@@ -11,6 +11,7 @@
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
 }
 
 @section BeforeMain {
@@ -19,7 +20,7 @@
         {
             new CrumbViewModel
             {
-                Text = "Manage Organisations",
+                Text = "Your Organisations",
                 Href = Url.Action("ManageOrganisations", "Organisation")
             },
             new CrumbViewModel
@@ -29,7 +30,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Change Scope (" + Model.ReportingYear.Year + " Reporting Year)"
+                Text = "Change Scope (Reporting Year " + reportingYearsString + ")"
             }
         };
     }
@@ -51,6 +52,11 @@
         <form method="POST" action="@Url.Action("ConfirmOutOfScopeAnswers", "ScopeNew", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
             @(Html.AntiForgeryToken())
             <h1 class="govuk-heading-xl">Review your information</h1>
+            
+            @(Html.HiddenFor(model => model.WhyOutOfScope))
+            @(Html.HiddenFor(model => model.WhyOutOfScopeDetails))
+            @(Html.HiddenFor(model => model.HaveReadGuidance))
+            @(Html.HiddenFor(model => model.ReportingYear))
             
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -105,7 +111,13 @@
                 {
                     Text = "Confirm"
                 }
-            ))
+                ))
+            
+            <p>
+                <a class="govuk-link" href="@Url.Action("ManageOrganisations", "Organisation")">
+                    Cancel
+                </a>
+            </p>
         </form>
     </div>
 </div>

@@ -6,9 +6,7 @@
     var reportDateFormatter = new GDSDateFormatter(reportInfoModel.ReportingStartDate);
     int linkId = reportDateFormatter.StartYear;
     long organisationId = Model.OrganisationId;
-    string encryptedOrganisationId = Encryption.EncryptAsParams(organisationId.ToString());
     string encryptedOrganisationIdQueryString = Encryption.EncryptQuerystring(organisationId.ToString());
-    string scopeRequest = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString());
     string year = $"{reportInfoModel.ReportingStartDate.Year}/{(reportInfoModel.ReportingStartDate.Year + 1).ToTwoDigitYear()}";
 }
 
