@@ -1,4 +1,7 @@
-﻿@using GenderPayGap.Database
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model IEnumerable<GenderPayGap.Database.UserOrganisation>
 @{
     ViewBag.Title = "Manage your organisation - Gender pay gap reporting service - GOV.UK";
@@ -90,10 +93,22 @@
 <div class="grid-row">
 
     <div class="column-two-thirds">
-
-        <p>
-            <a class="button" href="@Url.Action(nameof(RegisterController.OrganisationType), "Register")">Register an organisation</a>
-        </p>
+        
+        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewAddOrganisationJourney))
+        {
+            @Html.GovUkButton(new ButtonViewModel
+            {
+                Href = Url.Action("ChooseSector", "AddOrganisationChooseSector"),
+                Text = "Add organisation",
+                Classes = "govuk-!-margin-top-6"
+            })
+        }
+        else
+        {
+            <p>
+                <a class="button" href="@Url.Action(nameof(RegisterController.OrganisationType), "Register")">Register an organisation</a>
+            </p>
+        }
 
         @if (hasRegisteredOrgs == false)
         {
