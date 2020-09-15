@@ -54,7 +54,7 @@
             @(Html.AntiForgeryToken())
 
             @{
-                string error = Model.GetErrorFor<AdminChangePublicSectorClassificationViewModel, int?>(m => m.SelectedPublicSectorTypeId);
+                string error = Model.GetErrorFor(m => m.SelectedPublicSectorTypeId);
                 ErrorMessageViewModel errorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
             }
             @(Html.GovUkRadios(new RadiosViewModel

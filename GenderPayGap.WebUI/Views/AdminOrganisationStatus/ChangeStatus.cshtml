@@ -123,7 +123,7 @@
 
             <div class="govuk-form-group">
                 @{
-                    string error = Model.GetErrorFor<AdminChangeStatusViewModel, OrganisationStatuses?>(m => m.NewStatus);
+                    string error = Model.GetErrorFor(m => m.NewStatus);
                     ErrorMessageViewModel radiosErrorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
                 }
                 @Html.GovUkRadios(new RadiosViewModel

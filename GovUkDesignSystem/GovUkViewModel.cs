@@ -50,14 +50,6 @@ namespace GovUkDesignSystem
             errors.Add(property.Name, errorMessage);
         }
 
-        public bool HasErrorFor<TModel, TProperty>(
-            Expression<Func<TModel, TProperty>> propertyLambdaExpression)
-            where TModel : GovUkViewModel
-        {
-            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
-            return HasErrorFor(property);
-        }
-
         internal bool HasErrorFor(PropertyInfo property)
         {
             return errors.ContainsKey(property.Name);
@@ -71,14 +63,6 @@ namespace GovUkDesignSystem
         internal Dictionary<string, string> GetAllErrors()
         {
             return errors;
-        }
-
-        public string GetErrorFor<TModel, TProperty>(
-            Expression<Func<TModel, TProperty>> propertyLambdaExpression)
-            where TModel : GovUkViewModel
-        {
-            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
-            return GetErrorFor(property);
         }
 
         internal string GetErrorFor(PropertyInfo property)
@@ -106,6 +90,24 @@ namespace GovUkDesignSystem
         {
             var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
             model.AddErrorFor(property, errorMessage);
+        }
+
+        public static bool HasErrorFor<TModel, TProperty>(
+            this TModel model,
+            Expression<Func<TModel, TProperty>> propertyLambdaExpression)
+            where TModel : GovUkViewModel
+        {
+            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
+            return model.HasErrorFor(property);
+        }
+
+        public static string GetErrorFor<TModel, TProperty>(
+            this TModel model,
+            Expression<Func<TModel, TProperty>> propertyLambdaExpression)
+            where TModel : GovUkViewModel
+        {
+            var property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
+            return model.GetErrorFor(property);
         }
 
     }
