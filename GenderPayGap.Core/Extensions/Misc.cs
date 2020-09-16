@@ -12,17 +12,6 @@ namespace GenderPayGap.Extensions
     public static class Misc
     {
 
-        public static string CorrectNull(this object text)
-        {
-            var str = text as string;
-            if (string.IsNullOrWhiteSpace(str) || str.EqualsI("null"))
-            {
-                return null;
-            }
-
-            return str;
-        }
-
         public static bool IsNull(this object item)
         {
             if (item == null || System.Convert.IsDBNull(item))

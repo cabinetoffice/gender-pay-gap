@@ -69,17 +69,6 @@ namespace GenderPayGap.Extensions
         }
 
 
-        public static string GetTitleText(this Exception ex)
-        {
-            string title = ex.Message;
-            if (ex.InnerException != null)
-            {
-                title += Environment.NewLine + ex.InnerException.GetTitleText();
-            }
-
-            return title;
-        }
-
         public static string GetDetailsText(this Exception ex)
         {
             return JsonConvert.SerializeObject(ex.GetDetails(), Formatting.Indented);

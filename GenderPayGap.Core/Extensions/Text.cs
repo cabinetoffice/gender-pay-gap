@@ -8,8 +8,6 @@ namespace GenderPayGap.Extensions
     public static class Text
     {
 
-        public const string NumberChars = "1234567890";
-
         public static bool IsNumber(this string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -63,21 +61,6 @@ namespace GenderPayGap.Extensions
             }
 
             if (inputs.Any(i => string.IsNullOrWhiteSpace(i)))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public static bool IsAllNullOrWhiteSpace(this string input, params string[] inputs)
-        {
-            if (!string.IsNullOrWhiteSpace(input))
-            {
-                return true;
-            }
-
-            if (inputs.Any(i => !string.IsNullOrWhiteSpace(i)))
             {
                 return true;
             }
@@ -261,29 +244,6 @@ namespace GenderPayGap.Extensions
             return source.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        public static bool ContainsAll(this string text, string validCharacters)
-        {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
-
-            if (validCharacters == null || validCharacters.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(validCharacters));
-            }
-
-            foreach (char c in text)
-            {
-                if (validCharacters.IndexOf(c) == -1)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public static bool EndsWithI(this string source, params string[] strings)
         {
             if (string.IsNullOrWhiteSpace(source))
@@ -389,16 +349,6 @@ namespace GenderPayGap.Extensions
             return false;
         }
 
-        public static string Left(this string original, int length)
-        {
-            if (string.IsNullOrWhiteSpace(original) || length >= original.Length)
-            {
-                return original;
-            }
-
-            return original.Substring(0, length);
-        }
-
         public static bool LikeAny(this string input, IEnumerable<string> patterns)
         {
             foreach (string pattern in patterns)
@@ -500,21 +450,6 @@ namespace GenderPayGap.Extensions
 
             // Step 7
             return d[n, m];
-        }
-
-        public static bool IsUK(this string country)
-        {
-            return string.IsNullOrWhiteSpace(country)
-                   || country.EqualsI(
-                       "England",
-                       "United Kingdom",
-                       "GB",
-                       "UK",
-                       "Great Britain",
-                       "Britain",
-                       "Scotland",
-                       "Wales",
-                       "Northern Ireland");
         }
 
         public static string ToAbbr(this string s, string separator = "", int minLength = 3, params string[] excludeWords)

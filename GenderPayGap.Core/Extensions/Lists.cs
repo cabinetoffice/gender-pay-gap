@@ -59,16 +59,6 @@ namespace GenderPayGap.Extensions
             return text.Any(t => li.Any(l => l.EqualsI(t)));
         }
 
-        public static bool ContainsI(this string source, params string[] list)
-        {
-            if (string.IsNullOrWhiteSpace(source))
-            {
-                return false;
-            }
-
-            return list.Any(i => source.ContainsI(i));
-        }
-
         public static string ToQueryString(this NameValueCollection collection, bool allowDuplicateKeys = false)
         {
             var data = "";
@@ -333,12 +323,6 @@ namespace GenderPayGap.Extensions
             }
         }
 
-        public static IEnumerable<T> Page<T>(this IEnumerable<T> list, int pageSize, int page)
-        {
-            int skip = (page - 1) * pageSize;
-            return list.Skip(skip).Take(pageSize);
-        }
-
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
         {
             if (length == 1)
@@ -382,43 +366,4 @@ namespace GenderPayGap.Extensions
 
     }
 
-    [Serializable]
-    public class NameValueSetting
-    {
-
-        public NameValueSetting() { }
-
-        public NameValueSetting(string name, string value)
-        {
-            Name = name;
-            Value = value;
-        }
-
-        [XmlAttribute("name")]
-        public string Name { get; set; }
-
-        [XmlAttribute("value")]
-        public string Value { get; set; }
-
-    }
-
-    [Serializable]
-    public class NameValueElement
-    {
-
-        public NameValueElement() { }
-
-        public NameValueElement(string name, string value)
-        {
-            Name = name;
-            Value = value;
-        }
-
-        [XmlAttribute("name")]
-        public string Name { get; set; }
-
-        [XmlText]
-        public string Value { get; set; }
-
-    }
 }

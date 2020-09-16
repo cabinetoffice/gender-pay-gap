@@ -107,49 +107,9 @@ namespace GenderPayGap.Core.Classes.ErrorMessages
             return ((CustomErrorMessage) element).Code;
         }
 
-        public void Add(CustomErrorMessage element)
-        {
-            BaseAdd(element);
-        }
-
-        public void RemoveAt(int index)
-        {
-            BaseRemoveAt(index);
-        }
-
-        public void Insert(int index, CustomErrorMessage element)
-        {
-            BaseAdd(index, element);
-        }
-
         protected override bool IsElementName(string elementName)
         {
             return elementName.Equals("CustomErrorMessage", StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        internal static CustomErrorMessages Load(Configuration config)
-        {
-            var CustomErrorMessagesSection = (CustomErrorMessagesSection) config.GetSection("CustomErrorMessages");
-
-            //Get the account settings section
-            if (CustomErrorMessagesSection == null)
-            {
-                CustomErrorMessagesSection = new CustomErrorMessagesSection();
-            }
-
-            if (CustomErrorMessagesSection.Messages == null)
-            {
-                CustomErrorMessagesSection.Messages = new CustomErrorMessages();
-            }
-
-            CustomErrorMessages results = CustomErrorMessagesSection.Messages;
-
-            if (results == null)
-            {
-                throw new Exception("You must enter all the http error codes and messages.");
-            }
-
-            return results;
         }
 
         public static CustomErrorMessage GetPageError(int code)
@@ -167,31 +127,6 @@ namespace GenderPayGap.Core.Classes.ErrorMessages
         public static CustomErrorMessage GetError(int errorCode)
         {
             return DefaultSection.Messages[errorCode];
-        }
-
-        public static string GetTitle(int code)
-        {
-            return DefaultSection.Messages[code]?.Title;
-        }
-
-        public static string GetDescription(int code)
-        {
-            return DefaultSection.Messages[code]?.Description;
-        }
-
-        public static string GetTitle(string validator)
-        {
-            return DefaultSection.Messages.ValidationErrors[validator]?.Title;
-        }
-
-        public static string GetDescription(string validator)
-        {
-            return DefaultSection.Messages.ValidationErrors[validator]?.Description;
-        }
-
-        public static string GetModelError(string validator)
-        {
-            return DefaultSection.Messages.ValidationErrors[validator]?.Description;
         }
 
     }
