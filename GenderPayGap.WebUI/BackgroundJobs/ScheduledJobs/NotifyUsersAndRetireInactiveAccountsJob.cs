@@ -128,7 +128,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (AuditLog auditLog in userAuditLogs)
             {
-                auditLog.DetailsString = "Anonymised";
+                auditLog.Details = new Dictionary<string, string> {{"Anonymised", "Anonymised"}};
             }
         
         }
