@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             };
 
             var routeData = new RouteData();
-            routeData.Values.Add("Action", nameof(RegisterController.OrganisationType));
+            routeData.Values.Add("Action", "OrganisationType");
             routeData.Values.Add("Controller", "Register");
 
             var controller = UiTestHelper.GetController<RegisterController>(user.UserId, routeData, user, org, address, userOrg);
@@ -63,7 +63,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(userOrg.PINConfirmedDate > DateTime.MinValue);
             Assert.That(userOrg.Organisation.Status == OrganisationStatuses.Active);
             Assert.That(userOrg.Organisation.GetLatestAddress().AddressId == address.AddressId);
-            Assert.That(!string.IsNullOrWhiteSpace(userOrg.Organisation.EmployerReference));
             Assert.That(address.Status == AddressStatuses.Active);
             
         }

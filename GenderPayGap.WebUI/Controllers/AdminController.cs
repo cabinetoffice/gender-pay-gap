@@ -27,35 +27,22 @@ namespace GenderPayGap.WebUI.Controllers.Administration
     public partial class AdminController : BaseController
     {
 
-        #region Constructors
+        private readonly AuditLogger auditLogger;
 
         public AdminController(
             IHttpCache cache,
             IHttpSession session,
-            IHostingEnvironment hostingEnvironment,
-            IOrganisationBusinessLogic organisationBusinessLogic,
-            IUserRepository userRepository,
             IDataRepository dataRepository,
             IWebTracker webTracker,
-            [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
-            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository,
             AuditLogger auditLogger
         ) : base(cache, session, dataRepository, webTracker)
         {
-            HostingEnvironment = hostingEnvironment;
-            OrganisationBusinessLogic = organisationBusinessLogic;
-            UserRepository = userRepository;
-            PrivateSectorRepository = privateSectorRepository;
-            PublicSectorRepository = publicSectorRepository;
             this.auditLogger = auditLogger;
         }
 
-        #endregion
-
-        #region PendingRegistration Action
 
         [HttpGet("pending-registrations")]
-        public async Task<IActionResult> PendingRegistrations()
+        public IActionResult PendingRegistrations()
         {
             List<UserOrganisation> nonUkAddressUserOrganisations =
                 DataRepository
@@ -101,20 +88,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
             return View("PendingRegistrations", model);
         }
-
-        #endregion
-
-        #region Dependencies
-
-        private readonly IHostingEnvironment HostingEnvironment;
-        private readonly AuditLogger auditLogger;
-
-        public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
-        public IUserRepository UserRepository { get; }
-        public IPagedRepository<EmployerRecord> PrivateSectorRepository { get; }
-        public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
-
-        #endregion
 
     }
 }

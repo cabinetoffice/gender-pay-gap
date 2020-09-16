@@ -202,14 +202,6 @@ namespace GenderPayGap.WebUI
                 .As<IDataRepository>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<PublicSectorRepository>()
-                .As<IPagedRepository<EmployerRecord>>()
-                .Keyed<IPagedRepository<EmployerRecord>>("Public")
-                .InstancePerLifetimeScope();
-            builder.RegisterType<PrivateSectorRepository>()
-                .As<IPagedRepository<EmployerRecord>>()
-                .Keyed<IPagedRepository<EmployerRecord>>("Private")
-                .InstancePerLifetimeScope();
             builder.RegisterType<CompaniesHouseAPI>()
                 .As<ICompaniesHouseAPI>()
                 .SingleInstance()

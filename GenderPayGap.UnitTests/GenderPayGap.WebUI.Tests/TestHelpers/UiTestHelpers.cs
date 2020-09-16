@@ -255,14 +255,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
 
             //
-            builder.RegisterType<MockPrivateEmployerRepository>()
-                .As<IPagedRepository<EmployerRecord>>()
-                .Keyed<IPagedRepository<EmployerRecord>>("Private")
-                .SingleInstance();
-            builder.RegisterType<MockPublicEmployerRepository>()
-                .As<IPagedRepository<EmployerRecord>>()
-                .Keyed<IPagedRepository<EmployerRecord>>("Public")
-                .SingleInstance();
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
 
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();

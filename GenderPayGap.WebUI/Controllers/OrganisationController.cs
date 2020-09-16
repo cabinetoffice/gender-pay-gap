@@ -34,13 +34,10 @@ namespace GenderPayGap.WebUI.Controllers
             IHttpSession session,
             ISubmissionService submitService,
             IScopeBusinessLogic scopeBL,
-            IOrganisationBusinessLogic organisationBL,
             IDataRepository dataRepository,
             RegistrationRepository registrationRepository,
             IWebTracker webTracker,
-            EmailSendingService emailSendingService,
-            [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
-            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository) : base(
+            EmailSendingService emailSendingService) : base(
             cache,
             session,
             dataRepository,
@@ -48,9 +45,6 @@ namespace GenderPayGap.WebUI.Controllers
         {
             SubmissionService = submitService;
             ScopeBusinessLogic = scopeBL;
-            OrganisationBusinessLogic = organisationBL;
-            PrivateSectorRepository = privateSectorRepository;
-            PublicSectorRepository = publicSectorRepository;
             RegistrationRepository = registrationRepository;
             this.emailSendingService = emailSendingService;
         }
@@ -315,13 +309,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         public ISubmissionService SubmissionService { get; }
 
-        public IOrganisationBusinessLogic OrganisationBusinessLogic { get; }
-
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
-
-        public IPagedRepository<EmployerRecord> PrivateSectorRepository { get; }
-
-        public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
 
         public RegistrationRepository RegistrationRepository { get; }
 
