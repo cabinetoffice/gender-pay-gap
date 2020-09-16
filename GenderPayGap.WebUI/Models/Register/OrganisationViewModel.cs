@@ -21,43 +21,14 @@ namespace GenderPayGap.WebUI.Models.Register
         public string AddressReturnAction { get; set; }
 
         public bool ManualRegistration { get; set; }
-        public bool ManualAuthorised { get; set; }
         public bool SelectedAuthorised { get; set; }
         public bool ManualAddress { get; set; }
         public string RegisteredAddress { get; set; }
-        public bool WrongAddress { get; set; }
 
         public string BackAction { get; set; }
 
         public string ReviewCode { get; set; }
         public string CancellationReason { get; set; }
-        public bool IsFastTrackAuthorised { get; set; }
-
-        public SortedSet<int> GetSicCodeIds()
-        {
-            string separators = ";,: \n\r" + Environment.NewLine;
-            var codes = new SortedSet<int>();
-            foreach (string sicCode in SicCodeIds.SplitI(separators))
-            {
-                codes.Add(sicCode.ToInt32());
-            }
-
-            return codes;
-        }
-
-        public AddressModel GetAddressModel()
-        {
-            return new AddressModel {
-                Address1 = Address1,
-                Address2 = Address2,
-                Address3 = Address3,
-                City = City,
-                County = County,
-                Country = Country,
-                PostCode = Postcode,
-                PoBox = PoBox
-            };
-        }
 
         #region Search details
 
@@ -71,8 +42,6 @@ namespace GenderPayGap.WebUI.Models.Register
             MinimumLength = 3)]
         [DisplayName("Search")]
         public string SearchText { get; set; }
-
-        public int LastPrivateSearchRemoteTotal { get; set; }
 
         #endregion
 
@@ -131,8 +100,6 @@ namespace GenderPayGap.WebUI.Models.Register
 
         public string PoBox { get; set; }
         public string AddressSource { get; set; }
-
-        public bool? IsUkAddress { get; set; }
 
         public string GetFullAddress()
         {
@@ -194,16 +161,6 @@ namespace GenderPayGap.WebUI.Models.Register
         public List<EmployerRecord> ManualEmployers { get; set; }
         public int ManualEmployerIndex { get; set; }
 
-        public EmployerRecord GetManualEmployer()
-        {
-            if (ManualEmployerIndex > -1 && ManualEmployers != null && ManualEmployerIndex < ManualEmployers.Count)
-            {
-                return ManualEmployers[ManualEmployerIndex];
-            }
-
-            return null;
-        }
-
         public Dictionary<string, string> GetReferences(int i)
         {
             if (ManualEmployers == null || i >= ManualEmployers.Count)
@@ -245,91 +202,6 @@ namespace GenderPayGap.WebUI.Models.Register
         public PagedResult<EmployerRecord> Employers { get; set; }
 
         public int SelectedEmployerIndex { get; set; }
-
-        public EmployerRecord GetSelectedEmployer()
-        {
-            if (SelectedEmployerIndex > -1
-                && Employers != null
-                && Employers.Results != null
-                && SelectedEmployerIndex < Employers.Results.Count)
-            {
-                return Employers.Results[SelectedEmployerIndex];
-            }
-
-            return null;
-        }
-
-        public int EmployerStartIndex
-        {
-            get
-            {
-                if (Employers == null || Employers.Results == null || Employers.Results.Count < 1)
-                {
-                    return 1;
-                }
-
-                return ((Employers.CurrentPage * Employers.PageSize) - Employers.PageSize) + 1;
-            }
-        }
-
-        public int EmployerEndIndex
-        {
-            get
-            {
-                if (Employers == null || Employers.Results == null || Employers.Results.Count < 1)
-                {
-                    return 1;
-                }
-
-                return (EmployerStartIndex + Employers.Results.Count) - 1;
-            }
-        }
-
-        public int PagerStartIndex
-        {
-            get
-            {
-                if (Employers == null || Employers.PageCount <= 5)
-                {
-                    return 1;
-                }
-
-                if (Employers.CurrentPage < 4)
-                {
-                    return 1;
-                }
-
-                if (Employers.CurrentPage + 2 > Employers.PageCount)
-                {
-                    return Employers.PageCount - 4;
-                }
-
-                return Employers.CurrentPage - 2;
-            }
-        }
-
-        public int PagerEndIndex
-        {
-            get
-            {
-                if (Employers == null)
-                {
-                    return 1;
-                }
-
-                if (Employers.PageCount <= 5)
-                {
-                    return Employers.PageCount;
-                }
-
-                if (PagerStartIndex + 4 > Employers.PageCount)
-                {
-                    return Employers.PageCount;
-                }
-
-                return PagerStartIndex + 4;
-            }
-        }
 
         #endregion
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web;
-using Autofac.Features.AttributeFilters;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
@@ -10,14 +9,10 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -25,24 +20,17 @@ namespace GenderPayGap.WebUI.Controllers
     public partial class RegisterController : BaseController
     {
 
-        private readonly PinInThePostService pinInThePostService;
         private readonly EmailSendingService emailSendingService;
         private readonly AuditLogger auditLogger;
-
-        #region Constructors
+        public IUserRepository UserRepository { get; }
 
         public RegisterController(
             IHttpCache cache,
             IHttpSession session,
-            IScopeBusinessLogic scopeBL,
-            IOrganisationBusinessLogic orgBL,
             IUserRepository userRepository,
             IDataRepository dataRepository,
             IWebTracker webTracker,
-            PinInThePostService pinInThePostService,
             EmailSendingService emailSendingService,
-            [KeyFilter("Private")] IPagedRepository<EmployerRecord> privateSectorRepository,
-            [KeyFilter("Public")] IPagedRepository<EmployerRecord> publicSectorRepository,
             AuditLogger auditLogger)
             : base(
             cache,
@@ -50,27 +38,11 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository,
             webTracker)
         {
-            ScopeBusinessLogic = scopeBL;
-            OrganisationBusinessLogic = orgBL;
-            PrivateSectorRepository = privateSectorRepository;
-            PublicSectorRepository = publicSectorRepository;
             UserRepository = userRepository;
-            this.pinInThePostService = pinInThePostService;
             this.emailSendingService = emailSendingService;
             this.auditLogger = auditLogger;
         }
 
-        #endregion
-
-        #region Dependencies
-
-        public IOrganisationBusinessLogic OrganisationBusinessLogic { get; }
-        public IScopeBusinessLogic ScopeBusinessLogic { get; }
-        public IUserRepository UserRepository { get; }
-        public IPagedRepository<EmployerRecord> PrivateSectorRepository { get; }
-        public IPagedRepository<EmployerRecord> PublicSectorRepository { get; }
-
-        #endregion
 
         #region Session & Cache Properties
 
@@ -88,164 +60,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
         }
 
-
-        private int LastPrivateSearchRemoteTotal => Session["LastPrivateSearchRemoteTotal"].ToInt32();
-
-        private int CompaniesHouseFailures
-        {
-            get => Session["CompaniesHouseFailures"].ToInt32();
-            set
-            {
-                Session.Remove("CompaniesHouseFailures");
-                if (value > 0)
-                {
-                    Session["CompaniesHouseFailures"] = value;
-                }
-            }
-        }
-
         #endregion
         
-        #region PINSent
-
-        private async Task<IActionResult> GetSendPINAsync()
-        {
-            //Ensure user has completed the registration process
-            User currentUser;
-            IActionResult checkResult = CheckUserRegisteredOk(out currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            //Get the user organisation
-            UserOrganisation userOrg = await DataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
-
-            //If a pin has never been sent or resend button submitted then send one immediately
-            if (string.IsNullOrWhiteSpace(userOrg.PIN)
-                || userOrg.PINSentDate.EqualsI(null, DateTime.MinValue)
-                || userOrg.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
-            {
-                try
-                {
-                    DateTime now = VirtualDateTime.Now;
-
-                    // Generate a new pin
-                    string pin = OrganisationBusinessLogic.GeneratePINCode();
-
-                    // Save the PIN and confirm code
-                    userOrg.PIN = pin;
-                    userOrg.PINSentDate = now;
-                    userOrg.Method = RegistrationMethods.PinInPost;
-                    await DataRepository.SaveChangesAsync();
-
-                    // Try and send the PIN in post
-                    if (pinInThePostService.SendPinInThePost(Url, userOrg, pin, out string letterId))
-                    {
-                        userOrg.PITPNotifyLetterId = letterId;
-                        await DataRepository.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        // Show "Notify is down" error message
-                        return View(
-                            "PinFailedToSend",
-                            new PinFailedToSendViewModel {OrganisationName = userOrg.Organisation.OrganisationName});
-                    }
-
-                    CustomLogger.Information(
-                        "Send Pin-in-post",
-                        $"Name {currentUser.Fullname}, Email:{currentUser.EmailAddress}, IP:{UserHostAddress}, Address:{userOrg?.Address.GetAddressString()}");
-                }
-                catch (Exception ex)
-                {
-                    CustomLogger.Error(ex.Message, ex);
-                    // TODO: maybe change this?
-                    return View("CustomError", new ErrorViewModel(3014));
-                }
-            }
-
-            //Prepare view parameters
-            ViewBag.UserFullName = currentUser.Fullname;
-            ViewBag.UserJobTitle = currentUser.JobTitle;
-            ViewBag.Organisation = userOrg.Organisation.OrganisationName;
-            ViewBag.Address = userOrg?.Address.GetAddressString(",<br/>");
-            return View("PINSent");
-        }
-
-        [Authorize]
-        [HttpGet("pin-sent")]
-        public async Task<IActionResult> PINSent()
-        {
-            //Clear the stash
-            this.ClearStash();
-
-            return await GetSendPINAsync();
-        }
-
-        #endregion
-
-        #region RequestPIN
-
-        [HttpGet("request-pin")]
-        [Authorize]
-        public async Task<IActionResult> RequestPIN()
-        {
-            //Ensure user has completed the registration process
-            User currentUser;
-            IActionResult checkResult = CheckUserRegisteredOk(out currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            //Get the user organisation
-            UserOrganisation userOrg = await DataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
-
-            //Prepare view parameters
-            ViewBag.UserFullName = currentUser.Fullname;
-            ViewBag.UserJobTitle = currentUser.JobTitle;
-            ViewBag.Organisation = userOrg.Organisation.OrganisationName;
-            ViewBag.Address = userOrg?.Address.GetAddressString(",<br/>");
-            //Show the PIN textbox and button
-            return View("RequestPIN");
-        }
-
-        [PreventDuplicatePost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        [HttpPost("request-pin")]
-        public async Task<IActionResult> RequestPIN(CompleteViewModel model)
-        {
-            
-            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) )
-            {
-                return RedirectToAction("ManageOrganisations", "Organisation");
-            }
-            
-            //Ensure user has completed the registration process
-            User currentUser;
-            IActionResult checkResult = CheckUserRegisteredOk(out currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            //Get the user organisation
-            UserOrganisation userOrg = await DataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
-
-            //Mark the user org as ready to send a pin
-            userOrg.PIN = null;
-            userOrg.PINSentDate = null;
-            await DataRepository.SaveChangesAsync();
-
-            return RedirectToAction("PINSent");
-        }
-
-        #endregion
 
         #region password-reset
 

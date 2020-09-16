@@ -83,9 +83,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Clear all the stashes
             this.ClearAllStashes();
 
-            //Remove any previous searches from the cache
-            PrivateSectorRepository.ClearSearch();
-
             //Reset the current reporting organisation
             ReportingOrganisation = null;
 

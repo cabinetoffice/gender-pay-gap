@@ -67,12 +67,12 @@
                 new StepTask
                 {
                     TaskText = "Add an organisation",
-                    TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")
+                    TaskUrl = @Url.Action("ChooseSector", "AddOrganisationChooseSector")
                 },
                 new StepTask
                 {
                     TaskText = "Manage my organisations",
-                    TaskUrl = @Url.Action(nameof(RegisterController.OrganisationType), "Register")
+                    TaskUrl = @Url.Action("ManageOrganisations", "Organisation")
                 },
             }
         },

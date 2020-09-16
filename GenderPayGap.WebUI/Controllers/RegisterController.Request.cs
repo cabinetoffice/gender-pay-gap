@@ -560,12 +560,6 @@ namespace GenderPayGap.WebUI.Controllers
             //Send notification email to existing users 
             EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User, emailSendingService);
 
-            //Ensure the organisation has an employer reference
-            if (userOrg.PINConfirmedDate.HasValue && string.IsNullOrWhiteSpace(userOrg.Organisation.EmployerReference))
-            {
-                await OrganisationBusinessLogic.SetUniqueEmployerReferenceAsync(userOrg.Organisation);
-            }
-            
             //Save the model for the redirect
             this.StashModel(model);
 

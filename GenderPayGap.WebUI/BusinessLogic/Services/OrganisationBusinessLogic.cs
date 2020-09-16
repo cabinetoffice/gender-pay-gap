@@ -18,10 +18,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
     public interface IOrganisationBusinessLogic
     {
-        Task SetUniqueEmployerReferenceAsync(Organisation organisation);
-
-        string GeneratePINCode();
-
         CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier);
 
         CustomResult<Organisation> LoadInfoFromActiveEmployerIdentifier(string employerIdentifier);
@@ -56,51 +52,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         }
 
         private IDataRepository _DataRepository { get; }
-
-        public virtual async Task SetUniqueEmployerReferenceAsync(Organisation organisation)
-        {
-            //Get the unique reference
-            retry:
-            do
-            {
-                organisation.EmployerReference = GenerateEmployerReference();
-            } while (await _DataRepository.GetAll<Organisation>()
-                .AnyAsync(o => o.OrganisationId != organisation.OrganisationId && o.EmployerReference == organisation.EmployerReference));
-
-            try
-            {
-                //Save the organisation
-                await _DataRepository.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                var bex = ex.GetBaseException() as SqlException;
-                if (bex != null)
-                {
-                    switch (bex.Number)
-                    {
-                        case 2601: // Duplicated key row error
-                            goto retry;
-                        case 2627: // Unique constraint error
-                        case 547: // Constraint check violation
-                        default:
-                            break;
-                    }
-                }
-
-                throw;
-            }
-        }
-
-        public virtual string GenerateEmployerReference()
-        {
-            return Crypto.GeneratePasscode(Global.EmployerCodeChars.ToCharArray(), 8);
-        }
-
-        public virtual string GeneratePINCode()
-        {
-            return Crypto.GeneratePasscode(Global.PINChars.ToCharArray(), 7);
-        }
 
         public CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier)
         {

@@ -103,7 +103,6 @@ namespace GenderPayGap.Core
         public static DateTime PublicAccountingDate => DateTime.Parse("2017-03-31");
         public static int EmailVerificationExpiryDays => 7;
         public static int EmailVerificationMinResendHours => 1;
-        public static int EmployerPageSize => 20;
         public static int LevenshteinDistance => 2;
         public static int LockoutMinutes => 30;
         public static int MaxLoginAttempts => 5;
@@ -118,7 +117,6 @@ namespace GenderPayGap.Core
         public static string PINChars => "123456789ABCDEF";
         public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/guidance/gender-pay-gap-who-needs-to-report";
         public static int FirstReportingYear => 2017;
-        public static int CompaniesHouseMaxRecords => 400;
         public static int MinIOThreads => 300;
         public static int MinWorkerThreads => 300;
         public static string StartUrl =>

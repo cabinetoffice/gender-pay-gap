@@ -5,7 +5,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
@@ -21,17 +20,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly IOrganisationBusinessLogic organisationBusinessLogic;
         private readonly EmailSendingService emailSendingService;
 
         public AdminUnconfirmedPinsController(
             IDataRepository dataRepository,
-            IOrganisationBusinessLogic organisationBusinessLogic,
             EmailSendingService emailSendingService
         )
         {
             this.dataRepository = dataRepository;
-            this.organisationBusinessLogic = organisationBusinessLogic;
             this.emailSendingService = emailSendingService;
         }
 
@@ -67,7 +63,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
             {
-                string newPin = organisationBusinessLogic.GeneratePINCode();
+                string newPin = Crypto.GeneratePinInThePost();
                 userOrganisation.PIN = newPin;
             }
 

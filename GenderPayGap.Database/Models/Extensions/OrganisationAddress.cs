@@ -18,12 +18,6 @@ namespace GenderPayGap.Database
                 return false;
             }
 
-            var addressModel = obj as AddressModel;
-            if (addressModel != null)
-            {
-                return GetAddressModel().Equals(addressModel);
-            }
-
             var address = obj as OrganisationAddress;
             if (address == null)
             {
@@ -32,8 +26,6 @@ namespace GenderPayGap.Database
 
             return AddressId == address.AddressId;
         }
-
-        #region Methods
 
         public List<string> GetList()
         {
@@ -81,41 +73,9 @@ namespace GenderPayGap.Database
             return list;
         }
 
-        public bool EqualsI(OrganisationAddress address)
-        {
-            string add1 = GetAddressString();
-            string add2 = address == null ? null : address.GetAddressString();
-            return add1.EqualsI(add2);
-        }
-
         public string GetAddressString(string delimiter = ", ")
         {
             return GetList().ToDelimitedString(delimiter);
-        }
-
-        public AddressModel GetAddressModel()
-        {
-            return new AddressModel {
-                Address1 = Address1,
-                Address2 = Address2,
-                Address3 = Address3,
-                City = TownCity,
-                County = County,
-                Country = Country,
-                PostCode = PostCode,
-                PoBox = PoBox
-            };
-        }
-
-        public UserOrganisation GetFirstRegistration()
-        {
-            return UserOrganisations.OrderBy(uo => uo.PINConfirmedDate).FirstOrDefault(uo => uo.PINConfirmedDate > Created);
-        }
-
-        public DateTime GetFirstRegisteredDate()
-        {
-            UserOrganisation firstRegistration = GetFirstRegistration();
-            return firstRegistration?.PINConfirmedDate ?? Created;
         }
 
         public void SetStatus(AddressStatuses status, long byUserId, string details = null, DateTime? statusDate = null)
@@ -135,18 +95,16 @@ namespace GenderPayGap.Database
             StatusDetails = details;
         }
 
-        #endregion
-
         public bool AddressMatches(OrganisationAddress other)
         {
-            return String.Equals(Address1, other.Address1, StringComparison.Ordinal)
-                   && String.Equals(Address2, other.Address2, StringComparison.Ordinal)
-                   && String.Equals(Address3, other.Address3, StringComparison.Ordinal)
-                   && String.Equals(TownCity, other.TownCity, StringComparison.Ordinal)
-                   && String.Equals(County, other.County, StringComparison.Ordinal)
-                   && String.Equals(Country, other.Country, StringComparison.Ordinal)
-                   && String.Equals(PostCode, other.PostCode, StringComparison.Ordinal)
-                   && String.Equals(PoBox, other.PoBox, StringComparison.Ordinal);
+            return string.Equals(Address1, other.Address1, StringComparison.Ordinal)
+                   && string.Equals(Address2, other.Address2, StringComparison.Ordinal)
+                   && string.Equals(Address3, other.Address3, StringComparison.Ordinal)
+                   && string.Equals(TownCity, other.TownCity, StringComparison.Ordinal)
+                   && string.Equals(County, other.County, StringComparison.Ordinal)
+                   && string.Equals(Country, other.Country, StringComparison.Ordinal)
+                   && string.Equals(PostCode, other.PostCode, StringComparison.Ordinal)
+                   && string.Equals(PoBox, other.PoBox, StringComparison.Ordinal);
         }
 
     }
