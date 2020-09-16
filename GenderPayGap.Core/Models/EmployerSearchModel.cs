@@ -24,11 +24,6 @@ namespace GenderPayGap.Core.Models
             return OrganisationId.GetHashCode();
         }
 
-        public string GetEncryptedOrganisionId()
-        {
-            return Encryption.EncryptQuerystring(OrganisationId);
-        }
-
         #region Organisation Properties
 
         [Key]

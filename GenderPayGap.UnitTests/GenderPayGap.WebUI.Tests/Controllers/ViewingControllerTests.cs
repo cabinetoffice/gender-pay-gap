@@ -644,26 +644,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual(400, model.ErrorCode);
         }
 
-        [Test]
-        public void ViewingController_ReportDeprecated_Zero_Organisation_Id_Returns_Redirection_To_Report_Method()
-        {
-            // Arrange
-            var organisationId = 0;
-            var controller = UiTestHelper.GetController<ViewingController>();
-            string obfuscatedOrgId = ConfigureObfuscator(organisationId);
-            string encryptedOrganisationId = new EncryptionHandler()
-                .EncryptAndEncode(organisationId);
-
-            // Act
-            var result = controller.ReportDeprecated(encryptedOrganisationId, Global.FirstReportingYear) as RedirectToActionResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.IsTrue(result.Permanent);
-            Assert.AreEqual("Report", result.ActionName);
-            Assert.AreEqual(obfuscatedOrgId, result.RouteValues["employerIdentifier"].ToString());
-        }
-
         public static string ConfigureObfuscator(long valueToObfuscate)
         {
             string result = new InternalObfuscator().Obfuscate(valueToObfuscate.ToString());

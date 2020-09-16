@@ -12,7 +12,6 @@ namespace GenderPayGap.Core.Classes
     public interface IEncryptionHandler
     {
 
-        string EncryptAndEncode(long valueToEncryptAndEncode);
         string DecryptAndDecode(string valueToDecryptAndDecode);
 
     }
@@ -20,19 +19,9 @@ namespace GenderPayGap.Core.Classes
     public class EncryptionHandler : IEncryptionHandler
     {
 
-        public string EncryptAndEncode(long valueToEncryptAndEncode)
-        {
-            return EncryptAndEncode(valueToEncryptAndEncode.ToInt32());
-        }
-
         public string DecryptAndDecode(string valueToDecryptAndDecode)
         {
             return HttpUtility.UrlDecode(Encryption.DecryptQuerystring(valueToDecryptAndDecode));
-        }
-
-        private string EncryptAndEncode(int valueToEncryptAndEncode)
-        {
-            return Encryption.EncryptQuerystring(valueToEncryptAndEncode.ToString());
         }
 
     }

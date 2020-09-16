@@ -59,30 +59,6 @@ namespace GenderPayGap.Extensions
             return new Uri(GetBaseUri(baseUrl), relativeUrl).ToString();
         }
 
-        //
-        // Summary:
-        //     Combines an array of strings into a path.
-        //
-        // Parameters:
-        //   paths:
-        //     An array of parts of the path.
-        //
-        // Returns:
-        //     The combined paths.
-        //
-        // Exceptions:
-        //   T:System.ArgumentException:
-        //     One of the strings in the array contains one or more of the invalid characters
-        //     defined in System.IO.Path.GetInvalidPathChars.
-        //
-        //   T:System.ArgumentNullException:
-        //     One of the strings in the array is null.
-        public static string Combine(params string[] paths)
-        {
-            return DirToUrlSeparator(Path.Combine(paths));
-        }
-
-
         public static string DirToUrlSeparator(string filePath)
         {
             return filePath?.Replace('\\', '/');
