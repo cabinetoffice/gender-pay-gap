@@ -267,6 +267,8 @@ namespace GenderPayGap.Core
         
         [Display(Name = "Admin changed organisation company number")]
         AdminChangeOrganisationCompanyNumber = 41,
+        [Display(Name = "Admin changed organisation sector")]
+        AdminChangedOrganisationSector = 42
     }
 
     public enum HashingAlgorithm

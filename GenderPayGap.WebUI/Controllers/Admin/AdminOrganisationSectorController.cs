@@ -48,30 +48,29 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return View("ChangeSector", viewModel);
         }
         
-        [HttpPost("organisation/{id}/status/change")]
+        [HttpPost("organisation/{id}/sector/change")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public void ChangeSectorPost(long id, AdminChangeSectorViewModel viewModel)
+        public IActionResult ChangeSectorPost(long id, AdminChangeSectorViewModel viewModel)
         {
-            //TODO: Cleverness
-            // switch (viewModel.Action)
-            // {
-            //     case ChangeOrganisationSectorViewModelActions.OfferNewStatusAndReason:
-            //         UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
-            //         ValidateAdminChangeStatusViewModel(viewModel);
-            //         if (viewModel.HasAnyErrors())
-            //         {
-            //             return View("ChangeStatus", viewModel);
-            //         }
-            //
-            //         return View("ConfirmStatusChange", viewModel);
-            //
-            //     case ChangeOrganisationStatusViewModelActions.ConfirmStatusChange:
-            //         ChangeStatus(viewModel, id);
-            //         return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
-            //     default:
-            //         throw new ArgumentException("Unknown action in AdminOrganisationStatusController.ChangeStatusPost");
-            // }
+            switch (viewModel.Action)
+            {
+                case ChangeOrganisationSectorViewModelActions.OfferNewSectorAndReason:
+                    UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
+                    ValidateAdminChangeSectorViewModel(viewModel);
+                    if (viewModel.HasAnyErrors())
+                    {
+                        return View("ChangeSector", viewModel);
+                    }
+            
+                    return View("ConfirmSectorChange", viewModel);
+            
+                case ChangeOrganisationSectorViewModelActions.ConfirmSectorChange:
+                    ChangeSector(viewModel, id);
+                    return RedirectToAction("ViewSectorHistory", "AdminOrganisationSector", new {id});
+                default:
+                    throw new ArgumentException("Unknown action in AdminOrganisationSectorController.ChangeSectorPost");
+            }
         }
 
         [HttpGet("organisation/{id}/change-public-sector-classification")]
@@ -180,6 +179,41 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             viewModel.InactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
                 .Where(m => m.OrganisationId == organisationId).ToList();
+        }
+        
+        private void ValidateAdminChangeSectorViewModel(AdminChangeSectorViewModel viewModel)
+        {
+            if (!viewModel.NewSector.HasValue)
+            {
+                viewModel.AddErrorFor(m => m.NewSector, "Please select a new sector");
+            }
+
+            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
+        }
+        
+        private void ChangeSector(AdminChangeSectorViewModel viewModel, long organisationId)
+        {
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            SectorTypes previousSector = organisation.SectorType;
+            SectorTypes newSector = viewModel.NewSector ?? SectorTypes.Unknown;
+
+            // Update the sector
+            organisation.SectorType = newSector;
+
+            // Remove SIC codes when company changes between sectors
+            organisation.OrganisationSicCodes.Clear();
+
+            dataRepository.SaveChangesAsync().Wait();
+
+            // Audit log
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.AdminChangedOrganisationSector,
+                organisation,
+                new {PreviousStatus = previousSector, NewStatus = newSector, viewModel.Reason},
+                User);
+
         }
 
     }
