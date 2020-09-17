@@ -203,9 +203,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
             
-            // Update the organisation from Companies House and update details
-            updateFromCompaniesHouseService.UpdateOrganisationDetails(organisation.OrganisationId);
-
             if (!organisation.OptedOutFromCompaniesHouseUpdate)
             {
                 organisation.OptedOutFromCompaniesHouseUpdate = false;
@@ -227,6 +224,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             organisation.CompanyNumber = viewModel.NewCompanyNumber;
 
             dataRepository.SaveChangesAsync().Wait();
+
+            // Update the organisation from Companies House (AFTER we update the company number)
+            updateFromCompaniesHouseService.UpdateOrganisationDetails(organisation.OrganisationId);
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new { id = organisation.OrganisationId });
         }
