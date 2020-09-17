@@ -56,8 +56,7 @@
             @(Html.HiddenFor(model => model.WhyOutOfScope))
             @(Html.HiddenFor(model => model.WhyOutOfScopeDetails))
             @(Html.HiddenFor(model => model.HaveReadGuidance))
-            @(Html.HiddenFor(model => model.ReportingYear))
-            
+
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
@@ -113,7 +112,7 @@
                 }
                 ))
             
-            <p>
+            <p class="govuk-body">
                 <a class="govuk-link" href="@Url.Action("ManageOrganisations", "Organisation")">
                     Cancel
                 </a>

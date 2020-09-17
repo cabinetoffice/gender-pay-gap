@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
         public WhyOutOfScope? WhyOutOfScope { get; set; }
         
         [GovUkValidateRequired(
-            ErrorMessageIfMissing = "Please provide a reason that this organisation is out of scope."
+            ErrorMessageIfMissing = "Provide a reason that this organisation is out of scope."
         )]
         public string WhyOutOfScopeDetails { get; set; }
         

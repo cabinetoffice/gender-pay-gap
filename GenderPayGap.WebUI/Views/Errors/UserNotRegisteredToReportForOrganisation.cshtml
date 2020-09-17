@@ -3,7 +3,7 @@
 @model GenderPayGap.WebUI.ErrorHandling.UserNotRegisteredToReportForOrganisationException
 
 @{
-    ViewBag.Title = "Permission Denied - Gender pay gap service";
+    ViewBag.Title = "You don't have permission to report on behalf of this organisation - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -14,11 +14,23 @@
             You don't have permission to report on behalf of this organisation
         </h1>
 
-        @{
-            // TODO: Link this to the add organisation journey (once it's been built!)
-        }
+        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewAddOrganisationJourney)) 
+        { 
+            <p class="govuk-body">
+                <a href="@Url.Action("ChooseSector", "AddOrganisationChooseSector")"
+                   class="govuk-link">Add organisation</a> 
+            </p> 
+        } 
+        else 
+        { 
+            <p class="govuk-body">
+                <a href="@Url.Action(nameof(RegisterController.OrganisationType), "Register")"
+                   class="govuk-link">Register an organisation</a> 
+            </p> 
+        } 
+        
         <p class="govuk-body">If you have been sent this link by a colleague, you will need to add this organisation to your account</p>
         
-        <p class="govuk-body">If you think you should be able to report on behalf of this organisation, contact <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">gpg.reporting@cabinetoffice.gov.uk</a></p>
+        <p class="govuk-body">If you think you should be able to report on behalf of this organisation, contact <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">@(Global.GpgReportingEmail)</a></p>
     </div>
 </div>
