@@ -26,7 +26,7 @@ namespace GenderPayGap.WebUI.ErrorHandling
 
     public class UserNotRegisteredToReportForOrganisationException : CustomErrorPageException
     {
-        public override string ViewName => "";
+        public override string ViewName => "../Errors/UserNotRegisteredToReportForOrganisation";
 
         public override int StatusCode => 403;
 
