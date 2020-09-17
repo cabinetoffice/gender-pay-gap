@@ -1,4 +1,5 @@
 ﻿using System;
+using GenderPayGap.Core;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
@@ -54,5 +55,14 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
 
         [GovUkRadioCheckboxLabelText(Text = "No")]
         No = 1
+    }
+
+    public enum ScopeTypes
+    {
+
+        InScope = 0,
+        
+        OutOfScope = 1
+
     }
 }
