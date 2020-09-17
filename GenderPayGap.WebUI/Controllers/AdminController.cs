@@ -52,25 +52,6 @@ namespace GenderPayGap.WebUI.Controllers.Administration
 
         #endregion
 
-        #region Home Action
-
-        [HttpGet]
-        public IActionResult Home()
-        {
-            var viewModel = new AdminHomepageViewModel {
-                FeedbackCount = DataRepository.GetAll<Feedback>().Count(),
-                NewFeedbackCount = DataRepository.GetAll<Feedback>().Count(f => f.FeedbackStatus == FeedbackStatus.New),
-                LatestFeedbackDate = DataRepository.GetAll<Feedback>()
-                    .OrderByDescending(feedback => feedback.CreatedDate)
-                    .FirstOrDefault()
-                    ?.CreatedDate
-            };
-
-            return View("Home", viewModel);
-        }
-
-        #endregion
-
         #region PendingRegistration Action
 
         [HttpGet("pending-registrations")]
