@@ -80,7 +80,8 @@
                 We've sent a PIN by post to the following name &amp; address:
             </h2>
             <p class="govuk-body">
-                @(Model.ExistingUserOrganisation.User.Firstname) @(Model.ExistingUserOrganisation.User.Lastname)<br />
+                @(Model.ExistingUserOrganisation.User.Firstname) @(Model.ExistingUserOrganisation.User.Lastname)<br/>
+                @(Model.ExistingUserOrganisation.Organisation.OrganisationName)<br/>
                 @{
                     List<string> address = PinInThePostService.GetAddressComponentsWithoutRepeatsOrUnnecessaryComponents(Model.ExistingUserOrganisation.Organisation.GetLatestAddress());
                 }
