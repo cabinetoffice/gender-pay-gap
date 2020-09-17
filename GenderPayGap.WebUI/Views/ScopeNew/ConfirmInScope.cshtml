@@ -1,9 +1,96 @@
-﻿@{
-    ViewBag.Title = "Confirm In Scope - Gender pay gap service";
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem
+@using GenderPayGap.WebUI.Models.ScopeNew
+@using GenderPayGap.WebUI.Classes.Formatters
+@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.ScopeNew.OutOfScopeViewModel
+
+@{
+    ViewBag.Title = "Confirm that your organisation is in scope - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change Scope (Reporting Year " + reportingYearsString + ")"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+@{
+    string reportingYearFormatted = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string snapshotDate = new GDSDateFormatter(Model.ReportingYear).FullStartDate;
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        Confirm in scope
+        <form method="POST" action="@Url.Action("ConfirmInScopeAnswers", "ScopeNew", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
+            @(Html.AntiForgeryToken())
+            <h1 class="govuk-heading-xl">Confirm your organisation is required to report</h1>
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Employer Name
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.Organisation.OrganisationName
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Reporting Year
+                        </th>
+                        <td class="govuk-table__cell">
+                            @reportingYearFormatted
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="govuk-body">
+                Please confirm your organisation is in scope to report Gender Pay Gap data for the @reportingYearsString reporting year.
+            </p>
+
+            @(Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Confirm"
+                }
+                ))
+            
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageOrganisations", "Organisation")">
+                    Cancel
+                </a>
+            </p>
+        </form>
     </div>
 </div>
         
