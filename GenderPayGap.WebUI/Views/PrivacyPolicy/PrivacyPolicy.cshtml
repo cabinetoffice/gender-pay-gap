@@ -124,7 +124,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            <form method="post" action="@(Url.Action("PrivacyPolicyPost", "Home"))">
+            <form method="post" action="@Url.Action("PrivacyPolicyPost", "PrivacyPolicy")">
                 @Html.AntiForgeryToken()
                 <div class="govuk-form-group">
                     @(Html.GovUkButton(new ButtonViewModel
