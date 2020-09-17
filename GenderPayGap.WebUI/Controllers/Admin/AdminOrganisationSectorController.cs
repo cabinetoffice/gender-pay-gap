@@ -4,6 +4,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
@@ -27,6 +28,50 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             this.dataRepository = dataRepository;
             this.auditLogger = auditLogger;
+        }
+        
+          [HttpGet("organisation/{id}/sector")]
+        public IActionResult ViewSectorHistory(long id)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+
+            return View("ViewOrganisationSector", organisation);
+        }
+        
+        [HttpGet("organisation/{id}/sector/change")]
+        public IActionResult ChangeSectorGet(long id)
+        {
+            var viewModel = new AdminChangeSectorViewModel();
+
+            UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
+
+            return View("ChangeSector", viewModel);
+        }
+        
+        [HttpPost("organisation/{id}/status/change")]
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        public void ChangeSectorPost(long id, AdminChangeSectorViewModel viewModel)
+        {
+            //TODO: Cleverness
+            // switch (viewModel.Action)
+            // {
+            //     case ChangeOrganisationSectorViewModelActions.OfferNewStatusAndReason:
+            //         UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
+            //         ValidateAdminChangeStatusViewModel(viewModel);
+            //         if (viewModel.HasAnyErrors())
+            //         {
+            //             return View("ChangeStatus", viewModel);
+            //         }
+            //
+            //         return View("ConfirmStatusChange", viewModel);
+            //
+            //     case ChangeOrganisationStatusViewModelActions.ConfirmStatusChange:
+            //         ChangeStatus(viewModel, id);
+            //         return RedirectToAction("ViewStatusHistory", "AdminOrganisationStatus", new {id});
+            //     default:
+            //         throw new ArgumentException("Unknown action in AdminOrganisationStatusController.ChangeStatusPost");
+            // }
         }
 
         [HttpGet("organisation/{id}/change-public-sector-classification")]
@@ -127,6 +172,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             dataRepository.Insert(newOrganisationPublicSectorType);
 
             organisation.LatestPublicSectorType = newOrganisationPublicSectorType;
+        }
+        
+        private void UpdateAdminChangeSectorViewModelFromOrganisation(AdminChangeSectorViewModel viewModel, long organisationId)
+        {
+            viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
+
+            viewModel.InactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
+                .Where(m => m.OrganisationId == organisationId).ToList();
         }
 
     }
