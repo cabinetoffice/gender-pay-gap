@@ -35,13 +35,20 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                 return ProceedToNextPage(viewModel);
             }
 
-            viewModel.SicSections = dataRepository.GetAll<SicSection>().ToList();
+            viewModel.SicSections = GetSicSectionsExceptPublicSector();
             if (viewModel.SicCodes == null)
             {
                 viewModel.SicCodes = new List<int>();
             }
 
             return View("ManualSicCodes", viewModel);
+        }
+
+        private List<SicSection> GetSicSectionsExceptPublicSector()
+        {
+            return dataRepository.GetAll<SicSection>()
+                .Where(ss => ss.SicSectionId != "X") // Remove "Public Sector" SIC section
+                .ToList();
         }
 
         private IActionResult ProceedToNextPage(AddOrganisationManualViewModel viewModel)
