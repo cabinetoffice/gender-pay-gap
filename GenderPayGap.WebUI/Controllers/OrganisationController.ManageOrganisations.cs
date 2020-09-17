@@ -102,7 +102,7 @@ namespace GenderPayGap.WebUI.Controllers
                 DateTime? hasReadPrivacy = currentUser.AcceptedPrivacyStatement;
                 if (hasReadPrivacy == null || hasReadPrivacy.Value < Global.PrivacyChangedDate)
                 {
-                    return RedirectToAction(nameof(HomeController.PrivacyPolicy), "Home");
+                    return RedirectToAction(nameof(PrivacyPolicyController.PrivacyPolicyGet), "PrivacyPolicy");
                 }
             }
             
