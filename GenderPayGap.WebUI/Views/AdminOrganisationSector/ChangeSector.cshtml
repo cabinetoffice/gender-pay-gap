@@ -41,66 +41,6 @@
     }))
 }
 
-@{
-    var sectorHints = new Dictionary<SectorTypes, Func<object, object>>
-    {
-        {
-            SectorTypes.Public,
-            @<text>
-                This includes:
-                <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
-                    <li>Most government departments</li>
-                    <li>The armed forces</li>
-                    <li>Local authorities</li>
-                    <li>NHS bodies</li>
-                    <li>Universities</li>
-                    <li>Most schools, including academies and multi-academy trusts (except private and independent schools)</li>
-                </ul>
-            </text>
-        },
-        {
-            SectorTypes.Private,
-            @<text>
-                This includes:
-                <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
-                    <li>Limited companies</li>
-                    <li>Limited liability partnerships</li>
-                    <li>Charities</li>
-                    <li>Independent and private schools</li>
-                </ul>
-            </text>
-        },
-    };
-
-    var items = new List<ItemViewModel>();
-
-    foreach ((SectorTypes sector, Func<object, object> hint) in sectorHints)
-    {
-        if (Model.Organisation.SectorType != sector)
-        {
-            string fieldName = $"GovUk_Radio_{nameof(AdminChangeSectorViewModel.NewSector)}";
-            string fieldId = $"{fieldName}_{sector}";
-
-            items.Add(new RadioItemViewModel
-            {
-                Name = fieldName,
-                Value = sector.ToString(),
-                Id = fieldId,
-                Label = new LabelViewModel
-                {
-                    Text = sector.ToString(),
-                    For = fieldId
-                },
-                Hint = new HintViewModel
-                {
-                    Html = hint
-                }
-            });
-        }
-    }
-
-}
-
 <span class="govuk-caption-xl">Administration</span>
 <h1 class="govuk-heading-xl">
     Change sector
@@ -135,25 +75,67 @@
             </table>
 
             <div class="govuk-form-group">
-                @{
-                    string error = Model.GetErrorFor<AdminChangeSectorViewModel, SectorTypes?>(m => m.NewSector);
-                    ErrorMessageViewModel radiosErrorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
-                }
-                @Html.GovUkRadios(new RadiosViewModel
-                {
-                    Name = nameof(AdminChangeSectorViewModel.NewSector),
-                    Fieldset = new FieldsetViewModel
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Please select a new sector
+                    </h1>
+                </legend>
+                
+                @(Html.GovUkRadiosFor(
+                    m => m.NewSector,
+                    itemLabelOptions: new Dictionary<NewSectorTypes?, LabelViewModel>
                     {
-                        Legend = new LegendViewModel
                         {
-                            Text = "Please select a new sector",
-                            Classes = "govuk-fieldset__legend--m"
+                            NewSectorTypes.Public,
+                            new LabelViewModel
+                            {
+                                Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
+                            }
                         },
-                        Classes = "govuk-!-margin-top-6"
+                        {
+                            NewSectorTypes.Private,
+                            new LabelViewModel
+                            {
+                                Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
+                            }
+                        },
                     },
-                    Items = items,
-                    ErrorMessage = radiosErrorMessageViewModel
-                })
+                    itemHintOptions: new Dictionary<NewSectorTypes?, HintViewModel>
+                    {
+                        {
+                            NewSectorTypes.Public,
+                            new HintViewModel
+                            {
+                                Html = @<text>
+                                           This includes:
+                                           <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
+                                               <li>Most government departments</li>
+                                               <li>The armed forces</li>
+                                               <li>Local authorities</li>
+                                               <li>NHS bodies</li>
+                                               <li>Universities</li>
+                                               <li>Most schools, including academies and multi-academy trusts (except private and independent schools)</li>
+                                           </ul>
+                                        </text>
+                            }
+                        },
+                        {
+                            NewSectorTypes.Private,
+                            new HintViewModel
+                            {
+                                Html = @<text>
+                                           This includes:
+                                           <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
+                                               <li>Limited companies</li>
+                                               <li>Limited liability partnerships</li>
+                                               <li>Charities</li>
+                                               <li>Independent and private schools</li>
+                                           </ul>
+                                        </text>
+                            }
+                        }
+                    })
+                    )
 
                 @Html.GovUkTextAreaFor(
                     m => m.Reason,

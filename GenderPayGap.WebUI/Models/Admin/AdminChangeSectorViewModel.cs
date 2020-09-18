@@ -12,15 +12,14 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         public ChangeOrganisationSectorViewModelActions Action { get; set; }
 
-        public SectorTypes? NewSector { get; set; }
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Select a new sector.")]
+        public NewSectorTypes? NewSector { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Give a reason for this change.")]
         public string Reason { get; set; }
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Database.Organisation Organisation { get; set; }
-        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
-        public List<InactiveUserOrganisation> InactiveUserOrganisations { get; set; }
 
     }
 
@@ -30,6 +29,14 @@ namespace GenderPayGap.WebUI.Models.Admin
         Unknown,
         OfferNewSectorAndReason,
         ConfirmSectorChange
+
+    }
+
+    public enum NewSectorTypes
+    {
+
+        Public,
+        Private
 
     }
 }
