@@ -19,7 +19,7 @@
         crumbs.Add(new CrumbViewModel
         {
             Text = "Admin",
-            Href = Url.Action("Home", "Admin")
+            Href = Url.Action("AdminHomePage", "AdminHomepage")
         });
 
         if (referrer != null && referrer.AbsoluteUri.StartsWith(unconfirmedPinsPage))

@@ -136,8 +136,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual("Home", result.ActionName, "Expected the Action to be 'Home'");
-            Assert.AreEqual("Admin", result.ControllerName, "Expected the Controller to be 'Admin'");
+            Assert.AreEqual("AdminHomePage", result.ActionName, "Expected the Action to be 'Home'");
+            Assert.AreEqual("AdminHomepage", result.ControllerName, "Expected the Controller to be 'Admin'");
         }
 
         #endregion
@@ -162,8 +162,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual("Home", result.ActionName, "Expected the Action to be 'Home'");
-            Assert.AreEqual("Admin", result.ControllerName, "Expected the Controller to be 'Admin'");
+            Assert.AreEqual("AdminHomePage", result.ActionName, "Expected the Action to be 'Home'");
+            Assert.AreEqual("AdminHomepage", result.ControllerName, "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -237,8 +237,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual("Home", result.ActionName, "Expected the Action to be 'Home'");
-            Assert.AreEqual("Admin", result.ControllerName, "Expected the Controller to be 'Admin'");
+            Assert.AreEqual("AdminHomePage", result.ActionName, "Expected the Action to be 'Home'");
+            Assert.AreEqual("AdminHomepage", result.ControllerName, "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -463,8 +463,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -586,8 +586,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -770,8 +770,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual("Home", result.ActionName, "Expected the Action to be 'ManageOrganisations'");
-            Assert.AreEqual("Admin", result.ControllerName, "Expected the Controller to be 'Organisation'");
+            Assert.AreEqual("AdminHomePage", result.ActionName, "Expected the Action to be 'ManageOrganisations'");
+            Assert.AreEqual("AdminHomepage", result.ControllerName, "Expected the Controller to be 'Organisation'");
         }
 
         [Test]
@@ -963,8 +963,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -1014,8 +1014,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -1264,8 +1264,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -1359,8 +1359,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -1410,8 +1410,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]
@@ -1634,8 +1634,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result, "RedirectToActionResult should not be null");
-            Assert.AreEqual(result.ActionName, "Home", "Expected the Action to be 'Home'");
-            Assert.AreEqual(result.ControllerName, "Admin", "Expected the Controller to be 'Admin'");
+            Assert.AreEqual(result.ActionName, "AdminHomePage", "Expected the Action to be 'Home'");
+            Assert.AreEqual(result.ControllerName, "AdminHomepage", "Expected the Controller to be 'Admin'");
         }
 
         [Test]

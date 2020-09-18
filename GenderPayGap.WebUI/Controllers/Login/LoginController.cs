@@ -79,7 +79,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
             }
             else if (user.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
             else
             {

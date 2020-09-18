@@ -53,7 +53,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var currentStateModel = this.UnstashModel<ScopingViewModel>();
@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             // When Spamlocked then return a CustomError view
@@ -197,7 +197,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
@@ -210,7 +210,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>();
@@ -233,7 +233,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>(true);
@@ -274,7 +274,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>();
@@ -294,7 +294,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>();
@@ -315,7 +315,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             // update the state model
@@ -375,7 +375,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>();
@@ -396,7 +396,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>();
@@ -440,7 +440,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>();
@@ -462,7 +462,7 @@ namespace GenderPayGap.WebUI.Controllers
             // When User is Admin then redirect to Admin\Home
             if (CurrentUser != null && CurrentUser.IsAdministrator())
             {
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             var stateModel = this.UnstashModel<ScopingViewModel>(true);
