@@ -55,6 +55,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             var viewModel = new AdminChangeSectorViewModel();
 
             UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
+            viewModel.NewSector = viewModel.Organisation.SectorType == SectorTypes.Private ? NewSectorTypes.Private : NewSectorTypes.Public;
 
             return View("ChangeSector", viewModel);
         }
@@ -69,6 +70,17 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 case ChangeOrganisationSectorViewModelActions.OfferNewSectorAndReason:
                     UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
                     ValidateAdminChangeSectorViewModel(viewModel);
+                    
+                    // Check if new sector is same as original organisation sector
+                    var newSector = viewModel.NewSector == NewSectorTypes.Private ? SectorTypes.Private : SectorTypes.Public;
+                    if (newSector == viewModel.Organisation.SectorType)
+                    {
+                        viewModel.AddErrorFor(
+                            m => m.NewSector,
+                            "The organisation is already assigned to this sector."
+                        );
+                    }
+                    
                     if (viewModel.HasAnyErrors())
                     {
                         return View("ChangeSector", viewModel);
@@ -187,18 +199,11 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private void UpdateAdminChangeSectorViewModelFromOrganisation(AdminChangeSectorViewModel viewModel, long organisationId)
         {
             viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
-
-            viewModel.InactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
-                .Where(m => m.OrganisationId == organisationId).ToList();
         }
         
         private void ValidateAdminChangeSectorViewModel(AdminChangeSectorViewModel viewModel)
         {
-            if (!viewModel.NewSector.HasValue)
-            {
-                viewModel.AddErrorFor(m => m.NewSector, "Please select a new sector");
-            }
-
+            viewModel.ParseAndValidateParameters(Request, m => m.NewSector);
             viewModel.ParseAndValidateParameters(Request, m => m.Reason);
         }
         
@@ -207,7 +212,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             var organisation = dataRepository.Get<Organisation>(organisationId);
 
             SectorTypes previousSector = organisation.SectorType;
-            SectorTypes newSector = viewModel.NewSector ?? SectorTypes.Unknown;
+            SectorTypes newSector = viewModel.NewSector.Value == NewSectorTypes.Private ? SectorTypes.Private : SectorTypes.Public;
 
             // Update the sector
             organisation.SectorType = newSector;
