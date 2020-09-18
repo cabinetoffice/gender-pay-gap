@@ -1,4 +1,4 @@
-@using GenderPayGap.Core
+﻿@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Cookies
 @using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
@@ -150,7 +150,7 @@
                 new FooterLinksViewModel
                 {
                     Text = "Contact Us",
-                    Href = Url.Action("ContactUs", "Home")
+                    Href = Url.Action("ContactUs", "StaticPages")
                 },
                 new FooterLinksViewModel
                 {
@@ -165,12 +165,12 @@
                 new FooterLinksViewModel
                 {
                     Text = "Report Concerns",
-                    Href = Url.Action("ReportConcerns", "Home")
+                    Href = Url.Action("ReportConcerns", "StaticPages")
                 },
                 new FooterLinksViewModel
                 {
                     Text = "Accessibility Statement",
-                    Href = Url.Action("AccessibilityStatement", "Home")
+                    Href = Url.Action("AccessibilityStatement", "StaticPages")
                 }
             }
         }
