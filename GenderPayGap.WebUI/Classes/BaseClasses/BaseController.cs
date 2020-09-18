@@ -383,7 +383,7 @@ namespace GenderPayGap.WebUI.Classes
                     return null;
                 }
 
-                return RedirectToAction("Home", "Admin");
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
                 //return View("CustomError", new ErrorViewModel(1117));
             }
 

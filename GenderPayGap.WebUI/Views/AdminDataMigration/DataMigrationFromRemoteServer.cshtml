@@ -14,7 +14,7 @@
             new CrumbViewModel
             {
                 Text = "Admin",
-                Href = Url.Action("Home", "Admin")
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
             },
             new CrumbViewModel
             {
@@ -76,7 +76,7 @@
             }))
 
             <p class="govuk-body">
-                <a href="@Url.Action("Home", "Admin")"
+                <a href="@Url.Action("AdminHomePage", "AdminHomepage")"
                    class="govuk-link">
                     Cancel and return to the admin homepage
                 </a>
