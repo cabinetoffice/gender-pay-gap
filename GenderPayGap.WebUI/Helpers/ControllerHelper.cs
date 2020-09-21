@@ -89,5 +89,23 @@ namespace GenderPayGap.WebUI.Helpers
             }
         }
 
+        public static long DecryptOrganisationIdOrThrow404(string encryptedOrganisationId)
+        {
+            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
+            {
+                throw new PageNotFoundException();
+            }
+
+            return organisationId;
+        }
+
+        public static void ThrowIfReportingYearIsOutsideOfRange(int reportingYear)
+        {
+            if (!ReportingYearsHelper.GetReportingYears().Contains(reportingYear))
+            {
+                throw new PageNotFoundException();
+            }
+        }
+
     }
 }
