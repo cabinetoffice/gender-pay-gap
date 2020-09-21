@@ -1,0 +1,159 @@
+﻿@using GenderPayGap.WebUI.Views.Components.TaskList
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = $"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}";
+
+    ViewBag.Title = $"Report your gender pay gap - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Report your gender pay gap (reporting year {formattedReportingYears})"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
+
+        <h1 class="govuk-heading-xl">
+            Report your gender pay gap
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(formattedReportingYears)
+            </span>
+        </h1>
+
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+            Report incomplete
+        </h2>
+        <p class="govuk-body govuk-!-margin-bottom-7">
+            You have completed
+            @{
+                var statuses = new List<TaskListStatus>
+                    {
+                    Model.HourlyPayStatus,
+                    Model.BonusPayStatus,
+                    Model.EmployessByPayQuartileStatus,
+                    Model.PersonResponsibleStatus,
+                    Model.OrganisationSizeStatus,
+                    Model.LinkStatus,
+                    Model.ReviewAndSubmitStatus
+                };
+
+                int numberOfCompleteStatuses = statuses.Count(s => s == TaskListStatus.Completed);
+
+                @(numberOfCompleteStatuses)
+            }
+            of @(statuses.Count) sections.
+        </p>
+
+        @{
+            await Html.RenderPartialAsync("../Components/TaskList/TaskList", new TaskListViewModel
+            {
+                Sections = new List<TaskListSectionViewModel>
+                {
+                    new TaskListSectionViewModel
+                    {
+                        SectionName = "Figures",
+                        Items = new List<TaskListItemViewModel>
+                        {
+                            new TaskListItemViewModel
+                            {
+                                Title = "Hourly pay",
+                                Href = Url.Action("ReportHourlyPayGet", "ReportHourlyPay",
+                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                                Status = Model.HourlyPayStatus
+                            },
+                            new TaskListItemViewModel
+                            {
+                                Title = "Bonus pay",
+                                Href = Url.Action("ReportBonusPayGet", "ReportBonusPay",
+                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                                Status = Model.BonusPayStatus
+                            },
+                            new TaskListItemViewModel
+                            {
+                                Title = "Employees by pay quartile",
+                                Href = Url.Action("EmployeesByPayQuartileGet", "ReportEmployeesByPayQuartile",
+                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                                Status = Model.EmployessByPayQuartileStatus
+                            },
+                        }
+                    },
+                    new TaskListSectionViewModel
+                    {
+                        SectionName = "About your organisation",
+                        Items = new List<TaskListItemViewModel>
+                        {
+                            new TaskListItemViewModel
+                            {
+                                Title = "Person responsible in your organisation",
+                                Href = "#",
+                                Status = Model.PersonResponsibleStatus
+                            },
+                            new TaskListItemViewModel
+                            {
+                                Title = "Size of your organisation",
+                                Href = "#",
+                                Status = Model.OrganisationSizeStatus
+                            },
+                            new TaskListItemViewModel
+                            {
+                                Title = "Link to your gender pay gap information",
+                                Href = "#",
+                                Status = Model.LinkStatus
+                            },
+                        }
+                    },
+                    new TaskListSectionViewModel
+                    {
+                        SectionName = "Submit report",
+                        Items = new List<TaskListItemViewModel>
+                        {
+                            new TaskListItemViewModel
+                            {
+                                Title = "Review and submit your gender pay gap report",
+                                Href = null,
+                                Status = Model.ReviewAndSubmitStatus
+                            },
+                        }
+                    },
+                }
+            });
+        }
+
+    </div>
+</div>
