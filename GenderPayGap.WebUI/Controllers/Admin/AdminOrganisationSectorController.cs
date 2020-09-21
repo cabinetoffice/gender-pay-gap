@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -229,6 +230,16 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             // Remove SIC codes when company changes between sectors
             organisation.OrganisationSicCodes.Clear();
+            
+            // Change snapshot date for all organisation scopes to match new sector
+            organisation.OrganisationScopes.ForEach(
+                scope => scope.SnapshotDate = organisation.SectorType.GetAccountingStartDate(scope.SnapshotDate.Year)
+            );
+            
+            // Change accounting date for all returns to match new sector
+            organisation.Returns.ForEach(
+                returnItem => returnItem.AccountingDate = organisation.SectorType.GetAccountingStartDate(returnItem.AccountingDate.Year)
+            );
 
             dataRepository.SaveChangesAsync().Wait();
 
