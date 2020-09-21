@@ -68,32 +68,42 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             switch (viewModel.Action)
             {
                 case ChangeOrganisationSectorViewModelActions.OfferNewSectorAndReason:
-                    UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
-                    ValidateAdminChangeSectorViewModel(viewModel);
-                    
-                    // Check if new sector is same as original organisation sector
-                    var newSector = viewModel.NewSector == NewSectorTypes.Private ? SectorTypes.Private : SectorTypes.Public;
-                    if (newSector == viewModel.Organisation.SectorType)
-                    {
-                        viewModel.AddErrorFor(
-                            m => m.NewSector,
-                            "The organisation is already assigned to this sector."
-                        );
-                    }
-                    
-                    if (viewModel.HasAnyErrors())
-                    {
-                        return View("ChangeSector", viewModel);
-                    }
-            
-                    return View("ConfirmSectorChange", viewModel);
+                    return OfferNewSectorAndReason(id, viewModel);
             
                 case ChangeOrganisationSectorViewModelActions.ConfirmSectorChange:
-                    ChangeSector(viewModel, id);
-                    return RedirectToAction("ViewSectorHistory", "AdminOrganisationSector", new {id});
+                    return ConfirmSectorChange(id, viewModel);
                 default:
                     throw new ArgumentException("Unknown action in AdminOrganisationSectorController.ChangeSectorPost");
             }
+        }
+
+        private IActionResult OfferNewSectorAndReason(long id, AdminChangeSectorViewModel viewModel)
+        {
+            UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
+            ValidateAdminChangeSectorViewModel(viewModel);
+                    
+            // Check if new sector is same as original organisation sector
+            var newSector = viewModel.NewSector == NewSectorTypes.Private ? SectorTypes.Private : SectorTypes.Public;
+            if (newSector == viewModel.Organisation.SectorType)
+            {
+                viewModel.AddErrorFor(
+                    m => m.NewSector,
+                    "The organisation is already assigned to this sector."
+                );
+            }
+                    
+            if (viewModel.HasAnyErrors())
+            {
+                return View("ChangeSector", viewModel);
+            }
+            
+            return View("ConfirmSectorChange", viewModel);
+        }
+
+        private IActionResult ConfirmSectorChange(long id, AdminChangeSectorViewModel viewModel)
+        {
+            ChangeSector(viewModel, id);
+            return RedirectToAction("ViewSectorHistory", "AdminOrganisationSector", new {id});
         }
 
         [HttpGet("organisation/{id}/change-public-sector-classification")]
