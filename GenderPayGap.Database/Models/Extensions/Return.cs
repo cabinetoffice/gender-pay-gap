@@ -47,7 +47,7 @@ namespace GenderPayGap.Database
                         orgSize = OrganisationSizes.Employees1000To4999;
                         break;
                     case 19999:
-                        orgSize = OrganisationSizes.Employees5000to19999;
+                        orgSize = OrganisationSizes.Employees5000To19999;
                         break;
                     case int.MaxValue:
                         orgSize = OrganisationSizes.Employees20000OrMore;
