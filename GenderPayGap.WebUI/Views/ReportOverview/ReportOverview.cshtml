@@ -128,7 +128,8 @@
                             new TaskListItemViewModel
                             {
                                 Title = "Size of your organisation",
-                                Href = "#",
+                                Href = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation",
+                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
                                 Status = Model.OrganisationSizeStatus
                             },
                             new TaskListItemViewModel
