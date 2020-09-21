@@ -137,7 +137,7 @@ namespace GenderPayGap.Core
 
         [Display(Name = "5000 to 19,999")]
         [Range(5000, 19999)]
-        Employees5000to19999 = 5,
+        Employees5000To19999 = 5,
 
         [Display(Name = "20,000 or more")]
         [Range(20000, int.MaxValue)]

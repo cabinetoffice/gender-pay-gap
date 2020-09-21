@@ -37,7 +37,7 @@ namespace GenderPayGap.WebUI.Tests.Services
         public void GetOrgSizeOptions_Marks_given_org_size_indexes_as_checked_or_not_checked()
         {
             var testOptions = new[] {
-                OrganisationSizes.Employees0To249, OrganisationSizes.Employees1000To4999, OrganisationSizes.Employees5000to19999
+                OrganisationSizes.Employees0To249, OrganisationSizes.Employees1000To4999, OrganisationSizes.Employees5000To19999
             };
 
             // Mocks
