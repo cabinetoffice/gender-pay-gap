@@ -1,0 +1,133 @@
+﻿@using GenderPayGap.WebUI.Models.Report
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.ReportResponsiblePersonViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = $"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}";
+
+    ViewBag.Title = $"Report your gender pay gap - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Report your gender pay gap (reporting year {formattedReportingYears})",
+                Href = Url.Action("ReportOverview", "ReportOverview",
+                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Person responsible in your organisation"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
+
+        @(Html.GovUkErrorSummary())
+
+        <h1 class="govuk-heading-xl">
+            Report your gender pay gap
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(formattedReportingYears)
+            </span>
+        </h1>
+
+        <form method="post"
+              action="@Url.Action("ReportResponsiblePersonPost", "ReportResponsiblePerson",
+                          new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+            @(Html.AntiForgeryToken())
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        Person responsible in your organisation
+                    </h2>
+                    <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+                        <div class="govuk-!-margin-bottom-2">
+                            Enter the name and job title of the person with overall responsibility for gender pay gap reporting in your organisation.
+                        </div>
+                        <div>
+                            This could be your CEO, a director or other senior executive.
+                        </div>
+                    </div>
+                </legend>
+                
+                @(Html.GovUkTextInputFor(
+                    m => m.ResponsiblePersonFirstName,
+                    labelOptions: new LabelViewModel {Text = "First name"},
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-2" },
+                    classes: "govuk-input--width-20"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.ResponsiblePersonLastName,
+                    labelOptions: new LabelViewModel {Text = "Last name"},
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-2" },
+                    classes: "govuk-input--width-20"
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.ResponsiblePersonJobTitle,
+                    labelOptions: new LabelViewModel {Text = "Job title"},
+                    classes: "govuk-input--width-20"
+                ))
+
+            </fieldset>
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save",
+                Name = nameof(Model.Action),
+                Value = nameof(ReportPagesAction.Save),
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save and continue",
+                Name = nameof(Model.Action),
+                Value = nameof(ReportPagesAction.SaveAndContinue),
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+
+        </form>
+
+        <p class="govuk-body">
+            <a href="@Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+               class="govuk-link">
+                Back to report overview
+            </a>
+        </p>
+
+    </div>
+</div>
