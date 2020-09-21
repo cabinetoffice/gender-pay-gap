@@ -58,8 +58,11 @@
             @(Html.Hidden(nameof(AdminChangeSectorViewModel.Action),
                 ChangeOrganisationSectorViewModelActions.OfferNewSectorAndReason))
 
-            @Html.GovUkErrorSummary()
-
+            @(Html.GovUkErrorSummary(new[]
+            {
+                nameof(AdminChangeSectorViewModel.NewSector),
+                nameof(AdminChangeSectorViewModel.Reason)
+            }))
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
