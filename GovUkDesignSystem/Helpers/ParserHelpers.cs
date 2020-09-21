@@ -75,14 +75,25 @@ namespace GovUkDesignSystem.Helpers
         public static void AddErrorMessageBasedOnPropertyDisplayName(
             GovUkViewModel model,
             PropertyInfo property,
-            Func<string, string> getErrorMessageBasedOnPropertyDisplayName)
+            Func<string, string> getErrorMessageBasedOnPropertyDisplayName,
+            ErrorMessagePropertyNamePosition position)
         {
             var displayNameForErrorsAttribute = property.GetSingleCustomAttribute<GovUkDisplayNameForErrorsAttribute>();
 
             string errorMessage;
             if (displayNameForErrorsAttribute != null)
             {
-                errorMessage = getErrorMessageBasedOnPropertyDisplayName(displayNameForErrorsAttribute.NameWithinSentence);
+                switch (position)
+                {
+                    case ErrorMessagePropertyNamePosition.StartOfMessage:
+                        errorMessage = getErrorMessageBasedOnPropertyDisplayName(displayNameForErrorsAttribute.NameAtStartOfSentence);
+                        break;
+                    case ErrorMessagePropertyNamePosition.WithinMessage:
+                        errorMessage = getErrorMessageBasedOnPropertyDisplayName(displayNameForErrorsAttribute.NameWithinSentence);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(position), position, null);
+                }
             }
             else
             {
@@ -92,5 +103,11 @@ namespace GovUkDesignSystem.Helpers
             model.AddErrorFor(property, errorMessage);
         }
 
+    }
+
+    public enum ErrorMessagePropertyNamePosition
+    {
+        StartOfMessage,
+        WithinMessage
     }
 }
