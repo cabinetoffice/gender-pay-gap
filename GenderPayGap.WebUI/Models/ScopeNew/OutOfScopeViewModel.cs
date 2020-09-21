@@ -57,12 +57,4 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
         No = 1
     }
 
-    public enum ScopeTypes
-    {
-
-        InScope = 0,
-        
-        OutOfScope = 1
-
-    }
 }
