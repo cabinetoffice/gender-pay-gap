@@ -121,7 +121,8 @@
                             new TaskListItemViewModel
                             {
                                 Title = "Person responsible in your organisation",
-                                Href = "#",
+                                Href = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson",
+                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
                                 Status = Model.PersonResponsibleStatus
                             },
                             new TaskListItemViewModel
