@@ -360,5 +360,29 @@ namespace GovUkDesignSystem
                 autocomplete);
         }
 
+        public static IHtmlContent GovUkTextInputFor<TModel>(
+            this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, decimal?>> propertyLambdaExpression,
+            LabelViewModel labelOptions = null,
+            HintViewModel hintOptions = null,
+            FormGroupViewModel formGroupOptions = null,
+            string classes = null,
+            TextInputAppendixViewModel textInputAppendix = null,
+            string type = "text",
+            string autocomplete = null)
+            where TModel : GovUkViewModel
+        {
+            return TextInputHtmlGenerator.GenerateHtml(
+                htmlHelper,
+                propertyLambdaExpression,
+                labelOptions,
+                hintOptions,
+                formGroupOptions,
+                classes,
+                textInputAppendix,
+                type,
+                autocomplete);
+        }
+
     }
 }
