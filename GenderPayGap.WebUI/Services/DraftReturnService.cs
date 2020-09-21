@@ -16,6 +16,14 @@ namespace GenderPayGap.WebUI.Services
         }
 
 
+        public DraftReturn GetDraftReturn(long organisationId, int reportingYear)
+        {
+            return dataRepository.GetAll<DraftReturn>()
+                .Where(dr => dr.OrganisationId == organisationId)
+                .Where(dr => dr.SnapshotYear == reportingYear)
+                .FirstOrDefault();
+        }
+
         public DraftReturn GetOrCreateDraftReturn(long organisationId, int reportingYear)
         {
             DraftReturn draftReturn = dataRepository.GetAll<DraftReturn>()
