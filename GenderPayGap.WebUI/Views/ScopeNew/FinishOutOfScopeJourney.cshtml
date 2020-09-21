@@ -2,17 +2,19 @@
 @using GovUkDesignSystem
 @using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.WebUI.Classes.Formatters
-@using GenderPayGap.Core
 @model GenderPayGap.WebUI.Models.ScopeNew.OutOfScopeViewModel
 
 @{
-    ViewBag.Title = "Confirm that your organisation is in scope - Gender pay gap service";
+    ViewBag.Title = "Complete - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string reason = Model.WhyOutOfScope == WhyOutOfScope.Under250
+        ? "My organisation had fewer than 250 employees on " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+        : Model.WhyOutOfScopeDetails;
 }
 
 @section BeforeMain {
@@ -44,7 +46,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Confirm your organisation is required to report</h1>
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Complete
+            </h1>
+        </div>
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -75,30 +81,44 @@
                         @reportingYearsString
                     </td>
                 </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        New Scope
+                    </th>
+                    <td class="govuk-table__cell">
+                        OutOfScope
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Reason
+                    </th>
+                    <td class="govuk-table__cell">
+                        @reason
+                    </td>
+                </tr>
             </tbody>
         </table>
         
         <p class="govuk-body">
-            Please confirm your organisation is in scope to report Gender Pay Gap data for the @reportingYearsString reporting year.
+            You have told us that your organisation is not in scope of the gender pay gap reporting regulations.
+            We will contact you if we need more information.
         </p>
         
-        <form method="POST" action="@Url.Action("ConfirmInScopeAnswers", "ScopeNew", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
-            @(Html.AntiForgeryToken())
-
-            @(Html.GovUkButton(
-                new ButtonViewModel
-                {
-                    Text = "Confirm"
-                }
-                ))
-            
-            <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})">
-                    Cancel
-                </a>
-            </p>
-        </form>
+        <p class="govuk-body">
+            Return to
+            <a href="@Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})"
+               class="govuk-link">
+                @Model.Organisation.OrganisationName
+            </a>
+        </p>
+        
+        <p class="govuk-body">
+            Return to
+            <a href="@Url.Action("ManageOrganisations", "Organisation")"
+               class="govuk-link">
+                Your Organisations
+            </a>
+        </p>
     </div>
 </div>
-        
-
