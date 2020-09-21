@@ -33,7 +33,8 @@ namespace GovUkDesignSystem.Parsers
                 if (!double.TryParse(parameterValue, out _))
                 {
                     ParserHelpers.AddErrorMessageBasedOnPropertyDisplayName(model, property,
-                        (name) => $"{name} must be a number");
+                        (name) => $"{name} must be a number",
+                        ErrorMessagePropertyNamePosition.StartOfMessage);
                     return;
                 }
 
@@ -41,7 +42,8 @@ namespace GovUkDesignSystem.Parsers
                 if (!int.TryParse(parameterValue, out parsedIntValue))
                 {
                     ParserHelpers.AddErrorMessageBasedOnPropertyDisplayName(model, property,
-                        (name) => $"{name} must be a whole number");
+                        (name) => $"{name} must be a whole number",
+                        ErrorMessagePropertyNamePosition.StartOfMessage);
                     return;
                 }
 
