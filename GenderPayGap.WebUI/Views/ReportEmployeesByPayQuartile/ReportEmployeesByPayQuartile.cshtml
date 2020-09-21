@@ -1,0 +1,211 @@
+﻿@using GenderPayGap.WebUI.Models.Report
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.ReportEmployeesByPayQuartileViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = $"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}";
+
+    ViewBag.Title = $"Report your gender pay gap - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Report your gender pay gap (reporting year {formattedReportingYears})",
+                Href = Url.Action("ReportOverview", "ReportOverview",
+                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Bonus pay"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
+
+        @(Html.GovUkErrorSummary())
+
+        <h1 class="govuk-heading-xl">
+            Report your gender pay gap
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+            <br />
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(formattedReportingYears)
+            </span>
+        </h1>
+
+        <form method="post"
+              action="@Url.Action("EmployeesByPayQuartilePost", "ReportEmployeesByPayQuartile",
+                          new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+            @(Html.AntiForgeryToken())
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 class="govuk-fieldset__heading">
+                        Employees by pay quartile
+                    </h2>
+                </legend>
+
+                <h3 class="govuk-heading-s">
+                    Upper quartile
+                </h3>
+
+                @(Html.GovUkTextInputFor(
+                    m => m.MaleUpperPayBand,
+                    labelOptions: new LabelViewModel {Text = "Male" },
+                    formGroupOptions: new FormGroupViewModel{ Classes = "govuk-!-margin-bottom-2" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.FemaleUpperPayBand,
+                    labelOptions: new LabelViewModel {Text = "Female" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+
+                <h3 class="govuk-heading-s">
+                    Upper-middle quartile
+                </h3>
+
+                @(Html.GovUkTextInputFor(
+                    m => m.MaleUpperMiddlePayBand,
+                    labelOptions: new LabelViewModel {Text = "Male" },
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-2" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.FemaleUpperMiddlePayBand,
+                    labelOptions: new LabelViewModel {Text = "Female" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+
+                <h3 class="govuk-heading-s">
+                    Lower-middle quartile
+                </h3>
+
+                @(Html.GovUkTextInputFor(
+                    m => m.MaleLowerMiddlePayBand,
+                    labelOptions: new LabelViewModel {Text = "Male" },
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-2" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.FemaleLowerMiddlePayBand,
+                    labelOptions: new LabelViewModel {Text = "Female" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+
+                <h3 class="govuk-heading-s">
+                    Lower quartile
+                </h3>
+
+                @(Html.GovUkTextInputFor(
+                    m => m.MaleLowerPayBand,
+                    labelOptions: new LabelViewModel {Text = "Male" },
+                    formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-2" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+                @(Html.GovUkTextInputFor(
+                    m => m.FemaleLowerPayBand,
+                    labelOptions: new LabelViewModel {Text = "Female" },
+                    classes: "govuk-input--width-10",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    { Html = @<text>
+                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                              </text>
+                    }
+                ))
+
+            </fieldset>
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save",
+                Name = nameof(Model.Action),
+                Value = nameof(ReportPagesAction.Save),
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save and continue",
+                Name = nameof(Model.Action),
+                Value = nameof(ReportPagesAction.SaveAndContinue),
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+
+        </form>
+
+        <p class="govuk-body">
+            <a href="@Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+               class="govuk-link">
+                Back to report overview
+            </a>
+        </p>
+
+    </div>
+</div>
