@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs
 
 
             RecurringJob.AddOrUpdate<NotifyUsersAndRetireInactiveAccountsJob>(
-                ScheduledJobIds.SendIntentionToRetireAccountEmailsJobId,
+                ScheduledJobIds.NotifyUsersAndRetireInactiveAccountsJobId,
                 j => j.NotifyUsersAndRetireInactiveAccounts(),
                 "50 5 * * *" /* 5:50 once per day */);
         }
@@ -89,7 +89,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs
         public const string PurgeOrganisationsJobId = "PURGE_ORGANISATIONS_JOB";
         public const string SetPresumedScopesJobId = "SET_PRESUMED_SCOPES_JOB";
         public const string AnonymiseThreeYearOldFeedbackJobId = "ANONYMISE_THREE_YEAR_OLD_FEEDBACK_JOB";
-        public const string SendIntentionToRetireAccountEmailsJobId = "SEND_INTENTION_TO_RETIRE_ACCOUNT_EMAILS_JOB";
+        public const string NotifyUsersAndRetireInactiveAccountsJobId = "NOTIFY_USERS_AND_RETIRE_INACTIVE_ACCOUNT_JOB";
 
     }
 }

@@ -57,9 +57,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (User user in usersToSendReminders)
             {
-                // TODO: Update loginUrl
                 string daysRemaining = InThirtyDayRange(user, threeYearsAgoMinusThirtyDays) ? "30" : "7";
-                emailSendingService.SendAccountRetirementNotificationEmail(user.EmailAddress, daysRemaining);
+                emailSendingService.SendAccountRetirementNotificationEmail(user.EmailAddress, user.Fullname, daysRemaining);
             }
 
         }

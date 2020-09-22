@@ -376,10 +376,12 @@ namespace GenderPayGap.WebUI.Services
             }
         }
 
-        public async void SendAccountRetirementNotificationEmail(string emailAddress, string daysRemaining)
+        public async void SendAccountRetirementNotificationEmail(string emailAddress, string userFullName, string daysRemaining)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
+                {"UserFullName", userFullName},
+                {"EmailAddress", emailAddress}, // We do need to send the email address in the personalisation - because it appears in the body of the email
                 {"DaysRemaining", daysRemaining},
                 {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
