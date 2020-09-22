@@ -155,13 +155,6 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("ManageOrganisation", "Organisation", new { id = encryptedOrganisationId });
         }
 
-        [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out/complete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult FinishOutOfScopeJourney()
-        {
-            return 
-        }
-
         public void RetireOldScopes(Organisation organisation, int reportingYear)
         {
             organisation.OrganisationScopes.Where(o => o.SnapshotDate.Year == reportingYear).ForEach(s => s.Status = ScopeRowStatuses.Retired);
