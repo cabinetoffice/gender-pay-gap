@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
-using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +56,10 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
+            
+            // Check user has permissions to access this page
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
 
             viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScope);
             viewModel.ParseAndValidateParameters(Request, m => m.HaveReadGuidance);
@@ -88,6 +88,10 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult ConfirmOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
+            
+            // Check user has permissions to access this page
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
 
             // Get Organisation
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -105,7 +109,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
             
-            SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, false);
+            SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.OutOfScope);
 
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
 
@@ -120,6 +124,10 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult ConfirmInScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
+            
+            // Check user has permissions to access this page
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
 
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -132,7 +140,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
             
-            SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, true);
+            SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.InScope);
 
             return RedirectToAction("ManageOrganisation", "Organisation", new { id = encryptedOrganisationId });
         }
@@ -161,7 +169,7 @@ namespace GenderPayGap.WebUI.Controllers
                 });
         }
 
-        public void SendScopeChangeEmails(Organisation organisation, DateTime reportingYear, DateTime currentSnapshotDate, bool isInScopeChange )
+        public void SendScopeChangeEmails(Organisation organisation, DateTime reportingYear, DateTime currentSnapshotDate, ScopeStatuses newScope )
         {
             // Send emails if scope changed on current or previous reporting year
             if (reportingYear == currentSnapshotDate || reportingYear == currentSnapshotDate.AddYears(-1))
@@ -174,7 +182,7 @@ namespace GenderPayGap.WebUI.Controllers
                 // Send email of correct type to each email address associated with organisation
                 foreach (string emailAddress in emailAddressesForOrganisation)
                 {
-                    if (isInScopeChange)
+                    if (newScope == ScopeStatuses.InScope)
                     {
                         // Use Notify to send in scope email
                         emailSendingService.SendScopeChangeInEmail(emailAddress, organisation.OrganisationName);
