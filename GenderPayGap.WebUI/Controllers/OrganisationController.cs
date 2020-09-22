@@ -34,7 +34,6 @@ namespace GenderPayGap.WebUI.Controllers
             IHttpCache cache,
             IHttpSession session,
             ISubmissionService submitService,
-            IScopePresentation scopePresentation,
             IScopeBusinessLogic scopeBL,
             IOrganisationBusinessLogic organisationBL,
             IDataRepository dataRepository,
@@ -49,7 +48,6 @@ namespace GenderPayGap.WebUI.Controllers
             webTracker)
         {
             SubmissionService = submitService;
-            ScopePresentation = scopePresentation;
             ScopeBusinessLogic = scopeBL;
             OrganisationBusinessLogic = organisationBL;
             PrivateSectorRepository = privateSectorRepository;
@@ -314,60 +312,9 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("EnterCalculations", "Submit");
         }
 
-        [Authorize]
-        [HttpGet("~/change-organisation-scope/{request}")]
-        public IActionResult ChangeOrganisationScope(string request)
-        {
-            // Ensure user has completed the registration process
-            IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            // Decrypt request
-            if (!request.DecryptToParams(out List<string> requestParams))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt request parameters '{request}'");
-            }
-
-            // Extract the request vars
-            long organisationId = requestParams[0].ToInt64();
-            int reportingStartYear = requestParams[1].ToInt32();
-
-            // Check the user has permission for this organisation
-            UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrg == null)
-            {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
-            }
-
-            // Generate the scope state model
-            ScopingViewModel stateModel = ScopePresentation.CreateScopingViewModel(userOrg.Organisation, CurrentUser);
-
-            // Get the latest scope for the reporting year
-            ScopeViewModel latestScope = stateModel.ThisScope.SnapshotDate.Year == reportingStartYear ? stateModel.ThisScope :
-                stateModel.LastScope.SnapshotDate.Year == reportingStartYear ? stateModel.LastScope : null;
-
-            // Set the return url
-            stateModel.StartUrl = Url.Action("ManageOrganisation", new {id = Encryption.EncryptQuerystring(organisationId.ToString())});
-            stateModel.IsChangeJourney = true;
-            stateModel.AccountingDate = latestScope.SnapshotDate;
-
-            //Set the in/out journey type
-            stateModel.IsOutOfScopeJourney = latestScope.ScopeStatus.IsAny(ScopeStatuses.PresumedInScope, ScopeStatuses.InScope);
-
-            // Stash the model for the scope controller
-            this.StashModel(typeof(ScopeController), stateModel);
-            
-            return RedirectToAction("ChangeOrganisationScope", "Scope");
-        }
-
         #region Dependencies
 
         public ISubmissionService SubmissionService { get; }
-
-        public IScopePresentation ScopePresentation { get; }
 
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; }
 

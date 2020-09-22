@@ -101,58 +101,6 @@ namespace GenderPayGap.Tests
             GenerateTestData();
         }
 
-        #region UpdateOrgScopeStatus()
-
-        [Test]
-        [Description("UpdateOrgScopeStatus: When Organisation is Found Then Should Save New Scope Record With New Status")]
-        public async Task UpdateOrgScopeStatus_When_Organisation_is_Found_Then_Should_Save_New_Scope_Record_With_New_Status()
-        {
-            // Arrange
-            var saveChangesCalled = false;
-            var testExistingOrgScope = new OrganisationScope {
-                OrganisationScopeId = 123,
-                OrganisationId = 3,
-                ContactEmailAddress = "existing@test.com",
-                ContactFirstname = "Existing Firstname",
-                ContactLastname = "Existing Lastname",
-                ReadGuidance = true,
-                Reason = "Under250",
-                ScopeStatus = ScopeStatuses.OutOfScope,
-                ScopeStatusDate = VirtualDateTime.Now.AddDays(-20),
-                RegisterStatus = RegisterStatuses.RegisterComplete,
-                RegisterStatusDate = VirtualDateTime.Now.AddDays(-20)
-            };
-
-            mockDataRepo.SetupGetAll(testOrgData, testExistingOrgScope);
-            //mockDataRepo.SetupGetAll(testOrgData);
-            //mockDataRepo.SetupGetAll(testExistingOrgScope);
-
-            mockDataRepo.Setup(r => r.SaveChangesAsync()).Callback(() => saveChangesCalled = true).Returns(Task.CompletedTask);
-
-            // Act
-            OrganisationScope newOrgScope = await testScopeBL.UpdateScopeStatusAsync(123, ScopeStatuses.InScope);
-
-            // Assert
-            Expect(newOrgScope != null);
-            Organisation expectedOrg = testOrgData.FirstOrDefault(o => o.OrganisationId == testExistingOrgScope.OrganisationId);
-
-            Expect(expectedOrg != null);
-            Expect(saveChangesCalled, "Expected SaveChanges() to be called");
-
-            Assert.AreEqual(newOrgScope.OrganisationId, testExistingOrgScope.OrganisationId, "Expected OrganisationId");
-            Assert.AreEqual(newOrgScope.ContactEmailAddress, testExistingOrgScope.ContactEmailAddress, "Expected ContactEmailAddress");
-            Assert.AreEqual(newOrgScope.ContactFirstname, testExistingOrgScope.ContactFirstname, "Expected ContactFirstname");
-            Assert.AreEqual(newOrgScope.ContactLastname, testExistingOrgScope.ContactLastname, "Expected ContactLastname");
-            Assert.AreEqual(newOrgScope.ReadGuidance, testExistingOrgScope.ReadGuidance, "Expected ReadGuidance");
-            Assert.AreEqual(newOrgScope.Reason, testExistingOrgScope.Reason, "Expected Reason");
-            Assert.AreEqual(newOrgScope.ScopeStatus, ScopeStatuses.InScope, "Expected ScopeStatus");
-            Assert.Greater(newOrgScope.ScopeStatusDate, testExistingOrgScope.ScopeStatusDate, "Expected ScopeStatusDate");
-            Assert.AreEqual(newOrgScope.RegisterStatus, testExistingOrgScope.RegisterStatus, "Expected RegisterStatus");
-            Assert.AreEqual(newOrgScope.RegisterStatusDate, testExistingOrgScope.RegisterStatusDate, "Expected RegisterStatusDate");
-        }
-
-        #endregion
-
         #region SaveScope()
 
         [Test]
@@ -179,96 +127,6 @@ namespace GenderPayGap.Tests
             Expect(
                 testOrg.OrganisationScopes.Count(os => os.Status == ScopeRowStatuses.Active && os.SnapshotDate.Year == 2017) == 1,
                 "Expected Count(OrganisationScopes == submitted) to be 1");
-        }
-
-        #endregion
-
-        #region GetOrgScopeById()
-
-        [Test]
-        [Description("GetOrgScopeById: When ScopeId doesn't Match Then Return Null")]
-        public async Task GetOrgScopeById_When_ScopeId_doesnt_Match_Then_Return_Null()
-        {
-            // Arrange
-            mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetScopeByIdAsync(123);
-
-            // Assert
-            Assert.That(result == null, "Expected to return null when using a non existing scopeId");
-        }
-
-        [Test]
-        [Description("GetOrgScopeById: When ScopeId Exists Then Return Scope")]
-        public async Task GetOrgScopeById_When_ScopeId_Exists_Then_Return_ScopeAsync()
-        {
-            // Arrange
-            mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetScopeByIdAsync(35);
-
-            // Assert
-            Assert.That(result != null, "The result was null when using an existing scopeId");
-            Assert.That(result.OrganisationScopeId == 35, "Expected OrganisationScopeId to match");
-            Assert.That(result.OrganisationId == 3, "Expected OrganisationId to match");
-            Assert.That(result.ContactEmailAddress == "user@test.com", "Expected ContactEmailAddress to match");
-        }
-
-        #endregion
-
-        #region GetOrgScopeByEmployerReference()
-
-        [Test]
-        [Description("GetOrgScopeByEmployerReference: When EmployerReference doesn't Match Then Return Null")]
-        public async Task GetOrgScopeByEmployerReference_When_EmployerReference_doesnt_Match_Then_Return_Null()
-        {
-            // Arrange
-            var testEmployerRef = "AAAABBBB";
-            var testSnapshotYear = 2017;
-            mockDataRepo.Setup(r => r.GetAll<Organisation>()).Returns(new List<Organisation>().AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetScopeByEmployerReferenceAsync(testEmployerRef, testSnapshotYear);
-
-            // Assert
-            Assert.That(result == null, "Expected to return null when using a non existing EmployerReference");
-        }
-
-        [Test]
-        [Description("GetOrgScopeByEmployerReference: When EmployerReference Exists But Has No Scope Then Return Null")]
-        public async Task GetOrgScopeByEmployerReference_When_EmployerReference_Exists_But_Has_No_Scope_Then_Return_Null()
-        {
-            // Arrange
-            var testEmployerRef = "RWT2TY62";
-            var testSnapshotYear = 2017;
-            mockDataRepo.Setup(r => r.GetAll<Organisation>()).Returns(testOrgData.AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetScopeByEmployerReferenceAsync("RWT2TY62", testSnapshotYear);
-
-            // Assert
-            Assert.That(result == null, "Expected to return null when using an existing EmployerReference that has no scope");
-        }
-
-        [Test]
-        [Description("GetOrgScopeByEmployerReference: When EmployerReference Matches Then Return OrganisationScope Model")]
-        public async Task GetOrgScopeByEmployerReference_When_EmployerReference_Matches_Then_Return_OrganisationScope_ModelAsync()
-        {
-            // Arrange
-            var testEmployerRef = "SNGNB4BH";
-            var testSnapshotYear = 2017;
-            mockDataRepo.Setup(r => r.GetAll<Organisation>()).Returns(testOrgData.AsQueryable().BuildMock().Object);
-            mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetScopeByEmployerReferenceAsync(testEmployerRef, testSnapshotYear);
-
-            // Assert
-            Assert.That(result != null, "Expected to return a valid OrganisationScope Model");
-            Assert.That(result.OrganisationId == 4, "Expected the model to have the same OrganisationId");
-            Assert.That(result.OrganisationScopeId == 65, "Expected the model to have the same OrganisationScopeId");
         }
 
         #endregion
@@ -305,38 +163,6 @@ namespace GenderPayGap.Tests
             Assert.That(result != null, "Expected to return a valid OrganisationScope Model");
             Assert.That(result.OrganisationId == 4, "Expected the model to have the same OrganisationId");
             Assert.That(result.OrganisationScopeId == 65, "Expected the model to have the same OrganisationScopeId");
-        }
-
-        #endregion
-
-        #region GetPendingScopeRegistration()
-
-        [Test]
-        [Description("GetPendingScopeRegistration: When EmailAddress doesn't Match Then Return Null")]
-        public async Task GetPendingScopeRegistration_When_EmailAddress_doesnt_Match_Then_Return_Null()
-        {
-            // Arrange
-            mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetPendingScopeRegistrationAsync("123@123.com");
-            // Assert
-            Assert.That(result == null, "Expected to return null when using a non existing EmailAddress");
-        }
-
-        [Test]
-        [Description("GetPendingScopeRegistration: When EmailAddress Matches Then Return OrganisationScope Model")]
-        public async Task GetPendingScopeRegistration_When_EmailAddress_Matches_Then_Return_OrganisationScope_ModelAsync()
-        {
-            // Arrange
-            mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-
-            // Act
-            OrganisationScope result = await testScopeBL.GetPendingScopeRegistrationAsync("user@test.com");
-
-            // Assert
-            Assert.That(result != null, "Expected to return a valid OrganisationScope Model");
-            Assert.That(result.OrganisationScopeId == 35, "Expected the model to have the same OrganisationScopeId");
         }
 
         #endregion

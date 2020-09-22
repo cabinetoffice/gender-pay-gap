@@ -14,11 +14,6 @@ namespace GenderPayGap.WebUI.Tests.Classes.BaseClasses
     public class BaseControllerTests
     {
         [TestCase(typeof(RegisterController), "PINSent", null, typeof(AuthorizeAttribute))]
-        [TestCase(
-            typeof(ScopeController),
-            "EnterOutOfScopeAnswers",
-            typeof(EnterAnswersViewModel),
-            typeof(ValidateAntiForgeryTokenAttribute))]
         public void BaseController_Verify_Some_Method_Is_Decorated_With_Some_Attribute(Type controllerType,
             string methodName,
             Type modelArgumentForTheMethod,

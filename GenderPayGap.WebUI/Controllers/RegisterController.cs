@@ -34,7 +34,6 @@ namespace GenderPayGap.WebUI.Controllers
         public RegisterController(
             IHttpCache cache,
             IHttpSession session,
-            IScopePresentation scopePresentation,
             IScopeBusinessLogic scopeBL,
             IOrganisationBusinessLogic orgBL,
             IUserRepository userRepository,
@@ -51,7 +50,6 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository,
             webTracker)
         {
-            ScopePresentation = scopePresentation;
             ScopeBusinessLogic = scopeBL;
             OrganisationBusinessLogic = orgBL;
             PrivateSectorRepository = privateSectorRepository;
@@ -66,8 +64,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         #region Dependencies
 
-        // TODO move these in to RegisterPresentation service
-        public IScopePresentation ScopePresentation { get; }
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; }
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
         public IUserRepository UserRepository { get; }

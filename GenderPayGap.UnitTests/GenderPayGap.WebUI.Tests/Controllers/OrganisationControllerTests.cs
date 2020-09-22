@@ -110,60 +110,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        [Description("ChangeOrganisationScope GET: When request IsNullOrWhitespace Then Return BadRequest")]
-        public void ChangeOrganisationScope_GET_When_request_IsNullOrWhitespace_Then_Return_BadRequest()
-        {
-            // Arrange
-            var mockRouteData = new RouteData();
-            mockRouteData.Values.Add("Action", "ChangeOrganisationScope");
-            mockRouteData.Values.Add("Controller", "Organisation");
-
-            var controller = UiTestHelper.GetController<OrganisationController>(
-                MockUsers[0].UserId,
-                mockRouteData,
-                MockUsers,
-                MockUserOrganisations);
-            var testRequest = "";
-
-            // Act
-            IActionResult actionResult = controller.ChangeOrganisationScope(testRequest);
-
-            // Assert
-            var httpStatusResult = actionResult as HttpStatusViewResult;
-            Assert.NotNull(httpStatusResult, "httpStatusResult should not be null");
-            Assert.AreEqual(httpStatusResult.StatusCode, (int) HttpStatusCode.BadRequest, "Expected the StatusCode to be a 'BadRequest'");
-        }
-
-        [Test]
-        [Description("ChangeOrganisationScope GET: When User Not Assoc to Org Then Return Forbidden")]
-        public void ChangeOrganisationScope_GET_When_User_Not_Assoc_to_Org_Then_Return_Forbidden()
-        {
-            // Arrange
-            var mockRouteData = new RouteData();
-            mockRouteData.Values.Add("Action", "ChangeOrganisationScope");
-            mockRouteData.Values.Add("Controller", "Organisation");
-
-            var testUserId = 4;
-            var testOrgId = 123;
-
-            var controller = UiTestHelper.GetController<OrganisationController>(
-                testUserId,
-                mockRouteData,
-                MockUsers,
-                MockUserOrganisations);
-
-            string testRequest = Encryption.EncryptAsParams(testOrgId.ToString(), "2017");
-
-            // Act
-            IActionResult actionResult = controller.ChangeOrganisationScope(testRequest);
-
-            // Assert
-            var httpStatusResult = actionResult as HttpStatusViewResult;
-            Assert.NotNull(httpStatusResult, "httpStatusResult should not be null");
-            Assert.AreEqual(httpStatusResult.StatusCode, (int) HttpStatusCode.Forbidden, "Expected the StatusCode to be a 'Forbidden'");
-        }
-
-        [Test]
         [Description("DeclareScope GET: When Id IsNullOrWhitespace Then Return BadRequest")]
         public async Task DeclareScope_GET_When_Id_IsNullOrWhitespace_Then_Return_BadRequest()
         {
