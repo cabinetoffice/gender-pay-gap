@@ -103,17 +103,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
             
-            // Send emails if scope changed on current reporting year
-            if (viewModel.ReportingYear == currentSnapshotDate)
-            {
-                IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
-                    .Where(uo => uo.PINConfirmedDate.HasValue)
-                    .Select(uo => uo.User.EmailAddress);
-                foreach (string emailAddress in emailAddressesForOrganisation)
-                {
-                    emailSendingService.SendScopeChangeOutEmail(emailAddress, organisation.OrganisationName);
-                }
-            }
+            SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, false);
 
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
 
@@ -140,17 +130,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChangesAsync().Wait();
             
-            // Send emails if scope changed on current reporting year
-            if (viewModel.ReportingYear == currentSnapshotDate)
-            {
-                IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
-                    .Where(uo => uo.PINConfirmedDate.HasValue)
-                    .Select(uo => uo.User.EmailAddress);
-                foreach (string emailAddress in emailAddressesForOrganisation)
-                {
-                    emailSendingService.SendScopeChangeOutEmail(emailAddress, organisation.OrganisationName);
-                }
-            }
+            SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, true);
 
             return RedirectToAction("ManageOrganisation", "Organisation", new { id = encryptedOrganisationId });
         }
@@ -177,6 +157,34 @@ namespace GenderPayGap.WebUI.Controllers
                     Reason = reasonForChange,
                     ReadGuidance = haveReadGuidance
                 });
+        }
+
+        public void SendScopeChangeEmails(Organisation organisation, DateTime reportingYear, DateTime currentSnapshotDate, bool isInScopeChange )
+        {
+            // Send emails if scope changed on current or previous reporting year
+            if (reportingYear == currentSnapshotDate || reportingYear == currentSnapshotDate.AddYears(-1))
+            {
+                // Find all email addresses associated with the organisation - only the active ones (who have confirmed their PIN)
+                IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
+                    .Where(uo => uo.PINConfirmedDate.HasValue)
+                    .Select(uo => uo.User.EmailAddress);
+                
+                // Send email of correct type to each email address associated with organisation
+                foreach (string emailAddress in emailAddressesForOrganisation)
+                {
+                    if (isInScopeChange)
+                    {
+                        // Use Notify to send in scope email
+                        emailSendingService.SendScopeChangeInEmail(emailAddress, organisation.OrganisationName);
+                    }
+                    else
+                    {
+                        // Use Notify to send out of scope email
+                        emailSendingService.SendScopeChangeOutEmail(emailAddress, organisation.OrganisationName);
+                    }
+                    
+                }
+            }
         }
 
         public long DecryptOrganisationId(string encryptedOrganisationId)
