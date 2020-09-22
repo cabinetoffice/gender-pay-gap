@@ -359,13 +359,8 @@ namespace GenderPayGap.WebUI.Controllers
 
             // Stash the model for the scope controller
             this.StashModel(typeof(ScopeController), stateModel);
-
-            if (stateModel.IsOutOfScopeJourney)
-            {
-                return RedirectToAction("EnterOutOfScopeAnswers", "Scope");
-            }
-
-            return RedirectToAction("ConfirmInScope", "Scope");
+            
+            return RedirectToAction("ChangeOrganisationScope", "Scope");
         }
 
         #region Dependencies
