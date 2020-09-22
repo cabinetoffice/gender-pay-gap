@@ -14,7 +14,6 @@ using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Models.Organisation;
-using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;

@@ -2,9 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using GenderPayGap.WebUI.Controllers;
-using GenderPayGap.WebUI.Models.Scope;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Classes.BaseClasses
