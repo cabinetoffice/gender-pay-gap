@@ -56,6 +56,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
         
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out")]
+        [ValidateAntiForgeryToken]
         public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
@@ -83,6 +84,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out/confirm")]
+        [ValidateAntiForgeryToken]
         public IActionResult ConfirmOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
