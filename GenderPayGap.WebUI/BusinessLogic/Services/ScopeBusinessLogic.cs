@@ -17,19 +17,11 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
     {
 
         // scope repo
-        Task<OrganisationScope> GetScopeByIdAsync(long organisationScopeId);
-        OrganisationScope GetLatestScopeBySnapshotYear(Organisation organisation, int snapshotYear = 0);
         Task<OrganisationScope> GetLatestScopeBySnapshotYearAsync(long organisationId, int snapshotYear = 0);
-        Task<OrganisationScope> GetPendingScopeRegistrationAsync(string emailAddress);
         Task SaveScopeAsync(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes);
-        Task SaveScopesAsync(Organisation org, IEnumerable<OrganisationScope> newScopes, bool saveToDatabase = true);
-
-        // nso repo
-        Task<OrganisationScope> GetScopeByEmployerReferenceAsync(string employerReference, int snapshotYear = 0);
 
         // business logic
         Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear = 0);
-        Task<OrganisationScope> UpdateScopeStatusAsync(long existingOrgScopeId, ScopeStatuses newStatus);
 
         Task<HashSet<Organisation>> SetPresumedScopesAsync();
 
@@ -80,68 +72,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             }
 
             return latestScope.ScopeStatus;
-        }
-
-        /// <summary>
-        ///     Returns the latest scope for an organisation
-        /// </summary>
-        /// <param name="employerReference"></param>
-        public virtual async Task<OrganisationScope> GetScopeByEmployerReferenceAsync(string employerReference, int snapshotYear = 0)
-        {
-            Organisation org = await GetOrgByEmployerReferenceAsync(employerReference);
-            if (org == null)
-            {
-                return null;
-            }
-
-            return GetLatestScopeBySnapshotYear(org, snapshotYear);
-        }
-
-        /// <summary>
-        ///     Creates a new scope record using an existing scope and applies a new status
-        /// </summary>
-        /// <param name="existingOrgScopeId"></param>
-        /// <param name="newStatus"></param>
-        public virtual async Task<OrganisationScope> UpdateScopeStatusAsync(long existingOrgScopeId, ScopeStatuses newStatus)
-        {
-            OrganisationScope oldOrgScope = await DataRepository.GetAll<OrganisationScope>()
-                .FirstOrDefaultAsync(os => os.OrganisationScopeId == existingOrgScopeId);
-            // when OrganisationScope isn't found then throw ArgumentOutOfRangeException
-            if (oldOrgScope == null)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(existingOrgScopeId),
-                    $"Cannot find organisation with OrganisationScopeId: {existingOrgScopeId}");
-            }
-
-            Organisation org = await DataRepository.GetAll<Organisation>()
-                .FirstOrDefaultAsync(o => o.OrganisationId == oldOrgScope.OrganisationId);
-            // when Organisation isn't found then throw ArgumentOutOfRangeException
-            if (org == null)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(oldOrgScope.OrganisationId),
-                    $"Cannot find organisation with OrganisationId: {oldOrgScope.OrganisationId}");
-            }
-
-            // When Organisation is Found Then Save New Scope Record With New Status
-            var newScope = new OrganisationScope {
-                OrganisationId = oldOrgScope.OrganisationId,
-                ContactEmailAddress = oldOrgScope.ContactEmailAddress,
-                ContactFirstname = oldOrgScope.ContactFirstname,
-                ContactLastname = oldOrgScope.ContactLastname,
-                ReadGuidance = oldOrgScope.ReadGuidance,
-                Reason = oldOrgScope.Reason,
-                ScopeStatus = newStatus,
-                ScopeStatusDate = VirtualDateTime.Now,
-                RegisterStatus = oldOrgScope.RegisterStatus,
-                RegisterStatusDate = oldOrgScope.RegisterStatusDate,
-                // carry the snapshot date over
-                SnapshotDate = oldOrgScope.SnapshotDate
-            };
-
-            await SaveScopeAsync(org, true, newScope);
-            return newScope;
         }
 
         public virtual async Task SaveScopeAsync(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes)
@@ -387,20 +317,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             return newScope;
         }
 
-        public async Task<Organisation> GetOrgByEmployerReferenceAsync(string employerReference)
-        {
-            Organisation org = await DataRepository.GetAll<Organisation>()
-                .FirstOrDefaultAsync(o => o.EmployerReference == employerReference);
-            return org;
-        }
-
         #region Repo
-
-        public virtual async Task<OrganisationScope> GetScopeByIdAsync(long organisationScopeId)
-        {
-            return await DataRepository.GetAll<OrganisationScope>()
-                .FirstOrDefaultAsync(o => o.OrganisationScopeId == organisationScopeId);
-        }
 
         /// <summary>
         ///     Gets the latest scope for the specified organisation id and snapshot year
@@ -434,13 +351,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 .SingleOrDefault(s => s.SnapshotDate.Year == snapshotYear && s.Status == ScopeRowStatuses.Active);
 
             return orgScope;
-        }
-
-        public virtual async Task<OrganisationScope> GetPendingScopeRegistrationAsync(string emailAddress)
-        {
-            return await DataRepository.GetAll<OrganisationScope>()
-                .OrderByDescending(s => s.RegisterStatusDate)
-                .FirstOrDefaultAsync(o => o.RegisterStatus == RegisterStatuses.RegisterPending && o.ContactEmailAddress == emailAddress);
         }
 
         #endregion
