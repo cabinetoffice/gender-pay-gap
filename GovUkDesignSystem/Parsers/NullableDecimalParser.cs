@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using GovUkDesignSystem.Attributes.ValidationAttributes;
 using GovUkDesignSystem.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -41,6 +44,19 @@ namespace GovUkDesignSystem.Parsers
                         (name) => $"{name} must be a number",
                         ErrorMessagePropertyNamePosition.StartOfMessage);
                     return;
+                }
+
+                List<GovUkValidationAttribute> customAttributes = property
+                    .GetCustomAttributes(typeof(GovUkValidationAttribute))
+                    .Cast<GovUkValidationAttribute>()
+                    .ToList();
+                foreach (var attribute in customAttributes)
+                {
+                    var result = attribute.CheckForValidationErrors(model, property, parsedDecimalValue);
+                    if (result == false)
+                    {
+                        return;
+                    }
                 }
 
                 property.SetValue(model, parsedDecimalValue);
