@@ -20,13 +20,13 @@ namespace GenderPayGap.WebUI.Controllers
     
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("organisation")]
-    public class ScopeNewController : Controller
+    public class ScopeController : Controller
     {
 
         private readonly EmailSendingService emailSendingService;
         private readonly IDataRepository dataRepository;
         
-        public ScopeNewController(EmailSendingService emailSendingService, IDataRepository dataRepository)
+        public ScopeController(EmailSendingService emailSendingService, IDataRepository dataRepository)
         {
             this.emailSendingService = emailSendingService;
             this.dataRepository = dataRepository;

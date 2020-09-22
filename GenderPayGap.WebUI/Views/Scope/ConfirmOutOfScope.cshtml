@@ -50,7 +50,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ConfirmOutOfScopeAnswers", "ScopeNew", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
+        <form method="POST" action="@Url.Action("ConfirmOutOfScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
             @(Html.AntiForgeryToken())
             <h1 class="govuk-heading-xl">Review your information</h1>
             
