@@ -1,0 +1,67 @@
+﻿@using GenderPayGap.WebUI.Views.Components.TaskList
+@model GenderPayGap.WebUI.Views.Components.TaskList.TaskListViewModel
+
+<ol class="app-task-list">
+
+    @for (var sectionIndex = 0; sectionIndex < Model.Sections.Count; sectionIndex++)
+    {
+        TaskListSectionViewModel section = Model.Sections[sectionIndex];
+
+        <li>
+            <h2 class="app-task-list__section">
+                <span class="app-task-list__section-number">@(sectionIndex + 1).</span>
+                @(section.SectionName)
+            </h2>
+            <ul class="app-task-list__items">
+
+                @for (var itemIndex = 0; itemIndex < section.Items.Count; itemIndex++)
+                {
+                    TaskListItemViewModel item = section.Items[itemIndex];
+                    <li class="app-task-list__item">
+                        <span class="app-task-list__task-name">
+                            @if (item.Href == null || item.Status == TaskListStatus.CannotStartYet)
+                            {
+                                <span aria-describedby="@($"status-{sectionIndex}-{itemIndex}")">
+                                    @item.Title
+                                </span>
+                            }
+                            else
+                            {
+                                <a href="@(item.Href)"
+                                   class="govuk-link"
+                                   aria-describedby="@($"status-{sectionIndex}-{itemIndex}")">
+                                    @item.Title
+                                </a>
+                            }
+                        </span>
+                        <strong class="govuk-tag app-task-list__tag
+                                @(item.Status == TaskListStatus.InProgress ? "govuk-tag--blue" : null)
+                                @(item.Status == TaskListStatus.NotStarted ||
+                                  item.Status == TaskListStatus.CannotStartYet ? "govuk-tag--grey" : null)"
+                                id="@($"status-{sectionIndex}-{itemIndex}")">
+                            @switch (item.Status)
+                            {
+                                case TaskListStatus.Completed:
+                                    @:Completed
+                                    break;
+                                case TaskListStatus.InProgress:
+                                    @:In progress
+                                    break;
+                                case TaskListStatus.NotStarted:
+                                    @:Not started
+                                    break;
+                                case TaskListStatus.CannotStartYet:
+                                    @:Cannot start yet
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                        </strong>
+                    </li>
+                }
+
+            </ul>
+        </li>
+    }
+
+</ol>
