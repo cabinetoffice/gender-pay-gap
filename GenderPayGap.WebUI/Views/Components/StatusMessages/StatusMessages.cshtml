@@ -1,0 +1,15 @@
+﻿@using GenderPayGap.WebUI.Helpers
+
+@{
+    List<string> statusMessages = StatusMessageHelper.GetStatusMessages(Context.Request, Context.Response);
+}
+
+@if (statusMessages.Count > 0)
+{
+    <section role="status" class="status-message">
+        @foreach (string statusMessage in statusMessages)
+        {
+            @(statusMessage)<br/>
+        }
+    </section>
+}
