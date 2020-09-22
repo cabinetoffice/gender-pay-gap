@@ -30,7 +30,7 @@
         @if (Model.CanChangeScope)
         {
             <div>
-                <a href="@(Url.Action("ChangeOrganisationScope", "ScopeNew", new { encryptedOrganisationId = encryptedOrganisationIdQueryString, reportingYear = reportDateFormatter.StartYear }))">
+                <a href="@(Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId = encryptedOrganisationIdQueryString, reportingYear = reportDateFormatter.StartYear }))">
                     Change<span class="visually-hidden"> scope for year @year</span>
                 </a>
             </div>

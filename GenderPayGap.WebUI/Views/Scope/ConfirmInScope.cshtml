@@ -82,7 +82,7 @@
             Please confirm your organisation is in scope to report Gender Pay Gap data for the @reportingYearsString reporting year.
         </p>
         
-        <form method="POST" action="@Url.Action("ConfirmInScopeAnswers", "ScopeNew", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
+        <form method="POST" action="@Url.Action("ConfirmInScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
             @(Html.AntiForgeryToken())
 
             @(Html.GovUkButton(
