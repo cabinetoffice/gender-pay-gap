@@ -129,23 +129,17 @@ namespace GenderPayGap.WebUI.Services
         public bool DraftReturnExistsAndIsComplete(long organisationId, int reportingYear)
         {
             DraftReturn draftReturn = GetDraftReturn(organisationId, reportingYear);
+            if (draftReturn == null)
+            {
+                return false;
+            }
 
-            return HourlyPaySectionIsComplete(draftReturn)
-                   && BonusPaySectionIsComplete(draftReturn)
-                   && EmployeesByPayQuartileSectionIsComplete(draftReturn)
-                   && ResponsiblePersonSectionIsComplete(draftReturn)
-                   && OrganisationSizeSectionIsComplete(draftReturn)
-                   && WebsiteLinkSectionIsComplete(draftReturn);
-        }
+            // Hourly pay
+            bool hourlyPaySectionIsComplete =
+                draftReturn.DiffMeanHourlyPayPercent != null
+                && draftReturn.DiffMedianHourlyPercent != null;
 
-        private static bool HourlyPaySectionIsComplete(DraftReturn draftReturn)
-        {
-            return draftReturn.DiffMeanHourlyPayPercent != null
-                   && draftReturn.DiffMedianHourlyPercent != null;
-        }
-
-        private static bool BonusPaySectionIsComplete(DraftReturn draftReturn)
-        {
+            // Bonus pay
             bool noBonusesPaid =
                 draftReturn.MaleMedianBonusPayPercent == 0
                 && draftReturn.FemaleMedianBonusPayPercent == 0;
@@ -156,40 +150,40 @@ namespace GenderPayGap.WebUI.Services
                 && draftReturn.DiffMeanBonusPercent != null
                 && draftReturn.DiffMedianBonusPercent != null;
 
-            return noBonusesPaid || allValuesComplete;
-        }
+            bool bonusPaySectionIsComplete = noBonusesPaid || allValuesComplete;
 
-        private static bool EmployeesByPayQuartileSectionIsComplete(DraftReturn draftReturn)
-        {
-            return draftReturn.MaleLowerPayBand != null
-                   && draftReturn.FemaleLowerPayBand != null
-                   && draftReturn.MaleMiddlePayBand != null
-                   && draftReturn.FemaleMiddlePayBand != null
-                   && draftReturn.MaleUpperPayBand != null
-                   && draftReturn.FemaleUpperPayBand != null
-                   && draftReturn.MaleUpperQuartilePayBand != null
-                   && draftReturn.FemaleUpperQuartilePayBand != null;
-        }
+            // Employees by pay quartile
+            bool employeesByPayQuartileSectionIsComplete =
+                draftReturn.MaleLowerPayBand != null
+                && draftReturn.FemaleLowerPayBand != null
+                && draftReturn.MaleMiddlePayBand != null
+                && draftReturn.FemaleMiddlePayBand != null
+                && draftReturn.MaleUpperPayBand != null
+                && draftReturn.FemaleUpperPayBand != null
+                && draftReturn.MaleUpperQuartilePayBand != null
+                && draftReturn.FemaleUpperQuartilePayBand != null;
 
-        private static bool ResponsiblePersonSectionIsComplete(DraftReturn draftReturn)
-        {
-            return !string.IsNullOrWhiteSpace(draftReturn.FirstName)
-                   && !string.IsNullOrWhiteSpace(draftReturn.LastName)
-                   && !string.IsNullOrWhiteSpace(draftReturn.JobTitle);
-        }
+            // Responsible person
+            bool responsiblePersonSectionIsComplete =
+                !string.IsNullOrWhiteSpace(draftReturn.FirstName)
+                && !string.IsNullOrWhiteSpace(draftReturn.LastName)
+                && !string.IsNullOrWhiteSpace(draftReturn.JobTitle);
 
-        private static bool OrganisationSizeSectionIsComplete(DraftReturn draftReturn)
-        {
-            return draftReturn.OrganisationSize != null;
-        }
+            // Organisation size
+            bool organisationSizeSectionIsComplete = draftReturn.OrganisationSize != null;
 
-        private static bool WebsiteLinkSectionIsComplete(DraftReturn draftReturn)
-        {
+            // Website link
             // The website link is optional, so we should allow it to be missing
             bool linkIsMissing = string.IsNullOrEmpty(draftReturn.CompanyLinkToGPGInfo);
             bool linkIsValid = UriSanitiser.IsValidHttpOrHttpsLink(draftReturn.CompanyLinkToGPGInfo);
+            bool websiteLinkSectionIsComplete = linkIsMissing || linkIsValid;
 
-            return linkIsMissing || linkIsValid;
+            return hourlyPaySectionIsComplete
+                   && bonusPaySectionIsComplete
+                   && employeesByPayQuartileSectionIsComplete
+                   && responsiblePersonSectionIsComplete
+                   && organisationSizeSectionIsComplete
+                   && websiteLinkSectionIsComplete;
         }
 
         public bool DraftReturnWouldBeLateIfSubmittedNow(DraftReturn draftReturn)
