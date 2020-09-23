@@ -1,4 +1,4 @@
-@using GenderPayGap.WebUI.Views.Components.TaskList
+﻿@using GenderPayGap.WebUI.Views.Components.TaskList
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
@@ -149,7 +149,10 @@
                             new TaskListItemViewModel
                             {
                                 Title = "Review and submit your gender pay gap report",
-                                Href = null,
+                                Href = Model.ReviewAndSubmitStatus == TaskListStatus.NotStarted // Only show a link if the status is NotStarted
+                                    ? Url.Action("ReportReview", "ReportReviewAndSubmit",
+                                        new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                                    : null,
                                 Status = Model.ReviewAndSubmitStatus
                             },
                         }
