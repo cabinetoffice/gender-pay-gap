@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -159,7 +159,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                     new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
             }
 
-            viewModel.ParseAndValidateParameters(Request, m => m.ContactFromEhrc);
+            viewModel.ParseAndValidateParameters(Request, m => m.ReceivedLetterFromEhrc);
             viewModel.ParseAndValidateParameters(Request, m => m.Reason);
 
             if (viewModel.HasAnyErrors())

@@ -49,7 +49,7 @@
 
         @(Html.GovUkErrorSummary(new []
         {
-            nameof(Model.ContactFromEhrc),
+            nameof(Model.ReceivedLetterFromEhrc),
             nameof(Model.Reason)
         }))
 
@@ -88,7 +88,7 @@
             @(Html.AntiForgeryToken())
             
             @(Html.GovUkRadiosFor(
-                m => m.ContactFromEhrc,
+                m => m.ReceivedLetterFromEhrc,
                 fieldsetOptions: new FieldsetViewModel
                 {
                     Legend = new LegendViewModel
