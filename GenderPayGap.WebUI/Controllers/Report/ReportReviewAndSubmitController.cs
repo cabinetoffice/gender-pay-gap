@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -19,13 +19,16 @@ namespace GenderPayGap.WebUI.Controllers.Report
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly ReturnService returnService;
         private readonly DraftReturnService draftReturnService;
 
         public ReportReviewAndSubmitController(
             IDataRepository dataRepository,
+            ReturnService returnService,
             DraftReturnService draftReturnService)
         {
             this.dataRepository = dataRepository;
+            this.returnService = returnService;
             this.draftReturnService = draftReturnService;
         }
 
@@ -87,7 +90,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
                     new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             }
 
-            return Json("This is where we would save the report (on-time submission)");
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            returnService.CreateAndSaveOnTimeReturnFromDraftReturn(draftReturn, user, Url);
+
+            return Json("Saved! (on-time submission)");
         }
 
 
@@ -168,7 +174,11 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 return View("LateSubmission", viewModel);
             }
 
-            return Json("This is where we would save the report (late submission)");
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            bool receivedLetterFromEhrc = viewModel.ReceivedLetterFromEhrc == ReportLateSubmissionReceivedLetterFromEhrc.Yes;
+            returnService.CreateAndSaveLateReturnFromDraftReturn(draftReturn, user, Url, viewModel.Reason, receivedLetterFromEhrc);
+
+            return Json("Saved (late submission)");
         }
 
     }
