@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.WebUI.Views.Components.TaskList
+@using GenderPayGap.WebUI.Views.Components.TaskList
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
@@ -135,7 +135,8 @@
                             new TaskListItemViewModel
                             {
                                 Title = "Link to your gender pay gap information",
-                                Href = "#",
+                                Href = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite",
+                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
                                 Status = Model.LinkStatus
                             },
                         }
