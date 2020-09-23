@@ -234,6 +234,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().SingleInstance();
             builder.RegisterType<OrganisationService>().As<OrganisationService>().InstancePerLifetimeScope();
+            builder.RegisterType<ReturnService>().As<ReturnService>().InstancePerLifetimeScope();
             builder.RegisterType<DraftReturnService>().As<DraftReturnService>().InstancePerLifetimeScope();
 
             // BL Services
