@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -9,7 +8,7 @@ namespace GenderPayGap.Database
     {
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        Task<int> SaveChangesAsync();
+        void SaveChanges();
         DatabaseFacade GetDatabase();
 
     }
