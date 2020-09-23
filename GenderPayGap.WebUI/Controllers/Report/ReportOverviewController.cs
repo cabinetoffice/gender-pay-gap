@@ -180,8 +180,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 && viewModel.BonusPayStatus == TaskListStatus.Completed
                 && viewModel.EmployessByPayQuartileStatus == TaskListStatus.Completed
                 && viewModel.PersonResponsibleStatus == TaskListStatus.Completed
-                && viewModel.OrganisationSizeStatus == TaskListStatus.Completed
-                && viewModel.LinkStatus == TaskListStatus.Completed)
+                && viewModel.OrganisationSizeStatus == TaskListStatus.Completed)
+                // The "website link" page is optional, so we don't check viewModel.LinkStatus
             {
                 return TaskListStatus.NotStarted;
             }
