@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -78,7 +77,7 @@ namespace GenderPayGap.Database
         public DbSet<DataProtectionKey> DataProtectionKeys { get; } // This is used to store "data protection" keys - used in anti-forgery tokens
 
 
-        public async Task<int> SaveChangesAsync()
+        public void SaveChanges()
         {
             #region Validate the new or changed entities
 
@@ -109,7 +108,7 @@ namespace GenderPayGap.Database
 
             #endregion
 
-            return await base.SaveChangesAsync();
+            base.SaveChanges();
         }
 
         public DatabaseFacade GetDatabase()

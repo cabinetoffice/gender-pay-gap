@@ -61,14 +61,20 @@ namespace GenderPayGap.Core.Classes
             GetEntities<TEntity>().Remove(entity);
         }
 
-        public async Task SaveChangesAsync()
+        public void SaveChanges()
         {
             if (TransactionStarted && Transaction == null)
             {
                 Transaction = DbContext.GetDatabase().BeginTransaction();
             }
 
-            await DbContext.SaveChangesAsync();
+            DbContext.SaveChanges();
+        }
+
+        [Obsolete("Please use SaveChanges (the synchronous version) instead")]
+        public async Task SaveChangesAsync()
+        {
+            SaveChanges();
         }
         
         public void Dispose()

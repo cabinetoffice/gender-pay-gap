@@ -22,6 +22,9 @@ namespace GenderPayGap.Core.Interfaces
 
         DbSet<TEntity> GetEntities<TEntity>() where TEntity : class;
 
+        void SaveChanges();
+        
+        [Obsolete("Please use SaveChanges (the synchronous version) instead")]
         Task SaveChangesAsync();
 
     }
