@@ -116,10 +116,10 @@
             </h2>
             <p class="govuk-body govuk-!-margin-bottom-2">
                 You have completed
-                @numberOfCompleteStatuses
-                of @statuses.Count required sections.
+                @(numberOfCompleteStatuses)
+                of @(statuses.Count) required sections.
             </p>
-            @if (Model.ReviewAndSubmitStatus == TaskListStatus.CannotStartYet)
+            @if (numberOfCompleteStatuses < statuses.Count)
             {
                 <p class="govuk-body @(Model.DraftReturnExists ? "govuk-!-margin-bottom-2" : "govuk-!-margin-bottom-8")">
                     Once you have completed all required sections, you will be able to review and submit your report
@@ -151,6 +151,7 @@
         @{
             await Html.RenderPartialAsync("../Components/TaskList/TaskList", new TaskListViewModel
             {
+                ShouldSectionsBeNumbered = false,
                 Sections = new List<TaskListSectionViewModel>
                 {
                     new TaskListSectionViewModel

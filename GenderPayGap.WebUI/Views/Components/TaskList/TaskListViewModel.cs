@@ -6,6 +6,7 @@ namespace GenderPayGap.WebUI.Views.Components.TaskList
     public class TaskListViewModel
     {
         public List<TaskListSectionViewModel> Sections { get; set; }
+        public bool ShouldSectionsBeNumbered { get; set; }
     }
 
     public class TaskListSectionViewModel
