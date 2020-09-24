@@ -9,10 +9,13 @@
 
         <li>
             <h2 class="app-task-list__section">
-                <span class="app-task-list__section-number">@(sectionIndex + 1).</span>
+                @if (Model.ShouldSectionsBeNumbered)
+                {
+                    <span class="app-task-list__section-number">@(sectionIndex + 1).</span>
+                }
                 @(section.SectionName)
             </h2>
-            <ul class="app-task-list__items">
+            <ul class="app-task-list__items @(Model.ShouldSectionsBeNumbered ? null : "govuk-!-padding-left-0")">
 
                 @for (var itemIndex = 0; itemIndex < section.Items.Count; itemIndex++)
                 {
