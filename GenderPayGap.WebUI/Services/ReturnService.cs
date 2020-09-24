@@ -26,8 +26,17 @@ namespace GenderPayGap.WebUI.Services
         }
 
 
-        public Return CreateAndSaveOnTimeReturnFromDraftReturn(DraftReturn draftReturn, User user, IUrlHelper urlHelper)
+        public Return CreateAndSaveReturnFromDraftReturn(DraftReturn draftReturn, User user, IUrlHelper urlHelper)
         {
+            // Whilst this Return isn't itself late, it might be a non-figures edit to an already-late Return
+            Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
+            Return existingReturn = organisation.GetReturn(draftReturn.SnapshotYear);
+
+            if (existingReturn != null && existingReturn.IsLateSubmission)
+            {
+                return CreateAndSaveReturnFromDraftReturn(draftReturn, user, urlHelper, isLateSubmission: true, lateReason: existingReturn.LateReason, receivedLetterFromEhrc: existingReturn.EHRCResponse);
+            }
+
             return CreateAndSaveReturnFromDraftReturn(draftReturn, user, urlHelper, isLateSubmission: false, lateReason: null, receivedLetterFromEhrc: false);
         }
 

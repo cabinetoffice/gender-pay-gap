@@ -69,7 +69,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
 
             viewModel.DraftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
-            viewModel.WillBeLateSubmission = draftReturnService.DraftReturnWouldBeLateIfSubmittedNow(viewModel.DraftReturn);
+            viewModel.WillBeLateSubmission = draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(viewModel.DraftReturn);
         }
 
 
@@ -92,14 +92,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
-            if (draftReturnService.DraftReturnWouldBeLateIfSubmittedNow(draftReturn))
+            if (draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 return RedirectToAction("LateSubmissionGet", "ReportReviewAndSubmit",
                     new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             }
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            Return newReturn = returnService.CreateAndSaveOnTimeReturnFromDraftReturn(draftReturn, user, Url);
+            Return newReturn = returnService.CreateAndSaveReturnFromDraftReturn(draftReturn, user, Url);
 
             return RedirectToAction("ReportConfirmation", "ReportConfirmation",
                 new
@@ -129,7 +129,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
-            if (!draftReturnService.DraftReturnWouldBeLateIfSubmittedNow(draftReturn))
+            if (!draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 // If (somehow) this is not a late submission, send the user back to the Review page
                 return RedirectToAction("ReportReview", "ReportReviewAndSubmit",
@@ -177,7 +177,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
-            if (!draftReturnService.DraftReturnWouldBeLateIfSubmittedNow(draftReturn))
+            if (!draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 // If (somehow) this is not a late submission, send the user back to the Review page
                 return RedirectToAction("ReportReview", "ReportReviewAndSubmit",
