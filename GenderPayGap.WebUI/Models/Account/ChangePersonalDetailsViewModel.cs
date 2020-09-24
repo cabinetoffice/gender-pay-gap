@@ -1,4 +1,5 @@
-﻿using GovUkDesignSystem;
+﻿using System.Dynamic;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account
@@ -13,6 +14,8 @@ namespace GenderPayGap.WebUI.Models.Account
         
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter your job title")]
         public string JobTitle { get; set; }
+
+        public string ContactPhoneNumber { get; set; }
 
     }
 }

@@ -8,21 +8,52 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
             Change your personal details
-            
-            <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
-                @(Html.AntiForgeryToken())
-                
-                @(Html.GovUkErrorSummary())
-                
-                @(Html.GovUkTextInputFor(
-                    m => m.FirstName,
-                    labelOptions: new LabelViewModel { Text = "First name" },
-                    autocomplete: "firstname"
-                    ))
-            </form>
         </h1>
+            
+        <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
+            @(Html.AntiForgeryToken())
+            
+            @(Html.GovUkErrorSummary())
+            
+            @(Html.GovUkTextInputFor(
+                m => m.FirstName,
+                labelOptions: new LabelViewModel { Text = "First name" },
+                autocomplete: "given-name"
+            ))
+            
+            @(Html.GovUkTextInputFor(
+                m => m.LastName,
+                labelOptions: new LabelViewModel { Text = "Last name" },
+                autocomplete: "family-name"
+                ))
+            
+            @(Html.GovUkTextInputFor(
+                m => m.JobTitle,
+                labelOptions: new LabelViewModel { Text = "Job title" },
+                autocomplete: "organization-title"
+                ))
+            
+            @(Html.GovUkTextInputFor(
+                m => m.ContactPhoneNumber,
+                labelOptions: new LabelViewModel { Text = "Contact phone number" },
+                autocomplete: "tel"
+                ))
+            
+            @(Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Confirm"
+                }
+                ))
+            
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageAccount", "ManageAccount", new { Area = "Account" })">
+                    Cancel
+                </a>
+            </p>
+        </form>
     </div>
 </div>
