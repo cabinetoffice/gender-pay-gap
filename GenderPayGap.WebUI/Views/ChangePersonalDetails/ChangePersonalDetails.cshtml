@@ -1,0 +1,28 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Account.ChangePersonalDetailsViewModel
+
+@{
+    ViewBag.Title = "Change your personal details - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl">
+            Change your personal details
+            
+            <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
+                @(Html.AntiForgeryToken())
+                
+                @(Html.GovUkErrorSummary())
+                
+                @(Html.GovUkTextInputFor(
+                    m => m.FirstName,
+                    labelOptions: new LabelViewModel { Text = "First name" },
+                    autocomplete: "firstname"
+                    ))
+            </form>
+        </h1>
+    </div>
+</div>
