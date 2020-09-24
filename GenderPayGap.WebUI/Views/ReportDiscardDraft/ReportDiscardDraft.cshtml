@@ -1,0 +1,100 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.ReportDiscardDraftViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = $"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}";
+
+    string editOrReportTitle = Model.IsEditingSubmittedReturn
+        ? "Edit your gender pay gap"
+        : "Report your gender pay gap";
+    string yourChangesOrYourDraftReport = Model.IsEditingSubmittedReturn ? "your changes" : "your draft report";
+
+    ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisations", "Organisation")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
+                Href = Url.Action("ReportOverview", "ReportOverview",
+                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Discard {yourChangesOrYourDraftReport}"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
+
+        @(Html.GovUkErrorSummary())
+
+        <h1 class="govuk-heading-xl">
+            @(editOrReportTitle)
+            <br/>
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+            <br/>
+            <span class="govuk-!-font-size-27" style="margin-top: 4px; display: block;">
+                for reporting year @(formattedReportingYears)
+            </span>
+        </h1>
+
+        <form method="post"
+              action="@Url.Action("ReportDiscardDraftPost", "ReportDiscardDraft",
+                          new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+            @(Html.AntiForgeryToken())
+            
+            <h2 class="govuk-heading-m">
+                Discard @(yourChangesOrYourDraftReport)
+            </h2>
+            <p class="govuk-body">
+                Are you sure you want to discard @(yourChangesOrYourDraftReport)?
+            </p>
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = Model.IsEditingSubmittedReturn ? "Discard your changes" : "Discard your draft report",
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+
+        </form>
+
+        <p class="govuk-body">
+            <a href="@Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+               class="govuk-link">
+                Back to report overview
+            </a>
+        </p>
+
+    </div>
+</div>

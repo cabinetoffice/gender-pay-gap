@@ -1,4 +1,4 @@
-@using GenderPayGap.WebUI.Views.Components.TaskList
+﻿@using GenderPayGap.WebUI.Views.Components.TaskList
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
@@ -165,6 +165,20 @@
                     },
                 }
             });
+        }
+        
+        @if (Model.DraftReturnExists)
+        {
+            <p class="govuk-body">
+                If you no longer want to keep
+                @(Model.IsEditingSubmittedReturn ? "these changes" : "this draft report")
+                you can
+                <a href="@(Url.Action("ReportDiscardDraftGet", "ReportDiscardDraft",
+                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))"
+                   class="govuk-link">
+                    discard @(Model.IsEditingSubmittedReturn ? "your changes" : "your draft report")
+                </a>
+            </p>
         }
 
     </div>
