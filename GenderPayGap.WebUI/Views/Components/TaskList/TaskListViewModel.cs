@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GenderPayGap.WebUI.Views.Components.TaskList
 {
@@ -16,6 +17,7 @@ namespace GenderPayGap.WebUI.Views.Components.TaskList
     public class TaskListItemViewModel
     {
         public string Title { get; set; }
+        public Func<object, object> BodyHtml { get; set; }
         public string Href { get; set; }
         public TaskListStatus Status { get; set; }
     }
