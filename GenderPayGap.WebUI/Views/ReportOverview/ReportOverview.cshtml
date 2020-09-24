@@ -60,28 +60,93 @@
             </span>
         </h1>
 
-        @{
+        @if (Model.IsEditingSubmittedReturn)
+        {
+            @if (Model.DraftReturnExists)
+            {
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+                    You have un-published changes
+                </h2>
+                <p class="govuk-body govuk-!-margin-bottom-2">
+                    <a href="@(Url.Action("ReportReview", "ReportReviewAndSubmit",
+                                 new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))"
+                       class="govuk-link">
+                        Review and submit your report</a>
+                    to publish these changes
+                </p>
+                <p class="govuk-body govuk-!-margin-bottom-8">
+                    Or
+                    <a href="@(Url.Action("ReportDiscardDraftGet", "ReportDiscardDraft",
+                                 new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))"
+                       class="govuk-link">
+                        discard your changes</a>
+                    if you no longer want to keep them
+                </p>
+            }
+            else
+            {
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+                    You have reported your gender pay gap data
+                </h2>
+                <p class="govuk-body govuk-!-margin-bottom-2">
+                    You can use this page to make changes to your report
+                </p>
+                <p class="govuk-body govuk-!-margin-bottom-2">
+                    You currently have no un-published changes
+                </p>
+                <p class="govuk-body govuk-!-margin-bottom-8">
+                    If you make changes to your report, you will be able to review and re-submit your report
+                </p>
+            }
+        }
+        else
+        {
             var statuses = new List<TaskListStatus>
             {
                 Model.HourlyPayStatus,
                 Model.BonusPayStatus,
                 Model.EmployessByPayQuartileStatus,
                 Model.PersonResponsibleStatus,
-                Model.OrganisationSizeStatus,
-                Model.LinkStatus,
-                Model.ReviewAndSubmitStatus
+                Model.OrganisationSizeStatus
             };
-
             int numberOfCompleteStatuses = statuses.Count(s => s == TaskListStatus.Completed);
+
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+                Report @(numberOfCompleteStatuses == statuses.Count ? "ready to publish" : "incomplete")
+            </h2>
+            <p class="govuk-body govuk-!-margin-bottom-2">
+                You have completed
+                @numberOfCompleteStatuses
+                of @statuses.Count required sections.
+            </p>
+            @if (Model.ReviewAndSubmitStatus == TaskListStatus.CannotStartYet)
+            {
+                <p class="govuk-body @(Model.DraftReturnExists ? "govuk-!-margin-bottom-2" : "govuk-!-margin-bottom-8")">
+                    Once you have completed all required sections, you will be able to review and submit your report
+                </p>
+            }
+            else
+            {
+                <p class="govuk-body govuk-!-margin-bottom-2">
+                    <a href="@(Url.Action("ReportReview", "ReportReviewAndSubmit",
+                                 new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))"
+                       class="govuk-link">
+                        Review and submit your report</a>
+                    to publish these changes
+                </p>
+            }
+            @if (Model.DraftReturnExists)
+            {
+                <p class="govuk-body govuk-!-margin-bottom-8">
+                    You can
+                    <a href="@(Url.Action("ReportDiscardDraftGet", "ReportDiscardDraft",
+                                 new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))"
+                       class="govuk-link">
+                        discard your changes</a>
+                    if you no longer want to keep them
+                </p>
+            }
         }
-        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
-            Report @(numberOfCompleteStatuses == statuses.Count ? "complete" : "incomplete")
-        </h2>
-        <p class="govuk-body govuk-!-margin-bottom-7">
-            You have completed
-            @(numberOfCompleteStatuses)
-            of @(statuses.Count) sections.
-        </p>
 
         @{
             await Html.RenderPartialAsync("../Components/TaskList/TaskList", new TaskListViewModel
@@ -165,20 +230,6 @@
                     },
                 }
             });
-        }
-        
-        @if (Model.DraftReturnExists)
-        {
-            <p class="govuk-body">
-                If you no longer want to keep
-                @(Model.IsEditingSubmittedReturn ? "these changes" : "this draft report")
-                you can
-                <a href="@(Url.Action("ReportDiscardDraftGet", "ReportDiscardDraft",
-                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))"
-                   class="govuk-link">
-                    discard @(Model.IsEditingSubmittedReturn ? "your changes" : "your draft report")
-                </a>
-            </p>
         }
 
     </div>
