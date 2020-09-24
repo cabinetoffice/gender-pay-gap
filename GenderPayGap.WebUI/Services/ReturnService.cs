@@ -26,22 +26,22 @@ namespace GenderPayGap.WebUI.Services
         }
 
 
-        public void CreateAndSaveOnTimeReturnFromDraftReturn(DraftReturn draftReturn, User user, IUrlHelper urlHelper)
+        public Return CreateAndSaveOnTimeReturnFromDraftReturn(DraftReturn draftReturn, User user, IUrlHelper urlHelper)
         {
-            CreateAndSaveReturnFromDraftReturn(draftReturn, user, urlHelper, isLateSubmission: false, lateReason: null, receivedLetterFromEhrc: false);
+            return CreateAndSaveReturnFromDraftReturn(draftReturn, user, urlHelper, isLateSubmission: false, lateReason: null, receivedLetterFromEhrc: false);
         }
 
-        public void CreateAndSaveLateReturnFromDraftReturn(
+        public Return CreateAndSaveLateReturnFromDraftReturn(
             DraftReturn draftReturn,
             User user,
             IUrlHelper urlHelper,
             string lateReason,
             bool receivedLetterFromEhrc)
         {
-            CreateAndSaveReturnFromDraftReturn(draftReturn, user, urlHelper, true, lateReason, receivedLetterFromEhrc);
+            return CreateAndSaveReturnFromDraftReturn(draftReturn, user, urlHelper, true, lateReason, receivedLetterFromEhrc);
         }
 
-        private void CreateAndSaveReturnFromDraftReturn(
+        private Return CreateAndSaveReturnFromDraftReturn(
             DraftReturn draftReturn,
             User user,
             IUrlHelper urlHelper,
@@ -69,6 +69,8 @@ namespace GenderPayGap.WebUI.Services
             // Send emails
             SendGeoFirstTimeSubmissionEmail(newReturn, urlHelper);
             SendSuccessfulSubmissionEmailToRegisteredUsers(newReturn, urlHelper);
+
+            return newReturn;
         }
 
         private Return CreateReturnFromDraftReturn(

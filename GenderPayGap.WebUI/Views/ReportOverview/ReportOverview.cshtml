@@ -56,27 +56,26 @@
             </span>
         </h1>
 
+        @{
+            var statuses = new List<TaskListStatus>
+            {
+                Model.HourlyPayStatus,
+                Model.BonusPayStatus,
+                Model.EmployessByPayQuartileStatus,
+                Model.PersonResponsibleStatus,
+                Model.OrganisationSizeStatus,
+                Model.LinkStatus,
+                Model.ReviewAndSubmitStatus
+            };
+
+            int numberOfCompleteStatuses = statuses.Count(s => s == TaskListStatus.Completed);
+        }
         <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
-            Report incomplete
+            Report @(numberOfCompleteStatuses == statuses.Count ? "complete" : "incomplete")
         </h2>
         <p class="govuk-body govuk-!-margin-bottom-7">
             You have completed
-            @{
-                var statuses = new List<TaskListStatus>
-                    {
-                    Model.HourlyPayStatus,
-                    Model.BonusPayStatus,
-                    Model.EmployessByPayQuartileStatus,
-                    Model.PersonResponsibleStatus,
-                    Model.OrganisationSizeStatus,
-                    Model.LinkStatus,
-                    Model.ReviewAndSubmitStatus
-                };
-
-                int numberOfCompleteStatuses = statuses.Count(s => s == TaskListStatus.Completed);
-
-                @(numberOfCompleteStatuses)
-            }
+            @(numberOfCompleteStatuses)
             of @(statuses.Count) sections.
         </p>
 
