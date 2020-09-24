@@ -232,7 +232,7 @@ namespace GenderPayGap.WebUI.Services
                    && websiteLinkSectionIsComplete;
         }
 
-        public bool DraftReturnWouldBeLateIfSubmittedNow(DraftReturn draftReturn)
+        public bool DraftReturnWouldBeNewlyLateIfSubmittedNow(DraftReturn draftReturn)
         {
             Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
             int reportingYear = draftReturn.SnapshotYear;
@@ -243,13 +243,39 @@ namespace GenderPayGap.WebUI.Services
             bool isMandatory = draftReturn.OrganisationSize != OrganisationSizes.Employees0To249;
             bool isInScope = organisation.GetScopeForYear(reportingYear).IsInScopeVariant();
             bool yearIsNotExcluded = !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
+            bool isMaterialChange = IsDraftReturnAMaterialChange(draftReturn, organisation);
 
-            // TODO: Add logic to take into account whether this is:
-            // - the first submission this year,
-            // - an edit
-            //   - whether the previous submission was late
+            return isLate && isMandatory && isInScope && yearIsNotExcluded && isMaterialChange;
+        }
 
-            return isLate && isMandatory && isInScope && yearIsNotExcluded;
+        private bool IsDraftReturnAMaterialChange(DraftReturn draftReturn, Organisation organisation)
+        {
+            Return submittedReturn = organisation.GetReturn(draftReturn.SnapshotYear);
+            if (submittedReturn == null)
+            {
+                // If this is the first Return of the year, then it must include a material change (figures)
+                return true;
+            }
+
+            bool isMaterialChange =
+                draftReturn.DiffMeanHourlyPayPercent != submittedReturn.DiffMeanHourlyPayPercent
+                || draftReturn.DiffMedianHourlyPercent != submittedReturn.DiffMedianHourlyPercent
+
+                || draftReturn.DiffMeanBonusPercent != submittedReturn.DiffMeanBonusPercent
+                || draftReturn.DiffMedianBonusPercent != submittedReturn.DiffMedianBonusPercent
+                || draftReturn.MaleMedianBonusPayPercent != submittedReturn.MaleMedianBonusPayPercent
+                || draftReturn.FemaleMedianBonusPayPercent != submittedReturn.FemaleMedianBonusPayPercent
+
+                || draftReturn.MaleLowerPayBand != submittedReturn.MaleLowerPayBand
+                || draftReturn.FemaleLowerPayBand != submittedReturn.FemaleLowerPayBand
+                || draftReturn.MaleMiddlePayBand != submittedReturn.MaleMiddlePayBand
+                || draftReturn.FemaleMiddlePayBand != submittedReturn.FemaleMiddlePayBand
+                || draftReturn.MaleUpperPayBand != submittedReturn.MaleUpperPayBand
+                || draftReturn.FemaleUpperPayBand != submittedReturn.FemaleUpperPayBand
+                || draftReturn.MaleUpperQuartilePayBand != submittedReturn.MaleUpperQuartilePayBand
+                || draftReturn.FemaleUpperQuartilePayBand != submittedReturn.FemaleUpperQuartilePayBand;
+
+            return isMaterialChange;
         }
 
     }
