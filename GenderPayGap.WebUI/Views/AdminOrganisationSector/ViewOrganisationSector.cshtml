@@ -70,9 +70,8 @@
         
         @if (!Model.SectorHistory.Any())
         {
-            <div class="govuk-body">
-                No organisation sector information
-            </div>
+            <p class="govuk-body"><span class="govuk-!-font-weight-bold">Current sector: </span>@Model.Organisation.SectorType</p>
+            <p class="govuk-body">This organisation's sector has never been changed</p>
         }
         else
         {
@@ -104,8 +103,8 @@
                             }
                             else if (i == 1)
                             {
-                                <th scope="row" class="govuk-table__header" rowspan="@(sectorChanges.Count - 1)">
-                                    Previous sector
+                                <th scope="row" class="govuk-table__header" rowspan="@(sectorChanges.Count)">
+                                    Previous sectors
                                 </th>
                             }
 
@@ -119,6 +118,17 @@
                             </td>
                             <td class="govuk-table__cell">@(sectorChangeDetails.Reason)</td>
                         </tr>
+
+                        @if (i == sectorChanges.Count - 1)
+                        {
+                            // Add a final row for the original scope (not audited so doesn't appear in the list automatically)
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">@(sectorChangeDetails.OldSector)</td>
+                                <td class="govuk-table__cell"></td>
+                                <td class="govuk-table__cell"></td>
+                                <td class="govuk-table__cell">Initial sector choice</td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
