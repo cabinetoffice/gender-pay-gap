@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -63,6 +63,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
             if (draftReturn != null)
             {
+                viewModel.DraftReturnExists = true;
                 SetReportStatusesFromDraftReturn(viewModel, draftReturn);
                 return;
             }
