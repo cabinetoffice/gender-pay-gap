@@ -27,18 +27,22 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             var viewModel = new ChangePersonalDetailsViewModel();
 
+            // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
+            // Fill the viewModel with the current user's information
             viewModel.FirstName = currentUser.Firstname;
             viewModel.LastName = currentUser.Lastname;
             viewModel.JobTitle = currentUser.JobTitle;
             viewModel.ContactPhoneNumber = currentUser.ContactPhoneNumber;
             
+            // Return the Change Personal Details form
             return View("ChangePersonalDetails", viewModel);
         }
         
         // The user submits some new personal details
-        // We validate it (e.g. that all fields are filled in)
+        // We validate it (e.g. that all fields except contact phone number are filled in)
+        // Then we save the updates and return the user to the Manage Account page
         [HttpPost("change-personal-details")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
