@@ -1,6 +1,4 @@
-﻿@using GenderPayGap.Core
-@using GenderPayGap.Database
-@using GovUkDesignSystem
+﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Return
 
@@ -9,7 +7,7 @@
     int reportingYear = Model.AccountingDate.Year;
     string formattedReportingYears = $"{reportingYear}-{(reportingYear + 1) % 100}";
 
-    ViewBag.Title = $"Report your gender pay gap - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    ViewBag.Title = $"You've reported your gender pay gap data - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
