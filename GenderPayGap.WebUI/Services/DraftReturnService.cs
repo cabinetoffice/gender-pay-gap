@@ -31,24 +31,70 @@ namespace GenderPayGap.WebUI.Services
 
         public DraftReturn GetOrCreateDraftReturn(long organisationId, int reportingYear)
         {
-            DraftReturn draftReturn = dataRepository.GetAll<DraftReturn>()
-                .Where(dr => dr.OrganisationId == organisationId)
-                .Where(dr => dr.SnapshotYear == reportingYear)
-                .FirstOrDefault();
+            DraftReturn draftReturn = GetDraftReturn(organisationId, reportingYear);
 
             if (draftReturn == null)
             {
-                draftReturn = new DraftReturn
+                Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+                Return submittedReturn = organisation.GetReturn(reportingYear);
+
+                if (submittedReturn != null)
                 {
-                    OrganisationId = organisationId,
-                    SnapshotYear = reportingYear
-                };
+                    draftReturn = CreateDraftReturnBasedOnSubmittedReturn(submittedReturn);
+                }
+                else
+                {
+                    draftReturn = CreateBlankDraftReturn(organisationId, reportingYear);
+                }
 
                 dataRepository.Insert(draftReturn);
-                dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChanges();
             }
 
             return draftReturn;
+        }
+
+        private DraftReturn CreateDraftReturnBasedOnSubmittedReturn(Return submittedReturn)
+        {
+            return new DraftReturn
+            {
+                OrganisationId = submittedReturn.OrganisationId,
+                SnapshotYear = submittedReturn.AccountingDate.Year,
+
+                DiffMeanHourlyPayPercent = submittedReturn.DiffMeanHourlyPayPercent,
+                DiffMedianHourlyPercent = submittedReturn.DiffMedianHourlyPercent,
+
+                MaleMedianBonusPayPercent = submittedReturn.MaleMedianBonusPayPercent,
+                FemaleMedianBonusPayPercent = submittedReturn.FemaleMedianBonusPayPercent,
+                DiffMeanBonusPercent = submittedReturn.DiffMeanBonusPercent,
+                DiffMedianBonusPercent = submittedReturn.DiffMedianBonusPercent,
+
+                MaleUpperQuartilePayBand = submittedReturn.MaleUpperQuartilePayBand,
+                FemaleUpperQuartilePayBand = submittedReturn.FemaleUpperQuartilePayBand,
+                MaleUpperPayBand = submittedReturn.MaleUpperPayBand,
+                FemaleUpperPayBand = submittedReturn.FemaleUpperPayBand,
+                MaleMiddlePayBand = submittedReturn.MaleMiddlePayBand,
+                FemaleMiddlePayBand = submittedReturn.FemaleMiddlePayBand,
+                MaleLowerPayBand = submittedReturn.MaleLowerPayBand,
+                FemaleLowerPayBand = submittedReturn.FemaleLowerPayBand,
+                
+                FirstName = submittedReturn.FirstName,
+                LastName = submittedReturn.LastName,
+                JobTitle = submittedReturn.JobTitle,
+
+                OrganisationSize = submittedReturn.OrganisationSize,
+
+                CompanyLinkToGPGInfo = submittedReturn.CompanyLinkToGPGInfo
+            };
+        }
+
+        private static DraftReturn CreateBlankDraftReturn(long organisationId, int reportingYear)
+        {
+            return new DraftReturn
+            {
+                OrganisationId = organisationId,
+                SnapshotYear = reportingYear
+            };
         }
 
         public void SaveDraftReturnOrDeleteIfNotRelevent(DraftReturn draftReturn)
@@ -59,7 +105,7 @@ namespace GenderPayGap.WebUI.Services
                 dataRepository.Delete(draftReturn);
             }
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         private bool DraftReturnIsEmpty(DraftReturn draftReturn)
