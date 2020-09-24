@@ -1,4 +1,4 @@
-﻿using GenderPayGap.WebUI.Views.Components.TaskList;
+using GenderPayGap.WebUI.Views.Components.TaskList;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Report
@@ -8,9 +8,10 @@ namespace GenderPayGap.WebUI.Models.Report
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Database.Organisation Organisation { get; set; }
-
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public int ReportingYear { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public bool IsEditingSubmittedReturn { get; set; }
 
         public TaskListStatus HourlyPayStatus { get; set; }
         public TaskListStatus BonusPayStatus { get; set; }
