@@ -8,9 +8,10 @@ namespace GenderPayGap.WebUI.Models.Report
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public Database.Organisation Organisation { get; set; }
-
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public int ReportingYear { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public bool IsEditingSubmittedReturn { get; set; }
 
         public ReportPagesAction Action { get; set; }
 

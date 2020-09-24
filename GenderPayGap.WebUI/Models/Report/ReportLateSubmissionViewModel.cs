@@ -15,6 +15,9 @@ namespace GenderPayGap.WebUI.Models.Report
         public int ReportingYear { get; set; }
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public bool IsEditingSubmittedReturn { get; set; }
+
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public DateTime DeadlineDate { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select yes if you have received a letter about a breach of the regulations from the Equality and Human Rights Commission.")]

@@ -39,16 +39,22 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             var viewModel = new ReportSizeOfOrganisationViewModel();
-            PopulateViewModelWithOrganisationAndReportingYear(viewModel, organisationId, reportingYear);
+            PopulateViewModel(viewModel, organisationId, reportingYear);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
 
             return View("ReportSizeOfOrganisation", viewModel);
         }
 
-        private void PopulateViewModelWithOrganisationAndReportingYear(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)
         {
-            viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+
+            viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
+
+            Return submittedReturn = organisation.GetReturn(reportingYear);
+            bool isEditingSubmittedReturn = submittedReturn != null;
+            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
         }
 
         private void SetValuesFromDraftReturnOrSubmittedReturn(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)
@@ -60,8 +66,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 return;
             }
 
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-            Return submittedReturn = organisation.GetReturn(reportingYear);
+            Return submittedReturn = viewModel.Organisation.GetReturn(reportingYear);
             if (submittedReturn != null)
             {
                 SetValuesFromSubmittedReturn(viewModel, submittedReturn);
@@ -95,7 +100,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (viewModel.HasAnyErrors())
             {
-                PopulateViewModelWithOrganisationAndReportingYear(viewModel, organisationId, reportingYear);
+                PopulateViewModel(viewModel, organisationId, reportingYear);
                 return View("ReportSizeOfOrganisation", viewModel);
             }
 

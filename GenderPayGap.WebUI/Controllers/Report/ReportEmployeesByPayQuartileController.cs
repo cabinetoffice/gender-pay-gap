@@ -40,16 +40,22 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             var viewModel = new ReportEmployeesByPayQuartileViewModel();
-            PopulateViewModelWithOrganisationAndReportingYear(viewModel, organisationId, reportingYear);
+            PopulateViewModel(viewModel, organisationId, reportingYear);
             SetFigures(viewModel, organisationId, reportingYear);
 
             return View("ReportEmployeesByPayQuartile", viewModel);
         }
 
-        private void PopulateViewModelWithOrganisationAndReportingYear(ReportEmployeesByPayQuartileViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportEmployeesByPayQuartileViewModel viewModel, long organisationId, int reportingYear)
         {
-            viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+
+            viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
+
+            Return submittedReturn = organisation.GetReturn(reportingYear);
+            bool isEditingSubmittedReturn = submittedReturn != null;
+            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
         }
 
         private void SetFigures(ReportEmployeesByPayQuartileViewModel viewModel, long organisationId, int reportingYear)
@@ -61,8 +67,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 return;
             }
 
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-            Return submittedReturn = organisation.GetReturn(reportingYear);
+            Return submittedReturn = viewModel.Organisation.GetReturn(reportingYear);
             if (submittedReturn != null)
             {
                 SetFiguresFromSubmittedReturn(viewModel, submittedReturn);
@@ -110,7 +115,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (viewModel.HasAnyErrors())
             {
-                PopulateViewModelWithOrganisationAndReportingYear(viewModel, organisationId, reportingYear);
+                PopulateViewModel(viewModel, organisationId, reportingYear);
                 return View("ReportEmployeesByPayQuartile", viewModel);
             }
 

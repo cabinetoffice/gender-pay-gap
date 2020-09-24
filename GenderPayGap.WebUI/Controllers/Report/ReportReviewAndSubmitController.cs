@@ -59,8 +59,15 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
         private void PopulateReportAndSubmitViewModel(ReportReviewAndSubmitViewModel viewModel, long organisationId, int reportingYear)
         {
-            viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+
+            viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
+
+            Return submittedReturn = organisation.GetReturn(reportingYear);
+            bool isEditingSubmittedReturn = submittedReturn != null;
+            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
+
             viewModel.DraftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
             viewModel.WillBeLateSubmission = draftReturnService.DraftReturnWouldBeLateIfSubmittedNow(viewModel.DraftReturn);
         }
@@ -138,12 +145,17 @@ namespace GenderPayGap.WebUI.Controllers.Report
         private void PopulateLateSubmissionViewModel(ReportLateSubmissionViewModel viewModel, long organisationId, int reportingYear)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            
             DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
             DateTime deadlineDate = snapshotDate.AddYears(1).AddDays(-1);
 
+            Return submittedReturn = organisation.GetReturn(reportingYear);
+            bool isEditingSubmittedReturn = submittedReturn != null;
+            
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
             viewModel.DeadlineDate = deadlineDate;
+            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
         }
 
         [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission")]

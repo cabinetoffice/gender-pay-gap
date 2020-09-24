@@ -6,7 +6,11 @@
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string formattedReportingYears = $"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}";
 
-    ViewBag.Title = $"Report your gender pay gap - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    string editOrReportTitle = Model.IsEditingSubmittedReturn
+        ? "Edit your gender pay gap"
+        : "Report your gender pay gap";
+
+    ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -26,7 +30,7 @@
             },
             new CrumbViewModel
             {
-                Text = $"Report your gender pay gap (reporting year {formattedReportingYears})",
+                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
                 Href = Url.Action("ReportOverview", "ReportOverview",
                     new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
@@ -54,7 +58,7 @@
         }))
 
         <h1 class="govuk-heading-xl">
-            Report your gender pay gap
+            @(editOrReportTitle)
             <br />
             <span class="govuk-!-font-size-27">
                 for @(Model.Organisation.OrganisationName)
