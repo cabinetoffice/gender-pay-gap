@@ -4,6 +4,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
@@ -91,9 +92,15 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            returnService.CreateAndSaveOnTimeReturnFromDraftReturn(draftReturn, user, Url);
+            Return newReturn = returnService.CreateAndSaveOnTimeReturnFromDraftReturn(draftReturn, user, Url);
 
-            return Json("Saved! (on-time submission)");
+            return RedirectToAction("ReportConfirmation", "ReportConfirmation",
+                new
+                {
+                    encryptedOrganisationId = encryptedOrganisationId,
+                    reportingYear = reportingYear,
+                    confirmationId = Encryption.EncryptQuerystring(newReturn.ReturnId.ToString())
+                });
         }
 
 
@@ -176,9 +183,15 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             bool receivedLetterFromEhrc = viewModel.ReceivedLetterFromEhrc == ReportLateSubmissionReceivedLetterFromEhrc.Yes;
-            returnService.CreateAndSaveLateReturnFromDraftReturn(draftReturn, user, Url, viewModel.Reason, receivedLetterFromEhrc);
+            Return newReturn = returnService.CreateAndSaveLateReturnFromDraftReturn(draftReturn, user, Url, viewModel.Reason, receivedLetterFromEhrc);
 
-            return Json("Saved (late submission)");
+            return RedirectToAction("ReportConfirmation", "ReportConfirmation",
+                new
+                {
+                    encryptedOrganisationId = encryptedOrganisationId,
+                    reportingYear = reportingYear,
+                    confirmationId = Encryption.EncryptQuerystring(newReturn.ReturnId.ToString())
+                });
         }
 
     }
