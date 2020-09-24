@@ -138,6 +138,9 @@
                             new TaskListItemViewModel
                             {
                                 Title = "Link to your gender pay gap information",
+                                BodyHtml = @<text>
+                                               (optional)
+                                            </text>,
                                 Href = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite",
                                     new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
                                 Status = Model.LinkStatus

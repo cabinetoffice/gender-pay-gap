@@ -23,6 +23,7 @@
                             {
                                 <span aria-describedby="@($"status-{sectionIndex}-{itemIndex}")">
                                     @item.Title
+                                    @(item.BodyHtml?.Invoke(null))
                                 </span>
                             }
                             else
@@ -32,6 +33,7 @@
                                    aria-describedby="@($"status-{sectionIndex}-{itemIndex}")">
                                     @item.Title
                                 </a>
+                                @(item.BodyHtml?.Invoke(null))
                             }
                         </span>
                         <strong class="govuk-tag app-task-list__tag

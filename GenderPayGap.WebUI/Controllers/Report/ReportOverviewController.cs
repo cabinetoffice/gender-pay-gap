@@ -132,7 +132,11 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.EmployessByPayQuartileStatus = TaskListStatus.Completed;
             viewModel.PersonResponsibleStatus = TaskListStatus.Completed;
             viewModel.OrganisationSizeStatus = TaskListStatus.Completed;
-            viewModel.LinkStatus = TaskListStatus.Completed;
+            
+            // LinkStatus is the only status that isn't definitely Complete
+            // All the other fields are non-nullable in the database
+            viewModel.LinkStatus = GetStatusFromStrings(submittedReturn.CompanyLinkToGPGInfo);
+
             viewModel.ReviewAndSubmitStatus = TaskListStatus.Completed;
         }
 
