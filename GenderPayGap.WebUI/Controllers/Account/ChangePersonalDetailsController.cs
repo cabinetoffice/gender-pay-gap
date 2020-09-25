@@ -48,10 +48,10 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [ValidateAntiForgeryToken]
         public IActionResult ChangePersonalDetailsPost(ChangePersonalDetailsViewModel viewModel)
         {
-            // We don't validate contact number, since this is manually checked and we'll accept anything here
             viewModel.ParseAndValidateParameters(Request, m => m.FirstName);
             viewModel.ParseAndValidateParameters(Request, m => m.LastName);
             viewModel.ParseAndValidateParameters(Request, m => m.JobTitle);
+            viewModel.ParseAndValidateParameters(Request, m => m.ContactPhoneNumber);
 
             if (viewModel.HasAnyErrors())
             {
