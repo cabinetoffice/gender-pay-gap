@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 
 namespace GenderPayGap.WebUI.Models.Organisation
 {
@@ -10,7 +9,6 @@ namespace GenderPayGap.WebUI.Models.Organisation
     public class ManageOrganisationModel
     {
 
-        public List<ReportInfoModel> ReportInfoModels;
         public UserOrganisation CurrentUserOrg { get; set; }
 
         public List<UserOrganisation> AssociatedUserOrgs { get; set; }
@@ -18,6 +16,8 @@ namespace GenderPayGap.WebUI.Models.Organisation
         public string EncCurrentOrgId { get; set; }
 
         public Database.Organisation Organisation => CurrentUserOrg.Organisation;
+
+        public List<int> ReportingYearsWithDraftReturns { get; set; }
 
     }
 

@@ -1,6 +1,6 @@
 @using GenderPayGap.Core
 @using GenderPayGap.Database
-@using GenderPayGap.WebUI.BusinessLogic.Models.Organisation
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Organisation
 @model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationModel
 @{
@@ -67,21 +67,27 @@
                 </tr>
             </thead>
 
-            @for (int i = Model.ReportInfoModels.Count - 1, editScopeCount = Global.EditableScopeCount; i >= 0; i--, editScopeCount--)
+            @{
+                List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
+            }
+            @for (int i = 0; i < reportingYears.Count; i++)
             {
-                ReportInfoModel report = Model.ReportInfoModels[i];
-                if (report == null)
+                int reportingYear = reportingYears[i];
+                OrganisationScope scopeForYear = currentOrg.GetScopeForYear(reportingYear);
+
+                if (scopeForYear != null) // If there is no scope, then the organisation can't report for this year
                 {
-                    continue;
+                    bool canChangeScope = i < Global.EditableScopeCount;
+
+                    var displayReportModel = new DisplayReportModel
+                    {
+                        ReportingYear = reportingYear,
+                        Organisation = currentOrg,
+                        CanChangeScope = canChangeScope,
+                        HasDraftReturnForYear = Model.ReportingYearsWithDraftReturns.Contains(reportingYear)
+                    };
+                    @await Html.PartialAsync("DisplayReportSection", displayReportModel)
                 }
-                var displayReportModel = new DisplayReportModel
-                {
-                    Report = report,
-                    OrganisationId = currentOrg.OrganisationId,
-                    EncCurrentOrgId = Model.EncCurrentOrgId,
-                    CanChangeScope = editScopeCount > 0
-                };
-                @await Html.PartialAsync("DisplayReportSection", displayReportModel)
             }
         </table>
     </div>

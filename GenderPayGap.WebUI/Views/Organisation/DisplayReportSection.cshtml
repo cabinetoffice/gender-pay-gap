@@ -1,13 +1,15 @@
-﻿@using GenderPayGap.WebUI.BusinessLogic.Models.Organisation
+﻿@using GenderPayGap.Core.Classes
+@using GenderPayGap.Database
 @using GenderPayGap.WebUI.Classes.Formatters
 @model GenderPayGap.WebUI.Models.Organisation.DisplayReportModel
 @{
-    ReportInfoModel reportInfoModel = Model.Report;
-    var reportDateFormatter = new GDSDateFormatter(reportInfoModel.ReportingStartDate);
-    int linkId = reportDateFormatter.StartYear;
-    long organisationId = Model.OrganisationId;
-    string encryptedOrganisationIdQueryString = Encryption.EncryptQuerystring(organisationId.ToString());
-    string year = $"{reportInfoModel.ReportingStartDate.Year}/{(reportInfoModel.ReportingStartDate.Year + 1).ToTwoDigitYear()}";
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string year = $"{Model.ReportingYear}/{(Model.ReportingYear + 1).ToTwoDigitYear()}";
+
+    OrganisationScope scopeForYear = Model.Organisation.GetScopeForYear(Model.ReportingYear);
+    Return submittedReturn = Model.Organisation.GetReturn(Model.ReportingYear);
+    DateTime snapshotDate = Model.Organisation.SectorType.GetAccountingStartDate(Model.ReportingYear);
+    DateTime deadline = snapshotDate.AddYears(1).AddDays(-1);
 }
 
 <tr class="govuk-table__row">
@@ -18,19 +20,19 @@
 
     <td class="govuk-table__cell govuk-!-font-size-19">
         <div>
-            @if (reportInfoModel.NotRequiredToReport)
+            @if (!scopeForYear.IsInScopeVariant())
             {
                 <span>NOT REQUIRED TO REPORT</span>
             }
             else
             {
-                <span>REQUIRED TO REPORT <br/> by @(reportDateFormatter.FullEndDate)</span>
+                <span>REQUIRED TO REPORT <br/> by @(deadline.ToString("d MMM yyyy"))</span>
             }
         </div>
         @if (Model.CanChangeScope)
         {
             <div>
-                <a href="@(Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId = encryptedOrganisationIdQueryString, reportingYear = reportDateFormatter.StartYear }))">
+                <a href="@(Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear }))">
                     Change<span class="visually-hidden"> scope for year @year</span>
                 </a>
             </div>
@@ -39,54 +41,59 @@
 
     <td class="govuk-table__cell govuk-!-font-size-19">
         @{
-            bool isReportAvailable = reportInfoModel.ReportModifiedDate != null;
-            bool isDraftAvailable = reportInfoModel.HasDraftContent();
-
-            string returnOrDraftInfoIsAvailable = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString(), true.ToString());
-            string returnOrDraftInfoIsNotAvailable = Encryption.EncryptAsParams(organisationId.ToString(), reportDateFormatter.StartYear.ToString(), false.ToString());
+            bool isReportAvailable = submittedReturn != null;
+            bool isDraftAvailable = Model.HasDraftReturnForYear;
         }
 
         <div>
-            @if (reportInfoModel.ReportModifiedDate == null)
+            @if (submittedReturn == null)
             {
                 <span>Your organisation has not reported</span>
             }
             else
             {
                 <span>Reported </span>
-                if (reportInfoModel.NotRequiredToReport)
+                if (submittedReturn.IsVoluntarySubmission())
                 {
                     <span>voluntarily</span>
                 }
-                var modifiedDateFormatter = new GDSDateFormatter(reportInfoModel.ReportModifiedDate.Value);
+                var modifiedDateFormatter = new GDSDateFormatter(submittedReturn.Modified);
                 <span> on @modifiedDateFormatter.FullStartDate</span>
             }
         </div>
         <br/>
         @if (!isReportAvailable && !isDraftAvailable)
         {
-            <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsNotAvailable}))">
+            <a class="button"
+               href="@(Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
                 <span>Draft report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
         @if (!isReportAvailable && isDraftAvailable)
         {
-            <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
+            <a class="button"
+               href="@(Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
                 <span>Edit draft<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
         @if (isReportAvailable && !isDraftAvailable)
         {
-            <a id="ChangeReport@(linkId)-@(Model.EncCurrentOrgId)" class="button" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
+            <a class="button"
+               href="@(Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
                 <span>Edit Report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
         @if (isReportAvailable && isDraftAvailable)
         {
-            <a class="button" id="NewReport@(linkId)-@(Model.EncCurrentOrgId)" href="@(Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable}))">
+            <a class="button"
+               href="@(Url.Action("ReportOverview", "ReportOverview",
+                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
                 <span>Edit draft report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
