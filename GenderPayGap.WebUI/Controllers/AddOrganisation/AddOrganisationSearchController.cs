@@ -28,8 +28,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("{sector}/search")]
         public IActionResult Search(AddOrganisationSearchViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             if (!string.IsNullOrWhiteSpace(viewModel.Query))

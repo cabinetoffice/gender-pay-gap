@@ -14,20 +14,10 @@
             You don't have permission to report on behalf of this organisation
         </h1>
 
-        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewAddOrganisationJourney)) 
-        { 
-            <p class="govuk-body">
-                <a href="@Url.Action("ChooseSector", "AddOrganisationChooseSector")"
-                   class="govuk-link">Add organisation</a> 
-            </p> 
-        } 
-        else 
-        { 
-            <p class="govuk-body">
-                <a href="@Url.Action(nameof(RegisterController.OrganisationType), "Register")"
-                   class="govuk-link">Register an organisation</a> 
-            </p> 
-        } 
+        <p class="govuk-body">
+            <a href="@Url.Action("ChooseSector", "AddOrganisationChooseSector")"
+               class="govuk-link">Add organisation</a> 
+        </p> 
         
         <p class="govuk-body">If you have been sent this link by a colleague, you will need to add this organisation to your account</p>
         

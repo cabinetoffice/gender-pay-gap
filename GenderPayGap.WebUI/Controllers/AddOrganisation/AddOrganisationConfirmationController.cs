@@ -28,8 +28,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("confirmation")]
         public IActionResult Confirmation(string confirmationId)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             UserOrganisation userOrganisation = LoadUserOrganisationWithConfirmationId(confirmationId);

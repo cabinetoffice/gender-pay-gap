@@ -24,8 +24,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("manual/address")]
         public IActionResult ManualAddress(AddOrganisationManualViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             if (viewModel.Validate == true)

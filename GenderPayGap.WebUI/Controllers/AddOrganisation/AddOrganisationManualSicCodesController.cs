@@ -26,8 +26,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("manual/sic-codes")]
         public IActionResult ManualSicCodes(AddOrganisationManualViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             if (viewModel.Validate == true)
