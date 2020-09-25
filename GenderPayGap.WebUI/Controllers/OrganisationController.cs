@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -32,7 +33,6 @@ namespace GenderPayGap.WebUI.Controllers
         public OrganisationController(
             IHttpCache cache,
             IHttpSession session,
-            ISubmissionService submitService,
             IScopeBusinessLogic scopeBL,
             IDataRepository dataRepository,
             RegistrationRepository registrationRepository,
@@ -43,7 +43,6 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository,
             webTracker)
         {
-            SubmissionService = submitService;
             ScopeBusinessLogic = scopeBL;
             RegistrationRepository = registrationRepository;
             this.emailSendingService = emailSendingService;
@@ -83,7 +82,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the current snapshot date
-            DateTime snapshotDate = SubmissionService.GetCurrentSnapshotDate(userOrg.Organisation.SectorType).AddYears(-1);
+            DateTime snapshotDate = userOrg.Organisation.SectorType.GetAccountingStartDate().AddYears(-1);
             if (snapshotDate.Year < Global.FirstReportingYear)
             {
                 return new HttpBadRequestResult($"Snapshot year {snapshotDate.Year} is invalid");
@@ -218,96 +217,7 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("ActivateService", "Register");
         }
 
-        [Authorize]
-        [HttpGet("~/report-for-organisation/{request}")]
-        public async Task<IActionResult> ReportForOrganisation(string request)
-        {
-            //Ensure user has completed the registration process
-            IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            // Decrypt request
-            if (!request.DecryptToParams(out List<string> requestParams))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt parameters '{request}'");
-            }
-
-            // Extract the request vars
-            long organisationId = requestParams[0].ToInt64();
-            int reportingStartYear = requestParams[1].ToInt32();
-            bool change = requestParams[2].ToBoolean();
-
-            // Ensure we can report for the year requested
-            if (!SubmissionService.IsValidSnapshotYear(reportingStartYear))
-            {
-                return new HttpBadRequestResult($"Invalid snapshot year {reportingStartYear}");
-            }
-
-            // Check the user has permission for this organisation
-            UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrg == null)
-            {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
-            }
-
-            // get the sector
-            SectorTypes sectorType = userOrg.Organisation.SectorType;
-
-            // Determine if this is for the previous reporting year
-            bool isPrevReportingYear = SubmissionService.IsCurrentSnapshotYear(sectorType, reportingStartYear) == false;
-
-            // Set the reporting session globals
-            ReportingOrganisationId = organisationId;
-            ReportingOrganisationStartYear = reportingStartYear;
-
-            // Clear the SubmitController stash
-            this.ClearAllStashes();
-
-            var reportingRequirement =
-                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, reportingStartYear);
-            
-            bool requiredToReport =
-                reportingRequirement == ScopeStatuses.InScope || reportingRequirement == ScopeStatuses.PresumedInScope;
-            
-            // When previous reporting year then do late submission flow
-            // unless the reporting year has been excluded from late flag enforcement (eg. 2019/20 due to COVID-19)
-
-            var yearsToExclude = Global.ReportingStartYearsToExcludeFromLateFlagEnforcement;
-            var reportingYearShouldBeExcluded = yearsToExclude.Contains(reportingStartYear);
-            
-            if (isPrevReportingYear && requiredToReport && !reportingYearShouldBeExcluded )
-            {
-                // Change an existing late submission
-                if (change)
-                {
-                    return RedirectToAction("LateWarning", "Submit", new {request, returnUrl = "CheckData"});
-                }
-
-                // Create new a late submission
-                return RedirectToAction("LateWarning", "Submit", new {request});
-            }
-
-            /*
- * Under normal circumstances, we might want to stash the model at this point, just before the redirection, however, we are NOT going to for two reasons:
- *      (1) The information currently on the model includes ONLY the bare minimum to know if there is a draft or not, it doesn't for example, include anything to do with the permissions to access, who is locked it, lastWrittenTimestamp... This behaviour is by design: the draft file is locked on access, and that will happen once the user arrives to 'check data' or 'enter calculations', if we were to stash the model now, the stashed info won't contain all relevant draft information.
- *      (2) Currently stash/unstash only works with the name of the controller, so it really doesn't matter what we stash here, the 'check data' and 'enter calculations' page belong to a different controller, so the stashed info will never be read by them anyway.
- */
-            // Change an existing submission
-            if (change)
-            {
-                return RedirectToAction("CheckData", "Submit");
-            }
-
-            // Create new a submission
-            return RedirectToAction("EnterCalculations", "Submit");
-        }
-
         #region Dependencies
-
-        public ISubmissionService SubmissionService { get; }
 
         public IScopeBusinessLogic ScopeBusinessLogic { get; }
 

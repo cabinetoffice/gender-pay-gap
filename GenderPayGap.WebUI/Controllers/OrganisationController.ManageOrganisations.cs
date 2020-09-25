@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 using GenderPayGap.WebUI.Classes;
@@ -46,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.ClearStash();
 
             //Get the current snapshot date
-            DateTime currentSnapshotDate = SubmissionService.GetCurrentSnapshotDate(userOrg.Organisation.SectorType);
+            DateTime currentSnapshotDate = userOrg.Organisation.SectorType.GetAccountingStartDate();
 
             //Make sure we have an explicit scope for last and year for organisations new to this year
             if (userOrg.PINConfirmedDate != null && userOrg.Organisation.Created >= currentSnapshotDate)
@@ -62,15 +64,18 @@ namespace GenderPayGap.WebUI.Controllers
             // get any associated users for the current org
             List<UserOrganisation> associatedUserOrgs = userOrg.GetAssociatedUsers().ToList();
 
-            // get all editable reports
-            List<ReportInfoModel> reportInfos = await SubmissionService.GetAllEditableReportsAsync(userOrg, currentSnapshotDate);
-
             // build the view model
+            List<int> yearsWithDraftReturns =
+                DataRepository.GetAll<DraftReturn>()
+                    .Where(d => d.OrganisationId == organisationId)
+                    .Select(d => d.SnapshotYear)
+                    .ToList();
+
             var model = new ManageOrganisationModel {
                 CurrentUserOrg = userOrg,
                 AssociatedUserOrgs = associatedUserOrgs,
                 EncCurrentOrgId = Encryption.EncryptQuerystring(organisationId.ToString()),
-                ReportInfoModels = reportInfos.OrderBy(r => r.ReportingStartDate).ToList()
+                ReportingYearsWithDraftReturns = yearsWithDraftReturns
             };
 
             return View(model);

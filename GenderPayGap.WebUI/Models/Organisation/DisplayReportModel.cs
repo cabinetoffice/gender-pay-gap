@@ -1,5 +1,4 @@
 ﻿using System;
-using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 
 namespace GenderPayGap.WebUI.Models.Organisation
 {
@@ -7,15 +6,10 @@ namespace GenderPayGap.WebUI.Models.Organisation
     [Serializable]
     public class DisplayReportModel
     {
-
-        public long OrganisationId { get; set; }
-
-        public string EncCurrentOrgId { get; set; }
-
-        public ReportInfoModel Report { get; set; }
-
+        public Database.Organisation Organisation { get; set; }
+        public int ReportingYear { get; set; }
         public bool CanChangeScope { get; set; }
-
+        public bool HasDraftReturnForYear { get; set; }
     }
 
 }
