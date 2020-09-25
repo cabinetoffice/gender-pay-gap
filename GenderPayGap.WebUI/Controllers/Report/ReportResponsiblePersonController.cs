@@ -38,6 +38,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            if (organisation.SectorType == SectorTypes.Public)
+            {
+                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                StatusMessageHelper.SetStatusMessage(Response, "Public sector organisations are not required to provide a person responsible", nextPageUrl);
+                return LocalRedirect(nextPageUrl);
+            }
+
             var viewModel = new ReportResponsiblePersonViewModel();
             PopulateViewModel(viewModel, organisationId, reportingYear);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
@@ -99,6 +107,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            if (organisation.SectorType == SectorTypes.Public)
+            {
+                string nextPagePublicSectorUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                StatusMessageHelper.SetStatusMessage(Response, "Public sector organisations are not required to provide a person responsible", nextPagePublicSectorUrl);
+                return LocalRedirect(nextPagePublicSectorUrl);
+            }
 
             ValidateUserInput(viewModel);
 
