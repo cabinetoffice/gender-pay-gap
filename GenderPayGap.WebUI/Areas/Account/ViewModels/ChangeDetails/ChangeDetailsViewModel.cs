@@ -10,16 +10,13 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewModels
     [DefaultResource(typeof(AccountResources))]
     public class ChangeDetailsViewModel
     {
-
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(AccountResources.FirstNameRequired))]
+        
         [Display(Name = nameof(FirstName))]
         public string FirstName { get; set; }
-
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(AccountResources.LastNameRequired))]
+        
         [Display(Name = nameof(LastName))]
         public string LastName { get; set; }
-
-        [Required(AllowEmptyStrings = false, ErrorMessageResourceName = nameof(AccountResources.JobTitleRequired))]
+        
         [StringLength(50, ErrorMessageResourceName = nameof(AccountResources.JobTitleLength))]
         [Display(Name = nameof(JobTitle))]
         public string JobTitle { get; set; }

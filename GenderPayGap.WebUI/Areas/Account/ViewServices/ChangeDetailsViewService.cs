@@ -23,10 +23,11 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             // map to business domain model
             var mappedDetails = new UpdateDetailsModel
             {
-                FirstName = newDetails.FirstName,
-                LastName = newDetails.LastName,
-                JobTitle = newDetails.JobTitle,
-                ContactPhoneNumber = newDetails.ContactPhoneNumber,
+                // TODO: Remove FirstName, LastName, JobTitle and ContactPhoneNumber from here when ChangeContactPreferences is complete
+                FirstName = currentUser.Firstname,
+                LastName = currentUser.Lastname,
+                JobTitle = currentUser.JobTitle,
+                ContactPhoneNumber = currentUser.ContactPhoneNumber,
                 SendUpdates = newDetails.SendUpdates,
                 AllowContact = newDetails.AllowContact
             };
