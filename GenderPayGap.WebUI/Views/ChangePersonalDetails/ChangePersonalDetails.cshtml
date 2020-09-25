@@ -7,50 +7,77 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Account",
+                Href = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})
+            },
+            new CrumbViewModel
+            {
+                Text = "Personal Details"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        @(Html.GovUkErrorSummary())
+        
         <h1 class="govuk-heading-xl">
             Change your personal details
         </h1>
-            
+
         <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
             @(Html.AntiForgeryToken())
-            
-            @(Html.GovUkErrorSummary())
-            
+
             @(Html.GovUkTextInputFor(
                 m => m.FirstName,
-                labelOptions: new LabelViewModel { Text = "First name" },
-                autocomplete: "given-name"
-            ))
-            
+                labelOptions: new LabelViewModel {Text = "First name"},
+                autocomplete: "given-name",
+                classes: "govuk-input--width-20"
+                ))
+
             @(Html.GovUkTextInputFor(
                 m => m.LastName,
-                labelOptions: new LabelViewModel { Text = "Last name" },
-                autocomplete: "family-name"
+                labelOptions: new LabelViewModel {Text = "Last name"},
+                autocomplete: "family-name",
+                classes: "govuk-input--width-20"
                 ))
-            
+
             @(Html.GovUkTextInputFor(
                 m => m.JobTitle,
-                labelOptions: new LabelViewModel { Text = "Job title" },
-                autocomplete: "organization-title"
+                labelOptions: new LabelViewModel {Text = "Job title"},
+                autocomplete: "organization-title",
+                classes: "govuk-input--width-20"
                 ))
-            
+
             @(Html.GovUkTextInputFor(
                 m => m.ContactPhoneNumber,
-                labelOptions: new LabelViewModel { Text = "Contact phone number" },
-                autocomplete: "tel"
+                labelOptions: new LabelViewModel {Text = "Contact phone number"},
+                autocomplete: "tel",
+                classes: "govuk-input--width-20"
                 ))
-            
+
             @(Html.GovUkButton(
                 new ButtonViewModel
                 {
-                    Text = "Confirm"
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
                 }
                 ))
-            
+
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("ManageAccount", "ManageAccount", new { Area = "Account" })">
+                <a class="govuk-link" href="@Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})">
                     Cancel
                 </a>
             </p>
