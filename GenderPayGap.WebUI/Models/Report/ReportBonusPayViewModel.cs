@@ -31,12 +31,12 @@ namespace GenderPayGap.WebUI.Models.Report
         public decimal? MaleBonusPayPercent { get; set; }
 
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Different in bonus pay (mean)",
+            NameAtStartOfSentence = "Difference in bonus pay (mean)",
             NameWithinSentence = "difference in bonus pay (mean)")]
         public decimal? DiffMeanBonusPercent { get; set; }
 
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Different in bonus pay (median)",
+            NameAtStartOfSentence = "Difference in bonus pay (median)",
             NameWithinSentence = "difference in bonus pay (median)")]
         public decimal? DiffMedianBonusPercent { get; set; }
 

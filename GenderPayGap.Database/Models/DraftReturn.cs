@@ -63,6 +63,70 @@ namespace GenderPayGap.Database.Models
         public string CompanyLinkToGPGInfo { get; set; }
 
 
+        public bool IsEmpty()
+        {
+            return
+                DiffMeanHourlyPayPercent == null
+                && DiffMedianHourlyPercent == null
+
+                && MaleMedianBonusPayPercent == null
+                && FemaleMedianBonusPayPercent == null
+                && DiffMeanBonusPercent == null
+                && DiffMedianBonusPercent == null
+
+                && MaleLowerPayBand == null
+                && FemaleLowerPayBand == null
+                && MaleMiddlePayBand == null
+                && FemaleMiddlePayBand == null
+                && MaleUpperPayBand == null
+                && FemaleUpperPayBand == null
+                && MaleUpperQuartilePayBand == null
+                && FemaleUpperQuartilePayBand == null
+
+                && string.IsNullOrWhiteSpace(FirstName)
+                && string.IsNullOrWhiteSpace(LastName)
+                && string.IsNullOrWhiteSpace(JobTitle)
+
+                && OrganisationSize == null
+
+                && string.IsNullOrWhiteSpace(CompanyLinkToGPGInfo)
+                ;
+        }
+
+        public bool IsSameAsSubmittedReturn(Return submittedReturn)
+        {
+            return
+                submittedReturn != null
+
+                && DiffMeanHourlyPayPercent == submittedReturn.DiffMeanHourlyPayPercent
+                && DiffMedianHourlyPercent == submittedReturn.DiffMedianHourlyPercent
+
+                && DiffMeanBonusPercent == submittedReturn.DiffMeanBonusPercent
+                && DiffMedianBonusPercent == submittedReturn.DiffMedianBonusPercent
+                && MaleMedianBonusPayPercent == submittedReturn.MaleMedianBonusPayPercent
+                && FemaleMedianBonusPayPercent == submittedReturn.FemaleMedianBonusPayPercent
+
+                && MaleLowerPayBand == submittedReturn.MaleLowerPayBand
+                && FemaleLowerPayBand == submittedReturn.FemaleLowerPayBand
+                && MaleMiddlePayBand == submittedReturn.MaleMiddlePayBand
+                && FemaleMiddlePayBand == submittedReturn.FemaleMiddlePayBand
+                && MaleUpperPayBand == submittedReturn.MaleUpperPayBand
+                && FemaleUpperPayBand == submittedReturn.FemaleUpperPayBand
+                && MaleUpperQuartilePayBand == submittedReturn.MaleUpperQuartilePayBand
+                && FemaleUpperQuartilePayBand == submittedReturn.FemaleUpperQuartilePayBand
+
+                && FirstName == submittedReturn.FirstName
+                && LastName == submittedReturn.LastName
+                && JobTitle == submittedReturn.JobTitle
+
+                && OrganisationSize == submittedReturn.OrganisationSize
+
+                && CompanyLinkToGPGInfo == submittedReturn.CompanyLinkToGPGInfo
+                ;
+        }
+
+
+        #region Obsolete properties - to be deleted once we're happy they're no longer used
         [JsonProperty]
         [Obsolete("Only used by old Submit journey")]
         public long? ReturnId { get; set; }
@@ -152,6 +216,7 @@ namespace GenderPayGap.Database.Models
         [Obsolete("Only used by old Submit journey")]
         public bool NotRequiredToReport =>
             ReportingRequirement == ScopeStatuses.OutOfScope || ReportingRequirement == ScopeStatuses.PresumedOutOfScope;
+        #endregion
 
     }
 }
