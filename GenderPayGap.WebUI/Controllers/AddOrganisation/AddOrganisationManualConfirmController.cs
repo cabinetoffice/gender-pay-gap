@@ -37,8 +37,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("manual/confirm")]
         public IActionResult ManualConfirmGet(AddOrganisationManualViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             ValidateManuallyEnteredOrganisationDetails(viewModel);
@@ -52,8 +50,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [ValidateAntiForgeryToken]
         public IActionResult ManualConfirmPost(AddOrganisationManualViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             ValidateManuallyEnteredOrganisationDetails(viewModel);

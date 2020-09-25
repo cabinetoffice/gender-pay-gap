@@ -45,8 +45,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [HttpGet("found")]
         public IActionResult FoundGet(AddOrganisationFoundViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             ThrowIfNeitherIdNorCompanyNumberIsSpecified(viewModel);
@@ -116,8 +114,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         [ValidateAntiForgeryToken]
         public IActionResult FoundPost(AddOrganisationFoundViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewAddOrganisationJourney);
-
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             ThrowIfNeitherIdNorCompanyNumberIsSpecified(viewModel);
