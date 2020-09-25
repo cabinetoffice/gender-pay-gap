@@ -91,47 +91,5 @@ namespace Account.Controllers.ChangeDetailsController
             Assert.IsInstanceOf(typeof(ChangeDetailsViewModel), viewResult.Model);
         }
 
-        [Test]
-        public void POST_SavesChangeDetailsModelToUserEntity()
-        {
-            // Arrange
-            User verifiedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            var controller =
-                UiTestHelper.GetController<GenderPayGap.WebUI.Areas.Account.Controllers.ChangeDetailsController>(
-                    verifiedUser.UserId,
-                    mockRouteData,
-                    verifiedUser);
-
-            var testViewModel = new ChangeDetailsViewModel {
-                FirstName = $"NewFirstName{verifiedUser.UserId}",
-                LastName = $"NewLastName{verifiedUser.UserId}",
-                JobTitle = $"NewJobTitle{verifiedUser.UserId}",
-                ContactPhoneNumber = $"NewContactPhoneNumber{verifiedUser.UserId}",
-                AllowContact = !verifiedUser.AllowContact,
-                SendUpdates = !verifiedUser.SendUpdates
-            };
-
-            // Act
-            var redirectToActionResult = controller.ChangeDetails(testViewModel) as RedirectToActionResult;
-
-            // Assert
-            Assert.NotNull(redirectToActionResult);
-            Assert.AreEqual(
-                nameof(GenderPayGap.WebUI.Areas.Account.Controllers.ManageAccountController.ManageAccount),
-                redirectToActionResult.ActionName);
-
-            // Assert success flag
-            Assert.IsTrue(controller.TempData.ContainsKey(nameof(AccountResources.ChangeDetailsSuccessAlert)));
-
-            // Assert user details
-            testViewModel.Compare(verifiedUser);
-
-            // Assert contact point details
-            Assert.AreEqual(verifiedUser.ContactFirstName, testViewModel.FirstName, "Expected ContactFirstName to match");
-            Assert.AreEqual(verifiedUser.ContactLastName, testViewModel.LastName, "Expected ContactLastName to match");
-            Assert.AreEqual(verifiedUser.ContactJobTitle, testViewModel.JobTitle, "Expected ContactJobTitle to match");
-        }
-
     }
-
 }
