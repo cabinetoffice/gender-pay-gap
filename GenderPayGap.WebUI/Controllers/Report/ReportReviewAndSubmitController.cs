@@ -46,15 +46,21 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (!draftReturnService.DraftReturnExistsAndIsComplete(organisationId, reportingYear))
             {
-                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
-                StatusMessageHelper.SetStatusMessage(Response, "This report is not ready to submit. Complete the remaining sections", nextPageUrl);
-                return LocalRedirect(nextPageUrl);
+                return RedirectToReportOverviewPageWithNotReadyStatusMessage(encryptedOrganisationId, reportingYear);
             }
 
             var viewModel = new ReportReviewAndSubmitViewModel();
             PopulateReportAndSubmitViewModel(viewModel, organisationId, reportingYear);
 
             return View("ReportReview", viewModel);
+        }
+
+        private IActionResult RedirectToReportOverviewPageWithNotReadyStatusMessage(string encryptedOrganisationId, int reportingYear)
+        {
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview",
+                new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+            StatusMessageHelper.SetStatusMessage(Response, "This report is not ready to submit. Complete the remaining sections", nextPageUrl);
+            return LocalRedirect(nextPageUrl);
         }
 
         private void PopulateReportAndSubmitViewModel(ReportReviewAndSubmitViewModel viewModel, long organisationId, int reportingYear)
@@ -86,9 +92,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (!draftReturnService.DraftReturnExistsAndIsComplete(organisationId, reportingYear))
             {
-                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
-                StatusMessageHelper.SetStatusMessage(Response, "This report is not ready to submit. Complete the remaining sections", nextPageUrl);
-                return LocalRedirect(nextPageUrl);
+                return RedirectToReportOverviewPageWithNotReadyStatusMessage(encryptedOrganisationId, reportingYear);
             }
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
@@ -123,9 +127,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (!draftReturnService.DraftReturnExistsAndIsComplete(organisationId, reportingYear))
             {
-                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
-                StatusMessageHelper.SetStatusMessage(Response, "This report is not ready to submit. Complete the remaining sections", nextPageUrl);
-                return LocalRedirect(nextPageUrl);
+                return RedirectToReportOverviewPageWithNotReadyStatusMessage(encryptedOrganisationId, reportingYear);
             }
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
@@ -171,9 +173,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (!draftReturnService.DraftReturnExistsAndIsComplete(organisationId, reportingYear))
             {
-                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
-                StatusMessageHelper.SetStatusMessage(Response, "This report is not ready to submit. Complete the remaining sections", nextPageUrl);
-                return LocalRedirect(nextPageUrl);
+                return RedirectToReportOverviewPageWithNotReadyStatusMessage(encryptedOrganisationId, reportingYear);
             }
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
