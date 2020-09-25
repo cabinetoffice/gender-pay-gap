@@ -123,6 +123,16 @@
                         {
                             // Add a final row for the original scope (not audited so doesn't appear in the list automatically)
                             <tr class="govuk-table__row">
+                                
+                                @if (sectorChanges.Count == 1)
+                                {
+                                    // If this is the only row added (so the Previous sectors header isn't present yet)
+                                    // Add the Previous sectors header
+                                    <th scope="row" class="govuk-table__header" rowspan="@(sectorChanges.Count)">
+                                        Previous sectors
+                                    </th>
+                                }
+                                
                                 <td class="govuk-table__cell">@(sectorChangeDetails.OldSector)</td>
                                 <td class="govuk-table__cell"></td>
                                 <td class="govuk-table__cell"></td>
