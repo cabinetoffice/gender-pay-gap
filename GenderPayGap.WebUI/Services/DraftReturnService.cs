@@ -180,6 +180,8 @@ namespace GenderPayGap.WebUI.Services
                 return false;
             }
 
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+
             // Hourly pay
             bool hourlyPaySectionIsComplete =
                 draftReturn.DiffMeanHourlyPayPercent != null
@@ -211,9 +213,10 @@ namespace GenderPayGap.WebUI.Services
 
             // Responsible person
             bool responsiblePersonSectionIsComplete =
-                !string.IsNullOrWhiteSpace(draftReturn.FirstName)
-                && !string.IsNullOrWhiteSpace(draftReturn.LastName)
-                && !string.IsNullOrWhiteSpace(draftReturn.JobTitle);
+                organisation.SectorType == SectorTypes.Public // Public sector organisations don't have to provide a responsible person
+                || (!string.IsNullOrWhiteSpace(draftReturn.FirstName)
+                    && !string.IsNullOrWhiteSpace(draftReturn.LastName)
+                    && !string.IsNullOrWhiteSpace(draftReturn.JobTitle));
 
             // Organisation size
             bool organisationSizeSectionIsComplete = draftReturn.OrganisationSize != null;

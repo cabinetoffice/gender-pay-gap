@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.WebUI.Views.Components.TaskList
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Views.Components.TaskList
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
@@ -106,9 +107,12 @@
                 Model.HourlyPayStatus,
                 Model.BonusPayStatus,
                 Model.EmployessByPayQuartileStatus,
-                Model.PersonResponsibleStatus,
                 Model.OrganisationSizeStatus
             };
+            if (Model.Organisation.SectorType != SectorTypes.Public)
+            {
+                statuses.Add(Model.PersonResponsibleStatus);
+            }
             int numberOfCompleteStatuses = statuses.Count(s => s == TaskListStatus.Completed);
 
             <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
@@ -149,86 +153,93 @@
         }
 
         @{
+            var figuresSection = new TaskListSectionViewModel
+            {
+                SectionName = "Figures",
+                Items = new List<TaskListItemViewModel>
+                {
+                    new TaskListItemViewModel
+                    {
+                        Title = "Hourly pay",
+                        Href = Url.Action("ReportHourlyPayGet", "ReportHourlyPay",
+                            new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                        Status = Model.HourlyPayStatus
+                    },
+                    new TaskListItemViewModel
+                    {
+                        Title = "Bonus pay",
+                        Href = Url.Action("ReportBonusPayGet", "ReportBonusPay",
+                            new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                        Status = Model.BonusPayStatus
+                    },
+                    new TaskListItemViewModel
+                    {
+                        Title = "Employees by pay quartile",
+                        Href = Url.Action("EmployeesByPayQuartileGet", "ReportEmployeesByPayQuartile",
+                            new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                        Status = Model.EmployessByPayQuartileStatus
+                    }
+                }
+            };
+
+            var aboutYourOrganisationSection = new TaskListSectionViewModel
+            {
+                SectionName = "About your organisation",
+                Items = new List<TaskListItemViewModel>()
+            };
+            if (Model.Organisation.SectorType != SectorTypes.Public)
+            {
+                aboutYourOrganisationSection.Items.Add(new TaskListItemViewModel
+                {
+                    Title = "Person responsible in your organisation",
+                    Href = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson",
+                        new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                    Status = Model.PersonResponsibleStatus
+                });
+            }
+            aboutYourOrganisationSection.Items.Add(new TaskListItemViewModel
+            {
+                Title = "Size of your organisation",
+                Href = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation",
+                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                Status = Model.OrganisationSizeStatus
+            });
+            aboutYourOrganisationSection.Items.Add(new TaskListItemViewModel
+            {
+                Title = "Link to your gender pay gap information",
+                BodyHtml = @<text>
+                               (optional)
+                            </text>,
+                Href = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite",
+                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
+                Status = Model.LinkStatus
+            });
+
+            var submitSection = new TaskListSectionViewModel
+            {
+                SectionName = "Submit report",
+                Items = new List<TaskListItemViewModel>
+                {
+                    new TaskListItemViewModel
+                    {
+                        Title = "Review and submit your gender pay gap report",
+                        Href = Model.ReviewAndSubmitStatus == TaskListStatus.NotStarted // Only show a link if the status is NotStarted
+                            ? Url.Action("ReportReview", "ReportReviewAndSubmit",
+                                new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                            : null,
+                        Status = Model.ReviewAndSubmitStatus
+                    }
+                }
+            };
+
             await Html.RenderPartialAsync("../Components/TaskList/TaskList", new TaskListViewModel
             {
                 ShouldSectionsBeNumbered = false,
                 Sections = new List<TaskListSectionViewModel>
                 {
-                    new TaskListSectionViewModel
-                    {
-                        SectionName = "Figures",
-                        Items = new List<TaskListItemViewModel>
-                        {
-                            new TaskListItemViewModel
-                            {
-                                Title = "Hourly pay",
-                                Href = Url.Action("ReportHourlyPayGet", "ReportHourlyPay",
-                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                                Status = Model.HourlyPayStatus
-                            },
-                            new TaskListItemViewModel
-                            {
-                                Title = "Bonus pay",
-                                Href = Url.Action("ReportBonusPayGet", "ReportBonusPay",
-                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                                Status = Model.BonusPayStatus
-                            },
-                            new TaskListItemViewModel
-                            {
-                                Title = "Employees by pay quartile",
-                                Href = Url.Action("EmployeesByPayQuartileGet", "ReportEmployeesByPayQuartile",
-                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                                Status = Model.EmployessByPayQuartileStatus
-                            },
-                        }
-                    },
-                    new TaskListSectionViewModel
-                    {
-                        SectionName = "About your organisation",
-                        Items = new List<TaskListItemViewModel>
-                        {
-                            new TaskListItemViewModel
-                            {
-                                Title = "Person responsible in your organisation",
-                                Href = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson",
-                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                                Status = Model.PersonResponsibleStatus
-                            },
-                            new TaskListItemViewModel
-                            {
-                                Title = "Size of your organisation",
-                                Href = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation",
-                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                                Status = Model.OrganisationSizeStatus
-                            },
-                            new TaskListItemViewModel
-                            {
-                                Title = "Link to your gender pay gap information",
-                                BodyHtml = @<text>
-                                               (optional)
-                                            </text>,
-                                Href = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite",
-                                    new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                                Status = Model.LinkStatus
-                            },
-                        }
-                    },
-                    new TaskListSectionViewModel
-                    {
-                        SectionName = "Submit report",
-                        Items = new List<TaskListItemViewModel>
-                        {
-                            new TaskListItemViewModel
-                            {
-                                Title = "Review and submit your gender pay gap report",
-                                Href = Model.ReviewAndSubmitStatus == TaskListStatus.NotStarted // Only show a link if the status is NotStarted
-                                    ? Url.Action("ReportReview", "ReportReviewAndSubmit",
-                                        new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
-                                    : null,
-                                Status = Model.ReviewAndSubmitStatus
-                            },
-                        }
-                    },
+                    figuresSection,
+                    aboutYourOrganisationSection,
+                    submitSection,
                 }
             });
         }

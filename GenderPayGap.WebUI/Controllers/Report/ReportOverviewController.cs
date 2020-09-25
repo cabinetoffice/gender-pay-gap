@@ -189,7 +189,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HourlyPayStatus == TaskListStatus.Completed
                 && viewModel.BonusPayStatus == TaskListStatus.Completed
                 && viewModel.EmployessByPayQuartileStatus == TaskListStatus.Completed
-                && viewModel.PersonResponsibleStatus == TaskListStatus.Completed
+                && (
+                    viewModel.PersonResponsibleStatus == TaskListStatus.Completed ||
+                    viewModel.Organisation.SectorType == SectorTypes.Public // Public sector organisations don't have to provide a responsible person
+                )
                 && viewModel.OrganisationSizeStatus == TaskListStatus.Completed)
                 // The "website link" page is optional, so we don't check viewModel.LinkStatus
             {

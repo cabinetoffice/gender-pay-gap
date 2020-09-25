@@ -1,4 +1,5 @@
 ﻿@using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -172,28 +173,31 @@
                 </tr>
             </tbody>
         </table>
-
-        <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
-            Person responsible in your organisation
-        </h3>
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key govuk-!-width-two-thirds govuk-!-font-weight-regular">
-                    Name
-                </dt>
-                <dd class="govuk-summary-list__value govuk-!-width-one-third">
-                    @(Model.DraftReturn.FirstName) @(Model.DraftReturn.LastName)
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key govuk-!-width-two-thirds govuk-!-font-weight-regular">
-                    Job title
-                </dt>
-                <dd class="govuk-summary-list__value govuk-!-width-one-third">
-                    @(Model.DraftReturn.JobTitle)
-                </dd>
-            </div>
-        </dl>
+        
+        @if (Model.Organisation.SectorType != SectorTypes.Public)
+        {
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                Person responsible in your organisation
+            </h3>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-!-width-two-thirds govuk-!-font-weight-regular">
+                        Name
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-!-width-one-third">
+                        @(Model.DraftReturn.FirstName) @(Model.DraftReturn.LastName)
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-!-width-two-thirds govuk-!-font-weight-regular">
+                        Job title
+                    </dt>
+                    <dd class="govuk-summary-list__value govuk-!-width-one-third">
+                        @(Model.DraftReturn.JobTitle)
+                    </dd>
+                </div>
+            </dl>
+        }
 
         <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
             Size of your organisation
