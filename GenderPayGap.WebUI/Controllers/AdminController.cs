@@ -1,51 +1,32 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
-using GenderPayGap.Database.Models;
-using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.BusinessLogic.Services;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
-using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Administration
 {
     [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
-    public partial class AdminController : BaseController
+    public class AdminController : Controller
     {
 
-        private readonly AuditLogger auditLogger;
+        private readonly IDataRepository dataRepository;
 
-        public AdminController(
-            IHttpCache cache,
-            IHttpSession session,
-            IDataRepository dataRepository,
-            IWebTracker webTracker,
-            AuditLogger auditLogger
-        ) : base(cache, session, dataRepository, webTracker)
+        public AdminController(IDataRepository dataRepository)
         {
-            this.auditLogger = auditLogger;
+            this.dataRepository = dataRepository;
         }
-
 
         [HttpGet("pending-registrations")]
         public IActionResult PendingRegistrations()
         {
             List<UserOrganisation> nonUkAddressUserOrganisations =
-                DataRepository
+                dataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
                     .Where(uo => uo.PINConfirmedDate == null)
@@ -56,7 +37,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     .ToList();
 
             List<UserOrganisation> publicSectorUserOrganisations =
-                DataRepository
+                dataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
                     .Where(uo => uo.PINConfirmedDate == null)
@@ -66,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Administration
                     .ToList();
 
             List<UserOrganisation> allManuallyRegisteredUserOrganisations =
-                DataRepository
+                dataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
                     .Where(uo => uo.PINConfirmedDate == null)
