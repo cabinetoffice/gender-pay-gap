@@ -89,6 +89,7 @@ namespace GenderPayGap.WebUI.Services
             bool receivedLetterFromEhrc)
         {
             Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
+            Return existingReturn = organisation.GetReturn(draftReturn.SnapshotYear);
             var organisationSizeRange = draftReturn.OrganisationSize?.GetAttribute<RangeAttribute>();
 
             var newReturn = new Return
@@ -128,8 +129,6 @@ namespace GenderPayGap.WebUI.Services
                 LateReason = lateReason,
                 EHRCResponse = receivedLetterFromEhrc,
 
-                Modifications = null, // TODO we'll need to set this for edited returns
-
                 // We will set the status to Submitted soon
                 // But, we want to use the Return.SetStatus method (which required the Return to already be saved
                 // But, to save the Return, we need an initial status
@@ -137,7 +136,59 @@ namespace GenderPayGap.WebUI.Services
                 Status = ReturnStatuses.Draft
             };
 
+            newReturn.Modifications = CalculateModifications(newReturn, existingReturn);
+
             return newReturn;
+        }
+
+        private string CalculateModifications(Return newReturn, Return existingReturn)
+        {
+            if (existingReturn == null)
+            {
+                return null;
+            }
+
+            var modifications = new List<string>();
+
+            if (newReturn.DiffMeanHourlyPayPercent != existingReturn.DiffMeanHourlyPayPercent
+                || newReturn.DiffMedianHourlyPercent != existingReturn.DiffMedianHourlyPercent
+                
+                || newReturn.MaleMedianBonusPayPercent != existingReturn.MaleMedianBonusPayPercent
+                || newReturn.FemaleMedianBonusPayPercent != existingReturn.FemaleMedianBonusPayPercent
+                || newReturn.DiffMeanBonusPercent != existingReturn.DiffMeanBonusPercent
+                || newReturn.DiffMedianBonusPercent != existingReturn.DiffMedianBonusPercent
+
+                || newReturn.MaleUpperQuartilePayBand != existingReturn.MaleUpperQuartilePayBand
+                || newReturn.FemaleUpperQuartilePayBand != existingReturn.FemaleUpperQuartilePayBand
+                || newReturn.MaleUpperPayBand != existingReturn.MaleUpperPayBand
+                || newReturn.FemaleUpperPayBand != existingReturn.FemaleUpperPayBand
+                || newReturn.MaleMiddlePayBand != existingReturn.MaleMiddlePayBand
+                || newReturn.FemaleMiddlePayBand != existingReturn.FemaleMiddlePayBand
+                || newReturn.MaleLowerPayBand != existingReturn.MaleLowerPayBand
+                || newReturn.FemaleLowerPayBand != existingReturn.FemaleLowerPayBand)
+            {
+                modifications.Add("Figures");
+            }
+
+            if (newReturn.FirstName != existingReturn.FirstName
+                || newReturn.LastName != existingReturn.LastName
+                || newReturn.JobTitle != existingReturn.JobTitle)
+            {
+                modifications.Add("PersonResponsible");
+            }
+
+            if (newReturn.MinEmployees != existingReturn.MinEmployees
+                || newReturn.MaxEmployees != existingReturn.MaxEmployees)
+            {
+                modifications.Add("OrganisationSize");
+            }
+
+            if (newReturn.CompanyLinkToGPGInfo != existingReturn.CompanyLinkToGPGInfo)
+            {
+                modifications.Add("WebsiteURL");
+            }
+
+            return string.Join(", ", modifications);
         }
 
         private static void RetireOldReturnsForSameYear(Return newReturn, User user)
