@@ -18,11 +18,11 @@ namespace GenderPayGap.WebUI.Models.Report
         public ReportPagesAction Action { get; set; }
 
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Different in hourly pay (mean)",
+            NameAtStartOfSentence = "Difference in hourly pay (mean)",
             NameWithinSentence = "difference in hourly pay (mean)")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Different in hourly pay (median)",
+            NameAtStartOfSentence = "Difference in hourly pay (median)",
             NameWithinSentence = "difference in hourly pay (median)")]
         public decimal? DiffMedianHourlyPercent { get; set; }
 
