@@ -23,14 +23,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
         public void POST_Existing_Scopes_Are_Retired_When_New_Scope_Is_Added()
         {
             // Arrange
-            var user = new UserBuilder().Build();
+            User user = new UserBuilder();
 
-            var organisation = CreateDefaultOrganisation(SectorTypes.Private);
+            Organisation organisation = new OrganisationBuilder().WithSectorType(SectorTypes.Private);
 
-            var organisationScope2018 = CreateDefaultOrganisationScope(organisation, ScopeStatuses.PresumedInScope, 2018);
-
-            var organisationScope2017 = CreateDefaultOrganisationScope(organisation, ScopeStatuses.PresumedInScope, 2017);
+            OrganisationScope organisationScope2018 = new OrganisationScopeBuilder().WithOrganisation(organisation)
+                .WithReportingYear(2018);
             
+            OrganisationScope organisationScope2017 = new OrganisationScopeBuilder().WithOrganisation(organisation)
+                .WithReportingYear(2017);
+
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Radio_NewScopeStatus", "OutOfScope");
             requestFormValues.Add("GovUk_Text_Reason", "A reason");
@@ -66,7 +68,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
         {
             return new Organisation
             {
-                OrganisationId = 1, OrganisationName = "Test Organisation Ltd", CompanyNumber = "12345678", Created = DateTime.Now, SectorType = sector
+                OrganisationId = 1, OrganisationName = "Test Organisation Ltd", CompanyNumber = "12345678", SectorType = sector
             };
         }
 
