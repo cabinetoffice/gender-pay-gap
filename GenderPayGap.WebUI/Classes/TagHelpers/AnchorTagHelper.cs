@@ -29,35 +29,6 @@ namespace GenderPayGap.WebUI.Classes.TagHelpers
 
             #region Google Analytics Tracking
 
-            ///Change category andtrack category to data-track-category
-            ReplaceTrack("category", "action", "label", "options");
-
-            void ReplaceTrack(params string[] fieldNames)
-            {
-                Parallel.ForEach(
-                    fieldNames,
-                    fieldName => {
-                        foreach (string fn in new[] {$"track-{fieldName}", fieldName})
-                        {
-                            int i = output.Attributes.IndexOfName(fn);
-                            if (i > -1)
-                            {
-                                if (output.Attributes.ContainsName($"data-track-{fieldName}"))
-                                {
-                                    throw new ArgumentException($"data-track-{fieldName}", "Duplicate tracking field");
-                                }
-
-                                var newAttribute = new TagHelperAttribute(
-                                    $"data-track-{fieldName}",
-                                    output.Attributes[i].Value,
-                                    output.Attributes[i].ValueStyle);
-                                output.Attributes.RemoveAt(i);
-                                output.Attributes.Insert(i, newAttribute);
-                            }
-                        }
-                    });
-            }
-
             //Check if link should be tracked
             //TODO check what these fields mean
             bool isTracked = output.Attributes.ContainsName("data-track-category")
