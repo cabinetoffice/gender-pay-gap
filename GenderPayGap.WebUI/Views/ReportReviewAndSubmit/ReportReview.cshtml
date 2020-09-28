@@ -229,19 +229,12 @@
                     @(linkIsValid ? null : "govuk-!-width-one-third")">
                     @if (linkIsValid)
                     {
-                        try // This try-catch is here because of a bug in AnchorTagHelper
-                        {
-                            <a href="@(Model.DraftReturn.CompanyLinkToGPGInfo)"
-                               target="_blank"
-                               rel="noopener"
-                               class="govuk-link">
-                                @(Model.DraftReturn.CompanyLinkToGPGInfo)
-                            </a>
-                        }
-                        catch (ArgumentException)
-                        {
+                        <a href="@(Model.DraftReturn.CompanyLinkToGPGInfo)"
+                           target="_blank"
+                           rel="noopener"
+                           class="govuk-link">
                             @(Model.DraftReturn.CompanyLinkToGPGInfo)
-                        }
+                        </a>
                     }
                     else
                     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GovUkDesignSystem.GovUkDesignSystemComponents.SubComponents;
 
 namespace GovUkDesignSystem.GovUkDesignSystemComponents
@@ -24,9 +25,7 @@ namespace GovUkDesignSystem.GovUkDesignSystemComponents
         /// <summary>
         ///     HTML attributes (for example data attributes) to add to the anchor tag.
         /// </summary>
-        [Obsolete(
-            "This doesn't work yet - The GenderPayGap.WebUI.Classes.TagHelpers.AnchorTagHelper doesn't currently allow arbitrary attributes")]
-        public string Attributes { get; set; }
+        public Dictionary<string, string> Attributes { get; set; }
 
         /// <summary>
         ///     HTML to use within the back link component.
