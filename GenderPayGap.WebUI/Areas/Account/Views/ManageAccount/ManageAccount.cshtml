@@ -135,7 +135,7 @@
             <div class="column-half gpg-c-cya__changelink">
                 @if (string.IsNullOrEmpty(ViewBag.ChangeDetailsUrl) == false)
                 {
-                    <a href="@(ViewBag.ChangeDetailsUrl)">
+                    <a href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
                         Change
                         <span class="visually-hidden"> my contact preferences</span>
                     </a>

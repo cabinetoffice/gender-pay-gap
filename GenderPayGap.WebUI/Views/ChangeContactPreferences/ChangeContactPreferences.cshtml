@@ -1,0 +1,59 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Account.ChangeContactPreferencesViewModel
+
+@{
+    ViewBag.Title = "Change your contact preferences - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Account",
+                Href = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})
+            },
+            new CrumbViewModel
+            {
+                Text = "Contact Preferences"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @(Html.GovUkErrorSummary())
+        
+        <h1 class="govuk-heading-xl">
+            Change your contact preferences
+        </h1>
+
+        <form method="POST" action="@Url.Action("ChangeContactPreferencesPost", "ChangeContactPreferences")">
+            @(Html.AntiForgeryToken())
+
+            @(Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }
+                ))
+
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})">
+                    Cancel
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
+
