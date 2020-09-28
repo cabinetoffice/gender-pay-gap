@@ -70,10 +70,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Save updates
             dataRepository.SaveChangesAsync().Wait();
             
-            // TODO: Add success notification to show on ManageAccount page after redirect
+            string nextPageUrl = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"});
+            StatusMessageHelper.SetStatusMessage(Response, "Saved changes to personal details", nextPageUrl);
 
             // Return user to the Manage Account page
-            return RedirectToAction("ManageAccount", "ManageAccount", new { Area = "Account" });
+            return LocalRedirect(nextPageUrl);
         }
 
     }
