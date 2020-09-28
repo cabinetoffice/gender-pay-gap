@@ -90,22 +90,6 @@ namespace System.Web
             }
         }
 
-        public static bool GetIsExternalUrl(this Microsoft.AspNetCore.Http.HttpContext context, string href)
-        {
-            if (string.IsNullOrWhiteSpace(href) || href.IsRelativeUri())
-            {
-                return false;
-            }
-
-            if (!Uri.IsWellFormedUriString(href, UriKind.Absolute))
-            {
-                throw new ArgumentException($"Url '{href}' is not well formed", nameof(href));
-            }
-
-            var uri = new Uri(href);
-            return !uri.Host.EqualsI(context.Request.Host.Host, StringComparer.OrdinalIgnoreCase);
-        }
-
         public static string GetUserHostAddress(this Microsoft.AspNetCore.Http.HttpContext context)
         {
             return context.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();

@@ -24,16 +24,6 @@ namespace GenderPayGap.Extensions
             }
         }
 
-        public static bool IsRelativeUri(this string url)
-        {
-            return !IsAbsoluteUri(url);
-        }
-
-        public static bool IsAbsoluteUri(this string url)
-        {
-            return url.ContainsI("://");
-        }
-
         public static Uri GetBaseUri(this Uri uri)
         {
             return new Uri($"{uri.Scheme}://{uri.Authority}/");

@@ -27,24 +27,6 @@ namespace GenderPayGap.WebUI.Classes.TagHelpers
                 rels.AddRange(output.Attributes["rel"].Value.ToStringOrEmpty().SplitI(";, "));
             }
 
-            var isExternal = false;
-            if (output.Attributes.ContainsName("href"))
-            {
-                string href = output.Attributes["href"].Value.ToStringOrEmpty().TrimI(" \\/.");
-                if (!string.IsNullOrWhiteSpace(href) && !href.StartsWithI("mailto:", "javascript:", "ftp:", "file:", "#"))
-                {
-                    //Check if the link is external
-                    isExternal = ViewContext.HttpContext.GetIsExternalUrl(href);
-
-                    //If external then 
-                    if (isExternal)
-                    {
-                        //Never allow the new tab to control this page
-                        rels.AddRange("noopener");
-                    }
-                }
-            }
-
             #region Google Analytics Tracking
 
             ///Change category andtrack category to data-track-category
@@ -96,12 +78,6 @@ namespace GenderPayGap.WebUI.Classes.TagHelpers
             }
 
             #endregion
-
-            //Make sure we open in new tab unless otherwise stated
-            if (isExternal && !output.Attributes.ContainsName("target"))
-            {
-                output.Attributes.SetAttribute("target", "_blank");
-            }
 
             //Save the relationship attribute changes
             if (rels.Any())
