@@ -6,6 +6,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
+using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -35,8 +36,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             requestFormValues.Add("GovUk_Checkbox_SendUpdates", "true");
             requestFormValues.Add("GovUk_Checkbox_AllowContact", "false");
 
-            var controller = NewUiTestHelper.GetController<WebUI.Controllers.Account.AccountCreationController>(
-                requestFormValues: requestFormValues);
+            var controller = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>()
+                .WithRequestFormValues(requestFormValues)
+                .Build();
 
             // Required to mock out the Url object when creating the verification URL
             controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
@@ -77,7 +79,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
                 Status = UserStatuses.New
             };
 
-            var controller = NewUiTestHelper.GetController<WebUI.Controllers.Account.AccountCreationController>(dbObjects: user);
+            var controller = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>()
+                .WithDatabaseObjects(user)
+                .Build();
 
             // Act
             var response = (RedirectToActionResult) controller.VerifyEmail(user.EmailVerifyHash);
