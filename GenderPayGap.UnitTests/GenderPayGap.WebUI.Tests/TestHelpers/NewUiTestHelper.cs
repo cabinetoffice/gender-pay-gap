@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
         where T: Controller
         {
 
-            DIContainer = BuildContainerIoC(dbObjects);
+            DIContainer = BuildContainerIocForControllerOfType<T>(dbObjects);
 
             //Create Inversion of Control container
             Global.ContainerIoC = DIContainer;
@@ -135,7 +135,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             
         }
         
-        public static IContainer BuildContainerIoC(params object[] dbObjects)
+        public static IContainer BuildContainerIocForControllerOfType<T>(params object[] dbObjects)
+        where T : Controller
         {
             var builder = new ContainerBuilder();
 
@@ -210,9 +211,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             builder.Register(c => Mock.Of<IEncryptionHandler>()).As<IEncryptionHandler>().SingleInstance();
             
-            //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
-            builder.RegisterType<AccountCreationController>().InstancePerLifetimeScope();
-            builder.RegisterType<AdminOrganisationScopeController>().InstancePerLifetimeScope();
+            // Register Controller
+            builder.RegisterType<T>().InstancePerLifetimeScope();
 
             builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
             builder.RegisterType<HttpCache>().As<IHttpCache>().SingleInstance();
