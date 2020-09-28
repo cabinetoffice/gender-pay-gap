@@ -27,22 +27,6 @@ namespace GenderPayGap.WebUI.Classes.TagHelpers
                 rels.AddRange(output.Attributes["rel"].Value.ToStringOrEmpty().SplitI(";, "));
             }
 
-            var isDownload = false;
-            if (output.Attributes.ContainsName("download"))
-            {
-                string download = output.Attributes["download"].Value.ToString();
-                if (download.EqualsI("false"))
-                {
-                    output.Attributes.RemoveAll("download");
-                }
-                else
-                {
-                    isDownload = true;
-                    output.Attributes.RemoveAll("download");
-                    output.Attributes.Insert(0, new TagHelperAttribute("download", null, HtmlAttributeValueStyle.Minimized));
-                }
-            }
-
             var isExternal = false;
             if (output.Attributes.ContainsName("href"))
             {
@@ -120,7 +104,7 @@ namespace GenderPayGap.WebUI.Classes.TagHelpers
             #endregion
 
             //Make sure we open in new tab unless otherwise stated
-            if ((isDownload || isExternal) && !output.Attributes.ContainsName("target"))
+            if (isExternal && !output.Attributes.ContainsName("target"))
             {
                 output.Attributes.SetAttribute("target", "_blank");
             }
