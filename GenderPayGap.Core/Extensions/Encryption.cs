@@ -228,11 +228,34 @@ namespace GenderPayGap.Extensions
             //Always try using just the basic master password
             passwords.Add(null);
 
-            var tryWithPrimer = true;
-            byte[] decryptedBytes = null;
-            TryNoPrimer:
-            var found = false;
+            // First, try with encryption primer 
+            bool tryWithPrimer = true;
+            bool found = DecryptBytes(encryptedBytes, passwords, tryWithPrimer, out byte[] decryptedBytes);
 
+            // Try again without encryption primer 
+            if (!found)
+            {
+                tryWithPrimer = false;
+                found = DecryptBytes(encryptedBytes, passwords, tryWithPrimer, out decryptedBytes);
+            }
+
+            if (!found)
+            {
+                throw new CryptographicException("Could not decrypt using specified keys");
+            }
+
+            if (tryWithPrimer)
+            {
+                decryptedBytes = decryptedBytes.Strip(PrimerBytes.Length, PrimerBytes.Length);
+            }
+
+            return decryptedBytes;
+        }
+
+        private static bool DecryptBytes(byte[] encryptedBytes, List<string> passwords, bool tryWithPrimer, out byte[] decryptedBytes)
+        {
+            var found = false;
+            decryptedBytes = null;
             var attempted = new HashSet<string>();
             for (var p = 0; p < passwords.Count; p++)
             {
@@ -270,25 +293,7 @@ namespace GenderPayGap.Extensions
                 }
             }
 
-            //Tray again without encryption primer 
-            if (!found && tryWithPrimer)
-            {
-                tryWithPrimer = false;
-                goto TryNoPrimer;
-            }
-
-
-            if (!found)
-            {
-                throw new CryptographicException("Could not decrypt using specified keys");
-            }
-
-            if (tryWithPrimer)
-            {
-                decryptedBytes = decryptedBytes.Strip(PrimerBytes.Length, PrimerBytes.Length);
-            }
-
-            return decryptedBytes;
+            return found;
         }
 
         [DebuggerStepThrough]

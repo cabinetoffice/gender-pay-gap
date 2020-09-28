@@ -246,28 +246,20 @@ namespace GenderPayGap.WebUI.Classes
                         description = "The value here is invalid.";
                     }
 
-                    if (attributes == null || !attributes.Any())
+                    if (attributes != null && attributes.Any())
                     {
-                        goto addModelError;
+                        ValidationAttribute attribute = attributes.FirstOrDefault(a => a.FormatErrorMessage(displayName) == error.ErrorMessage);
+                        if (attribute != null)
+                        {
+                            string validatorKey = $"{containerType.Name}.{propertyName}:{attribute.GetType().Name.TrimSuffix("Attribute")}";
+                            CustomErrorMessage customError = CustomErrorMessages.GetValidationError(validatorKey);
+                            if (customError != null)
+                            {
+                                title = attribute.FormatError(customError.Title, displayName);
+                                description = attribute.FormatError(customError.Description, displayName);
+                            }
+                        }
                     }
-
-                    ValidationAttribute attribute = attributes.FirstOrDefault(a => a.FormatErrorMessage(displayName) == error.ErrorMessage);
-                    if (attribute == null)
-                    {
-                        goto addModelError;
-                    }
-
-                    string validatorKey = $"{containerType.Name}.{propertyName}:{attribute.GetType().Name.TrimSuffix("Attribute")}";
-                    CustomErrorMessage customError = CustomErrorMessages.GetValidationError(validatorKey);
-                    if (customError == null)
-                    {
-                        goto addModelError;
-                    }
-
-                    title = attribute.FormatError(customError.Title, displayName);
-                    description = attribute.FormatError(customError.Description, displayName);
-
-                    addModelError:
 
                     //add the summary message if it doesnt already exist
                     if (!string.IsNullOrWhiteSpace(title)
