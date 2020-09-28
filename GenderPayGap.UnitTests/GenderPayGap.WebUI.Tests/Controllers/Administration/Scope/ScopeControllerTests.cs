@@ -4,6 +4,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -37,9 +38,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
             requestFormValues.Add("GovUk_Radio_NewScopeStatus", "OutOfScope");
             requestFormValues.Add("GovUk_Text_Reason", "A reason");
 
-            object[] dbObjects = {user, organisation, organisationScope2017, organisationScope2018};
-
-            var controller = NewUiTestHelper.GetController<WebUI.Controllers.AdminOrganisationScopeController>(requestFormValues: requestFormValues, dbObjects: dbObjects);
+            var controller = new ControllerBuilder<AdminOrganisationScopeController>()
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user, organisation, organisationScope2017, organisationScope2018)
+                .Build();
 
             // Act
             controller.ChangeScopePost(1, 2018, new AdminChangeScopeViewModel());
