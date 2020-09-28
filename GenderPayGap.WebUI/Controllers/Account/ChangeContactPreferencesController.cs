@@ -1,0 +1,49 @@
+﻿using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database;
+using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Account;
+using Microsoft.AspNetCore.Mvc;
+
+namespace GenderPayGap.WebUI.Controllers.Account
+{
+    [Route("manage-account")]
+    public class ChangeContactPreferencesController : Controller
+    {
+
+        private readonly IDataRepository dataRepository;
+
+        public ChangeContactPreferencesController(
+            IDataRepository dataRepository)
+        {
+            this.dataRepository = dataRepository;
+        }
+        
+        // The user asks to change their contact preferences
+        // We direct them to a page that asks for their updated contact preferences
+        [HttpGet("change-contact-preferences")]
+        public IActionResult ChangeContactPreferencesGet()
+        {
+            var viewModel = new ChangeContactPreferencesViewModel();
+
+            // Get the current user
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            // Fill the viewModel with the current user's information
+            viewModel.SendUpdates = currentUser.SendUpdates;
+            viewModel.AllowContact = currentUser.AllowContact;
+            
+            // Return the Change Contact Preferences form
+            return View("ChangeContactPreferences", viewModel);
+        }
+
+        [HttpPost("change-contact-preferences")]
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangeContactPreferencesPost(ChangeContactPreferencesViewModel viewModel)
+        {
+            return null;
+        }
+
+    }
+}
