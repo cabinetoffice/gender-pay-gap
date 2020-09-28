@@ -59,7 +59,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("organisation/{id}/scope/change/{year}")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeScopePost(long id, int year, AdminChangeScopeViewModel viewModel)
+        public IActionResult ChangeScopePost(long id, int year, AdminChangeScopeViewModel viewModel)
         {
             var organisation = dataRepository.Get<Organisation>(id);
             var currentOrganisationScope = organisation.GetScopeForYear(year);
@@ -103,7 +103,7 @@ namespace GenderPayGap.WebUI.Controllers
             };
 
             dataRepository.Insert(newOrganisationScope);
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChangesAsync().Wait();
 
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationScope,
