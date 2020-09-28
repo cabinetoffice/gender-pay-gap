@@ -39,14 +39,8 @@ namespace GenderPayGap.WebUI.Classes.TagHelpers
                     //If external then 
                     if (isExternal)
                     {
-                        //Indicates that the referenced document is not part of the same site as the current document
-                        rels.Add("external");
-
-                        //Prevent google from following the link
-                        rels.Add("nofollow");
-
-                        //Never send the referrer or allow opening of tabs
-                        rels.AddRange("noreferrer", "noopener");
+                        //Never allow the new tab to control this page
+                        rels.AddRange("noopener");
                     }
                 }
             }
