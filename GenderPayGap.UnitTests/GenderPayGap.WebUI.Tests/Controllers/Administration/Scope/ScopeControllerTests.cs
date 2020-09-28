@@ -5,6 +5,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -22,7 +23,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
         public void POST_Existing_Scopes_Are_Retired_When_New_Scope_Is_Added()
         {
             // Arrange
-            var user = CreateDefaultUser();
+            var user = new UserBuilder().Build();
 
             var organisation = CreateDefaultOrganisation(SectorTypes.Private);
 
@@ -57,8 +58,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
                 EmailAddress = "test@example.com",
                 Firstname = "Test",
                 Lastname = "Example",
-                EmailVerifySendDate = VirtualDateTime.Now,
-                EmailVerifyHash = Guid.NewGuid().ToString("N"),
                 Status = UserStatuses.Active
             };
         }
