@@ -52,39 +52,5 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
             Assert.AreEqual(organisationScope2017.Status, ScopeRowStatuses.Active);
         }
 
-        private User CreateDefaultUser()
-        {
-            return new User
-            {
-                UserId = 1,
-                EmailAddress = "test@example.com",
-                Firstname = "Test",
-                Lastname = "Example",
-                Status = UserStatuses.Active
-            };
-        }
-
-        private Organisation CreateDefaultOrganisation(SectorTypes sector)
-        {
-            return new Organisation
-            {
-                OrganisationId = 1, OrganisationName = "Test Organisation Ltd", CompanyNumber = "12345678", SectorType = sector
-            };
-        }
-
-        private OrganisationScope CreateDefaultOrganisationScope(Organisation organisation, ScopeStatuses scopeStatus, int reportingYear)
-        {
-            return new OrganisationScope
-            {
-                Organisation = organisation,
-                OrganisationId = organisation.OrganisationId,
-                ReadGuidance = true,
-                ScopeStatus = scopeStatus,
-                Reason = "Initial setup",
-                Status = ScopeRowStatuses.Active,
-                SnapshotDate = SectorTypes.Private.GetAccountingStartDate(reportingYear)
-            };
-        }
-
     }
 }
