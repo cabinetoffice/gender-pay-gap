@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
+using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +22,48 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
         public void POST_Existing_Scopes_Are_Retired_When_New_Scope_Is_Added()
         {
             // Arrange
+            var user = new User
+            {
+                UserId = 1,
+                EmailAddress = "test@example.com",
+                Firstname = "Test",
+                Lastname = "Example",
+                EmailVerifySendDate = VirtualDateTime.Now,
+                EmailVerifyHash = Guid.NewGuid().ToString("N"),
+                Status = UserStatuses.Active
+            };
+
+            var organisation = new Organisation
+            {
+                OrganisationId = 1, OrganisationName = "Test Organisation Ltd", CompanyNumber = "12345678", Created = DateTime.Now
+            };
+
+            var organisationScope2018 = new OrganisationScope
+            {
+                Organisation = organisation,
+                OrganisationId = organisation.OrganisationId,
+                ReadGuidance = true,
+                ScopeStatus = ScopeStatuses.PresumedInScope,
+                Reason = "Initial setup",
+                Status = ScopeRowStatuses.Active,
+                SnapshotDate = SectorTypes.Private.GetAccountingStartDate(2018)
+            };
+            
+            var organisationScope2017 = new OrganisationScope
+            {
+                Organisation = organisation,
+                OrganisationId = organisation.OrganisationId,
+                ReadGuidance = true,
+                ScopeStatus = ScopeStatuses.PresumedInScope,
+                Reason = "Initial setup",
+                Status = ScopeRowStatuses.Active,
+                SnapshotDate = SectorTypes.Private.GetAccountingStartDate(2017)
+            };
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Radio_NewScopeStatus_OutOfScope", "true");
+            requestFormValues.Add("GovUk_Text_Reason", "A reason");
+
             var testViewModel = new AdminChangeScopeViewModel
             {
                 Reason = "A reason",
@@ -29,13 +74,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
                 ReportingYear = 2018
             };
 
-            var controller = NewUiTestHelper.GetController<WebUI.Controllers.AdminOrganisationScopeController>();
+            object[] dbObjects = {user, organisation, organisationScope2017, organisationScope2018};
+
+            var controller = NewUiTestHelper.GetController<WebUI.Controllers.AdminOrganisationScopeController>(dbObjects: dbObjects);
 
             // Act
-            var response = (RedirectToActionResult) controller.ChangeScopePost(testViewModel.OrganisationId, testViewModel.ReportingYear, testViewModel);
+            controller.ChangeScopePost(testViewModel.OrganisationId, testViewModel.ReportingYear, testViewModel);
             
             // Assert
-            // TODO: Check that old scopes for this reporting year are retired
+            // Old scopes from the same year should be retired
+            Assert.AreEqual(organisationScope2018.Status, ScopeRowStatuses.Retired);
+            
+            // Scopes from a different year should not be retired
+            Assert.AreEqual(organisationScope2017.Status, ScopeRowStatuses.Active);
         }
 
     }
