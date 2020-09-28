@@ -2,6 +2,8 @@
 
 @await Html.PartialAsync("AccountNavigation")
 
+<div class="govuk-!-margin-top-5"></div>
+
 @{ await Html.RenderPartialAsync("../../../../Views/Components/StatusMessages/StatusMessages"); }
 
 @if (string.IsNullOrWhiteSpace(ViewBag.ChangeSuccessMessage) == false)
@@ -20,7 +22,7 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-large">Manage your account</h1>
+        <h1 class="heading-large govuk-!-margin-top-1">Manage your account</h1>
     </div>
 </div>
 
