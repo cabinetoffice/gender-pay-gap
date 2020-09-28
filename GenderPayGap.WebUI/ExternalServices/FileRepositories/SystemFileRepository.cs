@@ -100,23 +100,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 directoryPath = Path.Combine(_rootDir.FullName, directoryPath);
             }
 
-            var retries = 0;
-            Retry:
-            try
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-            catch (IOException)
-            {
-                if (retries >= 10)
-                {
-                    throw;
-                }
-
-                retries++;
-                Thread.Sleep(500);
-                goto Retry;
-            }
+            Directory.CreateDirectory(directoryPath);
         }
 
         private bool GetDirectoryExists(string directoryPath)
