@@ -1,4 +1,5 @@
-﻿@using GenderPayGap.Core.Classes
+@using GenderPayGap.Core
+@using GenderPayGap.Core.Classes
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Classes.Formatters
 @model GenderPayGap.WebUI.Models.Organisation.DisplayReportModel
@@ -43,6 +44,9 @@
         @{
             bool isReportAvailable = submittedReturn != null;
             bool isDraftAvailable = Model.HasDraftReturnForYear;
+
+            string returnOrDraftInfoIsAvailable = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), Model.ReportingYear.ToString(), true.ToString());
+            string returnOrDraftInfoIsNotAvailable = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), Model.ReportingYear.ToString(), false.ToString());
         }
 
         <div>
@@ -62,20 +66,27 @@
             }
         </div>
         <br/>
+        @{
+            string newUrl = Url.Action("ReportOverview", "ReportOverview",
+                new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear});
+            string returnOrDraftAvailableUrl = Url.Action("ReportForOrganisation", new {request = returnOrDraftInfoIsAvailable});
+            string returnOrDraftUnavailableUrl = Url.Action("ReportForOrganisation", new { request = returnOrDraftInfoIsNotAvailable });
+            bool useNewUrl = FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney);
+        }
+
         @if (!isReportAvailable && !isDraftAvailable)
         {
             <a class="button"
-               href="@(Url.Action("ReportOverview", "ReportOverview",
-                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
+               href="@(useNewUrl ? newUrl : returnOrDraftUnavailableUrl)">
                 <span>Draft report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
 
+
         @if (!isReportAvailable && isDraftAvailable)
         {
             <a class="button"
-               href="@(Url.Action("ReportOverview", "ReportOverview",
-                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
+               href="@(useNewUrl ? newUrl : returnOrDraftAvailableUrl)">
                 <span>Edit draft<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
@@ -83,8 +94,7 @@
         @if (isReportAvailable && !isDraftAvailable)
         {
             <a class="button"
-               href="@(Url.Action("ReportOverview", "ReportOverview",
-                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
+               href="@(useNewUrl ? newUrl : returnOrDraftAvailableUrl)">
                 <span>Edit Report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
@@ -92,8 +102,7 @@
         @if (isReportAvailable && isDraftAvailable)
         {
             <a class="button"
-               href="@(Url.Action("ReportOverview", "ReportOverview",
-                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
+               href="@(useNewUrl ? newUrl : returnOrDraftAvailableUrl)">
                 <span>Edit draft report<span class="visually-hidden"> for year @year</span></span>
             </a>
         }
