@@ -2,8 +2,11 @@
 
 @await Html.PartialAsync("AccountNavigation")
 
+@{ await Html.RenderPartialAsync("../../../../Views/Components/StatusMessages/StatusMessages"); }
+
 @if (string.IsNullOrWhiteSpace(ViewBag.ChangeSuccessMessage) == false)
 {
+    // TODO: Remove this when all links use new StatusMessages component
     <div class="grid-row">
         <div class="column-two-thirds">
             <div class="gpg-c-notification gpg-c-notification--success" aria-labelledby="success-summary-title" role="alert" tabindex="-1">
