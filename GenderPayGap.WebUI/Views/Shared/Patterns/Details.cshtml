@@ -1,6 +1,6 @@
 ﻿@model GenderPayGap.WebUI.Models.Shared.Details
 <details>
-    <summary aria-controls="@Model.Id" aria-expanded="@Model.Expanded" data-track-category="@Model.Id" data-track-label="@Model.LinkText">
+    <summary aria-controls="@Model.Id" aria-expanded="@Model.Expanded" data-track-category="@Model.Id" data-track-label="@Model.LinkText" rel="track">
         <span class="summary">@Model.LinkText</span>
     </summary>
     <div id="@Model.Id" class="@(Model.IsPanel ? "panel panel-border-narrow" : "")" aria-hidden="@(Model.Expanded == false)">
