@@ -41,11 +41,16 @@ namespace GenderPayGap.WebUI.Services
 
         public Organisation ImportOrganisationFromCompaniesHouse(string companyNumber, User requestingUser)
         {
-            // If we already have an organisation with this company number in our database,
+            // If we already have an active organisation with this company number in our database,
             //   then no need to import it, just load it from the database
-            if (dataRepository.GetAll<Organisation>().Any(o => o.CompanyNumber == companyNumber))
+            Organisation existingOrganisation = dataRepository.GetAll<Organisation>()
+                .Where(org => org.CompanyNumber == companyNumber)
+                .Where(org => org.Status == OrganisationStatuses.Active) // Only do this for Active organisations - if we have a Retired or Deleted organisation, then continue re-importing from CoHo
+                .FirstOrDefault();
+
+            if (existingOrganisation != null)
             {
-                return dataRepository.GetAll<Organisation>().First(o => o.CompanyNumber == companyNumber);
+                return existingOrganisation;
             }
 
             CompaniesHouseCompany companiesHouseCompany = companiesHouseApi.GetCompanyAsync(companyNumber).Result;

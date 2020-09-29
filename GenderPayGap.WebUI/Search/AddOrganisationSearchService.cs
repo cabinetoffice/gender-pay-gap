@@ -208,6 +208,7 @@ namespace GenderPayGap.WebUI.Search
             List<Organisation> foundOrganisations = dataRepository
                 .GetAll<Organisation>()
                 .Where(org => organisationIds.Contains(org.OrganisationId))
+                .Where(org => org.Status == OrganisationStatuses.Active) // If we have Retired or Deleted an organisation, don't use its details - just use the details from CoHo
                 .ToList();
 
             List<AddOrganisationSearchResult> searchResults = limitedNumberOfOrganisations

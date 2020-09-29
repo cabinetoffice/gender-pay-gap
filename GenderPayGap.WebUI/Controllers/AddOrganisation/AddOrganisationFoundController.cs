@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -85,6 +85,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             Organisation existingOrganisation = dataRepository.GetAll<Organisation>()
                 .Where(o => o.CompanyNumber == viewModel.CompanyNumber)
+                .Where(o => o.Status == OrganisationStatuses.Active) // Only redirect the user to an Active organisation (i.e. don't do this for Retired or Deleted organisations)
                 .FirstOrDefault();
 
             // We expect an ID for organisations that are in our database
@@ -187,6 +188,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             Organisation existingOrganisation = dataRepository.GetAll<Organisation>()
                 .Where(o => o.CompanyNumber == viewModel.CompanyNumber)
+                .Where(o => o.Status == OrganisationStatuses.Active) // Only redirect the user to an Active organisation (i.e. don't do this for Retired or Deleted organisations)
                 .FirstOrDefault();
 
             // We expect an ID for organisations that are in our database
