@@ -25,14 +25,15 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("change-contact-preferences")]
         public IActionResult ChangeContactPreferencesGet()
         {
-            var viewModel = new ChangeContactPreferencesViewModel();
-
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
             // Fill the viewModel with the current user's information
-            viewModel.SendUpdates = currentUser.SendUpdates;
-            viewModel.AllowContact = currentUser.AllowContact;
+            var viewModel = new ChangeContactPreferencesViewModel
+            {
+                SendUpdates = currentUser.SendUpdates,
+                AllowContact = currentUser.AllowContact
+            };
             
             // Return the Change Contact Preferences form
             return View("ChangeContactPreferences", viewModel);
