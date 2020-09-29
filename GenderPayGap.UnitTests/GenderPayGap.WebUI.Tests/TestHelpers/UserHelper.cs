@@ -33,7 +33,7 @@ namespace GenderPayGap.Tests.TestHelpers
         public static User GetGovEqualitiesOfficeUser()
         {
             User user = GetNotAdminUserWithoutVerifiedEmailAddress();
-            user.EmailAddress = "test@GovEqualitiesOfficeUser.gov.uk";
+            user.EmailAddress = "test@geo.gov.uk";
             return user;
         }
 
