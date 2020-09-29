@@ -10,6 +10,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         private string organisationName = "Test Organisation Ltd";
         private string companyNumber = "12345678";
         private SectorTypes sectorType = SectorTypes.Public;
+        private OrganisationStatuses status = OrganisationStatuses.Active;
 
         public OrganisationBuilder WithOrganisationId(long organisationId)
         {
@@ -35,20 +36,22 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
 
-        private Organisation Build()
+        public OrganisationBuilder WithStatus(OrganisationStatuses status)
+        {
+            this.status = status;
+            return this;
+        }
+
+        public Organisation Build()
         {
             return new Organisation
             {
                 OrganisationId = organisationId,
                 OrganisationName = organisationName,
                 CompanyNumber = companyNumber,
-                SectorType = sectorType
+                SectorType = sectorType,
+                Status = status
             };
-        }
-        
-        public static implicit operator Organisation(OrganisationBuilder instance)
-        {
-            return instance.Build();
         }
 
     }
