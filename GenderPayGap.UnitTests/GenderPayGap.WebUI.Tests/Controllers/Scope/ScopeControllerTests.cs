@@ -3,10 +3,8 @@ using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
-using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
-using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 
