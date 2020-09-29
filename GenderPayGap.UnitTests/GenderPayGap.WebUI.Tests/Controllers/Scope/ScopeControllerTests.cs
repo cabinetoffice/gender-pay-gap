@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 
@@ -23,26 +22,32 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
         public void POST_Existing_Scopes_Are_Retired_When_New_Scope_Is_Added()
         {
             // Arrange
-            User user = new UserBuilder();
-
-            Organisation organisation = new OrganisationBuilder().WithSectorType(SectorTypes.Private);
-
-            OrganisationScope organisationScope2018 = new OrganisationScopeBuilder().WithOrganisation(organisation)
-                .WithReportingYear(2018);
+            Organisation organisation = new OrganisationBuilder().WithSectorType(SectorTypes.Private).Build();
             
-            OrganisationScope organisationScope2017 = new OrganisationScopeBuilder().WithOrganisation(organisation)
-                .WithReportingYear(2017);
+            User user = new UserBuilder().WithOrganisation(organisation).Build();
+
+            OrganisationScope organisationScope2018 = new OrganisationScopeBuilder()
+                .WithOrganisation(organisation)
+                .WithReportingYear(2018)
+                .Build();
+            
+            OrganisationScope organisationScope2017 = new OrganisationScopeBuilder()
+                .WithOrganisation(organisation)
+                .WithReportingYear(2017)
+                .Build();
 
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Radio_NewScopeStatus", "OutOfScope");
             requestFormValues.Add("GovUk_Text_Reason", "A reason");
 
-            object[] dbObjects = {user, organisation, organisationScope2017, organisationScope2018};
-
-            var controller = NewUiTestHelper.GetController<WebUI.Controllers.AdminOrganisationScopeController>(requestFormValues: requestFormValues, dbObjects: dbObjects);
+            var controller = new ControllerBuilder<ScopeController>().WithUserId(user.UserId)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user, organisation, organisationScope2017, organisationScope2018)
+                .Build();
 
             // Act
-            controller.ChangeScopePost(1, 2018, new AdminChangeScopeViewModel());
+            string encryptedOrganisationId = Encryption.EncryptQuerystring(user.UserId.ToString());
+            controller.ConfirmOutOfScopeAnswers(encryptedOrganisationId, 2018, new OutOfScopeViewModel());
             
             // Assert
             // Old scopes from the same year should be retired

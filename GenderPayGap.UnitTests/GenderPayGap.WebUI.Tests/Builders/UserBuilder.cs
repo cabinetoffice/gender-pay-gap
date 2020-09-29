@@ -1,4 +1,7 @@
-﻿using GenderPayGap.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using GenderPayGap.Core;
 using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Tests.Builders
@@ -10,6 +13,8 @@ namespace GenderPayGap.WebUI.Tests.Builders
         private string firstname = "John";
         private string lastname = "Smith";
         private UserStatuses status = UserStatuses.Active;
+        private DateTime emailVerifiedDate = DateTime.Now.AddDays(-5);
+        private ICollection<UserOrganisation> organisations = new List<UserOrganisation>();
 
         public UserBuilder WithUserId(long userId)
         {
@@ -41,6 +46,13 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
 
+        public UserBuilder WithOrganisation(Organisation organisation)
+        {
+            UserOrganisation userOrganisation = new UserOrganisationBuilder().ForUser(userId).ForOrganisation(organisation).Build();
+            organisations.Add(userOrganisation);
+            return this;
+        }
+
         public User Build()
         {
             return new User
@@ -49,13 +61,10 @@ namespace GenderPayGap.WebUI.Tests.Builders
                 EmailAddress = emailAddress,
                 Firstname = firstname,
                 Lastname = lastname,
-                Status = status
+                Status = status,
+                EmailVerifiedDate = emailVerifiedDate,
+                UserOrganisations = organisations
             };
-        }
-
-        public static implicit operator User(UserBuilder instance)
-        {
-            return instance.Build();
         }
 
     }

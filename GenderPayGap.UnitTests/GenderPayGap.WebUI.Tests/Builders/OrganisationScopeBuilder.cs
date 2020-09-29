@@ -8,7 +8,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
     public class OrganisationScopeBuilder
     {
 
-        private Organisation organisation = new OrganisationBuilder();
+        private Organisation organisation = new OrganisationBuilder().Build();
         private bool readGuidance = false;
         private ScopeStatuses scopeStatus = ScopeStatuses.PresumedInScope;
         private string reason = "A reason";
@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
 
-        private OrganisationScope Build()
+        public OrganisationScope Build()
         {
             return new OrganisationScope
             {
@@ -63,11 +63,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
                 Status = status,
                 SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear)
             };
-        }
-        
-        public static implicit operator OrganisationScope(OrganisationScopeBuilder instance)
-        {
-            return instance.Build();
         }
 
     }
