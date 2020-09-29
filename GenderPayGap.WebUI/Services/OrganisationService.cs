@@ -14,6 +14,12 @@ namespace GenderPayGap.WebUI.Services
 {
     public class OrganisationService
     {
+        private enum SourceOfData
+        {
+            CompaniesHouse,
+            Manual
+        }
+
 
         private readonly IDataRepository dataRepository;
         private readonly ICompaniesHouseAPI companiesHouseApi;
@@ -62,14 +68,13 @@ namespace GenderPayGap.WebUI.Services
                 EmployerReference = GenerateUniqueEmployerReference()
             };
 
-            SetInitialStatus(organisation, requestingUser, 
-                OrganisationStatuses.Active /* Organisations imported from CoHo are trusted, so we set them to Active */);
+            SetInitialStatus(organisation, requestingUser, SourceOfData.CompaniesHouse);
 
-            AddOrganisationName(organisation, companiesHouseCompany.CompanyName);
+            AddOrganisationName(organisation, companiesHouseCompany.CompanyName, SourceOfData.CompaniesHouse);
 
             AddOrganisationAddress(organisation, companiesHouseCompany.RegisteredOfficeAddress);
 
-            AddOrganisationSicCodes(organisation, companiesHouseCompany.SicCodes);
+            AddOrganisationSicCodes(organisation, companiesHouseCompany.SicCodes, SourceOfData.CompaniesHouse);
 
             SetInitialScopes(organisation);
 
@@ -101,10 +106,9 @@ namespace GenderPayGap.WebUI.Services
                 EmployerReference = GenerateUniqueEmployerReference()
             };
 
-            SetInitialStatus(organisation, requestingUser, 
-                OrganisationStatuses.Pending /* Organisations that the user created manually  */);
+            SetInitialStatus(organisation, requestingUser, SourceOfData.Manual);
 
-            AddOrganisationName(organisation, organisationName);
+            AddOrganisationName(organisation, organisationName, SourceOfData.Manual);
 
             AddOrganisationAddress(
                 organisation,
@@ -120,7 +124,7 @@ namespace GenderPayGap.WebUI.Services
                 isUkAddress
             );
 
-            AddOrganisationSicCodes(organisation, sicCodes);
+            AddOrganisationSicCodes(organisation, sicCodes, SourceOfData.Manual);
 
             SetInitialScopes(organisation);
 
@@ -145,18 +149,34 @@ namespace GenderPayGap.WebUI.Services
             return employerReference;
         }
 
-        private void SetInitialStatus(Organisation organisation, User user, OrganisationStatuses status)
+        private void SetInitialStatus(Organisation organisation, User user, SourceOfData sourceOfData)
         {
+            OrganisationStatuses status;
+            string organisationStatusDetails;
+            switch (sourceOfData)
+            {
+                case SourceOfData.CompaniesHouse:
+                    status = OrganisationStatuses.Active;
+                    organisationStatusDetails = "Imported from CoHo";
+                    break;
+                case SourceOfData.Manual:
+                    status = OrganisationStatuses.Pending;
+                    organisationStatusDetails = "Manually registered";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sourceOfData), sourceOfData, null);
+            }
+
             organisation.Status = status;
             organisation.StatusDate = DateTime.Now;
-            organisation.StatusDetails = "Imported from CoHo";
+            organisation.StatusDetails = organisationStatusDetails;
 
             var organisationStatus = new OrganisationStatus
             {
                 Organisation = organisation,
                 Status = status,
                 StatusDate = VirtualDateTime.Now,
-                StatusDetails = "Imported from CoHo",
+                StatusDetails = organisationStatusDetails,
                 ByUser = user
             };
 
@@ -165,15 +185,28 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.Insert(organisationStatus);
         }
 
-        private void AddOrganisationName(Organisation organisation, string name)
+        private void AddOrganisationName(Organisation organisation, string name, SourceOfData sourceOfData)
         {
             organisation.OrganisationName = name;
+
+            string source;
+            switch (sourceOfData)
+            {
+                case SourceOfData.CompaniesHouse:
+                    source = "CoHo";
+                    break;
+                case SourceOfData.Manual:
+                    source = "User";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sourceOfData), sourceOfData, null);
+            }
 
             var organisationName = new OrganisationName
             {
                 Organisation = organisation,
                 Name = name,
-                Source = "CoHo"
+                Source = source
             };
 
             organisation.OrganisationNames.Add(organisationName);
@@ -233,29 +266,29 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.Insert(organisationAddress);
         }
 
-        private void AddOrganisationSicCodes(Organisation organisation, List<string> sicCodes)
+        private void AddOrganisationSicCodes(Organisation organisation, List<string> sicCodes, SourceOfData sourceOfData)
         {
             if (sicCodes != null)
             {
                 foreach (string sicCodeString in sicCodes)
                 {
-                    AddOrganisationSicCode(organisation, sicCodeString);
+                    AddOrganisationSicCode(organisation, sicCodeString, sourceOfData);
                 }
             }
         }
 
-        private void AddOrganisationSicCodes(Organisation organisation, List<int> sicCodes)
+        private void AddOrganisationSicCodes(Organisation organisation, List<int> sicCodes, SourceOfData sourceOfData)
         {
             if (sicCodes != null)
             {
                 foreach (int sicCode in sicCodes)
                 {
-                    AddOrganisationSicCode(organisation, sicCode);
+                    AddOrganisationSicCode(organisation, sicCode, sourceOfData);
                 }
             }
         }
 
-        private void AddOrganisationSicCode(Organisation organisation, string sicCodeString)
+        private void AddOrganisationSicCode(Organisation organisation, string sicCodeString, SourceOfData sourceOfData)
         {
             if (!int.TryParse(sicCodeString, out int sicCodeInt))
             {
@@ -266,16 +299,16 @@ namespace GenderPayGap.WebUI.Services
                         OrganisationName = organisation.OrganisationName,
                         CompanyNumber = organisation.CompanyNumber,
                         SicCode = sicCodeString,
-                        Source = "CoHo",
+                        Source = sourceOfData.ToString(),
                         Error = $"Could not parse ({sicCodeString}) as an integer"
                     });
                 return;
             }
 
-            AddOrganisationSicCode(organisation, sicCodeInt);
+            AddOrganisationSicCode(organisation, sicCodeInt, sourceOfData);
         }
 
-        private void AddOrganisationSicCode(Organisation organisation, int sicCodeInt)
+        private void AddOrganisationSicCode(Organisation organisation, int sicCodeInt, SourceOfData sourceOfData)
         {
             SicCode sicCode = dataRepository.Get<SicCode>(sicCodeInt);
 
@@ -288,17 +321,30 @@ namespace GenderPayGap.WebUI.Services
                         OrganisationName = organisation.OrganisationName,
                         CompanyNumber = organisation.CompanyNumber,
                         SicCode = sicCodeInt,
-                        Source = "CoHo",
+                        Source = sourceOfData.ToString(),
                         Error = $"SIC code ({sicCodeInt}) not found in our database"
                     });
                 return;
+            }
+
+            string source;
+            switch (sourceOfData)
+            {
+                case SourceOfData.CompaniesHouse:
+                    source = "CoHo";
+                    break;
+                case SourceOfData.Manual:
+                    source = "Manual";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sourceOfData), sourceOfData, null);
             }
 
             var organisationSicCode = new OrganisationSicCode
             {
                 Organisation = organisation,
                 SicCode = sicCode,
-                Source = "CoHo"
+                Source = source
             };
 
             organisation.OrganisationSicCodes.Add(organisationSicCode);
