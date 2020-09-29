@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -100,7 +100,8 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     new
                     {
                         id = existingOrganisation.GetEncryptedId(),
-                        query = viewModel.Query
+                        query = viewModel.Query,
+                        sector = viewModel.Sector
                     });
             }
 
@@ -203,7 +204,8 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     new
                     {
                         id = existingOrganisation.GetEncryptedId(),
-                        query = viewModel.Query
+                        query = viewModel.Query,
+                        sector = viewModel.Sector
                     });
             }
 
