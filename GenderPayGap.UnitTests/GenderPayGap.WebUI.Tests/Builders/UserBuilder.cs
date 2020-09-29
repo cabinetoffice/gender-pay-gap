@@ -27,6 +27,12 @@ namespace GenderPayGap.WebUI.Tests.Builders
             };
         }
 
+        public UserBuilder DefaultAdminUser()
+        {
+            userInProgress.EmailAddress = "admin-user@geo.gov.uk";
+            return this;
+        }
+
         public UserBuilder WithUserId(long userId)
         {
             userInProgress.UserId = userId;

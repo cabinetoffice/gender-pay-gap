@@ -37,13 +37,6 @@ namespace GenderPayGap.Tests.TestHelpers
             return user;
         }
 
-        public static User GetAdminUser()
-        {
-            User user = GetNotAdminUserWithoutVerifiedEmailAddress();
-            user.EmailAddress = "adminUser@AdminUser.com";
-            return user;
-        }
-
         public static User GetDatabaseAdmin()
         {
             return Mock.Of<User>(
