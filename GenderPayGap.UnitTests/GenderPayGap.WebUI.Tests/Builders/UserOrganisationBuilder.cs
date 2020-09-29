@@ -7,19 +7,23 @@ namespace GenderPayGap.WebUI.Tests.Builders
     {
 
         private long userId = 1;
+        private User user = new UserBuilder().Build();
         private long organisationId = 1;
+        private Organisation organisation = new OrganisationBuilder().Build();
         private DateTime created = DateTime.Now.AddDays(-5);
         private DateTime pinConfirmedDate = DateTime.Now.AddDays(-2);
 
-        public UserOrganisationBuilder ForUser(long userId)
+        public UserOrganisationBuilder ForUser(User user)
         {
-            this.userId = userId;
+            userId = user.UserId;
+            this.user = user;
             return this;
         }
 
         public UserOrganisationBuilder ForOrganisation(Organisation organisation)
         {
             organisationId = organisation.OrganisationId;
+            this.organisation = organisation;
             return this;
         }
 
@@ -34,7 +38,9 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return new UserOrganisation
             {
                 UserId = userId, 
+                User = user,
                 OrganisationId = organisationId, 
+                Organisation = organisation,
                 Created = created,
                 PINConfirmedDate = pinConfirmedDate
             };
