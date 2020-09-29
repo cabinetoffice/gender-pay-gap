@@ -1,5 +1,4 @@
-﻿using System.Dynamic;
-using GovUkDesignSystem;
+﻿using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account

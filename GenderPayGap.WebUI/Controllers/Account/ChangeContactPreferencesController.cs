@@ -3,6 +3,7 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
+using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
@@ -37,12 +38,29 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ChangeContactPreferences", viewModel);
         }
 
+        // The user submits some new contact preferences
+        // We validate them
+        // Then we save the updates and return the user to the Manage Account page
         [HttpPost("change-contact-preferences")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeContactPreferencesPost(ChangeContactPreferencesViewModel viewModel)
         {
-            return null;
+            // Get the user db entry
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            
+            // Update the user's information
+            currentUser.SendUpdates = viewModel.SendUpdates;
+            currentUser.AllowContact = viewModel.AllowContact;
+
+            // Save updates
+            dataRepository.SaveChanges();
+            
+            string nextPageUrl = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"});
+            StatusMessageHelper.SetStatusMessage(Response, "Saved changes to contact preferences", nextPageUrl);
+
+            // Return user to the Manage Account page
+            return LocalRedirect(nextPageUrl);
         }
 
     }
