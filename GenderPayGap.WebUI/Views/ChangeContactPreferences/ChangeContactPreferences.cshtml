@@ -39,12 +39,29 @@
 
         <form method="POST" action="@Url.Action("ChangeContactPreferencesPost", "ChangeContactPreferences")">
             @(Html.AntiForgeryToken())
+            
+            @(Html.GovUkCheckboxItemFor(
+                m => m.AllowContact,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"
+                }
+            
+            ))
+            
+            @(Html.GovUkCheckboxItemFor(
+                m => m.SendUpdates,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "I would like to receive information about webinars, events, and new guidance"
+                }
+            ))
 
             @(Html.GovUkButton(
                 new ButtonViewModel
                 {
                     Text = "Confirm",
-                    Classes = "govuk-!-margin-bottom-4"
+                    Classes = "govuk-!-margin-bottom-4 govuk-!-margin-top-4"
                 }
                 ))
 
