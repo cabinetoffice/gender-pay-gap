@@ -106,7 +106,7 @@ namespace GenderPayGap.WebUI.Controllers
                 currentUser.UserId,
                 viewModel.Reason);
 
-            // [In]Activate users of the organisaton
+            // [In]Activate users of the organisation
             if (newStatus == OrganisationStatuses.Active)
             {
                 ActivateUsersOfOrganisation(organisation);
