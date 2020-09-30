@@ -86,13 +86,10 @@
             </div>
 
             <div class="column-half gpg-c-cya__changelink">
-                @if (string.IsNullOrEmpty(ViewBag.ChangeDetailsUrl) == false)
-                {
-                    <a href="@Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails")">
-                          Change
-                          <span class="visually-hidden"> my personal details</span>
-                      </a>
-                }
+                <a href="@Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails")">
+                  Change
+                  <span class="visually-hidden"> my personal details</span>
+                </a>
             </div>
         </div>
 
@@ -133,13 +130,10 @@
             </div>
 
             <div class="column-half gpg-c-cya__changelink">
-                @if (string.IsNullOrEmpty(ViewBag.ChangeDetailsUrl) == false)
-                {
-                    <a href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
-                        Change
-                        <span class="visually-hidden"> my contact preferences</span>
-                    </a>
-                }
+                <a href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
+                    Change
+                    <span class="visually-hidden"> my contact preferences</span>
+                </a>
             </div>
 
         </div>
