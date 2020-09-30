@@ -47,7 +47,7 @@
             <li>You will not receive communications from the gender pay gap service</li>
         </ul>
         
-        @if (Model.User.UserOrganisations.Any(uo => uo.GetAssociatedUsers().Count() == 1))
+        @if (Model.IsSoleUserRegisteredToAnOrganisation)
         {
             <div class="govuk-warning-text">
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -62,7 +62,7 @@
             </div>
         }
 
-        <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
+        <form method="POST" action="@Url.Action("CloseAccountPost", "CloseAccountNew")">
             @(Html.AntiForgeryToken())
 
             <h2 class="govuk-heading-s">Are you sure you want to close your account?</h2>
