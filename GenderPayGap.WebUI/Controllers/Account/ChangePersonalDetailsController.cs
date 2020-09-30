@@ -1,4 +1,4 @@
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -33,17 +33,18 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
 
-            var viewModel = new ChangePersonalDetailsViewModel();
-
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
             // Fill the viewModel with the current user's information
-            viewModel.FirstName = currentUser.Firstname;
-            viewModel.LastName = currentUser.Lastname;
-            viewModel.JobTitle = currentUser.JobTitle;
-            viewModel.ContactPhoneNumber = currentUser.ContactPhoneNumber;
-            
+            var viewModel = new ChangePersonalDetailsViewModel
+            {
+                FirstName = currentUser.Firstname,
+                LastName = currentUser.Lastname,
+                JobTitle = currentUser.JobTitle,
+                ContactPhoneNumber = currentUser.ContactPhoneNumber
+            };
+
             // Return the Change Personal Details form
             return View("ChangePersonalDetails", viewModel);
         }
