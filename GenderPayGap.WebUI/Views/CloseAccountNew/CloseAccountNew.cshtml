@@ -1,0 +1,92 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Account.CloseAccountNewViewModel
+
+@{
+    ViewBag.Title = "Close your account - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Account",
+                Href = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})
+            },
+            new CrumbViewModel
+            {
+                Text = "Close Account"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @(Html.GovUkErrorSummary())
+        
+        <h1 class="govuk-heading-xl">
+            Close your account
+        </h1>
+        
+        <p class="govuk-body">
+            This will not impact any reports already published on the service. Other people registered to the
+            organisation will still be able to submit and change reports.
+        </p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+            <li>You will not be able to report for any organisations you have registered</li>
+            <li>You will not receive communications from the gender pay gap service</li>
+        </ul>
+        
+        @if (Model.User.UserOrganisations.Any(uo => uo.GetAssociatedUsers().Count() == 1))
+        {
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    Closing your account will leave one or more of your oganisations with no one to submit on their behalf.
+                </strong>
+            </div>
+        
+            <div class="govuk-inset-text">
+                It can take up to a week to register an organisation
+            </div>
+        }
+
+        <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
+            @(Html.AntiForgeryToken())
+
+            <h2 class="govuk-heading-s">Are you sure you want to close your account?</h2>
+            
+            @(Html.GovUkTextInputFor(
+                m => m.Password,
+                labelOptions: new LabelViewModel {Text = "Enter your password to confirm"},
+                autocomplete: "password",
+                classes: "govuk-input--width-20"
+            ))
+
+            @(Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Close account",
+                    Classes = "govuk-!-margin-bottom-4 govuk-button--warning"
+                }
+                ))
+
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})">
+                    Cancel
+                </a>
+            </p>
+        </form>
+    </div>
+</div>
