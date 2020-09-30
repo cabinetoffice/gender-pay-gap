@@ -67,6 +67,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         {
             UserOrganisation userOrganisation = new UserOrganisationBuilder().ForUser(userInProgress).ForOrganisation(organisation).Build();
             userInProgress.UserOrganisations.Add(userOrganisation);
+            organisation.UserOrganisations.Add(userOrganisation);
             return this;
         }
 
