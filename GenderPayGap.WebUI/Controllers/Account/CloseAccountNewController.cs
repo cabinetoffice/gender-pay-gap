@@ -1,8 +1,19 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.Areas.Account.ViewModels;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
+using GenderPayGap.WebUI.Repositories;
+using GenderPayGap.WebUI.Services;
+using GovUkDesignSystem;
+using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
@@ -12,11 +23,20 @@ namespace GenderPayGap.WebUI.Controllers.Account
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly IUserRepository userRepository;
+        private readonly RegistrationRepository registrationRepository;
+        private readonly EmailSendingService emailSendingService;
 
         public CloseAccountNewController(
-            IDataRepository dataRepository)
+            IDataRepository dataRepository, 
+            IUserRepository userRepository, 
+            RegistrationRepository registrationRepository,
+            EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
+            this.userRepository = userRepository;
+            this.registrationRepository = registrationRepository;
+            this.emailSendingService = emailSendingService;
         }
 
         // The user asks to close their account
@@ -24,12 +44,18 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("close")]
         public IActionResult CloseAccountGet()
         {
+            // Admin impersonating a user shouldn't be able to close the user's account
+            if (LoginHelper.IsUserBeingImpersonated(User))
+            {
+                return RedirectToAction("ManageAccount", "ManageAccount", new {Area = "Account"});
+            }
+            
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             
             var viewModel = new CloseAccountNewViewModel
             {
-                User = currentUser
+                IsSoleUserRegisteredToAnOrganisation = currentUser.IsSoleUserOfOneOrMoreOrganisations()
             };
 
             // Return the Change Personal Details form
@@ -39,11 +65,94 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("close")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public IActionResult CloseAccountPost()
+        public async Task<IActionResult> CloseAccountPost(CloseAccountNewViewModel viewModel)
         {
-            return null;
+            // Admin impersonating a user shouldn't be able to close the user's account
+            if (LoginHelper.IsUserBeingImpersonated(User))
+            {
+                return RedirectToAction("ManageAccount", "ManageAccount", new {Area = "Account"});
+            }
+            
+            viewModel.ParseAndValidateParameters(Request, m => m.Password);
+
+            if (viewModel.HasAnyErrors())
+            {
+                return View("CloseAccountNew", viewModel);
+            }
+            
+            // Get the current user
+            User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            
+            // Check password
+            bool isValidPassword = await userRepository.CheckPasswordAsync(currentUser, viewModel.Password);
+            if (!isValidPassword)
+            {
+                viewModel.AddErrorFor(m => m.Password, "Could not verify your password");
+                return View("CloseAccountNew", viewModel);
+            }
+
+            RetireUserAccount(currentUser);
+
+            SendAccountClosedEmail(currentUser);
+            
+            // Collect list of organisations that will be orphaned once the user's account is closed
+            List<Organisation> orphanedOrganisations = currentUser.UserOrganisations
+                .Select(uo => uo.Organisation)
+                .Distinct()
+                .Where(org => org.GetIsOrphan())
+                .ToList();
+
+            InformGeoOfOrphanedOrganisations(orphanedOrganisations);
+            
+            // Log user out and redirect to success page
+            IActionResult accountClosedSuccess = RedirectToAction("CloseAccountComplete", "CloseAccountNew");
+
+            return LoginHelper.Logout(HttpContext, accountClosedSuccess);
         }
         
+        // The user asks to close their account
+        // We direct them to a page that asks for confirmation
+        [HttpGet("close/completed")]
+        public IActionResult CloseAccountComplete()
+        {
+            // Return the Close Account completed page
+            return View("CloseAccountComplete");
+        }
+
+        private async void RetireUserAccount(User user)
+        {
+            try
+            {
+                // update retired user registrations 
+                await registrationRepository.RemoveRetiredUserRegistrationsAsync(user);
+
+                // retire user
+                userRepository.RetireUser(user);
+
+                // commit
+                userRepository.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                userRepository.RollbackTransaction();
+                CustomLogger.Warning($"Failed to retire user {user.UserId}", ex);
+                throw;
+            }
+        }
+
+        private void SendAccountClosedEmail(User user)
+        {
+            // Send email to user informing them of account closure
+            emailSendingService.SendCloseAccountCompletedEmail(user.EmailAddress);
+        }
+
+        private void InformGeoOfOrphanedOrganisations(List<Organisation> orphanedOrganisations)
+        {
+            // Email GEO for each newly orphaned organisation
+            orphanedOrganisations
+                .ForEach(
+                    org => emailSendingService.SendGeoOrphanOrganisationEmail(org.OrganisationName));
+        }
 
     }
 }

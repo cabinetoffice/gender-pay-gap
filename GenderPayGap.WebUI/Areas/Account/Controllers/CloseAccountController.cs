@@ -67,12 +67,12 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // execute change password process
-            /*ModelStateDictionary errors = await CloseAccountService.CloseAccountAsync(currentUser, formData.EnterPassword);
+            ModelStateDictionary errors = await CloseAccountService.CloseAccountAsync(currentUser, formData.EnterPassword);
             if (errors.ErrorCount > 0)
             {
                 ModelState.Merge(errors);
                 return View(nameof(CloseAccount), formData);
-            }*/
+            }
 
             // force sign-out then redirect to completed page
             IActionResult suggestedResult = RedirectToAction("CloseAccountCompleted", "CloseAccount");

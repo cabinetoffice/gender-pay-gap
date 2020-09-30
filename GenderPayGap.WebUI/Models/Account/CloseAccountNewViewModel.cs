@@ -8,11 +8,11 @@ namespace GenderPayGap.WebUI.Models.Account
     public class CloseAccountNewViewModel : GovUkViewModel
     {
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Enter your email address")]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Enter your password")]
         public string Password { get; set; }
         
         [BindNever]
-        public User User { get; set; }
+        public bool IsSoleUserRegisteredToAnOrganisation { get; set; }
 
     }
 }
