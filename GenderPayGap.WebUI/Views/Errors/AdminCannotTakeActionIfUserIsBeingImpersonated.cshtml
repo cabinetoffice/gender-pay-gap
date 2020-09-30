@@ -1,0 +1,22 @@
+﻿@model GenderPayGap.WebUI.ErrorHandling.AdminCannotTakeActionIfImpersonatingUserException
+
+@{
+    ViewBag.Title = "This page is not available to admin users whilst impersonating an employer user - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            This page is not available to admin users whilst impersonating an employer user
+        </h1>
+
+        <p class="govuk-body">
+            If you
+            <a href="@Url.Action("Logout", "Login")">sign out</a>
+            you will be returned to the user's page where you may be able to make the changes you need.
+        </p>
+
+    </div>
+</div>
