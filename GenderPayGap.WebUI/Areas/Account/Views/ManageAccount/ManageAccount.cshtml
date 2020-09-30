@@ -30,8 +30,8 @@
     <div class="column-two-thirds">
         @if (string.IsNullOrEmpty(ViewBag.CloseAccountUrl) == false)
         {
-            <a href="@(ViewBag.CloseAccountUrl)">
-                Close your account
+            <a href="@Url.Action("CloseAccountGet", "CloseAccountNew")">
+              Close your account
             </a>
         }
     </div>
