@@ -1,5 +1,6 @@
 ﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
@@ -57,24 +58,37 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 return View("ChangePersonalDetails", viewModel);
             }
-            
+
             // Get the user db entry
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             
-            // Update the user's information
-            currentUser.Firstname = viewModel.FirstName;
-            currentUser.Lastname = viewModel.LastName;
-            currentUser.JobTitle = viewModel.JobTitle;
-            currentUser.ContactPhoneNumber = viewModel.ContactPhoneNumber;
+            SaveUserDetails(currentUser, viewModel);
 
-            // Save updates
-            dataRepository.SaveChangesAsync().Wait();
-            
             string nextPageUrl = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to personal details", nextPageUrl);
 
             // Return user to the Manage Account page
             return LocalRedirect(nextPageUrl);
+        }
+
+        private void SaveUserDetails(User currentUser, ChangePersonalDetailsViewModel viewModel)
+        {
+            // Update the user's information
+            currentUser.Firstname = viewModel.FirstName;
+            currentUser.ContactFirstName = viewModel.FirstName;
+
+            currentUser.Lastname = viewModel.LastName;
+            currentUser.ContactLastName = viewModel.LastName;
+
+            currentUser.JobTitle = viewModel.JobTitle;
+            currentUser.ContactJobTitle = viewModel.JobTitle;
+
+            currentUser.ContactPhoneNumber = viewModel.ContactPhoneNumber;
+
+            currentUser.Modified = VirtualDateTime.Now;
+
+            // Save updates
+            dataRepository.SaveChanges();
         }
 
     }
