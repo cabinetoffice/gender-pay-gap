@@ -107,5 +107,13 @@ namespace GenderPayGap.WebUI.Helpers
             }
         }
 
+        public static void ThrowIfAdminIsImpersonatingUser(ClaimsPrincipal aspDotNetUser)
+        {
+            if (LoginHelper.IsUserBeingImpersonated(aspDotNetUser))
+            {
+                throw new AdminCannotTakeActionIfImpersonatingUserException();
+            }
+        }
+
     }
 }

@@ -25,6 +25,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("change-contact-preferences")]
         public IActionResult ChangeContactPreferencesGet()
         {
+            ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
+
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
@@ -47,6 +49,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [ValidateAntiForgeryToken]
         public IActionResult ChangeContactPreferencesPost(ChangeContactPreferencesViewModel viewModel)
         {
+            ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
+
             // Get the user db entry
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             

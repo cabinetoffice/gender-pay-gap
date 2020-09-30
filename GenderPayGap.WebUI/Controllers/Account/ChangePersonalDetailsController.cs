@@ -1,4 +1,4 @@
-﻿using GenderPayGap.Core;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -31,6 +31,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("change-personal-details")]
         public IActionResult ChangePersonalDetailsGet()
         {
+            ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
+
             var viewModel = new ChangePersonalDetailsViewModel();
 
             // Get the current user
@@ -54,6 +56,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [ValidateAntiForgeryToken]
         public IActionResult ChangePersonalDetailsPost(ChangePersonalDetailsViewModel viewModel)
         {
+            ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
+
             viewModel.ParseAndValidateParameters(Request, m => m.FirstName);
             viewModel.ParseAndValidateParameters(Request, m => m.LastName);
             viewModel.ParseAndValidateParameters(Request, m => m.JobTitle);
