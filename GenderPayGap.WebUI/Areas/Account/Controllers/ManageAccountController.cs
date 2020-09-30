@@ -4,6 +4,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Areas.Account.Controllers
@@ -38,7 +39,8 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
                 EmailAddress = currentUser.EmailAddress,
                 ContactPhoneNumber = currentUser.ContactPhoneNumber,
                 SendUpdates = currentUser.SendUpdates,
-                AllowContact = currentUser.AllowContact
+                AllowContact = currentUser.AllowContact,
+                IsUserBeingImersonated = LoginHelper.IsUserBeingImpersonated(User)
             };
 
             // check if we have any successful changes
