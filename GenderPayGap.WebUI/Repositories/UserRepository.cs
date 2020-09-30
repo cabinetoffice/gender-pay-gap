@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,9 +7,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.BusinessLogic.Models.Account;
 using GenderPayGap.WebUI.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Repositories
 {
@@ -135,120 +132,6 @@ namespace GenderPayGap.WebUI.Repositories
                 userToUpdate,
                 new { }, // We don't want to save the passwords(!) so there's not really anything else to save here
                 userToUpdate);
-        }
-
-        public bool UpdateDetails(User userToUpdate, UpdateDetailsModel changeDetails)
-        {
-            if (userToUpdate is null)
-            {
-                throw new ArgumentNullException(nameof(userToUpdate));
-            }
-
-            if (changeDetails is null)
-            {
-                throw new ArgumentNullException(nameof(changeDetails));
-            }
-
-            if (userToUpdate.Status != UserStatuses.Active)
-            {
-                throw new ArgumentException($"Can only update details for active users. UserId={userToUpdate.UserId}");
-            }
-
-            // check we have changes
-            var originalDetails = new UpdateDetailsModel
-            {
-                FirstName = userToUpdate.Firstname,
-                LastName = userToUpdate.Lastname,
-                JobTitle = userToUpdate.JobTitle,
-                ContactPhoneNumber = userToUpdate.ContactPhoneNumber,
-                SendUpdates = userToUpdate.SendUpdates,
-                AllowContact = userToUpdate.AllowContact
-            };
-
-            if (originalDetails.Equals(changeDetails))
-            {
-                return false;
-            }
-
-            // log details changed
-            if (userToUpdate.Firstname != changeDetails.FirstName ||
-                userToUpdate.Lastname != changeDetails.LastName ||
-                userToUpdate.ContactFirstName != changeDetails.FirstName ||
-                userToUpdate.ContactLastName != changeDetails.LastName)
-            {
-                auditLogger.AuditChangeToUser(
-                    AuditedAction.UserChangeName,
-                    userToUpdate,
-                    new
-                    {
-                        OldFirstName = userToUpdate.Firstname,
-                        OldLastName = userToUpdate.Lastname,
-                        OldContactFirstName = userToUpdate.ContactFirstName,
-                        OldContactLastName = userToUpdate.ContactLastName,
-                        NewFirstName = changeDetails.FirstName,
-                        NewLastName = changeDetails.LastName,
-                    },
-                    userToUpdate);
-            }
-            if (userToUpdate.JobTitle != changeDetails.JobTitle ||
-                userToUpdate.ContactJobTitle != changeDetails.JobTitle)
-            {
-                auditLogger.AuditChangeToUser(
-                    AuditedAction.UserChangeJobTitle,
-                    userToUpdate,
-                    new
-                    {
-                        OldJobTitle = userToUpdate.JobTitle,
-                        OldContactJobTitle = userToUpdate.ContactJobTitle,
-                        NewJobTitle = changeDetails.JobTitle,
-                    },
-                    userToUpdate);
-            }
-            if (userToUpdate.ContactPhoneNumber != changeDetails.ContactPhoneNumber)
-            {
-                auditLogger.AuditChangeToUser(
-                    AuditedAction.UserChangePhoneNumber,
-                    userToUpdate,
-                    new
-                    {
-                        OldContactPhoneNumber = userToUpdate.ContactPhoneNumber,
-                        NewContactPhoneNumber = changeDetails.ContactPhoneNumber,
-                    },
-                    userToUpdate);
-            }
-            if (userToUpdate.SendUpdates != changeDetails.SendUpdates ||
-                userToUpdate.AllowContact != changeDetails.AllowContact)
-            {
-                auditLogger.AuditChangeToUser(
-                    AuditedAction.UserChangeContactPreferences,
-                    userToUpdate,
-                    new
-                    {
-                        OldSendUpdates = userToUpdate.SendUpdates,
-                        OldAllowContactForUserResearch = userToUpdate.AllowContact,
-                        NewSendUpdates = changeDetails.SendUpdates,
-                        NewAllowContactForUserResearch = changeDetails.AllowContact,
-                    },
-                    userToUpdate);
-            }
-
-            // update current user with new details
-            userToUpdate.Firstname = changeDetails.FirstName;
-            userToUpdate.Lastname = changeDetails.LastName;
-            userToUpdate.JobTitle = changeDetails.JobTitle;
-            userToUpdate.ContactFirstName = changeDetails.FirstName;
-            userToUpdate.ContactLastName = changeDetails.LastName;
-            userToUpdate.ContactJobTitle = changeDetails.JobTitle;
-            userToUpdate.ContactPhoneNumber = changeDetails.ContactPhoneNumber;
-            userToUpdate.SendUpdates = changeDetails.SendUpdates;
-            userToUpdate.AllowContact = changeDetails.AllowContact;
-            userToUpdate.Modified = VirtualDateTime.Now;
-
-            // save
-            dataRepository.SaveChangesAsync().Wait();
-
-            // success
-            return true;
         }
 
         public void RetireUser(User userToRetire)
