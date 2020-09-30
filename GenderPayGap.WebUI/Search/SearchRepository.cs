@@ -27,15 +27,18 @@ namespace GenderPayGap.WebUI.Search
 
         public static void LoadSearchDataIntoCache()
         {
-            var dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            using (ILifetimeScope scope = Global.ContainerIoC.BeginLifetimeScope())
+            {
+                var dataRepository = scope.Resolve<IDataRepository>();
 
-            CachedOrganisations = LoadAllOrganisations(dataRepository);
-            CalculateOrganisationWords();
-            NumberOfOrganisations = CachedOrganisations.Count;
+                CachedOrganisations = LoadAllOrganisations(dataRepository);
+                CalculateOrganisationWords();
+                NumberOfOrganisations = CachedOrganisations.Count;
 
-            CachedUsers = LoadAllUsers(dataRepository);
+                CachedUsers = LoadAllUsers(dataRepository);
 
-            CacheLastUpdated = VirtualDateTime.Now;
+                CacheLastUpdated = VirtualDateTime.Now;
+            }
         }
 
         private static void CalculateOrganisationWords()
