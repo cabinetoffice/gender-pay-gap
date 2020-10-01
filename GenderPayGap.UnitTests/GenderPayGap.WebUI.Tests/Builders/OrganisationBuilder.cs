@@ -1,4 +1,6 @@
-﻿using GenderPayGap.Core;
+﻿using System;
+using System.Collections.Generic;
+using GenderPayGap.Core;
 using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Tests.Builders
@@ -25,6 +27,13 @@ namespace GenderPayGap.WebUI.Tests.Builders
         private string companyNumber = "12345678";
         private SectorTypes sectorType = SectorTypes.Public;
         private OrganisationStatuses status = OrganisationStatuses.Active;
+        private OrganisationScope scope = new OrganisationScope
+        {
+            ScopeStatus = ScopeStatuses.PresumedInScope,
+            Status = ScopeRowStatuses.Active,
+            SnapshotDate = DateTime.Now
+        };
+        private ICollection<OrganisationScope> scopes = new List<OrganisationScope>();
 
         public OrganisationBuilder WithOrganisationId(long organisationId)
         {
@@ -58,13 +67,16 @@ namespace GenderPayGap.WebUI.Tests.Builders
 
         public Organisation Build()
         {
+            scopes.Add(scope);
+            
             return new Organisation
             {
                 OrganisationId = organisationId,
                 OrganisationName = organisationName,
                 CompanyNumber = companyNumber,
                 SectorType = sectorType,
-                Status = status
+                Status = status,
+                OrganisationScopes = scopes
             };
         }
 
