@@ -6,7 +6,21 @@ namespace GenderPayGap.WebUI.Tests.Builders
     public class OrganisationBuilder
     {
 
-        private long organisationId = 1;
+        private static long nextOrganisationId = 1;
+        private static readonly object nextOrganisationIdLock = new object();
+
+        private static long GetNextOrganisationId()
+        {
+            lock (nextOrganisationIdLock)
+            {
+                long organisationIdToReturn = nextOrganisationId;
+                nextOrganisationId++;
+                return organisationIdToReturn;
+            }
+        }
+
+
+        private long organisationId = GetNextOrganisationId();
         private string organisationName = "Test Organisation Ltd";
         private string companyNumber = "12345678";
         private SectorTypes sectorType = SectorTypes.Public;
