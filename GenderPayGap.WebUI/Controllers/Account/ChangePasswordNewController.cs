@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
@@ -18,12 +19,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly UserRepository userRepository;
+        private readonly IUserRepository userRepository;
         private readonly EmailSendingService emailSendingService;
 
         public ChangePasswordNewController(
             IDataRepository dataRepository,
-            UserRepository userRepository,
+            IUserRepository userRepository,
             EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
@@ -33,7 +34,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         
         // The user asks to change their password
         // We direct them to a page that asks for their existing and new passwords
-        [HttpGet("change-password")]
+        [HttpGet("change-password-new")]
         public IActionResult ChangePasswordGet()
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
@@ -42,7 +43,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ChangePasswordNew", new ChangePasswordNewViewModel());
         }
 
-        [HttpPost("change-password")]
+        [HttpPost("change-password-new")]
         [ValidateAntiForgeryToken]
         [PreventDuplicatePost]
         public async Task<IActionResult> ChangePasswordPost(ChangePasswordNewViewModel viewModel)
