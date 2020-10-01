@@ -65,7 +65,11 @@
                 <dd class="cya-change">
                     @if (string.IsNullOrEmpty(ViewBag.ChangePasswordUrl) == false)
                     {
-                        <a href="@(ViewBag.ChangePasswordUrl)">
+                        @*<a href="@(ViewBag.ChangePasswordUrl)">
+                            Change
+                            <span class="visually-hidden"> password</span>
+                        </a>*@
+                        <a href="@Url.Action("ChangePasswordGet", "ChangePasswordNew")">
                             Change
                             <span class="visually-hidden"> password</span>
                         </a>
