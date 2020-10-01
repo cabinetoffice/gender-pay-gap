@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 
@@ -9,13 +8,27 @@ namespace GenderPayGap.WebUI.Tests.Builders
     public class UserBuilder
     {
 
-        private User userInProgress;
+        private static long nextUserId = 1;
+        private static readonly object nextUserIdLock = new object();
+
+        private static long GetNextUserId()
+        {
+            lock (nextUserIdLock)
+            {
+                long userIdToReturn = nextUserId;
+                nextUserId++;
+                return userIdToReturn;
+            }
+        }
+
+
+        private readonly User userInProgress;
 
         public UserBuilder()
         {
             userInProgress = new User
             {
-                UserId = 1,
+                UserId = GetNextUserId(),
                 Firstname = "John",
                 Lastname = "Smith",
                 EmailAddress = "user@test.com",
