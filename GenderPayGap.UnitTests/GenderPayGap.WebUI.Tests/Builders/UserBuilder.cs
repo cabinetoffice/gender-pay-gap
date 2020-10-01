@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.Tests.Builders
 {
@@ -36,7 +37,9 @@ namespace GenderPayGap.WebUI.Tests.Builders
                 AllowContact = true,
                 EmailVerifiedDate = DateTime.Now,
                 Status = UserStatuses.Active,
-                UserOrganisations = new List<UserOrganisation>()
+                UserOrganisations = new List<UserOrganisation>(),
+                HashingAlgorithm = HashingAlgorithm.SHA512,
+                PasswordHash = Crypto.GetSHA512Checksum("password")
             };
         }
 
@@ -81,6 +84,15 @@ namespace GenderPayGap.WebUI.Tests.Builders
             UserOrganisation userOrganisation = new UserOrganisationBuilder().ForUser(userInProgress).ForOrganisation(organisation).Build();
             userInProgress.UserOrganisations.Add(userOrganisation);
             organisation.UserOrganisations.Add(userOrganisation);
+            return this;
+        }
+
+        public UserBuilder WithPassword(string password)
+        {
+            byte[] salt = Crypto.GetSalt();
+            userInProgress.Salt = Convert.ToBase64String(salt);
+            userInProgress.PasswordHash = Crypto.GetPBKDF2(password, salt);
+            userInProgress.HashingAlgorithm = HashingAlgorithm.PBKDF2;
             return this;
         }
 

@@ -128,13 +128,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
                 // retire user
                 userRepository.RetireUser(user);
-
-                // commit
-                userRepository.CommitTransaction();
             }
             catch (Exception ex)
             {
-                userRepository.RollbackTransaction();
                 CustomLogger.Warning($"Failed to retire user {user.UserId}", ex);
                 throw;
             }
