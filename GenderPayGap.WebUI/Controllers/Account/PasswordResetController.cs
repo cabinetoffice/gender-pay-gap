@@ -46,7 +46,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             if (userForPasswordReset.IsNull())
             {
-                // Do something about it
+                viewModel.AddErrorFor(m => m.EmailAddress, "An account associated with this email address does not exist.");
+                
+                return View("PasswordReset", viewModel); 
             }
 
             // If password reset email has been sent (and password hasn't been changed) within the last 10 minutes
