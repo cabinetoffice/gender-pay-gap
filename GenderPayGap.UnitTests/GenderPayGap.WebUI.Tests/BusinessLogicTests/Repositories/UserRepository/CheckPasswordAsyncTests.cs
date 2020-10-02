@@ -48,12 +48,11 @@ namespace Repositories.UserRepository
                 HashingAlgorithm = HashingAlgorithm.PBKDF2, LoginAttempts = 3
             };
 
-            mockDataRepo.Setup(x => x.SaveChangesAsync())
-                .Callback(() => saveChangesCalled = true)
-                .Returns(Task.CompletedTask);
+            mockDataRepo.Setup(x => x.SaveChanges())
+                .Callback(() => saveChangesCalled = true);
 
             // Act
-            bool actualResult = await testUserRepo.CheckPasswordAsync(testUser, testPassword);
+            bool actualResult = testUserRepo.CheckPassword(testUser, testPassword);
 
             // Assert
             Assert.IsTrue(actualResult, "Expected correct password to return true");
@@ -76,12 +75,11 @@ namespace Repositories.UserRepository
             {
                 var saveChangesCalled = false;
 
-                mockDataRepo.Setup(x => x.SaveChangesAsync())
-                    .Callback(() => saveChangesCalled = true)
-                    .Returns(Task.CompletedTask);
+                mockDataRepo.Setup(x => x.SaveChanges())
+                    .Callback(() => saveChangesCalled = true);
 
                 // Act
-                bool actualResult = await testUserRepo.CheckPasswordAsync(testUser, testPassword);
+                bool actualResult = testUserRepo.CheckPassword(testUser, testPassword);
 
                 // Assert
                 Assert.IsFalse(actualResult, "Expected wrong password to return false");

@@ -9,7 +9,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
     public interface IUserRepository : IDataTransaction
     {
 
-        Task<bool> CheckPasswordAsync(User user, string password);
+        bool CheckPassword(User user, string password);
 
         Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses);
 

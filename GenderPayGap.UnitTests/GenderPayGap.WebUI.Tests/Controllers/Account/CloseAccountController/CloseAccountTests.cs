@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountNewViewModel()).Wait();
+            controller.CloseAccountPost(new CloseAccountNewViewModel());
             
             // Assert
             Assert.AreEqual(user.Status, UserStatuses.Retired);
@@ -69,7 +69,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountNewViewModel()).Wait();
+            controller.CloseAccountPost(new CloseAccountNewViewModel());
             
             // Assert
             Assert.AreEqual(user.Status, UserStatuses.Active);
@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
         
         [Test]
         [Description("POST: Closing account removes user from organisations and emails GEO for orphans")]
-        public async Task POST_Closing_Account_Removes_User_From_Organisations_And_Emails_GEO_For_Orphans()
+        public void POST_Closing_Account_Removes_User_From_Organisations_And_Emails_GEO_For_Orphans()
         {
             // Arrange
             Organisation organisation1 = new OrganisationBuilder().WithOrganisationId(1).Build();
@@ -108,7 +108,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
             
             // Act
-            await controller.CloseAccountPost(new CloseAccountNewViewModel());
+            controller.CloseAccountPost(new CloseAccountNewViewModel());
             
             // Assert
             // Assert that organisation1 doesn't have userToDelete associated with it, but is not an orphan

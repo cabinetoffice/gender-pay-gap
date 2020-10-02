@@ -65,7 +65,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("close")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CloseAccountPost(CloseAccountNewViewModel viewModel)
+        public IActionResult CloseAccountPost(CloseAccountNewViewModel viewModel)
         {
             // Admin impersonating a user shouldn't be able to close the user's account
             if (LoginHelper.IsUserBeingImpersonated(User))
@@ -84,7 +84,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             
             // Check password
-            bool isValidPassword = await userRepository.CheckPasswordAsync(currentUser, viewModel.Password);
+            bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.Password);
             if (!isValidPassword)
             {
                 viewModel.AddErrorFor(m => m.Password, "Could not verify your password");
