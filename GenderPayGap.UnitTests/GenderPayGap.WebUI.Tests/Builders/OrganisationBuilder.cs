@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.Tests.Builders
 {
@@ -30,8 +32,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         private OrganisationScope scope = new OrganisationScope
         {
             ScopeStatus = ScopeStatuses.PresumedInScope,
-            Status = ScopeRowStatuses.Active,
-            SnapshotDate = DateTime.Now
+            Status = ScopeRowStatuses.Active
         };
         private ICollection<OrganisationScope> scopes = new List<OrganisationScope>();
 
@@ -67,6 +68,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
 
         public Organisation Build()
         {
+            scope.SnapshotDate = sectorType.GetAccountingStartDate(VirtualDateTime.Now.Year);
             scopes.Add(scope);
             
             return new Organisation
