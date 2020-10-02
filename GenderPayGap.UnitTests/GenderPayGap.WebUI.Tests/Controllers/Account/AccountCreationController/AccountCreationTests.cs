@@ -36,15 +36,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             requestFormValues.Add("GovUk_Checkbox_SendUpdates", "true");
             requestFormValues.Add("GovUk_Checkbox_AllowContact", "false");
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>()
+            var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>();
+            var controller = controllerBuilder
                 .WithRequestFormValues(requestFormValues)
                 .Build();
 
             // Required to mock out the Url object when creating the verification URL
             controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
-
-            NewUiTestHelper.MockBackgroundJobsApi
-                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
             var response = (ViewResult) controller.CreateUserAccountPost(new CreateUserAccountViewModel());
@@ -52,15 +50,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             // Assert
             Assert.AreEqual("ConfirmEmailAddress", response.ViewName);
 
-            NewUiTestHelper.MockBackgroundJobsApi.Verify(
-                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains("test@example.com"))),
-                Times.Once(),
-                "Expected the existingUser1's email address to be in the email send queue");
+            Assert.AreEqual(1, controllerBuilder.EmailsSent.Count);
+            NotifyEmail emailSent = controllerBuilder.EmailsSent[0];
 
-            NewUiTestHelper.MockBackgroundJobsApi.Verify(
-                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId.Contains(EmailTemplates.AccountVerificationEmail))),
-                Times.Exactly(1),
-                $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.AccountVerificationEmail}");
+            Assert.AreEqual("test@example.com", emailSent.EmailAddress);
+            Assert.AreEqual(EmailTemplates.AccountVerificationEmail, emailSent.TemplateId);
         }
         
         [Test]

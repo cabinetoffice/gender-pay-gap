@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
             requestFormValues.Add("GovUk_Text_Password", "password");
             
             var controller = new ControllerBuilder<CloseAccountNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -63,7 +63,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
             requestFormValues.Add("GovUk_Text_Password", "wrongpassword");
             
             var controller = new ControllerBuilder<CloseAccountNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -97,15 +97,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
 
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "password");
-            
-            var controller = new ControllerBuilder<CloseAccountNewController>()
-                .WithUserId(userToDelete.UserId)
+
+            var controllerBuilder = new ControllerBuilder<CloseAccountNewController>();
+            var controller = controllerBuilder
+                .WithLoggedInUser(userToDelete)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(organisation1, organisation2, standardUser, userToDelete)
                 .Build();
-            
-            NewUiTestHelper.MockBackgroundJobsApi
-                .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
             
             // Act
             controller.CloseAccountPost(new CloseAccountNewViewModel());
@@ -118,11 +116,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
             // Assert that organisation2 is now an orphan
             Assert.IsTrue(organisation2.GetIsOrphan());
             
-            // Assert that an orphan email has been sent to GEO
-            NewUiTestHelper.MockBackgroundJobsApi.Verify(
-                x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.TemplateId == EmailTemplates.SendGeoOrphanOrganisationEmail)),
-                Times.Once,
-                $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.AccountVerificationEmail}");
+            // Assert that there are two emails: 1 'Close Account' email to the user, 1 'Orphan Organisation' email to GEO
+            Assert.AreEqual(2, controllerBuilder.EmailsSent.Count);
+
+            NotifyEmail userEmail = controllerBuilder.EmailsSent.SingleOrDefault(ne => ne.EmailAddress == userToDelete.EmailAddress);
+            Assert.NotNull(userEmail);
+            Assert.AreEqual(EmailTemplates.SendCloseAccountCompletedEmail, userEmail.TemplateId, $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendCloseAccountCompletedEmail}");
+
+            NotifyEmail geoEmail = controllerBuilder.EmailsSent.SingleOrDefault(ne => ne.EmailAddress == Global.GeoDistributionList[0]);
+            Assert.NotNull(geoEmail);
+            Assert.AreEqual(EmailTemplates.SendGeoOrphanOrganisationEmail, geoEmail.TemplateId, $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendGeoOrphanOrganisationEmail}");
         }
 
     }
