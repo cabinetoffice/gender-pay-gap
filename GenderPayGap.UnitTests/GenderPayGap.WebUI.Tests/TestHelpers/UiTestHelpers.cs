@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Reflection;
 using System.Security.Claims;
 using Autofac;
 using Autofac.Features.AttributeFilters;
@@ -43,9 +44,12 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace GenderPayGap.WebUI.Tests.TestHelpers
@@ -399,6 +403,71 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
         {
             Mock<IResponseCookies> mockCookies = Mock.Get(controller.HttpContext.Response.Cookies);
             mockCookies.Verify(c => c.Delete(key), Times.Once(), $"The cookie '{key}' was not deleted");
+        }
+
+
+        /// <summary>
+        ///     Registers an InMemory SQLRespository and populates with entities
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="dbObjects"></param>
+        public static void RegisterInMemoryTestDatabase(this ContainerBuilder builder, params object[] dbObjects)
+        {
+            GpgDatabaseContext dbContext = CreateInMemoryTestDatabase(dbObjects);
+            builder.Register(c => new SqlRepository(dbContext)).As<IDataRepository>().InstancePerLifetimeScope();
+        }
+
+        public static GpgDatabaseContext CreateInMemoryTestDatabase(params object[] dbObjects)
+        {
+            //Get the method name of the unit test or the parent
+            string testName = TestContext.CurrentContext.Test.FullName;
+            if (string.IsNullOrWhiteSpace(testName))
+            {
+                testName = MethodBase.GetCurrentMethod().FindParentWithAttribute<TestAttribute>().Name;
+            }
+
+            DbContextOptionsBuilder<GpgDatabaseContext> optionsBuilder =
+                new DbContextOptionsBuilder<GpgDatabaseContext>().UseInMemoryDatabase(testName);
+
+            optionsBuilder.ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+
+            // show more detailed EF errors i.e. ReturnId value instead of '{ReturnId}' in the logs etc...
+            optionsBuilder.EnableSensitiveDataLogging();
+
+            var dbContext = new GpgDatabaseContext(optionsBuilder.Options);
+            if (dbObjects != null && dbObjects.Length > 0)
+            {
+                foreach (object item in dbObjects)
+                {
+                    var enumerable = item as IEnumerable<object>;
+                    if (enumerable == null)
+                    {
+                        dbContext.Add(item);
+                    }
+                    else
+                    {
+                        dbContext.AddRange(enumerable);
+                    }
+                }
+
+                dbContext.SaveChanges();
+            }
+
+            return dbContext;
+        }
+
+        /// <summary>
+        ///     Adds a new mock url to the action method of an existing or new Mock URl helper of the controller
+        /// </summary>
+        /// <param name="controller">The source controller to add the mock setup</param>
+        /// <param name="url">The url to be returned by the Action method</param>
+        public static void AddMockUriHelperNew(this Controller controller, string url)
+        {
+            Mock<IUrlHelper> mockUrlHelper = controller.Url?.GetMockFromObject() ?? new Mock<IUrlHelper>();
+
+            mockUrlHelper.Setup(helper => helper.Action(It.IsAny<UrlActionContext>())).Returns(url).Verifiable();
+
+            controller.Url = mockUrlHelper.Object;
         }
 
     }
