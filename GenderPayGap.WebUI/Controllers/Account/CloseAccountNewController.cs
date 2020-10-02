@@ -92,7 +92,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             }
 
             // Collect list of organisations associated with the user
-            List<Organisation> userOrganisations = currentUser.UserOrganisations
+            List<Organisation> possiblyOrphanedOrganisations = currentUser.UserOrganisations
                 .Select(uo => uo.Organisation)
                 .Distinct()
                 .ToList();
@@ -102,7 +102,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             SendAccountClosedEmail(currentUser);
 
             // Collect list of orphaned organisations after the user has been retired
-            List<Organisation> orphanedOrganisations = userOrganisations.FindAll(org => org.GetIsOrphan());
+            List<Organisation> orphanedOrganisations = possiblyOrphanedOrganisations.FindAll(org => org.GetIsOrphan());
 
             InformGeoOfOrphanedOrganisations(orphanedOrganisations);
             
