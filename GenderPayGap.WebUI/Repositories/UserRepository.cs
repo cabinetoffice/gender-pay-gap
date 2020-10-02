@@ -35,7 +35,7 @@ namespace GenderPayGap.WebUI.Repositories
                 .FirstOrDefault();
         }
 
-        public async Task<bool> CheckPasswordAsync(User user, string password)
+        public bool CheckPassword(User user, string password)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Repositories
             finally
             {
                 //Save the changes
-                await dataRepository.SaveChangesAsync();
+                dataRepository.SaveChanges();
             }
         }
 

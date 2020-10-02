@@ -155,7 +155,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return View("VerifyEmail", viewModel);
             }
 
-            if (!userRepository.CheckPasswordAsync(user, viewModel.Password).Result)
+            if (!userRepository.CheckPassword(user, viewModel.Password))
             {
                 viewModel.AddErrorFor(m => m.Password, "Incorrect password");
                 return View("VerifyEmail", viewModel);

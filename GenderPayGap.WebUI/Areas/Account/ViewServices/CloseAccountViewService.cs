@@ -33,7 +33,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewServices
             var errorState = new ModelStateDictionary();
 
             // ensure the user has entered their password
-            bool checkPasswordResult = await UserRepository.CheckPasswordAsync(userToRetire, currentPassword);
+            bool checkPasswordResult = UserRepository.CheckPassword(userToRetire, currentPassword);
             if (checkPasswordResult == false)
             {
                 errorState.AddModelError(nameof(ChangePasswordViewModel.CurrentPassword), "Could not verify your current password");
