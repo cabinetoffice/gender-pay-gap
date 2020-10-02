@@ -91,16 +91,18 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return View("CloseAccountNew", viewModel);
             }
 
-            // Collect list of organisations that will be orphaned once the user's account is closed
-            List<Organisation> orphanedOrganisations = currentUser.UserOrganisations
+            // Collect list of organisations associated with the user
+            List<Organisation> userOrganisations = currentUser.UserOrganisations
                 .Select(uo => uo.Organisation)
                 .Distinct()
-                .Where(org => org.UserOrganisations.Count == 1)
                 .ToList();
 
             RetireUserAccount(currentUser);
 
             SendAccountClosedEmail(currentUser);
+
+            // Collect list of orphaned organisations after the user has been retired
+            List<Organisation> orphanedOrganisations = userOrganisations.FindAll(org => org.GetIsOrphan());
 
             InformGeoOfOrphanedOrganisations(orphanedOrganisations);
             
