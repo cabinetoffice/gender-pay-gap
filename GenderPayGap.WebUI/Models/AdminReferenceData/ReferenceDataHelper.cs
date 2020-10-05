@@ -40,11 +40,13 @@ namespace GenderPayGap.WebUI.Models.AdminReferenceData {
                     var csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture)
                     {
                         IgnoreQuotes = false,
-                        TrimOptions = TrimOptions.InsideQuotes
+                        TrimOptions = TrimOptions.InsideQuotes,
+                        MissingFieldFound = null
                     };
 
                     using (var csvReader = new CsvReader(reader, csvConfiguration))
                     {
+                        csvReader.Read();
                         csvReader.ReadHeader();
                         string[] fieldHeaders = csvReader.Context.HeaderRecord;
 
