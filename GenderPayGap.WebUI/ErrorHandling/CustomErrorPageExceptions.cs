@@ -30,10 +30,21 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public override int StatusCode => 403;
     }
     
-    public class UserRecentlySentPasswordResetEmailWithoutChangingPassword : CustomErrorPageException
+    public class UserRecentlySentPasswordResetEmailWithoutChangingPasswordException : CustomErrorPageException
     {
         public override string ViewName => "../Errors/UserNotRegisteredToReportForOrganisation";    
         public override int StatusCode => 403;
+    }
+
+    public class FailedToSendEmailException : CustomErrorPageException
+    {
+
+        public override string ViewName => "../Errors/FailedToSendEmail";
+
+        public override int StatusCode => 403;
+        
+        public string EmailAddress { get; set; }
+
     }
 
     public class AdminCannotTakeActionIfImpersonatingUserException : CustomErrorPageException

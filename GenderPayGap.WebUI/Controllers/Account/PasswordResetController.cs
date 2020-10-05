@@ -67,10 +67,17 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // If password reset email has been sent (and password hasn't been changed) within the last 10 minutes, show an error page
             if (userForPasswordReset.ResetSendDate.HasValue && (userForPasswordReset.ResetSendDate.Value - DateTime.Now).TotalMinutes < 10)
             {
-                throw new UserRecentlySentPasswordResetEmailWithoutChangingPassword();
+                throw new UserRecentlySentPasswordResetEmailWithoutChangingPasswordException();
             }
-            
-            SendPasswordResetEmail(userForPasswordReset);
+
+            try
+            {
+                SendPasswordResetEmail(userForPasswordReset);
+            }
+            catch
+            {
+                throw new FailedToSendEmailException {EmailAddress = viewModel.EmailAddress};
+            }
 
             return null;
         }
