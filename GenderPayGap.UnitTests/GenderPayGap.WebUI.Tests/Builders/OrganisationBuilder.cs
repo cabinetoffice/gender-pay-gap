@@ -1,29 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 
 namespace GenderPayGap.WebUI.Tests.Builders
 {
     public class OrganisationBuilder
     {
 
-        private static long nextOrganisationId = 1;
-        private static readonly object nextOrganisationIdLock = new object();
-
-        private static long GetNextOrganisationId()
-        {
-            lock (nextOrganisationIdLock)
-            {
-                long organisationIdToReturn = nextOrganisationId;
-                nextOrganisationId++;
-                return organisationIdToReturn;
-            }
-        }
-
-
-        private long organisationId = GetNextOrganisationId();
+        private long organisationId = TestIdGenerator.GenerateIdFor<Organisation>();
         private string organisationName = "Test Organisation Ltd";
         private string companyNumber = "12345678";
         private SectorTypes sectorType = SectorTypes.Public;
