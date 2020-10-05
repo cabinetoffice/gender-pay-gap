@@ -39,7 +39,7 @@ namespace GenderPayGap.WebUI.Cookies
             response.Cookies.Append(
                 CookieSettingsCookieName,
                 cookieSettingsString,
-                new CookieOptions {Secure = true, SameSite = SameSiteMode.Strict, MaxAge = TimeSpan.FromDays(365)});
+                new CookieOptions {Secure = true, SameSite = SameSiteMode.Lax, MaxAge = TimeSpan.FromDays(365)});
         }
 
         #endregion
@@ -75,7 +75,7 @@ namespace GenderPayGap.WebUI.Cookies
             response.Cookies.Append(
                 SeenCookieMessageCookieName,
                 seenCookieMessageString,
-                new CookieOptions {Secure = true, SameSite = SameSiteMode.Strict, MaxAge = TimeSpan.FromDays(365)});
+                new CookieOptions {Secure = true, SameSite = SameSiteMode.Lax, MaxAge = TimeSpan.FromDays(365)});
         }
 
         #endregion

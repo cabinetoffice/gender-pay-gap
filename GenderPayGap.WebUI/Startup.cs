@@ -363,7 +363,7 @@ namespace GenderPayGap.WebUI
 
             var cookiePolicyOptions = new CookiePolicyOptions
             {
-                MinimumSameSitePolicy = SameSiteMode.Strict,
+                MinimumSameSitePolicy = SameSiteMode.Lax,
             };
             app.UseCookiePolicy(cookiePolicyOptions);
             app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
