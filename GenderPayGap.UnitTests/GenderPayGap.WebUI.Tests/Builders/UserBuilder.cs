@@ -3,25 +3,12 @@ using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 
 namespace GenderPayGap.WebUI.Tests.Builders
 {
     public class UserBuilder
     {
-
-        private static long nextUserId = 1;
-        private static readonly object nextUserIdLock = new object();
-
-        private static long GetNextUserId()
-        {
-            lock (nextUserIdLock)
-            {
-                long userIdToReturn = nextUserId;
-                nextUserId++;
-                return userIdToReturn;
-            }
-        }
-
 
         private readonly User userInProgress;
 
@@ -29,7 +16,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         {
             userInProgress = new User
             {
-                UserId = GetNextUserId(),
+                UserId = TestIdGenerator.GenerateIdFor<User>(),
                 Firstname = "John",
                 Lastname = "Smith",
                 EmailAddress = "user@test.com",
