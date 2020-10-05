@@ -29,6 +29,12 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public override string ViewName => "../Errors/UserNotRegisteredToReportForOrganisation";    
         public override int StatusCode => 403;
     }
+    
+    public class UserRecentlySentPasswordResetEmailWithoutChangingPassword : CustomErrorPageException
+    {
+        public override string ViewName => "../Errors/UserNotRegisteredToReportForOrganisation";    
+        public override int StatusCode => 403;
+    }
 
     public class AdminCannotTakeActionIfImpersonatingUserException : CustomErrorPageException
     {
