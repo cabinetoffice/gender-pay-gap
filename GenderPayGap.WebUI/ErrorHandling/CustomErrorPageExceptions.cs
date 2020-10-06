@@ -46,6 +46,15 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public string EmailAddress { get; set; }
 
     }
+    
+    public class PasswordResetCodeExpiredException : CustomErrorPageException
+    {
+
+        public override string ViewName => "../Errors/PasswordResetCodeExpired";
+
+        public override int StatusCode => 403;
+
+    }
 
     public class AdminCannotTakeActionIfImpersonatingUserException : CustomErrorPageException
     {
