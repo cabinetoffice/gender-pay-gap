@@ -9,5 +9,8 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         public string Password { get; set; }
 
+        public string BasicAuthUsername { get; set; }
+        public string BasicAuthPassword { get; set; }
+
     }
 }
