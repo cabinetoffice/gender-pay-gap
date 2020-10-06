@@ -17,23 +17,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GovUkDesignSystem", "GovUkDesignSystem\GovUkDesignSystem.csproj", "{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{72B53450-285C-4716-8BF6-5885E53E617F}"
-	ProjectSection(SolutionItems) = preProject
-		Infrastructure\Conduit.sh = Infrastructure\Conduit.sh
-		Infrastructure\ConnectToPaas_Cache_Dev.sh = Infrastructure\ConnectToPaas_Cache_Dev.sh
-		Infrastructure\ConnectToPaas_Cache_PreProd.sh = Infrastructure\ConnectToPaas_Cache_PreProd.sh
-		Infrastructure\ConnectToPaas_Cache_Prod.sh = Infrastructure\ConnectToPaas_Cache_Prod.sh
-		Infrastructure\ConnectToPaas_Cache_Test.sh = Infrastructure\ConnectToPaas_Cache_Test.sh
-		Infrastructure\ConnectToPaas_DB_Dev.sh = Infrastructure\ConnectToPaas_DB_Dev.sh
-		Infrastructure\ConnectToPaas_DB_PreProd.sh = Infrastructure\ConnectToPaas_DB_PreProd.sh
-		Infrastructure\ConnectToPaas_DB_Prod.sh = Infrastructure\ConnectToPaas_DB_Prod.sh
-		Infrastructure\ConnectToPaas_DB_Test.sh = Infrastructure\ConnectToPaas_DB_Test.sh
-		Infrastructure\CreateEnvironment.sh = Infrastructure\CreateEnvironment.sh
-		Infrastructure\DeleteEnvironment.sh = Infrastructure\DeleteEnvironment.sh
-		Infrastructure\LoginToGovPaas.sh = Infrastructure\LoginToGovPaas.sh
-		Infrastructure\LoginToGovPaasTemplate.sh = Infrastructure\LoginToGovPaasTemplate.sh
-	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{9AB0CA8E-5650-4A4E-9DFF-254E8A14F9C8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General files", "General files", "{9AB0CA8E-5650-4A4E-9DFF-254E8A14F9C8}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		CONTRIBUTING.md = CONTRIBUTING.md
@@ -42,6 +27,50 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{9AB0CA8E
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetEnvironmentVariablesInGovPaaS", "SetEnvironmentVariablesInGovPaaS\SetEnvironmentVariablesInGovPaaS.csproj", "{95E70733-073A-498E-8653-BE4626FEFA5C}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Infrastructure", "Infrastructure\", "{52C28191-9B43-4116-8A69-40CD737650DD}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51998"
+		Debug.AspNetCompiler.PhysicalPath = "Infrastructure\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51998\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51998"
+		Release.AspNetCompiler.PhysicalPath = "Infrastructure\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51998\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51998"
+		SlnRelativePath = "Infrastructure\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{4235BEF5-F532-434F-8BC7-35033F49663B}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Documentation", "Documentation\", "{81A83AB9-45C8-4F86-873E-052B08604269}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51878"
+		Debug.AspNetCompiler.PhysicalPath = "Documentation\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51878\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51878"
+		Release.AspNetCompiler.PhysicalPath = "Documentation\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51878\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "51878"
+		SlnRelativePath = "Documentation\"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +102,12 @@ Global
 		{95E70733-073A-498E-8653-BE4626FEFA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E70733-073A-498E-8653-BE4626FEFA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95E70733-073A-498E-8653-BE4626FEFA5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52C28191-9B43-4116-8A69-40CD737650DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52C28191-9B43-4116-8A69-40CD737650DD}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{52C28191-9B43-4116-8A69-40CD737650DD}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{81A83AB9-45C8-4F86-873E-052B08604269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A83AB9-45C8-4F86-873E-052B08604269}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A83AB9-45C8-4F86-873E-052B08604269}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +117,9 @@ Global
 		{F3DB4C50-110C-44BB-A308-B924FA0BE635} = {6EB28909-F4E9-402E-A247-01532AAC6841}
 		{ADB4DCF7-1D43-41EF-9FD3-DA4C36D923AB} = {165A87E4-ED4A-4509-A52C-81748DE7286F}
 		{AE3D6DDB-5C46-4149-A74B-4C631FFC1C33} = {6EB28909-F4E9-402E-A247-01532AAC6841}
+		{95E70733-073A-498E-8653-BE4626FEFA5C} = {72B53450-285C-4716-8BF6-5885E53E617F}
+		{52C28191-9B43-4116-8A69-40CD737650DD} = {72B53450-285C-4716-8BF6-5885E53E617F}
+		{81A83AB9-45C8-4F86-873E-052B08604269} = {4235BEF5-F532-434F-8BC7-35033F49663B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CBCD6EE1-83A9-461C-820C-9D31E0347395}
