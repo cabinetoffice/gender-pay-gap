@@ -12,6 +12,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Backup;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem.Parsers;
@@ -136,6 +137,8 @@ namespace GenderPayGap.WebUI.Controllers
 
             viewModel.ParseAndValidateParameters(Request, m => m.Hostname);
             viewModel.ParseAndValidateParameters(Request, m => m.Password);
+            viewModel.ParseAndValidateParameters(Request, m => m.BasicAuthUsername);
+            viewModel.ParseAndValidateParameters(Request, m => m.BasicAuthPassword);
 
             if (string.IsNullOrWhiteSpace(Global.DataMigrationPassword))
             {
@@ -152,16 +155,24 @@ namespace GenderPayGap.WebUI.Controllers
 
             WriteParagraph($"Requesting data export from {viewModel.Hostname}");
 
+            var httpClient = new HttpClient();
+            if (!string.IsNullOrWhiteSpace(viewModel.BasicAuthUsername) && !string.IsNullOrWhiteSpace(viewModel.BasicAuthPassword))
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(viewModel.BasicAuthUsername, viewModel.BasicAuthPassword);
+            }
             string requestUrl = $"https://{viewModel.Hostname}/admin/data-migration/export-all?password={viewModel.Password}";
-            string responseString = new HttpClient().GetStringAsync(requestUrl).Result;
+            string responseString = httpClient.GetStringAsync(requestUrl).Result;
 
             WriteParagraph($"Received data export from {viewModel.Hostname}");
 
             ImportDataFromJsonString(responseString);
 
             WriteParagraph($"Data Migration Complete!");
+            Thread.Sleep(TimeSpan.FromSeconds(5)); // Sleep for a few seconds to allow the output to be flushed (sometimes the last sections of output are missed, which is confusing the the user
 
             EndChunkedResponse();
+            Thread.Sleep(TimeSpan.FromSeconds(5)); // Sleep for a few seconds to allow the output to be flushed (sometimes the last sections of output are missed, which is confusing the the user
+
             return null;
         }
 
