@@ -2,7 +2,6 @@
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
