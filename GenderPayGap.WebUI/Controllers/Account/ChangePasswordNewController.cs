@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -6,7 +6,6 @@ using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
-using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
@@ -38,6 +37,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         public IActionResult ChangePasswordGet()
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             // Return the Change Personal Details form
             return View("ChangePasswordNew", new ChangePasswordNewViewModel());
@@ -48,6 +48,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [PreventDuplicatePost]
         public async Task<IActionResult> ChangePasswordPost(ChangePasswordNewViewModel viewModel)
         {
+            ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+            
             // Check all values are provided and NewPassword is at least 8 characters long
             viewModel.ParseAndValidateParameters(Request, m => m.CurrentPassword);
             viewModel.ParseAndValidateParameters(Request, m => m.NewPassword);
@@ -64,7 +67,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return View("ChangePasswordNew", viewModel);
             }
             
-            userRepository.UpdateUserPasswordUsingPBKDF2(currentUser, viewModel.NewPassword);
+            userRepository.UpdatePassword(currentUser, viewModel.NewPassword);
             
             // send password change notification
             emailSendingService.SendChangePasswordCompletedEmail(currentUser.EmailAddress);
@@ -77,30 +80,33 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return LocalRedirect(nextPageUrl);
         }
 
-        public async void ValidatePasswords(ChangePasswordNewViewModel viewModel, User currentUser)
+        public void ValidatePasswords(ChangePasswordNewViewModel viewModel, User currentUser)
         {
             // Check if current password is correct
-            bool isValidPassword = await userRepository.CheckPasswordAsync(currentUser, viewModel.CurrentPassword);
+            bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword);
             if (!isValidPassword)
             {
                 viewModel.AddErrorFor(m => m.CurrentPassword, "Could not verify your current password.");
             }
 
-            if (!viewModel.NewPassword.Any(char.IsUpper) || !viewModel.NewPassword.Any(char.IsLower) || !viewModel.NewPassword.Any(char.IsDigit))
-            {
-                viewModel.AddErrorFor(m => m.NewPassword, "New password must contain at least one upper case, 1 lower case character and 1 digit");
-            }
-
             // Check if new password is the same as old password
-            if (viewModel.CurrentPassword == viewModel.NewPassword)
+            if (viewModel.HasSuccessfullyParsedValueFor(m => m.NewPassword)
+                && viewModel.HasSuccessfullyParsedValueFor(m => m.CurrentPassword)
+                && viewModel.NewPassword == viewModel.CurrentPassword)
             {
-                viewModel.AddErrorFor(m => m.NewPassword, "The password you have entered must be different from your previous password");
+                viewModel.AddErrorFor(
+                    m => m.NewPassword,
+                    "Your new password cannot be the same as your old password.");
             }
 
             // Check if new password and confirmation password match
-            if (viewModel.NewPassword != viewModel.ConfirmNewPassword)
+            if (viewModel.HasSuccessfullyParsedValueFor(m => m.NewPassword)
+                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmNewPassword)
+                && viewModel.NewPassword != viewModel.ConfirmNewPassword)
             {
-                viewModel.AddErrorFor(m => m.ConfirmNewPassword, "The password and confirmation password do not match.");
+                viewModel.AddErrorFor(
+                    m => m.ConfirmNewPassword,
+                    "The password and confirmation do not match.");
             }
         }
 
