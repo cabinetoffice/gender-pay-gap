@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
@@ -14,11 +12,13 @@ using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
+    [Authorize(Roles = LoginRoles.GpgEmployer)]
     public class CloseAccountNewController : Controller
     {
 

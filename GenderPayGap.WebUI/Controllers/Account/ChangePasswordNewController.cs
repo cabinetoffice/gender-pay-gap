@@ -1,5 +1,4 @@
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
@@ -9,11 +8,13 @@ using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
+    [Authorize(Roles = LoginRoles.GpgEmployer)]
     public class ChangePasswordNewController : Controller
     {
 

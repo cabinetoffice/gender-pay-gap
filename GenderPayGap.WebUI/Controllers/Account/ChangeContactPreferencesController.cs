@@ -3,12 +3,13 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
-using GovUkDesignSystem.Parsers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
+    [Authorize(Roles = LoginRoles.GpgEmployer)]
     public class ChangeContactPreferencesController : Controller
     {
 
