@@ -14,7 +14,7 @@ namespace GovUkDesignSystem.Attributes.ValidationAttributes
         {
             if (typeof(TProperty) != typeof(string))
             {
-                throw new Exception("Paramater value has the wrong type");
+                throw new Exception("Parameter value has the wrong type");
             }
 
             var value = parameterValue as string;
