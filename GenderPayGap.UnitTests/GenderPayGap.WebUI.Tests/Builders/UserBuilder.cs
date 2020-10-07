@@ -11,6 +11,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
     {
 
         private readonly User userInProgress;
+        private const string Salt = "salt";
 
         public UserBuilder()
         {
@@ -25,8 +26,9 @@ namespace GenderPayGap.WebUI.Tests.Builders
                 EmailVerifiedDate = DateTime.Now,
                 Status = UserStatuses.Active,
                 UserOrganisations = new List<UserOrganisation>(),
-                HashingAlgorithm = HashingAlgorithm.SHA512,
-                PasswordHash = Crypto.GetSHA512Checksum("password")
+                HashingAlgorithm = HashingAlgorithm.PBKDF2,
+                Salt = Salt,
+                PasswordHash = Crypto.GetPBKDF2("password", Convert.FromBase64String(Salt))
             };
         }
 
@@ -74,11 +76,10 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
         
-        public UserBuilder WithPassword(string password) 
-        { 
-            byte[] salt = Crypto.GetSalt(); 
-            userInProgress.Salt = Convert.ToBase64String(salt); 
-            userInProgress.PasswordHash = Crypto.GetPBKDF2(password, salt); 
+        public UserBuilder WithPassword(string password)
+        {
+            userInProgress.Salt = Salt;
+            userInProgress.PasswordHash = Crypto.GetPBKDF2(password, Convert.FromBase64String(Salt));
             userInProgress.HashingAlgorithm = HashingAlgorithm.PBKDF2; 
             return this; 
         }
