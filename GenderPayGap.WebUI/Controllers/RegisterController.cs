@@ -302,7 +302,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.ClearStash();
 
             //Save the user to ensure UserId>0 for new status
-            UserRepository.UpdateUserPasswordUsingPBKDF2(currentUser, model.Password);
+            UserRepository.UpdatePassword(currentUser, model.Password);
 
             currentUser.ResetAttempts = 0;
             currentUser.ResetSendDate = null;

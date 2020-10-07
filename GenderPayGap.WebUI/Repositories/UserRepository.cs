@@ -178,7 +178,7 @@ namespace GenderPayGap.WebUI.Repositories
             }
         }
 
-        public void UpdateUserPasswordUsingPBKDF2(User user, string password)
+        private void UpdateUserPasswordUsingPBKDF2(User user, string password)
         {
             if (user == null)
             {
