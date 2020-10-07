@@ -39,10 +39,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>();
             var controller = controllerBuilder
                 .WithRequestFormValues(requestFormValues)
+                .WithMockUriHelper()
                 .Build();
-
-            // Required to mock out the Url object when creating the verification URL
-            controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
 
             // Act
             var response = (ViewResult) controller.CreateUserAccountPost(new CreateUserAccountViewModel());

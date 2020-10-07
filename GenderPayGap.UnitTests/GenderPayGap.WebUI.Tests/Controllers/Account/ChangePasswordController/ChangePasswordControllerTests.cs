@@ -54,11 +54,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
+                .WithMockUriHelper()
                 .Build();
-            
-            // Required to mock out the Url object when creating the verification URL
-            controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
-            
+
             // Act
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
@@ -83,11 +81,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
+                .WithMockUriHelper()
                 .Build();
-            
-            // Required to mock out the Url object when creating the verification URL
-            controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
-            
+
             // Act
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
@@ -112,11 +108,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
+                .WithMockUriHelper()
                 .Build();
-            
-            // Required to mock out the Url object when creating the verification URL
-            controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
-            
+
             // Act
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
@@ -141,11 +135,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
+                .WithMockUriHelper()
                 .Build();
-            
-            // Required to mock out the Url object when creating the verification URL
-            controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
-            
+
             // Act
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
@@ -170,11 +162,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
+                .WithMockUriHelper()
                 .Build();
-            
-            // Required to mock out the Url object when creating the verification URL
-            controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
-            
+
             // Act
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
