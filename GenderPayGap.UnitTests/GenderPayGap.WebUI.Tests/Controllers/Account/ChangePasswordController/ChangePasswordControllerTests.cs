@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Controllers.Account;
+using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
-using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
@@ -63,6 +65,66 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "NewPassword1");
             Assert.IsTrue(isExpectedPassword);
+        }
+        
+        [Test]
+        [Description("POST: Email is sent when password is successfully updated")]
+        public async Task POST_Email_Is_Sent_When_Password_Is_Successfully_Updated()
+        {
+            // Arrange
+            User user = new UserBuilder().WithPassword("password").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
+            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
+            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
+            
+            var controllerBuilder = new ControllerBuilder<ChangePasswordNewController>();
+            var controller = controllerBuilder
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user)
+                .WithMockUriHelper()
+                .Build();
+
+            // Act
+            controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
+            
+            // Assert
+            NotifyEmail userEmail = controllerBuilder.EmailsSent.SingleOrDefault(ne => ne.EmailAddress == user.EmailAddress);
+            Assert.NotNull(userEmail);
+            Assert.AreEqual(EmailTemplates.SendChangePasswordCompletedEmail, userEmail.TemplateId, $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendChangePasswordCompletedEmail}");
+        }
+        
+        [Test]
+        [Description("POST: Audit log item is saved when password is successfully updated")]
+        public async Task POST_Audit_Log_Item_Is_Saved_When_Password_Is_Successfully_Updated()
+        {
+            // Arrange
+            User user = new UserBuilder().WithPassword("password").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
+            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
+            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
+            
+            var controllerBuilder = new ControllerBuilder<ChangePasswordNewController>();
+            var controller = controllerBuilder
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user)
+                .WithMockUriHelper()
+                .Build();
+
+            // Act
+            controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
+            
+            // Assert
+            List<AuditLog> auditLogEntries = controllerBuilder.DataRepository.GetAll<AuditLog>()
+                .Where(al => al.OriginalUserId == user.UserId)
+                .ToList();
+            Assert.That(auditLogEntries.Count == 1);
+            Assert.That(auditLogEntries.First().Action == AuditedAction.UserChangePassword);
         }
         
         [Test]
