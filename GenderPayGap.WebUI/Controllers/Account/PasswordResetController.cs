@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Web;
 using GenderPayGap.Core;
@@ -108,9 +108,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("choose-new-password")]
         public IActionResult ChooseNewPasswordGet(string code)
         {
-            User userForPasswordReset = ExtractUserFromResetCode(code);
+            // Don't use the User returned from this, but call it to check that the code is valid
+            // And also has not expired
+            ExtractUserFromResetCode(code);
 
-            ChooseNewPasswordViewModel viewModel = new ChooseNewPasswordViewModel {User = userForPasswordReset};
+            var viewModel = new ChooseNewPasswordViewModel {ResetCode = code};
 
             return View("ChooseNewPassword", viewModel);
         }
@@ -120,6 +122,18 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("choose-new-password")]
         public IActionResult ChooseNewPasswordPost(ChooseNewPasswordViewModel viewModel)
         {
+            viewModel.ParseAndValidateParameters(Request, m => m.NewPassword); 
+            viewModel.ParseAndValidateParameters(Request, m => m.ConfirmNewPassword);
+
+            // TODO: Check that the two passwords match
+            
+            // Find the user from the reset code in the viewModel
+            User userToUpdate = ExtractUserFromResetCode(viewModel.ResetCode);
+            
+            userRepository.UpdatePassword(userToUpdate, viewModel.NewPassword);
+            emailSendingService.SendChangePasswordCompletedEmail(userToUpdate.EmailAddress);
+
+            // TODO: Add completed page and redirect there
             return null;
         }
         
