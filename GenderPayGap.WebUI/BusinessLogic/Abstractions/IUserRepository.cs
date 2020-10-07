@@ -18,8 +18,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
         void UpdatePassword(User userToUpdate, string newPassword);
 
         void RetireUser(User userToRetire);
-
-        void UpdateUserPasswordUsingPBKDF2(User currentUser, string password);
     }
 
 }
