@@ -8,6 +8,7 @@ namespace GenderPayGap.WebUI.Models.Account
     {
         public User User { get; set; }
 
+        [GpgPasswordValidation]
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter a new password")]
         public string NewPassword { get; set; }
         

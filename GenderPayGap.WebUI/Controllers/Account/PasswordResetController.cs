@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
@@ -10,9 +9,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
-using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
-using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
@@ -84,6 +81,25 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             return View("PasswordResetSent");
         }
+        
+        // Generates and stores a GUID to act as a password reset code
+        private void SendPasswordResetEmail(User userForPasswordReset)
+        {
+            // Generate a random GUID as a unique identifier for the password reset
+            string resetCode = Guid.NewGuid().ToString();
+
+            // Store the reset code on the user entity for verification
+            userForPasswordReset.PasswordResetCode = resetCode;
+            userForPasswordReset.ResetSendDate = VirtualDateTime.Now;
+            dataRepository.SaveChanges();
+
+            string resetUrl = Url.Action("ChooseNewPasswordGet", "PasswordReset", new { code = resetCode }, "https");
+            emailSendingService.SendResetPasswordVerificationEmail(userForPasswordReset.EmailAddress, resetUrl);
+
+            CustomLogger.Information(
+                "Password reset sent",
+                $"User ID: {userForPasswordReset.UserId}, Email:{userForPasswordReset.EmailAddress}");
+        }
 
         #endregion
 
@@ -92,7 +108,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("choose-new-password")]
         public IActionResult ChooseNewPasswordGet(string code)
         {
-            User userForPasswordReset = DecryptResetCodeAndValidateComponents(code);
+            User userForPasswordReset = ExtractUserFromResetCode(code);
 
             ChooseNewPasswordViewModel viewModel = new ChooseNewPasswordViewModel {User = userForPasswordReset};
 
@@ -106,96 +122,44 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             return null;
         }
+        
+        // Look up the reset code (a GUID) in the database, and return the user it's associated with
+        private User ExtractUserFromResetCode(string encryptedCode)
+        {
+            User user = dataRepository.GetAll<User>().FirstOrDefault(u => u.PasswordResetCode == encryptedCode);
+            
+            // Check that user exists
+            if (user.IsNull())
+            {
+                throw new PageNotFoundException();
+            }
 
-        #endregion
+            // Check that password reset code has not expired
+            if (!PasswordResetCodeHasExpired(user))
+            {
+                throw new PasswordResetCodeExpiredException();
+            }
 
+            // Remove password reset code and send date
+            user.PasswordResetCode = null;
+            user.ResetSendDate = null;
+
+            return user;
+        }
+        
         private static bool PasswordResetEmailSentRecently(User userForPasswordReset)
         {
             return userForPasswordReset.ResetSendDate.HasValue
                    && (userForPasswordReset.ResetSendDate.Value - DateTime.Now).TotalMinutes < Global.MinPasswordResetMinutes;
         }
 
-        // Creates the reset code by encrypting the user ID for the user to change password
-        // A colon separator so the information can be extracted
-        // And the DateTime of sending, in ISO1806 format
-        private void SendPasswordResetEmail(User userForPasswordReset)
+        private static bool PasswordResetCodeHasExpired(User userForPasswordReset)
         {
-            // Send a password reset link to the user's email address
-            string resetCode = Encryption.EncryptQuerystring(userForPasswordReset.UserId + ":" + VirtualDateTime.Now.ToString("yyyyMMddHHmmss"));
-            // TODO: Update this action to an updated page
-            string resetUrl = Url.Action("ChooseNewPasswordGet", "PasswordReset", new { code = resetCode }, "https");
-            emailSendingService.SendResetPasswordVerificationEmail(userForPasswordReset.EmailAddress, resetUrl);
-
-            CustomLogger.Information(
-                "Password reset sent",
-                $"User ID: {userForPasswordReset.UserId}, Email:{userForPasswordReset.EmailAddress}");
+            return userForPasswordReset.ResetSendDate.HasValue
+                   && (userForPasswordReset.ResetSendDate.Value - DateTime.Now).TotalDays < Global.PasswordResetCodeExpiryDays;
         }
 
-        // Decrypt and decode the encrypted code from the password reset link
-        // Extract the user ID, look for the user and check that it exists
-        // Extract the reset code send date and check that it has not expired
-        private User DecryptResetCodeAndValidateComponents(string encryptedCode)
-        {
-            string decryptedCode = DecryptAndDecodePasswordResetCode(encryptedCode);
 
-            User user = GetUserFromPasswordResetCode(decryptedCode);
-
-            if (user.IsNull())
-            {
-                throw new PageNotFoundException();
-            }
-            
-            ValidatePasswordResetSendDate(decryptedCode);
-
-            return user;
-        }
-
-        private string DecryptAndDecodePasswordResetCode(string encryptedCode)
-        {
-            string decryptedCode = Encryption.DecryptQuerystring(encryptedCode);
-            
-            return HttpUtility.UrlDecode(decryptedCode.ToString());
-        }
-
-        // Return the user from the user ID provided in the decrypted password reset code
-        // Make sure to call DecryptAndDecodePasswordResetCode to decrypt the code before this
-        private User GetUserFromPasswordResetCode(string code)
-        {
-            // Split the code by : to get individual segments
-            string[] codeSegments = code.SplitI(":");
-            
-            // Convert the first segment (the user ID) to a long
-            long userId = codeSegments[0].ToLong();
-
-            // Find the user from this ID
-            return dataRepository.Get<User>(userId);
-        }
-
-        // Check that the password reset code contains a valid date
-        // And that is has not expired
-        private void ValidatePasswordResetSendDate(string code)
-        {
-            // Split the code by : to get individual segments
-            string[] codeSegments = code.SplitI(":");
-
-            try
-            {
-                // Try to convert the segment to a DateTime
-                DateTime passwordResetSendDate = DateTime.Parse(codeSegments[1]);
-
-                // Check if the password reset email was sent more than PasswordResetCodeExpiryDays ago (from Global.cs)
-                if ((DateTime.Now - passwordResetSendDate).TotalDays > Global.PasswordResetCodeExpiryDays)
-                {
-                    throw new PasswordResetCodeExpiredException();
-                }
-            }
-            catch
-            {
-                // Password reset date isn't valid (DateTime.Parse fails on the string)
-                throw new PageNotFoundException();
-            }
-            
-        }
-
+        #endregion
     }
 }
