@@ -1,12 +1,13 @@
 ﻿using GenderPayGap.Database;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
     public class ChooseNewPasswordViewModel : GovUkViewModel
     {
-        public User User { get; set; }
+        public string ResetCode { get; set; }
 
         [GpgPasswordValidation]
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter a new password")]
