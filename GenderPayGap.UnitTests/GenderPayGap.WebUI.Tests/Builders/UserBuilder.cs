@@ -81,15 +81,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
             userInProgress.PasswordHash = Crypto.GetPBKDF2(password, salt); 
             userInProgress.HashingAlgorithm = HashingAlgorithm.PBKDF2; 
             return this; 
-        } 
-
-        public UserBuilder WithPassword(string password)
-        {
-            byte[] salt = Crypto.GetSalt();
-            userInProgress.Salt = Convert.ToBase64String(salt);
-            userInProgress.PasswordHash = Crypto.GetPBKDF2(password, salt);
-            userInProgress.HashingAlgorithm = HashingAlgorithm.PBKDF2;
-            return this;
         }
 
         public User Build()

@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
 
             var controller = new ControllerBuilder<ChangePasswordNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -63,7 +63,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
             // Assert
-            bool isExpectedPassword = await mockUserRepo.CheckPasswordAsync(user, "NewPassword1");
+            bool isExpectedPassword = mockUserRepo.CheckPassword(user, "NewPassword1");
             Assert.IsTrue(isExpectedPassword);
         }
         
@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Abc1");
 
             var controller = new ControllerBuilder<ChangePasswordNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -92,7 +92,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
             // Assert
-            bool isExpectedPassword = await mockUserRepo.CheckPasswordAsync(user, "password");
+            bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
             Assert.IsTrue(isExpectedPassword);
         }
         
@@ -109,7 +109,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "abcdefg1");
 
             var controller = new ControllerBuilder<ChangePasswordNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -121,7 +121,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
             // Assert
-            bool isExpectedPassword = await mockUserRepo.CheckPasswordAsync(user, "password");
+            bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
             Assert.IsTrue(isExpectedPassword);
         }
         
@@ -138,7 +138,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "ABCDEFG1");
 
             var controller = new ControllerBuilder<ChangePasswordNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -150,7 +150,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
             // Assert
-            bool isExpectedPassword = await mockUserRepo.CheckPasswordAsync(user, "password");
+            bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
             Assert.IsTrue(isExpectedPassword);
         }
         
@@ -167,7 +167,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "AnotherPassword1");
 
             var controller = new ControllerBuilder<ChangePasswordNewController>()
-                .WithUserId(user.UserId)
+                .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -179,7 +179,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             controller.ChangePasswordPost(new ChangePasswordNewViewModel()).Wait();
             
             // Assert
-            bool isExpectedPassword = await mockUserRepo.CheckPasswordAsync(user, "password");
+            bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
             Assert.IsTrue(isExpectedPassword);
         }
 
