@@ -64,6 +64,8 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime? LoginDate { get; set; }
         [JsonProperty]
+        public string PasswordResetCode { get; set; }
+        [JsonProperty]
         public DateTime? ResetSendDate { get; set; }
         [JsonProperty]
         public int ResetAttempts { get; set; }
