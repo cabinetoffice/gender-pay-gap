@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Claims;
 using Autofac;
@@ -33,6 +34,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
 
         private User user;
         private Dictionary<string, StringValues> requestFormValues;
+        private bool mockUriHelper;
 
         public List<NotifyEmail> EmailsSent { get; } = new List<NotifyEmail>();
         public IDataRepository DataRepository { get; }
@@ -66,6 +68,12 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
 
+        public ControllerBuilder<T> WithMockUriHelper()
+        {
+            this.mockUriHelper = true;
+            return this;
+        }
+
         public T Build()
         {
             IContainer DIContainer = BuildContainerIocForControllerOfType();
@@ -91,6 +99,11 @@ namespace GenderPayGap.WebUI.Tests.Builders
             //Create and return the controller
             var controller = DIContainer.Resolve<T>();
             controller.ControllerContext = controllerContextMock;
+
+            if (mockUriHelper)
+            {
+                controller.AddMockUriHelperNew(new Uri("https://localhost:44371/mockURL").ToString());
+            }
             return controller;
         }
 
