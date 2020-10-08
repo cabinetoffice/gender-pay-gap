@@ -117,6 +117,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ChooseNewPassword", viewModel);
         }
         
+        [HttpGet("choose-new-password/complete")]
+        public IActionResult ChooseNewPasswordCompleteGet()
+        {
+            return View("ChooseNewPasswordComplete");
+        }
+        
         [ValidateAntiForgeryToken]
         [PreventDuplicatePost]
         [HttpPost("choose-new-password")]
@@ -124,8 +130,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             viewModel.ParseAndValidateParameters(Request, m => m.NewPassword); 
             viewModel.ParseAndValidateParameters(Request, m => m.ConfirmNewPassword);
-
-            // TODO: Check that the two passwords match
+            
+            if (viewModel.HasSuccessfullyParsedValueFor(m => m.NewPassword)
+                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmNewPassword)
+                && viewModel.NewPassword != viewModel.ConfirmNewPassword)
+            {
+                viewModel.AddErrorFor(m => m.ConfirmNewPassword, "Password and confirmation password do not match");
+            }
             
             // Find the user from the reset code in the viewModel
             User userToUpdate = ExtractUserFromResetCode(viewModel.ResetCode);
@@ -133,8 +144,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             userRepository.UpdatePassword(userToUpdate, viewModel.NewPassword);
             emailSendingService.SendChangePasswordCompletedEmail(userToUpdate.EmailAddress);
 
-            // TODO: Add completed page and redirect there
-            return null;
+            return RedirectToAction("ChooseNewPasswordCompleteGet");
         }
         
         // Look up the reset code (a GUID) in the database, and return the user it's associated with
