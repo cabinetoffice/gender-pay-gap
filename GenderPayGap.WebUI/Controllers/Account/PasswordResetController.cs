@@ -147,7 +147,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             User userToUpdate = ExtractUserFromResetCode(viewModel.ResetCode);
             
             userRepository.UpdatePassword(userToUpdate, viewModel.NewPassword);
-            emailSendingService.SendChangePasswordCompletedEmail(userToUpdate.EmailAddress);
+            emailSendingService.SendResetPasswordCompletedEmail(userToUpdate.EmailAddress);
 
             return RedirectToAction("ChooseNewPasswordCompleteGet");
         }
