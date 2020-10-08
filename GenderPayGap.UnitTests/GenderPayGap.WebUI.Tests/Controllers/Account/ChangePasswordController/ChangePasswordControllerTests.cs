@@ -92,12 +92,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             
             // Assert
             // Assert that exactly one email is sent
-            Assert.That(controllerBuilder.EmailsSent.Count == 1);
+            Assert.AreEqual(1,controllerBuilder.EmailsSent.Count);
             
             NotifyEmail userEmail = controllerBuilder.EmailsSent.FirstOrDefault();
             // Assert that the email sent has the correct email address and template
             Assert.NotNull(userEmail);
-            Assert.AreEqual(userEmail.EmailAddress, user.EmailAddress);
+            Assert.AreEqual(user.EmailAddress, userEmail.EmailAddress);
             Assert.AreEqual(EmailTemplates.SendChangePasswordCompletedEmail, userEmail.TemplateId, $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.SendChangePasswordCompletedEmail}");
         }
         
@@ -127,10 +127,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             // Assert
             // Assert that exactly one audit log entry is added
             List<AuditLog> auditLogEntries = controllerBuilder.DataRepository.GetAll<AuditLog>().ToList();
-            Assert.That(auditLogEntries.Count == 1);
+            Assert.AreEqual(1, auditLogEntries.Count);
             
             // Assert that the audit log entry audits the correct action
-            Assert.That(auditLogEntries.First().Action == AuditedAction.UserChangePassword);
+            Assert.AreEqual(AuditedAction.UserChangePassword, auditLogEntries.First().Action);
         }
         
         [Test]
