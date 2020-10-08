@@ -114,6 +114,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         
         // The user asks to close their account
         // We direct them to a page that asks for confirmation
+        [AllowAnonymous]
         [HttpGet("close/completed")]
         public IActionResult CloseAccountComplete()
         {

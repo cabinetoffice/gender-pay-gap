@@ -63,7 +63,7 @@
                 <dt class="cya-question">Password</dt>
                 <dd class="cya-answer cya-password">***********</dd>
                 <dd class="cya-change">
-                    @if (string.IsNullOrEmpty(ViewBag.ChangePasswordUrl) == false)
+                    @if (!Model.IsUserBeingImersonated)
                     {
                         <a href="@Url.Action("ChangePasswordGet", "ChangePasswordNew")">
                             Change
