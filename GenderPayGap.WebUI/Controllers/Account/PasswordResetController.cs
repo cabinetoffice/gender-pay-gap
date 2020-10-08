@@ -137,6 +137,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 viewModel.AddErrorFor(m => m.ConfirmNewPassword, "Password and confirmation password do not match");
             }
+
+            if (viewModel.HasAnyErrors())
+            {
+                return View("ChooseNewPassword", viewModel);
+            }
             
             // Find the user from the reset code in the viewModel
             User userToUpdate = ExtractUserFromResetCode(viewModel.ResetCode);
@@ -174,13 +179,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
         private static bool PasswordResetEmailSentRecently(User userForPasswordReset)
         {
             return userForPasswordReset.ResetSendDate.HasValue
-                   && (userForPasswordReset.ResetSendDate.Value - DateTime.Now).TotalMinutes < Global.MinPasswordResetMinutes;
+                   && (DateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalMinutes < Global.MinPasswordResetMinutes;
         }
 
         private static bool PasswordResetCodeHasExpired(User userForPasswordReset)
         {
             return userForPasswordReset.ResetSendDate.HasValue
-                   && (userForPasswordReset.ResetSendDate.Value - DateTime.Now).TotalDays < Global.PasswordResetCodeExpiryDays;
+                   && (DateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalDays < Global.PasswordResetCodeExpiryDays;
         }
 
 
