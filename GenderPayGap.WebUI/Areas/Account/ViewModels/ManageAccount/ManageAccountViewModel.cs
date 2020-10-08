@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Areas.Account.ViewModels
         [Display(Name = nameof(AllowContact))]
         public bool AllowContact { get; set; }
 
-        public bool IsUserBeingImersonated { get; set; }
+        public bool IsUserBeingImpersonated { get; set; }
 
     }
 
