@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.ErrorHandling
     
     public class UserRecentlySentPasswordResetEmailWithoutChangingPasswordException : CustomErrorPageException
     {
-        public override string ViewName => "../Errors/UserNotRegisteredToReportForOrganisation";    
+        public override string ViewName => "../Errors/UserRecentlySentPasswordResetEmailWithoutChangingPassword";    
         public override int StatusCode => 403;
     }
 
