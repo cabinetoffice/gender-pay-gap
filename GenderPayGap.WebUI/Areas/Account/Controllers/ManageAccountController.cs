@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
                 ContactPhoneNumber = currentUser.ContactPhoneNumber,
                 SendUpdates = currentUser.SendUpdates,
                 AllowContact = currentUser.AllowContact,
-                IsUserBeingImersonated = LoginHelper.IsUserBeingImpersonated(User)
+                IsUserBeingImpersonated = LoginHelper.IsUserBeingImpersonated(User)
             };
 
             // check if we have any successful changes
@@ -54,14 +54,12 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             }
 
             // generate flow urls
-            ViewBag.CloseAccountUrl = "";
             ViewBag.ChangeEmailUrl = "";
             ViewBag.ChangePasswordUrl = "";
             ViewBag.ChangeDetailsUrl = "";
 
             if (IsImpersonatingUser == false)
             {
-                ViewBag.CloseAccountUrl = Url.Action<CloseAccountController>(nameof(CloseAccountController.CloseAccount));
                 ViewBag.ChangeEmailUrl = Url.Action("ChangeEmailGet", "ChangeEmail");
                 ViewBag.ChangePasswordUrl = Url.Action<ChangePasswordController>(nameof(ChangePasswordController.ChangePassword));
             }

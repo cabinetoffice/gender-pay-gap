@@ -28,11 +28,8 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        @if (string.IsNullOrEmpty(ViewBag.CloseAccountUrl) == false)
+        @if (!Model.IsUserBeingImpersonated)
         {
-            @*<a href="@(ViewBag.CloseAccountUrl)">
-                Close your account
-            </a>*@
             <a href="@Url.Action("CloseAccountGet", "CloseAccountNew")">
                 Close your account
             </a>
@@ -63,7 +60,7 @@
                 <dt class="cya-question">Password</dt>
                 <dd class="cya-answer cya-password">***********</dd>
                 <dd class="cya-change">
-                    @if (!Model.IsUserBeingImersonated)
+                    @if (!Model.IsUserBeingImpersonated)
                     {
                         <a href="@Url.Action("ChangePasswordGet", "ChangePasswordNew")">
                             Change
@@ -89,7 +86,7 @@
             </div>
 
             <div class="column-half gpg-c-cya__changelink">
-                @if (!Model.IsUserBeingImersonated)
+                @if (!Model.IsUserBeingImpersonated)
                 {
                     <a href="@Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails")">
                         Change
@@ -136,7 +133,7 @@
             </div>
 
             <div class="column-half gpg-c-cya__changelink">
-                @if (!Model.IsUserBeingImersonated)
+                @if (!Model.IsUserBeingImpersonated)
                 {
                     <a href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
                         Change
