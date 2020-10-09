@@ -19,7 +19,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    public class CloseAccountNewController : Controller
+    public class CloseAccountController : Controller
     {
 
         private readonly IDataRepository dataRepository;
@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         private readonly RegistrationRepository registrationRepository;
         private readonly EmailSendingService emailSendingService;
 
-        public CloseAccountNewController(
+        public CloseAccountController(
             IDataRepository dataRepository, 
             IUserRepository userRepository, 
             RegistrationRepository registrationRepository,
@@ -53,19 +53,19 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             
-            var viewModel = new CloseAccountNewViewModel
+            var viewModel = new CloseAccountViewModel
             {
                 IsSoleUserRegisteredToAnOrganisation = currentUser.IsSoleUserOfOneOrMoreOrganisations()
             };
 
             // Return the Change Personal Details form
-            return View("CloseAccountNew", viewModel);
+            return View("CloseAccount", viewModel);
         }
 
         [HttpPost("close")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public IActionResult CloseAccountPost(CloseAccountNewViewModel viewModel)
+        public IActionResult CloseAccountPost(CloseAccountViewModel viewModel)
         {
             // Admin impersonating a user shouldn't be able to close the user's account
             if (LoginHelper.IsUserBeingImpersonated(User))
@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             if (viewModel.HasAnyErrors())
             {
-                return View("CloseAccountNew", viewModel);
+                return View("CloseAccount", viewModel);
             }
             
             // Get the current user
@@ -88,7 +88,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             if (!isValidPassword)
             {
                 viewModel.AddErrorFor(m => m.Password, "Could not verify your password");
-                return View("CloseAccountNew", viewModel);
+                return View("CloseAccount", viewModel);
             }
 
             // Collect list of organisations associated with the user
@@ -107,7 +107,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             InformGeoOfOrphanedOrganisations(orphanedOrganisations);
             
             // Log user out and redirect to success page
-            IActionResult accountClosedSuccess = RedirectToAction("CloseAccountComplete", "CloseAccountNew");
+            IActionResult accountClosedSuccess = RedirectToAction("CloseAccountComplete", "CloseAccount");
 
             return LoginHelper.Logout(HttpContext, accountClosedSuccess);
         }

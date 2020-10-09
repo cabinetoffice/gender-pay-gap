@@ -1,6 +1,6 @@
 ﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Account.CloseAccountNewViewModel
+@model GenderPayGap.WebUI.Models.Account.CloseAccountViewModel
 
 @{
     ViewBag.Title = "Close your account - Gender pay gap service";
@@ -62,7 +62,7 @@
             </div>
         }
 
-        <form method="POST" action="@Url.Action("CloseAccountPost", "CloseAccountNew")">
+        <form method="POST" action="@Url.Action("CloseAccountPost", "CloseAccount")">
             @(Html.AntiForgeryToken())
 
             <h2 class="govuk-heading-s">Are you sure you want to close your account?</h2>
