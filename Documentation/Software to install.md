@@ -28,7 +28,7 @@ Install the following software:
 
 * A database UI  
   I'd recommend [DataGrip](https://www.jetbrains.com/datagrip/)  
-  You ccan use pgAdmin (which comes with Postgres), but DataGrip is better (in my opinion)  
+  You can use pgAdmin (which comes with Postgres), but DataGrip is better (in my opinion)  
   If you work for Softwire, read Softwire's guide about getting
   [licences for DataGrip](https://swiki.softwire.com/display/Helpdesk/JetBrains+Licence+Keys)
 

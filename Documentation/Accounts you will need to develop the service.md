@@ -39,8 +39,11 @@ Project tools:
 * [Miro](https://miro.com)  
   For user research planning
 
-* Slack  
+* GPG team Slack  
   Ask an existing member of the team to add you to all the relevant Slack channels
+
+* Cross-government Slack  
+  This can be useful to ask questions to the Design System and PaaS teams  
 
 * Google Drive
 
