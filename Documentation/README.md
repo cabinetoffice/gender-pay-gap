@@ -8,3 +8,6 @@ Information for new developers:
 Environments and deployments:
 * [Our environments](Our%20environments.md)
 * [Deployments](Deployments.md)
+
+Database:
+* [Database migrations](Database%20migrations.md)
