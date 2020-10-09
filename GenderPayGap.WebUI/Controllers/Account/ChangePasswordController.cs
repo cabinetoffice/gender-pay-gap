@@ -15,14 +15,14 @@ namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    public class ChangePasswordNewController : Controller
+    public class ChangePasswordController : Controller
     {
 
         private readonly IDataRepository dataRepository;
         private readonly IUserRepository userRepository;
         private readonly EmailSendingService emailSendingService;
 
-        public ChangePasswordNewController(
+        public ChangePasswordController(
             IDataRepository dataRepository,
             IUserRepository userRepository,
             EmailSendingService emailSendingService)
@@ -41,13 +41,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
             // Return the Change Personal Details form
-            return View("ChangePasswordNew", new ChangePasswordNewViewModel());
+            return View("ChangePassword", new ChangePasswordViewModel());
         }
 
         [HttpPost("change-password-new")]
         [ValidateAntiForgeryToken]
         [PreventDuplicatePost]
-        public async Task<IActionResult> ChangePasswordPost(ChangePasswordNewViewModel viewModel)
+        public async Task<IActionResult> ChangePasswordPost(ChangePasswordViewModel viewModel)
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -65,7 +65,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             if (viewModel.HasAnyErrors())
             {
-                return View("ChangePasswordNew", viewModel);
+                return View("ChangePassword", viewModel);
             }
             
             userRepository.UpdatePassword(currentUser, viewModel.NewPassword);
@@ -81,7 +81,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return LocalRedirect(nextPageUrl);
         }
 
-        public void ValidatePasswords(ChangePasswordNewViewModel viewModel, User currentUser)
+        public void ValidatePasswords(ChangePasswordViewModel viewModel, User currentUser)
         {
             // Check if current password is correct
             bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword);
