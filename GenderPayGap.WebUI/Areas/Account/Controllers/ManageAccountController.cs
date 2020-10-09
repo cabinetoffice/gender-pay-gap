@@ -61,7 +61,6 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             if (IsImpersonatingUser == false)
             {
                 ViewBag.ChangeEmailUrl = Url.Action("ChangeEmailGet", "ChangeEmail");
-                ViewBag.ChangePasswordUrl = Url.Action<ChangePasswordController>(nameof(ChangePasswordController.ChangePassword));
             }
 
             // remove any change updates
