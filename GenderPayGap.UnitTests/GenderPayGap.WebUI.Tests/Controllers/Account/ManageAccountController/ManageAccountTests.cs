@@ -15,7 +15,6 @@ namespace Account.Controllers.ManageAccountController
     {
 
         private static object[] AddsSuccessAlertsToViewBagCases = {
-            new object[] {nameof(AccountResources.ChangePasswordSuccessAlert), AccountResources.ChangePasswordSuccessAlert},
             new object[] {nameof(AccountResources.ChangeDetailsSuccessAlert), AccountResources.ChangeDetailsSuccessAlert}
         };
 
