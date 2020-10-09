@@ -48,14 +48,9 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
             {
                 ViewBag.ChangeSuccessMessage = AccountResources.ChangeDetailsSuccessAlert;
             }
-            else if (TempData.ContainsKey(nameof(AccountResources.ChangePasswordSuccessAlert)))
-            {
-                ViewBag.ChangeSuccessMessage = AccountResources.ChangePasswordSuccessAlert;
-            }
 
             // generate flow urls
             ViewBag.ChangeEmailUrl = "";
-            ViewBag.ChangePasswordUrl = "";
             ViewBag.ChangeDetailsUrl = "";
 
             if (IsImpersonatingUser == false)
@@ -65,7 +60,6 @@ namespace GenderPayGap.WebUI.Areas.Account.Controllers
 
             // remove any change updates
             TempData.Remove(nameof(AccountResources.ChangeDetailsSuccessAlert));
-            TempData.Remove(nameof(AccountResources.ChangePasswordSuccessAlert));
 
             return View(model);
         }

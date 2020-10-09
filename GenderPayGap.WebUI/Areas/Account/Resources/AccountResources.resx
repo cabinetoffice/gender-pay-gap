@@ -126,12 +126,6 @@
   <data name="ChangeEmailAddressMustDiffer" xml:space="preserve">
     <value>The email address you entered must be different from your current email address</value>
   </data>
-  <data name="ChangePasswordMustBeDifferent" xml:space="preserve">
-    <value>The password you have entered must be different from your previous password</value>
-  </data>
-  <data name="ChangePasswordSuccessAlert" xml:space="preserve">
-    <value>Your password has been changed successfully</value>
-  </data>
   <data name="ConfirmEmailAddress" xml:space="preserve">
     <value>Confirm your email address</value>
   </data>
