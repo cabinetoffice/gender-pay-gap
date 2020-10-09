@@ -88,24 +88,6 @@ namespace GenderPayGap.WebUI.Areas.Account.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The password you have entered must be different from your previous password.
-        /// </summary>
-        public static string ChangePasswordMustBeDifferent {
-            get {
-                return ResourceManager.GetString("ChangePasswordMustBeDifferent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your password has been changed successfully.
-        /// </summary>
-        public static string ChangePasswordSuccessAlert {
-            get {
-                return ResourceManager.GetString("ChangePasswordSuccessAlert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Confirm your email address.
         /// </summary>
         public static string ConfirmEmailAddress {
