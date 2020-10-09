@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class CloseAccountNewViewModel : GovUkViewModel
+    public class CloseAccountViewModel : GovUkViewModel
     {
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter your password")]
