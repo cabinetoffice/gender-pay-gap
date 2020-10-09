@@ -4,7 +4,7 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ChangePasswordNewViewModel : GovUkViewModel
+    public class ChangePasswordViewModel : GovUkViewModel
     {
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter your current password")]
