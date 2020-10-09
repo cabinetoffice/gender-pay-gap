@@ -35,14 +35,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "password");
             
-            var controller = new ControllerBuilder<CloseAccountNewController>()
+            var controller = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountNewViewModel());
+            controller.CloseAccountPost(new CloseAccountViewModel());
             
             // Assert
             Assert.AreEqual(user.Status, UserStatuses.Retired);
@@ -58,14 +58,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "wrongpassword");
             
-            var controller = new ControllerBuilder<CloseAccountNewController>()
+            var controller = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountNewViewModel());
+            controller.CloseAccountPost(new CloseAccountViewModel());
             
             // Assert
             Assert.AreEqual(user.Status, UserStatuses.Active);
@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "password");
 
-            var controllerBuilder = new ControllerBuilder<CloseAccountNewController>();
+            var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(userToDelete)
                 .WithRequestFormValues(requestFormValues)
@@ -102,7 +102,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountNewViewModel());
+            controller.CloseAccountPost(new CloseAccountViewModel());
             
             // Assert
             // Assert that organisation1 doesn't have userToDelete associated with it, but is not an orphan
