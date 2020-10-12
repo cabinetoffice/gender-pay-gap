@@ -9,6 +9,9 @@ namespace GenderPayGap.WebUI.Models.Account
 
         [BindNever]
         public User User { get; set; }
+        
+        [BindNever]
+        public bool IsUserBeingImpersonated { get; set; }
 
     }
 }

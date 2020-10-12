@@ -6,7 +6,9 @@
 }
 
 @section BeforeMain {
-    @{ await Html.RenderPartialAsync("../Components/Navigation/AccountTabs"); }
+    @{
+        await Html.RenderPartialAsync("../Components/Navigation/AccountTabs");
+    }
 }
 
 <div class="govuk-!-margin-top-5"></div>
@@ -19,6 +21,17 @@
         <h1 class="govuk-heading-xl">
             Manage Account
         </h1>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!Model.IsUserBeingImpersonated)
+        {
+            <a class="govuk-link" href="@Url.Action("CloseAccountGet", "CloseAccount")">
+                Close your account
+            </a>
+        }
     </div>
 </div>
 
