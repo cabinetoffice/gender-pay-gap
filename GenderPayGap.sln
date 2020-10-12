@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General files", "General fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetEnvironmentVariablesInGovPaaS", "SetEnvironmentVariablesInGovPaaS\SetEnvironmentVariablesInGovPaaS.csproj", "{95E70733-073A-498E-8653-BE4626FEFA5C}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Infrastructure", "Infrastructure\", "{52C28191-9B43-4116-8A69-40CD737650DD}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "InfrastructureNested", "Infrastructure\", "{52C28191-9B43-4116-8A69-40CD737650DD}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51998"
@@ -51,7 +51,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{4235BEF5-F532-434F-8BC7-35033F49663B}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Documentation", "Documentation\", "{81A83AB9-45C8-4F86-873E-052B08604269}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DocumentationNested", "Documentation\", "{81A83AB9-45C8-4F86-873E-052B08604269}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51878"
