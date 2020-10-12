@@ -16,7 +16,6 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
-using GenderPayGap.WebUI.Areas.Account.ViewServices;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
