@@ -21,9 +21,13 @@ The Gender Pay gap service currently has 4 environments:
   The real / live website
 
 ## Authentication
-When you first visit a non-production environment, you will be asked for a username and password
-![Screenshot Of Http Basic Auth In Dev Environment (Firefox)](screenshot-of-http-basic-auth-in-dev-environment-firefox.png)
-![Screenshot Of Http Basic Auth In Dev Environment (Google Chrome)](screenshot-of-http-basic-auth-in-dev-environment-google-chrome.png)
+When you first visit a non-production environment, you will be asked for a username and password  
+<img src="screenshot-of-http-basic-auth-in-dev-environment-firefox.png"
+     alt="Screenshot Of Http Basic Auth In Dev Environment (Firefox)"
+     width="632px">
+<img src="screenshot-of-http-basic-auth-in-dev-environment-google-chrome.png"
+     alt="Screenshot Of Http Basic Auth In Dev Environment (Google Chrome)"
+     width="453px">
 
 This username and password prompt:
 * Is not turned on in the Live environment

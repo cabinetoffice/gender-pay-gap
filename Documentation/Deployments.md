@@ -39,8 +39,10 @@ How to release:
 
 * Click the blue "Create release" button (top right)
 
-* Choose the build number in the "Artifacts" drop down
-  ![Screenshot Of Azure Devops Release Artifact Selection Drop Down](screenshot-of-azure-devops-release-artifact-selection-drop-down.png)
+* Choose the build number in the "Artifacts" drop down  
+  <img src="screenshot-of-azure-devops-release-artifact-selection-drop-down.png"
+       alt="Screenshot Of Azure Devops Release Artifact Selection Drop Down"
+       width="617px">
 
 * Click the blue "Create" button
 
