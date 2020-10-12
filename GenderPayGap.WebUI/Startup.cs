@@ -14,7 +14,6 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.Areas.Account.ViewServices;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
