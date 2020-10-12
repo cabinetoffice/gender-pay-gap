@@ -1,10 +1,12 @@
-﻿@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
+﻿@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
 
 @{
     ViewBag.Title = "Manage account - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{ await Html.RenderPartialAsync("../Components/Navigation/AccountTabs"); }
 }
 
 <div class="govuk-!-margin-top-5"></div>
