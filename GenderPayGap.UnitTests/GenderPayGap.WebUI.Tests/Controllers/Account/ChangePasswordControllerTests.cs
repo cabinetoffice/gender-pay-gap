@@ -6,6 +6,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 
-namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
+namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {
     [TestFixture]
     [SetCulture("en-GB")]
@@ -51,7 +52,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>()
+            var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
@@ -78,7 +79,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
             
-            var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>();
+            var controllerBuilder = new ControllerBuilder<ChangePasswordController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
@@ -112,7 +113,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
             
-            var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>();
+            var controllerBuilder = new ControllerBuilder<ChangePasswordController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
@@ -144,7 +145,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "Abc1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Abc1");
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>()
+            var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
@@ -171,7 +172,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "abcdefg1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "abcdefg1");
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>()
+            var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
@@ -198,7 +199,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "ABCDEFG1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "ABCDEFG1");
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>()
+            var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
@@ -225,7 +226,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.ChangePasswordController
             requestFormValues.Add("GovUk_Text_NewPassword", "Password1");
             requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "AnotherPassword1");
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.ChangePasswordController>()
+            var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
                 .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
