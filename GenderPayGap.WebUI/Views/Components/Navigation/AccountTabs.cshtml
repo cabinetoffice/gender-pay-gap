@@ -1,12 +1,13 @@
 ﻿@{
     var navEntries = new[]
     {
-        new {Text = "Manage Organisations", UrlPath = Url.Action<OrganisationController>(nameof(OrganisationController.ManageOrganisations))},
-        new {Text = "Manage Account", UrlPath = Url.Action<ManageAccountController>(nameof(ManageAccountController.ManageAccount))},
+        new {Text = "Manage Organisations", UrlPath = Url.Action("ManageOrganisations", "Organisation")},
+        new {Text = "Manage Account", UrlPath = Url.Action("ManageAccountGet", "ManageAccount")}
     };
 }
-<div class="grid-row">
-    <div class="column-full">
+
+<div class="govuk-grid-row account-tabs">
+    <div class="govuk-grid-column-full">
         <nav class="app-navigation govuk-clearfix">
             <ul class="app-navigation__list govuk-width-container">
                 @foreach (var navItem in navEntries)

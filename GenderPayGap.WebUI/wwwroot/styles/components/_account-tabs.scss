@@ -1,0 +1,89 @@
+﻿.account-tabs {
+
+  .app-navigation {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.25;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    border-bottom: 1px solid #b1b4b6;
+  }
+  
+  @media print {
+    .app-navigation {
+      display: none;
+    }
+  }
+
+  @media (min-width: 40.0625em) {
+    .app-navigation {
+      font-size: 16px;
+      line-height: 1.31579;
+    }
+  }
+
+  @media print {
+    .app-navigation {
+      font-size: 14pt;
+      line-height: 1.15;
+    }
+  }
+
+  @media (min-width: 40.0525em) {
+    .app-navigation__list {
+      float: right;
+    }
+  }
+
+  .app-navigation__list {
+    position: relative;
+    padding: 0;
+    list-style: none;
+  }
+
+  .app-navigation__list-item {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    height: 40px;
+    padding: 0 15px;
+    float: left;
+    line-height: 40px;
+  }
+
+  .app-navigation__list-item--current {
+    border-bottom: 4px solid #005ea5
+  }
+
+  .app-navigation__link {
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .app-navigation__link:not(:focus):visited {
+    color: #005ea5
+  }
+
+  .app-navigation__link:not(:focus):hover {
+    color: #1d70b8;
+    text-decoration: underline;
+  }
+
+  .app-navigation__link:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .app-navigation__list-item--current .app-navigation__link:hover {
+    text-decoration: none;
+  }
+
+}
