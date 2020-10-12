@@ -1,6 +1,7 @@
 ﻿using GenderPayGap.Database;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.TestHelpers;
+using GenderPayGap.WebUI.Areas.Account.Controllers;
 using GenderPayGap.WebUI.Areas.Account.Resources;
 using GenderPayGap.WebUI.Areas.Account.ViewModels;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NUnit.Framework;
 
-namespace Account.Controllers.ManageAccountController
+namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {
 
     public class ManageAccountTests
@@ -24,7 +25,7 @@ namespace Account.Controllers.ManageAccountController
         public void BeforeEach()
         {
             mockRouteData = new RouteData();
-            mockRouteData.Values.Add("Action", nameof(GenderPayGap.WebUI.Areas.Account.Controllers.ManageAccountController.ManageAccount));
+            mockRouteData.Values.Add("Action", nameof(ManageAccountController.ManageAccount));
             mockRouteData.Values.Add("Controller", "ManageAccount");
         }
 
@@ -34,7 +35,7 @@ namespace Account.Controllers.ManageAccountController
             // Arrange
             User unverifiedUser = UserHelper.GetNotAdminUserWithoutVerifiedEmailAddress();
             var controller =
-                UiTestHelper.GetController<GenderPayGap.WebUI.Areas.Account.Controllers.ManageAccountController>(
+                UiTestHelper.GetController<ManageAccountController>(
                     0,
                     mockRouteData,
                     unverifiedUser);
@@ -53,7 +54,7 @@ namespace Account.Controllers.ManageAccountController
             // Arrange
             User verifiedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
             var controller =
-                UiTestHelper.GetController<GenderPayGap.WebUI.Areas.Account.Controllers.ManageAccountController>(
+                UiTestHelper.GetController<ManageAccountController>(
                     verifiedUser.UserId,
                     mockRouteData,
                     verifiedUser);
@@ -75,7 +76,7 @@ namespace Account.Controllers.ManageAccountController
             // Arrange
             User verifiedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
             var controller =
-                UiTestHelper.GetController<GenderPayGap.WebUI.Areas.Account.Controllers.ManageAccountController>(
+                UiTestHelper.GetController<ManageAccountController>(
                     verifiedUser.UserId,
                     mockRouteData,
                     verifiedUser);

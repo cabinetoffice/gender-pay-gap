@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 
-namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
+namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {
     [TestFixture]
     [SetCulture("en-GB")]
@@ -36,7 +37,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
             requestFormValues.Add("GovUk_Checkbox_SendUpdates", "true");
             requestFormValues.Add("GovUk_Checkbox_AllowContact", "false");
 
-            var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>();
+            var controllerBuilder = new ControllerBuilder<AccountCreationController>();
             var controller = controllerBuilder
                 .WithRequestFormValues(requestFormValues)
                 .WithMockUriHelper()
@@ -71,7 +72,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account.AccountCreationController
                 Status = UserStatuses.New
             };
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.AccountCreationController>()
+            var controller = new ControllerBuilder<AccountCreationController>()
                 .WithDatabaseObjects(user)
                 .Build();
 

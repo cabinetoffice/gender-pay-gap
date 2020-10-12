@@ -12,7 +12,7 @@ using GenderPayGap.WebUI.Tests.Builders;
 using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 
-namespace GenderPayGap.WebUI.Tests.Controllers.Account.CloseAccountController
+namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {
     [TestFixture]
     [SetCulture("en-GB")]
