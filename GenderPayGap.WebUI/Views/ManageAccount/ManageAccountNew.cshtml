@@ -1,4 +1,4 @@
-@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
+﻿@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
 
 @{
     ViewBag.Title = "Manage account - Gender pay gap service";
@@ -84,23 +84,25 @@
 
 <div class="govuk-grid-row govuk-!-margin-top-7">
     <div class="govuk-grid-column-two-thirds">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-half">
-                <h2 class="govuk-heading-m">
-                    Personal details
-                </h2>
-            </div>
-            <div class="govuk-grid-column-one-half">
-                @if (!Model.IsUserBeingImpersonated)
-                    {
-                        <p class="govuk-body">
-                            <a class="govuk-link" href="@Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails")" style="float: right;">
-                                Change
-                                <span class="govuk-visually-hidden"> personal details</span>
-                            </a>
-                        </p>
-                    }
-            </div>
+        
+        <h2 class="govuk-heading-m" style="float: left;">
+            Personal details
+        </h2>
+        
+        @if (!Model.IsUserBeingImpersonated)
+        {
+            <p class="govuk-body" style="float: right;">
+                <a class="govuk-link" href="@(Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails"))">
+                    Change
+                    <span class="govuk-visually-hidden"> personal details</span>
+                </a>
+            </p>
+        }
+        <div style="clear: both;">
+            @* This <div> is deliberately empty
+                The elements above use "float: left;" and "float:right;"
+                We use this <div> (with "clear: both;") to ensure that the elements below
+                don't float up inline with the elements above *@
         </div>
 
         <dl class="govuk-summary-list">
@@ -142,25 +144,27 @@
 
 <div class="govuk-grid-row govuk-!-margin-top-7">
     <div class="govuk-grid-column-two-thirds">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-half">
-                <h2 class="govuk-heading-m">
-                    Contact preferences
-                </h2>
-            </div>
-            <div class="govuk-grid-column-one-half">
-                @if (!Model.IsUserBeingImpersonated)
-                {
-                    <p class="govuk-body">
-                        <a class="govuk-link" href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")" style="float: right;">
-                            Change
-                            <span class="govuk-visually-hidden"> contact preferences</span>
-                        </a>
-                    </p>
-                }
-            </div>
+
+        <h2 class="govuk-heading-m" style="float: left;">
+            Contact preferences
+        </h2>
+
+        @if (!Model.IsUserBeingImpersonated)
+        {
+            <p class="govuk-body" style="float: right;">
+                <a class="govuk-link" href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
+                    Change
+                    <span class="govuk-visually-hidden"> contact preferences</span>
+                </a>
+            </p>
+        }
+        <div style="clear: both;">
+            @* This <div> is deliberately empty
+            The elements above use "float: left;" and "float:right;"
+            We use this <div> (with "clear: both;") to ensure that the elements below
+            don't float up inline with the elements above *@
         </div>
-        
+
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
