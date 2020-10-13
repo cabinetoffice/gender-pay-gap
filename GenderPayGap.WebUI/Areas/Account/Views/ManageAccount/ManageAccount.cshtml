@@ -1,10 +1,11 @@
-﻿@model ManageAccountViewModel
+﻿@using GenderPayGap.WebUI.Views.Components.StatusMessages
+@model ManageAccountViewModel
 
 @await Html.PartialAsync("AccountNavigation")
 
 <div class="govuk-!-margin-top-5"></div>
 
-@{ await Html.RenderPartialAsync("../../../../Views/Components/StatusMessages/StatusMessages"); }
+@{ await Html.RenderPartialAsync("../../../../Views/Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
 
 @if (string.IsNullOrWhiteSpace(ViewBag.ChangeSuccessMessage) == false)
 {

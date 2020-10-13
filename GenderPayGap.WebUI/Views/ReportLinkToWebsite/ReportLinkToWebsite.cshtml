@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.WebUI.Models.Report
+@using GenderPayGap.WebUI.Views.Components.StatusMessages
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Report.ReportLinkToWebsiteViewModel
@@ -52,7 +53,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
 
         @(Html.GovUkErrorSummary())
 
@@ -87,7 +88,7 @@
                         If you don't have the URL to hand you can return and add it later.
                     </div>
                 </legend>
-                
+
                 @(Html.GovUkTextAreaFor(
                     m => m.LinkToOrganisationWebsite,
                     rows: 5,

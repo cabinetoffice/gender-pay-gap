@@ -1,3 +1,4 @@
+﻿@using GenderPayGap.WebUI.Views.Components.StatusMessages
 @model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
 
 @{
@@ -11,12 +12,13 @@
     }
 }
 
-<div class="govuk-!-margin-top-5"></div>
-
-@{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+        @{
+            await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages",
+                new StatusMessagesViewModel { Classes = "govuk-!-margin-bottom-6" });
+        }
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
             Manage your account

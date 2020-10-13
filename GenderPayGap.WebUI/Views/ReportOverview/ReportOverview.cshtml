@@ -1,4 +1,5 @@
 @using GenderPayGap.Core
+@using GenderPayGap.WebUI.Views.Components.StatusMessages
 @using GenderPayGap.WebUI.Views.Components.TaskList
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -47,7 +48,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages"); }
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
 
         <h1 class="govuk-heading-xl">
             @(editOrReportTitle)
