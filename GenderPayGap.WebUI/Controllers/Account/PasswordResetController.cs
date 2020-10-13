@@ -39,6 +39,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("password-reset")]
         public IActionResult PasswordResetGet()
         {
+            // Redirect if already logged in
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             return View("PasswordReset", new PasswordResetViewModel());
         }
 
@@ -47,6 +53,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("password-reset")]
         public IActionResult PasswordResetPost(PasswordResetViewModel viewModel)
         {
+            // Redirect if already logged in
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
 
             if (viewModel.HasAnyErrors())
@@ -57,7 +69,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Find user associated with email address
             User userForPasswordReset = userRepository.FindByEmailAsync(viewModel.EmailAddress, UserStatuses.Active).Result;
 
-            if (userForPasswordReset.IsNull())
+            if (userForPasswordReset == null)
             {
                 viewModel.AddErrorFor(m => m.EmailAddress, "An account associated with this email address does not exist.");
                 
@@ -69,17 +81,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 throw new UserRecentlySentPasswordResetEmailWithoutChangingPasswordException();
             }
+            
+            SendPasswordResetEmail(userForPasswordReset);
 
-            try
-            {
-                SendPasswordResetEmail(userForPasswordReset);
-            }
-            catch
-            {
-                throw new FailedToSendEmailException {EmailAddress = viewModel.EmailAddress};
-            }
+            var passwordResetSentViewModel = new PasswordResetSentViewModel {EmailAddress = viewModel.EmailAddress};
 
-            return View("PasswordResetSent");
+            return View("PasswordResetSent", passwordResetSentViewModel);
         }
         
         // Generates and stores a GUID to act as a password reset code
@@ -108,6 +115,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("choose-new-password")]
         public IActionResult ChooseNewPasswordGet(string code)
         {
+            // Redirect if already logged in
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             // Don't use the User returned from this, but call it to check that the code is valid
             // And also has not expired
             ExtractUserFromResetCode(code);
@@ -120,6 +133,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpGet("choose-new-password/complete")]
         public IActionResult ChooseNewPasswordCompleteGet()
         {
+            // Redirect if already logged in
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             return View("ChooseNewPasswordComplete");
         }
         
@@ -128,6 +147,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("choose-new-password")]
         public IActionResult ChooseNewPasswordPost(ChooseNewPasswordViewModel viewModel)
         {
+            // Redirect if already logged in
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             viewModel.ParseAndValidateParameters(Request, m => m.NewPassword); 
             viewModel.ParseAndValidateParameters(Request, m => m.ConfirmNewPassword);
             
@@ -155,10 +180,15 @@ namespace GenderPayGap.WebUI.Controllers.Account
         // Look up the reset code (a GUID) in the database, and return the user it's associated with
         private User ExtractUserFromResetCode(string encryptedCode)
         {
+            if (encryptedCode == null)
+            {
+                throw new PageNotFoundException();
+            }
+            
             User user = dataRepository.GetAll<User>().FirstOrDefault(u => u.PasswordResetCode == encryptedCode);
             
             // Check that user exists
-            if (user.IsNull())
+            if (user == null)
             {
                 throw new PageNotFoundException();
             }
@@ -185,7 +215,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         private static bool PasswordResetCodeHasExpired(User userForPasswordReset)
         {
             return userForPasswordReset.ResetSendDate.HasValue
-                   && (DateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalDays < Global.PasswordResetCodeExpiryDays;
+                   && (DateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalDays < Global.PasswordResetCodeExpiryDays.TotalDays;
         }
 
 

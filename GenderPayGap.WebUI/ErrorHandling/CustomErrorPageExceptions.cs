@@ -36,17 +36,6 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public override int StatusCode => 403;
     }
 
-    public class FailedToSendEmailException : CustomErrorPageException
-    {
-
-        public override string ViewName => "../Errors/FailedToSendEmail";
-
-        public override int StatusCode => 403;
-        
-        public string EmailAddress { get; set; }
-
-    }
-    
     public class PasswordResetCodeExpiredException : CustomErrorPageException
     {
 
