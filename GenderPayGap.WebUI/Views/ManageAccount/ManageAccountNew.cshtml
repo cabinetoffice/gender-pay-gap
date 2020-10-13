@@ -170,9 +170,9 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
-                    <td scope="row" class="govuk-table__cell">
+                    <th scope="row" class="govuk-table__cell govuk-!-font-weight-regular">
                         I would like to receive information about webinars, events and new guidance
-                    </td>
+                    </th>
                     <td class="govuk-table__cell">
                         @if (Model.User.SendUpdates)
                         {
@@ -185,9 +185,9 @@
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
-                    <td scope="row" class="govuk-table__cell">
+                    <th scope="row" class="govuk-table__cell govuk-!-font-weight-regular">
                         I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys
-                    </td>
+                    </th>
                     <td class="govuk-table__cell">
                         @if (Model.User.AllowContact)
                         {
