@@ -1,4 +1,4 @@
-﻿@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
+@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
 
 @{
     ViewBag.Title = "Manage account - Gender pay gap service";
@@ -54,7 +54,8 @@
                 <dd class="govuk-summary-list__actions">
                     @if (!Model.IsUserBeingImpersonated)
                     {
-                        <a href="@Url.Action("ChangeEmailGet", "ChangeEmail")">
+                        <a href="@(Url.Action("ChangeEmailGet", "ChangeEmail"))"
+                           class="govuk-link">
                             Change
                             <span class="govuk-visually-hidden"> email</span>
                         </a>
@@ -71,7 +72,8 @@
                 <dd class="govuk-summary-list__actions">
                     @if (!Model.IsUserBeingImpersonated)
                     {
-                        <a href="@Url.Action("ChangePasswordGet", "ChangePassword")">
+                        <a href="@(Url.Action("ChangePasswordGet", "ChangePassword"))"
+                           class="govuk-link">
                             Change
                             <span class="govuk-visually-hidden"> password</span>
                         </a>
