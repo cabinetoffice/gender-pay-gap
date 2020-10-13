@@ -27,7 +27,8 @@
         @if (!Model.IsUserBeingImpersonated)
         {
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("CloseAccountGet", "CloseAccount")">
+                <a href="@(Url.Action("CloseAccountGet", "CloseAccount"))"
+                   class="govuk-link">
                     Close your account
                 </a>
             </p>
@@ -43,7 +44,7 @@
                     Email address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.User.EmailAddress
+                    @(Model.User.EmailAddress)
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     @if (!Model.IsUserBeingImpersonated)
@@ -84,7 +85,8 @@
             @if (!Model.IsUserBeingImpersonated)
             {
                 <p class="govuk-body" style="float: right;">
-                <a class="govuk-link" href="@(Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails"))">
+                    <a href="@(Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails"))"
+                       class="govuk-link">
                         Change
                         <span class="govuk-visually-hidden"> personal details</span>
                     </a>
@@ -104,7 +106,7 @@
                     First name
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.User.Firstname
+                    @(Model.User.Firstname)
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -112,7 +114,7 @@
                     Last name
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.User.Lastname
+                    @(Model.User.Lastname)
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -120,7 +122,7 @@
                     Job title
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.User.JobTitle
+                    @(Model.User.JobTitle)
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -128,7 +130,7 @@
                     Phone number
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.User.ContactPhoneNumber
+                    @(Model.User.ContactPhoneNumber)
                 </dd>
             </div>
         </dl>
@@ -141,7 +143,8 @@
             @if (!Model.IsUserBeingImpersonated)
             {
                 <p class="govuk-body" style="float: right;">
-                <a class="govuk-link" href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
+                    <a href="@(Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences"))"
+                       class="govuk-link" >
                         Change
                         <span class="govuk-visually-hidden"> contact preferences</span>
                     </a>
