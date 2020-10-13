@@ -28,16 +28,18 @@
     <div class="govuk-grid-column-two-thirds">
         @if (!Model.IsUserBeingImpersonated)
         {
-            <a class="govuk-link" href="@Url.Action("CloseAccountGet", "CloseAccount")">
-                Close your account
-            </a>
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("CloseAccountGet", "CloseAccount")">
+                    Close your account
+                </a>
+            </p>
         }
     </div>
 </div>
 
-<div class="govuk-grid-row">
+<div class="govuk-grid-row govuk-!-margin-top-7">
     <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-l govuk-!-margin-top-7">
+        <h2 class="govuk-heading-m">
             Login details
         </h2>
 
@@ -80,11 +82,26 @@
     </div>
 </div>
 
-<div class="govuk-grid-row">
+<div class="govuk-grid-row govuk-!-margin-top-7">
     <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-l govuk-!-margin-top-7">
-            Personal details
-        </h2>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h2 class="govuk-heading-m">
+                    Personal details
+                </h2>
+            </div>
+            <div class="govuk-grid-column-one-half">
+                @if (!Model.IsUserBeingImpersonated)
+                    {
+                        <p class="govuk-body">
+                            <a class="govuk-link" href="@Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails")" style="float: right;">
+                                Change
+                                <span class="govuk-visually-hidden"> personal details</span>
+                            </a>
+                        </p>
+                    }
+            </div>
+        </div>
 
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
@@ -123,3 +140,64 @@
     </div>
 </div>
 
+<div class="govuk-grid-row govuk-!-margin-top-7">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <h2 class="govuk-heading-m">
+                    Contact preferences
+                </h2>
+            </div>
+            <div class="govuk-grid-column-one-half">
+                @if (!Model.IsUserBeingImpersonated)
+                {
+                    <p class="govuk-body">
+                        <a class="govuk-link" href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")" style="float: right;">
+                            Change
+                            <span class="govuk-visually-hidden"> contact preferences</span>
+                        </a>
+                    </p>
+                }
+            </div>
+        </div>
+        
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <td scope="row" class="govuk-table__cell">
+                        I would like to receive information about webinars, events and new guidance
+                    </td>
+                    <td class="govuk-table__cell gpg-c-yesno">
+                        @if (Model.User.SendUpdates)
+                            {
+                                <span class="gpg-c-yesno__mark--tick"></span>
+                                <span class="gpg-c-yesno--text">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="gpg-c-yesno__mark--cross"></span>
+                                <span class="gpg-c-yesno--text">No</span>
+                            }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td scope="row" class="govuk-table__cell">
+                        I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys
+                    </td>
+                    <td class="govuk-table__cell gpg-c-yesno">
+                        @if (Model.User.AllowContact)
+                            {
+                                <span class="gpg-c-yesno__mark--tick"></span>
+                                <span class="gpg-c-yesno--text">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="gpg-c-yesno__mark--cross"></span>
+                                <span class="gpg-c-yesno--text">No</span>
+                            }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
