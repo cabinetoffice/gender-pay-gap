@@ -3,8 +3,30 @@
 @model GenderPayGap.WebUI.Models.Account.ChangeEmailViewModel
 
 @{
-    ViewBag.Title = "Change email address - My Account - Gender pay gap service";
+    ViewBag.Title = "Change email address - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Account",
+                Href = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change Email Address"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
 }
 
 <div class="govuk-grid-row">
