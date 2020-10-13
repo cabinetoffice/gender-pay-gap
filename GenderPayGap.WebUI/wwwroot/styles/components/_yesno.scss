@@ -1,76 +1,40 @@
-﻿.gpg-c-yesno {
-  position: relative;
-}
+﻿
+.gpg-yesno {
+    position: relative;
+    padding-left: 1.7em;
 
-.gpg-c-yesno--text {
-  margin-left: 2em;
-}
+    &.gpg-yesno--yes:before,
+    &.gpg-yesno--no:before,
+    &.gpg-yesno--no:after {
+        content: "";
+        position: absolute;
+        border: solid;
+    }
 
-.gpg-c-yesno__mark--tick:before {
-  content: "";
-  border: solid;
-  border-width: 0 0 .2em .2em;
-  background: transparent;
-  width: 1em;
-  height: .5em;
-  position: absolute;
-  left: 0;
-  -moz-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  zoom: 1;
-}
+    &.gpg-yesno--yes:before {
+        border-width: 0 0 .2em .2em;
+        width: 1em;
+        height: .5em;
+        left: 0;
+        top: 0.1em;
+        transform: rotate(-45deg);
+    }
 
-.gpg-c-yesno__mark--cross:before {
-  content: "";
-  border: solid;
-  border-width: .2em 0 0 0;
-  background: transparent;
-  width: 1.25em;
-  height: 0;
-  position: absolute;
-  left: 0;
-  top: 1.4em;
-  -moz-transform: rotate(-45deg);
-  -o-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  zoom: 1;
-}
+    &.gpg-yesno--no:before {
+        border-width: .2em 0 0 0;
+        width: 1.25em;
+        height: 0;
+        left: 0;
+        top: 0.5em;
+        transform: rotate(-45deg);
+    }
 
-.gpg-c-yesno__mark--cross:after {
-  content: "";
-  border: solid;
-  border-width: 0 0 .2em 0;
-  background: transparent;
-  width: 1.25em;
-  height: 0;
-  position: absolute;
-  left: 0;
-  top: 1.4em;
-  -moz-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-  zoom: 1;
-}
-
-@media (min-width: 641px) {
-
-  .gpg-c-yesno__mark--tick:before,
-  .gpg-c-yesno__mark--cross:before,
-  .gpg-c-yesno__mark--cross:after {
-    left: inherit;
-    right: 2em;
-  }
-
-  .gpg-c-yesno__mark--cross:before,
-  .gpg-c-yesno__mark--cross:after {
-    top: 1.1em;
-  }
-
+    &.gpg-yesno--no:after {
+        border-width: 0 0 .2em 0;
+        width: 1.25em;
+        height: 0;
+        left: 0;
+        top: 0.5em;
+        transform: rotate(45deg);
+    }
 }
