@@ -1,4 +1,4 @@
-﻿@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
+@model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
 
 @{
     ViewBag.Title = "Manage account - Gender pay gap service";
@@ -167,34 +167,30 @@
                     <td scope="row" class="govuk-table__cell">
                         I would like to receive information about webinars, events and new guidance
                     </td>
-                    <td class="govuk-table__cell gpg-c-yesno">
+                    <td class="govuk-table__cell">
                         @if (Model.User.SendUpdates)
-                            {
-                                <span class="gpg-c-yesno__mark--tick"></span>
-                                <span class="gpg-c-yesno--text">Yes</span>
-                            }
-                            else
-                            {
-                                <span class="gpg-c-yesno__mark--cross"></span>
-                                <span class="gpg-c-yesno--text">No</span>
-                            }
+                        {
+                            <span class="gpg-yesno gpg-yesno--yes">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="gpg-yesno gpg-yesno--no">No</span>
+                        }
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <td scope="row" class="govuk-table__cell">
                         I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys
                     </td>
-                    <td class="govuk-table__cell gpg-c-yesno">
+                    <td class="govuk-table__cell">
                         @if (Model.User.AllowContact)
-                            {
-                                <span class="gpg-c-yesno__mark--tick"></span>
-                                <span class="gpg-c-yesno--text">Yes</span>
-                            }
-                            else
-                            {
-                                <span class="gpg-c-yesno__mark--cross"></span>
-                                <span class="gpg-c-yesno--text">No</span>
-                            }
+                        {
+                            <span class="gpg-yesno gpg-yesno--yes">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="gpg-yesno gpg-yesno--no">No</span>
+                        }
                     </td>
                 </tr>
             </tbody>
