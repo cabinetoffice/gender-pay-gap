@@ -6,17 +6,24 @@
     };
 }
 
-<div class="govuk-grid-row account-tabs">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <nav class="app-navigation govuk-clearfix">
-            <ul class="app-navigation__list govuk-width-container">
+
+        <nav class="account-tabs">
+            <ul>
                 @foreach (var navItem in navEntries)
                 {
-                    <li class="app-navigation__list-item @(navItem.UrlPath.EndsWith(Context.Request.Path.Value) ? "app-navigation__list-item--current" : "")">
-                        <a class="govuk-link govuk-link--no-visited-state app-navigation__link" href="@(navItem.UrlPath)" data-topnav="@navItem.Text">@navItem.Text</a>
+                    bool isCurrentPage = (navItem.UrlPath == Context.Request.Path.Value);
+
+                    <li class="@(isCurrentPage ? "account-tab--selected" : null)">
+                        <a href="@(navItem.UrlPath)"
+                           class="govuk-link govuk-link--no-visited-state">
+                            @(navItem.Text)
+                        </a>
                     </li>
                 }
             </ul>
         </nav>
+
     </div>
 </div>
