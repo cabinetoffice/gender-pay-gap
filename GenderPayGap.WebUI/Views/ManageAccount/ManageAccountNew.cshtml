@@ -21,11 +21,7 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
             Manage your account
         </h1>
-    </div>
-</div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
         @if (!Model.IsUserBeingImpersonated)
         {
             <p class="govuk-body">
@@ -34,12 +30,8 @@
                 </a>
             </p>
         }
-    </div>
-</div>
 
-<div class="govuk-grid-row govuk-!-margin-top-7">
-    <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">
+        <h2 class="govuk-heading-m govuk-!-margin-top-7">
             Login details
         </h2>
 
@@ -81,25 +73,22 @@
                 </dd>
             </div>
         </dl>
-    </div>
-</div>
-
-<div class="govuk-grid-row govuk-!-margin-top-7">
-    <div class="govuk-grid-column-two-thirds">
         
-        <h2 class="govuk-heading-m" style="float: left;">
-            Personal details
-        </h2>
+        <div class="govuk-!-margin-top-9">
+            <h2 class="govuk-heading-m" style="float: left;">
+                Personal details
+            </h2>
         
-        @if (!Model.IsUserBeingImpersonated)
-        {
-            <p class="govuk-body" style="float: right;">
+            @if (!Model.IsUserBeingImpersonated)
+            {
+                <p class="govuk-body" style="float: right;">
                 <a class="govuk-link" href="@(Url.Action("ChangePersonalDetailsGet", "ChangePersonalDetails"))">
-                    Change
-                    <span class="govuk-visually-hidden"> personal details</span>
-                </a>
-            </p>
-        }
+                        Change
+                        <span class="govuk-visually-hidden"> personal details</span>
+                    </a>
+                </p>
+            }
+        </div>
         <div style="clear: both;">
             @* This <div> is deliberately empty
                 The elements above use "float: left;" and "float:right;"
@@ -141,25 +130,22 @@
                 </dd>
             </div>
         </dl>
-    </div>
-</div>
+        
+        <div class="govuk-!-margin-top-9">
+            <h2 class="govuk-heading-m" style="float: left;">
+                Contact preferences
+            </h2>
 
-<div class="govuk-grid-row govuk-!-margin-top-7">
-    <div class="govuk-grid-column-two-thirds">
-
-        <h2 class="govuk-heading-m" style="float: left;">
-            Contact preferences
-        </h2>
-
-        @if (!Model.IsUserBeingImpersonated)
-        {
-            <p class="govuk-body" style="float: right;">
+            @if (!Model.IsUserBeingImpersonated)
+            {
+                <p class="govuk-body" style="float: right;">
                 <a class="govuk-link" href="@Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences")">
-                    Change
-                    <span class="govuk-visually-hidden"> contact preferences</span>
-                </a>
-            </p>
-        }
+                        Change
+                        <span class="govuk-visually-hidden"> contact preferences</span>
+                    </a>
+                </p>
+            }
+        </div>
         <div style="clear: both;">
             @* This <div> is deliberately empty
             The elements above use "float: left;" and "float:right;"
@@ -201,5 +187,6 @@
                 </tr>
             </tbody>
         </table>
+
     </div>
 </div>
