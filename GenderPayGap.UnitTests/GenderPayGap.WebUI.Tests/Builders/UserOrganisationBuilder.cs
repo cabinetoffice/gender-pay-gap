@@ -1,5 +1,6 @@
 ﻿using System;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.Tests.Builders
 {
@@ -7,8 +8,8 @@ namespace GenderPayGap.WebUI.Tests.Builders
     {
         private User user = new UserBuilder().Build();
         private Organisation organisation = new OrganisationBuilder().Build();
-        private DateTime created = DateTime.Now.AddDays(-5);
-        private DateTime pinConfirmedDate = DateTime.Now.AddDays(-2);
+        private DateTime created = VirtualDateTime.Now.AddDays(-5);
+        private DateTime pinConfirmedDate = VirtualDateTime.Now.AddDays(-2);
 
         public UserOrganisationBuilder ForUser(User user)
         {

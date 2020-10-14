@@ -188,9 +188,9 @@ namespace GenderPayGap.WebUI.Search
             switch (filter)
             {
                 case SearchReportingStatusFilter.ReportedInTheLast7Days:
-                    return organisations.Where(o => o.DateOfLatestReport > DateTime.Now.AddDays(-7));
+                    return organisations.Where(o => o.DateOfLatestReport > VirtualDateTime.Now.AddDays(-7));
                 case SearchReportingStatusFilter.ReportedInTheLast30Days:
-                    return organisations.Where(o => o.DateOfLatestReport > DateTime.Now.AddDays(-30));
+                    return organisations.Where(o => o.DateOfLatestReport > VirtualDateTime.Now.AddDays(-30));
                 case SearchReportingStatusFilter.ReportedLate:
                     return organisations.Where(o => o.ReportedLate);
                 case SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo:

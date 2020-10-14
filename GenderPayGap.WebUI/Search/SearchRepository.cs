@@ -62,28 +62,28 @@ namespace GenderPayGap.WebUI.Search
 
         private static List<SearchCachedOrganisation> LoadAllOrganisations(IDataRepository repository)
         {
-            DateTime start = DateTime.Now;
+            DateTime start = VirtualDateTime.Now;
 
             // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
             var allOrgsWithNames = repository.GetAll<Organisation>()
                 .Include(o => o.OrganisationNames)
                 .ToList();
 
-            CustomLogger.Information($"Search Repository: Time taken to load Names: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            CustomLogger.Information($"Search Repository: Time taken to load Names: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
             // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
             var allOrgsWithReturns = repository.GetAll<Organisation>()
                 .Include(o => o.Returns)
                 .ToList();
 
-            CustomLogger.Information($"Search Repository: Time taken to load Returns: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            CustomLogger.Information($"Search Repository: Time taken to load Returns: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
             // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
             var allOrgsWithScopes = repository.GetAll<Organisation>()
                 .Include(o => o.OrganisationScopes)
                 .ToList();
 
-            CustomLogger.Information($"Search Repository: Time taken to load Scopes: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            CustomLogger.Information($"Search Repository: Time taken to load Scopes: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
             List<Organisation> allOrganisations = repository
                 .GetAll<Organisation>()
@@ -95,7 +95,7 @@ namespace GenderPayGap.WebUI.Search
                 .ThenInclude(sc => sc.SicSection)
                 .ToList();
 
-            CustomLogger.Information($"Search Repository: Time taken to load Organisations: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            CustomLogger.Information($"Search Repository: Time taken to load Organisations: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
             List<SearchCachedOrganisation> searchCachedOrganisations = allOrganisations
                 .Select(
@@ -140,7 +140,7 @@ namespace GenderPayGap.WebUI.Search
                     })
                 .ToList();
 
-            CustomLogger.Information($"Search Repository: Time taken to convert Organisations into SearchCachedOrganisations: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            CustomLogger.Information($"Search Repository: Time taken to convert Organisations into SearchCachedOrganisations: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
             return searchCachedOrganisations;
         }
@@ -155,7 +155,7 @@ namespace GenderPayGap.WebUI.Search
 
         private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
         {
-            DateTime start = DateTime.Now;
+            DateTime start = VirtualDateTime.Now;
 
             var allUsers = repository
                 .GetAll<User>()
@@ -169,7 +169,7 @@ namespace GenderPayGap.WebUI.Search
                     })
                 .ToList();
 
-            CustomLogger.Information($"Search Repository: Time taken to load Users: {DateTime.Now.Subtract(start).TotalSeconds} seconds");
+            CustomLogger.Information($"Search Repository: Time taken to load Users: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
             return allUsers;
         }
