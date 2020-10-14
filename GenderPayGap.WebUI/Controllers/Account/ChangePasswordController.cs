@@ -74,7 +74,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             emailSendingService.SendChangePasswordCompletedEmail(currentUser.EmailAddress);
 
             // Set up success notification on Manage Account page
-            string nextPageUrl = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"});
+            string nextPageUrl = Url.Action("ManageAccountGet", "ManageAccount");
             StatusMessageHelper.SetStatusMessage(Response, "Your password has been changed successfully", nextPageUrl);
 
             // Return user to the Manage Account page

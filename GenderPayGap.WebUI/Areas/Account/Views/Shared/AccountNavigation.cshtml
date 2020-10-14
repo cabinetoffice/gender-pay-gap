@@ -2,7 +2,7 @@
     var navEntries = new[]
     {
         new {Text = "Manage Organisations", UrlPath = Url.Action<OrganisationController>(nameof(OrganisationController.ManageOrganisations))},
-        new {Text = "Manage Account", UrlPath = Url.Action<ManageAccountController>(nameof(ManageAccountController.ManageAccount))},
+        new {Text = "Manage Account", UrlPath = Url.Action("ManageAccountGet", "ManageAccount")},
     };
 }
 <div class="grid-row">

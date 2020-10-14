@@ -47,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Admin impersonating a user shouldn't be able to close the user's account
             if (LoginHelper.IsUserBeingImpersonated(User))
             {
-                return RedirectToAction("ManageAccount", "ManageAccount", new {Area = "Account"});
+                return RedirectToAction("ManageAccountGet", "ManageAccount");
             }
             
             // Get the current user
@@ -70,7 +70,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Admin impersonating a user shouldn't be able to close the user's account
             if (LoginHelper.IsUserBeingImpersonated(User))
             {
-                return RedirectToAction("ManageAccount", "ManageAccount", new {Area = "Account"});
+                return RedirectToAction("ManageAccountGet", "ManageAccount");
             }
             
             viewModel.ParseAndValidateParameters(Request, m => m.Password);

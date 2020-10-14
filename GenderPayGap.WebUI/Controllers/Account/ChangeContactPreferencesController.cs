@@ -62,7 +62,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Save updates
             dataRepository.SaveChanges();
             
-            string nextPageUrl = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"});
+            string nextPageUrl = Url.Action("ManageAccountGet", "ManageAccount");
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to contact preferences", nextPageUrl);
 
             // Return user to the Manage Account page
