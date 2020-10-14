@@ -307,14 +307,7 @@ namespace GenderPayGap.WebUI.Classes
             //Ensure user is logged in submit or rest of registration
             if (!User.Identity.IsAuthenticated)
             {
-                
-                //Allow anonymous users when resetting password
-                if (IsAnyAction("Register/PasswordReset", "Register/NewPassword"))
-                {
-                    return null;
-                }
-
-                //Otherwise ask the user to login
+                //Ask the user to login
                 return new ChallengeResult();
             }
 
