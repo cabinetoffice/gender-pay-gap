@@ -23,12 +23,12 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         // business logic
         Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear = 0);
 
-        Task<HashSet<Organisation>> SetPresumedScopesAsync();
+        void SetPresumedScopes();
 
-        Task<HashSet<OrganisationMissingScope>> FindOrgsWhereScopeNotSetAsync();
+        HashSet<OrganisationMissingScope> FindOrgsWhereScopeNotSet();
         bool FillMissingScopes(Organisation org);
 
-        Task<HashSet<Organisation>> SetScopeStatusesAsync();
+        void SetScopeStatuses();
 
     }
 
@@ -101,20 +101,18 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             }
         }
 
-        public async Task<HashSet<Organisation>> SetScopeStatusesAsync()
+        public void SetScopeStatuses()
         {
             DateTime lastSnapshotDate = DateTime.MinValue;
             long lastOrganisationId = -1;
             int index = -1;
-            var count = 0;
             IOrderedQueryable<OrganisationScope> scopes = DataRepository.GetAll<OrganisationScope>()
                 .OrderBy(os => os.SnapshotDate)
                 .ThenBy(os => os.OrganisationId)
                 .ThenByDescending(os => os.ScopeStatusDate);
-            var changedOrgs = new HashSet<Organisation>();
+
             foreach (OrganisationScope scope in scopes)
             {
-                count++;
                 if (lastSnapshotDate != scope.SnapshotDate || lastOrganisationId != scope.OrganisationId)
                 {
                     index = 0;
@@ -129,21 +127,18 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 if (scope.Status != newStatus)
                 {
                     scope.Status = newStatus;
-                    changedOrgs.Add(scope.Organisation);
                 }
 
                 lastSnapshotDate = scope.SnapshotDate;
                 lastOrganisationId = scope.OrganisationId;
             }
 
-            await DataRepository.SaveChangesAsync();
-
-            return changedOrgs;
+            DataRepository.SaveChanges();
         }
 
-        public async Task<HashSet<Organisation>> SetPresumedScopesAsync()
+        public void SetPresumedScopes()
         {
-            HashSet<OrganisationMissingScope> missingOrgs = await FindOrgsWhereScopeNotSetAsync();
+            HashSet<OrganisationMissingScope> missingOrgs = FindOrgsWhereScopeNotSet();
             var changedOrgs = new HashSet<Organisation>();
 
             foreach (OrganisationMissingScope org in missingOrgs)
@@ -156,10 +151,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
             if (changedOrgs.Count > 0)
             {
-                await DataRepository.SaveChangesAsync();
+                DataRepository.SaveChanges();
             }
-
-            return changedOrgs;
         }
 
         public bool FillMissingScopes(Organisation org)
@@ -224,12 +217,12 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             return changed;
         }
 
-        public async Task<HashSet<OrganisationMissingScope>> FindOrgsWhereScopeNotSetAsync()
+        public HashSet<OrganisationMissingScope> FindOrgsWhereScopeNotSet()
         {
             // get all orgs of any status
-            List<Organisation> allOrgs = await DataRepository
+            List<Organisation> allOrgs = DataRepository
                 .GetAll<Organisation>()
-                .ToListAsync();
+                .ToList();
 
             int firstYear = Global.FirstReportingYear;
 
