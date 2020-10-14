@@ -31,29 +31,26 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void SendReminderEmails()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId,  nameof(SendReminderEmails), startTime);
-            
+            JobHelpers.RunAndLogJob(SendReminderEmailsAction, nameof(SendReminderEmails));
+        }
+
+        private void SendReminderEmailsAction(string runId)
+        {
+            DateTime startTime = VirtualDateTime.Now;
+
             List<int> reminderDays = GetReminderEmailDays();
-            if (reminderDays.Count == 0)
+            if (reminderDays.Count != 0)
+            {
+                SendReminderEmailsForSectorType(SectorTypes.Private, runId, startTime);
+                SendReminderEmailsForSectorType(SectorTypes.Public, runId, startTime);
+            }
+            else
             {
                 var endTime = VirtualDateTime.Now;
-                CustomLogger.Information($"Function finished: {nameof(SendReminderEmails)}. No ReminderEmailDays set.",
-                    new
-                {
-                    runId,
-                    environment = Config.EnvironmentName,
-                    endTime,
-                    TimeTakenInSeconds = (endTime - startTime).TotalSeconds
-                });
-                return;
+                CustomLogger.Information(
+                    $"Function finished: {nameof(SendReminderEmails)}. No ReminderEmailDays set.",
+                    new {runId, environment = Config.EnvironmentName, endTime, TimeTakenInSeconds = (endTime - startTime).TotalSeconds});
             }
-
-            SendReminderEmailsForSectorType(SectorTypes.Private, runId, startTime);
-            SendReminderEmailsForSectorType(SectorTypes.Public, runId, startTime);
-
-            JobHelpers.LogFunctionEnd(runId, nameof(SendReminderEmails), startTime);
         }
 
         private void SendReminderEmailsForSectorType(SectorTypes sector, string runId, DateTime startTime)
