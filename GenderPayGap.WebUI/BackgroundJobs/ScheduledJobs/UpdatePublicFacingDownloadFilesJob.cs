@@ -34,26 +34,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void UpdateDownloadFiles()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId, nameof(UpdateDownloadFiles), startTime);
-
-            try
-            {
-                UpdateDownloadFilesInner();
-            }
-            catch (Exception ex)
-            {
-                JobHelpers.LogFunctionError(runId, nameof(UpdateDownloadFiles), startTime, ex );
-          
-                //Rethrow the error
-                throw;
-            }
-
-            JobHelpers.LogFunctionEnd(runId, nameof(UpdateDownloadFiles), startTime);
+            JobHelpers.RunAndLogJob(UpdateDownloadFilesAction, nameof(UpdateDownloadFiles));
         }
 
-        public void UpdateDownloadFilesInner()
+        public void UpdateDownloadFilesAction()
         {
             CustomLogger.Information($"UpdateDownloadFiles: Loading Organisations");
             // IMPORTANT: This variable isn't used, but running this query makes the next query much faster

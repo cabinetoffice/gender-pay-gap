@@ -24,25 +24,14 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void NotifyUsersAndRetireInactiveAccounts()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId, nameof(NotifyUsersAndRetireInactiveAccounts), startTime);
+            JobHelpers.RunAndLogJob(NotifyUsersAndRetireInactiveAccountsAction, nameof(NotifyUsersAndRetireInactiveAccounts));
+        }
 
-            try
-            {
-                SendReminderEmails();
+        private void NotifyUsersAndRetireInactiveAccountsAction()
+        {
+            SendReminderEmails();
 
-                RetireUsers();
-
-                JobHelpers.LogFunctionEnd(runId, nameof(NotifyUsersAndRetireInactiveAccounts), startTime);
-            }
-            catch (Exception ex)
-            {
-                JobHelpers.LogFunctionError(runId, nameof(NotifyUsersAndRetireInactiveAccounts), startTime, ex);
-
-                //Rethrow the error
-                throw;
-            }
+            RetireUsers();
         }
 
         private void SendReminderEmails()
