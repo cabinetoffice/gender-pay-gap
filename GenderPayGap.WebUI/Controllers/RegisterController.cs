@@ -1,6 +1,5 @@
 ﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +12,10 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly EmailSendingService emailSendingService;
         private readonly AuditLogger auditLogger;
-        public IUserRepository UserRepository { get; }
 
         public RegisterController(
             IHttpCache cache,
             IHttpSession session,
-            IUserRepository userRepository,
             IDataRepository dataRepository,
             IWebTracker webTracker,
             EmailSendingService emailSendingService,
@@ -29,12 +26,9 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository,
             webTracker)
         {
-            UserRepository = userRepository;
             this.emailSendingService = emailSendingService;
             this.auditLogger = auditLogger;
         }
-
         
-
     }
 }
