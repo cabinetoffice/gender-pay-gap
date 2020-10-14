@@ -56,7 +56,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         registration.PINConfirmedDate
                     });
                 dataRepository.Delete(registration);
-                dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChanges();
             }
         }
 

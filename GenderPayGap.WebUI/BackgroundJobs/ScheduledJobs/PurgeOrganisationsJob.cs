@@ -30,10 +30,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
         public void PurgeOrganisations()
         {
-            JobHelpers.RunAndLogJob(() => PurgeOrganisationsAction().Wait(), nameof(PurgeOrganisations));
+            JobHelpers.RunAndLogJob(PurgeOrganisationsAction, nameof(PurgeOrganisations));
         }
 
-        private async Task PurgeOrganisationsAction()
+        private void PurgeOrganisationsAction()
         {
             DateTime deadline = VirtualDateTime.Now.AddDays(0 - Global.PurgeUnusedOrganisationDays);
 
@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (Organisation org in organisationsToPurge)
             {
-                await PurgeOrganisation(org);
+                PurgeOrganisation(org);
             }
 
             if (organisationsToPurge.Count > 0)
@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 .ToList();
         }
 
-        private async Task PurgeOrganisation(Organisation org)
+        private void PurgeOrganisation(Organisation org)
         {
             EmployerSearchModel searchRecord = org.ToEmployerSearchResult(true);
 
@@ -91,7 +91,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             // Soft-Delete the Organisation
             org.SetStatus(OrganisationStatuses.Deleted, details: "Organisation deleted by PurgeOrganisationJob");
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
             
         }
 

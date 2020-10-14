@@ -43,11 +43,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             foreach (User user in users)
             {
-                PurgeUser(user, pinExpiryDate);
+                PurgeUser(user);
             }
         }
 
-        private void PurgeUser(User user, DateTime pinExpiryDate)
+        private void PurgeUser(User user)
         {
             auditLogger.AuditChangeToUser(
                 AuditedAction.PurgeUser,
@@ -55,7 +55,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 new {user.UserId, user.EmailAddress, user.JobTitle, user.Fullname});
 
             user.SetStatus(UserStatuses.Retired, user, "User retired by PurgeUserJob");
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
     }
