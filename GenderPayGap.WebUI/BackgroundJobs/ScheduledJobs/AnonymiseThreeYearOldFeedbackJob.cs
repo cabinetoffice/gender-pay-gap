@@ -17,25 +17,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             this.dataRepository = dataRepository;
         }
 
-        public void AnonymiseFeedbackAction()
+        public void AnonymiseFeedback()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId, nameof(AnonymiseFeedbackAction), startTime);
-
-            try
-            {
-                GetAndAnonymiseFeedback();
-
-                JobHelpers.LogFunctionEnd(runId, nameof(AnonymiseFeedbackAction), startTime);
-            }
-            catch (Exception ex)
-            {
-                JobHelpers.LogFunctionError(runId, nameof(AnonymiseFeedbackAction), startTime, ex);
-
-                //Rethrow the error
-                throw;
-            }
+            JobHelpers.RunAndLogJob(GetAndAnonymiseFeedback, nameof(AnonymiseFeedback));
         }
 
         public void GetAndAnonymiseFeedback()
@@ -52,7 +36,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 AnonymiseFeedbackItem(feedbackItem);
             }
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         public void AnonymiseFeedbackItem(Feedback feedback)

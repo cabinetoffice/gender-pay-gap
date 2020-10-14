@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
@@ -25,21 +23,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void FetchCompaniesHouseData()
         {
-            var runId = JobHelpers.CreateRunId();
-            var startTime = VirtualDateTime.Now;
-            JobHelpers.LogFunctionStart(runId,  nameof(FetchCompaniesHouseData), startTime);
-            
-            try
-            {
-                UpdateFromCompaniesHouse(runId);
-
-                JobHelpers.LogFunctionEnd(runId, nameof(FetchCompaniesHouseData), startTime);
-            }
-            catch (Exception ex)
-            {
-                JobHelpers.LogFunctionError(runId, nameof(FetchCompaniesHouseData), startTime, ex );
-                throw;
-            }
+            JobHelpers.RunAndLogJob(UpdateFromCompaniesHouse, nameof(FetchCompaniesHouseData));
         }
 
         private void UpdateFromCompaniesHouse(string runId)
