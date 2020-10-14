@@ -18,7 +18,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             this.dataRepository = dataRepository;
         }
         
-        [HttpGet("manage-account-new")]
+        [HttpGet("manage-account")]
         public IActionResult ManageAccountGet()
         {
             // Get the current user
@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             };
 
             // Return the Manage Account page
-            return View("ManageAccountNew", viewModel);
+            return View("ManageAccount", viewModel);
         }
 
     }

@@ -106,7 +106,7 @@
             <h2 class="heading-small">Need to close your account?</h2>
             <p>
                 If you created an account by mistake or no longer responsible
-                for reporting gender pay gap data you can close your account in <a href="@(Url.Action<ManageAccountController>(nameof(ManageAccountController.ManageAccount)))">manage account</a>.
+                for reporting gender pay gap data you can close your account in <a href="@Url.Action("ManageAccountGet", "ManageAccount")">manage account</a>.
             </p>
         }
 

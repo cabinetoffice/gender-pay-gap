@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Areas\Account\Views\ChangeDetails\ChangeDetails.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Views\ManageAccount\ManageAccount.cshtml" />
   </ItemGroup>
   <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
     <PropertyGroup>

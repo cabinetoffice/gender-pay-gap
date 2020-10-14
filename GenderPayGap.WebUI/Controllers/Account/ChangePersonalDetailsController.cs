@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             AuditLogChanges(currentUser, viewModel);
             SaveUserDetails(currentUser, viewModel);
 
-            string nextPageUrl = Url.Action("ManageAccount", "ManageAccount", new {Area = "Account"});
+            string nextPageUrl = Url.Action("ManageAccountGet", "ManageAccount");
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to personal details", nextPageUrl);
 
             // Return user to the Manage Account page
