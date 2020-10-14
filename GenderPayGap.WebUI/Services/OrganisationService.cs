@@ -168,7 +168,7 @@ namespace GenderPayGap.WebUI.Services
             }
 
             organisation.Status = status;
-            organisation.StatusDate = DateTime.Now;
+            organisation.StatusDate = VirtualDateTime.Now;
             organisation.StatusDetails = organisationStatusDetails;
 
             var organisationStatus = new OrganisationStatus

@@ -12,6 +12,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Backup;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
@@ -188,7 +189,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private void StartChunkedResponse()
         {
-            HttpContext.Items.Add("StartTime", DateTime.Now);
+            HttpContext.Items.Add("StartTime", VirtualDateTime.Now);
 
             Response.StatusCode = 200;
             Response.ContentType = "text/html";
@@ -200,7 +201,7 @@ namespace GenderPayGap.WebUI.Controllers
         private void WriteParagraph(string text)
         {
             DateTime startTime = (DateTime) HttpContext.Items["StartTime"];
-            TimeSpan elapsedTime = DateTime.Now.Subtract(startTime);
+            TimeSpan elapsedTime = VirtualDateTime.Now.Subtract(startTime);
 
             string html = $@"<p class=""govuk-body"">{elapsedTime.ToString("mm\\:ss")} {text}</p>";
 

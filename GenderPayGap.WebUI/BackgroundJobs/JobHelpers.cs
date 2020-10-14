@@ -15,7 +15,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs {
         public static void RunAndLogJob(Action<string> action, string actionName)
         {
             string runId = CreateRunId();
-            DateTime startTime = DateTime.Now;
+            DateTime startTime = VirtualDateTime.Now;
             LogFunctionStart(runId, actionName, startTime);
             try
             {
