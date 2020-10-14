@@ -38,6 +38,12 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
 
+        public UserBuilder DefaultRetiredUser()
+        {
+            userInProgress.Status = UserStatuses.Retired;
+            return this;
+        }
+
         public UserBuilder WithUserId(long userId)
         {
             userInProgress.UserId = userId;
