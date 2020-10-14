@@ -164,7 +164,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
         public void POST_Using_Expired_Reset_Code_Gives_PasswordResetCodeExpiredException()
         {
             // Arrange
-            User user = new UserBuilder().WithPasswordResetCode("code", DateTime.Now.AddDays(-10)).Build();
+            User user = new UserBuilder().WithPasswordResetCode("code", VirtualDateTime.Now.AddDays(-10)).Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
