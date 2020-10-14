@@ -25,10 +25,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_Providing_A_Valid_New_Email_Address_Results_In_A_Verification_Email_Being_Sent()
         {
             // Arrange
-            User user = new UserBuilder().WithEmailAddress("old@test.com").Build();
+            User user = new UserBuilder().WithEmailAddress("old@example.com").Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewEmailAddress", "new@test.com");
+            requestFormValues.Add("GovUk_Text_NewEmailAddress", "new@example.com");
 
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
@@ -47,7 +47,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             var email = controllerBuilder.EmailsSent.FirstOrDefault();
             Assert.NotNull(email);
             Assert.AreEqual(EmailTemplates.SendChangeEmailPendingVerificationEmail, email.TemplateId);
-            Assert.AreEqual("new@test.com", email.EmailAddress);
+            Assert.AreEqual("new@example.com", email.EmailAddress);
         }
         
         [Test]
@@ -55,10 +55,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_Trying_To_Change_Email_Address_To_Current_Email_Address_Does_Not_Send_Verification_Email()
         {
             // Arrange
-            User user = new UserBuilder().WithEmailAddress("old@test.com").Build();
+            User user = new UserBuilder().WithEmailAddress("old@example.com").Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewEmailAddress", "old@test.com");
+            requestFormValues.Add("GovUk_Text_NewEmailAddress", "old@example.com");
 
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
@@ -80,11 +80,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_Trying_To_Change_Email_Address_To_Other_Users_Email_Address_Does_Not_Send_Verification_Email()
         {
             // Arrange
-            User user = new UserBuilder().WithEmailAddress("user@test.com").Build();
-            User user2 = new UserBuilder().WithEmailAddress("user2@test.com").Build();
+            User user = new UserBuilder().WithEmailAddress("user@example.com").Build();
+            User user2 = new UserBuilder().WithEmailAddress("user2@example.com").Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewEmailAddress", "user2@test.com");
+            requestFormValues.Add("GovUk_Text_NewEmailAddress", "user2@example.com");
 
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
@@ -106,7 +106,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_User_Can_Verify_Their_Email_Address_And_Confirm_Password_To_Change_Email_Address()
         {
             // Arrange
-            User user = new UserBuilder().WithEmailAddress("old@test.com").WithPassword("password").Build();
+            User user = new UserBuilder().WithEmailAddress("old@example.com").WithPassword("password").Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "password");
@@ -123,17 +123,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 new ChangeEmailVerificationToken
                 {
                     UserId = user.UserId,
-                    NewEmailAddress = "new@test.com".ToLower(),
+                    NewEmailAddress = "new@example.com".ToLower(),
                     TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@test.com", Code = emailVerificationCode, User = user};
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user};
             
             // Act
             controller.VerifyEmailPost(viewModel);
             
             // Assert
-            Assert.AreEqual("new@test.com", user.EmailAddress);
+            Assert.AreEqual("new@example.com", user.EmailAddress);
             
             var auditLogs = controllerBuilder.DataRepository.GetAll<AuditLog>();
             Assert.AreEqual(1, auditLogs.Count());
@@ -144,13 +144,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             
             Assert.AreEqual(2, controllerBuilder.EmailsSent.Count);
 
-            var oldEmailNotifications = controllerBuilder.EmailsSent.Where(e => e.EmailAddress == "old@test.com").ToList();
+            var oldEmailNotifications = controllerBuilder.EmailsSent.Where(e => e.EmailAddress == "old@example.com").ToList();
             Assert.AreEqual(1, oldEmailNotifications.Count);
             
             var oldEmailNotification = oldEmailNotifications.FirstOrDefault();
             Assert.AreEqual(EmailTemplates.SendChangeEmailCompletedNotificationEmail, oldEmailNotification.TemplateId);
             
-            var newEmailNotifications = controllerBuilder.EmailsSent.Where(e => e.EmailAddress == "new@test.com").ToList();
+            var newEmailNotifications = controllerBuilder.EmailsSent.Where(e => e.EmailAddress == "new@example.com").ToList();
             Assert.AreEqual(1, newEmailNotifications.Count);
             
             var newEmailNotification = newEmailNotifications.FirstOrDefault();
@@ -162,7 +162,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_Cannot_Update_Email_Address_For_Non_Active_User()
         {
             // Arrange
-            User user = new UserBuilder().DefaultRetiredUser().WithEmailAddress("old@test.com").WithPassword("password").Build();
+            User user = new UserBuilder().DefaultRetiredUser().WithEmailAddress("old@example.com").WithPassword("password").Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "password");
@@ -179,11 +179,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 new ChangeEmailVerificationToken
                 {
                     UserId = user.UserId,
-                    NewEmailAddress = "new@test.com".ToLower(),
+                    NewEmailAddress = "new@example.com".ToLower(),
                     TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@test.com", Code = emailVerificationCode, User = user};
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user};
 
             // Act & Assert
             Assert.Throws<ArgumentException>(() => controller.VerifyEmailPost(viewModel));
@@ -194,8 +194,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_Cannot_Update_Email_Address_To_Email_Associated_With_Another_Account()
         {
             // Arrange
-            User user = new UserBuilder().WithEmailAddress("old@test.com").WithPassword("password").Build();
-            User user2 = new UserBuilder().WithEmailAddress("new@test.com").Build();
+            User user = new UserBuilder().WithEmailAddress("old@example.com").WithPassword("password").Build();
+            User user2 = new UserBuilder().WithEmailAddress("new@example.com").Build();
             
             var requestFormValues = new Dictionary<string, StringValues>();
             requestFormValues.Add("GovUk_Text_Password", "password");
@@ -212,17 +212,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 new ChangeEmailVerificationToken
                 {
                     UserId = user.UserId,
-                    NewEmailAddress = "new@test.com".ToLower(),
+                    NewEmailAddress = "new@example.com".ToLower(),
                     TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@test.com", Code = emailVerificationCode, User = user};
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user};
             
             // Act
             controller.VerifyEmailPost(viewModel);
 
             // Assert
-            Assert.AreEqual("old@test.com", user.EmailAddress);
+            Assert.AreEqual("old@example.com", user.EmailAddress);
 
             var auditLogs = controllerBuilder.DataRepository.GetAll<AuditLog>();
             Assert.AreEqual(0, auditLogs.Count());
