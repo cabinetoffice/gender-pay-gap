@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             }
 
             // If password reset email has been sent (and password hasn't been changed) within the last 10 minutes, show an error page
-            if (PasswordResetEmailSentRecently(userForPasswordReset))
+            if (PasswordResetEmailSentTooRecently(userForPasswordReset))
             {
                 throw new UserRecentlySentPasswordResetEmailWithoutChangingPasswordException();
             }
@@ -88,12 +88,18 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             return View("PasswordResetSent", passwordResetSentViewModel);
         }
-        
+
+        private static bool PasswordResetEmailSentTooRecently(User userForPasswordReset)
+        {
+            return userForPasswordReset.ResetSendDate.HasValue
+                   && (VirtualDateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalMinutes < Global.MinPasswordResetMinutes;
+        }
+
         // Generates and stores a GUID to act as a password reset code
         private void SendPasswordResetEmail(User userForPasswordReset)
         {
             // Generate a random GUID as a unique identifier for the password reset
-            string resetCode = Guid.NewGuid().ToString();
+            string resetCode = Guid.NewGuid().ToString("N");
 
             // Store the reset code on the user entity for verification
             userForPasswordReset.PasswordResetCode = resetCode;
@@ -120,10 +126,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 return RedirectToAction("ManageOrganisations", "Organisation");
             }
-            
-            // Don't use the User returned from this, but call it to check that the code is valid
-            // And also has not expired
-            ExtractUserFromResetCode(code);
+
+            // Find the user from the reset code in the viewModel
+            User user = GetUserFromResetCode(code);
+
+            // Check that password reset code has not expired
+            ThrowIfPasswordResetCodeHasExpired(user);
 
             var viewModel = new ChooseNewPasswordViewModel {ResetCode = code};
 
@@ -169,16 +177,22 @@ namespace GenderPayGap.WebUI.Controllers.Account
             }
             
             // Find the user from the reset code in the viewModel
-            User userToUpdate = ExtractUserFromResetCode(viewModel.ResetCode);
-            
+            User userToUpdate = GetUserFromResetCode(viewModel.ResetCode);
+
+            // Check that password reset code has not expired
+            ThrowIfPasswordResetCodeHasExpired(userToUpdate);
+
             userRepository.UpdatePassword(userToUpdate, viewModel.NewPassword);
             emailSendingService.SendResetPasswordCompletedEmail(userToUpdate.EmailAddress);
+
+            // Remove password reset code and send date
+            RemovePasswordResetCode(userToUpdate);
 
             return RedirectToAction("ChooseNewPasswordCompleteGet");
         }
         
         // Look up the reset code (a GUID) in the database, and return the user it's associated with
-        private User ExtractUserFromResetCode(string encryptedCode)
+        private User GetUserFromResetCode(string encryptedCode)
         {
             if (encryptedCode == null)
             {
@@ -193,31 +207,30 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 throw new PageNotFoundException();
             }
 
-            // Check that password reset code has not expired
-            if (!PasswordResetCodeHasExpired(user))
+            return user;
+        }
+
+        private static void ThrowIfPasswordResetCodeHasExpired(User user)
+        {
+            if (!user.ResetSendDate.HasValue)
             {
                 throw new PasswordResetCodeExpiredException();
             }
 
-            // Remove password reset code and send date
+            bool resetCodeHasExpired = (VirtualDateTime.Now - user.ResetSendDate.Value) < Global.PasswordResetCodeExpiryDays;
+            if (resetCodeHasExpired)
+            {
+                throw new PasswordResetCodeExpiredException();
+            }
+        }
+
+        private void RemovePasswordResetCode(User user)
+        {
             user.PasswordResetCode = null;
             user.ResetSendDate = null;
 
-            return user;
+            dataRepository.SaveChanges();
         }
-        
-        private static bool PasswordResetEmailSentRecently(User userForPasswordReset)
-        {
-            return userForPasswordReset.ResetSendDate.HasValue
-                   && (DateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalMinutes < Global.MinPasswordResetMinutes;
-        }
-
-        private static bool PasswordResetCodeHasExpired(User userForPasswordReset)
-        {
-            return userForPasswordReset.ResetSendDate.HasValue
-                   && (DateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalDays < Global.PasswordResetCodeExpiryDays.TotalDays;
-        }
-
 
         #endregion
     }

@@ -151,8 +151,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
                 .WithMockUriHelper()
                 .Build();
 
+            // Act
+            var requestViewModel = new ChooseNewPasswordViewModel { ResetCode = null /* reset code not provided */ };
+            TestDelegate action = () => controller.ChooseNewPasswordPost(requestViewModel);
+
             // Assert
-            Assert.Throws<PageNotFoundException>(() => controller.ChooseNewPasswordPost(new ChooseNewPasswordViewModel()));
+            Assert.Throws<PageNotFoundException>(action);
         }
         
         [Test]
