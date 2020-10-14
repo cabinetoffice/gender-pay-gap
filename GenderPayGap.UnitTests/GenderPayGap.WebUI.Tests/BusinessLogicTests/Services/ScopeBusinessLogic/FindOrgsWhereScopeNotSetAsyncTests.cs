@@ -54,10 +54,10 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
         [TestCase(1)]
         [TestCase(2)]
-        public async Task IgnoresOrgsWhereAllScopesAreSet(int expectedIgnoredId)
+        public void IgnoresOrgsWhereAllScopesAreSet(int expectedIgnoredId)
         {
             // act
-            HashSet<OrganisationMissingScope> actualMissingOrgScopes = await scopeBusinessLogic.FindOrgsWhereScopeNotSetAsync();
+            HashSet<OrganisationMissingScope> actualMissingOrgScopes = scopeBusinessLogic.FindOrgsWhereScopeNotSet();
 
             // assert
             OrganisationMissingScope actualMissingEntry = actualMissingOrgScopes
@@ -68,10 +68,10 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
         [TestCase(3, SectorTypes.Private)]
         [TestCase(4, SectorTypes.Public)]
-        public async Task FindsOrgsWhereScopeIsMissing(int expectedMissingOrgId, SectorTypes testSector)
+        public void FindsOrgsWhereScopeIsMissing(int expectedMissingOrgId, SectorTypes testSector)
         {
             // act
-            HashSet<OrganisationMissingScope> actualMissingOrgScopes = await scopeBusinessLogic.FindOrgsWhereScopeNotSetAsync();
+            HashSet<OrganisationMissingScope> actualMissingOrgScopes = scopeBusinessLogic.FindOrgsWhereScopeNotSet();
 
             // assert
             OrganisationMissingScope actualMissingEntry = actualMissingOrgScopes
@@ -90,10 +90,10 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
         [TestCase(5, SectorTypes.Private)]
         [TestCase(6, SectorTypes.Public)]
-        public async Task FindsOrgsWhereScopeIsUnknown(int expectedUnknownOrgId, SectorTypes testSector)
+        public void FindsOrgsWhereScopeIsUnknown(int expectedUnknownOrgId, SectorTypes testSector)
         {
             // act
-            HashSet<OrganisationMissingScope> actualMissingOrgScopes = await scopeBusinessLogic.FindOrgsWhereScopeNotSetAsync();
+            HashSet<OrganisationMissingScope> actualMissingOrgScopes = scopeBusinessLogic.FindOrgsWhereScopeNotSet();
 
             // assert
             OrganisationMissingScope actualMissingEntry = actualMissingOrgScopes
