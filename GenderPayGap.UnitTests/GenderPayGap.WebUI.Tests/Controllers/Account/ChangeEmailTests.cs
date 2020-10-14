@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
@@ -94,6 +99,133 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             
             // Assert
             Assert.AreEqual(0, controllerBuilder.EmailsSent.Count);
+        }
+
+        [Test]
+        [Description("POST: User can verify their email address and confirm password to change email address")]
+        public void POST_User_Can_Verify_Their_Email_Address_And_Confirm_Password_To_Change_Email_Address()
+        {
+            // Arrange
+            User user = new UserBuilder().WithEmailAddress("old@test.com").WithPassword("password").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_Password", "password");
+            
+            var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
+            var controller = controllerBuilder
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user)
+                .WithMockUriHelper()
+                .Build();
+
+            var emailVerificationCode = Encryption.EncryptModel(
+                new ChangeEmailVerificationToken
+                {
+                    UserId = user.UserId,
+                    NewEmailAddress = "new@test.com".ToLower(),
+                    TokenTimestamp = VirtualDateTime.Now
+                });
+
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@test.com", Code = emailVerificationCode, User = user};
+            
+            // Act
+            controller.VerifyEmailPost(viewModel);
+            
+            // Assert
+            Assert.AreEqual("new@test.com", user.EmailAddress);
+            
+            var auditLogs = controllerBuilder.DataRepository.GetAll<AuditLog>();
+            Assert.AreEqual(1, auditLogs.Count());
+
+            var auditLog = auditLogs.FirstOrDefault();
+            Assert.NotNull(auditLog);
+            Assert.AreEqual(AuditedAction.UserChangeEmailAddress, auditLog.Action);
+            
+            Assert.AreEqual(2, controllerBuilder.EmailsSent.Count);
+
+            var oldEmailNotifications = controllerBuilder.EmailsSent.Where(e => e.EmailAddress == "old@test.com").ToList();
+            Assert.AreEqual(1, oldEmailNotifications.Count);
+            
+            var oldEmailNotification = oldEmailNotifications.FirstOrDefault();
+            Assert.AreEqual(EmailTemplates.SendChangeEmailCompletedNotificationEmail, oldEmailNotification.TemplateId);
+            
+            var newEmailNotifications = controllerBuilder.EmailsSent.Where(e => e.EmailAddress == "new@test.com").ToList();
+            Assert.AreEqual(1, newEmailNotifications.Count);
+            
+            var newEmailNotification = newEmailNotifications.FirstOrDefault();
+            Assert.AreEqual(EmailTemplates.SendChangeEmailCompletedVerificationEmail, newEmailNotification.TemplateId);
+        }
+        
+        [Test]
+        [Description("POST: Cannot update email address for non-active user")]
+        public void POST_Cannot_Update_Email_Address_For_Non_Active_User()
+        {
+            // Arrange
+            User user = new UserBuilder().DefaultRetiredUser().WithEmailAddress("old@test.com").WithPassword("password").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_Password", "password");
+            
+            var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
+            var controller = controllerBuilder
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user)
+                .WithMockUriHelper()
+                .Build();
+
+            var emailVerificationCode = Encryption.EncryptModel(
+                new ChangeEmailVerificationToken
+                {
+                    UserId = user.UserId,
+                    NewEmailAddress = "new@test.com".ToLower(),
+                    TokenTimestamp = VirtualDateTime.Now
+                });
+
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@test.com", Code = emailVerificationCode, User = user};
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => controller.VerifyEmailPost(viewModel));
+        }
+        
+        [Test]
+        [Description("POST: Cannot update email address to email associated with another account")]
+        public void POST_Cannot_Update_Email_Address_To_Email_Associated_With_Another_Account()
+        {
+            // Arrange
+            User user = new UserBuilder().WithEmailAddress("old@test.com").WithPassword("password").Build();
+            User user2 = new UserBuilder().WithEmailAddress("new@test.com").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_Password", "password");
+            
+            var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
+            var controller = controllerBuilder
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user, user2)
+                .WithMockUriHelper()
+                .Build();
+
+            var emailVerificationCode = Encryption.EncryptModel(
+                new ChangeEmailVerificationToken
+                {
+                    UserId = user.UserId,
+                    NewEmailAddress = "new@test.com".ToLower(),
+                    TokenTimestamp = VirtualDateTime.Now
+                });
+
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@test.com", Code = emailVerificationCode, User = user};
+            
+            // Act
+            controller.VerifyEmailPost(viewModel);
+
+            // Assert
+            Assert.AreEqual("old@test.com", user.EmailAddress);
+
+            var auditLogs = controllerBuilder.DataRepository.GetAll<AuditLog>();
+            Assert.AreEqual(0, auditLogs.Count());
         }
 
     }
