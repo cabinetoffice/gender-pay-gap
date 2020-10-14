@@ -107,21 +107,6 @@
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
     <ProjectReference Include="..\GovUkDesignSystem\GovUkDesignSystem.csproj" />
   </ItemGroup>
-
-
-  <ItemGroup>
-    <Compile Update="Areas\Account\Resources\AccountResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AccountResources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Areas\Account\Resources\AccountResources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AccountResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
   <ItemGroup>
     <None Update="buildpack.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -134,10 +119,6 @@
   <!-- *** THIS IS REQUIRED TO TRANSFORM Web.Config on publish *** -->
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Xdt.Tools" Version="2.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Areas\Account\Views\ChangeDetails\ChangeDetails.cshtml" />
-    <_ContentIncludedByDefault Remove="Areas\Account\Views\ManageAccount\ManageAccount.cshtml" />
   </ItemGroup>
   <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
     <PropertyGroup>
