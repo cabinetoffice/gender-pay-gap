@@ -8,7 +8,7 @@
     bool hasRegisteredOrgs = Model.Any();
 }
 
-@await Html.PartialAsync("~/Areas/Account/Views/Shared/AccountNavigation.cshtml")
+@await Html.PartialAsync("AccountNavigationOld.cshtml")
 <div class="grid-row">
     <div style="margin-top: 15px;">
         <partial name="/Views/Components/CovidMessage.cshtml"/>
