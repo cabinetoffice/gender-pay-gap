@@ -217,7 +217,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 throw new PasswordResetCodeExpiredException();
             }
 
-            bool resetCodeHasExpired = (VirtualDateTime.Now - user.ResetSendDate.Value) < Global.PasswordResetCodeExpiryDays;
+            bool resetCodeHasExpired = (VirtualDateTime.Now - user.ResetSendDate.Value) > Global.PasswordResetCodeExpiryDays;
             if (resetCodeHasExpired)
             {
                 throw new PasswordResetCodeExpiredException();
