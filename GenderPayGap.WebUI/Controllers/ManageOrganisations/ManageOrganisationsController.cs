@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
@@ -24,6 +26,16 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         public IActionResult ManageOrganisationsGet()
         {
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            
+            // Show the privacy policy to non-admin users (if they're not being impersonated) if they haven't read it yet
+            if (!LoginHelper.IsUserBeingImpersonated(User) && !user.IsAdministrator())
+            {
+                DateTime? hasReadPrivacy = user.AcceptedPrivacyStatement;
+                if (hasReadPrivacy == null || hasReadPrivacy.Value < Global.PrivacyChangedDate)
+                {
+                    return RedirectToAction("PrivacyPolicyGet", "PrivacyPolicy");
+                }
+            }
 
             var viewModel = new ManageOrganisationsViewModel
             {
