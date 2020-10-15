@@ -1,0 +1,93 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
+@using GenderPayGap.WebUI.Models.Organisation
+@model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationViewModel
+
+@{
+    ViewBag.Title = "Manage your organisations - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        await Html.RenderPartialAsync("../Components/Navigation/AccountTabs");
+    }
+    
+    <div class="govuk-!-margin-top-3">
+        @{
+            await Html.RenderPartialAsync("../Components/CovidMessage");
+        }
+    </div>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">Reporting as @Model.Organisation.OrganisationName</span>
+        <h1 class="govuk-heading-xl">Manage your organisation's reporting</h1>
+        
+        <dl>
+            <dt class="govuk-body govuk-!-font-weight-bold">
+                Address
+            </dt>
+            <div>
+                <dt class="govuk-caption-m govuk-!-font-size-16">
+                    @Html.Raw(Model.Organisation.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
+                </dt>
+            </div>
+        </dl>
+        
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Need to make changes to your organisation details?
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                If you are a private or voluntary organisation and need to change your organisation name, sector information,
+                or address you should do this via Companies House. Changes that you make will automatically be reflected on this site. 
+                If this information is not available on Companies House, please contact 
+                <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
+                    @Global.GpgReportingEmail
+                </a>
+            </div>
+        </details>
+        
+        <h2 class="govuk-heading-l">Manage reports</h2>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Year</th>
+                    <th scope="col" class="govuk-table__header">Reporting requirement</th>
+                    <th scope="col" class="govuk-table__header">Report status</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @{
+                    List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
+
+                    for (int i = 0; i < reportingYears.Count; i++)
+                    {
+                        int reportingYear = reportingYears[i];
+                        OrganisationScope scopeForYear = Model.Organisation.GetScopeForYear(reportingYear);
+                        
+                        if (scopeForYear != null) // If there is no scope, then the organisation can't report for this year
+                        {
+                            bool canChangeScope = i < Global.EditableScopeCount;
+
+                            var displayReportModel = new DisplayReportModel
+                            {
+                                ReportingYear = reportingYear,
+                                Organisation = Model.Organisation,
+                                CanChangeScope = canChangeScope,
+                                HasDraftReturnForYear = Model.YearsWithDraftReturns.Contains(reportingYear)
+                            };
+                            @await Html.PartialAsync("../Organisation/DisplayReportSection", displayReportModel)
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
