@@ -74,7 +74,7 @@ namespace GenderPayGap.WebUI.Controllers.Guidance
                 },
                 new PaginationPage
                 {
-                    Title = "Do people get ‘stuck’ at certain levels within your organisation?",
+                    Title = "Do people get â€˜stuckâ€™ at certain levels within your organisation?",
                     Url = helper.Action("EightWaysDoPeopleGetStuck", "EightWaysGuidance")
                 },
                 new PaginationPage
