@@ -1,7 +1,4 @@
-﻿@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
-@using GenderPayGap.Database
-@using GenderPayGap.Core.Helpers
+﻿@using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationsViewModel
 
 @{
@@ -65,7 +62,7 @@
                     else
                     {
                         statusText = "Registration complete";
-                        linkAction = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId});
+                        linkAction = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {id = encryptedOrganisationId});
                     }
                     
                     <tr class="govuk-table__row">
