@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Organisation
 {
-    public class ManageOrganisationViewModel : GovUkViewModel
+    public class UsersRegisteredToReportForOrganisationViewModel : GovUkViewModel
     {
 
         [BindNever]
-        public Database.Organisation Organisation { get; set; }
+        public List<User> UsersRegisteredToReportForOrganisation { get; set; }
         
         [BindNever]
-        public List<int> YearsWithDraftReturns { get; set; }
-
-        [BindNever]
         public long LoggedInUserId { get; set; }
+        
+        [BindNever]
+        public long OrganisationId { get; set; }
 
     }
 }

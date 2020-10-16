@@ -79,7 +79,8 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             var viewModel = new ManageOrganisationViewModel
             {
                 Organisation = userOrganisation.Organisation,
-                YearsWithDraftReturns = yearsWithDraftReturns
+                YearsWithDraftReturns = yearsWithDraftReturns,
+                LoggedInUserId = user.UserId
             };
 
             return View("ManageOrganisation", viewModel);

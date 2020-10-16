@@ -1,0 +1,35 @@
+﻿@using GenderPayGap.Database
+@model GenderPayGap.WebUI.Models.Organisation.UsersRegisteredToReportForOrganisationViewModel
+
+@{
+    var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
+}
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">User</th>
+            <th scope="col" class="govuk-table__header">Action</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (User userRegisteredToReport in Model.UsersRegisteredToReportForOrganisation)
+        {
+            var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">
+                    @userRegisteredToReport.Fullname
+                    @if (userRegisteredToReport.UserId == Model.LoggedInUserId)
+                    {
+                        <span>(You)</span>
+                    }
+                </td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
+                        Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span> from reporting
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
