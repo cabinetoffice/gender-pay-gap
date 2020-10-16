@@ -61,9 +61,40 @@
             {
                 Organisation = Model.Organisation,
                 YearsWithDraftReturns = Model.YearsWithDraftReturns
-            }); 
-            
+            });
         }
+        
+        <h2 class="govuk-heading-l">Registered users</h2>
+
+        @{
+            var usersRegisteredToReportForOrganisation = Model.Organisation.UserOrganisations.Select(uo => uo.User).Distinct().ToList();
+        }
+        @if (usersRegisteredToReportForOrganisation.Count == 0)
+        {
+            <p class="govuk-body">
+                You are the only person registered to report for this organisation.
+            </p>
+            <p class="govuk-body">
+                If you remove yourself:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>You will not be able to report for this organisation</li>
+                <li>Someone else must register this organisation to report - this can take up to a week</li>
+                <li>Your account will remain open</li>
+            </ul>
+        } else
+        {
+            <p class="govuk-body">
+                The following people are registered to report gender pay gap data for this organisation. 
+            </p>
+            await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", new UsersRegisteredToReportForOrganisationViewModel
+            {
+                UsersRegisteredToReportForOrganisation = usersRegisteredToReportForOrganisation,
+                LoggedInUserId = Model.LoggedInUserId,
+                OrganisationId = Model.Organisation.OrganisationId
+            });
+        }
+
     </div>
 </div>
 
