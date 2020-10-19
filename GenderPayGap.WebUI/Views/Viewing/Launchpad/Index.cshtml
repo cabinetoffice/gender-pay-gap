@@ -38,11 +38,17 @@
     Report your gender pay gap data
 </div>
 
+@{
+    var reportingUrl = FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney) 
+        ? Url.Action("ManageOrganisationsGet", "ManageOrganisations") 
+        : Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation");
+}
+
 <div class="grid-row">
     <div class="column-three-thirds">
         <div class="column-two-thirds">
             <div class="heading-xsmall">
-                For employers to <a href="@(Global.StartUrl ?? Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation"))" rel="noopener">submit gender pay gap data</a>
+                For employers to <a href="@(Global.StartUrl ?? reportingUrl)" rel="noopener">submit gender pay gap data</a>
             </div>
         </div>
     </div>
