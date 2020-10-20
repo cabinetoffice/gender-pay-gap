@@ -17,7 +17,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.QueueBasedJobs
 
         public void SendNotifyEmail(NotifyEmail notifyEmail)
         {
-            JobHelpers.RunAndLogJob(() => SendNotifyEmailAction(notifyEmail), nameof(SendNotifyEmail));
+            JobHelpers.RunAndLogJob(() => SendNotifyEmailAction(notifyEmail), nameof(SendNotifyEmail), JobErrorsLogged.Manually);
         }
 
         private void SendNotifyEmailAction(NotifyEmail notifyEmail)
