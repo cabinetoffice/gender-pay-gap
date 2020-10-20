@@ -5,14 +5,20 @@ using GenderPayGap.Extensions.AspNetCore;
 
 namespace GenderPayGap.WebUI.BackgroundJobs {
 
+    internal enum JobErrorsLogged
+    {
+        Automatically,
+        Manually
+    }
+
     internal static class JobHelpers {
 
-        public static void RunAndLogJob(Action action, string actionName)
+        public static void RunAndLogJob(Action action, string actionName, JobErrorsLogged logErrors = JobErrorsLogged.Automatically)
         {
-            RunAndLogJob(unusedRunId => action(), actionName);
+            RunAndLogJob(unusedRunId => action(), actionName, logErrors);
         }
 
-        public static void RunAndLogJob(Action<string> action, string actionName)
+        public static void RunAndLogJob(Action<string> action, string actionName, JobErrorsLogged logErrors = JobErrorsLogged.Automatically)
         {
             string runId = CreateRunId();
             DateTime startTime = VirtualDateTime.Now;
@@ -25,7 +31,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs {
             }
             catch (Exception ex)
             {
-                LogFunctionError(runId, actionName, startTime, ex);
+                if (logErrors == JobErrorsLogged.Automatically)
+                {
+                    LogFunctionError(runId, actionName, startTime, ex);
+                }
 
                 //Rethrow the error
                 throw;
