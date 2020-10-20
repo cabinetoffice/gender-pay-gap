@@ -24,19 +24,23 @@ namespace GenderPayGap.WebUI.ErrorHandling
 
                 context.ExceptionHandled = true;
             }
-            else if (context.Exception is CustomErrorPageException exception)
+            else if (context.Exception is CustomErrorPageException customErrorPageException)
             {
                 context.Result = new ViewResult
                 {
-                    StatusCode = exception.StatusCode,
-                    ViewName = exception.ViewName,
+                    StatusCode = customErrorPageException.StatusCode,
+                    ViewName = customErrorPageException.ViewName,
                     ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), context.ModelState)
                     {
                         // For this type of custom error page, we use the exception itself as the model
-                        Model = exception
+                        Model = customErrorPageException
                     }
 
                 };
+            }
+            else if (context.Exception is CustomRedirectException customRedirectException)
+            {
+                context.Result = new RedirectResult(customRedirectException.RedirectUrl, permanent: false);
             }
         }
 
