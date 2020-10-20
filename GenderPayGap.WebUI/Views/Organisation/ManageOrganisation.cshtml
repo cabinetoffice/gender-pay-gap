@@ -30,7 +30,10 @@
                 </div>
                 <div>
                     <dt class="govuk-caption-m govuk-!-font-size-16">
-                        @Html.Raw(currentOrg.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
+                        @foreach (string addressLine in currentOrg.GetLatestAddress().GetAddressLines())
+                        {
+                            @(addressLine)<br/>
+                        }
                     </dt>
                 </div>
             </dl>

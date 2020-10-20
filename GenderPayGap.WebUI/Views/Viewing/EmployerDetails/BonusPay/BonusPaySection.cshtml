@@ -13,11 +13,6 @@
     };
 
     // calculates the median bonus pay text to display
-    string medianBonusMonetisation = $"<strong>women earn {Model.FemaleMedianBonusPayMonitised}</strong> for every <strong>{Model.MaleMedianBonusPayMonitised}</strong> that men earn when comparing median bonus pay.";
-
-    string medianBonusCompareStatement = Model.FemaleHasLowerMedianBonusPay ?
-        "<strong>lower</strong> than men&rsquo;s." :
-        "<strong>higher</strong> than men&rsquo;s.";
 
     // mean bonus difference
     var diffMeanBonusText = new BonusDiffTextViewModel
@@ -62,9 +57,18 @@
     {
         <div class="grid-row">
             <div class="column-two-thirds">
-                <span>In this organisation, @Html.Raw(medianBonusMonetisation)</span>
+                <span>
+                    In this organisation, <strong>women earn @(Model.FemaleMedianBonusPayMonitised)</strong>
+                    for every <strong>@(Model.MaleMedianBonusPayMonitised)</strong>
+                    that men earn when comparing median bonus pay.
+                </span>
                 <span>Their median bonus pay is <strong>@(string.Format("{0:0.#}", Math.Abs(diffMedianBonus)))%</strong></span>
-                <span>@Html.Raw(medianBonusCompareStatement)</span>
+                <span>
+                    <strong>
+                        @(Model.FemaleHasLowerMedianBonusPay ? "lower" : "higher")
+                    </strong>
+                    than men&rsquo;s.
+                </span>
             </div>
         </div>
 
