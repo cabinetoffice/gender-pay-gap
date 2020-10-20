@@ -181,8 +181,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 $"Expected the correct templateId to be in the email send queue, expected {EmailTemplates.UserAddedToOrganisationEmail}");
             UiTestHelper.MockBackgroundJobsApi.Verify(
                 x => x.AddEmailToQueue(It.Is<NotifyEmail>(inst => inst.EmailAddress.Contains(newUser.EmailAddress))),
-                Times.Never,
-                "Do not expect new user's email address to be in the email send queue");
+                Times.Once(),
+                "Expect new user's email address to be in the email send queue");
         }
     }
 }
