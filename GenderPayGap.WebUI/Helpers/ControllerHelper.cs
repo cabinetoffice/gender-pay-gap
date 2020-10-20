@@ -6,6 +6,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Helpers
 {
@@ -112,6 +113,19 @@ namespace GenderPayGap.WebUI.Helpers
             if (LoginHelper.IsUserBeingImpersonated(aspDotNetUser))
             {
                 throw new AdminCannotTakeActionIfImpersonatingUserException();
+            }
+        }
+
+        public static void RedirectIfUserNeedsToReadPrivacyPolicy(ClaimsPrincipal aspDotNetUser, User gpgUser, IUrlHelper url)
+        {
+            // Show the privacy policy to non-admin users (if they're not being impersonated) if they haven't read it yet
+            if (!LoginHelper.IsUserBeingImpersonated(aspDotNetUser) && !gpgUser.IsAdministrator())
+            {
+                DateTime? hasReadPrivacy = gpgUser.AcceptedPrivacyStatement;
+                if (hasReadPrivacy == null || hasReadPrivacy.Value < Global.PrivacyChangedDate)
+                {
+                    throw new RedirectToPrivacyPolicyException(url);
+                }
             }
         }
 

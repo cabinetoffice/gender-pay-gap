@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.ErrorHandling
 {
@@ -7,6 +8,11 @@ namespace GenderPayGap.WebUI.ErrorHandling
     {
         public abstract string ViewName { get; }
         public abstract int StatusCode { get; }
+    }
+
+    public abstract class CustomRedirectException : Exception
+    {
+        public abstract string RedirectUrl { get; }
     }
 
 
@@ -55,6 +61,16 @@ namespace GenderPayGap.WebUI.ErrorHandling
     {
         public override string ViewName => "../Errors/404";
         public override int StatusCode => 404;
+    }
+
+    public class RedirectToPrivacyPolicyException : CustomRedirectException
+    {
+        public override string RedirectUrl { get; }
+
+        public RedirectToPrivacyPolicyException(IUrlHelper url)
+        {
+            RedirectUrl = url.Action("PrivacyPolicyGet", "PrivacyPolicy");
+        }
     }
 
 }

@@ -37,16 +37,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             }
             
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            
-            // Show the privacy policy to non-admin users (if they're not being impersonated) if they haven't read it yet
-            if (!LoginHelper.IsUserBeingImpersonated(User) && !user.IsAdministrator())
-            {
-                DateTime? hasReadPrivacy = user.AcceptedPrivacyStatement;
-                if (hasReadPrivacy == null || hasReadPrivacy.Value < Global.PrivacyChangedDate)
-                {
-                    return RedirectToAction("PrivacyPolicyGet", "PrivacyPolicy");
-                }
-            }
+            ControllerHelper.RedirectIfUserNeedsToReadPrivacyPolicy(User, user, Url);
 
             var viewModel = new ManageOrganisationsViewModel
             {
