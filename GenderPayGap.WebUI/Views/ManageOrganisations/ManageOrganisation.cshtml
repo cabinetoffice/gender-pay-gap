@@ -57,10 +57,28 @@
         
         <h2 class="govuk-heading-l">Manage reports</h2>
         @{
+            List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
+            Dictionary<int, OrganisationScopeForYear> scopesByYear = new Dictionary<int, OrganisationScopeForYear>();
+            foreach (int reportingYear in reportingYears)
+            {
+                var scopeForYear = Model.Organisation.GetScopeForYear(reportingYear);
+                if (scopeForYear != null)
+                {
+                    OrganisationScopeForYear orgScopeForYear = new OrganisationScopeForYear(
+                        reportingYear, 
+                        scopeForYear, 
+                        Model.Organisation.GetReturn(reportingYear),
+                        Model.YearsWithDraftReturns.Contains(reportingYear)
+                    );
+                    scopesByYear.Add(reportingYear, orgScopeForYear);
+                }
+            }
+
             await Html.RenderPartialAsync("OrganisationReportsTable", new OrganisationReportsViewModel
             {
                 Organisation = Model.Organisation,
-                YearsWithDraftReturns = Model.YearsWithDraftReturns
+                YearsWithDraftReturns = Model.YearsWithDraftReturns,
+                OrganisationScopesByYear = scopesByYear,
             });
         }
         
@@ -87,6 +105,7 @@
             <p class="govuk-body">
                 The following people are registered to report gender pay gap data for this organisation. 
             </p>
+
             await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", new UsersRegisteredToReportForOrganisationViewModel
             {
                 UsersRegisteredToReportForOrganisation = usersRegisteredToReportForOrganisation,
