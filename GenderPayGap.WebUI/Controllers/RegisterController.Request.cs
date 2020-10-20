@@ -569,12 +569,6 @@ namespace GenderPayGap.WebUI.Controllers
         //Send the registration request
         protected void SendRegistrationAccepted(string emailAddress)
         {
-            //Always use the administrators email when not on production
-            if (!Config.IsProduction())
-            {
-                emailAddress = CurrentUser.EmailAddress;
-            }
-
             //Send an acceptance link to the email address
             string returnUrl = Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
             emailSendingService.SendOrganisationRegistrationApprovedEmail(emailAddress, returnUrl);
@@ -715,12 +709,6 @@ namespace GenderPayGap.WebUI.Controllers
         //Send the registration request
         protected void SendRegistrationDeclined(string emailAddress, string reason)
         {
-            //Always use the administrators email when not on production
-            if (!Config.IsProduction())
-            {
-                emailAddress = CurrentUser.EmailAddress;
-            }
-
             //Send a verification link to the email address
             emailSendingService.SendOrganisationRegistrationDeclinedEmail(emailAddress, reason);
         }
