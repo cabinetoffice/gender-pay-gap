@@ -29,11 +29,9 @@
             <dt class="govuk-body govuk-!-font-weight-bold">
                 Address
             </dt>
-            <div>
-                <dt class="govuk-caption-m govuk-!-font-size-16">
-                    @Html.Raw(Model.Organisation.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
-                </dt>
-            </div>
+            <dd class="govuk-caption-m govuk-!-font-size-16">
+                @Html.Raw(Model.Organisation.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
+            </dd>
         </dl>
         
         <details class="govuk-details" data-module="govuk-details">

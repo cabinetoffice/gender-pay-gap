@@ -24,6 +24,12 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/manage-organisations/{id}")]
         public async Task<IActionResult> ManageOrganisation(string id)
         {
+            // Check for feature flag and redirect if enabled
+            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
+            {
+                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {id = id});
+            }
+            
             //Ensure user has completed the registration process
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
             if (checkResult != null)
@@ -85,6 +91,12 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/manage-organisations")]
         public IActionResult ManageOrganisations()
         {
+            // Check for feature flag and redirect if not enabled
+            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
+            {
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
+            }
+            
             //Clear all the stashes
             this.ClearAllStashes();
 

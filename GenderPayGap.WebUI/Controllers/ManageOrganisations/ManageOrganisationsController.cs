@@ -30,6 +30,12 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         [HttpGet]
         public IActionResult ManageOrganisationsGet()
         {
+            // Check for feature flag and redirect if not enabled
+            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
+            {
+                return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+            
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             
             // Show the privacy policy to non-admin users (if they're not being impersonated) if they haven't read it yet
@@ -54,6 +60,12 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         [HttpGet("{id}")]
         public IActionResult ManageOrganisationGet(string id)
         {
+            // Check for feature flag and redirect if not enabled
+            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
+            {
+                return RedirectToAction("ManageOrganisation", "Organisation", new {id = id});
+            }
+            
             // Try to decrypt organisation id
             if (!id.DecryptToId(out long organisationId))
             {
