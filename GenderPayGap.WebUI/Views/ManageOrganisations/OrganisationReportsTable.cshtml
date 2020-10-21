@@ -19,8 +19,8 @@
                 OrganisationScopeForYear organisationScopeForYear = scopeForYear.Value;
 
                 string formattedYearText = $"{reportingYear}/{(reportingYear + 1).ToTwoDigitYear()}";
-                
-                DateTime snapshotDate = organisationScopeForYear.GetSnapshotDate();
+
+                DateTime snapshotDate = organisationScopeForYear.SnapshotDateForYear;
                 DateTime deadline = snapshotDate.AddYears(1).AddDays(-1);
                     
                 string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());

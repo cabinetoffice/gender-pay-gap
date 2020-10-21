@@ -35,8 +35,9 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             {
                 return RedirectToAction("ManageOrganisations", "Organisation");
             }
-            
+
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
             ControllerHelper.RedirectIfUserNeedsToReadPrivacyPolicy(User, user, Url);
 
             var viewModel = new ManageOrganisationsViewModel
@@ -64,6 +65,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             }
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
             
             // Check the user has permission for this organisation
             UserOrganisation userOrganisation = user.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);

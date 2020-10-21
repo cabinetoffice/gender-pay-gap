@@ -53,7 +53,7 @@
             <dt class="govuk-body govuk-!-font-weight-bold">
                 Address
             </dt>
-            <dd class="govuk-caption-m govuk-!-font-size-16">
+            <dd class="govuk-caption-m govuk-!-font-size-16 govuk-!-margin-left-0">
                 @Html.Raw(Model.Organisation.GetLatestAddress()?.GetAddressString("&#44;<br/>"))
             </dd>
         </dl>
