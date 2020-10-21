@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("manage-organisations-new")]
+    [Route("account/organisations")]
     public class ManageOrganisationsController : Controller
     {
 
