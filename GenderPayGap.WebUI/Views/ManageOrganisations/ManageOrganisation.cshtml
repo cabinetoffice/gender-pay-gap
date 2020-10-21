@@ -1,6 +1,8 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Organisation
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationViewModel
 
 @{
@@ -10,8 +12,24 @@
 
 @section BeforeMain {
     @{
-        await Html.RenderPartialAsync("../Components/Navigation/AccountTabs");
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Organisations",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName
+            }
+        };
     }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
     
     <div class="govuk-!-margin-top-3">
         @{
@@ -22,8 +40,14 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <span class="govuk-caption-xl">Reporting as @Model.Organisation.OrganisationName</span>
-        <h1 class="govuk-heading-xl">Manage your organisation's reporting</h1>
+
+        <h1 class="govuk-heading-xl">
+            Manage your organisation's reporting
+            <br>
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
         
         <dl>
             <dt class="govuk-body govuk-!-font-weight-bold">
