@@ -47,24 +47,8 @@
             <tbody class="govuk-table__body">
                 @foreach (UserOrganisation userOrganisation in Model.UserOrganisations)
                 {
-                    string statusText;
-                    string linkAction;
                     string encryptedOrganisationId = Encryption.EncryptQuerystring(userOrganisation.OrganisationId.ToString());
-                    if (userOrganisation.PINSentDate != null && userOrganisation.PINConfirmedDate == null)
-                    {
-                        statusText = "Awaiting activation PIN";
-                        linkAction = Url.Action("ActivateOrganisation", "Organisation", new {id = encryptedOrganisationId});
-                    } else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
-                    {
-                        statusText = "Awaiting registration approval";
-                        linkAction = null;
-                    }
-                    else
-                    {
-                        statusText = "Registration complete";
-                        linkAction = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {id = encryptedOrganisationId});
-                    }
-                    
+
                     <tr class="govuk-table__row">
                         @if (userOrganisation.PINSentDate != null && userOrganisation.PINConfirmedDate == null)
                         {
