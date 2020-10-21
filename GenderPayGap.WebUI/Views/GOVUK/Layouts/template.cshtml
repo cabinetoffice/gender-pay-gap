@@ -134,6 +134,13 @@
                                 <a rel="track" data-track-category="Header Link Clicked" href="/actions-to-close-the-gap">Close the gap</a>
                             </li>
                         }
+                        
+                        @if (User.IsInRole(LoginRoles.GpgAdmin))
+                        {
+                            <li>
+                                <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action("AdminHomePage", "AdminHomepage"))">Admin</a>
+                            </li>
+                        }
 
                         @if (User.Identity.IsAuthenticated)
                         {
