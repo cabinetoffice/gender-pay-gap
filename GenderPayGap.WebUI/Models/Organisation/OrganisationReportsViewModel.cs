@@ -27,19 +27,15 @@ namespace GenderPayGap.WebUI.Models.Organisation
 
         private Dictionary<int, OrganisationScopeForYear> GetOrganisationScopes(Database.Organisation organisation, List<int> yearsWithDraftReturns)
         {
-            // Get list of all available reporting years
             List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
             
-            // Create dictionary to store reporting years as keys against OrganisationScopeForYear values
             Dictionary<int, OrganisationScopeForYear> scopesByYear = new Dictionary<int, OrganisationScopeForYear>();
             
-            // Iterate over each available reporting year
             foreach (int reportingYear in reportingYears)
             {
                 // Get organisation's scope for given reporting year
                 var scopeForYear = organisation.GetScopeForYear(reportingYear);
                 
-                // Check that this isn't null, and create a new OrganisationScopeForYear object to contain scope data
                 if (scopeForYear != null)
                 {
                     OrganisationScopeForYear orgScopeForYear = new OrganisationScopeForYear(
@@ -63,7 +59,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
 
         private readonly int reportingYear;
 
-        private readonly DateTime snapshotDateForYear;
+        public DateTime SnapshotDateForYear;
 
         private readonly OrganisationScope scopeForYear;
 
@@ -74,7 +70,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
         public OrganisationScopeForYear(int reportingYear, DateTime snapshotDateForYear, OrganisationScope scopeForYear, Return returnForYear, bool isDraftReturnAvailable)
         {
             this.reportingYear = reportingYear;
-            this.snapshotDateForYear = snapshotDateForYear;
+            this.SnapshotDateForYear = snapshotDateForYear;
             this.scopeForYear = scopeForYear;
             this.returnForYear = returnForYear;
             this.isDraftReturnAvailable = isDraftReturnAvailable;
@@ -145,11 +141,6 @@ namespace GenderPayGap.WebUI.Models.Organisation
             }
 
             return "Edit draft report";
-        }
-
-        public DateTime GetSnapshotDate()
-        {
-            return this.snapshotDateForYear;
         }
 
     }
