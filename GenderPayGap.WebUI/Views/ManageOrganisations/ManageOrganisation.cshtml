@@ -1,7 +1,4 @@
 ﻿@using GenderPayGap.Core
-@using GenderPayGap.Core.Classes
-@using GenderPayGap.Database
-@using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Organisation
 @model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationViewModel
@@ -57,29 +54,7 @@
         
         <h2 class="govuk-heading-l">Manage reports</h2>
         @{
-            List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
-            Dictionary<int, OrganisationScopeForYear> scopesByYear = new Dictionary<int, OrganisationScopeForYear>();
-            foreach (int reportingYear in reportingYears)
-            {
-                var scopeForYear = Model.Organisation.GetScopeForYear(reportingYear);
-                if (scopeForYear != null)
-                {
-                    OrganisationScopeForYear orgScopeForYear = new OrganisationScopeForYear(
-                        reportingYear, 
-                        scopeForYear, 
-                        Model.Organisation.GetReturn(reportingYear),
-                        Model.YearsWithDraftReturns.Contains(reportingYear)
-                    );
-                    scopesByYear.Add(reportingYear, orgScopeForYear);
-                }
-            }
-
-            await Html.RenderPartialAsync("OrganisationReportsTable", new OrganisationReportsViewModel
-            {
-                Organisation = Model.Organisation,
-                YearsWithDraftReturns = Model.YearsWithDraftReturns,
-                OrganisationScopesByYear = scopesByYear,
-            });
+            await Html.RenderPartialAsync("OrganisationReportsTable", new OrganisationReportsViewModel(Model.Organisation, Model.YearsWithDraftReturns));
         }
         
         <h2 class="govuk-heading-l">Registered users</h2>

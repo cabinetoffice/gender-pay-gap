@@ -20,10 +20,10 @@
 
                 string formattedYearText = $"{reportingYear}/{(reportingYear + 1).ToTwoDigitYear()}";
                 
-                DateTime snapshotDate = Model.Organisation.SectorType.GetAccountingStartDate(reportingYear);
+                DateTime snapshotDate = organisationScopeForYear.GetSnapshotDate();
                 DateTime deadline = snapshotDate.AddYears(1).AddDays(-1);
                     
-                string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+                string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
                 
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold">
@@ -61,16 +61,16 @@
                         <div>
                             @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
                             {
-                                <a class="govuk-button" href="@Url.Action("ReportOverview", "ReportOverview",
+                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0" href="@Url.Action("ReportOverview", "ReportOverview",
                                                                   new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})">
                                     @organisationScopeForYear.GetReportButtonText()
                                 </a>
                             }
                             else
                             {
-                                var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), reportingYear.ToString(), organisationScopeForYear.IsAnyReportAvailable().ToString());
+                                var encryptedRequestParam = Encryption.EncryptAsParams(Model.OrganisationId.ToString(), reportingYear.ToString(), organisationScopeForYear.IsAnyReportAvailable().ToString());
                                 
-                                <a class="govuk-button" href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})">
+                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0" href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})">
                                     @organisationScopeForYear.GetReportButtonText()
                                 </a>
                             }
