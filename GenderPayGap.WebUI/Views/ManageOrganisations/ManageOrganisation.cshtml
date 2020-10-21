@@ -82,7 +82,7 @@
         <h2 class="govuk-heading-l">Registered users</h2>
 
         @{
-            var usersRegisteredToReportForOrganisation = Model.Organisation.UserOrganisations.Select(uo => uo.User).Distinct().ToList();
+            var usersRegisteredToReportForOrganisation = Model.Organisation.UserOrganisations.Where(uo => uo.PINConfirmedDate.HasValue).Select(uo => uo.User).Distinct().ToList();
         }
         @if (usersRegisteredToReportForOrganisation.Count == 0)
         {
