@@ -17,7 +17,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
         public long OrganisationId { get; set; }
 
         [BindNever]
-        public Dictionary<int, OrganisationScopeForYear> OrganisationScopesByYear { get; set; }
+        public List<OrganisationScopeForYear> OrganisationScopesByYear { get; set; }
 
         public OrganisationReportsViewModel(Database.Organisation organisation, List<int> yearsWithDraftReturns)
         {
@@ -25,11 +25,11 @@ namespace GenderPayGap.WebUI.Models.Organisation
             this.OrganisationScopesByYear = GetOrganisationScopes(organisation, yearsWithDraftReturns);
         }
 
-        private Dictionary<int, OrganisationScopeForYear> GetOrganisationScopes(Database.Organisation organisation, List<int> yearsWithDraftReturns)
+        private List<OrganisationScopeForYear> GetOrganisationScopes(Database.Organisation organisation, List<int> yearsWithDraftReturns)
         {
             List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
             
-            Dictionary<int, OrganisationScopeForYear> scopesByYear = new Dictionary<int, OrganisationScopeForYear>();
+            List<OrganisationScopeForYear> scopesByYear = new List<OrganisationScopeForYear>();
             
             foreach (int reportingYear in reportingYears)
             {
@@ -45,7 +45,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
                         organisation.GetReturn(reportingYear),
                         yearsWithDraftReturns.Contains(reportingYear)
                     );
-                    scopesByYear.Add(reportingYear, orgScopeForYear);
+                    scopesByYear.Add(orgScopeForYear);
                 }
             }
 
@@ -57,7 +57,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
     public class OrganisationScopeForYear
     {
 
-        private readonly int reportingYear;
+        public int ReportingYear;
 
         public DateTime SnapshotDateForYear;
 
@@ -69,7 +69,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
 
         public OrganisationScopeForYear(int reportingYear, DateTime snapshotDateForYear, OrganisationScope scopeForYear, Return returnForYear, bool isDraftReturnAvailable)
         {
-            this.reportingYear = reportingYear;
+            this.ReportingYear = reportingYear;
             this.SnapshotDateForYear = snapshotDateForYear;
             this.scopeForYear = scopeForYear;
             this.returnForYear = returnForYear;
@@ -78,7 +78,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
 
         public bool CanChangeScope()
         {
-            return Math.Abs(reportingYear - VirtualDateTime.Now.Year) <= Global.EditableScopeCount;
+            return Math.Abs(ReportingYear - VirtualDateTime.Now.Year) <= Global.EditableScopeCount;
         }
 
         public string GetScopeVariantText()
@@ -91,8 +91,10 @@ namespace GenderPayGap.WebUI.Models.Organisation
             return "REQUIRED TO REPORT";
         }
 
-        public string GetByReportingDeadlineText(DateTime deadline)
+        public string GetByReportingDeadlineText()
         {
+            DateTime deadline = SnapshotDateForYear.AddYears(1).AddDays(-1);
+            
             if (scopeForYear.IsInScopeVariant())
             {
                 return "by " + deadline.ToString("d MMM yyyy");
@@ -141,6 +143,11 @@ namespace GenderPayGap.WebUI.Models.Organisation
             }
 
             return "Edit draft report";
+        }
+
+        public string GetFormattedYearText()
+        {
+            return $"{ReportingYear}/{(ReportingYear + 1).ToTwoDigitYear()}";
         }
 
     }
