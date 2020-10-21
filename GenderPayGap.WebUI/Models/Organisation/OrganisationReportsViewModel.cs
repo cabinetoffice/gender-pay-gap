@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes.Formatters;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Organisation
@@ -12,43 +14,80 @@ namespace GenderPayGap.WebUI.Models.Organisation
     {
 
         [BindNever]
-        public Database.Organisation Organisation { get; set; }
-        
-        [BindNever]
-        public List<int> YearsWithDraftReturns { get; set; }
-        
+        public long OrganisationId { get; set; }
+
         [BindNever]
         public Dictionary<int, OrganisationScopeForYear> OrganisationScopesByYear { get; set; }
+
+        public OrganisationReportsViewModel(Database.Organisation organisation, List<int> yearsWithDraftReturns)
+        {
+            this.OrganisationId = organisation.OrganisationId;
+            this.OrganisationScopesByYear = GetOrganisationScopes(organisation, yearsWithDraftReturns);
+        }
+
+        private Dictionary<int, OrganisationScopeForYear> GetOrganisationScopes(Database.Organisation organisation, List<int> yearsWithDraftReturns)
+        {
+            // Get list of all available reporting years
+            List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
+            
+            // Create dictionary to store reporting years as keys against OrganisationScopeForYear values
+            Dictionary<int, OrganisationScopeForYear> scopesByYear = new Dictionary<int, OrganisationScopeForYear>();
+            
+            // Iterate over each available reporting year
+            foreach (int reportingYear in reportingYears)
+            {
+                // Get organisation's scope for given reporting year
+                var scopeForYear = organisation.GetScopeForYear(reportingYear);
+                
+                // Check that this isn't null, and create a new OrganisationScopeForYear object to contain scope data
+                if (scopeForYear != null)
+                {
+                    OrganisationScopeForYear orgScopeForYear = new OrganisationScopeForYear(
+                        reportingYear, 
+                        organisation.SectorType.GetAccountingStartDate(reportingYear),
+                        scopeForYear, 
+                        organisation.GetReturn(reportingYear),
+                        yearsWithDraftReturns.Contains(reportingYear)
+                    );
+                    scopesByYear.Add(reportingYear, orgScopeForYear);
+                }
+            }
+
+            return scopesByYear;
+        }
 
     }
 
     public class OrganisationScopeForYear
     {
 
-        private readonly int scopeYear;
+        private readonly int reportingYear;
 
-        private readonly OrganisationScope scope;
+        private readonly DateTime snapshotDateForYear;
+
+        private readonly OrganisationScope scopeForYear;
 
         private readonly Return returnForYear;
 
         private readonly bool isDraftReturnAvailable;
 
-        public OrganisationScopeForYear(int scopeYear, OrganisationScope scope, Return returnForYear, bool isDraftReturnAvailable)
+        public OrganisationScopeForYear(int reportingYear, DateTime snapshotDateForYear, OrganisationScope scopeForYear, Return returnForYear, bool isDraftReturnAvailable)
         {
-            this.scopeYear = scopeYear;
-            this.scope = scope;
+            this.reportingYear = reportingYear;
+            this.snapshotDateForYear = snapshotDateForYear;
+            this.scopeForYear = scopeForYear;
             this.returnForYear = returnForYear;
             this.isDraftReturnAvailable = isDraftReturnAvailable;
         }
 
         public bool CanChangeScope()
         {
-            return Math.Abs(scopeYear - VirtualDateTime.Now.Year) <= Global.EditableScopeCount;
+            return Math.Abs(reportingYear - VirtualDateTime.Now.Year) <= Global.EditableScopeCount;
         }
 
         public string GetScopeVariantText()
         {
-            if (!scope.IsInScopeVariant())
+            if (!scopeForYear.IsInScopeVariant())
             {
                 return "NOT REQUIRED TO REPORT";
             }
@@ -58,7 +97,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
 
         public string GetByReportingDeadlineText(DateTime deadline)
         {
-            if (scope.IsInScopeVariant())
+            if (scopeForYear.IsInScopeVariant())
             {
                 return "by " + deadline.ToString("d MMM yyyy");
             }
@@ -106,6 +145,11 @@ namespace GenderPayGap.WebUI.Models.Organisation
             }
 
             return "Edit draft report";
+        }
+
+        public DateTime GetSnapshotDate()
+        {
+            return this.snapshotDateForYear;
         }
 
     }
