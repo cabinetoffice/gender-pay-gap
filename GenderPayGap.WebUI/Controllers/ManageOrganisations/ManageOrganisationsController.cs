@@ -58,11 +58,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
                 return RedirectToAction("ManageOrganisation", "Organisation", new {id = id});
             }
             
-            // Try to decrypt organisation id
-            if (!id.DecryptToId(out long organisationId))
-            {
-                throw new PageNotFoundException();
-            }
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(id);
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
