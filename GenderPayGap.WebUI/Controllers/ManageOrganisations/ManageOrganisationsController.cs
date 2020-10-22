@@ -59,12 +59,8 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             }
             
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
-
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
-            
-            // Check the user has permission for this organisation
-            UserOrganisation userOrganisation = user.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
 
             // build the view model
@@ -74,12 +70,8 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
                     .Select(d => d.SnapshotYear)
                     .ToList();
 
-            var viewModel = new ManageOrganisationViewModel
-            {
-                Organisation = userOrganisation.Organisation,
-                YearsWithDraftReturns = yearsWithDraftReturns,
-                LoggedInUserId = user.UserId
-            };
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            var viewModel = new ManageOrganisationViewModel(organisation, user, yearsWithDraftReturns);
 
             return View("ManageOrganisation", viewModel);
         }

@@ -1,8 +1,8 @@
 ﻿@using GenderPayGap.Database
-@model GenderPayGap.WebUI.Models.Organisation.UsersRegisteredToReportForOrganisationViewModel
+@model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationViewModel
 
 @{
-    var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
+    var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
 }
 
 <table class="govuk-table">
@@ -13,13 +13,13 @@
         </tr>
     </thead>
     <tbody class="govuk-table__body">
-        @foreach (User userRegisteredToReport in Model.UsersRegisteredToReportForOrganisation)
+        @foreach (User userRegisteredToReport in Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst())
         {
             var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">
                     @userRegisteredToReport.Fullname
-                    @if (userRegisteredToReport.UserId == Model.LoggedInUserId)
+                    @if (userRegisteredToReport.UserId == Model.User.UserId)
                     {
                         <span>(You)</span>
                     }

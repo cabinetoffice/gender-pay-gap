@@ -1,7 +1,6 @@
-﻿@using GenderPayGap.Core.Classes
-@using GenderPayGap.WebUI.Models.Organisation
+﻿@using GenderPayGap.WebUI.Models.Organisation
 @using GenderPayGap.Core
-@model GenderPayGap.WebUI.Models.Organisation.OrganisationReportsViewModel
+@model ManageOrganisationViewModel
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
@@ -13,23 +12,21 @@
     </thead>
     <tbody class="govuk-table__body">
         @{
-            foreach (OrganisationScopeForYear scopeForYear in Model.OrganisationScopesByYear)
+            foreach (ManageOrganisationDetailsForYearViewModel detailsForYear in Model.GetOrganisationDetailsForYears())
             {
-                int reportingYear = scopeForYear.ReportingYear;
-
-                string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
+                string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
                 
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold">
-                        @scopeForYear.GetFormattedYearText()
+                        @detailsForYear.GetFormattedYearText()
                     </td>
                     
                     <td class="govuk-table__cell">
                         <div>
-                            @scopeForYear.GetScopeVariantText()
+                            @detailsForYear.GetRequiredToReportOrNotText()
                             
                             @{
-                                var reportingDeadlineText = scopeForYear.GetByReportingDeadlineText();
+                                var reportingDeadlineText = detailsForYear.GetByReportingDeadlineText();
                             }
                             
                             @if (reportingDeadlineText != null)
@@ -38,11 +35,11 @@
                                 @reportingDeadlineText
                             }
                         </div>
-                        @if (scopeForYear.CanChangeScope()) 
+                        @if (detailsForYear.CanChangeScope()) 
                         {
                             <div>
-                                <a href="@(Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear }))">
-                                    Change<span class="govuk-visually-hidden"> scope for year @scopeForYear.GetFormattedYearText()</span>
+                                <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear })">
+                                    Change<span class="govuk-visually-hidden"> scope for year @detailsForYear.GetFormattedYearText()</span>
                                 </a>
                             </div>
                         }
@@ -50,24 +47,24 @@
                     
                     <td class="govuk-table__cell">
                         <div>
-                            @scopeForYear.GetReportStatusText()
+                            @detailsForYear.GetReportStatusText()
                         </div>
                         <div>
                             @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
                             {
                                 <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0" 
                                    href="@Url.Action("ReportOverview", "ReportOverview",
-                                                                  new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})">
-                                    @scopeForYear.GetReportButtonText()
+                                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
+                                    @detailsForYear.GetReportButtonText()
                                 </a>
                             }
                             else
                             {
-                                var encryptedRequestParam = Encryption.EncryptAsParams(Model.OrganisationId.ToString(), reportingYear.ToString(), scopeForYear.IsAnyReportAvailable().ToString());
+                                var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
                                 
                                 <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0" 
                                    href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})">
-                                    @scopeForYear.GetReportButtonText()
+                                    @detailsForYear.GetReportButtonText()
                                 </a>
                             }
                         </div>
