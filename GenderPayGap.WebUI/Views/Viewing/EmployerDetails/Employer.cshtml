@@ -90,7 +90,7 @@
                         <tbody>
                             <tr>
                                 <td style="border-bottom: none; width: 300px;">
-                                    <span class="heading-small">@report.GetReportingPeriod()</span>
+                                    <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod()</h3>
                                 </td>
                                 <td style="border-bottom: none;">
                                     <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel { IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission() }"/>
