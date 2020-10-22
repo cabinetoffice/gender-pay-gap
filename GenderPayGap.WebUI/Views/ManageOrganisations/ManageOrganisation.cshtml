@@ -1,6 +1,4 @@
 ﻿@using GenderPayGap.Core
-@using GenderPayGap.WebUI.Helpers
-@using GenderPayGap.WebUI.Models.Organisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationViewModel
@@ -76,7 +74,7 @@
         
         <h2 class="govuk-heading-l">Manage reports</h2>
         @{
-            await Html.RenderPartialAsync("OrganisationReportsTable", new OrganisationReportsViewModel(Model.Organisation, Model.YearsWithDraftReturns));
+            await Html.RenderPartialAsync("OrganisationReportsTable", Model);
         }
         
         <h2 class="govuk-heading-l">Registered users</h2>
@@ -103,12 +101,7 @@
                 The following people are registered to report gender pay gap data for this organisation. 
             </p>
 
-            await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", new UsersRegisteredToReportForOrganisationViewModel
-            {
-                UsersRegisteredToReportForOrganisation = usersRegisteredToReportForOrganisation,
-                LoggedInUserId = Model.LoggedInUserId,
-                OrganisationId = Model.Organisation.OrganisationId
-            });
+            await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", Model);
         }
 
     </div>
