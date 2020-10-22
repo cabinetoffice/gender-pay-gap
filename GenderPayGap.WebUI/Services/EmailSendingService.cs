@@ -417,12 +417,14 @@ namespace GenderPayGap.WebUI.Services
                 notifyEmail.Personalisation = new Dictionary<string, dynamic>();
             }
 
-            notifyEmail.Personalisation.Add("Environment", GetEnvironmentNameForTestEnvironments());
+            notifyEmail.Personalisation.Add("Environment", GetEnvironmentNameAndRecipientEmailAddressForTestEnvironments(notifyEmail));
         }
 
-        private static string GetEnvironmentNameForTestEnvironments()
+        private static string GetEnvironmentNameAndRecipientEmailAddressForTestEnvironments(NotifyEmail notifyEmail)
         {
-            return Config.IsProduction() ? "" : $"[{Config.EnvironmentName}] ";
+            return Config.IsProduction()
+                ? ""
+                : $"[{Config.EnvironmentName} To:{notifyEmail.EmailAddress}] ";
         }
 
     }
