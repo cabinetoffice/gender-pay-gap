@@ -400,12 +400,22 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendEmailFromQueue(NotifyEmail notifyEmail)
         {
-            govNotifyApi.SendEmail(notifyEmail);
+            SendEmail(notifyEmail);
         }
 
         private void SendEmailDirectly(NotifyEmail notifyEmail)
         {
             AddEnvironmentDetailsToEmail(notifyEmail);
+            SendEmail(notifyEmail);
+        }
+
+        private void SendEmail(NotifyEmail notifyEmail)
+        {
+            if (!Config.IsProduction())
+            {
+                notifyEmail.EmailAddress = Global.TestEnvironmentEmailRecipient;
+            }
+
             govNotifyApi.SendEmail(notifyEmail);
         }
 
