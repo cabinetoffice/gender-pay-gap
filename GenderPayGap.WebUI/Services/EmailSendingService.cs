@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
@@ -28,7 +28,6 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"TimeWithUnits", "7 days"},
                 {"VerificationUrl", verificationUrl},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -53,7 +52,6 @@ namespace GenderPayGap.WebUI.Services
                 {"SubmittedOrUpdated", submittedOrUpdated},
                 {"ReportingPeriod", reportingPeriod},
                 {"ReportLink", reportLink},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -72,7 +70,6 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"PIN", pin},
                 {"OrganisationName", organisationName},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -89,7 +86,6 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"OrganisationName", organisationName},
                 {"Username", username},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -106,7 +102,6 @@ namespace GenderPayGap.WebUI.Services
             {
                 {"OrganisationName", organisationName},
                 {"RemovedUser", removedUserName},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -124,7 +119,6 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"OrganisationName", organisationName},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -139,8 +133,7 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"OrganisationName", organisationName}, 
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
+                {"OrganisationName", organisationName},
             };
 
             var notifyEmail = new NotifyEmail
@@ -156,7 +149,6 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -171,16 +163,10 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendChangeEmailCompletedVerificationEmail(string emailAddress)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
-            };
-
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
                 TemplateId = EmailTemplates.SendChangeEmailCompletedVerificationEmail,
-                Personalisation = personalisation
             };
 
             AddEmailToQueue(notifyEmail);
@@ -188,16 +174,10 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendChangeEmailCompletedNotificationEmail(string emailAddress)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
-            };
-
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
                 TemplateId = EmailTemplates.SendChangeEmailCompletedNotificationEmail,
-                Personalisation = personalisation
             };
 
             AddEmailToQueue(notifyEmail);
@@ -205,16 +185,10 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendChangePasswordCompletedEmail(string emailAddress)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
-            };
-
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
                 TemplateId = EmailTemplates.SendChangePasswordCompletedEmail,
-                Personalisation = personalisation
             };
 
             AddEmailToQueue(notifyEmail);
@@ -225,7 +199,6 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -240,16 +213,10 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendResetPasswordCompletedEmail(string emailAddress)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
-            };
-
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
                 TemplateId = EmailTemplates.SendResetPasswordCompletedEmail,
-                Personalisation = personalisation
             };
 
             AddEmailToQueue(notifyEmail);
@@ -257,16 +224,10 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendCloseAccountCompletedEmail(string emailAddress)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
-            };
-
             var notifyEmail = new NotifyEmail
             {
                 EmailAddress = emailAddress,
                 TemplateId = EmailTemplates.SendCloseAccountCompletedEmail,
-                Personalisation = personalisation
             };
 
             AddEmailToQueue(notifyEmail);
@@ -277,7 +238,6 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"url", url},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -295,7 +255,6 @@ namespace GenderPayGap.WebUI.Services
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"reason", reason},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -336,7 +295,6 @@ namespace GenderPayGap.WebUI.Services
                 {"org2", reportingOrg},
                 {"address", reportingAddress},
                 {"url", url},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             foreach (string emailAddress in Global.GeoDistributionList)
@@ -382,7 +340,6 @@ namespace GenderPayGap.WebUI.Services
                 {"UserFullName", userFullName},
                 {"EmailAddress", emailAddress}, // We do need to send the email address in the personalisation - because it appears in the body of the email
                 {"DaysRemaining", daysRemaining},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -397,6 +354,8 @@ namespace GenderPayGap.WebUI.Services
 
         private void AddEmailToQueue(NotifyEmail notifyEmail)
         {
+            AddEnvironmentDetailsToEmail(notifyEmail);
+
             try
             {
                 backgroundJobsApi.AddEmailToQueue(notifyEmail);
@@ -427,7 +386,6 @@ namespace GenderPayGap.WebUI.Services
                 {"OrganisationIsSingular", organisationIsSingular},
                 {"OrganisationIsPlural", organisationIsPlural},
                 {"SectorType", sectorType},
-                {"Environment", GetEnvironmentNameForTestEnvironments()}
             };
 
             var notifyEmail = new NotifyEmail
@@ -442,12 +400,24 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendEmailFromQueue(NotifyEmail notifyEmail)
         {
-            SendEmailDirectly(notifyEmail);
+            govNotifyApi.SendEmail(notifyEmail);
         }
 
         private void SendEmailDirectly(NotifyEmail notifyEmail)
         {
+            AddEnvironmentDetailsToEmail(notifyEmail);
             govNotifyApi.SendEmail(notifyEmail);
+        }
+
+
+        private static void AddEnvironmentDetailsToEmail(NotifyEmail notifyEmail)
+        {
+            if (notifyEmail.Personalisation == null)
+            {
+                notifyEmail.Personalisation = new Dictionary<string, dynamic>();
+            }
+
+            notifyEmail.Personalisation.Add("Environment", GetEnvironmentNameForTestEnvironments());
         }
 
         private static string GetEnvironmentNameForTestEnvironments()
