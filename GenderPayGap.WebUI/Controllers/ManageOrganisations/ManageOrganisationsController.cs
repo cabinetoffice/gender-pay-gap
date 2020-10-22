@@ -49,27 +49,24 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
 
         }
         
-        [HttpGet("{id}")]
-        public IActionResult ManageOrganisationGet(string id)
+        [HttpGet("{encryptedOrganisationId}")]
+        public IActionResult ManageOrganisationGet(string encryptedOrganisationId)
         {
             // Check for feature flag and redirect if not enabled
             if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
             {
-                return RedirectToAction("ManageOrganisation", "Organisation", new {id = id});
+                return RedirectToAction("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId});
             }
             
-            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(id);
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
             
             // Check the user has permission for this organisation
             UserOrganisation userOrganisation = user.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrganisation == null || userOrganisation.PINConfirmedDate == null)
-            {
-                throw new UserNotRegisteredToReportForOrganisationException();
-            }
-            
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+
             // build the view model
             List<int> yearsWithDraftReturns =
                 dataRepository.GetAll<DraftReturn>()

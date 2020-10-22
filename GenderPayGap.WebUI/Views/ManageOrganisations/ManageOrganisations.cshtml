@@ -1,4 +1,6 @@
 ﻿@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationsViewModel
 
 @{
@@ -19,7 +21,7 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl">
             Select an organisation
         </h1>
@@ -72,7 +74,7 @@
                         else
                         {
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {id = encryptedOrganisationId})">
+                                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})">
                                     @(userOrganisation.Organisation.OrganisationName.ToUpper())
                                 </a>
                             </td>
@@ -84,5 +86,21 @@
                 }
             </tbody>
         </table>
+        
+        @(Html.GovUkButton(new ButtonViewModel
+        {
+            Text = "Add organisation",
+            Classes = "govuk-!-margin-bottom-0",
+            Href = Url.Action("ChooseSector", "AddOrganisationChooseSector")
+        }))
+        
+        @{
+            // TODO: do something sensible to show the close account text
+        }
+
+        <hr class="govuk-!-margin-top-8 govuk-!-margin-bottom-8"/>
+        
+        <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLinkNew.cshtml"/>
+
     </div>
 </div>
