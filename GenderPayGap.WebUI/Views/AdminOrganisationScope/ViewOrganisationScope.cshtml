@@ -1,5 +1,5 @@
-﻿@using GenderPayGap.Core.Helpers
-@using GenderPayGap.Database
+﻿@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -78,7 +78,7 @@ else
                     else
                     {
                         <th scope="row" class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
-                            @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year))
+                            @(ReportingYearsHelper.FormatYearAsReportingPeriod(scope.SnapshotDate.Year))
                         </th>
                     }
                     <td class="govuk-table__cell">@(scope.ScopeStatus)</td>
@@ -98,7 +98,7 @@ else
                         <td class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
                             <a href="@Url.Action("ChangeScopeGet", "AdminOrganisationScope", new {id = scope.OrganisationId, year = scope.SnapshotDate.Year})"
                                class="govuk-link">
-                                Change <span class="govuk-visually-hidden"> scope for @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year))</span>
+                                Change <span class="govuk-visually-hidden"> scope for @(ReportingYearsHelper.FormatYearAsReportingPeriod(scope.SnapshotDate.Year))</span>
                             </a>
                         </td>
                     }

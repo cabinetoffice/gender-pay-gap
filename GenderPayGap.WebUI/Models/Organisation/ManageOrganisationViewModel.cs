@@ -82,7 +82,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
 
         public object GetFormattedYearText()
         {
-            return $"{ReportingYear}-{(ReportingYear + 1)%100}";
+            return ReportingYearsHelper.FormatYearAsReportingPeriod(ReportingYear);
         }
 
         public bool CanChangeScope()

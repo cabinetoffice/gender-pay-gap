@@ -18,5 +18,16 @@ namespace GenderPayGap.WebUI.Helpers
             return reportingYears;
         }
 
+        public static string FormatYearAsReportingPeriod(int reportingPeriodStartYear)
+        {
+            int fourDigitStartYear = reportingPeriodStartYear;
+
+            int fourDigitEndYear = reportingPeriodStartYear + 1;
+            int twoDigitEndYear = fourDigitEndYear % 100;
+
+            string formattedYear = $"{fourDigitStartYear}-{twoDigitEndYear}";
+            return formattedYear;
+        }
+
     }
 }
