@@ -1,6 +1,6 @@
 @using GenderPayGap.Core
-@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Microsoft.AspNetCore.Http
@@ -214,7 +214,7 @@
                 @foreach (OrganisationScope scope in scopes)
                 {
                     <b>
-                        @(ReportingPeriodHelper.FormatReportingPeriod(scope.SnapshotDate.Year)):
+                        @(ReportingYearsHelper.FormatYearAsReportingPeriod(scope.SnapshotDate.Year)):
                     </b>
                     @(scope.ScopeStatus)
                     <br/>
@@ -238,7 +238,7 @@
                         .FirstOrDefault();
 
                     <b>
-                        @(ReportingPeriodHelper.FormatReportingPeriod(year)):
+                        @(ReportingYearsHelper.FormatYearAsReportingPeriod(year)):
                     </b>
                     @if (latestReturnForCurrentYear != null)
                     {

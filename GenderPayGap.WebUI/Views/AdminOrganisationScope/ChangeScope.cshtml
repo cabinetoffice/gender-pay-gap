@@ -1,5 +1,5 @@
 @using GenderPayGap.Core
-@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -70,7 +70,7 @@
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Reporting year</th>
-                        <td class="govuk-table__cell">@(ReportingPeriodHelper.FormatReportingPeriod(Model.ReportingYear))</td>
+                        <td class="govuk-table__cell">@(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Current scope</th>
