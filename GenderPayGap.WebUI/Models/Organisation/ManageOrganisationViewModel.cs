@@ -89,8 +89,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
         {
             int currentReportingYear = organisation.SectorType.GetAccountingStartDate().Year;
             int earliestAllowedReportingYear = currentReportingYear - (Global.EditableScopeCount - 1);
-            bool isCurrentYearEditable = ReportingYear >= earliestAllowedReportingYear;
-            return isCurrentYearEditable;
+            return ReportingYear >= earliestAllowedReportingYear;
         }
 
         public string GetRequiredToReportOrNotText()
