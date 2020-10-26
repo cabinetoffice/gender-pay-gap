@@ -87,15 +87,23 @@
         @(Html.GovUkButton(new ButtonViewModel
         {
             Text = "Add organisation",
-            Classes = "govuk-!-margin-bottom-0",
+            Classes = "govuk-!-margin-bottom-8",
             Href = Url.Action("ChooseSector", "AddOrganisationChooseSector")
         }))
         
-        @{
-            // TODO: do something sensible to show the close account text
+        @if (!Model.UserOrganisations.Any())
+        {
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
+                Need to close your account?
+            </h2>
+            <p class="govuk-body govuk-!-margin-bottom-8 govuk-!-width-two-thirds">
+                If you created an account by mistake
+                or are no longer responsible for reporting gender pay gap data
+                you can close your account in <a href="@Url.Action("ManageAccountGet", "ManageAccount")">manage account</a>.
+            </p>
         }
         
-        <hr class="govuk-!-margin-top-8 govuk-!-margin-bottom-8" style="background: black; border: 1px solid black;"/>
+        <hr class="govuk-!-margin-bottom-8" style="background: black; border: 1px solid black;"/>
         
         <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLinkNew.cshtml"/>
 
