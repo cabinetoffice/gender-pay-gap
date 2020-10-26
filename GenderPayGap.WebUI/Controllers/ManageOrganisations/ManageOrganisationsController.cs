@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
-using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
-using GenderPayGap.WebUI.Models.Organisation;
+using GenderPayGap.WebUI.Models.ManageOrganisations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

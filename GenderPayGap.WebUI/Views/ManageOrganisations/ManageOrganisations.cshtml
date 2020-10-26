@@ -1,7 +1,7 @@
 ﻿@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Organisation.ManageOrganisationsViewModel
+@model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationsViewModel
 
 @{
     ViewBag.Title = "Manage your organisations - Gender pay gap service";
@@ -94,8 +94,8 @@
         @{
             // TODO: do something sensible to show the close account text
         }
-
-        <hr class="govuk-!-margin-top-8 govuk-!-margin-bottom-8"/>
+        
+        <hr class="govuk-!-margin-top-8 govuk-!-margin-bottom-8" style="background: black; border: 1px solid black;"/>
         
         <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLinkNew.cshtml"/>
 

@@ -1,6 +1,6 @@
-﻿@using GenderPayGap.WebUI.Models.Organisation
-@using GenderPayGap.Core
-@model ManageOrganisationViewModel
+﻿@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Models.ManageOrganisations
+@model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
@@ -62,8 +62,9 @@
                             {
                                 var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
                                 
-                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0" 
-                                   href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})">
+                                <a role="button"
+                                   href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
+                                   class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0">
                                     @detailsForYear.GetReportButtonText()
                                 </a>
                             }

@@ -7,7 +7,7 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes.Formatters;
 using GenderPayGap.WebUI.Helpers;
 
-namespace GenderPayGap.WebUI.Models.Organisation
+namespace GenderPayGap.WebUI.Models.ManageOrganisations
 {
     public class ManageOrganisationViewModel
     {
