@@ -1,6 +1,8 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -65,6 +67,12 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
 
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            if (OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
+            {
+                return RedirectToAction("DeclareScope", "Organisation", new { id = encryptedOrganisationId });
+            }
+
             // build the view model
             List<int> yearsWithDraftReturns =
                 dataRepository.GetAll<DraftReturn>()
@@ -72,10 +80,28 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
                     .Select(d => d.SnapshotYear)
                     .ToList();
 
-            var organisation = dataRepository.Get<Organisation>(organisationId);
             var viewModel = new ManageOrganisationViewModel(organisation, user, yearsWithDraftReturns);
 
             return View("ManageOrganisation", viewModel);
+        }
+
+        private static bool OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(Organisation organisation)
+        {
+            DateTime currentYearSnapshotDate = organisation.SectorType.GetAccountingStartDate();
+            bool organisationCreatedInCurrentReportingYear = organisation.Created >= currentYearSnapshotDate;
+
+            if (organisationCreatedInCurrentReportingYear)
+            {
+                int previousReportingYear = currentYearSnapshotDate.AddYears(-1).Year;
+                OrganisationScope scope = organisation.GetScopeForYear(previousReportingYear);
+
+                if (scope.IsScopePresumed())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }
