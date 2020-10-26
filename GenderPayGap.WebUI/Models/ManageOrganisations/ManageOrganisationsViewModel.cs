@@ -3,9 +3,9 @@ using GenderPayGap.Database;
 using GovUkDesignSystem;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace GenderPayGap.WebUI.Models.Organisation
+namespace GenderPayGap.WebUI.Models.ManageOrganisations
 {
-    public class ManageOrganisationsViewModel : GovUkViewModel
+    public class ManageOrganisationsViewModel
 
     {
 
