@@ -44,7 +44,7 @@ namespace GenderPayGap.WebUI.Controllers
                 dataRepository.SaveChangesAsync().Wait();
             }
 
-            return RedirectToAction("ManageOrganisations", "Organisation");
+            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
         }
 
     }

@@ -42,7 +42,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Redirect if already logged in
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
             
             return View("PasswordReset", new PasswordResetViewModel());
@@ -56,7 +56,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Redirect if already logged in
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
             
             viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
@@ -124,7 +124,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Redirect if already logged in
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             // Find the user from the reset code in the viewModel
@@ -144,7 +144,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Redirect if already logged in
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
             
             return View("ChooseNewPasswordComplete");
@@ -158,7 +158,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Redirect if already logged in
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
             
             viewModel.ParseAndValidateParameters(Request, m => m.NewPassword); 

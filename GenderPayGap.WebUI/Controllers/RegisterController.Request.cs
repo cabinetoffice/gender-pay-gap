@@ -570,7 +570,7 @@ namespace GenderPayGap.WebUI.Controllers
         protected void SendRegistrationAccepted(string emailAddress)
         {
             //Send an acceptance link to the email address
-            string returnUrl = Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
+            string returnUrl = Url.Action("ManageOrganisationsGet", "ManageOrganisations", null, "https");
             emailSendingService.SendOrganisationRegistrationApprovedEmail(emailAddress, returnUrl);
         }
 

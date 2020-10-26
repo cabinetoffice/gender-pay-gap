@@ -11,7 +11,7 @@
     @Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
-        Href = Url.Action("ManageOrganisations", "Organisation"),
+        Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations"),
         
         // Note: some of the "Back" links in this journey can't use the default browser behaviour
         //  so we should control all of them explicitly
@@ -114,7 +114,7 @@
             }))
 
             <p class="govuk-body">
-                <a href="@Url.Action("ManageOrganisations", "Organisation")"
+                <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                    class="govuk-link">
                     Cancel and return to your organisations
                 </a>

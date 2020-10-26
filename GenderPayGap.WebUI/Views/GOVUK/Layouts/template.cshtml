@@ -119,7 +119,7 @@
                                 <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action("StepByStepStandalone", "ReportingStepByStep"))">Guidance</a>
                             </li>
                             <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href=@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")>Submit</a>
+                                <a rel="track" data-track-category="Header Link Clicked" href=@Url.Action("ManageOrganisationsGet", "ManageOrganisations")>Submit</a>
                             </li>
                         }
                         else
@@ -151,7 +151,7 @@
                         else 
                         {
                             <li id="login-links" class="nowrap">
-                                @Html.ActionLink("Sign in", nameof(OrganisationController.ManageOrganisations), "Organisation") 
+                                @Html.ActionLink("Sign in", "ManageOrganisationsGet", "ManageOrganisations")
                             </li>
                         }
                     </ul>

@@ -18,12 +18,12 @@
             new CrumbViewModel
             {
                 Text = "Your Organisations",
-                Href = Url.Action("ManageOrganisations", "Organisation")
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
             },
             new CrumbViewModel
             {
                 Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId})
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
             },
             new CrumbViewModel
             {
@@ -83,13 +83,13 @@
         </h2>
         <ul class="govuk-list">
             <li>
-                <a href="@(Url.Action("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId}))"
+                <a href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})"
                    class="govuk-link">
                     Back to @(Model.Organisation.OrganisationName)
                 </a>
             </li>
             <li>
-                <a href="@(Url.Action("ManageOrganisations", "Organisation"))"
+                <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                    class="govuk-link">
                     Back to your organisations
                 </a>

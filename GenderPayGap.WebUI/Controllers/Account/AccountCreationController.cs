@@ -32,13 +32,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             switch (viewModel.HaveYouAlreadyCreatedYourUserAccount)
             {
                 case HaveYouAlreadyCreatedYourUserAccount.Yes:
-                    return RedirectToAction("ManageOrganisations", "Organisation");
+                    return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
 
                 case HaveYouAlreadyCreatedYourUserAccount.No:
                 case HaveYouAlreadyCreatedYourUserAccount.NotSure:
@@ -62,7 +62,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             return View("CreateUserAccount", new CreateUserAccountViewModel());
@@ -143,7 +143,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             
             if (User.Identity.IsAuthenticated || gpgUser.EmailVerifiedDate != null)
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;

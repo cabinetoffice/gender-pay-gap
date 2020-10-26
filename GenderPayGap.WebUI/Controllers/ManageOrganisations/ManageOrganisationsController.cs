@@ -31,7 +31,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             // Check for feature flag and redirect if not enabled
             if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             if (User.IsInRole(LoginRoles.GpgAdmin))
@@ -59,7 +59,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             // Check for feature flag and redirect if not enabled
             if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
             {
-                return RedirectToAction("ManageOrganisation", "Organisation", new {id = encryptedOrganisationId});
+                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId});
             }
             
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);

@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 await submissionService.DiscardDraftFileAsync(stashedReturnViewModel);
             }
 
-            return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
         }
 
         [HttpPost("save-draft")]
