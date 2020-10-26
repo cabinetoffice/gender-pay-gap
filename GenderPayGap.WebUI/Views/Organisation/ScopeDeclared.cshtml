@@ -18,7 +18,7 @@
                 Press continue to manage your organisation.
             </p>
             <p></p>
-            <a class="button" href="@Url.Action("ManageOrganisation", "Organisation", new {id = ViewContext.RouteData.Values["Id"]})" role="button">Continue</a>
+            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = ViewContext.RouteData.Values["Id"]})" role="button">Continue</a>
         </div>
     </div>
 </main>

@@ -70,7 +70,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 LoginRoles.GpgEmployer,
                 currentUser.UserId);
 
-            return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
         }
 
         [HttpPost("impersonate/{userId}")]
@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 LoginRoles.GpgEmployer,
                 currentUser.UserId);
 
-            return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
         }
 
     }

@@ -83,7 +83,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
             }
             else
             {
-                return RedirectToAction("ManageOrganisations", "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
         }
 

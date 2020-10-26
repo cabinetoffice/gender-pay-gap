@@ -5,7 +5,7 @@
 @model GenderPayGap.WebUI.Models.Organisation.DeclareScopeModel
 <div class="grid-row">
     <div class="column-full">
-        <a class="link-back" href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Back</a>
+        <a class="link-back" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Back</a>
 
         @await Html.CustomValidationSummaryAsync()
 

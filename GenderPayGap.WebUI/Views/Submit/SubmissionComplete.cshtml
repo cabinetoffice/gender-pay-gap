@@ -14,7 +14,7 @@
             </div>
             <p>@Html.ActionLink("See your gender pay gap data", "Employer", "Viewing", new {employerIdentifier = Model.EncryptedOrganisationId}, new {id = "btnViewData", target = "_blank"})</p>
             <p>
-                <a href="@Url.Action(nameof(OrganisationController.ManageOrganisations), "Organisation")">Manage organisations</a>
+                <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Manage organisations</a>
             </p>
             <button id="NextStep" type="submit" class="button" name="command">Finish and sign out</button>
         }

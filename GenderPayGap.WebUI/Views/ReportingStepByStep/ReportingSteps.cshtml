@@ -72,7 +72,7 @@
                 new StepTask
                 {
                     TaskText = "Manage my organisations",
-                    TaskUrl = @Url.Action("ManageOrganisations", "Organisation")
+                    TaskUrl = @Url.Action("ManageOrganisationsGet", "ManageOrganisations")
                 },
             }
         },
@@ -130,8 +130,7 @@
                 new StepTask
                 {
                     TaskText = "Report your gender pay gap data",
-                    TaskUrl = @Global.StartUrl ?? Url.Action(nameof(OrganisationController.ManageOrganisations),
-                        "Organisation")
+                    TaskUrl = @Global.StartUrl ?? Url.Action("ManageOrganisationsGet", "ManageOrganisations")
                 },
             }
         },

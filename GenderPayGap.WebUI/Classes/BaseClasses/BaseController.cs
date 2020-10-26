@@ -445,7 +445,7 @@ namespace GenderPayGap.WebUI.Classes
                 CustomLogger.Warning(
                     $"Cannot find UserOrganisation for user {currentUser.UserId} and organisation {ReportingOrganisationId}");
 
-                return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             if (userOrg.Organisation.SectorType == SectorTypes.Private)
@@ -462,7 +462,7 @@ namespace GenderPayGap.WebUI.Classes
                         
                         if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.PrivateManualRegistration) )
                         {
-                            return RedirectToAction("ManageOrganisations", "Organisation");
+                            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
                         }
 
                         return RedirectToAction("PINSent", "Register");
@@ -523,7 +523,7 @@ namespace GenderPayGap.WebUI.Classes
             {
                 CustomLogger.Warning(
                     $"UserOrganisation for user {userOrg.UserId} and organisation {userOrg.OrganisationId} PIN is not confirmed");
-                return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
             return null;

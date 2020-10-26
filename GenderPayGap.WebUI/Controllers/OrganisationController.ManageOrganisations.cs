@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Check for feature flag and redirect if enabled
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
             {
-                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {id = id});
+                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = id});
             }
             
             //Ensure user has completed the registration process
@@ -122,7 +122,7 @@ namespace GenderPayGap.WebUI.Controllers
             
             //create the new view model 
             IOrderedEnumerable<UserOrganisation> model = currentUser.UserOrganisations.OrderBy(uo => uo.Organisation.OrganisationName);
-            return View(nameof(ManageOrganisations), model);
+            return View("ManageOrganisations", model);
         }
 
     }

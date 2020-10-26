@@ -82,7 +82,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 return View("DraftConfirm", postedReturnViewModel);
             }
 
-            return RedirectToAction(nameof(OrganisationController.ManageOrganisations), "Organisation");
+            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
         }
 
         private void ExcludeBlankFieldsFromModelState(ReturnViewModel returnViewModel)

@@ -58,7 +58,7 @@
                         <button type="submit" class="button button-warning" name="id">Remove user</button>
                     </p>
                     <p>
-                        <a href="@Url.Action("ManageOrganisation", new {id = Model.EncOrganisationId})">Cancel</a>
+                        <a href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = Model.EncOrganisationId})">Cancel</a>
                     </p>
                 </div>
             </div>

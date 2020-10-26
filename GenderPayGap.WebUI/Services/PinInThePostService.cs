@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Services
 
             string postCode = userOrganisation.Organisation.GetLatestAddress().PostCode;
 
-            string returnUrl = urlHelper.Action(nameof(OrganisationController.ManageOrganisations), "Organisation", null, "https");
+            string returnUrl = urlHelper.Action("ManageOrganisationsGet", "ManageOrganisations", null, "https");
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);
 
 

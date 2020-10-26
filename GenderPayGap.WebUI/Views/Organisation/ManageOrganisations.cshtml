@@ -72,7 +72,7 @@
                             else
                             {
                                 <th scope="row">
-                                    <a id="ManageOrg-@(encOrgId)" href="@Url.Action("ManageOrganisation", "Organisation", new {id = encOrgId})">
+                                    <a id="ManageOrg-@(encOrgId)" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encOrgId})">
                                         <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>
                                     </a>
                                 </th>
