@@ -48,5 +48,11 @@ namespace GenderPayGap.Database
             return ScopeStatus == ScopeStatuses.InScope || ScopeStatus == ScopeStatuses.PresumedInScope;
         }
 
+        public bool IsScopePresumed()
+        {
+            return ScopeStatus == ScopeStatuses.PresumedInScope ||
+                   ScopeStatus == ScopeStatuses.PresumedOutOfScope;
+        }
+
     }
 }
