@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
 {
-    [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
     public class ManageOrganisationsController : Controller
     {
@@ -24,12 +23,18 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         }
 
         [HttpGet]
+        [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin)]
         public IActionResult ManageOrganisationsGet()
         {
             // Check for feature flag and redirect if not enabled
             if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
             {
                 return RedirectToAction("ManageOrganisations", "Organisation");
+            }
+
+            if (User.IsInRole(LoginRoles.GpgAdmin))
+            {
+                return RedirectToAction("AdminHomePage", "AdminHomepage");
             }
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
@@ -44,8 +49,9 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             return View("ManageOrganisations", viewModel);
 
         }
-        
+
         [HttpGet("{encryptedOrganisationId}")]
+        [Authorize(Roles = LoginRoles.GpgEmployer)]
         public IActionResult ManageOrganisationGet(string encryptedOrganisationId)
         {
             // Check for feature flag and redirect if not enabled
