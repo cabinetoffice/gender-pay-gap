@@ -33,7 +33,11 @@
         </p>
         <p class="govuk-body">
             If you already have a user account, please
-            @(Html.ActionLink("sign in", "ManageOrganisationsGet", "ManageOrganisations")).
+            <a href="@(Url.Action("ManageOrganisationsGet", "ManageOrganisations"))"
+               class="govuk-body">
+                sign in
+            </a>
+            .
         </p>
 
         <form method="POST" action="@Url.Action("CreateUserAccountPost", "AccountCreation")" class="govuk-!-margin-top-8">
