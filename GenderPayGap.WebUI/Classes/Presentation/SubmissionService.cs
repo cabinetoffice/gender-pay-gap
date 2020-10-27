@@ -560,7 +560,7 @@ namespace GenderPayGap.WebUI.Classes.Services
                 ReportingStartDate = snapshotDate,
                 ReportModifiedDate = returnModifiedDate,
                 ReportingRequirement =
-                    await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisation.OrganisationId, snapshotDate.Year)
+                    await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisation.OrganisationId, snapshotDate.Year)
             };
 
             return result;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -111,7 +110,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope GET: When Id IsNullOrWhitespace Then Return BadRequest")]
-        public async Task DeclareScope_GET_When_Id_IsNullOrWhitespace_Then_Return_BadRequest()
+        public void DeclareScope_GET_When_Id_IsNullOrWhitespace_Then_Return_BadRequest()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -129,7 +128,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(testOrgId);
+            IActionResult actionResult = controller.DeclareScope(testOrgId);
 
 
             // Assert
@@ -140,7 +139,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope GET: When Org no scopes return BadRequest")]
-        public async Task DeclareScope_GET_When_NoScopes_Then_Return_BadRequest()
+        public void DeclareScope_GET_When_NoScopes_Then_Return_BadRequest()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -173,7 +172,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string encOrgId = Encryption.EncryptQuerystring(testOrgId.ToString());
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(encOrgId);
+            IActionResult actionResult = controller.DeclareScope(encOrgId);
 
             // Assert
             Expect(actionResult != null, "actionResult should not be null");
@@ -186,7 +185,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope GET: When Org has explicit scopes return BadRequest")]
-        public async Task DeclareScope_GET_When_PreviousInScope_Then_Return_BadRequest()
+        public void DeclareScope_GET_When_PreviousInScope_Then_Return_BadRequest()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -220,7 +219,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string encOrgId = Encryption.EncryptQuerystring(testOrgId.ToString());
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(encOrgId);
+            IActionResult actionResult = controller.DeclareScope(encOrgId);
 
             // Assert
             Expect(actionResult != null, "actionResult should not be null");
@@ -233,7 +232,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope GET: When Org has previous explicit scope return BadRequest")]
-        public async Task DeclareScope_GET_When_PreviousOutOfScope_Then_Return_BadRequest()
+        public void DeclareScope_GET_When_PreviousOutOfScope_Then_Return_BadRequest()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -267,7 +266,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Act
 
-            IActionResult result = await controller.DeclareScope(encOrgId);
+            IActionResult result = controller.DeclareScope(encOrgId);
             var actionResult = result as HttpStatusViewResult;
 
             // Assert
@@ -277,7 +276,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope GET: When User Not Assoc to Org Then Return Forbidden")]
-        public async Task DeclareScope_GET_When_User_Not_Assoc_to_Org_Then_Return_Forbidden()
+        public void DeclareScope_GET_When_User_Not_Assoc_to_Org_Then_Return_Forbidden()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -297,7 +296,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(encOrgId);
+            IActionResult actionResult = controller.DeclareScope(encOrgId);
 
             // Assert
             var httpStatusResult = actionResult as HttpStatusViewResult;
@@ -307,7 +306,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope GET: When User Not completed registration Return Forbidden")]
-        public async Task DeclareScope_GET_When_User_Not_FullyRegistered_Then_Return_Forbidden()
+        public void DeclareScope_GET_When_User_Not_FullyRegistered_Then_Return_Forbidden()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -327,7 +326,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(encOrgId);
+            IActionResult actionResult = controller.DeclareScope(encOrgId);
 
             // Assert
             var httpStatusResult = actionResult as HttpStatusViewResult;
@@ -337,7 +336,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope POST: When Id IsNullOrWhitespace Then Return BadRequest")]
-        public async Task DeclareScope_POST_When_Id_IsNullOrWhitespace_Then_Return_BadRequestAsync()
+        public void DeclareScope_POST_When_Id_IsNullOrWhitespace_Then_Return_BadRequestAsync()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -354,7 +353,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             DateTime snapshotDate = SectorTypes.Private.GetAccountingStartDate();
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(model, testOrgId);
+            IActionResult actionResult = controller.DeclareScope(model, testOrgId);
 
             // Assert
             var httpStatusResult = actionResult as HttpStatusViewResult;
@@ -364,7 +363,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope POST: When Model Last presumed year in scope save new scope")]
-        public async Task DeclareScope_POST_When_Model_LastYearPresumedInScope_Then_SaveInScopeAsync()
+        public void DeclareScope_POST_When_Model_LastYearPresumedInScope_Then_SaveInScopeAsync()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -409,7 +408,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var model = new DeclareScopeModel {SnapshotDate = lastSnapshotDate, ScopeStatus = ScopeStatuses.InScope};
 
             // Act
-            var actionResult = await controller.DeclareScope(model, encOrgId) as ViewResult;
+            var actionResult = controller.DeclareScope(model, encOrgId) as ViewResult;
 
             // Assert
             Expect(actionResult != null, "actionResult should not be null");
@@ -442,7 +441,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope POST: When User Not Assoc to Org Then Return Forbidden")]
-        public async Task DeclareScope_POST_When_User_Not_Assoc_to_Org_Then_Return_ForbiddenAsync()
+        public void DeclareScope_POST_When_User_Not_Assoc_to_Org_Then_Return_ForbiddenAsync()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -463,7 +462,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var model = new DeclareScopeModel();
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(model, encOrgId);
+            IActionResult actionResult = controller.DeclareScope(model, encOrgId);
 
             // Assert
             var httpStatusResult = actionResult as HttpStatusViewResult;
@@ -473,7 +472,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("DeclareScope POST: When User Not completed registration Return Forbidden")]
-        public async Task DeclareScope_POST_When_User_Not_FullyRegistered_Then_Return_ForbiddenAsync()
+        public void DeclareScope_POST_When_User_Not_FullyRegistered_Then_Return_ForbiddenAsync()
         {
             // Arrange
             var mockRouteData = new RouteData();
@@ -494,7 +493,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var model = new DeclareScopeModel();
 
             // Act
-            IActionResult actionResult = await controller.DeclareScope(model, encOrgId);
+            IActionResult actionResult = controller.DeclareScope(model, encOrgId);
 
             // Assert
             var httpStatusResult = actionResult as HttpStatusViewResult;

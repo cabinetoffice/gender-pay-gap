@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (userOrg.PINConfirmedDate != null && userOrg.Organisation.Created >= currentSnapshotDate)
             {
                 ScopeStatuses scopeStatus =
-                    await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, currentSnapshotDate.Year - 1);
+                    await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, currentSnapshotDate.Year - 1);
                 if (!scopeStatus.IsAny(ScopeStatuses.InScope, ScopeStatuses.OutOfScope))
                 {
                     return RedirectToAction(nameof(DeclareScope), "Organisation", new {id});

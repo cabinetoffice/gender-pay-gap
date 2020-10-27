@@ -835,8 +835,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //Setup the mocked business logic
             var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
             mockOrgBL
-                .Setup(x => x.GetCompareDataAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .ReturnsAsync(expectedModel);
+                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns(expectedModel);
             controller.OrganisationBusinessLogic = mockOrgBL.Object;
 
             // Act
@@ -887,8 +887,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //Setup the mocked business logic
             var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
             mockOrgBL
-                .Setup(x => x.GetCompareDataAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .ReturnsAsync(expectedModel);
+                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns(expectedModel);
             controller.OrganisationBusinessLogic = mockOrgBL.Object;
 
             // Act
@@ -931,8 +931,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //Setup the mocked business logic
             var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
             mockOrgBL
-                .Setup(x => x.GetCompareDataAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .ReturnsAsync(expectedModel);
+                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns(expectedModel);
 
             var expectedData = expectedModel.ToDataTable();
             mockOrgBL
@@ -984,8 +984,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //Setup the mocked business logic
             var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
             mockOrgBL
-                .Setup(x => x.GetCompareDataAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .ReturnsAsync(expectedModel);
+                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns(expectedModel);
             var expectedData = expectedModel.ToDataTable();
             mockOrgBL
                 .Setup(x => x.GetCompareDatatable(It.IsAny<IEnumerable<CompareReportModel>>()))

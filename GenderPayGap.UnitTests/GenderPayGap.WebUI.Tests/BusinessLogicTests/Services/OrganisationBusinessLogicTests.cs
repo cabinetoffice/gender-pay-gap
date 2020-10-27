@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -85,7 +84,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
         }
 
         [Test]
-        public async Task OrganisationBusinessLogic_GetCompareData_Leaves_Null_Values_At_The_Bottom_Of_The_ListAsync()
+        public void OrganisationBusinessLogic_GetCompareData_Leaves_Null_Values_At_The_Bottom_Of_The_List()
         {
             // Arrange
             List<Return> listOfReturns = GetFourOrgsWithVariousReturns();
@@ -116,7 +115,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
             var sortAscending = true;
 
             // Act
-            IEnumerable<CompareReportModel> data = await organisationBusinessLogic.GetCompareDataAsync(
+            IEnumerable<CompareReportModel> data = organisationBusinessLogic.GetCompareData(
                 listEncOrgIds,
                 year,
                 sortColumn,
