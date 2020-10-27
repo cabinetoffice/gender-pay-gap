@@ -625,7 +625,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("RemoveOrganisation POST: When Removal Complete Which Creates Orphan Organisation Then Email GEO")]
-        public async Task RemoveOrganisation_POST_When_Removal_Complete_Which_Creates_Orphan_Organisation_Then_Email_GEO()
+        public void RemoveOrganisation_POST_When_Removal_Complete_Which_Creates_Orphan_Organisation_Then_Email_GEO()
         {
             // Arrange
 
@@ -661,7 +661,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
-            var result = await controller.RemoveOrganisation(testModel) as RedirectToActionResult;
+            var result = controller.RemoveOrganisation(testModel) as RedirectToActionResult;
 
             // Assert
             UiTestHelper.MockBackgroundJobsApi.Verify(
@@ -680,7 +680,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("RemoveOrganisation POST: When Removal Complete Then Sends User Emails")]
-        public async Task RemoveOrganisation_POST_When_User_Org_Removed_Then_Sends_User_Email()
+        public void RemoveOrganisation_POST_When_User_Org_Removed_Then_Sends_User_Email()
         {
             // Arrange
             User user1 = CreateUser(1, "user1@test.com");
@@ -719,7 +719,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
-            var result = await controller.RemoveOrganisation(testModel) as RedirectToActionResult;
+            var result = controller.RemoveOrganisation(testModel) as RedirectToActionResult;
 
             // Assert$
             UiTestHelper.MockBackgroundJobsApi.Verify(

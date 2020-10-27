@@ -555,7 +555,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Save the changes and redirect
-            await DataRepository.SaveChangesAsync();
+            DataRepository.SaveChanges();
 
             //Send notification email to existing users 
             EmailSendingServiceHelpers.SendUserAddedEmailToExistingUsers(userOrg.Organisation, userOrg.User, emailSendingService);
@@ -696,7 +696,7 @@ namespace GenderPayGap.WebUI.Controllers
                     : model.CancellationReason);
 
             //Save the changes and redirect
-            await DataRepository.SaveChangesAsync();
+            DataRepository.SaveChanges();
 
             //Save the model for the redirect
             this.StashModel(model);

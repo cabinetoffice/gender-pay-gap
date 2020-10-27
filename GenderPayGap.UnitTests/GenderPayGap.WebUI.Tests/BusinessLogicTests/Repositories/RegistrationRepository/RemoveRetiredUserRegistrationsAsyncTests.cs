@@ -36,7 +36,7 @@ namespace Repositories.UserRepository
         private GenderPayGap.WebUI.Repositories.RegistrationRepository testRegistrationRepo;
 
         [Test]
-        public async Task UnregistersAllOrganisationsForUser()
+        public void UnregistersAllOrganisationsForUser()
         {
             // Arrange
             User testRetiredUser = mockDataRepo.GetAll<User>()
@@ -45,7 +45,7 @@ namespace Repositories.UserRepository
                 .FirstOrDefault();
 
             // Act
-            await testRegistrationRepo.RemoveRetiredUserRegistrationsAsync(testRetiredUser);
+            testRegistrationRepo.RemoveRetiredUserRegistrations(testRetiredUser);
 
             // Assert user org removed
             Assert.IsFalse(

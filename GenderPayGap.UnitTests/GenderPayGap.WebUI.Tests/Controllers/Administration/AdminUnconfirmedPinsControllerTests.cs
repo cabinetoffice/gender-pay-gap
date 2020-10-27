@@ -86,7 +86,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
-            await controller.SendPin(user.UserId, organisationId);
+            controller.SendPin(user.UserId, organisationId);
 
             // Assert
             UiTestHelper.MockBackgroundJobsApi.Verify(
@@ -139,7 +139,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
-            await controller.SendPin(user.UserId, organisationId);
+            controller.SendPin(user.UserId, organisationId);
 
             // Assert
             UiTestHelper.MockBackgroundJobsApi.Verify(
