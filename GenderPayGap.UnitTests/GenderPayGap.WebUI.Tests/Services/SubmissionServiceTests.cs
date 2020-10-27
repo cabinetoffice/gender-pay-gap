@@ -111,38 +111,7 @@ namespace GenderPayGap.Tests
             Expect(testReturn.MaxEmployees == (int)testOrgSizeRange.Maximum);
             Expect(testReturn.LateReason == testModel.LateReason);
         }
-
-        [Test]
-        [Ignore("Broken by change to draft file logic")]
-        public async Task DraftFile_GetDraftFile_Returns_A_Valid_DraftAsync()
-        {
-            // Arrange
-            User mockedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
-            Organisation mockedOrganisation = OrganisationHelper.GetPublicOrganisation();
-            mockedOrganisation.OrganisationId = new Random().Next(1000, 9999);
-            UserOrganisation mockedUserOrganisation = UserOrganisationHelper.LinkUserWithOrganisation(mockedUser, mockedOrganisation);
-            Return mockedReturn = ReturnHelper.GetSubmittedReturnForOrganisationAndYear(mockedUserOrganisation, Global.FirstReportingYear);
-
-            OrganisationHelper.LinkOrganisationAndReturn(mockedOrganisation, mockedReturn);
-
-            var testDraftFileBL = new DraftFileBusinessLogic(MoqHelpers.CreateMockAsyncDataRepository().Object);
-            var testService = new SubmissionService(mockDataRepo.Object, null, testDraftFileBL);
-
-            // Act
-            Draft actualDraft = await testService.GetDraftFileAsync(
-                mockedOrganisation.OrganisationId,
-                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
-                mockedUser.UserId);
-
-            // Assert
-            Assert.NotNull(actualDraft);
-            Assert.True(actualDraft.IsUserAllowedAccess);
-            Assert.AreEqual(mockedUser.UserId, actualDraft.LastWrittenByUserId);
-
-            // Clean up
-            testDraftFileBL.DiscardDraft(actualDraft);
-        }
-
+        
         [Test]
         [Description("GetSubmissionChangeSummary: Detects no changes")]
         public void GetSubmissionChangeSummary_Detects_no_changes()

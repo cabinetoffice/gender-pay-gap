@@ -115,48 +115,7 @@ namespace GenderPayGap.WebUI.Tests.Services
                 Assert.That(opt.Value == testSicSections[i].SicSectionId);
             }
         }
-
-        [Test]
-        [Ignore("This breaks in late-June and/or 1st-January each year because the date calculation in the test is wrong")]
-        [Description("GetReportingYearOptions: Marks given years as checked or not checked")]
-        public void GetReportingYearOptions_Marks_given_years_as_checked_or_not_checked()
-        {
-            // Setup
-            var testCheckedYears = new[] {2018, 2017};
-
-            // Mocks
-            var testService = new ViewingService(
-                _mockDataRepo.Object,
-                viewingSearchService);
-            List<OptionSelect> options = testService.GetReportingYearOptions(testCheckedYears);
-
-            // Assert
-            int firstYear = 2017;
-            int nowYear = VirtualDateTime.Now.Year;
-            List<int> testAllYears = Enumerable.Range(firstYear, nowYear - firstYear + 1).OrderByDescending(y => y).ToList();
-
-            for (var i = 0; i < options.Count; i++)
-            {
-                OptionSelect opt = options[i];
-
-                // assert checked status
-                if (testCheckedYears.Any(x => x.ToString() == opt.Value))
-                {
-                    Assert.That(opt.Checked);
-                }
-                else
-                {
-                    Assert.That(opt.Checked == false);
-                }
-
-                // assert all other meta values
-                Assert.AreEqual(false, opt.Disabled);
-                Assert.AreEqual(testAllYears[i].ToString(), opt.Id);
-                Assert.AreEqual($"{testAllYears[i]} to {testAllYears[i] + 1}", opt.Label);
-                Assert.AreEqual(testAllYears[i].ToString(), opt.Value);
-            }
-        }
-
+        
         [Test]
         [Description("GetReportingStatusOptions: Marks given status as checked or not checked")]
         public void GetReportingStatusOptions_Marks_given_status_as_checked_or_not_checked()
