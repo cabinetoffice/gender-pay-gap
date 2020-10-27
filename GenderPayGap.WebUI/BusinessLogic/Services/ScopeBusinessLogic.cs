@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -19,7 +18,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         void SaveScope(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes);
 
         // business logic
-        Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear = 0);
+        ScopeStatuses GetLatestScopeStatusForSnapshotYear(long organisationId, int snapshotYear = 0);
 
         void SetPresumedScopes();
 
@@ -45,7 +44,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         /// </summary>
         /// <param name="organisationId"></param>
         /// <param name="snapshotYear"></param>
-        public virtual async Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear)
+        public virtual ScopeStatuses GetLatestScopeStatusForSnapshotYear(long organisationId, int snapshotYear)
         {
             OrganisationScope latestScope = GetLatestScopeBySnapshotYear(organisationId, snapshotYear);
             if (latestScope == null)

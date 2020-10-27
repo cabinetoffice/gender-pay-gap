@@ -268,7 +268,7 @@ namespace GenderPayGap.WebUI.Controllers
             ReportBackUrl = null;
 
             //Get the compare basket organisations
-            IEnumerable<CompareReportModel> compareReports = await OrganisationBusinessLogic.GetCompareDataAsync(
+            IEnumerable<CompareReportModel> compareReports = OrganisationBusinessLogic.GetCompareData(
                 CompareViewService.ComparedEmployers.Value.AsEnumerable(),
                 year,
                 CompareViewService.SortColumn,

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -54,7 +53,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [Authorize]
         [HttpGet("~/declare-scope/{id}")]
-        public async Task<IActionResult> DeclareScope(string id)
+        public IActionResult DeclareScope(string id)
         {
             //Ensure user has completed the registration process
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
@@ -91,7 +90,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             ScopeStatuses scopeStatus =
-                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, snapshotDate.Year);
+                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, snapshotDate.Year);
             if (scopeStatus.IsAny(ScopeStatuses.InScope, ScopeStatuses.OutOfScope))
             {
                 return new HttpBadRequestResult("Explicit scope is already set");
@@ -107,7 +106,7 @@ namespace GenderPayGap.WebUI.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost("~/declare-scope/{id}")]
-        public async Task<IActionResult> DeclareScope(DeclareScopeModel model, string id)
+        public IActionResult DeclareScope(DeclareScopeModel model, string id)
         {
             // Ensure user has completed the registration process
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
@@ -145,7 +144,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Check if we need the current years scope
             ScopeStatuses scopeStatus =
-                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, model.SnapshotDate.Year);
+                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, model.SnapshotDate.Year);
             if (scopeStatus.IsAny(ScopeStatuses.InScope, ScopeStatuses.OutOfScope))
             {
                 return new HttpBadRequestResult("Explicit scope is already set");
@@ -268,7 +267,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.ClearAllStashes();
 
             var reportingRequirement =
-                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYearAsync(organisationId, reportingStartYear);
+                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, reportingStartYear);
             
             bool requiredToReport =
                 reportingRequirement == ScopeStatuses.InScope || reportingRequirement == ScopeStatuses.PresumedInScope;

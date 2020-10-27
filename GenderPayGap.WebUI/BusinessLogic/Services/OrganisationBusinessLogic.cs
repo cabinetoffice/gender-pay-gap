@@ -2,7 +2,6 @@
 using System.Data;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
@@ -21,7 +20,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         CustomResult<Organisation> GetOrganisationByEncryptedReturnId(string encryptedReturnId);
 
-        Task<IEnumerable<CompareReportModel>> GetCompareDataAsync(IEnumerable<string> comparedOrganisationIds,
+        IEnumerable<CompareReportModel> GetCompareData(IEnumerable<string> comparedOrganisationIds,
             int year,
             string sortColumn,
             bool sortAscending);
@@ -99,7 +98,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             return new CustomResult<Organisation>(organisation);
         }
 
-        public virtual async Task<IEnumerable<CompareReportModel>> GetCompareDataAsync(IEnumerable<string> encBasketOrgIds,
+        public virtual IEnumerable<CompareReportModel> GetCompareData(IEnumerable<string> encBasketOrgIds,
             int year,
             string sortColumn,
             bool sortAscending)
