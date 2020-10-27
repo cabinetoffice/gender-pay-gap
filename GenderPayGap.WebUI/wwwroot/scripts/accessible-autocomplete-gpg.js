@@ -2,7 +2,6 @@
     accessibleAutocomplete({
         element: document.querySelector(element),
         id: id,  // To match it to the existing <label>.
-        onConfirm: selectOrganisation,
         source: organisationList,
         name: 'search',
         minLength: 2,
@@ -12,13 +11,6 @@
             suggestion: organisationSuggestionTemplate
         }
     });
-
-    function selectOrganisation(suggestion) {
-        if (suggestion) {
-            var url = '/employer/' + suggestion.Id;
-            window.location.href = url;
-        }
-    }
 
     function organisationList (query, syncResults) {
         var organisationListUrl = '/viewing/suggest-employer-name-js?search=';
