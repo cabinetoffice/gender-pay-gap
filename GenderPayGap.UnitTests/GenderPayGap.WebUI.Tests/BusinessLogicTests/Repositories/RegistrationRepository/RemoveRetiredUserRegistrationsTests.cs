@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -14,7 +13,7 @@ namespace Repositories.UserRepository
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class RemoveRetiredUserRegistrationsAsyncTests
+    public class RemoveRetiredUserRegistrationsTests
     {
 
         [SetUp]

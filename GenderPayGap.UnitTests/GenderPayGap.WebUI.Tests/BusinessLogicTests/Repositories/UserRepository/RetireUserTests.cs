@@ -15,7 +15,7 @@ namespace Repositories.UserRepository
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class RetireUserAsyncTests
+    public class RetireUserTests
     {
 
         [SetUp]
@@ -51,7 +51,7 @@ namespace Repositories.UserRepository
             testUserRepo.RetireUser(currentUser);
 
             // Assert
-            Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
+            Assert.IsTrue(saveChangesCalled, "Expected SaveChanges to be called");
             Assert.AreEqual(currentUser.Status, UserStatuses.Retired, "Expected to change status to retired");
             Assert.AreEqual(currentUser.StatusDetails, "User retired", "Expected retire status details to be set");
         }
