@@ -15,7 +15,7 @@ namespace Repositories.UserRepository
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class UpdatePasswordAsyncTests
+    public class UpdatePasswordTests
     {
 
         [SetUp]
@@ -52,7 +52,7 @@ namespace Repositories.UserRepository
             testUserRepo.UpdatePassword(testUserToUpdate, testPassword);
 
             // Assert
-            Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
+            Assert.IsTrue(saveChangesCalled, "Expected SaveChanges to be called");
             Assert.AreEqual(Crypto.GetPBKDF2(testPassword, Convert.FromBase64String(testUserToUpdate.Salt)), testUserToUpdate.PasswordHash, "Expected to change password");
             Assert.AreEqual(HashingAlgorithm.PBKDF2, testUserToUpdate.HashingAlgorithm, "Expected hashing algorithm to change");
         }

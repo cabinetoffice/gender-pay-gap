@@ -15,7 +15,7 @@ namespace Repositories.UserRepository
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class UpdateEmailAsyncTests
+    public class UpdateEmailTests
     {
 
         [SetUp]
@@ -54,7 +54,7 @@ namespace Repositories.UserRepository
             testUserRepo.UpdateEmail(testUserToUpdate, testNewEmail);
 
             // Assert
-            Assert.IsTrue(saveChangesCalled, "Expected SaveChangesAsync to be called");
+            Assert.IsTrue(saveChangesCalled, "Expected SaveChanges to be called");
             Assert.AreEqual(testNewEmail, testUserToUpdate.EmailAddress, "Expected to change email");
             Assert.Zero(
                 VirtualDateTime.Now.Subtract(testUserToUpdate.EmailVerifiedDate.Value).Minutes,
