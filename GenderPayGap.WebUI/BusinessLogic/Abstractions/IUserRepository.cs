@@ -11,7 +11,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
 
         bool CheckPassword(User user, string password);
 
-        Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses);
+        User FindByEmail(string email, params UserStatuses[] filterStatuses);
 
         void UpdateEmail(User userToUpdate, string newEmailAddress);
 

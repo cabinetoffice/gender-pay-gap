@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
 
             // find the latest active user by email
-            User impersonatedUser = userRepository.FindByEmailAsync(viewModel.EmailAddress, UserStatuses.Active).Result;
+            User impersonatedUser = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Active);
             if (impersonatedUser == null)
             {
                 viewModel.AddErrorFor(m => m.EmailAddress, "This user does not exist");

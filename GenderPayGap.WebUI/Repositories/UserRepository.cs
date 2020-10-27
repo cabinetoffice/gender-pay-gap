@@ -23,7 +23,7 @@ namespace GenderPayGap.WebUI.Repositories
             this.auditLogger = auditLogger;
         }
 
-        public async Task<User> FindByEmailAsync(string email, params UserStatuses[] filterStatuses)
+        public User FindByEmail(string email, params UserStatuses[] filterStatuses)
         {
             return dataRepository.GetAll<User>()
                 .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)

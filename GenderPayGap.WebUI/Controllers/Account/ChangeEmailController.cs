@@ -194,7 +194,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
         private bool OtherUserWithThisEmailAddressAlreadyExists(string emailAddress)
         {
-            User otherUserWithSameEmailAddress = userRepository.FindByEmailAsync(emailAddress, UserStatuses.New, UserStatuses.Active).Result;
+            User otherUserWithSameEmailAddress = userRepository.FindByEmail(emailAddress, UserStatuses.New, UserStatuses.Active);
             return otherUserWithSameEmailAddress != null;
         }
 

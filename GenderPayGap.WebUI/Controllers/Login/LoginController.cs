@@ -44,7 +44,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
                 return View("Login", viewModel);
             }
 
-            User user = userRepository.FindByEmailAsync(viewModel.EmailAddress, UserStatuses.New, UserStatuses.Active).Result;
+            User user = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.New, UserStatuses.Active);
 
             if (user == null)
             {

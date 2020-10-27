@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -15,7 +14,7 @@ namespace Repositories.UserRepository
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class FindByEmailAsyncTests
+    public class FindByEmailTests
     {
 
         [SetUp]
@@ -40,12 +39,12 @@ namespace Repositories.UserRepository
         [TestCase("new1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New, UserStatuses.New)]
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Active, UserStatuses.Active)]
         [TestCase("retired1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Retired, UserStatuses.Retired)]
-        public async Task FindsMatchingEmailUsingSingleStatusFilter(string testFindEmail,
+        public void FindsMatchingEmailUsingSingleStatusFilter(string testFindEmail,
             UserStatuses testExpectedStatus,
             params UserStatuses[] testStatusFilter)
         {
             // Act
-            User actualUser = await testUserRepo.FindByEmailAsync(testFindEmail, testStatusFilter);
+            User actualUser = testUserRepo.FindByEmail(testFindEmail, testStatusFilter);
 
             // Assert
             Assert.AreEqual(testFindEmail, actualUser.EmailAddress, "Expected email to match");
@@ -54,10 +53,10 @@ namespace Repositories.UserRepository
 
         [TestCase("new1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New, UserStatuses.Retired)]
         [TestCase("retired1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New, UserStatuses.Retired)]
-        public async Task FindsMatchingEmailUsingMultipleStatusFilters(string testFindEmail, params UserStatuses[] testStatusFilters)
+        public void FindsMatchingEmailUsingMultipleStatusFilters(string testFindEmail, params UserStatuses[] testStatusFilters)
         {
             // Act
-            User actualUser = await testUserRepo.FindByEmailAsync(testFindEmail, testStatusFilters);
+            User actualUser = testUserRepo.FindByEmail(testFindEmail, testStatusFilters);
 
             // Assert
             Assert.AreEqual(testFindEmail, actualUser.EmailAddress, "Expected email to match");
@@ -65,10 +64,10 @@ namespace Repositories.UserRepository
         }
 
         [TestCase("missing@ad5bda75-e514-491b-b74d-4672542cbd15.com")]
-        public async Task ReturnsNullWhenEmailDoesNotMatch(string testFindEmail)
+        public void ReturnsNullWhenEmailDoesNotMatch(string testFindEmail)
         {
             // Act
-            User actualUser = await testUserRepo.FindByEmailAsync(testFindEmail);
+            User actualUser = testUserRepo.FindByEmail(testFindEmail);
 
             // Assert
             Assert.IsNull(actualUser, "Expected user to be null");

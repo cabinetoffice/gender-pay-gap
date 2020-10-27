@@ -67,7 +67,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             }
 
             // Find user associated with email address
-            User userForPasswordReset = userRepository.FindByEmailAsync(viewModel.EmailAddress, UserStatuses.Active).Result;
+            User userForPasswordReset = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Active);
 
             if (userForPasswordReset == null)
             {
