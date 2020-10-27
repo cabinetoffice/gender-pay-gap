@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.Core.Interfaces
@@ -23,9 +22,6 @@ namespace GenderPayGap.Core.Interfaces
         DbSet<TEntity> GetEntities<TEntity>() where TEntity : class;
 
         void SaveChanges();
-        
-        [Obsolete("Please use SaveChanges (the synchronous version) instead")]
-        Task SaveChangesAsync();
 
     }
 
