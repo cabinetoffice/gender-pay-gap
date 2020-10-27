@@ -1750,8 +1750,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             //Assert
             Assert.NotNull(result, "Expected RedirectToActionResult");
-            Assert.AreEqual(result.ControllerName, "Organisation", "Expected action");
-            Assert.AreEqual(result.ActionName, "ManageOrganisations", "Expected action");
+            Assert.AreEqual(result.ControllerName, "ManageOrganisations", "Expected controller");
+            Assert.AreEqual(result.ActionName, "ManageOrganisationsGet", "Expected action");
 
             //TODO you arent checking the returned model at all
             //TODO again you should be checking the returned model has correct values and is for the correct user and org and userorg
