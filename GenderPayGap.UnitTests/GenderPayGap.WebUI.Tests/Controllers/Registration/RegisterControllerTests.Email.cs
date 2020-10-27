@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -66,7 +65,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
         
         [Test]
         [Description("RegisterController POST: When User Added To Private Organisation Then Email Existing Users")]
-        public async Task RegisterController_POST_When_User_Added_To_Private_Organisation_Then_Email_Existing_Users()
+        public void RegisterController_POST_When_User_Added_To_Private_Organisation_Then_Email_Existing_Users()
         {
             // Arrange
             var organisationId = 100;
@@ -103,7 +102,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
-            await controller.ActivateService(testModel);
+            controller.ActivateService(testModel);
 
             //ASSERT:
             UiTestHelper.MockBackgroundJobsApi.Verify(
@@ -126,7 +125,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
         [Test]
         [Description("RegisterController POST: When User Added To Public Organisation Then Email Existing Users")]
-        public async Task RegisterController_POST_When_User_Added_To_Public_Organisation_Then_Email_Existing_Users()
+        public void RegisterController_POST_When_User_Added_To_Public_Organisation_Then_Email_Existing_Users()
         {
             // Arrange
             var organisationId = 100;
@@ -164,7 +163,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()));
 
             // Act
-            await controller.ReviewRequest(testModel, "approve");
+            controller.ReviewRequest(testModel, "approve");
 
             //ASSERT:
             UiTestHelper.MockBackgroundJobsApi.Verify(

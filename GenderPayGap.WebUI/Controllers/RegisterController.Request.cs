@@ -329,7 +329,7 @@ namespace GenderPayGap.WebUI.Controllers
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("review-request")]
-        public async Task<IActionResult> ReviewRequest(OrganisationViewModel model, string command)
+        public IActionResult ReviewRequest(OrganisationViewModel model, string command)
         {
             //Ensure user has completed the registration process
             User currentUser;
@@ -409,8 +409,8 @@ namespace GenderPayGap.WebUI.Controllers
                 //Check for company number conflicts
                 if (!string.IsNullOrWhiteSpace(model.CompanyNumber))
                 {
-                    conflictOrg = await DataRepository.GetAll<Organisation>()
-                        .FirstOrDefaultAsync(
+                    conflictOrg = DataRepository.GetAll<Organisation>()
+                        .FirstOrDefault(
                             o => userOrg.OrganisationId != o.OrganisationId && o.CompanyNumber.ToLower() == model.CompanyNumber.ToLower());
                     if (conflictOrg != null)
                     {
@@ -424,8 +424,8 @@ namespace GenderPayGap.WebUI.Controllers
                 //Check for charity number conflicts
                 if (!string.IsNullOrWhiteSpace(model.CharityNumber))
                 {
-                    OrganisationReference orgRef = await DataRepository.GetAll<OrganisationReference>()
-                        .FirstOrDefaultAsync(
+                    OrganisationReference orgRef = DataRepository.GetAll<OrganisationReference>()
+                        .FirstOrDefault(
                             o => userOrg.OrganisationId != o.OrganisationId
                                  && o.ReferenceName.ToLower() == nameof(model.CharityNumber).ToLower()
                                  && o.ReferenceValue.ToLower() == model.CharityNumber.ToLower());
@@ -442,8 +442,8 @@ namespace GenderPayGap.WebUI.Controllers
                 //Check for mutual number conflicts
                 if (!string.IsNullOrWhiteSpace(model.MutualNumber))
                 {
-                    OrganisationReference orgRef = await DataRepository.GetAll<OrganisationReference>()
-                        .FirstOrDefaultAsync(
+                    OrganisationReference orgRef = DataRepository.GetAll<OrganisationReference>()
+                        .FirstOrDefault(
                             o => userOrg.OrganisationId != o.OrganisationId
                                  && o.ReferenceName.ToLower() == nameof(model.MutualNumber).ToLower()
                                  && o.ReferenceValue.ToLower() == model.MutualNumber.ToLower());
@@ -460,8 +460,8 @@ namespace GenderPayGap.WebUI.Controllers
                 //Check for other reference conflicts
                 if (!string.IsNullOrWhiteSpace(model.OtherValue))
                 {
-                    OrganisationReference orgRef = await DataRepository.GetAll<OrganisationReference>()
-                        .FirstOrDefaultAsync(
+                    OrganisationReference orgRef = DataRepository.GetAll<OrganisationReference>()
+                        .FirstOrDefault(
                             o => userOrg.OrganisationId != o.OrganisationId
                                  && o.ReferenceName.ToLower() == model.OtherName.ToLower()
                                  && o.ReferenceValue.ToLower() == model.OtherValue.ToLower());

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -12,7 +10,6 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
@@ -22,7 +19,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         CustomResult<Organisation> LoadInfoFromActiveEmployerIdentifier(string employerIdentifier);
 
-        Task<CustomResult<Organisation>> GetOrganisationByEncryptedReturnIdAsync(string encryptedReturnId);
+        CustomResult<Organisation> GetOrganisationByEncryptedReturnId(string encryptedReturnId);
 
         Task<IEnumerable<CompareReportModel>> GetCompareDataAsync(IEnumerable<string> comparedOrganisationIds,
             int year,
@@ -86,11 +83,11 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         }
 
 
-        public async Task<CustomResult<Organisation>> GetOrganisationByEncryptedReturnIdAsync(string encryptedReturnId)
+        public CustomResult<Organisation> GetOrganisationByEncryptedReturnId(string encryptedReturnId)
         {
             string decryptedReturnId = _encryptionHandler.DecryptAndDecode(encryptedReturnId);
 
-            Return result = await _submissionLogic.GetSubmissionByReturnIdAsync(decryptedReturnId.ToInt64());
+            Return result = _submissionLogic.GetSubmissionByReturnId(decryptedReturnId.ToInt64());
 
             if (result == null)
             {

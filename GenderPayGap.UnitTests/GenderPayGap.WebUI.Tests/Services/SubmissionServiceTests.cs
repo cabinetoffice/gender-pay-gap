@@ -329,7 +329,7 @@ namespace GenderPayGap.Tests
 
         [Test]
         [Description("GetSubmissionForSnapshotYear: Returns latest submission for specified org and year")]
-        public async Task GetSubmissionForSnapshotYear_Returns_latest_submission_for_specified_org_and_yearAsync()
+        public void GetSubmissionForSnapshotYear_Returns_latest_submission_for_specified_org_and_year()
         {
             // Mocks
             var returns = new[] {
@@ -352,14 +352,14 @@ namespace GenderPayGap.Tests
 
             // Assert
             SubmissionService testService = mockService.Object;
-            Return actualReturn = await testService.GetReturnFromDatabaseAsync(1, 2000);
+            Return actualReturn = testService.GetReturnFromDatabase(1, 2000);
             Expect(actualReturn != null);
             Expect(actualReturn.ReturnId == 4);
         }
 
         [Test]
         [Description("GetSubmissionForSnapshotYear: Returns null when year does not exist")]
-        public async Task GetSubmissionForSnapshotYear_Returns_null_when_year_does_not_exist()
+        public void GetSubmissionForSnapshotYear_Returns_null_when_year_does_not_exist()
         {
             // Mocks
             mockDataRepo.Setup(dr => dr.GetAll<Return>())
@@ -380,7 +380,7 @@ namespace GenderPayGap.Tests
                 _mockDraftFileBL.Object);
 
             // Assert
-            Return actualReturn = await testService.GetReturnFromDatabaseAsync(1, 1998);
+            Return actualReturn = testService.GetReturnFromDatabase(1, 1998);
             Expect(actualReturn == null);
         }
 

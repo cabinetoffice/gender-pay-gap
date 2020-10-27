@@ -176,13 +176,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         #region Employer details
 
         [Test]
-        public async Task ViewingController_EmployerDetails_NoEmployerIdentity_returns_BadRequestAsync()
+        public void ViewingController_EmployerDetails_NoEmployerIdentity_returns_BadRequest()
         {
             // Arrange
             var controller = UiTestHelper.GetController<ViewingController>();
 
             // Act
-            var result = await controller.EmployerDetails(string.Empty) as HttpStatusViewResult;
+            var result = controller.EmployerDetails(string.Empty) as HttpStatusViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -192,7 +192,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("EmployerDetails: Permanent Redirect using return id")]
-        public async Task ViewingController_EmployerDetails_RedirectUsingReturnIdAsync()
+        public void ViewingController_EmployerDetails_RedirectUsingReturnId()
         {
             // Arrange
             var routeData = new RouteData();
@@ -219,7 +219,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string expectedObfuscatedOrganisationId = ConfigureObfuscator(report.OrganisationId);
 
             // Act
-            var result = await controller.EmployerDetails(id: encryptedReportId) as RedirectToActionResult;
+            var result = controller.EmployerDetails(id: encryptedReportId) as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(result);
@@ -245,13 +245,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task ViewingController_EmployerDetails_When_Y_Is_Received_Then_An_Error_Is_ReturnedAsync()
+        public void ViewingController_EmployerDetails_When_Y_Is_Received_Then_An_Error_Is_Returned()
         {
             // Arrange
             var controller = UiTestHelper.GetController<ViewingController>();
 
             // Act
-            var result = await controller.EmployerDetails(y: 34) as HttpStatusViewResult;
+            var result = controller.EmployerDetails(y: 34) as HttpStatusViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -261,14 +261,14 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("EmployerDetails: Permanent Redirect using organisation id")]
-        public async Task ViewingController_EmployerDetails_RedirectUsingOrganisationIdAsync()
+        public void ViewingController_EmployerDetails_RedirectUsingOrganisationId()
         {
             // Arrange
             var controller = UiTestHelper.GetController<ViewingController>();
             string obfuscatedReportOrganisationId = ConfigureObfuscator(10158);
 
             // Act
-            var result = await controller.EmployerDetails(obfuscatedReportOrganisationId) as RedirectToActionResult;
+            var result = controller.EmployerDetails(obfuscatedReportOrganisationId) as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(result);
@@ -279,7 +279,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task ViewingController_EmployerDetails_When_ReceivedId_Is_Not_Valid_Base64_String_Then_Returns_Custom_ErrorAsync()
+        public void ViewingController_EmployerDetails_When_ReceivedId_Is_Not_Valid_Base64_String_Then_Returns_Custom_Error()
         {
             // Arrange
             var controller = UiTestHelper.GetController<ViewingController>();
@@ -293,7 +293,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.OrganisationBusinessLogic = organisationBusinessLogic;
 
             // Act
-            var result = await controller.EmployerDetails(id: "?&%") as ViewResult;
+            var result = controller.EmployerDetails(id: "?&%") as ViewResult;
             Assert.NotNull(result);
             var model = result.Model as ErrorViewModel;
             Assert.NotNull(model);
@@ -304,7 +304,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task ViewingController_EmployerDetails_When_Report_Is_Not_Found_Then_Returns_Custom_ErrorAsync()
+        public void ViewingController_EmployerDetails_When_Report_Is_Not_Found_Then_Returns_Custom_Error()
         {
             // Arrange
             var returnIdToUse = "2548";
@@ -312,7 +312,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string encryptedReturnId = Encryption.EncryptQuerystring(returnIdToUse);
 
             // Act
-            var result = await controller.EmployerDetails(id: encryptedReturnId) as HttpStatusViewResult;
+            var result = controller.EmployerDetails(id: encryptedReturnId) as HttpStatusViewResult;
 
             // Assert
             Assert.NotNull(result);

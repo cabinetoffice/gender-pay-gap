@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
@@ -16,7 +14,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
     {
 
         // Submission
-        Task<Return> GetSubmissionByReturnIdAsync(long returnId);
+        Return GetSubmissionByReturnId(long returnId);
         ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert);
         CustomResult<Return> GetSubmissionByOrganisationAndYear(Organisation organisation, int year);
 
@@ -33,10 +31,10 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         #region Repo
 
-        public virtual async Task<Return> GetSubmissionByReturnIdAsync(long returnId)
+        public virtual Return GetSubmissionByReturnId(long returnId)
         {
-            return await DataRepository.GetAll<Return>()
-                .FirstOrDefaultAsync(o => o.ReturnId == returnId);
+            return DataRepository.GetAll<Return>()
+                .FirstOrDefault(o => o.ReturnId == returnId);
         }
         
         public IEnumerable<Return> GetAllSubmissionsByOrganisationIdAndSnapshotYear(long organisationId, int snapshotYear)

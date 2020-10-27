@@ -30,7 +30,7 @@ namespace GenderPayGap.WebUI.Classes.Services
         DateTime GetCurrentSnapshotDate(SectorTypes sector = SectorTypes.Private);
         SubmissionChangeSummary GetSubmissionChangeSummary(Return stashedReturn, Return databaseReturn);
 
-        Task<Return> GetSubmissionByIdAsync(long returnId);
+        Return GetSubmissionById(long returnId);
 
         // presentation
         Task<ReturnViewModel> GetReturnViewModelAsync(long organisationId, int snapshotYear, long userId);
@@ -371,13 +371,13 @@ namespace GenderPayGap.WebUI.Classes.Services
             };
         }
 
-        public async Task<Return> GetSubmissionByIdAsync(long returnId)
+        public Return GetSubmissionById(long returnId)
         {
-            return await DataRepository.GetAll<Return>()
-                .FirstOrDefaultAsync(r => r.ReturnId == returnId);
+            return DataRepository.GetAll<Return>()
+                .FirstOrDefault(r => r.ReturnId == returnId);
         }
 
-        public async Task<Return> GetReturnFromDatabaseAsync(long organisationId, int snapshotYear)
+        public Return GetReturnFromDatabase(long organisationId, int snapshotYear)
         {
             // ensure the year is reportable
             if (!IsValidSnapshotYear(snapshotYear))
@@ -385,19 +385,19 @@ namespace GenderPayGap.WebUI.Classes.Services
                 return null;
             }
 
-            return await DataRepository.GetAll<Return>()
+            return DataRepository.GetAll<Return>()
                 .Where(s => s.Status == ReturnStatuses.Submitted)
                 .Where(s => s.AccountingDate.Year == snapshotYear)
                 .Where(s => s.OrganisationId == organisationId)
                 .OrderByDescending(s => s.ReturnId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
         }
 
         public async Task<ReturnViewModel> GetReturnViewModelAsync(long organisationId, int snapshotYear, long userId)
         {
             // get the user organisation
-            UserOrganisation userOrganisationFromDatabase = await DataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
+            UserOrganisation userOrganisationFromDatabase = DataRepository.GetAll<UserOrganisation>()
+                .FirstOrDefault(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
 
             // throws an error when no user organisation was found
             if (userOrganisationFromDatabase == null)
@@ -409,7 +409,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             var result = new ReturnViewModel();
 
             // get the most recent submission for the given reporting year
-            Return returnFromDatabase = await GetReturnFromDatabaseAsync(organisationId, snapshotYear);
+            Return returnFromDatabase = GetReturnFromDatabase(organisationId, snapshotYear);
 
             // should provide late reason
             result.ShouldProvideLateReason = IsHistoricSnapshotYear(userOrganisationFromDatabase.Organisation.SectorType, snapshotYear);
@@ -518,7 +518,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             var reportInfos = new List<ReportInfoModel>();
             for (int snapshotYear = startYear; snapshotYear <= currentYear; snapshotYear++)
             {
-                Return report = await GetReturnFromDatabaseAsync(userOrg.OrganisationId, snapshotYear);
+                Return report = GetReturnFromDatabase(userOrg.OrganisationId, snapshotYear);
                 ReportInfoModel reportInfo = report != null
                     ? await GetReportInfoModelWithLockedDraftAsync(report.Organisation, report.Modified, snapshotYear)
                     : await GetReportInfoModelWithLockedDraftAsync(userOrg.Organisation, null, snapshotYear);

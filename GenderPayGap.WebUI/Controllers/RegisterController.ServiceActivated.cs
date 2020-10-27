@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Authentication;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
@@ -12,7 +12,6 @@ using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
@@ -49,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [Authorize]
         [HttpGet("activate-service")]
-        public async Task<IActionResult> ActivateService()
+        public IActionResult ActivateService()
         {
             //Ensure user has completed the registration process
             User currentUser;
@@ -60,8 +59,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the user organisation
-            UserOrganisation userOrg = await DataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
+            UserOrganisation userOrg = DataRepository.GetAll<UserOrganisation>()
+                .FirstOrDefault(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
 
             if (userOrg == null)
             {
@@ -94,7 +93,7 @@ namespace GenderPayGap.WebUI.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost("activate-service")]
-        public async Task<IActionResult> ActivateService(CompleteViewModel model)
+        public IActionResult ActivateService(CompleteViewModel model)
         {
             //Ensure user has completed the registration process
             User currentUser;
@@ -112,8 +111,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the user organisation
-            UserOrganisation userOrg = await DataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
+            UserOrganisation userOrg = DataRepository.GetAll<UserOrganisation>()
+                .FirstOrDefault(uo => uo.UserId == currentUser.UserId && uo.OrganisationId == ReportingOrganisationId);
 
             ActionResult result1;
 

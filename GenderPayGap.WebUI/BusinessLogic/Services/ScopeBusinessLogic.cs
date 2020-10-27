@@ -6,9 +6,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Scope;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
@@ -17,7 +15,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
     {
 
         // scope repo
-        Task<OrganisationScope> GetLatestScopeBySnapshotYearAsync(long organisationId, int snapshotYear = 0);
+        OrganisationScope GetLatestScopeBySnapshotYear(long organisationId, int snapshotYear = 0);
         void SaveScope(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes);
 
         // business logic
@@ -49,7 +47,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         /// <param name="snapshotYear"></param>
         public virtual async Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear)
         {
-            OrganisationScope latestScope = await GetLatestScopeBySnapshotYearAsync(organisationId, snapshotYear);
+            OrganisationScope latestScope = GetLatestScopeBySnapshotYear(organisationId, snapshotYear);
             if (latestScope == null)
             {
                 return ScopeStatuses.Unknown;
@@ -317,9 +315,9 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         /// </summary>
         /// <param name="organisationId"></param>
         /// <param name="snapshotYear"></param>
-        public virtual async Task<OrganisationScope> GetLatestScopeBySnapshotYearAsync(long organisationId, int snapshotYear = 0)
+        public virtual OrganisationScope GetLatestScopeBySnapshotYear(long organisationId, int snapshotYear = 0)
         {
-            Organisation org = await DataRepository.GetAll<Organisation>().FirstOrDefaultAsync(o => o.OrganisationId == organisationId);
+            Organisation org = DataRepository.GetAll<Organisation>().FirstOrDefault(o => o.OrganisationId == organisationId);
             if (org == null)
             {
                 throw new ArgumentException($"Cannot find organisation with id {organisationId}", nameof(organisationId));

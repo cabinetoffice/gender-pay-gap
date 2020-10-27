@@ -88,7 +88,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             if (stashedReturnViewModel.ReportInfo.Draft.HasDraftBeenModifiedDuringThisSession
                 || stashedReturnViewModel.HasDraftWithContent())
             {
-                Return databaseReturn = await submissionService.GetSubmissionByIdAsync(stashedReturnViewModel.ReturnId);
+                Return databaseReturn = submissionService.GetSubmissionById(stashedReturnViewModel.ReturnId);
 
                 if (databaseReturn != null)
                 {
@@ -158,7 +158,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             Return postedReturn = submissionService.CreateDraftSubmissionFromViewModel(postedReturnViewModel);
 
             SubmissionChangeSummary changeSummary = null;
-            Return databaseReturn = await submissionService.GetSubmissionByIdAsync(postedReturnViewModel.ReturnId);
+            Return databaseReturn = submissionService.GetSubmissionById(postedReturnViewModel.ReturnId);
             if (databaseReturn != null)
             {
                 changeSummary = submissionService.GetSubmissionChangeSummary(postedReturn, databaseReturn);
@@ -212,8 +212,8 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             postedReturn.SetStatus(ReturnStatuses.Submitted, OriginalUser?.UserId ?? currentUser.UserId);
 
-            Organisation organisationFromDatabase = await DataRepository.GetAll<Organisation>()
-                .FirstOrDefaultAsync(o => o.OrganisationId == postedReturnViewModel.OrganisationId);
+            Organisation organisationFromDatabase = DataRepository.GetAll<Organisation>()
+                .FirstOrDefault(o => o.OrganisationId == postedReturnViewModel.OrganisationId);
 
             organisationFromDatabase.Returns.Add(postedReturn);
 

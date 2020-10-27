@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
@@ -19,7 +18,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
         [Test]
         [Description("Check manual registration completes successfully on admin approval")]
-        public async Task RegisterController_ReviewRequest_POST_ManualRegistration_ServiceActivated()
+        public void RegisterController_ReviewRequest_POST_ManualRegistration_ServiceActivated()
         {
             //ARRANGE:
             //create a user who does exist in the db
@@ -55,7 +54,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             controller.StashModel(model);
 
             //ACT:
-            var result = await controller.ReviewRequest(model, "approve") as RedirectToActionResult;
+            var result = controller.ReviewRequest(model, "approve") as RedirectToActionResult;
 
             //ASSERT:
             Assert.That(result != null, "Expected RedirectToActionResult");
