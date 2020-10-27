@@ -67,44 +67,5 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             Assert.That(address.Status == AddressStatuses.Active);
             
         }
-
-        [Test]
-        [Ignore("Needs fixing/deleting")]
-        [Description("RegisterController.ServiceActivated GET: When OrgScope is Not Null Then Return Expected ViewData")]
-        public void RegisterController_ServiceActivated_GET_When_OrgScope_is_Not_Null_Then_Return_Expected_ViewData()
-        {
-            // Arrange
-            var mockRouteData = new RouteData();
-            mockRouteData.Values.Add("Action", "ServiceActivated");
-            mockRouteData.Values.Add("Controller", "Register");
-
-            var mockOrg = new Organisation {
-                OrganisationId = 52425, SectorType = SectorTypes.Private, OrganisationName = "Mock Organisation Ltd"
-            };
-
-            var mockUser = new User {UserId = 87654, EmailAddress = "mock@test.com", EmailVerifiedDate = VirtualDateTime.Now};
-
-            var mockReg = new UserOrganisation {UserId = 87654, OrganisationId = 52425, PINConfirmedDate = VirtualDateTime.Now};
-
-            var controller = UiTestHelper.GetController<RegisterController>(87654, mockRouteData, mockUser, mockOrg, mockReg);
-            controller.ReportingOrganisationId = mockOrg.OrganisationId;
-
-            var testUri = new Uri("https://localhost/register/activate-service");
-            controller.AddMockUriHelper(testUri.ToString(), "ActivateService");
-
-            //Mock the Referrer
-            controller.Request.Headers["Referer"] = testUri.ToString();
-
-            // Act
-            var viewResult = controller.ServiceActivated() as ViewResult;
-
-            // Assert
-            Assert.NotNull(viewResult, "ViewResult should not be null");
-            Assert.AreEqual(viewResult.ViewName, "ServiceActivated", "Expected the ViewName to be 'ServiceActivated'");
-
-            // Assert ViewData
-            Assert.That(controller.ViewBag.OrganisationName == mockOrg.OrganisationName, "Expected OrganisationName");
-        }
-
     }
 }

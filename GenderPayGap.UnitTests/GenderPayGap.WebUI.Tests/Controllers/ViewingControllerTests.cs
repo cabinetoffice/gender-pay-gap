@@ -102,33 +102,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("EmployerSearch: Invalid EmployerSize 4,10", result.StatusDescription);
         }
 
-        [Ignore("Relies on Azure search, which will be replaced soon")]
-        [Test]
-        [Description("ViewingController.SearchResults GET: Returns Finder/SearchResults view")]
-        public async Task ViewingController_SearchResults_GET_Returns_Finder_SearchResults_view()
-        {
-            // Arrange
-            var mockRouteData = new RouteData();
-            mockRouteData.Values.Add("Action", "SearchResults");
-            mockRouteData.Values.Add("Controller", "Viewing");
-
-            var controller = UiTestHelper.GetController<ViewingController>(0, mockRouteData);
-
-            var searchText = "search text";
-            var sectorType = SearchType.BySectorType;
-            // Test
-            var query = new SearchResultsQuery {search = searchText, t = sectorType, p = 1};
-            var result = await controller.SearchResults(query) as ViewResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual("Finder/SearchResults", result.ViewName);
-            var model = result.Model as SearchViewModel;
-            Assert.NotNull(model);
-            Assert.AreEqual(query.search, model.search);
-            Assert.AreEqual(query.p, model.p);
-        }
-
         #endregion
 
         #region Downloads

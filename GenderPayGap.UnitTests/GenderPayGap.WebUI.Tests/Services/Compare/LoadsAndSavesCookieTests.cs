@@ -71,41 +71,6 @@ namespace GenderPayGap.Tests.Services.Compare
                 "Expected previous employer ids to be cleared from basket");
         }
 
-        [TestCase]
-        [Ignore("Need to create a mock HttpRequest object to pass to SaveComparedEmployersToCookie, but I don't have time to do this now'")]
-        public void SavesComparedEmployersToCookie()
-        {
-            // Arrange
-            var AppendWasCalled = false;
-            mockHttpContext.Setup(x => x.Request.Cookies[It.Is<string>(arg => arg == CookieNames.LastCompareQuery)])
-                .Returns("12345678");
-
-            var testService = new CompareViewService(
-                mockHttpContextAccessor.Object,
-                Mock.Of<IHttpSession>());
-
-            var testIds = new[] {"AAA", "BBB", "CCC"};
-            testService.AddRangeToBasket(testIds);
-
-            mockHttpContext.Setup(
-                    x => x.Response.Cookies.Append(
-                        It.Is<string>(arg => arg == CookieNames.LastCompareQuery),
-                        It.IsAny<string>(),
-                        It.IsAny<CookieOptions>()))
-                .Callback(
-                    (string key, string value, CookieOptions options) => {
-                        // Assert
-                        Assert.AreEqual(string.Join(",", testIds), value);
-                        AppendWasCalled = true;
-                    });
-
-            // Act
-            testService.SaveComparedEmployersToCookie(null);
-
-            // Assert
-            Assert.IsTrue(AppendWasCalled);
-        }
-
     }
 
 }
