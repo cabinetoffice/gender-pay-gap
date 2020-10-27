@@ -217,7 +217,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             organisationFromDatabase.Returns.Add(postedReturn);
 
-            await DataRepository.SaveChangesAsync();
+            DataRepository.SaveChanges();
 
             //This is required for the submission complete page
             postedReturnViewModel.EncryptedOrganisationId = postedReturn.Organisation.GetEncryptedId();

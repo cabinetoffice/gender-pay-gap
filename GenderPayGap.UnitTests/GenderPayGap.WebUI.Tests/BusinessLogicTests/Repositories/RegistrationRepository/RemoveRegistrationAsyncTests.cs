@@ -36,7 +36,7 @@ namespace Repositories.RegistrationRepository
         private GenderPayGap.WebUI.Repositories.RegistrationRepository testRegistrationRepo;
 
         [Test]
-        public async Task UserCanUnregisterAnotherUser()
+        public void UserCanUnregisterAnotherUser()
         {
             // Arrange
             User testUnregisterUser = mockDataRepo.GetAll<User>()
@@ -52,14 +52,14 @@ namespace Repositories.RegistrationRepository
             UserOrganisation testUserOrg = testUnregisterUser.UserOrganisations.FirstOrDefault();
 
             // Act
-            await testRegistrationRepo.RemoveRegistrationAsync(testUserOrg, testActionByUser);
+            testRegistrationRepo.RemoveRegistration(testUserOrg, testActionByUser);
 
             // Assert user org removed
             Assert.IsNull(mockDataRepo.GetAll<UserOrganisation>().Where(uo => uo == testUserOrg).FirstOrDefault());
         }
 
         [Test]
-        public async Task UserCanUnregisterThemselves()
+        public void UserCanUnregisterThemselves()
         {
             // Arrange
             User testUnregisterUser = mockDataRepo.GetAll<User>()
@@ -70,7 +70,7 @@ namespace Repositories.RegistrationRepository
             UserOrganisation testUserOrg = testUnregisterUser.UserOrganisations.FirstOrDefault();
 
             // Act
-            await testRegistrationRepo.RemoveRegistrationAsync(testUserOrg, testUnregisterUser);
+            testRegistrationRepo.RemoveRegistration(testUserOrg, testUnregisterUser);
 
             // Assert user org removed
             Assert.IsNull(mockDataRepo.GetAll<UserOrganisation>().Where(uo => uo == testUserOrg).FirstOrDefault());

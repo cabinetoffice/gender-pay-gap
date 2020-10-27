@@ -122,12 +122,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("CloseAccountComplete");
         }
 
-        private async void RetireUserAccount(User user)
+        private void RetireUserAccount(User user)
         {
             try
             {
                 // update retired user registrations 
-                await registrationRepository.RemoveRetiredUserRegistrationsAsync(user);
+                registrationRepository.RemoveRetiredUserRegistrations(user);
 
                 // retire user
                 userRepository.RetireUser(user);

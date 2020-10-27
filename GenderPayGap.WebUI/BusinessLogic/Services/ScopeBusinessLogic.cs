@@ -18,7 +18,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         // scope repo
         Task<OrganisationScope> GetLatestScopeBySnapshotYearAsync(long organisationId, int snapshotYear = 0);
-        Task SaveScopeAsync(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes);
+        void SaveScope(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes);
 
         // business logic
         Task<ScopeStatuses> GetLatestScopeStatusForSnapshotYearAsync(long organisationId, int snapshotYear = 0);
@@ -74,12 +74,12 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             return latestScope.ScopeStatus;
         }
 
-        public virtual async Task SaveScopeAsync(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes)
+        public virtual void SaveScope(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes)
         {
-            await SaveScopesAsync(org, newScopes, saveToDatabase);
+            SaveScopes(org, newScopes, saveToDatabase);
         }
 
-        public virtual async Task SaveScopesAsync(Organisation org, IEnumerable<OrganisationScope> newScopes, bool saveToDatabase = true)
+        public virtual void SaveScopes(Organisation org, IEnumerable<OrganisationScope> newScopes, bool saveToDatabase = true)
         {
             foreach (OrganisationScope newScope in newScopes.OrderBy(s => s.SnapshotDate).ThenBy(s => s.ScopeStatusDate))
             {
@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             // save to db
             if (saveToDatabase)
             {
-                await DataRepository.SaveChangesAsync();
+                DataRepository.SaveChanges();
             }
         }
 

@@ -187,7 +187,7 @@ namespace GenderPayGap.WebUI.Controllers
             userOrg.ConfirmAttemptDate = VirtualDateTime.Now;
 
             //Save the changes
-            await DataRepository.SaveChangesAsync();
+            DataRepository.SaveChanges();
 
             //Log the registration
             auditLogger.AuditChangeToOrganisation(

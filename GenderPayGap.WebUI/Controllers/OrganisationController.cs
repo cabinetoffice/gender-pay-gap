@@ -179,7 +179,7 @@ namespace GenderPayGap.WebUI.Controllers
             };
 
             //Save the new declared scopes
-            await ScopeBusinessLogic.SaveScopeAsync(userOrg.Organisation, true, newScope);
+            ScopeBusinessLogic.SaveScope(userOrg.Organisation, true, newScope);
             return View("ScopeDeclared", model);
         }
 
@@ -390,7 +390,7 @@ namespace GenderPayGap.WebUI.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost("~/remove-organisation")]
-        public async Task<IActionResult> RemoveOrganisation(RemoveOrganisationModel model)
+        public IActionResult RemoveOrganisation(RemoveOrganisationModel model)
         {
             // Ensure user has completed the registration process
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
@@ -437,7 +437,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Remove the registration
             User actionByUser = IsImpersonatingUser == false ? currentUser : OriginalUser;
             Organisation orgToRemove = userOrgToUnregister.Organisation;
-            await RegistrationRepository.RemoveRegistrationAsync(userOrgToUnregister, actionByUser);
+            RegistrationRepository.RemoveRegistration(userOrgToUnregister, actionByUser);
 
             // Email user that has been unregistered
             emailSendingService.SendRemovedUserFromOrganisationEmail(

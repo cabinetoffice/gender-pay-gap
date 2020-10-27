@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendFeedbackPost(FeedbackViewModel viewModel)
+        public IActionResult SendFeedbackPost(FeedbackViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.HowEasyIsThisServiceToUse);
             viewModel.ParseAndValidateParameters(Request, m => m.HowDidYouHearAboutGpg);
@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
             Feedback feedbackDatabaseModel = ConvertFeedbackViewModelIntoFeedbackDatabaseModel(viewModel);
 
             dataRepository.Insert(feedbackDatabaseModel);
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChanges();
 
             return View("FeedbackSent");
         }

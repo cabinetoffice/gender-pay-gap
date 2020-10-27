@@ -105,7 +105,7 @@ namespace GenderPayGap.Tests
 
         [Test]
         [Description("SaveScope: Retires any previous submissions in the same snapshot year")]
-        public async Task SaveScope_retires_any_previous_submissions_in_the_same_snapshot_year()
+        public void SaveScope_retires_any_previous_submissions_in_the_same_snapshot_year()
         {
             Organisation testOrg = testOrgData.Where(o => o.OrganisationId == 4).FirstOrDefault();
             var testNewScope = new OrganisationScope {OrganisationId = 4, SnapshotDate = new DateTime(2017, 4, 5)};
@@ -113,10 +113,10 @@ namespace GenderPayGap.Tests
 
             // Mocks
             mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-            mockDataRepo.Setup(r => r.SaveChangesAsync()).Callback(() => saveChangesCalled = true).Returns(Task.CompletedTask);
+            mockDataRepo.Setup(r => r.SaveChanges()).Callback(() => saveChangesCalled = true);
 
             // Test
-            await testScopeBL.SaveScopeAsync(testOrg, true, testNewScope);
+            testScopeBL.SaveScope(testOrg, true, testNewScope);
 
             // Assert
             Expect(saveChangesCalled, "Expected SaveChanges() to be called");

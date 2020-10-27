@@ -56,10 +56,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpPost("send-pin")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendPin(long userId, long organisationId)
+        public IActionResult SendPin(long userId, long organisationId)
         {
-            UserOrganisation userOrganisation = await dataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
+            UserOrganisation userOrganisation = dataRepository.GetAll<UserOrganisation>()
+                .FirstOrDefault(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
 
             if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
             {
@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
 
             userOrganisation.PINSentDate = VirtualDateTime.Now;
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChanges();
 
             emailSendingService.SendPinEmail(
                 userOrganisation.User.EmailAddress,

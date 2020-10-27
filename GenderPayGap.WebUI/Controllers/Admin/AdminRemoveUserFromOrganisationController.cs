@@ -51,23 +51,23 @@ namespace GenderPayGap.WebUI.Controllers
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("organisation/{organisationId}/remove-user/{userId}")]
-        public async Task<IActionResult> RemoveUserFromOrganisationPost(
+        public IActionResult RemoveUserFromOrganisationPost(
             long organisationId,
             long userId,
             AdminRemoveUserViewModel viewModel)
         {
-            return await UnlinkUserAndOrganisationPost(organisationId, userId, viewModel, false);
+            return UnlinkUserAndOrganisationPost(organisationId, userId, viewModel, false);
         }
 
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("user/{userId}/remove-organisation/{organisationId}")]
-        public async Task<IActionResult> RemoveOrganisationFromUserPost(
+        public IActionResult RemoveOrganisationFromUserPost(
             long organisationId,
             long userId,
             AdminRemoveUserViewModel viewModel)
         {
-            return await UnlinkUserAndOrganisationPost(organisationId, userId, viewModel, true);
+            return UnlinkUserAndOrganisationPost(organisationId, userId, viewModel, true);
         }
 
         private IActionResult UnlinkUserAndOrganisationGet(long organisationId, long userId, bool fromViewUserPage)
@@ -98,7 +98,7 @@ namespace GenderPayGap.WebUI.Controllers
             viewModel.UserFullName = userOrg.User.Fullname;
         }
 
-        private async Task<IActionResult> UnlinkUserAndOrganisationPost(
+        private IActionResult UnlinkUserAndOrganisationPost(
             long organisationId,
             long userId,
             AdminRemoveUserViewModel viewModel,
@@ -125,7 +125,7 @@ namespace GenderPayGap.WebUI.Controllers
                     .FirstOrDefault();
             dataRepository.Delete(userOrg);
 
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChanges();
 
             // Email user that has been unregistered
             emailSendingService.SendRemovedUserFromOrganisationEmail(

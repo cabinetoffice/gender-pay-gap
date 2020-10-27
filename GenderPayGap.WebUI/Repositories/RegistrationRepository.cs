@@ -30,7 +30,7 @@ namespace GenderPayGap.WebUI.Repositories
             this.emailSendingService = emailSendingService;
         }
 
-        public async Task RemoveRetiredUserRegistrationsAsync(User userToRetire)
+        public void RemoveRetiredUserRegistrations(User userToRetire)
         {
             // We extract this list of Organisations BEFORE deleting the UserOrganisations to prevent an Entity Framework error:
             // "Attempted to update or delete an entity that does not exist in the store."
@@ -58,10 +58,10 @@ namespace GenderPayGap.WebUI.Repositories
             }
 
             // save changes to database
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChanges();
         }
 
-        public async Task RemoveRegistrationAsync(UserOrganisation userOrgToUnregister, User actionByUser)
+        public void RemoveRegistration(UserOrganisation userOrgToUnregister, User actionByUser)
         {
             if (userOrgToUnregister is null)
             {
@@ -87,7 +87,7 @@ namespace GenderPayGap.WebUI.Repositories
             dataRepository.Delete(userOrgToUnregister);
 
             // Save changes to database
-            await dataRepository.SaveChangesAsync();
+            dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.RegistrationLog,
