@@ -240,7 +240,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpGet("employer-details")]
         [Obsolete("Please use method 'Employer' instead.")] //, true)]
-        public async Task<IActionResult> EmployerDetails(string e = null, int y = 0, string id = null)
+        public IActionResult EmployerDetails(string e = null, int y = 0, string id = null)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
@@ -249,7 +249,7 @@ namespace GenderPayGap.WebUI.Controllers
                 try
                 {
                     CustomResult<Organisation> organisationLoadingOutcome =
-                        await OrganisationBusinessLogic.GetOrganisationByEncryptedReturnIdAsync(id);
+                        OrganisationBusinessLogic.GetOrganisationByEncryptedReturnId(id);
 
                     if (organisationLoadingOutcome.Failed)
                     {

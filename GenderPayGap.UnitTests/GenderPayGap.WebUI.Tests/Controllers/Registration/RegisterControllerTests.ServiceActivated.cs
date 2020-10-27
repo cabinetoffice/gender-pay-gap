@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Database;
@@ -19,7 +18,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
 
         [Test]
         [Description("Check registration completes successfully when correct pin entered ")]
-        public async Task RegisterController_ActivateService_POST_CorrectPIN_ServiceActivated()
+        public void RegisterController_ActivateService_POST_CorrectPIN_ServiceActivated()
         {
             //ARRANGE:
             //create a user who does exist in the db
@@ -56,7 +55,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Registration
             var model = new CompleteViewModel {PIN = pin};
 
             //ACT:
-            var result = await controller.ActivateService(model) as RedirectToActionResult;
+            var result = controller.ActivateService(model) as RedirectToActionResult;
 
             //ASSERT:
             Assert.That(result != null, "Expected RedirectToActionResult");

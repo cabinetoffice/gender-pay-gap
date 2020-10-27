@@ -45,10 +45,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("send-pin")]
-        public async Task<IActionResult> SendPinWarning(long userId, long organisationId)
+        public IActionResult SendPinWarning(long userId, long organisationId)
         {
-            UserOrganisation userOrganisation = await dataRepository.GetAll<UserOrganisation>()
-                .FirstOrDefaultAsync(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
+            UserOrganisation userOrganisation = dataRepository.GetAll<UserOrganisation>()
+                .FirstOrDefault(uo => uo.UserId == userId && uo.OrganisationId == organisationId);
 
             return View("../Admin/SendPinWarning", userOrganisation);
         }
