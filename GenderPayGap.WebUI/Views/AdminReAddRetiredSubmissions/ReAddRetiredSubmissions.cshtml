@@ -1,0 +1,73 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminReAddRetiredSubmissionsViewModel
+@{
+    ViewBag.Title = "Re-add Retired Submissions - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Re-add Retired Submissions"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Re-add Retired Submissions
+        </h1>
+
+        @(Html.GovUkErrorSummary(new[]
+        {
+            nameof(Model.File),
+        }))
+
+        <form method="post" enctype="multipart/form-data" action="@Url.Action("ReAddRetiredSubmissionsPost", "AdminReAddRetiredSubmissions")">
+            @(Html.AntiForgeryToken())
+
+            @(await Html.GovUkFileUploadFor(m => m.File,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "Upload a CSV file",
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-4"
+                }
+                ))
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Upload and ADD ALL SUBMISSIONS TO THE DATABASE",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("AdminHomePage", "AdminHomepage")"
+                   class="govuk-link">
+                    Cancel and return to the admin homepage
+                </a>
+            </p>
+
+        </form>
+    </div>
+</div>
