@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -14,7 +13,7 @@ namespace Repositories.UserRepository
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class CheckPasswordAsyncTests
+    public class CheckPasswordTests
     {
 
         [SetUp]
@@ -36,7 +35,7 @@ namespace Repositories.UserRepository
         private IUserRepository testUserRepo;
 
         [Test]
-        public async Task CorrectPasswordShouldResetLoginAttempts()
+        public void CorrectPasswordShouldResetLoginAttempts()
         {
             // Arrange
             var saveChangesCalled = false;
@@ -61,7 +60,7 @@ namespace Repositories.UserRepository
         }
 
         [Test]
-        public async Task IncorrectPasswordShouldIncreaseLoginAttempts()
+        public void IncorrectPasswordShouldIncreaseLoginAttempts()
         {
             // Arrange
             var testPassword = "currentPassword123";
