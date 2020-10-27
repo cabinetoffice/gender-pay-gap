@@ -71,12 +71,6 @@ namespace GenderPayGap.Core.Classes
             DbContext.SaveChanges();
         }
 
-        [Obsolete("Please use SaveChanges (the synchronous version) instead")]
-        public async Task SaveChangesAsync()
-        {
-            SaveChanges();
-        }
-        
         public void Dispose()
         {
             DbContext?.Dispose();
