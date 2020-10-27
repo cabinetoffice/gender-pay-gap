@@ -34,7 +34,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
             CustomLogger.Debug($"Updating LastCheckedAgainstCompaniesHouse - OrganisationId({organisationId})");
             organisation.LastCheckedAgainstCompaniesHouse = VirtualDateTime.Now;
-            _DataRepository.SaveChangesAsync().Wait();
+            _DataRepository.SaveChanges();
 
             try
             {
@@ -57,7 +57,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                                 UpdateName(organisation, organisationFromCompaniesHouse);
 
                                 CustomLogger.Debug($"Saving - OrganisationId({organisationId})");
-                                _DataRepository.SaveChangesAsync().Wait();
+                                _DataRepository.SaveChanges();
                                 _DataRepository.CommitTransaction();
 
                                 CustomLogger.Debug($"Saved - OrganisationId({organisationId})");

@@ -103,7 +103,7 @@ namespace GenderPayGap.WebUI.Controllers
             };
 
             dataRepository.Insert(newOrganisationScope);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationScope,

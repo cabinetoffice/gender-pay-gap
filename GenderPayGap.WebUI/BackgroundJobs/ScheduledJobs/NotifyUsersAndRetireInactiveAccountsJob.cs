@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 AnonymiseAuditLogsForUser(user.UserId);
             }
             
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         private void AnonymiseUser(User user)

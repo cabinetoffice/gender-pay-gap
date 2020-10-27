@@ -117,7 +117,7 @@ namespace GenderPayGap.WebUI.Controllers
                 InactivateUsersOfOrganisation(organisation);
             }
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             // Audit log
             auditLogger.AuditChangeToOrganisation(

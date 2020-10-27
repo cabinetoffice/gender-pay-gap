@@ -342,7 +342,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             RemoveSicCodes(viewModel, organisation);
             AddSicCodes(viewModel, organisation);
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             string newSicCodes = organisation.GetSicCodeIdsString();
 
@@ -362,7 +362,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private void OptOrganisationOutOfCompaniesHouseUpdates(Organisation organisation)
         {
             organisation.OptedOutFromCompaniesHouseUpdate = true;
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         private void RemoveSicCodes(ChangeOrganisationSicCodesViewModel viewModel, Organisation organisation)

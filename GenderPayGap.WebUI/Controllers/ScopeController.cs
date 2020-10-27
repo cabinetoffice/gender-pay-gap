@@ -107,7 +107,7 @@ namespace GenderPayGap.WebUI.Controllers
             
             UpdateScopes(organisation, ScopeStatuses.OutOfScope, reportingYear, reasonForChange, viewModel.HaveReadGuidance == HaveReadGuidance.Yes);
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
             
             SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.OutOfScope);
 
@@ -138,7 +138,7 @@ namespace GenderPayGap.WebUI.Controllers
             
             UpdateScopes(organisation, ScopeStatuses.InScope, reportingYear, null, null);
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
             
             SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.InScope);
 

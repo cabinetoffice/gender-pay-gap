@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Services
             if (!latestAddress.IsUkAddress.HasValue)
             {
                 latestAddress.IsUkAddress = isUkAddress;
-                dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChanges();
             }
         }
 
@@ -79,7 +79,7 @@ namespace GenderPayGap.WebUI.Services
             SetInitialScopes(organisation);
 
             dataRepository.Insert(organisation);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return organisation;
         }
@@ -129,7 +129,7 @@ namespace GenderPayGap.WebUI.Services
             SetInitialScopes(organisation);
 
             dataRepository.Insert(organisation);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return organisation;
         }

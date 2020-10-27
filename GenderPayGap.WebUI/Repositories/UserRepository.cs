@@ -88,7 +88,7 @@ namespace GenderPayGap.WebUI.Repositories
             userToUpdate.Modified = now;
 
             // save
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             // log email change
             auditLogger.AuditChangeToUser(
@@ -124,7 +124,7 @@ namespace GenderPayGap.WebUI.Repositories
             userToUpdate.Modified = VirtualDateTime.Now;
 
             // save
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             // log password changed
             auditLogger.AuditChangeToUser(
@@ -151,7 +151,7 @@ namespace GenderPayGap.WebUI.Repositories
             userToRetire.Modified = VirtualDateTime.Now;
 
             // save
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             // log status changed
             auditLogger.AuditChangeToUser(
@@ -190,7 +190,7 @@ namespace GenderPayGap.WebUI.Repositories
             user.PasswordHash = Crypto.GetPBKDF2(password, salt);
             user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         #region IDataTransaction

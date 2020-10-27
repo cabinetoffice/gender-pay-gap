@@ -214,7 +214,7 @@ namespace GenderPayGap.WebUI.Controllers
                 dataRepository.Delete(sicSection);
             }
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         [HttpPost("reference-data/sic-codes/upload/check")]
@@ -286,7 +286,7 @@ namespace GenderPayGap.WebUI.Controllers
                 dataRepository.Delete(sicCode);
             }
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
     }

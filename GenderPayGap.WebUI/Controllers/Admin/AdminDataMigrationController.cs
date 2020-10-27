@@ -257,7 +257,7 @@ namespace GenderPayGap.WebUI.Controllers
             WriteParagraph($"Starting DataProtectionKey");
             dataRepository.GetAll<DataProtectionKey>().ToList().ForEach(dpk => dataRepository.Delete(dpk));
             dataRepository.Insert(allData.DataProtectionKeys);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
             WriteParagraph($"DataProtectionKey done");
 
             InsertData(allData.Feedbacks);
@@ -275,7 +275,7 @@ namespace GenderPayGap.WebUI.Controllers
             var newDataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
             newDataRepository.Insert(allData.Organisations);
             newDataRepository.Insert(allData.OrganisationPublicSectorTypes);
-            newDataRepository.SaveChangesAsync().Wait();
+            newDataRepository.SaveChanges();
             allData.Organisations.Clear();
             allData.OrganisationPublicSectorTypes.Clear();
             WriteParagraph($"Organisations and OrganisationPublicSectorTypes done");
@@ -327,7 +327,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             newDataRepository.Insert(items);
 
-            newDataRepository.SaveChangesAsync().Wait();
+            newDataRepository.SaveChanges();
 
             items.Clear();
             WriteParagraph($"{typeof(T).Name} done");
