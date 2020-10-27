@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -39,11 +38,11 @@ namespace Repositories.UserRepository
         private IUserRepository testUserRepo;
 
         [TestCase]
-        public async Task SavesNewPasswordHash()
+        public void SavesNewPasswordHash()
         {
             // Arrange
             var saveChangesCalled = false;
-            User testUserToUpdate = await testUserRepo.FindByEmailAsync("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com");
+            User testUserToUpdate = testUserRepo.FindByEmail("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com");
             var testPassword = "__Password123__";
 
             mockDataRepo.Setup(x => x.SaveChanges())
@@ -62,10 +61,10 @@ namespace Repositories.UserRepository
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New)]
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Unknown)]
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Retired)]
-        public async Task ThrowsErrorWhenUserStatusIsNotActive(string testCurrentEmail, UserStatuses testStatus)
+        public void ThrowsErrorWhenUserStatusIsNotActive(string testCurrentEmail, UserStatuses testStatus)
         {
             // Arrange
-            User testUserToUpdate = await testUserRepo.FindByEmailAsync(testCurrentEmail);
+            User testUserToUpdate = testUserRepo.FindByEmail(testCurrentEmail);
             DateTime testEmailVerifiedDate = VirtualDateTime.Now.Date.AddDays(-7);
             string testExistingPasswordHash = Crypto.GetPBKDF2("ExistingPassword123", Convert.FromBase64String(testUserToUpdate.Salt));
             testUserToUpdate.PasswordHash = testExistingPasswordHash;

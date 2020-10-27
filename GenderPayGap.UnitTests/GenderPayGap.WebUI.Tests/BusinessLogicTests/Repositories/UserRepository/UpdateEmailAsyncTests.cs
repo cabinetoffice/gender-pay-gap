@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -39,11 +38,11 @@ namespace Repositories.UserRepository
         private IUserRepository testUserRepo;
 
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", "active2@ad5bda75-e514-491b-b74d-4672542cbd15.com")]
-        public async Task SavesExpectedEmailFields(string testCurrentEmail, string testNewEmail)
+        public void SavesExpectedEmailFields(string testCurrentEmail, string testNewEmail)
         {
             // Arrange
             var saveChangesCalled = false;
-            User testUserToUpdate = await testUserRepo.FindByEmailAsync(testCurrentEmail);
+            User testUserToUpdate = testUserRepo.FindByEmail(testCurrentEmail);
 
             // pretend user email was last verified 7 days ago
             testUserToUpdate.EmailVerifiedDate = VirtualDateTime.Now.Date.AddDays(-7);
@@ -65,12 +64,12 @@ namespace Repositories.UserRepository
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New)]
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Unknown)]
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Retired)]
-        public async Task ThrowsErrorWhenUserStatusIsNotActive(string testCurrentEmail, UserStatuses testStatus)
+        public void ThrowsErrorWhenUserStatusIsNotActive(string testCurrentEmail, UserStatuses testStatus)
         {
             // Arrange
             DateTime testEmailVerifiedDate = VirtualDateTime.Now.Date.AddDays(-7);
 
-            User testUserToUpdate = await testUserRepo.FindByEmailAsync(testCurrentEmail);
+            User testUserToUpdate = testUserRepo.FindByEmail(testCurrentEmail);
             testUserToUpdate.Status = testStatus;
             testUserToUpdate.EmailVerifiedDate = testEmailVerifiedDate;
 
