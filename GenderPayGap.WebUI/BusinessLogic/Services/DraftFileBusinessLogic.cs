@@ -109,7 +109,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 dataRepository.Delete(matchingReturn);
             }
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         #endregion
@@ -148,7 +148,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             };
 
             InsertOrUpdate(newEmptyDraftReturn);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         private bool DraftExists(Draft draft)
@@ -185,7 +185,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 originalDraftReturn.LastWrittenByUserId = userIdRequestingAccess;
                 originalDraftReturn.LastWrittenDateTime = VirtualDateTime.Now;
 
-                dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChanges();
             }
         }
 
@@ -384,7 +384,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             }
 
             dataRepository.Insert(draftToSave);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         #endregion

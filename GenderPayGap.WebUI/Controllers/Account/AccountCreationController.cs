@@ -123,7 +123,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             User newUser = CreateNewUser(viewModel);
             dataRepository.Insert(newUser);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             GenerateAndSendAccountVerificationEmail(newUser);
 
@@ -148,7 +148,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;
             gpgUser.SetStatus(UserStatuses.Active, gpgUser, "Email verified");
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
             
             return RedirectToAction("AccountCreationConfirmation");
         }
@@ -209,7 +209,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 user.EmailVerifyHash = verificationCode;
                 user.EmailVerifySendDate = VirtualDateTime.Now;
 
-                dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChanges();
             }
             catch
             {

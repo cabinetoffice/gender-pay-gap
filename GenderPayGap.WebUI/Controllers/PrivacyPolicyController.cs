@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Controllers
                 
                 user.AcceptedPrivacyStatement = VirtualDateTime.Now;
 
-                dataRepository.SaveChangesAsync().Wait();
+                dataRepository.SaveChanges();
             }
 
             return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");

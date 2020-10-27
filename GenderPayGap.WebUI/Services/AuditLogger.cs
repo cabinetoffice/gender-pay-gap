@@ -109,7 +109,7 @@ namespace GenderPayGap.WebUI.Services
                     Details = details
                 });
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
 

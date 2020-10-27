@@ -39,7 +39,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             feedback.FeedbackStatus = status;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return RedirectToAction("ViewFeedback", "AdminFeedback");
         }

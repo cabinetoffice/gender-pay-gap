@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             user.AllowContact = viewModel.AllowContact;
             user.SendUpdates = viewModel.SendUpdates;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return RedirectToAction("ViewUser", "AdminViewUser", new {id = user.UserId});
         }

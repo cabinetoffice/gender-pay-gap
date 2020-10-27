@@ -48,9 +48,8 @@ namespace Repositories.UserRepository
             // pretend user email was last verified 7 days ago
             testUserToUpdate.EmailVerifiedDate = VirtualDateTime.Now.Date.AddDays(-7);
 
-            mockDataRepo.Setup(x => x.SaveChangesAsync())
-                .Callback(() => saveChangesCalled = true)
-                .Returns(Task.CompletedTask);
+            mockDataRepo.Setup(x => x.SaveChanges())
+                .Callback(() => saveChangesCalled = true);
 
             // Act
             testUserRepo.UpdateEmail(testUserToUpdate, testNewEmail);

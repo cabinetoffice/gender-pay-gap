@@ -46,9 +46,8 @@ namespace Repositories.UserRepository
             User testUserToUpdate = await testUserRepo.FindByEmailAsync("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com");
             var testPassword = "__Password123__";
 
-            mockDataRepo.Setup(x => x.SaveChangesAsync())
-                .Callback(() => saveChangesCalled = true)
-                .Returns(Task.CompletedTask);
+            mockDataRepo.Setup(x => x.SaveChanges())
+                .Callback(() => saveChangesCalled = true);
 
             // Act
             testUserRepo.UpdatePassword(testUserToUpdate, testPassword);

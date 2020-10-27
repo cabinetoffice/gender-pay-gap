@@ -209,7 +209,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             OrganisationAddress newOrganisationAddress = CreateOrganisationAddressFromViewModel(viewModel);
             AddNewAddressToOrganisation(newOrganisationAddress, organisation);
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationAddress,
@@ -269,7 +269,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private void OptOrganisationOutOfCompaniesHouseUpdates(Organisation organisation)
         {
             organisation.OptedOutFromCompaniesHouseUpdate = true;
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
     }

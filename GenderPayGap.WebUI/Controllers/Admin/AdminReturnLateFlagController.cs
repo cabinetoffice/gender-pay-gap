@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             specifiedReturn.IsLateSubmission = viewModel.NewLateFlag.Value;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeLateFlag,

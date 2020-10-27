@@ -161,7 +161,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             var dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
             dataRepository.Insert(reminderEmailRecord);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         private string GetOrganisationNameString(List<Organisation> organisations)

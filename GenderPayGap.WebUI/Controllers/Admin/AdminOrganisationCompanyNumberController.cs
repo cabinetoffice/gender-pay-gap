@@ -123,7 +123,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             organisation.CompanyNumber = null;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }
@@ -223,7 +223,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             organisation.CompanyNumber = viewModel.NewCompanyNumber;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             // Update the organisation from Companies House (AFTER we update the company number)
             updateFromCompaniesHouseService.UpdateOrganisationDetails(organisation.OrganisationId);

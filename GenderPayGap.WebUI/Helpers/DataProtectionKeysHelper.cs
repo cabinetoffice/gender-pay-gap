@@ -59,7 +59,7 @@ namespace GenderPayGap.WebUI.Helpers
 
             IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
             dataRepository.Insert(dataProtectionKey);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
     }

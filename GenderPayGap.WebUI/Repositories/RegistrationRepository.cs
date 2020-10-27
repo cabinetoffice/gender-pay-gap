@@ -133,7 +133,7 @@ namespace GenderPayGap.WebUI.Repositories
             }
 
             dataRepository.Insert(userOrganisation);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return userOrganisation;
         }

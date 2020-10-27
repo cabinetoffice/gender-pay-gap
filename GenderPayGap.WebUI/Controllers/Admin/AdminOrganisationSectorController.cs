@@ -159,7 +159,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             AddNewOrganisationPublicSectorType(organisation, viewModel.SelectedPublicSectorTypeId.Value);
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return RedirectToAction("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId});
         }
@@ -241,7 +241,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 returnItem => returnItem.AccountingDate = organisation.SectorType.GetAccountingStartDate(returnItem.AccountingDate.Year)
             );
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             // Audit log
             auditLogger.AuditChangeToOrganisation(

@@ -45,9 +45,8 @@ namespace Repositories.UserRepository
             var saveChangesCalled = false;
             User currentUser = await testUserRepo.FindByEmailAsync("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com");
 
-            mockDataRepo.Setup(x => x.SaveChangesAsync())
-                .Callback(() => saveChangesCalled = true)
-                .Returns(Task.CompletedTask);
+            mockDataRepo.Setup(x => x.SaveChanges())
+                .Callback(() => saveChangesCalled = true);
 
             // Act
             testUserRepo.RetireUser(currentUser);

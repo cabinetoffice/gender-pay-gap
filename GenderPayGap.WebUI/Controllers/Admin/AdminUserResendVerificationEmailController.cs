@@ -90,7 +90,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             user.EmailVerifyHash = verificationCode;
             user.EmailVerifySendDate = VirtualDateTime.Now;
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return View("VerificationEmailSent", user);
         }

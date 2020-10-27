@@ -192,7 +192,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             OrganisationName newOrganisationName = CreateOrganisationNameFromViewModel(viewModel);
             AddNewNameToOrganisation(newOrganisationName, organisation);
 
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.AdminChangeOrganisationName,
@@ -231,7 +231,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private void OptOrganisationOutOfCompaniesHouseUpdates(Organisation organisation)
         {
             organisation.OptedOutFromCompaniesHouseUpdate = true;
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
         }
 
         [HttpGet("organisation/{organisationId}/name/{nameId}/delete")]
@@ -287,7 +287,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 User);
 
             dataRepository.Delete(name);
-            dataRepository.SaveChangesAsync().Wait();
+            dataRepository.SaveChanges();
 
             return View("SuccessfullyDeletedOrganisationName", organisation);
         }
