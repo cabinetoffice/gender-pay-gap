@@ -270,7 +270,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             }
             else
             {
-                viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(organisationAddress?.PostCode).Result
+                viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(organisationAddress?.PostCode)
                     ? AddOrganisationIsUkAddress.Yes
                     : (AddOrganisationIsUkAddress?) null;
             }
@@ -297,7 +297,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             // IsUkAddress
             string postCode = organisationFromCompaniesHouse.RegisteredOfficeAddress.PostalCode;
-            viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(postCode).Result
+            viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(postCode)
                 ? AddOrganisationIsUkAddress.Yes
                 : (AddOrganisationIsUkAddress?) null;
         }

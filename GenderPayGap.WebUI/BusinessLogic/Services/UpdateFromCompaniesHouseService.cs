@@ -163,7 +163,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         {
             string premisesAndLine1 = companiesHouseAddress.GetAddressLineFromPremisesAndAddressLine1();
             bool? isUkAddress = null;
-            if (PostcodesIoApi.IsValidPostcode(companiesHouseAddress?.PostalCode).Result)
+            if (PostcodesIoApi.IsValidPostcode(companiesHouseAddress?.PostalCode))
             {
                 isUkAddress = true;
             }

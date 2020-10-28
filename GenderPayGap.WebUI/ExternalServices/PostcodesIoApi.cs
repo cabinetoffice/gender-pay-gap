@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.ExternalServices
@@ -8,7 +7,7 @@ namespace GenderPayGap.WebUI.ExternalServices
     public class PostcodesIoApi
     {
 
-        public static async Task<bool> IsValidPostcode(string postcode)
+        public static bool IsValidPostcode(string postcode)
         {
             if (string.IsNullOrWhiteSpace(postcode))
             {
@@ -26,11 +25,11 @@ namespace GenderPayGap.WebUI.ExternalServices
 
                     string path = $"/postcodes/{postcode}/validate";
 
-                    HttpResponseMessage response = await httpClient.GetAsync(path);
+                    HttpResponseMessage response = httpClient.GetAsync(path).Result;
 
                     if (response.IsSuccessStatusCode)
                     {
-                        string bodyString = await response.Content.ReadAsStringAsync();
+                        string bodyString = response.Content.ReadAsStringAsync().Result;
                         var body = JsonConvert.DeserializeObject<PostcodesIoApiValidateResponse>(bodyString);
                         return body.result;
                     }
