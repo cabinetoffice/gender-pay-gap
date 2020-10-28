@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -285,7 +284,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private void PopulateViewModelBasedOnCompanyNumber(AddOrganisationFoundViewModel viewModel)
         {
-            CompaniesHouseCompany organisationFromCompaniesHouse = companiesHouseApi.GetCompanyAsync(viewModel.CompanyNumber).Result;
+            CompaniesHouseCompany organisationFromCompaniesHouse = companiesHouseApi.GetCompany(viewModel.CompanyNumber);
 
             // Name
             viewModel.Name = organisationFromCompaniesHouse.CompanyName;

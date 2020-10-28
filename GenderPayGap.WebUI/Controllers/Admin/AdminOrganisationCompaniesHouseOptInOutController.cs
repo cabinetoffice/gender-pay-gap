@@ -87,7 +87,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompaniesHouseCompany companiesHouseCompany;
             try
             {
-                companiesHouseCompany = companiesHouseApi.GetCompanyAsync(organisation.CompanyNumber).Result;
+                companiesHouseCompany = companiesHouseApi.GetCompany(organisation.CompanyNumber);
             }
             catch (Exception)
             {

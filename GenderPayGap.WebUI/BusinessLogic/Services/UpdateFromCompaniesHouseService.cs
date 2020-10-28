@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             {
                 CustomLogger.Debug($"Calling CoHo API - OrganisationId({organisationId})");
                 CompaniesHouseCompany organisationFromCompaniesHouse =
-                    companiesHouseApi.GetCompanyAsync(organisation.CompanyNumber).Result;
+                    companiesHouseApi.GetCompany(organisation.CompanyNumber);
 
                 try
                 {

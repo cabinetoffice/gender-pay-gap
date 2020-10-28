@@ -52,7 +52,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 try
                 {
                     CompaniesHouseCompany organisationFromCompaniesHouse =
-                        companiesHouseApi.GetCompanyAsync(organisation.CompanyNumber).Result;
+                        companiesHouseApi.GetCompany(organisation.CompanyNumber);
 
                     OrganisationAddress addressFromCompaniesHouse =
                         UpdateFromCompaniesHouseService.CreateOrganisationAddressFromCompaniesHouseAddress(

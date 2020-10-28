@@ -163,7 +163,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             CompaniesHouseCompany companiesHouseCompany;
             try
             {
-                companiesHouseCompany = companiesHouseApi.GetCompanyAsync(formattedCompanyNumber).Result;
+                companiesHouseCompany = companiesHouseApi.GetCompany(formattedCompanyNumber);
             }
             catch (Exception)
             {

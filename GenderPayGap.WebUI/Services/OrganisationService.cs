@@ -59,7 +59,7 @@ namespace GenderPayGap.WebUI.Services
                 return existingOrganisation;
             }
 
-            CompaniesHouseCompany companiesHouseCompany = companiesHouseApi.GetCompanyAsync(companyNumber).Result;
+            CompaniesHouseCompany companiesHouseCompany = companiesHouseApi.GetCompany(companyNumber);
 
             Organisation organisation = new Organisation
             {

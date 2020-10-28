@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -15,7 +14,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
     public interface ICompaniesHouseAPI
     {
 
-        Task<CompaniesHouseCompany> GetCompanyAsync(string companyNumber);
+        CompaniesHouseCompany GetCompany(string companyNumber);
         List<CompaniesHouseSearchResultCompany> SearchCompanies(string query);
 
     }
@@ -35,7 +34,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
             _httpClient = httpClient;
         }
 
-        public async Task<CompaniesHouseCompany> GetCompanyAsync(string companyNumber)
+        public CompaniesHouseCompany GetCompany(string companyNumber)
         {
             if (companyNumber.IsNumber())
             {
@@ -46,14 +45,14 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
             string json = null;
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync($"/company/{companyNumber}");
+                HttpResponseMessage response = _httpClient.GetAsync($"/company/{companyNumber}").Result;
                 // Migration to dotnet core work around return status codes until over haul of this API client
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     throw new HttpException(response.StatusCode);
                 }
 
-                json = await response.Content.ReadAsStringAsync();
+                json = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<CompaniesHouseCompany>(json);
             }
             catch (Exception ex)

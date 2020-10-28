@@ -53,7 +53,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 try
                 {
                     CompaniesHouseCompany organisationFromCompaniesHouse =
-                        companiesHouseApi.GetCompanyAsync(organisation.CompanyNumber).Result;
+                        companiesHouseApi.GetCompany(organisation.CompanyNumber);
 
                     List<string> sicCodeIdsFromCompaniesHouse = organisationFromCompaniesHouse.SicCodes;
                     List<string> sicCodesFromDatabase = organisation.GetSicCodes().Select(osc => osc.SicCodeId.ToString()).ToList();
