@@ -20,7 +20,7 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         [SetUp]
         public void BeforeEach()
         {
-            mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+            mockDataRepo = MoqHelpers.CreateMockDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
             mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
         }

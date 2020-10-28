@@ -10,7 +10,7 @@ namespace GenderPayGap.Tests.Common.Classes
     public static class MoqHelpers
     {
 
-        public static Mock<IDataRepository> CreateMockAsyncDataRepository()
+        public static Mock<IDataRepository> CreateMockDataRepository()
         {
             var mockDataRepo = new Mock<IDataRepository>();
             mockDataRepo.SetupEmptyDataRepository();

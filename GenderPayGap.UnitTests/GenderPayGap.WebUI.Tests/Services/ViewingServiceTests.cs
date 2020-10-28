@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.Tests.Services
         [SetUp]
         public void BeforeEach()
         {
-            _mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+            _mockDataRepo = MoqHelpers.CreateMockDataRepository();
             viewingSearchService = new ViewingSearchService(_mockDataRepo.Object);
         }
 

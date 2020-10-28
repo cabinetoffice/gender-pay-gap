@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -52,7 +51,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
 
         [Test]
         [Description("AdminUnconfirmedPinsController POST: When PIN has expired create new PIN and send email")]
-        public async Task AdminUnconfirmedPinsController_POST_When_PIN_has_expired_create_new_PIN_and_send_email()
+        public void AdminUnconfirmedPinsController_POST_When_PIN_has_expired_create_new_PIN_and_send_email()
         {
             // Arrange
 
@@ -108,7 +107,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
         
         [Test]
         [Description("AdminUnconfirmedPinsController POST: When PIN is still valid send email")]
-        public async Task AdminUnconfirmedPinsController_POST_When_PIN_is_still_valid_send_email()
+        public void AdminUnconfirmedPinsController_POST_When_PIN_is_still_valid_send_email()
         {
             // Arrange
             

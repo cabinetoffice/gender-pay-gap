@@ -92,7 +92,7 @@ namespace GenderPayGap.BusinessLogic.Tests.Services
 
             IEnumerable<Organisation> listOfOrgs = listOfReturns.Select(ret => ret.Organisation);
 
-            Mock<IDataRepository> mockedDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
+            Mock<IDataRepository> mockedDataRepository = MoqHelpers.CreateMockDataRepository();
 
             mockedDataRepository.SetupGetAll(listOfOrgs, listOfReturns);
 

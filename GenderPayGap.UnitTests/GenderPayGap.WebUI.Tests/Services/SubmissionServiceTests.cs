@@ -33,7 +33,7 @@ namespace GenderPayGap.Tests
         [SetUp]
         public void BeforeEach()
         {
-            mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+            mockDataRepo = MoqHelpers.CreateMockDataRepository();
             mockScopeBL = new Mock<IScopeBusinessLogic>();
             _mockDraftFileBL = new Mock<IDraftFileBusinessLogic>();
         }
@@ -408,7 +408,7 @@ namespace GenderPayGap.Tests
             mockDataRepo.Setup(dr => dr.GetAll<Return>())
                 .Returns(new Return[] { }.AsQueryable().BuildMock().Object);
 
-            var testDraftFileFileBusinessLogic = new DraftFileBusinessLogic(MoqHelpers.CreateMockAsyncDataRepository().Object);
+            var testDraftFileFileBusinessLogic = new DraftFileBusinessLogic(MoqHelpers.CreateMockDataRepository().Object);
             Draft actualDraftFile = testDraftFileFileBusinessLogic.GetExistingOrNew(
                 testOrganisation.OrganisationId,
                 testYear,
