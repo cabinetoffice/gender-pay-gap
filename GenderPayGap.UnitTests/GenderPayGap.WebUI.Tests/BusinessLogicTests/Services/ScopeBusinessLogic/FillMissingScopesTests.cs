@@ -22,7 +22,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         public void BeforeEach()
         {
             // setup mocks
-            mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
+            mockDataRepository = MoqHelpers.CreateMockDataRepository();
 
             // sut
             scopeBusinessLogic = new WebUI.BusinessLogic.Services.ScopeBusinessLogic(mockDataRepository.Object);

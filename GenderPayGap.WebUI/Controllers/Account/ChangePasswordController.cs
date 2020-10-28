@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
@@ -47,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("change-password-new")]
         [ValidateAntiForgeryToken]
         [PreventDuplicatePost]
-        public async Task<IActionResult> ChangePasswordPost(ChangePasswordViewModel viewModel)
+        public IActionResult ChangePasswordPost(ChangePasswordViewModel viewModel)
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);

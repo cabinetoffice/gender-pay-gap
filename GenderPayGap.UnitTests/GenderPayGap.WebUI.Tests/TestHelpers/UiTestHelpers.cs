@@ -224,7 +224,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             }
             else
             {
-                Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockAsyncDataRepository();
+                Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockDataRepository();
                 builder.Register(c => mockDataRepo.Object).As<IDataRepository>().InstancePerLifetimeScope();
             }
 

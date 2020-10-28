@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -42,7 +41,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
 
         [Test]
         [Description("POST: Password is updated as expected")]
-        public async Task POST_Password_Is_Updated_As_Expected()
+        public void POST_Password_Is_Updated_As_Expected()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -60,7 +59,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "NewPassword1");
@@ -69,7 +68,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         
         [Test]
         [Description("POST: Email is sent when password is successfully updated")]
-        public async Task POST_Email_Is_Sent_When_Password_Is_Successfully_Updated()
+        public void POST_Email_Is_Sent_When_Password_Is_Successfully_Updated()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -88,7 +87,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             // Assert that exactly one email is sent
@@ -103,7 +102,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         
         [Test]
         [Description("POST: Audit log item is saved when password is successfully updated")]
-        public async Task POST_Audit_Log_Item_Is_Saved_When_Password_Is_Successfully_Updated()
+        public void POST_Audit_Log_Item_Is_Saved_When_Password_Is_Successfully_Updated()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -122,7 +121,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             // Assert that exactly one audit log entry is added
@@ -135,7 +134,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         
         [Test]
         [Description("POST: Password is not updated when new password has fewer than 8 characters")]
-        public async Task POST_Password_Is_Not_Updated_When_New_Password_Has_Fewer_Than_8_Characters()
+        public void POST_Password_Is_Not_Updated_When_New_Password_Has_Fewer_Than_8_Characters()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -153,7 +152,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -162,7 +161,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         
         [Test]
         [Description("POST: Password is not updated when new password is missing an uppercase letter")]
-        public async Task POST_Password_Is_Not_Updated_When_New_Password_Missing_Uppercase_Letter()
+        public void POST_Password_Is_Not_Updated_When_New_Password_Missing_Uppercase_Letter()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -180,7 +179,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -189,7 +188,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         
         [Test]
         [Description("POST: Password is not updated when new password is missing a lowercase letter")]
-        public async Task POST_Password_Is_Not_Updated_When_New_Password_Missing_Lowercase_Letter()
+        public void POST_Password_Is_Not_Updated_When_New_Password_Missing_Lowercase_Letter()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -207,7 +206,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -216,7 +215,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         
         [Test]
         [Description("POST: Password is not updated when new password is different to the confirmation password")]
-        public async Task POST_Password_Is_Not_Updated_When_New_Password_Different_To_Confirmation_Password()
+        public void POST_Password_Is_Not_Updated_When_New_Password_Different_To_Confirmation_Password()
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
@@ -234,7 +233,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel()).Wait();
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");

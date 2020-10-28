@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -17,14 +16,14 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class FindOrgsWhereScopeNotSetAsyncTests : BaseBusinessLogicTests
+    public class FindOrgsWhereScopeNotSetTests : BaseBusinessLogicTests
     {
 
         [SetUp]
         public void BeforeEach()
         {
             // setup mocks
-            mockDataRepository = MoqHelpers.CreateMockAsyncDataRepository();
+            mockDataRepository = MoqHelpers.CreateMockDataRepository();
 
             // setup data
             DateTime currentPrivateSnapshotDate = SectorTypes.Private.GetAccountingStartDate();
