@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GenderPayGap.Core.Interfaces
 {
 
-    public interface IDataRepository : IDisposable, IDataTransaction
+    public interface IDataRepository : IDisposable
     {
 
         void Delete<TEntity>(TEntity entity) where TEntity : class;

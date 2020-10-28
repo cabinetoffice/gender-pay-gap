@@ -81,55 +81,6 @@ namespace GenderPayGap.Core.Classes
             return DbContext.Set<TEntity>();
         }
 
-        public async Task BeginTransactionAsync(Func<Task> delegateAction)
-        {
-            if (Transaction != null)
-            {
-                throw new Exception("Another transaction has already been started");
-            }
-
-            DatabaseFacade database = DbContext.GetDatabase();
-            IExecutionStrategy strategy = database.CreateExecutionStrategy();
-
-            TransactionStarted = true;
-            try
-            {
-                await strategy.Execute(delegateAction);
-                if (Transaction != null)
-                {
-                    throw new TransactionException("An SQL transaction has started which you must commit or rollback");
-                }
-            }
-            finally
-            {
-                TransactionStarted = false;
-            }
-        }
-
-        public void CommitTransaction()
-        {
-            if (Transaction == null)
-            {
-                throw new Exception("Cannot commit a transaction which has not been started");
-            }
-
-            Transaction.Commit();
-            Transaction.Dispose();
-            Transaction = null;
-        }
-
-        public void RollbackTransaction()
-        {
-            if (Transaction == null)
-            {
-                throw new Exception("Cannot rollback a transaction which has not been started");
-            }
-
-            Transaction.Rollback();
-            Transaction.Dispose();
-            Transaction = null;
-        }
-
     }
 
 }
