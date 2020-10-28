@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -11,7 +10,6 @@ using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.Repositories
 {
-
     public class UserRepository : IUserRepository
     {
         private readonly IDataRepository dataRepository;
@@ -193,25 +191,5 @@ namespace GenderPayGap.WebUI.Repositories
             dataRepository.SaveChanges();
         }
 
-        #region IDataTransaction
-
-        public async Task BeginTransactionAsync(Func<Task> delegateAction)
-        {
-            await dataRepository.BeginTransactionAsync(delegateAction);
-        }
-
-        public void CommitTransaction()
-        {
-            dataRepository.CommitTransaction();
-        }
-
-        public void RollbackTransaction()
-        {
-            dataRepository.RollbackTransaction();
-        }
-
-        #endregion
-
     }
-
 }

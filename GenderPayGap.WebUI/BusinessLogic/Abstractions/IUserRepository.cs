@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using GenderPayGap.Core;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
 {
 
-    public interface IUserRepository : IDataTransaction
+    public interface IUserRepository
     {
 
         bool CheckPassword(User user, string password);

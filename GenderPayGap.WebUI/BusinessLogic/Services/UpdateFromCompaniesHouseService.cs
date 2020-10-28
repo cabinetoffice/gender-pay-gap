@@ -18,59 +18,53 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         private const string SourceOfChange = "CoHo";
         private const string DetailsOfChange = "Replaced by CoHo";
 
-        private readonly ICompaniesHouseAPI _CompaniesHouseAPI;
-        private readonly IDataRepository _DataRepository;
+        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly IDataRepository dataRepository;
 
-        public UpdateFromCompaniesHouseService(IDataRepository dataRepository, ICompaniesHouseAPI companiesHouseAPI)
+        public UpdateFromCompaniesHouseService(IDataRepository dataRepository, ICompaniesHouseAPI companiesHouseApi)
         {
-            _DataRepository = dataRepository;
-            _CompaniesHouseAPI = companiesHouseAPI;
+            this.dataRepository = dataRepository;
+            this.companiesHouseApi = companiesHouseApi;
         }
 
         public void UpdateOrganisationDetails(long organisationId)
         {
             CustomLogger.Debug($"Loading organisation - OrganisationId({organisationId})");
-            var organisation = _DataRepository.Get<Organisation>(organisationId);
+            var organisation = dataRepository.Get<Organisation>(organisationId);
 
             CustomLogger.Debug($"Updating LastCheckedAgainstCompaniesHouse - OrganisationId({organisationId})");
             organisation.LastCheckedAgainstCompaniesHouse = VirtualDateTime.Now;
-            _DataRepository.SaveChanges();
+            dataRepository.SaveChanges();
 
             try
             {
                 CustomLogger.Debug($"Calling CoHo API - OrganisationId({organisationId})");
                 CompaniesHouseCompany organisationFromCompaniesHouse =
-                    _CompaniesHouseAPI.GetCompanyAsync(organisation.CompanyNumber).Result;
+                    companiesHouseApi.GetCompanyAsync(organisation.CompanyNumber).Result;
 
-                CustomLogger.Debug($"Starting transaction - OrganisationId({organisationId})");
-                _DataRepository.BeginTransactionAsync(
-                        async () => {
-                            try
-                            {
-                                CustomLogger.Debug($"Updating SIC codes - OrganisationId({organisationId})");
-                                UpdateSicCode(organisation, organisationFromCompaniesHouse);
+                try
+                {
+                    CustomLogger.Debug($"Updating SIC codes - OrganisationId({organisationId})");
+                    UpdateSicCode(organisation, organisationFromCompaniesHouse);
 
-                                CustomLogger.Debug($"Updating Address - OrganisationId({organisationId})");
-                                UpdateAddress(organisation, organisationFromCompaniesHouse);
+                    CustomLogger.Debug($"Updating Address - OrganisationId({organisationId})");
+                    UpdateAddress(organisation, organisationFromCompaniesHouse);
 
-                                CustomLogger.Debug($"Updating Name - OrganisationId({organisationId})");
-                                UpdateName(organisation, organisationFromCompaniesHouse);
+                    CustomLogger.Debug($"Updating Name - OrganisationId({organisationId})");
+                    UpdateName(organisation, organisationFromCompaniesHouse);
 
-                                CustomLogger.Debug($"Saving - OrganisationId({organisationId})");
-                                _DataRepository.SaveChanges();
-                                _DataRepository.CommitTransaction();
+                    CustomLogger.Debug($"Saving - OrganisationId({organisationId})");
+                    dataRepository.SaveChanges();
 
-                                CustomLogger.Debug($"Saved - OrganisationId({organisationId})");
-                            }
-                            catch (Exception ex)
-                            {
-                                string message =
-                                    $"Update from Companies House: Failed to update database, organisation id = {organisationId}";
-                                CustomLogger.Error(message, ex);
-                                _DataRepository.RollbackTransaction();
-                            }
-                        })
-                    .Wait();
+                    CustomLogger.Debug($"Saved - OrganisationId({organisationId})");
+                }
+                catch (Exception ex)
+                {
+                    string message =
+                        $"Update from Companies House: Failed to update database, organisation id = {organisationId}";
+                    CustomLogger.Error(message, ex);
+                }
+
             }
             catch (Exception ex)
             {
@@ -111,13 +105,13 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             IEnumerable<int> idsToBeAdded = newSicCodeIds.Except(sicCodeIds);
             foreach (int sicCodeId in idsToBeAdded)
             {
-                if (_DataRepository.GetAll<SicCode>().Any(sicCode => sicCode.SicCodeId == sicCodeId))
+                if (dataRepository.GetAll<SicCode>().Any(sicCode => sicCode.SicCodeId == sicCodeId))
                 {
                     var sicCodeToBeAdded = new OrganisationSicCode {
                         Organisation = organisation, SicCodeId = sicCodeId, Source = SourceOfChange, Created = VirtualDateTime.Now
                     };
                     organisation.OrganisationSicCodes.Add(sicCodeToBeAdded);
-                    _DataRepository.Insert(sicCodeToBeAdded);
+                    dataRepository.Insert(sicCodeToBeAdded);
                 }
             }
         }
@@ -140,7 +134,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             oldOrganisationAddress.Status = AddressStatuses.Retired;
             oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
 
-            _DataRepository.Insert(newOrganisationAddressFromCompaniesHouse);
+            dataRepository.Insert(newOrganisationAddressFromCompaniesHouse);
         }
 
         private static bool IsNewOrganisationAddressNullOrEmpty(OrganisationAddress address)
@@ -208,7 +202,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             };
             organisation.OrganisationNames.Add(nameToAdd);
             organisation.OrganisationName = companyNameFromCompaniesHouse;
-            _DataRepository.Insert(nameToAdd);
+            dataRepository.Insert(nameToAdd);
         }
 
         public static bool IsCompanyNameEqual(OrganisationName organisationName, string companyName)
