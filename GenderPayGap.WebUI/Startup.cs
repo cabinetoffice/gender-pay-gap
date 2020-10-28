@@ -381,7 +381,7 @@ namespace GenderPayGap.WebUI
             HangfireConfigurationHelper.ConfigureApp(app);
 
             lifetime.ApplicationStarted.Register(
-                async () =>
+                () =>
                 {
                     // Summary:
                     //     Triggered when the application host has fully started and is about to wait for

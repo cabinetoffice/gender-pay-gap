@@ -14,7 +14,6 @@ using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Models.Submit;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Classes.Services
 {
@@ -36,8 +35,6 @@ namespace GenderPayGap.WebUI.Classes.Services
         Task<ReturnViewModel> GetReturnViewModelAsync(long organisationId, int snapshotYear, long userId);
 
         Return CreateDraftSubmissionFromViewModel(ReturnViewModel stashedReturnViewModel);
-
-        Task<List<ReportInfoModel>> GetAllEditableReportsAsync(UserOrganisation userOrg, DateTime currentSnapshotDate);
 
         #region DraftFile
 
@@ -484,49 +481,10 @@ namespace GenderPayGap.WebUI.Classes.Services
             return result;
         }
 
-        /// <summary>
-        ///     This draft will only return the contents of the draft, if you need to know the user that is currently locking the
-        ///     draft, or when was the draft last written, please use GetReportInfoModelWithDraft
-        /// </summary>
-        /// <param name="organisation"></param>
-        /// <param name="returnModifiedDate"></param>
-        /// <param name="snapshotYear"></param>
-        public async Task<ReportInfoModel> GetReportInfoModelWithLockedDraftAsync(Organisation organisation,
-            DateTime? returnModifiedDate,
-            int snapshotYear)
-        {
-            ReportInfoModel reportInfo = GetReport_Info(organisation, returnModifiedDate, snapshotYear);
-            reportInfo.Draft = await GetDraftIfAvailableAsync(organisation.OrganisationId, snapshotYear);
-            return reportInfo;
-        }
-
         public DateTime GetCurrentSnapshotDate(SectorTypes sector = SectorTypes.Private)
         {
             // Get the current reporting period for the sector
             return GetSnapshotDate(sector);
-        }
-
-        public async Task<List<ReportInfoModel>> GetAllEditableReportsAsync(UserOrganisation userOrg, DateTime currentSnapshotDate)
-        {
-            int currentYear = currentSnapshotDate.Year;
-            int startYear = currentYear - (Global.EditableReportCount - 1);
-            if (startYear < Global.FirstReportingYear)
-            {
-                startYear = Global.FirstReportingYear;
-            }
-
-            var reportInfos = new List<ReportInfoModel>();
-            for (int snapshotYear = startYear; snapshotYear <= currentYear; snapshotYear++)
-            {
-                Return report = GetReturnFromDatabase(userOrg.OrganisationId, snapshotYear);
-                ReportInfoModel reportInfo = report != null
-                    ? await GetReportInfoModelWithLockedDraftAsync(report.Organisation, report.Modified, snapshotYear)
-                    : await GetReportInfoModelWithLockedDraftAsync(userOrg.Organisation, null, snapshotYear);
-
-                reportInfos.Add(reportInfo);
-            }
-
-            return reportInfos;
         }
 
         /// <summary>

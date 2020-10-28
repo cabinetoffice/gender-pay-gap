@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
@@ -62,7 +61,10 @@ namespace GenderPayGap.Extensions
             }
 
             //use the randome number to pick from the character set
-            Parallel.For(0, chars.Length, i => { chars[i] = charset[randomData[i] % charset.Length]; });
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = charset[randomData[i] % charset.Length];
+            }
 
             return new string(chars);
         }
