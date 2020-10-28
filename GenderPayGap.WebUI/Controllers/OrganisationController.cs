@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -220,7 +219,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [Authorize]
         [HttpGet("~/report-for-organisation/{request}")]
-        public async Task<IActionResult> ReportForOrganisation(string request)
+        public IActionResult ReportForOrganisation(string request)
         {
             //Ensure user has completed the registration process
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
@@ -267,7 +266,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.ClearAllStashes();
 
             var reportingRequirement =
-                await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, reportingStartYear);
+                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, reportingStartYear);
             
             bool requiredToReport =
                 reportingRequirement == ScopeStatuses.InScope || reportingRequirement == ScopeStatuses.PresumedInScope;

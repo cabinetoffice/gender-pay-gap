@@ -42,9 +42,9 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         #endregion
 
         [HttpGet("submit/")]
-        public async Task<IActionResult> Redirect()
+        public IActionResult Redirect()
         {
-            await WebTracker.TrackPageViewAsync(this);
+            WebTracker.TrackPageView(this);
 
             return RedirectToAction("EnterCalculations");
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -705,7 +704,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         #region SortEmployers
 
         [Test]
-        public async Task CompareController_SortEmployers_NoColumn_ReturnsBadRequest()
+        public void CompareController_SortEmployers_NoColumn_ReturnsBadRequest()
         {
             // Arrange
             var controller = UiTestHelper.GetController<CompareController>();
@@ -713,7 +712,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string returnUrl = @"\viewing\search-results";
 
             // Act
-            var result = await controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
+            var result = controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -724,7 +723,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task CompareController_SortEmployers_NoReturnUrl_ReturnsBadRequest()
+        public void CompareController_SortEmployers_NoReturnUrl_ReturnsBadRequest()
         {
             // Arrange
             var controller = UiTestHelper.GetController<CompareController>();
@@ -732,7 +731,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string returnUrl = null;
 
             // Act
-            var result = await controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
+            var result = controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -743,7 +742,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task CompareController_SortEmployers_SuccessAscending_RedirectToReturnUrl()
+        public void CompareController_SortEmployers_SuccessAscending_RedirectToReturnUrl()
         {
             // Arrange
             var controller = UiTestHelper.GetController<CompareController>();
@@ -751,11 +750,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string returnUrl = @"\viewing\search-results";
 
             // Act
-            var result = await controller.SortEmployers(column, returnUrl) as RedirectResult;
+            var result = controller.SortEmployers(column, returnUrl) as RedirectResult;
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageViewAsync(It.IsAny<Controller>(),"sort-employers: OrganisationName Ascending", "/compare-employers/sort-employers?OrganisationName=Ascending"), Times.Once());
+            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(),"sort-employers: OrganisationName Ascending", "/compare-employers/sort-employers?OrganisationName=Ascending"), Times.Once());
             
             Assert.NotNull(result);
             Assert.AreEqual(returnUrl, result.Url);
@@ -765,7 +764,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task CompareController_SortEmployers_SuccessDescending_RedirectToReturnUrl()
+        public void CompareController_SortEmployers_SuccessDescending_RedirectToReturnUrl()
         {
             // Arrange
             var controller = UiTestHelper.GetController<CompareController>();
@@ -775,7 +774,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.SortAscending = true;
 
             // Act
-            var result = await controller.SortEmployers(column, returnUrl) as RedirectResult;
+            var result = controller.SortEmployers(column, returnUrl) as RedirectResult;
 
             // Assert
             Assert.NotNull(result);
@@ -786,7 +785,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task CompareController_SortEmployers_SuccessChange_RedirectToReturnUrl()
+        public void CompareController_SortEmployers_SuccessChange_RedirectToReturnUrl()
         {
             // Arrange
             var controller = UiTestHelper.GetController<CompareController>();
@@ -796,11 +795,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.SortAscending = false;
 
             // Act
-            var result = await controller.SortEmployers(column, returnUrl) as RedirectResult;
+            var result = controller.SortEmployers(column, returnUrl) as RedirectResult;
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageViewAsync(It.IsAny<Controller>(), "sort-employers: OrganisationName Descending", "/compare-employers/sort-employers?OrganisationName=Descending"), Times.Once());
+            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), "sort-employers: OrganisationName Descending", "/compare-employers/sort-employers?OrganisationName=Descending"), Times.Once());
 
             Assert.NotNull(result);
             Assert.AreEqual(returnUrl, result.Url);
@@ -812,7 +811,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         #region CompareEmployers
         [Test]
-        public async Task CompareController_CompareEmployers_NoYear_DefaultSortFirstYearAsync()
+        public void CompareController_CompareEmployers_NoYear_DefaultSortFirstYearAsync()
         {
             // Arrange
             var routeData = new RouteData();
@@ -840,7 +839,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.OrganisationBusinessLogic = mockOrgBL.Object;
 
             // Act
-            ViewResult result = await controller.CompareEmployers(0) as ViewResult;
+            ViewResult result = controller.CompareEmployers(0) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -860,7 +859,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task CompareController_CompareEmployers_WithYear_SameSortAsync()
+        public void CompareController_CompareEmployers_WithYear_SameSortAsync()
         {
             // Arrange
             var routeData = new RouteData();
@@ -892,7 +891,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.OrganisationBusinessLogic = mockOrgBL.Object;
 
             // Act
-            var result = await controller.CompareEmployers(firstReportingYear) as ViewResult;
+            var result = controller.CompareEmployers(firstReportingYear) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -913,7 +912,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         #region DownloadCompareData
         [Test]
-        public async Task CompareController_DownloadCompareData_NoYear_DefaultSortFirstYearAsync()
+        public void CompareController_DownloadCompareData_NoYear_DefaultSortFirstYearAsync()
         {
             // Arrange
             var routeData = new RouteData();
@@ -941,12 +940,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.OrganisationBusinessLogic = mockOrgBL.Object;
 
             // Act
-            var result = await controller.DownloadCompareData() as ContentResult;
+            var result = controller.DownloadCompareData() as ContentResult;
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
             var filename = $"Compared GPG Data {firstReportingYear}-{(firstReportingYear+1).ToTwoDigitYear()}.csv";
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageViewAsync(It.IsAny<Controller>(), filename, null), Times.Once());
+            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
 
             Assert.NotNull(result);
             Assert.AreEqual(result.ContentType, "text/csv");
@@ -960,7 +959,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public async Task CompareController_DownloadCompareData_WithYear_SameSortAsync()
+        public void CompareController_DownloadCompareData_WithYear_SameSortAsync()
         {
             // Arrange
             var routeData = new RouteData();
@@ -993,13 +992,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.OrganisationBusinessLogic = mockOrgBL.Object;
 
             // Act
-            var result = await controller.DownloadCompareData(firstReportingYear) as ContentResult;
+            var result = controller.DownloadCompareData(firstReportingYear) as ContentResult;
 
             // Assert
 
             //Test the google analytics tracker was executed once on the controller
             var filename = $"Compared GPG Data {firstReportingYear}-{(firstReportingYear + 1).ToTwoDigitYear()}.csv";
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageViewAsync(It.IsAny<Controller>(), filename, null), Times.Once());
+            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
 
             Assert.NotNull(result);
             Assert.AreEqual(result.ContentType, "text/csv");
