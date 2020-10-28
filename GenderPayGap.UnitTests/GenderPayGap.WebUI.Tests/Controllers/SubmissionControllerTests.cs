@@ -2953,7 +2953,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         [Test]
         [Description("SubmitController_Init_GET_Redirect Success")]
-        public async Task SubmitController_Init_GET_Redirect_Success()
+        public void SubmitController_Init_GET_Redirect_Success()
         {
             // route data
             var routeData = new RouteData();
@@ -2961,11 +2961,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             routeData.Values.Add("controller", "submit");
 
             var controller = UiTestHelper.GetController<SubmitController>();
-            var result = await controller.Redirect() as RedirectToActionResult;
+            var result = controller.Redirect() as RedirectToActionResult;
 
             //Test the google analytics tracker was executed once on the controller
             controller.WebTracker.GetMockFromObject()
-                .Verify(mock => mock.TrackPageViewAsync(It.IsAny<Controller>(), null, null), Times.Once());
+                .Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), null, null), Times.Once());
 
             Assert.NotNull(result);
         }

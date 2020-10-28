@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
@@ -195,7 +194,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("sort-employers/{column}")]
-        public async Task<IActionResult> SortEmployers(string column, string returnUrl)
+        public IActionResult SortEmployers(string column, string returnUrl)
         {
             //Check the parameters are populated
             if (string.IsNullOrWhiteSpace(column))
@@ -216,7 +215,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Track the download 
             if (CompareViewService.SortColumn != column || CompareViewService.SortAscending != sort)
             {
-                await WebTracker.TrackPageViewAsync(
+                WebTracker.TrackPageView(
                     this,
                     $"sort-employers: {column} {(CompareViewService.SortAscending ? "Ascending" : "Descending")}",
                     $"/compare-employers/sort-employers?{column}={(CompareViewService.SortAscending ? "Ascending" : "Descending")}");
@@ -232,7 +231,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("~/compare-employers/{year:int=0}")]
-        public async Task<IActionResult> CompareEmployers(int year, string employers = null)
+        public IActionResult CompareEmployers(int year, string employers = null)
         {
             if (year == 0)
             {
@@ -279,13 +278,13 @@ namespace GenderPayGap.WebUI.Controllers
             if (CompareViewService.LastComparedEmployerList != lastComparedEmployerList && IsAction("CompareEmployers"))
             {
                 SortedSet<string> employerIds = compareReports.Select(r => r.EncOrganisationId).ToSortedSet();
-                await WebTracker.TrackPageViewAsync(
+                WebTracker.TrackPageView(
                     this,
                     $"compare-employers: {employerIds.ToDelimitedString()}",
                     $"{ViewBag.ReturnUrl}?{employerIds.ToEncapsulatedString("e=", null, "&", "&", false)}");
                 foreach (CompareReportModel employer in compareReports)
                 {
-                    await WebTracker.TrackPageViewAsync(
+                    WebTracker.TrackPageView(
                         this,
                         $"{employer.EncOrganisationId}: {employer.OrganisationName}",
                         $"{ViewBag.ReturnUrl}?{employer.EncOrganisationId}={employer.OrganisationName}");
@@ -348,14 +347,14 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("download-compare-data")]
-        public async Task<IActionResult> DownloadCompareData(int year = 0)
+        public IActionResult DownloadCompareData(int year = 0)
         {
             if (year == 0)
             {
                 year = Global.FirstReportingYear;
             }
 
-            var result = await CompareEmployers(year) as ViewResult;
+            var result = CompareEmployers(year) as ViewResult;
             var viewModel = result.Model as CompareViewModel;
             IEnumerable<CompareReportModel> data = viewModel?.CompareReports;
 
@@ -377,7 +376,7 @@ namespace GenderPayGap.WebUI.Controllers
             Response.BufferOutput = true;
             */
             //Track the download 
-            await WebTracker.TrackPageViewAsync(this, contentDisposition.FileName);
+            WebTracker.TrackPageView(this, contentDisposition.FileName);
 
             //Return the data
             return Content(model.ToCSV(), "text/csv");

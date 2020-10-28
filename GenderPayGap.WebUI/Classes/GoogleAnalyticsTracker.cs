@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
 using Polly.Extensions.Http;
 
-namespace GenderPayGap.Core.Classes
+namespace GenderPayGap.WebUI.Classes
 {
+    public interface IWebTracker
+    {
+        void TrackPageView(Controller controller, string pageTitle = null, string pageUrl = null);
+    }
+
+
     /// <summary>
     ///     Uses open HttpClient see
     ///     https://www.codeproject.com/Articles/1194406/Using-HttpClient-as-it-was-intended-because-you-re
@@ -46,7 +50,7 @@ namespace GenderPayGap.Core.Classes
         }
 
 
-        public async Task TrackPageViewAsync(Controller controller, string pageTitle = null, string pageUrl = null)
+        public void TrackPageView(Controller controller, string pageTitle = null, string pageUrl = null)
         {
             if (string.IsNullOrWhiteSpace(pageTitle))
             {
@@ -67,11 +71,11 @@ namespace GenderPayGap.Core.Classes
                 pageUrl = Url.RelativeToAbsoluteUrl(pageUrl, controller.HttpContext.GetUri());
             }
 
-            await SendPageViewTrackingAsync(pageTitle, pageUrl);
+            SendPageViewTracking(pageTitle, pageUrl);
         }
 
 
-        private async Task<HttpResponseMessage> SendPageViewTrackingAsync(string title, string url)
+        private async void SendPageViewTracking(string title, string url)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -97,7 +101,7 @@ namespace GenderPayGap.Core.Classes
                 new KeyValuePair<string, string>("dl", url)
             };
 
-            return await _httpClient.PostAsync(endpointUri, new FormUrlEncodedContent(postData)).ConfigureAwait(false);
+            await _httpClient.PostAsync(endpointUri, new FormUrlEncodedContent(postData)).ConfigureAwait(false);
         }
 
         public static void SetupHttpClient(HttpClient httpClient)

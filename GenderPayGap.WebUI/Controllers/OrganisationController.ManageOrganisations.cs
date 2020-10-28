@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.Organisation;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +20,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [Authorize]
         [HttpGet("~/manage-organisations/{id}")]
-        public async Task<IActionResult> ManageOrganisation(string id)
+        public IActionResult ManageOrganisation(string id)
         {
             // Check for feature flag and redirect if enabled
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
@@ -60,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (userOrg.PINConfirmedDate != null && userOrg.Organisation.Created >= currentSnapshotDate)
             {
                 ScopeStatuses scopeStatus =
-                    await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, currentSnapshotDate.Year - 1);
+                    ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, currentSnapshotDate.Year - 1);
                 if (!scopeStatus.IsAny(ScopeStatuses.InScope, ScopeStatuses.OutOfScope))
                 {
                     return RedirectToAction(nameof(DeclareScope), "Organisation", new {id});

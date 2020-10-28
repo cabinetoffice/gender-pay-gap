@@ -495,7 +495,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             DateTime? returnModifiedDate,
             int snapshotYear)
         {
-            ReportInfoModel reportInfo = await GetReport_InfoAsync(organisation, returnModifiedDate, snapshotYear);
+            ReportInfoModel reportInfo = GetReport_Info(organisation, returnModifiedDate, snapshotYear);
             reportInfo.Draft = await GetDraftIfAvailableAsync(organisation.OrganisationId, snapshotYear);
             return reportInfo;
         }
@@ -543,12 +543,12 @@ namespace GenderPayGap.WebUI.Classes.Services
             int snapshotYear,
             long userRequestingDraft)
         {
-            ReportInfoModel reportInfo = await GetReport_InfoAsync(organisation, returnModifiedDate, snapshotYear);
+            ReportInfoModel reportInfo = GetReport_Info(organisation, returnModifiedDate, snapshotYear);
             reportInfo.Draft = await GetDraftFileAsync(organisation.OrganisationId, snapshotYear, userRequestingDraft);
             return reportInfo;
         }
 
-        private async Task<ReportInfoModel> GetReport_InfoAsync(Organisation organisation, DateTime? returnModifiedDate, int snapshotYear)
+        private ReportInfoModel GetReport_Info(Organisation organisation, DateTime? returnModifiedDate, int snapshotYear)
         {
             DateTime snapshotDate = GetSnapshotDate(organisation.SectorType, snapshotYear);
             if (!IsValidSnapshotYear(snapshotDate.Year))
@@ -560,7 +560,7 @@ namespace GenderPayGap.WebUI.Classes.Services
                 ReportingStartDate = snapshotDate,
                 ReportModifiedDate = returnModifiedDate,
                 ReportingRequirement =
-                    await ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisation.OrganisationId, snapshotDate.Year)
+                    ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisation.OrganisationId, snapshotDate.Year)
             };
 
             return result;

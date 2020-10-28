@@ -229,7 +229,7 @@ namespace GenderPayGap.WebUI.Controllers
             string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";
 
             //Track the download 
-            WebTracker.TrackPageViewAsync(this, userFacingDownloadFileName).Wait();
+            WebTracker.TrackPageView(this, userFacingDownloadFileName);
 
             return DownloadHelper.CreateCsvDownload(fileContents, userFacingDownloadFileName);
         }
