@@ -18,43 +18,43 @@ namespace GenderPayGap.WebUI.Models.Report
         public ReportPagesAction Action { get; set; }
 
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in upper quartile",
-            NameWithinSentence = "male employees in upper quartile")]
+            NameAtStartOfSentence = "Male employees in upper quarter",
+            NameWithinSentence = "male employees in upper quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? MaleUpperPayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in upper quartile",
-            NameWithinSentence = "female employees in upper quartile")]
+            NameAtStartOfSentence = "Female employees in upper quarter",
+            NameWithinSentence = "female employees in upper quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? FemaleUpperPayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in upper-middle quartile",
-            NameWithinSentence = "male employees in upper-middle quartile")]
+            NameAtStartOfSentence = "Male employees in upper-middle quarter",
+            NameWithinSentence = "male employees in upper-middle quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? MaleUpperMiddlePayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in upper-middle quartile",
-            NameWithinSentence = "female employees in upper-middle quartile")]
+            NameAtStartOfSentence = "Female employees in upper-middle quarter",
+            NameWithinSentence = "female employees in upper-middle quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? FemaleUpperMiddlePayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in lower-middle quartile",
-            NameWithinSentence = "male employees in lower-middle quartile")]
+            NameAtStartOfSentence = "Male employees in lower-middle quarter",
+            NameWithinSentence = "male employees in lower-middle quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? MaleLowerMiddlePayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in lower-middle quartile",
-            NameWithinSentence = "female employees in lower-middle quartile")]
+            NameAtStartOfSentence = "Female employees in lower-middle quarter",
+            NameWithinSentence = "female employees in lower-middle quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? FemaleLowerMiddlePayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in lower quartile",
-            NameWithinSentence = "male employees in lower quartile")]
+            NameAtStartOfSentence = "Male employees in lower quarter",
+            NameWithinSentence = "male employees in lower quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? MaleLowerPayBand { get; set; }
         [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in lower quartile",
-            NameWithinSentence = "female employees in lower quartile")]
+            NameAtStartOfSentence = "Female employees in lower quarter",
+            NameWithinSentence = "female employees in lower quarter")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         public decimal? FemaleLowerPayBand { get; set; }
 
