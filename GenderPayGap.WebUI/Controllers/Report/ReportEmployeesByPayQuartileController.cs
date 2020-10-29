@@ -124,7 +124,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             string nextPageUrl = viewModel.Action == ReportPagesAction.Save
                 ? Url.Action("EmployeesByPayQuartileGet", "ReportEmployeesByPayQuartile", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})
                 : Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
-            StatusMessageHelper.SetStatusMessage(Response, "Saved changes to employees by pay quartile", nextPageUrl);
+            StatusMessageHelper.SetStatusMessage(Response, "Saved changes to employees by pay quarter", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
 
@@ -140,7 +140,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.ParseAndValidateParameters(Request, m => m.FemaleLowerPayBand);
 
             // Validate percents add up to 100
-            string errorMessage = "Figures for each quartile must add up to 100%";
+            string errorMessage = "Figures for each quarter must add up to 100%";
 
             if (viewModel.FemaleUpperPayBand.HasValue
                 && viewModel.MaleUpperPayBand.HasValue

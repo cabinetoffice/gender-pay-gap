@@ -2367,7 +2367,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 DiffMeanHourlyPayPercent = 0,
                 DiffMedianHourlyPercent = 0,
 
-                // quartile
+                // quarters
                 FemaleLowerPayBand = 10,
                 FemaleMiddlePayBand = 30,
                 FemaleUpperPayBand = 60,
