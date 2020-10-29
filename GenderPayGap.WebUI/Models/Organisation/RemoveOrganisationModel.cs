@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GenderPayGap.WebUI.Models.Organisation
 {
@@ -10,7 +11,7 @@ namespace GenderPayGap.WebUI.Models.Organisation
         public string EncUserId { get; set; }
 
         public string OrganisationName { get; set; }
-        public string OrganisationAddress { get; set; }
+        public List<string> OrganisationAddress { get; set; }
         public string UserName { get; set; }
 
     }

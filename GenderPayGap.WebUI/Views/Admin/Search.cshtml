@@ -75,7 +75,7 @@
                             </div>
                             <div class="govuk-radios__item" style="margin-right: 0;">
                                 <input class="govuk-radios__input" id="changed-name" name="orderBy" type="radio" value="relevance"
-                                       @(Html.Raw(Model.OrderBy == "relevance" ? "checked" : null))
+                                       @{if (Model.OrderBy == "relevance") { <text> checked </text>}}
                                        onchange="submitSearchForm();">
                                 <label class="govuk-label govuk-radios__label" for="changed-name">
                                     By relevance
@@ -83,7 +83,7 @@
                             </div>
                             <div class="govuk-radios__item" style="margin-right: 0;">
                                 <input class="govuk-radios__input" id="changed-name-2" name="orderBy" type="radio" value="alphabetically"
-                                       @(Html.Raw(Model.OrderBy == "alphabetically" ? "checked" : null))
+                                       @{if (Model.OrderBy == "alphabetically") { <text> checked </text>}}
                                        onchange="submitSearchForm();">
                                 <label class="govuk-label govuk-radios__label" for="changed-name-2">
                                     Alphabetically

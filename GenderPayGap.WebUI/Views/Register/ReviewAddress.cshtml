@@ -92,17 +92,23 @@
                             <span class="heading-medium">New address</span>
                         </th>
                         <td class="govuk-table__cell">
-                            @Html.Raw(Model.GetFullAddress().Replace(",", ",<br/>"))
+                            @foreach (string addressLine in Model.GetFullAddress())
+                            {
+                                @(addressLine)<br />
+                            }
                         </td>
                     </tr>
-                    @if (!string.IsNullOrWhiteSpace(Model.RegisteredAddress))
+                    @if (Model.RegisteredAddress != null)
                     {
                         <tr class="govuk-table__row">
                             <th class="govuk-table__header" scope="row">
                                 <span class="heading-medium">Old address</span>
                             </th>
                             <td class="govuk-table__cell">
-                                @Html.Raw(Model.RegisteredAddress.Replace(",", ",<br/>"))
+                                @foreach (string addressLine in Model.RegisteredAddress)
+                                {
+                                    @(addressLine)<br/>
+                                }
                             </td>
                         </tr>
                     }

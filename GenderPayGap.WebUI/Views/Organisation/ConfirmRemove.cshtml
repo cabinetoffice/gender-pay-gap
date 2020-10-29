@@ -48,7 +48,10 @@
                             Address
                         </dt>
                         <dd id="OrgAddressAnswer" class="cya-answer">
-                            @Html.Raw(Model.OrganisationAddress.Replace(",", "&#44;<br/>"))
+                            @foreach (string addressLine in Model.OrganisationAddress)
+                            {
+                                @(addressLine)<br />
+                            }
                         </dd>
                     </div>
                 </dl>
