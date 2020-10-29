@@ -115,7 +115,7 @@ namespace GenderPayGap.WebUI.Controllers
             model.PoBox = userOrg.Address.PoBox;
 
             model.RegisteredAddress = userOrg.Address.Status == AddressStatuses.Pending
-                ? userOrg.Organisation.GetLatestAddress()?.GetAddressString()
+                ? userOrg.Organisation.GetLatestAddress().GetAddressLines()
                 : null;
 
             model.CharityNumber = userOrg.Organisation.OrganisationReferences

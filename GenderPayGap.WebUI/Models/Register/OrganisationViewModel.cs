@@ -23,7 +23,7 @@ namespace GenderPayGap.WebUI.Models.Register
         public bool ManualRegistration { get; set; }
         public bool SelectedAuthorised { get; set; }
         public bool ManualAddress { get; set; }
-        public string RegisteredAddress { get; set; }
+        public List<string> RegisteredAddress { get; set; }
 
         public string BackAction { get; set; }
 
@@ -101,7 +101,7 @@ namespace GenderPayGap.WebUI.Models.Register
         public string PoBox { get; set; }
         public string AddressSource { get; set; }
 
-        public string GetFullAddress()
+        public List<string> GetFullAddress()
         {
             var list = new List<string>();
             list.Add(Address1);
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Models.Register
             list.Add(Country);
             list.Add(Postcode);
             list.Add(PoBox);
-            return list.ToDelimitedString(", ");
+            return list;
         }
 
         #endregion

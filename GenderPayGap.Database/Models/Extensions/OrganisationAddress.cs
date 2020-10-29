@@ -7,6 +7,60 @@ using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Database
 {
+    public static class OrganisationAddressExtensions
+    {
+        public static List<string> GetAddressLines(this OrganisationAddress address)
+        {
+            var list = new List<string>();
+            if (address == null)
+            {
+                return list;
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.Address1))
+            {
+                list.Add(address.Address1.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.Address2))
+            {
+                list.Add(address.Address2.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.Address3))
+            {
+                list.Add(address.Address3.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.TownCity))
+            {
+                list.Add(address.TownCity.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.County))
+            {
+                list.Add(address.County.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.Country))
+            {
+                list.Add(address.Country.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.PostCode))
+            {
+                list.Add(address.PostCode.TrimI());
+            }
+
+            if (!string.IsNullOrWhiteSpace(address.PoBox))
+            {
+                list.Add(address.PoBox.TrimI());
+            }
+
+            return list;
+        }
+    }
+
     [Serializable]
     public partial class OrganisationAddress
     {
@@ -27,55 +81,9 @@ namespace GenderPayGap.Database
             return AddressId == address.AddressId;
         }
 
-        public List<string> GetList()
-        {
-            var list = new List<string>();
-            if (!string.IsNullOrWhiteSpace(Address1))
-            {
-                list.Add(Address1.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(Address2))
-            {
-                list.Add(Address2.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(Address3))
-            {
-                list.Add(Address3.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(TownCity))
-            {
-                list.Add(TownCity.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(County))
-            {
-                list.Add(County.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(Country))
-            {
-                list.Add(Country.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(PostCode))
-            {
-                list.Add(PostCode.TrimI());
-            }
-
-            if (!string.IsNullOrWhiteSpace(PoBox))
-            {
-                list.Add(PoBox.TrimI());
-            }
-
-            return list;
-        }
-
         public string GetAddressString(string delimiter = ", ")
         {
-            return GetList().ToDelimitedString(delimiter);
+            return this.GetAddressLines().ToDelimitedString(delimiter);
         }
 
         public void SetStatus(AddressStatuses status, long byUserId, string details = null, DateTime? statusDate = null)

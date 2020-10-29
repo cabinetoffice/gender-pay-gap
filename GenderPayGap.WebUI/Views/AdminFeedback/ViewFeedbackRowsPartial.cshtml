@@ -2,7 +2,7 @@
 @using GenderPayGap.Database.Models
 @model GenderPayGap.WebUI.Views.AdminFeedback.ViewFeedbackRowsPartialViewModel
 
-<details class="govuk-details" data-module="govuk-details" @(Model.Open ? Html.Raw("open") : null)>
+<details class="govuk-details" data-module="govuk-details" @{if (Model.Open) { <text> open </text> }}>
     <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
             <span class="govuk-!-font-weight-bold govuk-!-font-size-48">

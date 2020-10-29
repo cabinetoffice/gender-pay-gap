@@ -1,30 +1,7 @@
 ﻿@using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.WebUI.Models.Viewing
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
-@{
 
-    var medianHourlyRateChartModel = new VerticalBarChartModel
-    {
-        Id = "MedianHourlyDiffChart",
-        FemaleIsLower = Model.FemaleHasLowerMedianHourlyPercent,
-        Male = Model.FemaleHasLowerMedianHourlyPercent ? 100 : 100 + Model.DiffMedianHourlyPercent.Value,
-        Female = Model.FemaleHasLowerMedianHourlyPercent ? 100 - Model.DiffMedianHourlyPercent.Value : 100,
-        MaleMonetisation = Model.MaleMedianHourlyRateMonitised,
-        FemaleMonetisation = Model.FemaleMedianHourlyRateMonitised
-    };
-
-    // calculates the median hourly rate text to display
-    string medianMonetisation = $"<strong>women earn {Model.FemaleMedianHourlyRateMonitised}</strong> for every <strong>{Model.MaleMedianHourlyRateMonitised}</strong> that men earn when comparing median hourly wages.";
-
-    string medianLoHiStatement = Model.FemaleHasLowerMedianHourlyPercent ?
-        "<strong>lower</strong> than men&rsquo;s." :
-        "<strong>higher</strong> than men&rsquo;s.";
-
-    // calculates the mean hourly rate text to display
-    string meanLoHiStatement = Model.FemaleHasLowerMeanHourlyPercent ?
-        "<strong>lower</strong> than men&rsquo;s." :
-        "<strong>higher</strong> than men&rsquo;s.";
-}
 <div class="grid-row">
     <div class="column-full">
         <section id="HourlyRateInfo">
@@ -34,9 +11,18 @@
 
             <div class="grid-row">
                 <div class="column-two-thirds">
-                    <span>In this organisation, @Html.Raw(medianMonetisation)</span>
+                    <span>
+                        In this organisation, <strong>women earn @(Model.FemaleMedianHourlyRateMonitised)</strong>
+                        for every <strong>@(Model.MaleMedianHourlyRateMonitised)</strong>
+                        that men earn when comparing median hourly wages.
+                    </span>
                     <span>Their median hourly wage is <strong>@(string.Format("{0:0.#}", Math.Abs(Model.DiffMedianHourlyPercent.Value)))%</strong></span>
-                    <span>@Html.Raw(medianLoHiStatement)</span>
+                    <span>
+                        <strong>
+                            @(Model.FemaleHasLowerMedianHourlyPercent ? "lower" : "higher")
+                        </strong>
+                        than men&rsquo;s.
+                    </span>
                 </div>
             </div>
 
@@ -49,6 +35,18 @@
                         </span>
                     </div>
 
+                    @{
+                        // IntelliSense says this variable isn't used, but it actually is, on the line below
+                        var medianHourlyRateChartModel = new VerticalBarChartModel
+                        {
+                            Id = "MedianHourlyDiffChart",
+                            FemaleIsLower = Model.FemaleHasLowerMedianHourlyPercent,
+                            Male = Model.FemaleHasLowerMedianHourlyPercent ? 100 : 100 + Model.DiffMedianHourlyPercent.Value,
+                            Female = Model.FemaleHasLowerMedianHourlyPercent ? 100 - Model.DiffMedianHourlyPercent.Value : 100,
+                            MaleMonetisation = Model.MaleMedianHourlyRateMonitised,
+                            FemaleMonetisation = Model.FemaleMedianHourlyRateMonitised
+                        };
+                    }
                     <partial name="EmployerDetails/VerticalBarChart" model="medianHourlyRateChartModel"/>
                 </div>
             </div>
@@ -57,7 +55,12 @@
                 <div class="column-two-thirds">
                     <span>When comparing mean hourly wages, </span>
                     <span>women&rsquo;s mean hourly wage is <strong>@(string.Format("{0:0.#}", Math.Abs(Model.DiffMeanHourlyPayPercent.Value)))%</strong></span>
-                    <span>@Html.Raw(meanLoHiStatement)</span>
+                    <span>
+                        <strong>
+                            @(Model.FemaleHasLowerMeanHourlyPercent ? "lower" : "higher")
+                        </strong>
+                        than men&rsquo;s.
+                    </span>
                 </div>
             </div>
 
