@@ -76,6 +76,158 @@
         <thead>
             <tr>
                 <th colspan="2">
+                    <span>Employees by pay quarter</span>
+                </th>
+                <th>
+                    <span class="edit">
+                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "PayQuartiles")">
+                            Edit<span class="visually-hidden"> pay quarter</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="numeric govuk-!-font-size-16" scope="col">
+                    <strong>Male</strong>
+                </td>
+                <td class="numeric govuk-!-font-size-16" scope="col">
+                    <strong>Female</strong>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>
+                    Upper quarter
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleUpperQuartilePayBand">
+                        @if (Model.MaleUpperQuartilePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleUpperQuartilePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleUpperQuartilePayBand">
+                        @if (Model.FemaleUpperQuartilePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleUpperQuartilePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Upper middle quarter
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleUpperPayBand">
+                        @if (Model.MaleUpperPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleUpperPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleUpperPayBand">
+                        @if (Model.FemaleUpperPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleUpperPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lower middle quarter
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleMiddlePayBand">
+                        @if (Model.MaleMiddlePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleMiddlePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleMiddlePayBand">
+                        @if (Model.FemaleMiddlePayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleMiddlePayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Lower quarter
+                </td>
+                <td class="numeric">
+                    <span id="DisplayMaleLowerPayBand">
+                        @if (Model.MaleLowerPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.MaleLowerPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+                <td class="numeric">
+                    <span id="DisplayFemaleLowerPayBand">
+                        @if (Model.FemaleLowerPayBand.HasValue)
+                        {
+                            @Html.ValueFor(model => model.FemaleLowerPayBand)
+                            @:%
+                        }
+                        else
+                        {
+                            <span class="gpg-data__status--notcompleted">Not completed</span>
+                        }
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table gpg-data">
+        <thead>
+            <tr>
+                <th colspan="2">
                     <span>Hourly rate</span>
                 </th>
                 <th class="question" colspan="3">
@@ -219,158 +371,6 @@
                         else if (Model.MaleMedianBonusPayPercent == 0)
                         {
                             <span>Not applicable</span>
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table gpg-data">
-        <thead>
-            <tr>
-                <th colspan="2">
-                    <span>Employees by pay quarter</span>
-                </th>
-                <th>
-                    <span class="edit">
-                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "PayQuartiles")">
-                            Edit<span class="visually-hidden"> pay quarter</span>
-                        </a>
-                    </span>
-                </th>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="numeric govuk-!-font-size-16" scope="col">
-                    <strong>Male</strong>
-                </td>
-                <td class="numeric govuk-!-font-size-16" scope="col">
-                    <strong>Female</strong>
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-
-            <tr>
-                <td>
-                    Upper quarter
-                </td>
-                <td class="numeric">
-                    <span id="DisplayMaleUpperQuartilePayBand">
-                        @if (Model.MaleUpperQuartilePayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.MaleUpperQuartilePayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-                <td class="numeric">
-                    <span id="DisplayFemaleUpperQuartilePayBand">
-                        @if (Model.FemaleUpperQuartilePayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.FemaleUpperQuartilePayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Upper middle quarter
-                </td>
-                <td class="numeric">
-                    <span id="DisplayMaleUpperPayBand">
-                        @if (Model.MaleUpperPayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.MaleUpperPayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-                <td class="numeric">
-                    <span id="DisplayFemaleUpperPayBand">
-                        @if (Model.FemaleUpperPayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.FemaleUpperPayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Lower middle quarter
-                </td>
-                <td class="numeric">
-                    <span id="DisplayMaleMiddlePayBand">
-                        @if (Model.MaleMiddlePayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.MaleMiddlePayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-                <td class="numeric">
-                    <span id="DisplayFemaleMiddlePayBand">
-                        @if (Model.FemaleMiddlePayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.FemaleMiddlePayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Lower quarter
-                </td>
-                <td class="numeric">
-                    <span id="DisplayMaleLowerPayBand">
-                        @if (Model.MaleLowerPayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.MaleLowerPayBand)
-                            @:%
-                        }
-                        else
-                        {
-                            <span class="gpg-data__status--notcompleted">Not completed</span>
-                        }
-                    </span>
-                </td>
-                <td class="numeric">
-                    <span id="DisplayFemaleLowerPayBand">
-                        @if (Model.FemaleLowerPayBand.HasValue)
-                        {
-                            @Html.ValueFor(model => model.FemaleLowerPayBand)
-                            @:%
                         }
                         else
                         {
