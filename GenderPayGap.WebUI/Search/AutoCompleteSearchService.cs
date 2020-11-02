@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Search
             bool queryContainsPunctuation)
         {
             return allOrganisations
-                .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
+                .Where(org => org.IncludeInViewingService)
                 .Where(org => SearchHelper.CurrentOrPreviousOrganisationNameMatchesSearchTerms(org, searchTerms, queryContainsPunctuation))
                 .ToList();
         }
