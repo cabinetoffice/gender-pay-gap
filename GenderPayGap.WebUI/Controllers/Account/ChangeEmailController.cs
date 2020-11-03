@@ -47,6 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         // The user tells us their new email address
         // We validate it (e.g. is it the email address of another user)
         // Then, we send a verification email
+        [ValidateAntiForgeryToken]
         [HttpPost("change-email")]
         public IActionResult ChangeEmailPost(ChangeEmailViewModel viewModel)
         {
@@ -133,6 +134,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         // We validate the email verify token, and check that their password is correct
         // We then go ahead and change their email address
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         [HttpPost("verify-email")]
         public IActionResult VerifyEmailPost(VerifyEmailChangeViewModel viewModel)
         {

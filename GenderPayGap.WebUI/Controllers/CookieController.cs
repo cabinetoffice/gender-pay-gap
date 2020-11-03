@@ -24,6 +24,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("/cookies")]
+        [ValidateAntiForgeryToken]
         public IActionResult CookieSettingsPost(CookieSettingsViewModel cookieSettingsViewModel)
         {
             var cookieSettings = new CookieSettings
@@ -51,6 +52,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("/accept-all-cookies")]
+        [ValidateAntiForgeryToken]
         public IActionResult AcceptAllCookies()
         {
             var cookieSettings = new CookieSettings

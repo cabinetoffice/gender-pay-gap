@@ -97,6 +97,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("reference-data/sic-sections/upload")]
+        [ValidateAntiForgeryToken]
         public IActionResult SicSectionUploadPost(AdminFileUploadViewModel viewModel)
         {
             if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
@@ -126,6 +127,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("reference-data/sic-codes/upload")]
+        [ValidateAntiForgeryToken]
         public IActionResult SicCodeUploadPost(AdminFileUploadViewModel viewModel)
         {
             if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
@@ -157,6 +159,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("reference-data/sic-sections/upload/check")]
+        [ValidateAntiForgeryToken]
         public IActionResult SicSectionUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
         {
             var newRecords = JsonConvert.DeserializeObject<List<SicSection>>(viewModel.SerializedNewRecords);
@@ -218,6 +221,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("reference-data/sic-codes/upload/check")]
+        [ValidateAntiForgeryToken]
         public IActionResult SicCodeUploadCheckPost(AdminSicCodeUploadCheckViewModel viewModel)
         {
             var newRecords = JsonConvert.DeserializeObject<List<SicCode>>(viewModel.SerializedNewRecords);

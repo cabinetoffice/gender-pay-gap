@@ -50,8 +50,9 @@
                             </td>
                             <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
                                 <form method="post"
-                                      action="@(Url.Action())"
+                                      action="@Url.Action("CategoriseFeedback", "AdminFeedback")"
                                       style="align-items: center; display: flex; flex-direction: column;">
+                                    @(Html.AntiForgeryToken())
                                     <input type="hidden" name="feedbackId" value="@(feedback.FeedbackId)"/>
 
                                     @if (Model.ShowMarkAsSpamButton)

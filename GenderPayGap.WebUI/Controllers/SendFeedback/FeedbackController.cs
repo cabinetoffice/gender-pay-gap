@@ -48,6 +48,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SendFeedbackPost(FeedbackViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.HowEasyIsThisServiceToUse);

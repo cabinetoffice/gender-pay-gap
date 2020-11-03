@@ -57,6 +57,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("organisation/{id}/change-company-number")]
+        [ValidateAntiForgeryToken]
         public IActionResult ChangeCompanyNumberPost(long id, AdminOrganisationCompanyNumberViewModel viewModel)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);

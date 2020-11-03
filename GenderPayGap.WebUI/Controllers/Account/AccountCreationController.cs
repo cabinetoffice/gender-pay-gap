@@ -69,6 +69,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         }
 
         [HttpPost("/create-user-account")]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateUserAccountPost(CreateUserAccountViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
