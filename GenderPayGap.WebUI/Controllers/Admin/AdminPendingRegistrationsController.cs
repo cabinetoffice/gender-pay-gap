@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
@@ -8,16 +8,16 @@ using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GenderPayGap.WebUI.Controllers.Administration
+namespace GenderPayGap.WebUI.Controllers.Admin
 {
     [Authorize(Roles = LoginRoles.GpgAdmin)]
     [Route("admin")]
-    public class AdminController : Controller
+    public class AdminPendingRegistrationsController : Controller
     {
 
         private readonly IDataRepository dataRepository;
 
-        public AdminController(IDataRepository dataRepository)
+        public AdminPendingRegistrationsController(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
