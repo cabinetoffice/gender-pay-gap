@@ -47,7 +47,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.Organisation.OrganisationId })">
+        <form method="POST" action="@Url.Action("ChangeCompanyNumberPost", "AdminOrganisationCompanyNumber", new { id = Model.Organisation.OrganisationId })">
             @(Html.AntiForgeryToken())
             <input type="hidden"
                    name="@(nameof(AdminOrganisationCompanyNumberViewModel.CurrentPage))"
