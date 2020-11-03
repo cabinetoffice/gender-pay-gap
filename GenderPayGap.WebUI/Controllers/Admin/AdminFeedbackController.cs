@@ -33,6 +33,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("feedback")]
+        [ValidateAntiForgeryToken]
         public IActionResult CategoriseFeedback(long feedbackId, FeedbackStatus status)
         {
             Feedback feedback = dataRepository.Get<Feedback>(feedbackId);

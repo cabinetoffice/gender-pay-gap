@@ -93,6 +93,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [AllowAnonymous]
         [HttpPost("data-migration/from-file")]
+        [ValidateAntiForgeryToken]
         public IActionResult ImportAllDataFromFile(AdminFileUploadViewModel viewModel)
         {
             if (!IsUserAllowedToImportData())
@@ -129,6 +130,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [AllowAnonymous]
         [HttpPost("data-migration/from-remote-server")]
+        [ValidateAntiForgeryToken]
         public IActionResult ImportAllDataFromRemoteServer(AdminDataMigrationViewModel viewModel)
         {
             if (!IsUserAllowedToImportData())

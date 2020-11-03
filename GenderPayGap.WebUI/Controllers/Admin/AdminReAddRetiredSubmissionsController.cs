@@ -34,6 +34,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("re-add-retired-submissions")]
+        [ValidateAntiForgeryToken]
         public IActionResult ReAddRetiredSubmissionsPost(AdminReAddRetiredSubmissionsViewModel viewModel)
         {
             var expectedHeadings = new List<string>
