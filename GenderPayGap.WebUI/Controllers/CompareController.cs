@@ -382,17 +382,6 @@ namespace GenderPayGap.WebUI.Controllers
             return Content(model.ToCSV(), "text/csv");
         }
 
-        [HttpGet("help/{view}")]
-        public IActionResult CompareHelp(string view)
-        {
-            if (string.IsNullOrWhiteSpace(view))
-            {
-                return new HttpBadRequestResult("Missing view name");
-            }
-
-            return View($"Help/{view}");
-        }
-
         #region Helpers
 
         private EmployerSearchModel GetEmployer(string employerIdentifier, bool activeOnly = true)
