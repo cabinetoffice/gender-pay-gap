@@ -1,54 +1,102 @@
 ﻿@using GenderPayGap.WebUI.Models.Shared
+@using GenderPayGap.WebUI.Views.Components.PaginationLinks
 @{
     ViewBag.Title = "Actions to close the gap - GOV.UK";   
     Layout = "Index.cshtml";
 }
 
-<h2 class="heading-large">Overview</h2>
-<p>
+<h2 class="govuk-heading-l">Overview</h2>
+<p class="govuk-body">
     Employers have asked us which actions are likely to improve recruitment and progression of women and reduce the gender pay gap.
 </p>
-<p>
+<p class="govuk-body">
     This guidance summarises approaches that have been shown to work and those which need more evidence before they can be recommended as widespread approaches.
     This will help employers create more effective action plans.
 </p>
-<p>
+<p class="govuk-body">
     Employers who use high quality data to understand the drivers of their gender pay gap will be able to target their actions and therefore deliver the most effective results.
 </p>
 
-@await Html.PartialModelAsync(new Accordion(
-    new AccordionSection("What evidence we have used", "", "/Views/ActionHubOld/OverviewParts/Evidence.cshtml", "evidence-used"),
-    new AccordionSection("How you can help", "", "/Views/ActionHubOld/OverviewParts/Help.cshtml", "how-you-can-help")
-    ))
-
-@await Html.PartialModelAsync(new Pagination(
-    new PaginationLink(Url.Action("Effective", "ActionHub"), "Next", "Effective actions")
-    ))
-<div style="margin-bottom: 25px; font-size: 16px!important">
-    <a rel="download" class="print-link" data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/Evidence-based_actions_for_employers.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Gender pay gap explained&quot;}" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">Print entire guide<span class="visually-hidden"> (pdf)</span></a>
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+    <div class="govuk-accordion__section ">
+        <div class="govuk-accordion__section-header">
+            <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+                    What evidence we have used
+                </span>
+            </h2>
+        </div>
+        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+            <p class="govuk-body">
+                This guidance is based on the best available evidence currently.
+                It will be regularly updated as the evidence base develops.
+            </p>
+        
+            <p class="govuk-body">
+                Where possible, we have used evidence based on randomised controlled trials that were conducted in the field and that measure objective outcomes related to recruitment, progression and promotion.
+                High quality evidence is currently scarce in the field of gender equality in the workplace.
+            </p>
+        </div>
+    </div>
+    <div class="govuk-accordion__section ">
+        <div class="govuk-accordion__section-header">
+            <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+                    How you can help
+                </span>
+            </h2>
+        </div>
+        <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+            <p class="govuk-body">
+                To build better evidence, we encourage researchers and employers to evaluate the actions they take to improve gender equality in the workplace.
+            </p>
+      
+            <p class="govuk-body">
+                The Government Equalities Office will be working with employers to build more evidence on what works.
+                If you represent an organisation with 4000 or more employees in the UK and would like to partner with us, please contact the Gender and Behavioural Insights programme <a class="govuk-link" href="mailto:gabiprogramme@bi.team">gabiprogramme@bi.team</a>
+                <br/>
+                This is a programme run by the Behavioural Insights Team for the Government Equalities Office.
+            </p>
+        </div>
+    </div>
 </div>
-@*Actions to close the gender pay gap - download PDF*@
-<table class="table-responsive">
-    <tbody>
-    <tr>
-        <td style="width: 100px;">
-            <a rel="download" download class="gem-c-related-navigation__section-link--other" data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/Evidence-based_actions_for_employers.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Gender pay gap explained&quot;}" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">
-                <img style="border:6px solid #dee0e2" width="78" src="/img/what-works.png" alt="" />
-                <span class="visually-hidden">Actions to close the gender pay gap (pdf)</span>
+
+@{
+    var rightLink = new PaginationLinkViewModel
+    {
+        Title = "Next",
+        Text = "Effective actions",
+        Url = Url.Action("Effective", "ActionHub")
+    };
+    
+    await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
+    {
+        LeftLink = null,
+        RightLink = rightLink
+    });
+}
+
+<p class="govuk-body-s">
+    <a class="govuk-link print-link" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">
+        Print entire guide (PDF)
+    </a>
+</p>
+
+<div class="pdf-preview">
+    <span class="pdf-preview__image">
+        <a href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">
+            <img style="border:6px solid #dee0e2" width="78" src="/img/what-works.png" alt=""/>
+            <span class="govuk-visually-hidden">Actions to close the gender pay gap (pdf)</span>
+        </a>
+    </span>
+    
+    <span class="pdf-preview__text">
+        <p class="govuk-body govuk-!-margin-bottom-1">
+            <a class="govuk-link" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">
+                Actions to close the gender pay gap
+                <span class="govuk-visually-hidden"> (pdf)</span>
             </a>
-        </td>
-        <td style="vertical-align: top">
-            <div style="width: 180px; align-content: left;">
-                <a rel="download" download data-track-category="relatedLinkClicked" data-track-action="1.1 Related content" data-track-label="/public/assets/pdf/Evidence-based_actions_for_employers.pdf" data-track-options="{&quot;dimension28&quot;:&quot;1&quot;,&quot;dimension29&quot;:&quot;Gender pay gap explained&quot;}" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf"
-                   style="font-size: 19px !important">
-                    Actions to close the gender pay gap
-                    <span class="visually-hidden"> (pdf)</span>
-                </a>
-            </div>
-            <div class="text-left font-xsmall">
-                <p>PDF, 8.45MB, 12 pages</p>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        </p>
+        <p class="govuk-body-s">PDF, 8.45MB, 12 pages</p>
+    </span>
+</div>
