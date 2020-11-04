@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             //This is required so the tagHelper looks up based on this action name not the actual OverviewAction
             RouteData.Values.Add("SitemapAction", "Overview2");
-            return View("/Views/ActionHub2/Overview.cshtml");
+            return View("/Views/ActionHubNew/Overview.cshtml");
         }
 
         [HttpGet("leadership-and-accountability")]
@@ -56,7 +56,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (UseNewActionHub())
             {
-                return View("/Views/ActionHub2/Leadership.cshtml");
+                return View("/Views/ActionHubNew/Leadership.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -67,7 +67,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (UseNewActionHub())
             {
-                return View("/Views/ActionHub2/Hiring.cshtml");
+                return View("/Views/ActionHubNew/Hiring.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -78,7 +78,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (UseNewActionHub())
             {
-                return View("/Views/ActionHub2/Talent.cshtml");
+                return View("/Views/ActionHubNew/Talent.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -89,7 +89,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (UseNewActionHub())
             {
-                return View("/Views/ActionHub2/Workplace.cshtml");
+                return View("/Views/ActionHubNew/Workplace.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -100,7 +100,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (UseNewActionHub())
             {
-                return View("/Views/ActionHub2/Reading.cshtml");
+                return View("/Views/ActionHubNew/Reading.cshtml");
             }
 
             return new HttpNotFoundResult();
