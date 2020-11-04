@@ -60,3 +60,22 @@
         }
     }
 }
+
+.print-link {
+    background: url(../../img/icon-print.png) no-repeat 0 50%;
+    padding: 0.5em 0 0.5em 28px
+}
+
+.pdf-preview {
+    
+    .pdf-preview__image {
+        width: 80px;
+        float: left;
+    }
+    
+    .pdf-preview__text {
+        float: left;
+        margin-left: 1em;
+        width: 200px;
+    }
+}
