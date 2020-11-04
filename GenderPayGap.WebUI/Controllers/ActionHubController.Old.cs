@@ -13,7 +13,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (!UseNewActionHub())
             {
-                return View("/Views/ActionHub1/Overview.cshtml");
+                return View("/Views/ActionHubOld/Overview.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -24,7 +24,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (!UseNewActionHub())
             {
-                return View("/Views/ActionHub1/Effective.cshtml");
+                return View("/Views/ActionHubOld/Effective.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -35,7 +35,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (!UseNewActionHub())
             {
-                return View("/Views/ActionHub1/Promising.cshtml");
+                return View("/Views/ActionHubOld/Promising.cshtml");
             }
 
             return new HttpNotFoundResult();
@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (!UseNewActionHub())
             {
-                return View("/Views/ActionHub1/MixedResult.cshtml");
+                return View("/Views/ActionHubOld/MixedResult.cshtml");
             }
 
             return new HttpNotFoundResult();
