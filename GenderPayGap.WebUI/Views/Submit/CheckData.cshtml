@@ -76,7 +76,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    <span>Employees by pay quarter</span>
+                    <span>Percentage of men and women in each hourly pay quarter</span>
                 </th>
                 <th>
                     <span class="edit">
@@ -89,10 +89,10 @@
             <tr>
                 <td></td>
                 <td class="numeric govuk-!-font-size-16" scope="col">
-                    <strong>Male</strong>
+                    <strong>Men</strong>
                 </td>
                 <td class="numeric govuk-!-font-size-16" scope="col">
-                    <strong>Female</strong>
+                    <strong>Women</strong>
                 </td>
             </tr>
         </thead>
@@ -100,7 +100,7 @@
 
             <tr>
                 <td>
-                    Upper quarter
+                    Upper hourly pay quarter
                 </td>
                 <td class="numeric">
                     <span id="DisplayMaleUpperQuartilePayBand">
@@ -131,7 +131,7 @@
             </tr>
             <tr>
                 <td>
-                    Upper middle quarter
+                    Upper middle hourly pay quarter
                 </td>
                 <td class="numeric">
                     <span id="DisplayMaleUpperPayBand">
@@ -162,7 +162,7 @@
             </tr>
             <tr>
                 <td>
-                    Lower middle quarter
+                    Lower middle hourly pay quarter
                 </td>
                 <td class="numeric">
                     <span id="DisplayMaleMiddlePayBand">
@@ -193,7 +193,7 @@
             </tr>
             <tr>
                 <td>
-                    Lower quarter
+                    Lower hourly pay quarter
                 </td>
                 <td class="numeric">
                     <span id="DisplayMaleLowerPayBand">
@@ -228,7 +228,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    <span>Hourly rate</span>
+                    <span>Average (mean) and median gender pay gap using hourly pay</span>
                 </th>
                 <th class="question" colspan="3">
                     <span class="edit">
@@ -242,7 +242,7 @@
         <tbody>
             <tr>
                 <td>
-                    Difference in mean hourly rate of pay
+                    Average (mean) gender pay gap using hourly pay
                 </td>
                 <td class="numeric" colspan="2">
                     <span id="DisplayDiffMeanHourlyPayPercent">
@@ -260,7 +260,7 @@
             </tr>
             <tr>
                 <td>
-                    Difference in median hourly rate of pay
+                    Median gender pay gap using hourly pay
                 </td>
                 <td class="numeric" colspan="2">
                     <span id="DisplayDiffMedianHourlyPercent">
@@ -283,7 +283,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    <span>Bonus pay</span>
+                    <span>Bonus pay gap</span>
                 </th>
                 <th>
                     <span class="edit">
@@ -296,10 +296,10 @@
             <tr>
                 <td></td>
                 <th class="numeric govuk-!-font-size-16" scope="col">
-                    <strong>Male</strong>
+                    <strong>Men</strong>
                 </th>
                 <th class="numeric govuk-!-font-size-16" scope="col">
-                    <strong>Female</strong>
+                    <strong>Women</strong>
                 </th>
             </tr>
         </thead>
@@ -336,10 +336,10 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    Difference in mean bonus pay
+                <td style="padding-top: 50px;">
+                    Average (mean) gender pay gap using bonus pay
                 </td>
-                <td class="numeric" colspan="2">
+                <td class="numeric" colspan="2" style="padding-top: 50px;">
                     <span id="DisplayDiffMeanBonusPercent">
                         @if (Model.DiffMeanBonusPercent.HasValue)
                         {
@@ -359,7 +359,7 @@
             </tr>
             <tr>
                 <td>
-                    Difference in median bonus pay
+                    Median gender pay gap using bonus pay
                 </td>
                 <td class="numeric" colspan="2">
                     <span id="DisplayDiffMedianBonusPercent">

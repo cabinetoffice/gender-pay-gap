@@ -46,11 +46,11 @@
             <p>A negative <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation receive a lower rate than women in your organisation.</p>
 
             <div class="form-horizontal">
-                <h2 id="PayQuartiles" class="heading-medium">Employees by pay quarter</h2>
+                <h2 id="PayQuartiles" class="heading-medium">Percentage of men and women in each hourly pay quarter</h2>
 
                 <fieldset>
                     <legend>
-                        <h3 class="heading-small">Upper quarter</h3>
+                        <h3 class="heading-small">Upper hourly pay quarter</h3>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.MaleUpperQuartilePayBand, "error")">
                         @Html.LabelFor(model => model.MaleUpperQuartilePayBand, new { @class = "form-label" })
@@ -66,7 +66,7 @@
 
                 <fieldset>
                     <legend>
-                        <h3 class="heading-small">Upper middle quarter</h3>
+                        <h3 class="heading-small">Upper middle hourly pay quarter</h3>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.MaleUpperPayBand, "error")">
                         @Html.LabelFor(model => model.MaleUpperPayBand, new { @class = "form-label" })
@@ -82,7 +82,7 @@
 
                 <fieldset>
                     <legend>
-                        <h3 class="heading-small">Lower middle quarter</h3>
+                        <h3 class="heading-small">Lower middle hourly pay quarter</h3>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.MaleMiddlePayBand, "error")">
                         @Html.LabelFor(model => model.MaleMiddlePayBand, new { @class = "form-label" })
@@ -98,7 +98,7 @@
 
                 <fieldset>
                     <legend>
-                        <h3 class="heading-small">Lower quarter</h3>
+                        <h3 class="heading-small">Lower hourly pay quarter</h3>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.MaleLowerPayBand, "error")">
                         @Html.LabelFor(model => model.MaleLowerPayBand, new { @class = "form-label" })
@@ -114,7 +114,7 @@
 
                 <fieldset id="HourlyPay">
                     <legend>
-                        <h2 class="heading-medium">Difference in hourly rate of pay &#8211; mean</h2>
+                        <h2 class="heading-medium">Average (mean) gender pay gap using hourly pay</h2>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.DiffMeanHourlyPayPercent, "error")">
                         @Html.LabelFor(model => model.DiffMeanHourlyPayPercent, new { @class = "form-label " })
@@ -125,7 +125,7 @@
 
                 <fieldset>
                     <legend>
-                        <h2 class="heading-medium">Difference in hourly rate of pay &#8211; median</h2>
+                        <h2 class="heading-medium">Median gender pay gap using hourly pay</h2>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.DiffMedianHourlyPercent, "error")">
                         @Html.LabelFor(model => model.DiffMedianHourlyPercent, new { @class = "form-label" })
@@ -136,7 +136,7 @@
 
                 <fieldset id="BonusPay">
                     <legend>
-                        <h2 class="heading-medium">Percentage of employees who received bonus pay</h2>
+                        <h2 class="heading-medium">Percentage of men and women who were paid a bonus</h2>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.MaleMedianBonusPayPercent, "error")">
                         @Html.LabelFor(model => model.MaleMedianBonusPayPercent, new { @class = "form-label" })
@@ -152,19 +152,14 @@
 
                 <fieldset>
                     <legend>
-                        <h2 class="heading-medium">Difference in bonus pay &#8211; mean</h2>
+                        <h2 class="heading-medium">Bonus pay</h2>
                     </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.DiffMeanBonusPercent, "error")">
                         @Html.LabelFor(model => model.DiffMeanBonusPercent, new { @class = "form-label" })
                         @Html.ValidationMessageFor(model => model.DiffMeanBonusPercent, "", new { @class = "error-message" })
                         @Html.CustomEditorFor(model => model.DiffMeanBonusPercent, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
                     </div>
-                </fieldset>
 
-                <fieldset>
-                    <legend>
-                        <h2 class="heading-medium">Difference in bonus pay &#8211; median</h2>
-                    </legend>
                     <div class="form-group @Html.SetErrorClass(model => model.DiffMedianBonusPercent, "error")">
                         @Html.LabelFor(model => model.DiffMedianBonusPercent, new { @class = "form-label" })
                         @Html.ValidationMessageFor(model => model.DiffMedianBonusPercent, "", new { @class = "error-message" })
