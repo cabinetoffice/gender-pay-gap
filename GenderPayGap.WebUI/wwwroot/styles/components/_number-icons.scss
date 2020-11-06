@@ -199,3 +199,45 @@
     background-size: 100%;
   }
 }
+
+.icon-effective {
+  background-image: url("../../img/effective64x64.png");
+  width: 23px;
+  height: 23px;
+  background-size: 100%;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .icon-effective {
+    background-image: url("../../img/effective32x32.png");
+    background-size: 100%;
+  }
+}
+
+.icon-promising {
+  background-image: url("../../img/promising64x64.png");
+  width: 23px;
+  height: 23px;
+  background-size: 100%;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .icon-promising {
+    background-image: url("../../img/promising32x32.png");
+    background-size: 100%;
+  }
+}
+
+.icon-mixed {
+  background-image: url("../../img/mixed64x64.png");
+  width: 23px;
+  height: 23px;
+  background-size: 100%;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .icon-mixed {
+    background-image: url("../../img/mixed32x32.png");
+    background-size: 100%;
+  }
+}
