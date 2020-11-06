@@ -1,70 +1,71 @@
 ﻿@model GenderPayGap.WebUI.Models.Organisation.RemoveOrganisationModel
 @{
-    ViewBag.Title = "Confirm removal of organisation - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    ViewBag.Title = "Confirm removal of organisation - Gender pay gap service";
     var controller = ViewData["Controller"] as BaseController;
 
     long userId = Encryption.DecryptQuerystring(Model.EncUserId).ToInt64();
     bool userRemovingSelf = controller.CurrentUser.UserId == userId && controller.IsImpersonatingUser == false;
     string userNamePostFix = userRemovingSelf ? "You" : "";
 }
-<main id="content" role="main">
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.EncOrganisationId)
-        @Html.HiddenFor(m => m.EncUserId)
-        @Html.HiddenFor(m => m.OrganisationName)
-        @Html.HiddenFor(m => m.UserName)
-
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <h1 class="heading-large">
-                    Confirm removal of user
-                </h1>
-                <p>You are about to remove the following user from reporting Gender Pay Gap data for this organisation.</p>
-                <dl class="govuk-check-your-answers cya-questions-short">
-                    <div>
-                        <dt class="cya-question">
-                            User name
-                        </dt>
-                        <dd id="UserNameAnswer" class="cya-answer">
-                            @Model.UserName
-                            @if (string.IsNullOrEmpty(userNamePostFix) == false)
-                            {
-                                <span>(@userNamePostFix)</span>
-                            }
-                        </dd>
-                    </div>
-                    <div>
-                        <dt class="cya-question">
-                            Organisation name
-                        </dt>
-                        <dd id="OrgNameAnswer" class="cya-answer">
-                            @Model.OrganisationName
-                        </dd>
-                    </div>
-                    <div>
-                        <dt class="cya-question">
-                            Address
-                        </dt>
-                        <dd id="OrgAddressAnswer" class="cya-answer">
-                            @foreach (string addressLine in Model.OrganisationAddress)
-                            {
-                                @(addressLine)<br />
-                            }
-                        </dd>
-                    </div>
-                </dl>
-                <br/>
-                <div class="form-group">
-                    <p>
-                        <button type="submit" class="button button-warning" name="id">Remove user</button>
-                    </p>
-                    <p>
-                        <a href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = Model.EncOrganisationId})">Cancel</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    }
-</main>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <h1 class="govuk-heading-xl">
+            Confirm removal of user
+        </h1>
+        
+        <p class="govuk-body">You are about to remove the following user from reporting Gender Pay Gap data for this organisation.</p>
+        
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              User name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @Model.UserName
+              @if (string.IsNullOrEmpty(userNamePostFix) == false)
+              {
+                  <span>(@userNamePostFix)</span>
+              }
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @Model.OrganisationName
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @foreach (string addressLine in Model.OrganisationAddress)
+              {
+                  @(addressLine)<br/>
+              }
+            </dd>
+          </div>
+        </dl>
+        
+        <form method="POST" action="@Url.Action("RemoveOrganisation", "Organisation")">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.EncOrganisationId)
+            @Html.HiddenFor(m => m.EncUserId)
+            @Html.HiddenFor(m => m.OrganisationName)
+            @Html.HiddenFor(m => m.UserName)
+            
+            <button class="govuk-button govuk-button--warning">
+                Remove user
+            </button>
+            
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = Model.EncOrganisationId})">Cancel</a>
+            </p>
+            
+        </form>
+    </div>
+</div>

@@ -1,36 +1,37 @@
 ﻿@model GenderPayGap.WebUI.Models.Organisation.RemoveOrganisationModel
 @{
-    ViewBag.Title = "Remove organisation reason - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    ViewBag.Title = "Remove organisation reason - Gender pay gap service";
     var controller = ViewData["Controller"] as BaseController;
     long userId = Encryption.DecryptQuerystring(Model.EncUserId).ToInt64();
 }
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <div class="govuk-box-highlight">
-            <h1 class="heading-xlarge">
-                Removal Complete
-            </h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            Removal complete
+          </h1>
         </div>
 
         @if (controller.CurrentUser.UserId == userId && controller.IsImpersonatingUser == false)
         {
-            <p>
+            <p class="govuk-body">
                 You have successfully removed yourself from reporting Gender Pay Gap data for @Model.OrganisationName. You will receive an email notification shortly.
             </p>
         }
         else
         {
-            <p>
+            <p class="govuk-body">
                 You have successfully removed @Model.UserName from reporting Gender Pay Gap data for @Model.OrganisationName. They will receive an email notification shortly.
             </p>
         }
 
-        <div class="form-group">
-            <div class="bold-small">
+        <div class="govuk-form-group">
+            <p class="govuk-body govuk-!-font-weight-bold">
                 More options
-            </div>
-            <p>
-                <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Manage Organisations</a>
+            </p>
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Manage Organisations</a>
             </p>
         </div>
     </div>
