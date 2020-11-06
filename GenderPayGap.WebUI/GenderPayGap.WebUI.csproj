@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\ActionHubOld\PromisingParts\References.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\ActionHubOld\MixedResultParts\References.cshtml" />
   </ItemGroup>
   <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
     <PropertyGroup>
