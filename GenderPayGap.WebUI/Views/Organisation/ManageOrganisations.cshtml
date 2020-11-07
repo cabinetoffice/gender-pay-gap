@@ -49,7 +49,7 @@
                         string encOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
 
                         <tr>
-                            @if (userOrg.PINSentDate != null && userOrg.PINConfirmedDate == null)
+                            @if (userOrg.IsAwaitingActivationPIN())
                             {
                                 <th scope="row">
                                     <a id="ActivateOrg-@(encOrgId)" href="@(Url.Action("ActivateOrganisation", "Organisation", new {id = encOrgId}))">
@@ -60,7 +60,7 @@
                                     Awaiting activation PIN
                                 </td>
                             }
-                            else if (userOrg.PINSentDate == null && userOrg.PINConfirmedDate == null)
+                            else if (userOrg.IsAwaitingRegistrationApproval())
                             {
                                 <th scope="row">
                                     <span>@userOrg.Organisation.OrganisationName.ToUpper()</span>

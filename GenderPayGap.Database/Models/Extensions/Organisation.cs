@@ -234,14 +234,14 @@ namespace GenderPayGap.Database
             }
 
             reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate)
-                .FirstOrDefault(uo => uo.PINSentDate != null && uo.PINConfirmedDate == null);
+                .FirstOrDefault(uo => uo.IsAwaitingActivationPIN());
             if (reg != null)
             {
                 return "Awaiting PIN";
             }
 
             reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate)
-                .FirstOrDefault(uo => uo.PINSentDate == null && uo.PINConfirmedDate == null && uo.Method == RegistrationMethods.Manual);
+                .FirstOrDefault(uo => uo.IsAwaitingRegistrationApproval() && uo.Method == RegistrationMethods.Manual);
             if (reg != null)
             {
                 return "Awaiting Approval";

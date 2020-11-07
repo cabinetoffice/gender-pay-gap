@@ -31,6 +31,16 @@ namespace GenderPayGap.Database
         {
             return PINConfirmedDate != null;
         }
+        
+        public bool IsAwaitingActivationPIN()
+        {
+            return PINSentDate.HasValue && PINConfirmedDate == null;
+        }
+
+        public bool IsAwaitingRegistrationApproval()
+        {
+            return PINSentDate == null && PINConfirmedDate == null;
+        }
 
     }
 }

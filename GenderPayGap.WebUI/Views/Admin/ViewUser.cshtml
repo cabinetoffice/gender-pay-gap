@@ -210,11 +210,11 @@ else
             {
                 Organisation organisation = userOrganisation.Organisation;
                 string userStatus = null;
-                @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+                @if (userOrganisation.IsAwaitingActivationPIN())
                 {
                     userStatus = "AWAITING_PIN";
                 }
-                else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                else if (userOrganisation.IsAwaitingRegistrationApproval())
                 {
                     userStatus = "AWAITING_APPROVAL";
                 }

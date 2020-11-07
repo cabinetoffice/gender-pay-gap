@@ -293,11 +293,11 @@ else
             {
                 User user = userOrganisation.User;
                 string userStatus = null;
-                @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+                @if (userOrganisation.IsAwaitingActivationPIN())
                 {
                     userStatus = "AWAITING_PIN";
                 }
-                else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                else if (userOrganisation.IsAwaitingActivationPIN())
                 {
                     userStatus = "AWAITING_APPROVAL";
                 }
