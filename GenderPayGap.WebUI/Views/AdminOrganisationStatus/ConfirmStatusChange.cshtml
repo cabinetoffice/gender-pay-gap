@@ -127,11 +127,11 @@
                                             @(user.EmailAddress)
                                         </td>
                                         <td class="govuk-table__cell">
-                                            @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+                                            @if (userOrganisation.IsAwaitingActivationPIN())
                                             {
                                                 @:Awaiting activation PIN
                                             }
-                                            else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                                            else if (userOrganisation.IsAwaitingRegistrationApproval())
                                             {
                                                 @:Awaiting registration approval
                                             }
@@ -158,11 +158,11 @@
                                             @(user.EmailAddress)
                                         </td>
                                         <td class="govuk-table__cell">
-                                            @if (userOrganisation.PINSentDate.HasValue && userOrganisation.PINConfirmedDate == null)
+                                            @if (userOrganisation.IsAwaitingActivationPIN())
                                             {
                                                 @:Awaiting activation PIN
                                             }
-                                            else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                                            else if (userOrganisation.IsAwaitingRegistrationApproval())
                                             {
                                                 @:Awaiting registration approval
                                             }

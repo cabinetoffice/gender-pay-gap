@@ -49,7 +49,7 @@
                     string encryptedOrganisationId = Encryption.EncryptQuerystring(userOrganisation.OrganisationId.ToString());
 
                     <tr class="govuk-table__row">
-                        @if (userOrganisation.PINSentDate != null && userOrganisation.PINConfirmedDate == null)
+                        @if (userOrganisation.IsAwaitingActivationPIN())
                         {
                             <td class="govuk-table__cell">
                                 <a class="govuk-link" href="@Url.Action("ActivateOrganisation", "Organisation", new {id = encryptedOrganisationId})">
@@ -59,7 +59,7 @@
                             <td class="govuk-table__cell">
                                 Awaiting activation PIN
                             </td>    
-                        } else if (userOrganisation.PINSentDate == null && userOrganisation.PINConfirmedDate == null)
+                        } else if (userOrganisation.IsAwaitingRegistrationApproval())
                         {
                             <td class="govuk-table__cell">
                                 @(userOrganisation.Organisation.OrganisationName.ToUpper())

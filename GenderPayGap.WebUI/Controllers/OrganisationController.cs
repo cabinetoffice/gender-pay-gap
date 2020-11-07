@@ -363,7 +363,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Make sure they are fully registered for one before requesting another
-            if (userOrg.PINConfirmedDate == null && userOrg.PINSentDate != null)
+            if (userOrg.IsAwaitingActivationPIN())
             {
                 TimeSpan remainingTime = userOrg.PINSentDate.Value.AddMinutes(Global.LockoutMinutes) - VirtualDateTime.Now;
                 if (remainingTime > TimeSpan.Zero)
