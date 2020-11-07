@@ -11,3 +11,6 @@ Environments and deployments:
 
 Database:
 * [Database migrations](Database%20migrations.md)
+
+Load testing:
+* [Load testing](Load%20testing.md)
