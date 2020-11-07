@@ -1,6 +1,22 @@
 # LoadTests
 
-This is the project for Load Testing the GPG project.
+This is the module for Load Testing the GPG project.
+
+## Opening this module
+
+This module can't be opened in Visual Studio so you'll need another IDE such as IntelliJ.
+
+1. Download and install [IntelliJ](https://www.jetbrains.com/idea/download) (Community edition is fine)
+1. Open just this folder (./LoadTests) in IntelliJ
+1. Set up your JDK if you didn't already - you'll need to see a valid Java 1.8 under File > Project Structure > Project SDKs
+1. Install the Scala plugin: File > Settings > Plugins > search for Scala and hit Install
+1. Maven should automatically sync, but if it doesn't, open the Maven window and hit "Reimport all Maven projects"
+
+You should now be able to run
+```
+mvn gatling:verify
+```
+and have it succeed.
 
 ## Creating or modifying a scenario
 
