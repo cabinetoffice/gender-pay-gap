@@ -1,32 +1,39 @@
-﻿@{
-    ViewBag.Title = "Registration accepted - Gender pay gap reporting service";
-}
-@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
-<main id="content" role="main">
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <div class="govuk-box-highlight">
-                <h1 class="bold-large dynamic-content" style="display: block;">Registration complete</h1>
-            </div>
-            <div class="bold-small">
-                What happens next.
-            </div>
-            <p class="dynamic-content" style="display: block;">
-                We’ve sent
-                @if (!string.IsNullOrWhiteSpace(ViewBag.TestUrl))
-                {
-                    <a date-name="testurl" href="@ViewBag.TestUrl">
-                        @Model.ContactFirstName&nbsp;@Model.ContactLastName
-                    </a>
-                }
-                else
-                {
-                    <span>@Model.ContactFirstName&nbsp;@Model.ContactLastName</span>
-                }
-                an email confirming they can report on behalf of @(Model.OrganisationName).
-            </p>
-            <a href="@Url.Action("PendingRegistrations", "AdminPendingRegistrations")" class="button">Continue</a>
+﻿@model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
 
+@{
+    ViewBag.Title = "Registration accepted - Gender pay gap reporting service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            Registration complete
+          </h1>
         </div>
+        
+        <h2 class="govuk-heading-m">
+            What happens next
+        </h2>
+        <p class="govuk-body">
+            We’ve sent
+            @if (!string.IsNullOrWhiteSpace(ViewBag.TestUrl))
+            {
+                <a date-name="testurl" href="@ViewBag.TestUrl">
+                    @Model.ContactFirstName&nbsp;@Model.ContactLastName
+                </a>
+            }
+            else
+            {
+                <span>@Model.ContactFirstName&nbsp;@Model.ContactLastName</span>
+            }
+            an email confirming they can report on behalf of @(Model.OrganisationName).
+        </p>
+        
+        <button class="govuk-button" href="@Url.Action("PendingRegistrations", "AdminPendingRegistrations")">
+          Continue
+        </button>
+
     </div>
-</main>
+</div>
