@@ -1,48 +1,53 @@
-﻿@{
-    ViewBag.Title = "Confirm registration cancellation - Gender pay gap reporting service";
-}
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Register.OrganisationViewModel
 
-<main id="content" role="main">
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+@{
+    ViewBag.Title = "Confirm registration cancellation - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
 
-        @Html.HiddenFor(m => m.SectorType)
-        @Html.HiddenFor(m => m.ReviewCode)
+<form method="POST" action="@Url.Action("ConfirmCancellation", "Register")">
+    @Html.AntiForgeryToken()
+    
+    @Html.HiddenFor(m => m.SectorType)
+    @Html.HiddenFor(m => m.ReviewCode)
 
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                @await Html.CustomValidationSummaryAsync()
-                <h1 class="heading-large">Reject registration request</h1>
-                <p class="bold-small">
-                    You’re about to reject a registration request by:
-                </p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @(Html.GovUkErrorSummary())
+            
+            <h1 class="govuk-heading-xl">Reject registration request</h1>
+            <p class="govuk-body govuk-!-font-weight-bold">
+                You’re about to reject a registration request by:
+            </p>
 
-                <p> @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)</p>
-                <p class="bold-small"> to report gender pay gap data for:</p>
-                <p class="dynamic-content" style="display: block;">
-                    @Model.OrganisationName,<br>
-                    @foreach (string addressLine in Model.GetFullAddress())
-                    {
-                        @(addressLine)<br />
-                    }
-                </p>
-                <div class="form-group @Html.SetErrorClass(model => model.CancellationReason, "error")">
-                    <label class="form-label" for="textarea-a">
-                        Reason for rejection (optional)
-                    </label>
-                    @Html.TextAreaFor(model => model.CancellationReason, new {cols = "10", rows = "4", style = "width:315px"})
-                </div>
-                <br>
-                <p>
-                    <button type="submit" class="button" name="command" value="continue">Yes, reject registration request</button>
-                </p>
-                <p>
-                    <button type="submit" class="link-button" name="command" value="cancel">Cancel</button>
-                </p>
+            <p class="govuk-body"> @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)</p>
+            <p class="govuk-body govuk-!-font-weight-bold"> to report gender pay gap data for:</p>
+            <p class="govuk-body" style="display: block;">
+                @Model.OrganisationName,<br>
+                @foreach (string addressLine in Model.GetFullAddress())
+                {
+                    @(addressLine)<br />
+                }
+            </p>
+            
+            @(Html.GovUkTextAreaFor(
+                m => m.CancellationReason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "Reason for rejection (optional)",
+                    Classes = "govuk-label--m"
+                }
+            ))
+            
+            <button type="submit" class="govuk-button" name="command" value="continue">Yes, reject registration request</button>
+            
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ReviewRequest", "Register")">Cancel</a>
+            </p>
 
-            </div>
         </div>
-    }
-</main>
+    </div>
+    
+</form>
