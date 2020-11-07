@@ -70,7 +70,7 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Organisation SIC codes</th>
                     <td class="govuk-table__cell">
-                        @foreach (OrganisationSicCode organisationSicCode in Model.Organisation.OrganisationSicCodes.Where(osc => !osc.Retired.HasValue))
+                        @foreach (OrganisationSicCode organisationSicCode in Model.Organisation.OrganisationSicCodes.Where(osc => !osc.IsRetired()))
                         {
                             <b>@(organisationSicCode.SicCode.SicCodeId)</b>
                             @(organisationSicCode.SicCode.Description)

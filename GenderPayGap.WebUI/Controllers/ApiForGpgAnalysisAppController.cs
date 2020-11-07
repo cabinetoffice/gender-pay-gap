@@ -81,8 +81,8 @@ namespace GenderPayGap.WebUI.Controllers
                         // Organisations are allowed multiple SIC codes
                         // But, for this API, we just want 1 SIC code per organisation
                         // We use this method to keep this API consistent with the database query
-                        // TODO: we should really filter out Retired SIC codes
                         OrganisationSicCode firstSicCodeForOrganisation = organisation.OrganisationSicCodes
+                            .Where(osc => !osc.IsRetired())
                             .OrderBy(osc => osc.SicCodeId)
                             .ThenBy(osc => osc.Source)
                             .FirstOrDefault();
