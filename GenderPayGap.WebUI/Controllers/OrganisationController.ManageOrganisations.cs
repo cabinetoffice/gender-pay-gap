@@ -15,9 +15,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers
 {
 
+    // TODO: Full partial class is not used and can be removed
     public partial class OrganisationController : BaseController
     {
 
+        // TODO: Not used - remove this
         [Authorize]
         [HttpGet("~/manage-organisations/{id}")]
         public IActionResult ManageOrganisation(string id)
@@ -55,7 +57,7 @@ namespace GenderPayGap.WebUI.Controllers
             DateTime currentSnapshotDate = userOrg.Organisation.SectorType.GetAccountingStartDate();
 
             //Make sure we have an explicit scope for last and year for organisations new to this year
-            if (userOrg.PINConfirmedDate != null && userOrg.Organisation.Created >= currentSnapshotDate)
+            if (userOrg.HasBeenActivated() && userOrg.Organisation.Created >= currentSnapshotDate)
             {
                 ScopeStatuses scopeStatus =
                     ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, currentSnapshotDate.Year - 1);
@@ -85,6 +87,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View(model);
         }
 
+        // TODO: Not used - remove this
         [Authorize]
         [HttpGet("~/manage-organisations")]
         public IActionResult ManageOrganisations()

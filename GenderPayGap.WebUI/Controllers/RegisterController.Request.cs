@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Check this registrations hasnt already completed
-            if (userOrg.PINConfirmedDate != null)
+            if (userOrg.HasBeenActivated())
             {
                 return View("CustomError", new ErrorViewModel(1145));
             }
@@ -188,7 +188,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (model.ManualRegistration)
             {
                 UserOrganisation firstRegistered = userOrg.Organisation.UserOrganisations.OrderByDescending(uo => uo.PINConfirmedDate)
-                    .FirstOrDefault(uo => uo.PINConfirmedDate != null);
+                    .FirstOrDefault(uo => uo.HasBeenActivated());
                 if (firstRegistered != null)
                 {
                     AddModelError(

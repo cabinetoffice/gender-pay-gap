@@ -89,7 +89,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         private void CheckUserAndSendReminderEmailsForSectorType(User user, SectorTypes sector)
         {
             List<Organisation> inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
-                .Where(uo => uo.PINConfirmedDate != null)
+                .Where(uo => uo.HasBeenActivated())
                 .Select(uo => uo.Organisation)
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Where(o => o.SectorType == sector)

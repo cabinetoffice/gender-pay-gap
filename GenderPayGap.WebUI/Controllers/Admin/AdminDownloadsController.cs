@@ -78,7 +78,7 @@ namespace GenderPayGap.WebUI.Controllers
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.InScope ||
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.PresumedInScope)
                 .Where(org => org.UserOrganisations == null ||
-                              !org.UserOrganisations.Any(uo => uo.PINConfirmedDate != null // Registration complete
+                              !org.UserOrganisations.Any(uo => uo.HasBeenActivated() // Registration complete
                                                                || uo.Method == RegistrationMethods.Manual // Manual registration
                                                                || (uo.Method == RegistrationMethods.PinInPost // PITP registration in progress
                                                                && uo.PINSentDate.HasValue

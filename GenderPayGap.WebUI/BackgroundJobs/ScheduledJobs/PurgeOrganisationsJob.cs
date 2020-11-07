@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 .Where(o => o.Created < deadline)
                 .Where(o => !o.Returns.Any())
                 .Where(o => !o.OrganisationScopes.Any(sc => sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.OutOfScope))
-                .Where(o => !o.UserOrganisations.Any(uo => uo.Method == RegistrationMethods.Manual || uo.PINConfirmedDate != null || uo.PINSentDate > deadline))
+                .Where(o => !o.UserOrganisations.Any(uo => uo.Method == RegistrationMethods.Manual || uo.HasBeenActivated() || uo.PINSentDate > deadline))
                 .Where(o => !o.OrganisationAddresses.Any(a => a.CreatedByUserId == -1))
                 .ToList();
         }
