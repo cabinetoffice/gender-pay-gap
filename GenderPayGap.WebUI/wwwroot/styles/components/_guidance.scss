@@ -63,19 +63,25 @@
 
 .print-link {
     background: url(../../img/icon-print.png) no-repeat 0 50%;
-    padding: 0.5em 0 0.5em 28px
+    padding: 0.5em 0 0.5em 1.75em;
 }
 
 .pdf-preview {
     
     .pdf-preview__image {
         width: 80px;
-        float: left;
+
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+            float: left;
+        }
     }
     
     .pdf-preview__text {
-        float: left;
         margin-left: 1em;
         width: 200px;
+
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+            float: left;
+        }
     }
 }
