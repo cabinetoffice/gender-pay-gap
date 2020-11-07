@@ -18,184 +18,19 @@
   background-repeat: no-repeat;
 }
 
-.icon-step-1 {
+@mixin is-number-icon($number) {
   width: 23px;
   height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-1.png);
-}
+  background-image: url("../../public/images/icon-steps/icon-step-#{$number}.png");
 
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-1 {
-    background-image: url(../../public/images/icon-steps/icon-step-1-2x.png);
+  @media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
+    background-image: url("../../public/images/icon-steps/icon-step-#{$number}-2x.png");
     background-size: 100%;
   }
 }
 
-.icon-step-2 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-2.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-2 {
-    background-image: url(../../public/images/icon-steps/icon-step-2-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-3 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-3.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-3 {
-    background-image: url(../../public/images/icon-steps/icon-step-3-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-4 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-4.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-4 {
-    background-image: url(../../public/images/icon-steps/icon-step-4-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-5 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-5.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-5 {
-    background-image: url(../../public/images/icon-steps/icon-step-5-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-6 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-6.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-6 {
-    background-image: url(../../public/images/icon-steps/icon-step-6-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-7 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-7.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-7 {
-    background-image: url(../../public/images/icon-steps/icon-step-7-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-8 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-8.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-8 {
-    background-image: url(../../public/images/icon-steps/icon-step-8-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-9 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-9.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-9 {
-    background-image: url(../../public/images/icon-steps/icon-step-9-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-10 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-10.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-10 {
-    background-image: url(../../public/images/icon-steps/icon-step-10-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-11 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-11.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-11 {
-    background-image: url(../../public/images/icon-steps/icon-step-11-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-12 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-12.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-12 {
-    background-image: url(../../public/images/icon-steps/icon-step-12-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-13 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-13.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-13 {
-    background-image: url(../../public/images/icon-steps/icon-step-13-2x.png);
-    background-size: 100%;
-  }
-}
-
-.icon-step-14 {
-  width: 23px;
-  height: 23px;
-  background-image: url(../../public/images/icon-steps/icon-step-14.png);
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-  .icon-step-14 {
-    background-image: url(../../public/images/icon-steps/icon-step-14-2x.png);
-    background-size: 100%;
+@for $i from 1 through 14 {
+  .icon-step-#{$i} {
+    @include is-number-icon($i);
   }
 }
