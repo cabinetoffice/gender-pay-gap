@@ -80,7 +80,7 @@
 
             @{
                 List<OrganisationSicCode> currentSicCodes = Model.Organisation.OrganisationSicCodes
-                    .Where(osc => !osc.Retired.HasValue)
+                    .Where(osc => !osc.IsRetired())
                     .OrderBy(osc => osc.SicCode.SicCodeId)
                     .ToList();
             }

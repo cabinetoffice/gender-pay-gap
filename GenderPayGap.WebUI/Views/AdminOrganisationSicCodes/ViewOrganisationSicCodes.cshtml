@@ -54,7 +54,7 @@
 
 @{
     List<OrganisationSicCode> currentSicCodes = Model.OrganisationSicCodes
-        .Where(osc => !osc.Retired.HasValue)
+        .Where(osc => !osc.IsRetired())
         .OrderBy(osc => osc.SicCode.SicCodeId)
         .ToList();
 }
@@ -98,7 +98,7 @@ else
 
 @{
     List<OrganisationSicCode> previousSicCodes = Model.OrganisationSicCodes
-        .Where(osc => osc.Retired.HasValue)
+        .Where(osc => osc.IsRetired())
         .OrderByDescending(osc => osc.Retired.Value)
         .ThenBy(osc => osc.SicCode.SicCodeId)
         .ToList();

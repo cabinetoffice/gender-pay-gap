@@ -24,5 +24,10 @@ namespace GenderPayGap.Database
         public virtual Organisation Organisation { get; set; }
         public virtual SicCode SicCode { get; set; }
 
+        public bool IsRetired()
+        {
+            return Retired.HasValue;
+        }
+
     }
 }
