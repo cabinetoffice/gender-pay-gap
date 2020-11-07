@@ -23,8 +23,13 @@ namespace GenderPayGap.Database
                 .Where(
                     uo => uo.OrganisationId == OrganisationId
                           && uo.UserId != UserId
-                          && uo.PINConfirmedDate != null
+                          && uo.HasBeenActivated()
                           && uo.User.Status == UserStatuses.Active);
+        }
+
+        public bool HasBeenActivated()
+        {
+            return PINConfirmedDate != null;
         }
 
     }

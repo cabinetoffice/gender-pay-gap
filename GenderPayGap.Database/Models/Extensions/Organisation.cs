@@ -129,7 +129,7 @@ namespace GenderPayGap.Database
                    && (GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope)
                    && (UserOrganisations == null
                        || !UserOrganisations.Any(
-                           uo => uo.PINConfirmedDate != null
+                           uo => uo.HasBeenActivated()
                                  || uo.Method == RegistrationMethods.Manual
                                  || uo.Method == RegistrationMethods.PinInPost
                                  && uo.PINSentDate.HasValue
@@ -227,7 +227,7 @@ namespace GenderPayGap.Database
 
         public string GetRegistrationStatus()
         {
-            UserOrganisation reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate).FirstOrDefault(uo => uo.PINConfirmedDate != null);
+            UserOrganisation reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate).FirstOrDefault(uo => uo.HasBeenActivated());
             if (reg != null)
             {
                 return $"Registered {reg.PINConfirmedDate?.ToFriendly(false)}";

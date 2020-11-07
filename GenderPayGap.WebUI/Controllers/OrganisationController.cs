@@ -207,7 +207,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // Ensure this organisation needs activation on the users account
-            if (userOrg.PINConfirmedDate != null)
+            if (userOrg.HasBeenActivated())
             {
                 throw new Exception(
                     $"Attempt to activate organisation {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}' for {currentUser.EmailAddress} by '{(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)}' which has already been activated");
