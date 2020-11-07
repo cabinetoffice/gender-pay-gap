@@ -7,11 +7,12 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
+using GovUkDesignSystem;
 
 namespace GenderPayGap.WebUI.Models.Register
 {
     [Serializable]
-    public class OrganisationViewModel
+    public class OrganisationViewModel : GovUkViewModel
     {
 
         public bool PINExpired;
