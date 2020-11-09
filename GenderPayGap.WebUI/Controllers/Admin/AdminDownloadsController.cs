@@ -77,12 +77,13 @@ namespace GenderPayGap.WebUI.Controllers
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active) == null ||
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.InScope ||
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.PresumedInScope)
+                .AsEnumerable()
                 .Where(org => org.UserOrganisations == null ||
-                              !org.UserOrganisations.Any(uo => uo.HasBeenActivated() // Registration complete
-                                                               || uo.Method == RegistrationMethods.Manual // Manual registration
-                                                               || (uo.Method == RegistrationMethods.PinInPost // PITP registration in progress
-                                                               && uo.PINSentDate.HasValue
-                                                               && uo.PINSentDate.Value > pinExpiresDate)))
+                    !org.UserOrganisations.Any(uo => uo.HasBeenActivated() // Registration complete
+                    || uo.Method == RegistrationMethods.Manual // Manual registration
+                    || (uo.Method == RegistrationMethods.PinInPost // PITP registration in progress
+                    && uo.PINSentDate.HasValue
+                    && uo.PINSentDate.Value > pinExpiresDate)))
                 .ToList();
 
             var records = orphanOrganisations.Select(
