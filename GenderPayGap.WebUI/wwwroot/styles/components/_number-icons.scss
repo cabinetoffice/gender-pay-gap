@@ -1,37 +1,28 @@
-﻿.action-step {
+﻿.action-steps {
   position: relative;
   padding-bottom: 10px;
-}
+  padding-left: -30px;
 
-.action-step .icon {
-  position: absolute;
-}
-
-.action-step h3,
-.action-step p,
-.action-step ul {
-  padding-left: 30px;
-}
-
-.icon {
-  display: inline-block;
-  background-position: 0 0;
-  background-repeat: no-repeat;
-}
-
-@mixin is-number-icon($number) {
-  width: 23px;
-  height: 23px;
-  background-image: url("../../public/images/icon-steps/icon-step-#{$number}.png");
-
-  @media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:20 / 10),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-    background-image: url("../../public/images/icon-steps/icon-step-#{$number}-2x.png");
-    background-size: 100%;
+  ol {
+    list-style: none;
+    counter-reset: action-step-counter;
+    padding-left: 0;
   }
-}
-
-@for $i from 1 through 14 {
-  .icon-step-#{$i} {
-    @include is-number-icon($i);
+  ol > li {
+    counter-increment: action-step-counter;
+  }
+  ol > li::before {
+    content: counter(action-step-counter);
+    position: absolute;
+    line-height: 23px;
+    font-size: small;
+    text-align: center;
+    vertical-align: middle;
+    width: 23px;
+    height: 23px;
+    left: -30px;
+    color: white;
+    background: black;
+    border-radius: 50%;
   }
 }
