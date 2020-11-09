@@ -32,8 +32,10 @@
             an email confirming their registration request for @Model.OrganisationName has been cancelled.
         </p>
         
-        <button class="govuk-button" href="@Url.Action("PendingRegistrations", "AdminPendingRegistrations")">
-          Continue
-        </button>
+        <form method="GET" action="@Url.Action("PendingRegistrations", "AdminPendingRegistrations")">
+            <button class="govuk-button" type="submit">
+                Continue
+            </button>
+        </form>
     </div>
 </div>
