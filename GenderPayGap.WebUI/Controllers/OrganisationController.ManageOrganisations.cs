@@ -15,11 +15,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers
 {
 
-    // TODO: Full partial class is not used and can be removed
+    // TODO: Full partial class is not used and can be removed once GPG-387 is released to live
     public partial class OrganisationController : BaseController
     {
 
-        // TODO: Not used - remove this
+        // TODO: Not used - remove this once GPG-387 is released to live
         [Authorize]
         [HttpGet("~/manage-organisations/{id}")]
         public IActionResult ManageOrganisation(string id)
@@ -87,7 +87,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View(model);
         }
 
-        // TODO: Not used - remove this
+        // TODO: Not used - remove this once GPG-387 is released to live
         [Authorize]
         [HttpGet("~/manage-organisations")]
         public IActionResult ManageOrganisations()
