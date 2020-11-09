@@ -120,10 +120,6 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Xdt.Tools" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\ActionHubOld\PromisingParts\References.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\ActionHubOld\MixedResultParts\References.cshtml" />
-  </ItemGroup>
   <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
     <PropertyGroup>
       <_SourceWebConfig>$(MSBuildThisFileDirectory)Web.config</_SourceWebConfig>
