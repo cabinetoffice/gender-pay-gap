@@ -34,153 +34,157 @@
 }
 
 <div class="govuk-grid-row">
+    <form method="POST" action="@Url.Action("ReviewRequest", "Register")">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ReviewRequest", "Register")">
-            @Html.AntiForgeryToken()
+        
+        @Html.AntiForgeryToken()
             
-            @Html.HiddenFor(model => model.SectorType)
-            @Html.HiddenFor(model => model.CompanyNumber)
-            @Html.HiddenFor(model => model.CharityNumber)
-            @Html.HiddenFor(model => model.MutualNumber)
-            @Html.HiddenFor(model => model.OtherName)
-            @Html.HiddenFor(model => model.OtherValue)
-            @Html.HiddenFor(model => model.ReviewCode)
-            @Html.HiddenFor(model => model.ManualAddress)
+        @Html.HiddenFor(model => model.SectorType)
+        @Html.HiddenFor(model => model.CompanyNumber)
+        @Html.HiddenFor(model => model.CharityNumber)
+        @Html.HiddenFor(model => model.MutualNumber)
+        @Html.HiddenFor(model => model.OtherName)
+        @Html.HiddenFor(model => model.OtherValue)
+        @Html.HiddenFor(model => model.ReviewCode)
+        @Html.HiddenFor(model => model.ManualAddress)
 
-            <h1 class="govuk-heading-xl">
-                Approve registration request
-            </h1>
+        <h1 class="govuk-heading-xl">
+            Approve registration request
+        </h1>
             
-            <table class="govuk-table">
-                <caption class="govuk-table__caption govuk-!-margin-bottom-2">Person registering to report</caption>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">
-                            Your name
-                        </th>
-                        <td class="govuk-table__cell">
-                            @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)
-                        </td>
-                    </tr>
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-!-margin-bottom-2">Person registering to report</caption>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Your name
+                    </th>
+                    <td class="govuk-table__cell">
+                        @Model.ContactFirstName @Model.ContactLastName (@Model.ContactJobTitle)
+                    </td>
+                </tr>
 
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">
-                            Contact Email
-                        </th>
-                        <td class="govuk-table__cell">
-                            @Model.ContactEmailAddress
-                        </td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">
-                            Telephone
-                        </th>
-                        <td class="govuk-table__cell">
-                            @Model.ContactPhoneNumber
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Contact Email
+                    </th>
+                    <td class="govuk-table__cell">
+                        @Model.ContactEmailAddress
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Telephone
+                    </th>
+                    <td class="govuk-table__cell">
+                        @Model.ContactPhoneNumber
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-            <table class="govuk-table">
-                <caption class="govuk-table__caption govuk-!-margin-bottom-2">Organisation being registered</caption>
-                <tbody class="govuk-table__body">
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-!-margin-bottom-2">Organisation being registered</caption>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Organisation
+                    </th>
+                    <td class="govuk-table__cell">
+                        @Model.OrganisationName
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Business&nbsp;Sectors (SIC&nbsp;Codes)
+                    </th>
+                    <td class="govuk-table__cell">
+                        @await Html.PartialAsync("_SicCodeList", Model.SicCodes)
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Address to register
+                    </th>
+                    <td class="govuk-table__cell">
+                        @foreach (string addressLine in Model.GetFullAddress())
+                        {
+                            @(addressLine)<br />
+                        }
+                    </td>
+                </tr>
+                @if (Model.RegisteredAddress != null)
+                {
                     <tr class="govuk-table__row">
                         <th class="govuk-table__header" scope="row">
-                            Organisation
+                            Current address
                         </th>
                         <td class="govuk-table__cell">
-                            @Model.OrganisationName
-                        </td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">
-                            Business&nbsp;Sectors (SIC&nbsp;Codes)
-                        </th>
-                        <td class="govuk-table__cell">
-                            @await Html.PartialAsync("_SicCodeList", Model.SicCodes)
-                        </td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">
-                            Address to register
-                        </th>
-                        <td class="govuk-table__cell">
-                            @foreach (string addressLine in Model.GetFullAddress())
+                            @foreach (string addressLine in Model.RegisteredAddress)
                             {
                                 @(addressLine)<br />
                             }
                         </td>
                     </tr>
-                    @if (Model.RegisteredAddress != null)
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Current address
-                            </th>
-                            <td class="govuk-table__cell">
-                                @foreach (string addressLine in Model.RegisteredAddress)
-                                {
-                                    @(addressLine)<br />
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
             
-            <table class="govuk-table">
-                <caption class="govuk-table__caption govuk-!-margin-bottom-2">Provided references</caption>
-                <tbody class="govuk-table__body">
-                    @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Company Number
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.CompanyNumber
-                            </td>
-                        </tr>
-                    }
-                    
-                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Charity Number
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.CharityNumber
-                            </td>
-                        </tr>
-                    }
-                    
-                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Mutual partnership number
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.MutualNumber
-                            </td>
-                        </tr>
-                    }
-                    
-                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                @Model.OtherName
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.OtherValue
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-!-margin-bottom-2">Provided references</caption>
+            <tbody class="govuk-table__body">
+                @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Company Number
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.CompanyNumber
+                        </td>
+                    </tr>
+                }
+                        
+                @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Charity Number
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.CharityNumber
+                        </td>
+                    </tr>
+                }
+                        
+                @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Mutual partnership number
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.MutualNumber
+                        </td>
+                    </tr>
+                }
+                        
+                @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            @Model.OtherName
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.OtherValue
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="govuk-grid-column-full">
             
         <h2 class="govuk-heading-l">
             Similar organisations
@@ -238,6 +242,7 @@
         <button type="submit" class="govuk-button govuk-button--warning" role="link" name="command" value="decline">Reject registration</button>
         <button type="submit" class="govuk-button" name="command" value="approve">Confirm and complete registration</button>
         
-        </form>
-    </div>
+        </div>
+    </form>
+    
 </div>

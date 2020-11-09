@@ -35,10 +35,10 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ReviewRequest", "Register")">
+    <form method="POST" action="@Url.Action("ReviewRequest", "Register")">
+        <div class="govuk-grid-column-two-thirds">
             @Html.AntiForgeryToken()
-            
+                        
             @Html.HiddenFor(model => model.SectorType)
             @Html.HiddenFor(model => model.CompanyNumber)
             @Html.HiddenFor(model => model.CharityNumber)
@@ -47,13 +47,13 @@
             @Html.HiddenFor(model => model.OtherValue)
             @Html.HiddenFor(model => model.ReviewCode)
             @Html.HiddenFor(model => model.ManualAddress)
-            
+                        
             @(Html.GovUkErrorSummary())
 
             <h1 class="govuk-heading-xl">
                 Approve existing employer application - with change of address
             </h1>
-            
+                        
             <table class="govuk-table">
                 <caption class="govuk-table__caption govuk-!-margin-bottom-2">Person registering to report and change address</caption>
                 <tbody class="govuk-table__body">
@@ -131,7 +131,7 @@
                     }
                 </tbody>
             </table>
-            
+                        
             <table class="govuk-table">
                 <caption class="govuk-table__caption govuk-!-margin-bottom-2">Provided references</caption>
                 <tbody class="govuk-table__body">
@@ -146,7 +146,7 @@
                             </td>
                         </tr>
                     }
-                    
+                                
                     @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
                     {
                         <tr class="govuk-table__row">
@@ -158,7 +158,7 @@
                             </td>
                         </tr>
                     }
-                    
+                                
                     @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
                     {
                         <tr class="govuk-table__row">
@@ -170,7 +170,7 @@
                             </td>
                         </tr>
                     }
-                    
+                                
                     @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
                     {
                         <tr class="govuk-table__row">
@@ -184,63 +184,66 @@
                     }
                 </tbody>
             </table>
-            
-        <h2 class="govuk-heading-l">
-            Similar organisations
-        </h2>
-        
-        @if (Model.ManualEmployers != null && Model.ManualEmployers.Any()) {
-            
-            <table class="govuk-table" summary="A list organisations that match your organisation details">
-                <caption class="govuk-table__caption govuk-visually-hidden">Customer and Business listing</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col">Organisation and address</th>
-                        <th class="govuk-table__header" scope="col">References</th>
-                        <th class="govuk-table__header" scope="col">Registration Status</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @for (var i = 0; i < Model.ManualEmployers.Count; i++)
-                    {
+        </div>
+    
+        <div class="govuk-grid-column-full">
+                    
+            <h2 class="govuk-heading-l">
+                Similar organisations
+            </h2>
+                
+            @if (Model.ManualEmployers != null && Model.ManualEmployers.Any()) {
+                    
+                <table class="govuk-table" summary="A list organisations that match your organisation details">
+                    <caption class="govuk-table__caption govuk-visually-hidden">Customer and Business listing</caption>
+                    <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                @Model.ManualEmployers[i].OrganisationName <span>@Model.ManualEmployers[i].GetFullAddress()</span>
-                            </td>
-                            <td class="govuk-table__cell">
-                                @{ Dictionary<string, string> references = Model.GetReferences(i); }
-                                @foreach (string key in references.Keys)
-                                {
-                                    if (key.EqualsI("Company No") && references[key].EqualsI(Model.CompanyNumber)
-                                        || key.EqualsI("Charity No") && references[key].EqualsI(Model.CharityNumber)
-                                        || key.EqualsI("Mutual No") && references[key].EqualsI(Model.MutualNumber)
-                                        || key.EqualsI(Model.OtherName) && references[key].EqualsI(Model.OtherValue)
-                                        )
-                                    {
-                                        <span style="color: red; display: block; white-space: nowrap;">@key: @(references[key])</span>
-                                    }
-                                    else
-                                    {
-                                        <span style="display: block; white-space: nowrap;">@key: @(references[key])</span>
-                                    }
-                                }
-                            </td>
-                            <td class="govuk-table__cell">
-                                @Model.ManualEmployers[i].RegistrationStatus
-                            </td>
+                            <th class="govuk-table__header" scope="col">Organisation and address</th>
+                            <th class="govuk-table__header" scope="col">References</th>
+                            <th class="govuk-table__header" scope="col">Registration Status</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p class="govuk-body">No similar organisations found.</p>
-        }
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @for (var i = 0; i < Model.ManualEmployers.Count; i++)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    @Model.ManualEmployers[i].OrganisationName <span>@Model.ManualEmployers[i].GetFullAddress()</span>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @{ Dictionary<string, string> references = Model.GetReferences(i); }
+                                    @foreach (string key in references.Keys)
+                                    {
+                                        if (key.EqualsI("Company No") && references[key].EqualsI(Model.CompanyNumber)
+                                            || key.EqualsI("Charity No") && references[key].EqualsI(Model.CharityNumber)
+                                            || key.EqualsI("Mutual No") && references[key].EqualsI(Model.MutualNumber)
+                                            || key.EqualsI(Model.OtherName) && references[key].EqualsI(Model.OtherValue)
+                                            )
+                                        {
+                                            <span class="similar-org-reference similar-org-reference--clash">@key: @(references[key])</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="similar-org-reference">@key: @(references[key])</span>
+                                        }
+                                    }
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @Model.ManualEmployers[i].RegistrationStatus
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="govuk-body">No similar organisations found.</p>
+            }
+                
+            <button type="submit" class="govuk-button govuk-button--warning" role="link" name="command" value="decline">Reject registration</button>
+            <button type="submit" class="govuk-button" name="command" value="approve">Confirm and complete registration</button>
         
-        <button type="submit" class="govuk-button govuk-button--warning" role="link" name="command" value="decline">Reject registration</button>
-        <button type="submit" class="govuk-button" name="command" value="approve">Confirm and complete registration</button>
-        
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
