@@ -10,6 +10,12 @@
   }
   ol > li {
     counter-increment: action-step-counter;
+
+    @media (max-width: map-get($govuk-breakpoints, 'tablet')) {
+      > h3 {
+        margin-left: 30px;
+      }
+    }
   }
   ol > li::before {
     content: counter(action-step-counter);
@@ -20,9 +26,12 @@
     vertical-align: middle;
     width: 23px;
     height: 23px;
-    left: -30px;
     color: white;
     background: black;
     border-radius: 50%;
+
+    @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+      left: -30px;
+    }
   }
 }
