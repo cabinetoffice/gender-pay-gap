@@ -1,30 +1,28 @@
-﻿@using GenderPayGap.Core.Interfaces
-@using GenderPayGap.Database
-@model List<int>
-@inject IDataRepository DataRepo;
-@{
-    IQueryable<SicCode> sicCodes = DataRepo.GetAll<SicCode>().Where(s => Model.Contains(s.SicCodeId));
-}
-<ul>
-    @foreach (SicSection sector in sicCodes.Select(s => s.SicSection).Distinct().OrderBy(s => s.Description))
+﻿@using GenderPayGap.Database
+@model IQueryable<SicCode>
+
+<ul class="govuk-list govuk-list--bullet">
+    @foreach (SicSection sector in Model.Select(s => s.SicSection).Distinct().OrderBy(s => s.Description))
     {
         <li>
-            <b>@sector.Description</b>
-            
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">@sector.Description</p>
+
             @if (sector.SicSectionId != "X")
             {
-                <ul class="list list-bullet">
-                    @foreach (SicCode sicCode in sicCodes.Where(s => s.SicSectionId == sector.SicSectionId).Distinct().OrderBy(s => s.SicCodeId))
+                <ul class="govuk-list govuk-list--bullet">
+                    @foreach (SicCode sicCode in Model.Where(s => s.SicSectionId == sector.SicSectionId).Distinct().OrderBy(s => s.SicCodeId))
                     {
                         <li>
-                            <span style="font-weight: bold; margin-right: 5px">
-                                @sicCode.SicCodeId
-                            </span>
-                            <span>
-                                @sicCode.Description
-                            </span>
+                            <p class="govuk-body">
+                                <span class="govuk-!-font-weight-bold govuk-!-margin-right-2">
+                                    @sicCode.SicCodeId
+                                </span>
+                                <span>
+                                    @sicCode.Description
+                                </span>
+                            </p>
                         </li>
-                            
+
                     }
                 </ul>
             }

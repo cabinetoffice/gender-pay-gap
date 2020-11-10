@@ -105,7 +105,9 @@ namespace GenderPayGap.WebUI.Controllers
             model.OrganisationName = userOrg.Organisation.OrganisationName;
             model.CompanyNumber = userOrg.Organisation.CompanyNumber;
             model.SectorType = userOrg.Organisation.SectorType;
-            model.SicCodes = userOrg.Organisation.GetSicCodes().Select(o => o.SicCode.SicCodeId).ToList();
+            
+            var sicCodeIds = userOrg.Organisation.GetSicCodes().Select(o => o.SicCode.SicCodeId).ToList();
+            model.SicCodes = DataRepository.GetAll<SicCode>().Where(s => sicCodeIds.Contains(s.SicCodeId));
 
             model.Address1 = userOrg.Address.Address1;
             model.Address2 = userOrg.Address.Address2;
