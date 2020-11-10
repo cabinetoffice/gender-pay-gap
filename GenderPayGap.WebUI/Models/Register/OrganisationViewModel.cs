@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Models;
+using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GovUkDesignSystem;
@@ -152,7 +154,7 @@ namespace GenderPayGap.WebUI.Models.Register
         [Required(AllowEmptyStrings = false)]
         public string SicCodeIds { get; set; }
 
-        public List<int> SicCodes { get; set; }
+        public IQueryable<SicCode> SicCodes { get; set; }
         public string SicSource { get; set; }
 
         #endregion
