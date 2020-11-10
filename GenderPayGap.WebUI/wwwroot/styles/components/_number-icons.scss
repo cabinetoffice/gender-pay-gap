@@ -11,7 +11,7 @@
   ol > li {
     counter-increment: action-step-counter;
 
-    @media (max-width: map-get($govuk-breakpoints, 'tablet')) {
+    @media (max-width: map-get($govuk-breakpoints, 'desktop')) {
       > h3 {
         margin-left: 30px;
       }
@@ -30,7 +30,7 @@
     background: black;
     border-radius: 50%;
 
-    @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
+    @media (min-width: map-get($govuk-breakpoints, 'desktop')) {
       left: -30px;
     }
   }
