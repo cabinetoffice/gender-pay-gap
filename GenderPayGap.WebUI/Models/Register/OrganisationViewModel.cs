@@ -208,5 +208,14 @@ namespace GenderPayGap.WebUI.Models.Register
 
         #endregion
 
+        public bool NoReferencesProvided()
+        {
+            return
+                string.IsNullOrWhiteSpace(CompanyNumber)
+                && string.IsNullOrWhiteSpace(CharityNumber)
+                && string.IsNullOrWhiteSpace(MutualNumber)
+                && string.IsNullOrWhiteSpace(OtherValue);
+        }
+
     }
 }
