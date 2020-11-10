@@ -77,6 +77,7 @@ namespace GenderPayGap.WebUI.Controllers
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active) == null ||
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.InScope ||
                     org.OrganisationScopes.OrderByDescending(s => s.SnapshotDate).FirstOrDefault(s => s.Status == ScopeRowStatuses.Active).ScopeStatus == ScopeStatuses.PresumedInScope)
+                // We need the AsEnumerable here because EF gets upset about method calls - so we get the list at this point and then can filter it using a method call
                 .AsEnumerable()
                 .Where(org => org.UserOrganisations == null ||
                     !org.UserOrganisations.Any(uo => uo.HasBeenActivated() // Registration complete
