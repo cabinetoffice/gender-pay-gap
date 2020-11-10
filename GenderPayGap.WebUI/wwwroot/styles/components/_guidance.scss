@@ -69,8 +69,6 @@
 .pdf-preview {
     
     .pdf-preview__image {
-        width: 80px;
-
         @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
             float: left;
         }
@@ -78,6 +76,7 @@
     
     .pdf-preview__text {
         margin-left: 1em;
+        display: inline-block;
         width: 200px;
 
         @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
