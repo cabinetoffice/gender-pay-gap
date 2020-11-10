@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Actions to close the gap - Gender pay gap service";
     Layout = "Index.cshtml";
-    var index = 1;
 }
 
 <h2 class="govuk-heading-l">Effective actions</h2>
@@ -112,60 +111,62 @@
             </h2>
         </div>
         <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-            @{
-                var referenceIndex = 1;
-            }
-            <div>
-                <h4 class="govuk-heading-s">@(referenceIndex++). Include multiple women in shortlists for recruitment and promotions</h4>
-                <ul class="govuk-list">
+            <div class="reference-list">
+                <ol class="govuk-list govuk-list--number">
                     <li>
-                        Johnson, S. K., Hekman, D. R., & Chan, E. T. (2016). If there’s only one woman in your candidate pool, there’s statistically no chance she'll be hired. Harvard Business Review, 26(04).
+                        <h4 class="govuk-heading-s">Include multiple women in shortlists for recruitment and promotions</h4>
+                        <p class="govuk-body">
+                            Johnson, S. K., Hekman, D. R., & Chan, E. T. (2016). If there’s only one woman in your candidate pool, there’s statistically no chance she'll be hired. Harvard Business Review, 26(04).
+                        </p>
                     </li>
-                </ul>
-            
-                <h4 class="govuk-heading-s">@(referenceIndex++). Use skill-based assessment tasks in recruitment</h4>
-                <ul class="govuk-list">
+
                     <li>
-                        Cabrera, M. A. M., & Nguyen, N. T. (2001). Situational judgment tests: A review of practice and constructs assessed. International Journal of Selection and Assessment, 9(1‐2), 103-113.
+                        <h4 class="govuk-heading-s">Use skill-based assessment tasks in recruitment</h4>
+                        <p class="govuk-body">
+                            Cabrera, M. A. M., & Nguyen, N. T. (2001). Situational judgment tests: A review of practice and constructs assessed. International Journal of Selection and Assessment, 9(1‐2), 103-113.
+                        </p>
                     </li>
-                </ul>
-            
-                <h4 class="govuk-heading-s">@(referenceIndex++). Use structured interviews for recruitment and promotions</h4>
-                <ul class="govuk-list">
+
                     <li>
-                        Levashina, J., Hartwell, C. J., Morgeson, F. P., & Campion, M. A. (2014). The structured employment interview: Narrative and quantitative review of the research literature. Personnel Psychology, 67(1), 241-293.
+                        <h4 class="govuk-heading-s">Use structured interviews for recruitment and promotions</h4>
+                        <ul class="govuk-list">
+                            <li>
+                                Levashina, J., Hartwell, C. J., Morgeson, F. P., & Campion, M. A. (2014). The structured employment interview: Narrative and quantitative review of the research literature. Personnel Psychology, 67(1), 241-293.
+                            </li>
+
+                            <li>
+                                Oh, I., Postlethwaite, B.E. & Schmidt, F.L. (2013). Rethinking the validity of interviews for employment decision making: Implications of recent developments in meta-analysis (Chapter 12, pp. 297-329). In D. J. Svyantek & K. Mahoney (Eds.), Received wisdom, kernels of truth, and boundary conditions in organizational studies.
+                            </li>
+                        </ul>
                     </li>
-            
+
                     <li>
-                        Oh, I., Postlethwaite, B.E. & Schmidt, F.L. (2013). Rethinking the validity of interviews for employment decision making: Implications of recent developments in meta-analysis (Chapter 12, pp. 297-329). In D. J. Svyantek & K. Mahoney (Eds.), Received wisdom, kernels of truth, and boundary conditions in organizational studies.
+                        <h4 class="govuk-heading-s">Encourage salary negotiation by showing salary ranges</h4>
+                        <ul class="govuk-list">
+                            <li>
+                                Leibbrandt, A., & List, J. A. (2014). Do women avoid salary negotiations? Evidence from a large-scale natural field experiment. Management Science, 61(9), 2016-2024.
+                            </li>
+
+                            <li>
+                                Mazei, J., Hüffmeier, J., Freund, P. A., Stuhlmacher, A. F., Bilke, L., & Hertel, G. (2015). A meta-analysis on gender differences in negotiation outcomes and their moderators. Psychological Bulletin, 141(1), 85.
+                            </li>
+                        </ul>
                     </li>
-                </ul>
-            
-                <h4 class="govuk-heading-s">@(referenceIndex++). Encourage salary negotiation by showing salary ranges</h4>
-                <ul class="govuk-list">
+
                     <li>
-                        Leibbrandt, A., & List, J. A. (2014). Do women avoid salary negotiations? Evidence from a large-scale natural field experiment. Management Science, 61(9), 2016-2024.
+                        <h4 class="govuk-heading-s">Introduce transparency to promotion, pay and reward processes</h4>
+                        <p class="govuk-body">
+                            Castilla, E. J. (2015). Accounting for the gap: A firm study manipulating organizational accountability and transparency in pay decisions. Organization Science, 26(2), 311-333.
+                        </p>
                     </li>
-            
+
                     <li>
-                        Mazei, J., Hüffmeier, J., Freund, P. A., Stuhlmacher, A. F., Bilke, L., & Hertel, G. (2015). A meta-analysis on gender differences in negotiation outcomes and their moderators. Psychological Bulletin, 141(1), 85.
+                        <h4 class="govuk-heading-s">Appoint diversity managers and/or diversity task forces</h4>
+                        <p class="govuk-body">
+                            Dobbin, F., & Kalev, A. (2016). Why diversity programs fail. Harvard Business Review, 94(7/8), 52-60.
+                        </p>
                     </li>
-                </ul>
-            
-                <h4 class="govuk-heading-s">@(referenceIndex++). Introduce transparency to promotion, pay and reward processes</h4>
-                <ul class="govuk-list">
-                    <li>
-                        Castilla, E. J. (2015). Accounting for the gap: A firm study manipulating organizational accountability and transparency in pay decisions. Organization Science, 26(2), 311-333.
-            
-                    </li>
-                </ul>
-            
-                <h4 class="govuk-heading-s">@(referenceIndex++). Appoint diversity managers and/or diversity task forces</h4>
-                <ul class="govuk-list">
-                    <li>
-                        Dobbin, F., & Kalev, A. (2016). Why diversity programs fail. Harvard Business Review, 94(7/8), 52-60.
-                    </li>
-                </ul>
+                </ol>
             </div>
         </div>
     </div>
