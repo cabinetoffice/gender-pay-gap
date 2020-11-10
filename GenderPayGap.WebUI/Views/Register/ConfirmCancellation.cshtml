@@ -7,6 +7,38 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Pending Registrations",
+                Href = Url.Action("PendingRegistrations", "AdminPendingRegistrations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.ContactFirstName + " " + Model.ContactLastName + " (" + Model.ContactJobTitle + ") - " + Model.OrganisationName,
+                Href = Url.Action("ReviewRequest", "Register")
+            },
+            new CrumbViewModel
+            {
+                Text = "Reject"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
 <form method="POST" action="@Url.Action("ConfirmCancellation", "Register")">
     @Html.AntiForgeryToken()
     
@@ -18,7 +50,9 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
+            <span class="govuk-caption-xl">Administration</span>
             <h1 class="govuk-heading-xl">Reject registration request</h1>
+            
             <p class="govuk-body govuk-!-font-weight-bold">
                 You’re about to reject a registration request by:
             </p>
