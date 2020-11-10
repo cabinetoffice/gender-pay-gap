@@ -1,5 +1,5 @@
 ﻿@using GenderPayGap.Database
-@model IQueryable<SicCode>
+@model List<SicCode>
 
 <ul class="govuk-list govuk-list--bullet">
     @foreach (SicSection sector in Model.Select(s => s.SicSection).Distinct().OrderBy(s => s.Description))

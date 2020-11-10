@@ -154,7 +154,7 @@ namespace GenderPayGap.WebUI.Models.Register
         [Required(AllowEmptyStrings = false)]
         public string SicCodeIds { get; set; }
 
-        public IQueryable<SicCode> SicCodes { get; set; }
+        public List<SicCode> SicCodes { get; set; }
         public string SicSource { get; set; }
 
         #endregion
