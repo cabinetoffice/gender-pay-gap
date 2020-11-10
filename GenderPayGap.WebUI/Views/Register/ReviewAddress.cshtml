@@ -47,12 +47,15 @@
             @Html.HiddenFor(model => model.OtherValue)
             @Html.HiddenFor(model => model.ReviewCode)
             @Html.HiddenFor(model => model.ManualAddress)
-                        
-            @(Html.GovUkErrorSummary())
 
+            <span class="govuk-caption-xl">Administration</span>
             <h1 class="govuk-heading-xl">
                 Approve existing employer application - with change of address
             </h1>
+            
+            <h2 class="govuk-heading-l">
+                Request details
+            </h2>
                         
             <table class="govuk-table">
                 <caption class="govuk-table__caption govuk-!-margin-bottom-2 govuk-!-font-size-24">Person registering to report and change address</caption>
@@ -68,10 +71,10 @@
 
                     <tr class="govuk-table__row">
                         <th class="govuk-table__header" scope="row">
-                            Contact Email
+                            Email
                         </th>
                         <td class="govuk-table__cell">
-                            @Model.ContactEmailAddress
+                            @Model.EmailAddress
                         </td>
                     </tr>
                     <tr class="govuk-table__row">
@@ -131,62 +134,76 @@
                     }
                 </tbody>
             </table>
-                        
-            <table class="govuk-table">
-                <caption class="govuk-table__caption govuk-!-margin-bottom-2">Provided references</caption>
-                <tbody class="govuk-table__body">
-                    @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Company Number
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.CompanyNumber
-                            </td>
-                        </tr>
-                    }
-                                
-                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Charity Number
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.CharityNumber
-                            </td>
-                        </tr>
-                    }
-                                
-                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                Mutual partnership number
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.MutualNumber
-                            </td>
-                        </tr>
-                    }
-                                
-                    @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
-                    {
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header" scope="row">
-                                @Model.OtherName
-                            </th>
-                            <td class="govuk-table__cell">
-                                @Model.OtherValue
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                       
+            @{
+                if (Model.NoReferencesProvided())
+                {
+                    <h3 class="govuk-heading-m">
+                        Provided references
+                    </h3>
+                    <p class="govuk-body">
+                        No references provided
+                    </p>
+                }
+                else
+                {
+                    <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-!-margin-bottom-2">Provided references</caption>
+                    <tbody class="govuk-table__body">
+                        @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
+                        {
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" scope="row">
+                                    Company Number
+                                </th>
+                                <td class="govuk-table__cell">
+                                    @Model.CompanyNumber
+                                </td>
+                            </tr>
+                        }
+                                    
+                        @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                        {
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" scope="row">
+                                    Charity Number
+                                </th>
+                                <td class="govuk-table__cell">
+                                    @Model.CharityNumber
+                                </td>
+                            </tr>
+                        }
+                                    
+                        @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                        {
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" scope="row">
+                                    Mutual partnership number
+                                </th>
+                                <td class="govuk-table__cell">
+                                    @Model.MutualNumber
+                                </td>
+                            </tr>
+                        }
+                                    
+                        @if (!string.IsNullOrWhiteSpace(Model.CharityNumber))
+                        {
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" scope="row">
+                                    @Model.OtherName
+                                </th>
+                                <td class="govuk-table__cell">
+                                    @Model.OtherValue
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                }
+            }
         </div>
     
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-full govuk-!-margin-top-4">
                     
             <h2 class="govuk-heading-l">
                 Similar organisations
