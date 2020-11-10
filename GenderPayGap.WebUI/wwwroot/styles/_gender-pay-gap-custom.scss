@@ -1,33 +1,34 @@
-﻿
-@import "./pages/_cookie-settings";
-@import "./pages/_admin-return-details-page";
-@import "./pages/_add-organisation-manual-sic-codes";
-@import "./pages/_add-organisation-manual-confirm";
+﻿// Import SCSS partials here without the starting _
 
-@import "./components/_add-organisation-search-list";
-@import "./components/_accessible-autocomplete";
-@import "./components/_gpg-search-box";
-@import "./components/_cookie-banner";
-@import "./components/_covid-message";
-@import "./components/_guidance";
-@import "./components/_guidance-bar-chart";
-@import "./components/_header";
-@import "./components/_hero-banner";
-@import "./components/_pagination-links";
-@import "./components/_searchbar";
-@import "./components/_section-break";
-@import "./components/_status-message";
-@import "./components/_warning";
-@import "./components/_account-tabs";
-@import "./components/_yesno";
+@import "./pages/cookie-settings";
+@import "./pages/admin-return-details-page";
+@import "./pages/add-organisation-manual-sic-codes";
+@import "./pages/add-organisation-manual-confirm";
+
+@import "./components/add-organisation-search-list";
+@import "./components/accessible-autocomplete";
+@import "./components/gpg-search-box";
+@import "./components/cookie-banner";
+@import "./components/covid-message";
+@import "./components/guidance";
+@import "./components/guidance-bar-chart";
+@import "./components/header";
+@import "./components/hero-banner";
+@import "./components/pagination-links";
+@import "./components/searchbar";
+@import "./components/section-break";
+@import "./components/status-message";
+@import "./components/warning";
+@import "./components/account-tabs";
+@import "./components/yesno";
 @import "./components/similar-organisations";
 @import "./components/number-icons";
 @import "./components/references";
 
 // these files has been copied directly from the GovUK Prototype kit
-@import "./components/_step-by-step-navigation";
-@import "./components/_task-list";
+@import "./components/step-by-step-navigation";
+@import "./components/task-list";
 
 // this file overrides some of the GovUK properties
 // and it needs to come after the file copied from the GovUK Prototype kit
-@import "./components/_step-by-step-navigation-gpg";
+@import "./components/step-by-step-navigation-gpg";
