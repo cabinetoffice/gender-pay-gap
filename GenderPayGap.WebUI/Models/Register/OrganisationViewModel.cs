@@ -8,6 +8,7 @@ using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GovUkDesignSystem;
+using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Register
 {
@@ -29,6 +30,7 @@ namespace GenderPayGap.WebUI.Models.Register
         public string BackAction { get; set; }
 
         public string ReviewCode { get; set; }
+        
         public string CancellationReason { get; set; }
 
         #region Search details
