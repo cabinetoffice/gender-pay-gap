@@ -1,37 +1,41 @@
-﻿.action-steps {
+﻿$icon-size: 23px;
+
+.action-steps {
   position: relative;
   padding-bottom: 10px;
-  padding-left: -30px;
 
   ol {
     list-style: none;
     counter-reset: action-step-counter;
-    padding-left: 0;
-  }
-  ol > li {
-    counter-increment: action-step-counter;
+    margin-left: 0;
 
-    @media (max-width: map-get($govuk-breakpoints, 'desktop')) {
-      > h3 {
-        margin-left: 30px;
-      }
-    }
-  }
-  ol > li::before {
-    content: counter(action-step-counter);
-    position: absolute;
-    line-height: 23px;
-    font-size: small;
-    text-align: center;
-    vertical-align: middle;
-    width: 23px;
-    height: 23px;
-    color: white;
-    background: black;
-    border-radius: 50%;
-
-    @media (min-width: map-get($govuk-breakpoints, 'desktop')) {
+    > li {
+      counter-increment: action-step-counter;
       left: -30px;
+      
+      &::before {
+        content: counter(action-step-counter);
+        position: absolute;
+        line-height: $icon-size;
+        font-size: small;
+        text-align: center;
+        width: $icon-size;
+        height: $icon-size;
+        color: $govuk-body-background-colour;
+        background: $govuk-text-colour;
+        border-radius: 50%;
+        left: -30px;
+      }
+
+      @media (max-width: map-get($govuk-breakpoints, 'desktop')) {
+        > h3 {
+          margin-left: 30px;
+        }
+
+        &::before {
+          left: 0;
+        }
+      }
     }
   }
 }
