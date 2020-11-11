@@ -155,7 +155,7 @@
   width: 0;
   height: 100%;
   border-left: solid 2px $govuk-border-colour;
-  background: #fff;
+  background: govuk-colour("white");
   left: 0;
   margin-left: 12px;
   top: 15px;
@@ -226,7 +226,7 @@
   width: 26px;
   height: 26px;
   color: govuk-colour("black");
-  background: #fff;
+  background: govuk-colour("white");
   border-radius: 100px;
   text-align: center;
 }
@@ -303,7 +303,7 @@
 }
 
 .app-step-nav__circle-background {
-  text-shadow: 0 -0.1em 0 #fff, 0.1em 0 0 #fff, 0 0.1em 0 #fff, -0.1em 0 0 #fff;
+  text-shadow: 0 -0.1em 0 govuk-colour("white"), 0.1em 0 0 govuk-colour("white"), 0 0.1em 0 govuk-colour("white"), -0.1em 0 0 govuk-colour("white");
 }
 
 .app-step-nav__header {
@@ -467,7 +467,7 @@
   height: 16px;
   margin-top: -8px;
   background: govuk-colour("black");
-  border: solid 2px #fff;
+  border: solid 2px govuk-colour("white");
   border-radius: 100px;
 }
 @include govuk-media-query($from: tablet) {
@@ -511,7 +511,7 @@
   width: 0;
   height: 100%;
   border-left: dotted 2px $govuk-border-colour;
-  background: #fff;
+  background: govuk-colour("white");
   left: 0;
   margin-left: 12px;
   z-index: 3;
@@ -552,7 +552,7 @@
   width: 0;
   height: 100%;
   border-left: solid 2px $govuk-border-colour;
-  background: #fff;
+  background: govuk-colour("white");
   left: 0;
   margin-left: 12px;
   z-index: 3;
