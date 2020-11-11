@@ -3,7 +3,7 @@
     border: 2px solid $govuk-input-border-colour;
     padding: 15px 0;
 
-    @media (min-width: 40.0625em) {
+    @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
         padding: 20px 0;
     }
 
@@ -12,7 +12,7 @@
         margin: 0 15px;
         position: relative;
 
-        @media (min-width: 40.0625em) {
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
             margin: 0 30px;
         }
 
@@ -30,7 +30,7 @@
         font-size: 16px;
         line-height: 20px;
 
-        @media (min-width: 40.0625em) {
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
             font-size: 19px;
             line-height: 25px;
         }
@@ -61,7 +61,7 @@
         font-size: 16px;
         line-height: 20px;
 
-        @media (min-width: 40.0625em) {
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
             font-size: 19px;
             line-height: 25px;
         }
@@ -122,7 +122,7 @@
         font-size: 16px;
         line-height: 20px;
 
-        @media (min-width: 40.0625em) {
+        @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
             font-size: 19px;
             line-height: 25px;
         }
@@ -157,7 +157,7 @@
     }
 
     .cookie-banner-hide-button {
-        @media (min-width: 48em) {
+        @media (min-width: map-get($govuk-breakpoints, 'desktop')) {
             position: absolute;
             right: 5px;
             top: 0;
