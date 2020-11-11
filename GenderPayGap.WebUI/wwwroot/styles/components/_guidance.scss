@@ -72,6 +72,10 @@
         @media (min-width: map-get($govuk-breakpoints, 'tablet')) {
             float: left;
         }
+        
+        > a > img {
+            border:6px solid #dee0e2;
+        }
     }
     
     .pdf-preview__text {
