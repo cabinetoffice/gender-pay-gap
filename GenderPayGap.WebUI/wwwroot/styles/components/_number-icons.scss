@@ -1,12 +1,13 @@
 ﻿$icon-size: 23px;
 
 .action-steps {
-  position: relative;
   padding-bottom: 10px;
 
   ol {
+    position: relative;
     list-style: none;
     counter-reset: action-step-counter;
+    padding-left: 35px;
 
     > h3 {
       margin-left: 30px;
@@ -14,7 +15,6 @@
 
     > li {
       counter-increment: action-step-counter;
-      margin-left: 30px;
       
       &::before {
         content: counter(action-step-counter);
