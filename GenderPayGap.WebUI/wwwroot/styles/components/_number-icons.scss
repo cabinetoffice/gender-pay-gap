@@ -7,11 +7,14 @@
   ol {
     list-style: none;
     counter-reset: action-step-counter;
-    margin-left: 0;
+
+    > h3 {
+      margin-left: 30px;
+    }
 
     > li {
       counter-increment: action-step-counter;
-      left: -30px;
+      margin-left: 30px;
       
       &::before {
         content: counter(action-step-counter);
@@ -24,17 +27,7 @@
         color: $govuk-body-background-colour;
         background: $govuk-text-colour;
         border-radius: 50%;
-        left: -30px;
-      }
-
-      @media (max-width: map-get($govuk-breakpoints, 'desktop')) {
-        > h3 {
-          margin-left: 30px;
-        }
-
-        &::before {
-          left: 0;
-        }
+        left: 0;
       }
     }
   }
