@@ -269,13 +269,17 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendGeoOrphanOrganisationEmail(string organisationName)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"OrganisationName", organisationName}
-            };
-
             foreach (string emailAddress in Global.GeoDistributionList)
             {
+                // This personalisation Dictionary should be created separately for each recipient (i.e. inside the foreach loop)
+                // This ensures each recipient gets a separate instance of the Dictionary
+                // This allows each Dictionary to be modified independently without affecting each other
+                // Passing in the same Dictionary caused bug GPG-570
+                var personalisation = new Dictionary<string, dynamic>
+                {
+                    {"OrganisationName", organisationName}
+                };
+
                 var notifyEmail = new NotifyEmail
                 {
                     EmailAddress = emailAddress,
@@ -289,16 +293,20 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendGeoOrganisationRegistrationRequestEmail(string contactName, string reportingOrg, string reportingAddress, string url)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"name", contactName},
-                {"org2", reportingOrg},
-                {"address", reportingAddress},
-                {"url", url},
-            };
-
             foreach (string emailAddress in Global.GeoDistributionList)
             {
+                // This personalisation Dictionary should be created separately for each recipient (i.e. inside the foreach loop)
+                // This ensures each recipient gets a separate instance of the Dictionary
+                // This allows each Dictionary to be modified independently without affecting each other
+                // Passing in the same Dictionary caused bug GPG-570
+                var personalisation = new Dictionary<string, dynamic>
+                {
+                    {"name", contactName},
+                    {"org2", reportingOrg},
+                    {"address", reportingAddress},
+                    {"url", url},
+                };
+
                 var notifyEmail = new NotifyEmail
                 {
                     EmailAddress = emailAddress,
@@ -312,16 +320,20 @@ namespace GenderPayGap.WebUI.Services
 
         public void SendGeoFirstTimeDataSubmissionEmail(string year, string organisationName, string postedDate, string url)
         {
-            var personalisation = new Dictionary<string, dynamic>
-            {
-                {"year", year},
-                {"organisationName", organisationName},
-                {"postedDate", postedDate},
-                {"url", url},
-            };
-
             foreach (string emailAddress in Global.GeoDistributionList)
             {
+                // This personalisation Dictionary should be created separately for each recipient (i.e. inside the foreach loop)
+                // This ensures each recipient gets a separate instance of the Dictionary
+                // This allows each Dictionary to be modified independently without affecting each other
+                // Passing in the same Dictionary caused bug GPG-570
+                var personalisation = new Dictionary<string, dynamic>
+                {
+                    {"year", year},
+                    {"organisationName", organisationName},
+                    {"postedDate", postedDate},
+                    {"url", url},
+                };
+
                 var notifyEmail = new NotifyEmail
                 {
                     EmailAddress = emailAddress,
