@@ -27,6 +27,18 @@ namespace GenderPayGap.WebUI.Helpers
 
             // Add HTTP Basic Authentication in our non-production environments to make sure people don't accidentally stumble across the site
             // The site will still also be secured by the usual login/cookie auth - this is just an extra layer to make the site not publicly accessible
+            if (IsAuthorised(httpContext))
+            {
+                await _next.Invoke(httpContext);
+            }
+            else
+            {
+                SendUnauthorisedResponse(httpContext);
+            }
+        }
+
+        private bool IsAuthorised(HttpContext httpContext)
+        {
             try
             {
                 var authHeader = AuthenticationHeaderValue.Parse(httpContext.Request.Headers["Authorization"]);
@@ -38,16 +50,16 @@ namespace GenderPayGap.WebUI.Helpers
                 if (Global.BasicAuthUsername == username &&
                     Global.BasicAuthPassword == password)
                 {
-                    await _next.Invoke(httpContext);
+                    return true;
                 }
                 else
                 {
-                    SendUnauthorisedResponse(httpContext);
+                    return false;
                 }
             }
             catch
             {
-                SendUnauthorisedResponse(httpContext);
+                return false;
             }
         }
 
