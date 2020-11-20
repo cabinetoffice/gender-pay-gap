@@ -16,7 +16,7 @@
                 @foreach (OptionSelect item in Model.Metadata)
                 {
                     <label for="@(item.Id)" @(item.Disabled ? "disabled" : string.Empty)>
-                        <input name="@(Model.Group)" @(item.Disabled ? "disabled" : string.Empty) value="@(item.Value)" id="@(item.Id)" type="checkbox" @(queryLookup.Contains(item.Value) ? "checked" : "") aria-label="@(item.Id != "Size0" ? item.Label + " employees" : "Number of employees not provided")"/>
+                        <input name="@(Model.Group)" @(item.Disabled ? "disabled" : string.Empty) value="@(item.Value)" id="@(item.Id)" type="checkbox" @(queryLookup.Contains(item.Value) ? "checked" : "")/>
                         <span class="font-xsmall">@(item.Label)</span>
                     </label>
                 }
