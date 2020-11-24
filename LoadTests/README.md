@@ -2,16 +2,37 @@
 
 We use [Gatling](https://gatling.io/) for the purpose of Load Testing. Gatling is an open-source load and performance testing framework based on Scala, Akka and Netty.
 
+## What is Load Testing?
+
+Load tests check the performance of a software application whilst being used by a certain number of users simultaneously. 
+They are used to ensure that a system will cope effectively with high load, and to identify bottlenecks which may need further technical work to resolve.
+
+Load tests aim to:
+* Identify the maximum operational capacity of a system
+* Determine whether the infrastructure being used is sufficient to handle the expected system load
+* Determine the scalability of a system
+* Identify bottlenecks within the system which may need technical work
+
+## Why do we want to do it on GPG?
+
+Each year, employers with more than 250 employees are required to report their gender pay gap figures through the [Gender Pay Gap Service](https://gender-pay-gap.service.gov.uk/).
+Employers provide data from a specific reference date (the snapshot date), which is:
+* 31st March for public sector employers
+* 4th April for businesses and charities
+
+Employers are required to publish this data within one year of their respective snapshot date. This means that towards the end of each reporting year, there is a peak in load on the system as a large quantity of employers try to report their figures before the deadline.
+We run load tests to ensure that the system will cope well with expected load at this time, and to identify any technical changes we should prioritise before the reporting peak.
+
 ## Zero to Hero
 
 This module can't be opened in Visual Studio so you'll need another IDE such as IntelliJ.
 
-1. Download and install [IntelliJ](https://www.jetbrains.com/idea/download) (Community edition is fine)
-1. Install **Java** 64bits JDK 8 (not compatible with JDK 12+)
+1. Download and install [IntelliJ IDEA](https://www.jetbrains.com/idea/download) (Community edition is fine)
+1. Install **Java** 64bits JDK 8 (not compatible with JDK 12+) - look on [swiki](https://swiki.softwire.com/display/HelpdeskEmployees/Java+and+Patching) for instructions of how to do this with Amazon Corretto
 1. Set up your JDK if you didn't already - you'll need to see a valid Java 1.8 under File > Project Structure > Project SDKs
 1. Install **Scala** 2.12 (not compatible with Scala 2.11 or Scala 2.13)
 1. Install the Scala plugin for IntelliJ: File > Settings > Plugins > search for Scala and hit Install
-1. Increase the stack size for the Scala compiler so you don't suffer from StackOverflowErrors. Recommended setting Xss to 100M.  (File -> Settings -> Build, Execution, Deployment -> Compiler -> Scala Compiler -> Scala Compile Server -> in the JVM options textbox)
+1. Increase the stack size for the Scala compiler so you don't suffer from StackOverflowErrors. Recommended setting Xss to 100M.  (File -> Settings -> Build, Execution, Deployment -> Compiler -> Scala Compiler -> Scala Compile Server -> in the JVM options textbox). You'll need to expand each item in the sidebar - don't just click on Compiler and try to navigate from there!
 1. Open just this folder (./LoadTests) in IntelliJ
 1. Maven should automatically sync, but if it doesn't, open the Maven window and hit "Reimport all Maven projects" (the "refresh" icon)
 
