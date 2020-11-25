@@ -2,7 +2,7 @@
 
 We use [Gatling](https://gatling.io/) for the purpose of Load Testing. Gatling is an open-source load and performance testing framework based on Scala, Akka and Netty.
 
-## What is Load Testing?
+## What is load testing?
 
 Load tests check the performance of a software application whilst being used by a certain number of users simultaneously. 
 They are used to ensure that a system will cope effectively with high load, and to identify bottlenecks which may need further technical work to resolve.
@@ -28,7 +28,7 @@ We run load tests to ensure that the system will cope well with expected load at
 This module can't be opened in Visual Studio so you'll need another IDE such as IntelliJ.
 
 1. Download and install [IntelliJ IDEA](https://www.jetbrains.com/idea/download) (Community edition is fine)
-1. Install **Java** 64bits JDK 8 (not compatible with JDK 12+) - look on [swiki](https://swiki.softwire.com/display/HelpdeskEmployees/Java+and+Patching) for instructions of how to do this with Amazon Corretto
+1. Install **Java** 64bits JDK 8 (not compatible with JDK 12+)
 1. Set up your JDK if you didn't already - you'll need to see a valid Java 1.8 under File > Project Structure > Project SDKs
 1. Install **Scala** 2.12 (not compatible with Scala 2.11 or Scala 2.13)
 1. Install the Scala plugin for IntelliJ: File > Settings > Plugins > search for Scala and hit Install
@@ -42,9 +42,24 @@ mvn gatling:verify
 ```
 and have it succeed.
 
+## Preparing for a load test
+
+### The Gatling recorder
+
+The scenarios in this project were originally created using the Gatling Recorder which can be downloaded [here](https://gatling.io/open-source/start-testing/). 
+You can run the recorder by finding and running the `recorder.bat` file
+
 ### Creating or modifying a scenario
 
-The scenarios in this project were originally created using the Gatling Recorder. For minor tweaks (e.g. just to a specific page) you can edit `RecordingSimulation.scala` directly, or for a more substantial change you should consider recording a new scenario from scratch. See the [Gatling recorder docs](https://gatling.io/docs/current/quickstart/#using-the-recorder) for more.
+For minor tweaks (e.g. just to a specific page) you can edit `RecordingSimulation.scala` directly, or for a more substantial change you should consider recording a new scenario from scratch. See the [Gatling recorder docs](https://gatling.io/docs/current/quickstart/#using-the-recorder) for more.
+
+To create a new scenario, you will need to:
+1. Open the Gatling Recorder
+1. Set up a proxy - on Windows, go to System Settings > Proxy Settings, and use the manual proxy setup to create a proxy to `localhost:8000`
+1. Set the Gatling recorder to use port 8000, and to output the results to `LoadTests/src/test/scala/default`
+1. Run the service locally - it'll run on port 44371
+1. Press start on the Gatling recorder. Perform all the actions you want to record, and then click Stop when you're finished
+1. The code for your scenario will be saved in the `default` folder
 
 ## Running the load test
 
