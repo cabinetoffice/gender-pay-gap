@@ -92,46 +92,37 @@ class RecordingSimulation extends Simulation {
 
 	object SignInPage {
 		val visit = exec(http("Visit sign in page")
-			.get("/manage-organisations")
+			.get("/login")
 			.headers(headers_0)
 			.check(
 				status.in(200, 302),
 				regex("Sign in"),
-				regex("If you have an account, enter your email address and password"),
+				regex("If you have a user account, enter your email address and password"),
 				css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"))
 			.resources(http("Load important icon")
 				.get("/public/images/icon-important-2x.png"),
 				http("Load licence image")
-					.get("/account/public/assets/govuk_template/stylesheets/images/open-government-licence_2x.png?0.23.0"),
+					.get("/public/govuk_template/assets/stylesheets/images/open-government-licence_2x.png"),
 				http("Load logo")
-					.get("/account/public/assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png?0.23.0"),
+					.get("/public/govuk_template/assets/stylesheets/images/gov.uk_logotype_crown.png"),
 				http("Load crest")
-					.get("/account/public/assets/govuk_template/stylesheets/images/govuk-crest-2x.png?0.23.0")))
+					.get("/public/govuk_template/assets/stylesheets/images/govuk-crest-2x.png")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val signIn = feed(usersOrganisationsFeeder)
 			.exec(http("Sign in")
 			.post("/account/sign-in")
 			.headers(headers_3)
-			.formParam("Username", "${email}")
-			.formParam("Password", "Genderpaygap1")
+			.formParam("GovUk_Text_EmailAddress", "${email}")
+			.formParam("GovUk_Text_Password", "Genderpaygap1")
 			.formParam("ReturnUrl", "${returnUrl}")
 			.formParam("button", "login")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
-			.check(
-				css("input[name='id_token']","value").saveAs("idToken"),
-				css("input[name='scope']","value").saveAs("signInScope"),
-				css("input[name='state']","value").saveAs("signInState"),
-				css("input[name='session_state']","value").saveAs("signInSessionState")
-			))
+			)
 			.exec(http("Sign in OIDC")
 			.post("/signin-oidc")
 			.headers(headers_3)
-			.formParam("id_token", "${idToken}")
-			.formParam("scope", "${signInScope}")
-			.formParam("state", "${signInState}")
-			.formParam("session_state", "${signInSessionState}")
 			.check(
 				regex("Privacy Policy"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
@@ -141,29 +132,29 @@ class RecordingSimulation extends Simulation {
 
 	object RegistrationPage {
 		val visit = exec(http("Load registration page")
-			.get("/Register/about-you")
+			.get("create-user-account")
 			.headers(headers_0)
 			.check(
 				status.is(200),
-				regex("Create an account"),
+				regex("Create my account"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val register = feed(registrationFeeder)
 			.exec(http("Register")
-			.post("/Register/about-you")
+			.post("create-user-account")
 			.headers(headers_3)
-			.formParam("EmailAddress", "${email}")
-			.formParam("ConfirmEmailAddress", "${email}")
-			.formParam("FirstName", "Test")
-			.formParam("LastName", "Example")
-			.formParam("JobTitle", "Tester")
-			.formParam("Password", "GenderPayGap123")
-			.formParam("ConfirmPassword", "GenderPayGap123")
+			.formParam("GovUk_Text_EmailAddress", "${email}")
+			.formParam("GovUk_Text_ConfirmEmailAddress", "${email}")
+			.formParam("GovUk_Text_FirstName", "Test")
+			.formParam("GovUk_Text_LastName", "Example")
+			.formParam("GovUk_Text_JobTitle", "Tester")
+			.formParam("GovUk_Text_Password", "GenderPayGap123")
+			.formParam("GovUk_Text_ConfirmPassword", "GenderPayGap123")
 			.formParam("AllowContact", "true")
 			.formParam("SendUpdates", "false")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
-			.check(regex("Verify your email address")))
+			.check(regex("Confirm your email address")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
