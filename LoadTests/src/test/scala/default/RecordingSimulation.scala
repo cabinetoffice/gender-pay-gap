@@ -92,7 +92,7 @@ class RecordingSimulation extends Simulation {
 
 	object SignInPage {
 		val visit = exec(http("Visit sign in page")
-			.get("/login")
+			.get("/login??ReturnUrl=${returnUrl}")
 			.headers(headers_0)
 			.check(
 				status.in(200, 302),
@@ -120,13 +120,6 @@ class RecordingSimulation extends Simulation {
 			.formParam("button", "login")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			)
-			.exec(http("Sign in OIDC")
-			.post("/signin-oidc")
-			.headers(headers_3)
-			.check(
-				regex("Privacy Policy"),
-				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
-			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
@@ -159,10 +152,9 @@ class RecordingSimulation extends Simulation {
 	}
 
 	object PrivacyPolicyPage {
-		val accept = exec(http("Accept privacy and policy")
+		val accept = exec(http("Accept privacy policy")
 			.post("/privacy-policy")
 			.headers(headers_3)
-			.formParam("command", "Continue")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(
 				regex("Manage Organisations"),
