@@ -92,7 +92,7 @@ class RecordingSimulation extends Simulation {
 
 	object SignInPage {
 		val visit = exec(http("Visit sign in page")
-			.get("/login??ReturnUrl=${returnUrl}")
+			.get("/login?ReturnUrl=${returnUrl}")
 			.headers(headers_0)
 			.check(
 				status.in(200, 302),
