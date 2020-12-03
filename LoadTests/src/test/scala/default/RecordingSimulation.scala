@@ -163,6 +163,16 @@ class RecordingSimulation extends Simulation {
 	}
 
 	object RegisterOrganisation {
+		// TODO: Update to new journey
+
+		val visitManageOrganisationPage = exec(http("Visit manage organisations page")
+  			.get("/account/organisations")
+  			.headers(headers_0)
+  			.check(
+					regex("Add or select an organisation you're reporting for")
+				))
+				.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
 		val visitChooseOrganisationType = exec(http("Visit register an organisation page")
 			.get("/Register/organisation-type")
 			.headers(headers_0)
@@ -254,9 +264,10 @@ class RecordingSimulation extends Simulation {
 
 	object ReportGenderPayGap {
 		val visitManageOrganisation = exec(http("Visit manage organisation")
-			.get("/manage-organisations")
+			.get("/account/organisations")
 			.headers(headers_0)
 			.check(
+				// TODO: Fix this line - no ManageOrg id available on new design system page
 				css("a[id^='ManageOrg']", "href").find.saveAs("linkToAnOrganisation"),
 				regex("Select an organisation")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -484,6 +495,7 @@ class RecordingSimulation extends Simulation {
 			.check(regex("Manage your account")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
+		// TODO: Update these - change personal details is now multiple pages
 		val visitChangePersonalDetails = exec(http("Visit change personal details")
 			.get("/manage-account/change-details")
 			.headers(headers_0)
