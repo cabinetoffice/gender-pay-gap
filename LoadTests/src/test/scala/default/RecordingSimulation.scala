@@ -157,108 +157,62 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_3)
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(
-				regex("Manage Organisations"),
-				regex("Manage Account")))
+				status.is(200)
+			))
   		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
-	object RegisterOrganisation {
-		// TODO: Update to new journey
-
+	object SelectExistingOrganisation {
 		val visitManageOrganisationPage = exec(http("Visit manage organisations page")
-  			.get("/account/organisations")
-  			.headers(headers_0)
-  			.check(
-					regex("Add or select an organisation you're reporting for")
-				))
-				.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
-
-		val visitChooseOrganisationType = exec(http("Visit register an organisation page")
-			.get("/Register/organisation-type")
+			.get("/account/organisations")
 			.headers(headers_0)
 			.check(
-				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				regex("Select which type of organisation you would like to register")))
+				status.is(200)
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val chooseOrganisationType = exec(http("Choose organistion type to be private")
-			.post("/Register/organisation-type")
-			.headers(headers_3)
-			.formParam("SearchText", "")
-			.formParam("SectorType", "Private")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+		val chooseAddOrganisation = exec(http("Visit choose organisation sector page")
+			.get("/add-organisation/choose-sector")
+			.headers(headers_0)
 			.check(
-				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				regex("Find your organisation")))
+				status.is(200)
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val searchForAnOrganisation = exec(http("Search for an organisation")
-			.post("/Register/organisation-search")
-			.headers(headers_3)
-			.formParam("SectorType", "Private")
-			.formParam("ManualRegistration", "True")
-			.formParam("command", "search")
-			.formParam("SearchText", "${organisationName}")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+		val chooseOrganisationSector = exec(http("Choose organisation sector (private)")
+			.get("/add-organisation/choose-sector?GovUk_Radio_Sector=Private&Validate=True")
+			.headers(headers_0)
 			.check(
-				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				regex("Choose your organisation")))
+				status.is(200)
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val chooseAnOrganisation = exec(http("Choose an organisation")
-			.post("/Register/choose-organisation")
+		val searchForOrganisationName = exec(http("Search for organisation name")
+			.get("/add-organisation/private/search?query=${organisationName}")
+			.headers(headers_0)
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val chooseAnOrganisation = exec(http("Choose organisation from results list")
+			.get("/add-organisation/found?companyNumber=${organisationCompanyNumber}&query=${organisationName}&sector=Private")
+			.headers(headers_0)
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val confirmOrganisationChoice = exec(http("Confirm organisation choice")
+			.post("/add-organisation/found")
 			.headers(headers_3)
-			.formParam("SectorType", "Private")
-			.formParam("SearchText", "${organisationName}")
-			.formParam("command", "employer_0")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
-			.check(css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
-
-		val confirmOrganisationDetails = exec(http("Confirm organisation details")
-			.post("/Register/confirm-organisation")
-			.headers(headers_3)
-			.formParam("SearchText", "${organisationName}")
-			.formParam("SelectedEmployerIndex", "0")
 			.formParam("CompanyNumber", "${organisationCompanyNumber}")
-			.formParam("CharityNumber", "")
-			.formParam("MutualNumber", "")
-			.formParam("OtherName", "")
-			.formParam("OtherValue", "")
-			.formParam("SectorType", "Private")
-			.formParam("NoReference", "False")
-			.formParam("BackAction", "")
-			.formParam("AddressReturnAction", "")
-			.formParam("ConfirmReturnAction", "ChooseOrganisation")
-			.formParam("OrganisationName", "${organisationName}")
-			.formParam("NameSource", "User")
-			.formParam("AddressSource", "User")
-			.formParam("SicSource", "User")
-			.formParam("SicCodeIds", "2200")
-			.formParam("Address1", "test street")
-			.formParam("Address2", "")
-			.formParam("Address3", "")
-			.formParam("City", "")
-			.formParam("County", "")
-			.formParam("Country", "United Kingdom")
-			.formParam("Postcode", "NWN NWN")
-			.formParam("PoBox", "")
-			.formParam("IsUkAddress", "True")
-			.formParam("ContactFirstName", "")
-			.formParam("ContactLastName", "")
-			.formParam("ContactJobTitle", "")
-			.formParam("ContactEmailAddress", "")
-			.formParam("ContactPhoneNumber", "")
-			.formParam("ManualAddress", "False")
-			.formParam("ManualEmployerIndex", "0")
-			.formParam("MatchedReferenceCount", "0")
-			.formParam("ManualRegistration", "False")
-			.formParam("ManualAuthorised", "False")
-			.formParam("SelectedAuthorised", "False")
-			.formParam("IsFastTrackAuthorised", "False")
-			.formParam("command", "confirm")
-			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
-			.check(regex("We saved your registration request")))
+			.formParam("Query", "${organisationName}")
+			.formParam("IsUkAddress", "Yes")
+			.check(
+				status.is(200)
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
@@ -557,11 +511,12 @@ class RecordingSimulation extends Simulation {
 		SignInPage.visit,
 		SignInPage.signIn,
 		PrivacyPolicyPage.accept,
-		RegisterOrganisation.visitChooseOrganisationType,
-		RegisterOrganisation.chooseOrganisationType,
-		RegisterOrganisation.searchForAnOrganisation,
-		RegisterOrganisation.chooseAnOrganisation,
-		RegisterOrganisation.confirmOrganisationDetails,
+		SelectExistingOrganisation.visitManageOrganisationPage,
+		SelectExistingOrganisation.chooseAddOrganisation,
+		SelectExistingOrganisation.chooseOrganisationSector,
+		SelectExistingOrganisation.searchForOrganisationName,
+		SelectExistingOrganisation.chooseAnOrganisation,
+		SelectExistingOrganisation.confirmOrganisationChoice,
 		ReportGenderPayGap.visitManageOrganisation,
 		ReportGenderPayGap.visitOrganisation,
 		ReportGenderPayGap.visitEnterReport,
