@@ -162,7 +162,7 @@ class RecordingSimulation extends Simulation {
   		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
-	object SelectExistingOrganisation {
+	object SearchForOrganisation {
 		val visitManageOrganisationPage = exec(http("Visit manage organisations page")
 			.get("/account/organisations")
 			.headers(headers_0)
@@ -194,7 +194,9 @@ class RecordingSimulation extends Simulation {
 				status.is(200)
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+	}
 
+	object SelectExistingOrganisation {
 		val chooseAnOrganisation = exec(http("Choose organisation from results list")
 			.get("/add-organisation/found?companyNumber=${organisationCompanyNumber}&query=${organisationName}&sector=Private")
 			.headers(headers_0)
@@ -511,10 +513,10 @@ class RecordingSimulation extends Simulation {
 		SignInPage.visit,
 		SignInPage.signIn,
 		PrivacyPolicyPage.accept,
-		SelectExistingOrganisation.visitManageOrganisationPage,
-		SelectExistingOrganisation.chooseAddOrganisation,
-		SelectExistingOrganisation.chooseOrganisationSector,
-		SelectExistingOrganisation.searchForOrganisationName,
+		SearchForOrganisation.visitManageOrganisationPage,
+		SearchForOrganisation.chooseAddOrganisation,
+		SearchForOrganisation.chooseOrganisationSector,
+		SearchForOrganisation.searchForOrganisationName,
 		SelectExistingOrganisation.chooseAnOrganisation,
 		SelectExistingOrganisation.confirmOrganisationChoice,
 		ReportGenderPayGap.visitManageOrganisation,
