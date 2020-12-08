@@ -196,6 +196,113 @@ class RecordingSimulation extends Simulation {
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
+	object ManuallyEnterOrganisationDetails {
+		val visitOrganisationNamePage = exec(http("Visit manual organisation name page")
+			.get("/add-organisation/manual/name")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterOrganisationName = exec(http("Enter organisation name")
+			.get("/add-organisation/manual/name")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("Validate", "True")
+			.queryParam("GovUk_Text_OrganisationName", "${organisationName}")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitOrganisationAddressPage = exec(http("Visit manual organisation address page")
+			.get("/add-organisation/manual/address")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("OrganisationName", "${organisationName}")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterOrganisationAddress = exec(http("Enter organisation address")
+			.get("/add-organisation/manual/address")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("OrganisationName", "${organisationName}")
+			.queryParam("Validate", "True")
+			.queryParam("GovUk_Text_Address1", "1 Imaginary Street")
+			.queryParam("GovUk_Radio_IsUkAddress", "Yes")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitOrganisationSicCodesPage = exec(http("Visit manual organisation SIC codes page")
+			.get("/add-organisation/manual/sic-codes")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("OrganisationName", "${organisationName}")
+			.queryParam("Address1", "1 Imaginary Street")
+			.queryParam("IsUkAddress", "Yes")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterOrganisationSicCodes = exec(http("Enter organisation SIC codes")
+			.get("/add-organisation/manual/sic-codes")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("OrganisationName", "${organisationName}")
+			.queryParam("Validate", "True")
+			.queryParam("Address1", "1 Imaginary Street")
+			.queryParam("IsUkAddress", "Yes")
+			.queryParam("SicCodes", "41100")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitConfirmOrganisationDetailsPage = exec(http("Visit confirm organisation details page")
+			.get("/add-organisation/manual/confirm")
+			.headers(headers_0)
+			.queryParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("OrganisationName", "${organisationName}")
+			.queryParam("Address1", "1 Imaginary Street")
+			.queryParam("IsUkAddress", "Yes")
+			.queryParam("SicCodes", "41100")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val confirmManualOrganisationDetails = exec(http("Confirm manual organisation details")
+			.post("/add-organisation/manual/confirm")
+			.headers(headers_0)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("Sector", "Private")
+			.queryParam("Query", "${organisationName}")
+			.queryParam("OrganisationName", "${organisationName}")
+			.queryParam("Validate", "True")
+			.queryParam("Address1", "1 Imaginary Street")
+			.queryParam("IsUkAddress", "Yes")
+			.queryParam("SicCodes", "41100")
+			.check(
+				status.is(200)
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+	}
+
 	object SelectExistingOrganisation {
 		val chooseAnOrganisation = exec(http("Choose organisation from results list")
 			.get("/add-organisation/found?companyNumber=${organisationCompanyNumber}&query=${organisationName}&sector=Private")
@@ -513,6 +620,18 @@ class RecordingSimulation extends Simulation {
 		SignInPage.visit,
 		SignInPage.signIn,
 		PrivacyPolicyPage.accept,
+		SearchForOrganisation.visitManageOrganisationPage,
+		SearchForOrganisation.chooseAddOrganisation,
+		SearchForOrganisation.chooseOrganisationSector,
+		SearchForOrganisation.searchForOrganisationName,
+		ManuallyEnterOrganisationDetails.visitOrganisationNamePage,
+		ManuallyEnterOrganisationDetails.enterOrganisationName,
+		ManuallyEnterOrganisationDetails.visitOrganisationAddressPage,
+		ManuallyEnterOrganisationDetails.enterOrganisationAddress,
+		ManuallyEnterOrganisationDetails.visitOrganisationSicCodesPage,
+		ManuallyEnterOrganisationDetails.enterOrganisationSicCodes,
+		ManuallyEnterOrganisationDetails.visitConfirmOrganisationDetailsPage,
+		ManuallyEnterOrganisationDetails.confirmManualOrganisationDetails,
 		SearchForOrganisation.visitManageOrganisationPage,
 		SearchForOrganisation.chooseAddOrganisation,
 		SearchForOrganisation.chooseOrganisationSector,
