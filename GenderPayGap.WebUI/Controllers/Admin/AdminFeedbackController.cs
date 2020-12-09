@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
+using CsvHelper.Configuration;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
@@ -57,7 +58,8 @@ namespace GenderPayGap.WebUI.Controllers
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream))
             {
-                using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
+                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes, SanitizeForInjection = true};
+                using (var csv = new CsvWriter(writer, config))
                 {
                     csv.WriteRecords(feedback.ToList());
                 }
