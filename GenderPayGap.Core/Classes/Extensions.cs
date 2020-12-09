@@ -61,7 +61,7 @@ namespace GenderPayGap.Core.Classes
                 {
                     using (var textWriter = new StreamWriter(stream))
                     {
-                        var config = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes };
+                        var config = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes, SanitizeForInjection = true};
                         using (var writer = new CsvWriter(textWriter, config))
                         {
                             // Write columns

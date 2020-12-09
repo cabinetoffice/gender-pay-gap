@@ -41,7 +41,8 @@ namespace GenderPayGap.WebUI.Models.AdminReferenceData {
                     {
                         IgnoreQuotes = false,
                         TrimOptions = TrimOptions.InsideQuotes,
-                        MissingFieldFound = null
+                        MissingFieldFound = null,
+                        SanitizeForInjection = true
                     };
 
                     using (var csvReader = new CsvReader(reader, csvConfiguration))
@@ -72,7 +73,7 @@ namespace GenderPayGap.WebUI.Models.AdminReferenceData {
             }
             catch (Exception ex)
             {
-                errorMessage = "The selected file could not be uploaded – try again.";
+                errorMessage = "The selected file could not be uploaded ï¿½ try again.";
                 return false;
             }
         }
