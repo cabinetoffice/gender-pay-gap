@@ -90,7 +90,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void SaveCsvFile(IEnumerable records, string relativeFilePath)
         {
-            var csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes };
+            var csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes, SanitizeForInjection = true};
 
             using (var memoryStream = new MemoryStream())
             using (var streamReader = new StreamReader(memoryStream))
