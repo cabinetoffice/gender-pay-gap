@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Models.AdminReferenceData {
             }
             catch (Exception ex)
             {
-                errorMessage = "The selected file could not be uploaded � try again.";
+                errorMessage = "The selected file could not be uploaded - try again.";
                 return false;
             }
         }
