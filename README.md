@@ -1,6 +1,6 @@
 ![Build Status](https://dev.azure.com/govtequalitiesoffice/Gender%20Pay%20Gap/_apis/build/status/Build%20all%20branches)
 
-# Gender Pay Gap Service
+# Gender Pay Gap Service 
 
 This is the code for the [Gender Pay Gap service](https://gender-pay-gap.service.gov.uk).
 
