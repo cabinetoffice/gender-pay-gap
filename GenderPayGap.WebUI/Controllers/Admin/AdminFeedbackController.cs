@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers
             var memoryStream = new MemoryStream();
             using (var writer = new StreamWriter(memoryStream))
             {
-                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes, SanitizeForInjection = true};
+                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { SanitizeForInjection = true };
                 using (var csv = new CsvWriter(writer, config))
                 {
                     csv.WriteRecords(feedback.ToList());
