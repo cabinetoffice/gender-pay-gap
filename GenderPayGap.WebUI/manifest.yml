@@ -3,5 +3,5 @@ applications:
 - buildpacks:
   - dotnet_core_buildpack
   command: dotnet GenderPayGap.WebUI.dll
-  health-check-http-endpoint: /viewing
+  health-check-http-endpoint: /health-check
   health-check-type: http
