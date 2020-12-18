@@ -32,7 +32,7 @@ DO $$
                 INSERT INTO "Organisations"
                 ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "Modified", "OptedOutFromCompaniesHouseUpdate", "EmployerReference")
                 VALUES
-                (STARTING_ID + INDEX, '99999' || CAST(INDEX AS VARCHAR(16)), 'test_' || CAST(INDEX AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX AS VARCHAR(16)));
+                (STARTING_ID + INDEX, '99999' || CAST(INDEX AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX AS VARCHAR(16)));
 
                 INSERT INTO "OrganisationNames"
                 ("OrganisationNameId", "OrganisationId", "Name", "Source", "Created")

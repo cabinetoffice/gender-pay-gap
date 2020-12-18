@@ -43,6 +43,11 @@ class RecordingSimulation extends Simulation {
 	val headers_5 = Map(
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
+
+	val headers_6 = Map(
+		"content-type" -> "text/css"
+	)
+
 	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${Random.nextInt(2 * MAX_NUM_USERS) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
 	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
@@ -65,7 +70,10 @@ class RecordingSimulation extends Simulation {
 					.headers(headers_1),
 				http("Load crest")
 					.get("/public/govuk_template/assets/stylesheets/images/govuk-crest-2x.png")
-					.headers(headers_1)))
+					.headers(headers_1),
+				http("Load accessible autocomplete")
+  				.get("/assets/stylesheets/accessible-autocomplete.min.css")
+  				.headers(headers_6)))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val search = feed(searchFeeder)
@@ -330,8 +338,7 @@ class RecordingSimulation extends Simulation {
 			.get("/account/organisations")
 			.headers(headers_0)
 			.check(
-				// TODO: Fix this line - no ManageOrg id available on new design system page
-				css("a[id^='ManageOrg']", "href").find.saveAs("linkToAnOrganisation"),
+				css("a:contains('${organisationName}')", "href").saveAs("linkToAnOrganisation"),
 				regex("Select an organisation")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
