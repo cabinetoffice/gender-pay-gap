@@ -44,7 +44,7 @@ class RecordingSimulation extends Simulation {
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
 
-	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${Random.nextInt(2 * MAX_NUM_USERS) + 1}"))
+	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${MAX_NUM_USERS + Random.nextInt(MAX_NUM_USERS) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
 	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
 
@@ -66,7 +66,7 @@ class RecordingSimulation extends Simulation {
 					.headers(headers_1),
 				http("Load crest")
 					.get("/public/govuk_template/assets/stylesheets/images/govuk-crest-2x.png")
-					.headers(headers_1)
+					.headers(headers_1)))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val search = feed(searchFeeder)
