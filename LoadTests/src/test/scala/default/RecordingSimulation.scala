@@ -331,7 +331,7 @@ class RecordingSimulation extends Simulation {
 			.get("/account/organisations")
 			.headers(headers_0)
 			.check(
-				css("a:contains('${organisationName}')", "href").saveAs("linkToAnOrganisation"),
+				css(session => "a:contains('" + session("organisationName").as[String].toUpperCase() + "')", "href").saveAs("linkToAnOrganisation"),
 				regex("Select an organisation")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
