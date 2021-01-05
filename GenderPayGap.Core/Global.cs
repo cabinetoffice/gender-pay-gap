@@ -148,6 +148,8 @@ namespace GenderPayGap.Core
                 {"Server", ""}
             };
 
+        public static string GpgGuidanceLink = "https://www.gov.uk/government/collections/gender-pay-gap-reporting";
+
         #endregion
 
     }
