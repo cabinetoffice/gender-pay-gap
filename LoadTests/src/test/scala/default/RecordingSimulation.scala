@@ -335,16 +335,19 @@ class RecordingSimulation extends Simulation {
 			.get("/account/organisations")
 			.headers(headers_0)
 			.check(
-				css(session => "a:contains('" + session("organisationName").as[String].toUpperCase() + "')", "href").saveAs("linkToAnOrganisation"),
-				regex("Select an organisation")))
+				regex("Add or select an organisation you're reporting for"),
+				css("a.loadtest", "href").find.saveAs("linkToAnOrganisation")
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitOrganisation = exec(http("Visit an organisation page")
 			.get("${linkToAnOrganisation}")
 			.headers(headers_0)
 			.check(
-				css("a[id^='NewReport2019']", "href").find.saveAs("linkToTheLatestReport"),
-				regex("Manage your organisation's reporting")))
+				regex("Manage your organisation's reporting"),
+        regex("for ${organisationName}"),
+				css("a.create-report-2020", "href").find.saveAs("linkToTheLatestReport")
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitEnterReport = exec(http("Visit enter report page")
