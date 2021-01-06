@@ -1,21 +1,25 @@
 DO $$
 
     DECLARE
+        -- A high starting number to ensure that the IDs don't interfere with any existing data
         STARTING_ID INTEGER := 300000000;
         NUM_OF_USERS INTEGER := 20000;
         INDEX INTEGER := 1;
 
 -- Remove all test entities
     BEGIN
-        DELETE FROM "UserStatus" WHERE "ByUserId" = STARTING_ID + INDEX;
-        DELETE FROM "Users" WHERE "Users"."UserId" > STARTING_ID AND "Users"."UserId" <= STARTING_ID + NUM_OF_USERS;
-        DELETE FROM "Organisations" WHERE "Organisations"."OrganisationId" > STARTING_ID AND "Organisations"."OrganisationId" <= STARTING_ID + 2 * NUM_OF_USERS;
-        DELETE FROM "UserOrganisations" WHERE "UserOrganisations"."OrganisationId" > STARTING_ID AND "UserOrganisations"."OrganisationId" <= STARTING_ID + 2 * NUM_OF_USERS;
-        DELETE FROM "OrganisationScopes" WHERE "OrganisationScopes"."OrganisationScopeId" > STARTING_ID AND "OrganisationScopes"."OrganisationScopeId" <= STARTING_ID + 2* NUM_OF_USERS;
-        DELETE FROM "OrganisationNames" WHERE "OrganisationNames"."OrganisationId" > STARTING_ID AND "OrganisationNames"."OrganisationId" <= STARTING_ID + 2 * NUM_OF_USERS;
-        DELETE FROM "OrganisationSicCodes" WHERE "OrganisationSicCodes"."OrganisationId" > STARTING_ID AND "OrganisationSicCodes"."OrganisationId" <= STARTING_ID + 2 * NUM_OF_USERS;
-        DELETE FROM "OrganisationAddresses" WHERE "OrganisationAddresses"."AddressId" > STARTING_ID AND "OrganisationAddresses"."AddressId" <= STARTING_ID + 2 * NUM_OF_USERS;
-        DELETE FROM "Returns" WHERE "Returns"."OrganisationId" > STARTING_ID AND "Returns"."OrganisationId" <= STARTING_ID + NUM_OF_USERS;
+        DELETE FROM "AuditLogs" WHERE "OrganisationId" > STARTING_ID;
+        DELETE FROM "UserStatus" WHERE "ByUserId" > STARTING_ID;
+        DELETE FROM "OrganisationStatus" WHERE "OrganisationId" > STARTING_ID;
+        DELETE FROM "UserOrganisations" WHERE "UserOrganisations"."OrganisationId" > STARTING_ID;
+        DELETE FROM "OrganisationScopes" WHERE "OrganisationScopes"."OrganisationScopeId" > STARTING_ID;
+        DELETE FROM "OrganisationNames" WHERE "OrganisationNames"."OrganisationId" > STARTING_ID;
+        DELETE FROM "OrganisationSicCodes" WHERE "OrganisationSicCodes"."OrganisationId" > STARTING_ID;
+        DELETE FROM "OrganisationAddresses" WHERE "OrganisationAddresses"."AddressId" > STARTING_ID;
+        DELETE FROM "Returns" WHERE "Returns"."OrganisationId" > STARTING_ID;
+
+        DELETE FROM "Users" WHERE "Users"."UserId" > STARTING_ID;
+        DELETE FROM "Organisations" WHERE "Organisations"."OrganisationId" > STARTING_ID;
 
         -- Delete users created using registration journey
         DELETE FROM "UserStatus" WHERE "ByUserId" IN (SELECT "UserId" FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester');
@@ -32,7 +36,7 @@ DO $$
                 INSERT INTO "Organisations"
                 ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "Modified", "OptedOutFromCompaniesHouseUpdate", "EmployerReference")
                 VALUES
-                (STARTING_ID + INDEX, '99999' || CAST(INDEX AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX AS VARCHAR(16)));
+                (STARTING_ID + INDEX, '99999' || CAST(NUM_OF_USERS + INDEX AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX AS VARCHAR(16)));
 
                 INSERT INTO "OrganisationNames"
                 ("OrganisationNameId", "OrganisationId", "Name", "Source", "Created")
@@ -60,10 +64,11 @@ DO $$
                 (STARTING_ID + INDEX, STARTING_ID + INDEX, 0, '01/10/2020 12:26:44', '01/10/2020 12:26:44', '01/10/2020 12:26:44');
 
                 -- Create test organisations that are NOT linked to test users
+                -- These have the same names as linked Organisations, so they appear in the search results together
                 INSERT INTO "Organisations"
                 ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "Modified", "OptedOutFromCompaniesHouseUpdate", "EmployerReference")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, '99999' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS  AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)));
+                (STARTING_ID + NUM_OF_USERS + INDEX, '99999' || CAST(INDEX + 2 * NUM_OF_USERS AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS  AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)));
 
                 INSERT INTO "OrganisationNames"
                 ("OrganisationNameId", "OrganisationId", "Name", "Source", "Created")
