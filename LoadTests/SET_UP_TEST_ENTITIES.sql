@@ -11,6 +11,7 @@ DO $$
         DELETE FROM "AuditLogs" WHERE "OrganisationId" > STARTING_ID;
         DELETE FROM "UserStatus" WHERE "ByUserId" > STARTING_ID;
         DELETE FROM "OrganisationStatus" WHERE "OrganisationId" > STARTING_ID;
+        DELETE FROM "OrganisationStatus" WHERE "ByUserId" > STARTING_ID;
         DELETE FROM "UserOrganisations" WHERE "UserOrganisations"."OrganisationId" > STARTING_ID;
         DELETE FROM "OrganisationScopes" WHERE "OrganisationScopes"."OrganisationScopeId" > STARTING_ID;
         DELETE FROM "OrganisationNames" WHERE "OrganisationNames"."OrganisationId" > STARTING_ID;
@@ -18,12 +19,12 @@ DO $$
         DELETE FROM "OrganisationAddresses" WHERE "OrganisationAddresses"."AddressId" > STARTING_ID;
         DELETE FROM "Returns" WHERE "Returns"."OrganisationId" > STARTING_ID;
 
-        DELETE FROM "Users" WHERE "Users"."UserId" > STARTING_ID;
-        DELETE FROM "Organisations" WHERE "Organisations"."OrganisationId" > STARTING_ID;
-
         -- Delete users created using registration journey
         DELETE FROM "UserStatus" WHERE "ByUserId" IN (SELECT "UserId" FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester');
         DELETE FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester';
+
+        DELETE FROM "Users" WHERE "Users"."UserId" > STARTING_ID;
+        DELETE FROM "Organisations" WHERE "Organisations"."OrganisationId" > STARTING_ID;
 
         WHILE INDEX <= NUM_OF_USERS LOOP
                 -- Create test users
@@ -46,7 +47,7 @@ DO $$
                 INSERT INTO "OrganisationScopes"
                 ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "RegisterStatusId", "RegisterStatusDate", "SnapshotDate", "StatusId")
                 VALUES
-                (STARTING_ID + INDEX, STARTING_ID + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2019 00:00:00', 3);
+                (STARTING_ID + INDEX, STARTING_ID + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2020 00:00:00', 3);
 
                 INSERT INTO "OrganisationAddresses"
                 ("AddressId", "OrganisationId", "CreatedByUserId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
@@ -78,7 +79,7 @@ DO $$
                 INSERT INTO "OrganisationScopes"
                 ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "RegisterStatusId", "RegisterStatusDate", "SnapshotDate", "StatusId")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2019 00:00:00', 3);
+                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2020 00:00:00', 3);
 
                 INSERT INTO "OrganisationAddresses"
                 ("AddressId", "OrganisationId", "CreatedByUserId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
