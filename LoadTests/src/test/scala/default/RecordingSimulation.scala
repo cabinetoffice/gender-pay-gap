@@ -93,7 +93,7 @@ class RecordingSimulation extends Simulation {
 
 	object SignInPage {
 		val visit = exec(http("Visit sign in page")
-			.get("/login?ReturnUrl=${returnUrl}")
+			.get("/login")
 			.headers(headers_0)
 			.check(
 				status.in(200, 302),
@@ -113,20 +113,24 @@ class RecordingSimulation extends Simulation {
 
 		val signIn = feed(usersOrganisationsFeeder)
 			.exec(http("Sign in")
-			.post("/account/sign-in")
+			.post("/login")
 			.headers(headers_3)
 			.formParam("GovUk_Text_EmailAddress", "${email}")
 			.formParam("GovUk_Text_Password", "Genderpaygap1")
 			.formParam("ReturnUrl", "${returnUrl}")
 			.formParam("button", "login")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				status.in(200, 302),
+				regex("Privacy Policy"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"))
 			)
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object RegistrationPage {
 		val visit = exec(http("Load registration page")
-			.get("create-user-account")
+			.get("/create-user-account")
 			.headers(headers_0)
 			.check(
 				status.is(200),
@@ -135,8 +139,8 @@ class RecordingSimulation extends Simulation {
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val register = feed(registrationFeeder)
-			.exec(http("Register")
-			.post("create-user-account")
+			.exec(http("Register an account")
+			.post("/create-user-account")
 			.headers(headers_3)
 			.formParam("GovUk_Text_EmailAddress", "${email}")
 			.formParam("GovUk_Text_ConfirmEmailAddress", "${email}")
@@ -555,7 +559,9 @@ class RecordingSimulation extends Simulation {
 		val visit = exec(http("Visit manage account")
 			.get("/manage-account")
 			.headers(headers_0)
-			.check(regex("Manage your account")))
+			.check(
+				status.is(200),
+				regex("Manage your account")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		// TODO: Update these - change personal details is now multiple pages
