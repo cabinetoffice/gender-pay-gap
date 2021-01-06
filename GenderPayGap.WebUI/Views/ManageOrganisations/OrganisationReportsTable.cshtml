@@ -52,19 +52,18 @@
                         <div>
                             @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
                             {
-                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0" 
-                                   href="@Url.Action("ReportOverview", "ReportOverview",
-                                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
+                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0 create-report-@detailsForYear.ReportingYear"
+                                   href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
                                     @detailsForYear.GetReportButtonText()
                                 </a>
                             }
                             else
                             {
                                 var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
-                                
+
                                 <a role="button"
                                    href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
-                                   class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+                                   class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0 create-report-@detailsForYear.ReportingYear">
                                     @detailsForYear.GetReportButtonText()
                                 </a>
                             }
