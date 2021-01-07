@@ -344,21 +344,27 @@ class RecordingSimulation extends Simulation {
 			.get("${linkToAnOrganisation}")
 			.headers(headers_0)
 			.check(
+				status.is(200),
 				regex("Manage your organisation's reporting"),
         regex("for ${organisationName}"),
 				css("a.create-report-2020", "href").find.saveAs("linkToTheLatestReport")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val visitEnterReport = exec(http("Visit enter report page")
+		val visitEnterReport = exec(http("Visit report start page")
 			.get("${linkToTheLatestReport}")
 			.headers(headers_0)
 			.check(
-				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
-				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
-				regex("Enter your gender pay gap data for snapshot date")))
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				css("")
+			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitHourlyPayPage = exec(http("Visit hourly pay figures page")
+			.get()
+		)
 
 		val enterCalculation = exec(http("Enter calculation")
 			.post("/Submit/enter-calculations")
