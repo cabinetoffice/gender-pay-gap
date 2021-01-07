@@ -47,7 +47,8 @@ DO $$
                 INSERT INTO "OrganisationScopes"
                 ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "RegisterStatusId", "RegisterStatusDate", "SnapshotDate", "StatusId")
                 VALUES
-                (STARTING_ID + INDEX, STARTING_ID + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2020 00:00:00', 3);
+                (STARTING_ID + INDEX, STARTING_ID + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2020 00:00:00', 3),
+                (STARTING_ID + 2 * NUM_OF_USERS + INDEX, STARTING_ID + INDEX, 1, '01/10/2019 12:26:44', 0, '01/10/2019 12:26:44', '05/04/2019 00:00:00', 3);
 
                 INSERT INTO "OrganisationAddresses"
                 ("AddressId", "OrganisationId", "CreatedByUserId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
