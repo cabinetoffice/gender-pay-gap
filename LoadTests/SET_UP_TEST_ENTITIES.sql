@@ -21,7 +21,6 @@ DO $$
 
         -- Delete users created using registration journey
         DELETE FROM "UserStatus" WHERE "ByUserId" IN (SELECT "UserId" FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester');
-        DELETE FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester';
 
         DELETE FROM "Users" WHERE "Users"."UserId" > STARTING_ID;
         DELETE FROM "Organisations" WHERE "Organisations"."OrganisationId" > STARTING_ID;

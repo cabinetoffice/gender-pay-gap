@@ -336,7 +336,7 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_0)
 			.check(
 				regex("Add or select an organisation you're reporting for"),
-				css("a.loadtest", "href").find.saveAs("linkToAnOrganisation")
+				css("a[loadtest-id='organisation-link']", "href").find.saveAs("linkToAnOrganisation")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
@@ -347,7 +347,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Manage your organisation's reporting"),
         regex("for ${organisationName}"),
-				css("a.create-report-2020", "href").find.saveAs("linkToTheLatestReport")
+				css("a[loadtest-id='create-report-2020']", "href").find.saveAs("linkToTheLatestReport")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
@@ -361,10 +361,6 @@ class RecordingSimulation extends Simulation {
 				css("")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
-
-		val visitHourlyPayPage = exec(http("Visit hourly pay figures page")
-			.get()
-		)
 
 		val enterCalculation = exec(http("Enter calculation")
 			.post("/Submit/enter-calculations")
