@@ -164,21 +164,24 @@
                         Title = "Hourly pay",
                         Href = Url.Action("ReportHourlyPayGet", "ReportHourlyPay",
                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                        Status = Model.HourlyPayStatus
+                        Status = Model.HourlyPayStatus,
+                        LoadTestId = "hourly-pay"
                     },
                     new TaskListItemViewModel
                     {
                         Title = "Bonus pay",
                         Href = Url.Action("ReportBonusPayGet", "ReportBonusPay",
                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                        Status = Model.BonusPayStatus
+                        Status = Model.BonusPayStatus,
+                        LoadTestId = "bonus-pay"
                     },
                     new TaskListItemViewModel
                     {
                         Title = "Employees by pay quarter",
                         Href = Url.Action("EmployeesByPayQuartileGet", "ReportEmployeesByPayQuartile",
                             new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                        Status = Model.EmployessByPayQuartileStatus
+                        Status = Model.EmployessByPayQuartileStatus,
+                        LoadTestId = "employees-by-pay-quarter"
                     }
                 }
             };

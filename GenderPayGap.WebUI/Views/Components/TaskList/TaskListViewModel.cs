@@ -21,6 +21,8 @@ namespace GenderPayGap.WebUI.Views.Components.TaskList
         public Func<object, object> BodyHtml { get; set; }
         public string Href { get; set; }
         public TaskListStatus Status { get; set; }
+        
+        public string LoadTestId { get; set; }
     }
 
     public enum TaskListStatus
