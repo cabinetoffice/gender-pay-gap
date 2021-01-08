@@ -448,7 +448,110 @@ class RecordingSimulation extends Simulation {
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
 				regex("for reporting year 2020-21"),
-				css("a[loadtest-id='employees-by-pay-quarter']", "href").find.saveAs("linkToEmployeesByPayQuarterPage")
+				css("a[loadtest-id='responsible-person']", "href").find.saveAs("linkToResponsiblePersonPage")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitResponsiblePersonPage = exec(http("Visit responsible person page")
+			.get("${linkToResponsiblePersonPage}")
+			.headers(headers_0)
+			.check(
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				regex("Person responsible in your organisation")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterResponsiblePersonDetails = exec(http("Enter responsible person details")
+			.post("${linkToResponsiblePersonPage}")
+			.headers(headers_0)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("GovUk_Text_ResponsiblePersonFirstName", "FirstName")
+			.formParam("GovUk_Text_ResponsiblePersonLastName", "LastName")
+			.formParam("GovUk_Text_ResponsiblePersonJobTitle", "Tester")
+			.formParam("Action", "SaveAndContinue")
+			.check(
+				status.is(200),
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				css("a[loadtest-id='organisation-size']", "href").find.saveAs("linkToOrganisationSizePage")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitOrganisationSizePage = exec(http("Visit organisation size page")
+			.get("${linkToOrganisationSizePage}")
+			.headers(headers_0)
+			.check(
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				regex("Size of your organisation")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterOrganisationSizeDetails = exec(http("Enter organisation size details")
+			.post("${linkToOrganisationSizePage}")
+			.headers(headers_0)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("GovUk_Radio_SizeOfOrganisation", "Employees250To499")
+			.formParam("Action", "SaveAndContinue")
+			.check(
+				status.is(200),
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				css("a[loadtest-id='link-to-gpg-information']", "href").find.saveAs("linkToLinkToGpgInformationPage")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitLinkToGpgInformationPage = exec(http("Visit link to GPG information page")
+			.get("${linkToLinkToGpgInformationPage}")
+			.headers(headers_0)
+			.check(
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				regex("Link to your gender pay gap information")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterLinkToGpgInformationDetails = exec(http("Enter link to GPG information details")
+			.post("${linkToLinkToGpgInformationPage}")
+			.headers(headers_0)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("GovUk_Text_LinkToOrganisationWebsite", "http://test-employer-information.com/gpg")
+			.formParam("Action", "SaveAndContinue")
+			.check(
+				status.is(200),
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				css("a[loadtest-id='review-and-submit']", "href").find.saveAs("linkToReviewAndSubmitPage")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitReviewAndSubmitPage = exec(http("Visit review and submit page")
+			.get("${linkToReviewAndSubmitPage}")
+			.headers(headers_0)
+			.check(
+				regex("Report your gender pay gap"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21"),
+				regex("Review your gender pay gap report")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val reviewAndSubmitReport = exec(http("Review and submit report")
+			.post("${linkToReviewAndSubmitPage}")
+			.headers(headers_0)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				status.is(200),
+				regex("You've reported your gender pay gap data"),
+				regex("for ${organisationName}"),
+				regex("for reporting year 2020-21")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
@@ -608,6 +711,14 @@ class RecordingSimulation extends Simulation {
 		ReportGenderPayGap.enterBonusPayDetails,
 		ReportGenderPayGap.visitEmployeesByPayQuarterPage,
 		ReportGenderPayGap.enterEmployeesByPayQuarterDetails,
+		ReportGenderPayGap.visitResponsiblePersonPage,
+		ReportGenderPayGap.enterResponsiblePersonDetails,
+		ReportGenderPayGap.visitOrganisationSizePage,
+		ReportGenderPayGap.enterOrganisationSizeDetails,
+		ReportGenderPayGap.visitLinkToGpgInformationPage,
+		ReportGenderPayGap.enterLinkToGpgInformationDetails,
+		ReportGenderPayGap.visitReviewAndSubmitPage,
+		ReportGenderPayGap.reviewAndSubmitReport,
 		ManageAccount.visit,
 		ManageAccount.visitChangeEmailAddressPage,
 		ManageAccount.changeEmailAddress,
