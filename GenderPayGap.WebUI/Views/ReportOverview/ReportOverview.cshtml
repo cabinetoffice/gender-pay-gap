@@ -198,7 +198,8 @@
                     Title = "Person responsible in your organisation",
                     Href = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson",
                         new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                    Status = Model.PersonResponsibleStatus
+                    Status = Model.PersonResponsibleStatus,
+                    LoadTestId = "responsible-person"
                 });
             }
             aboutYourOrganisationSection.Items.Add(new TaskListItemViewModel
@@ -206,7 +207,8 @@
                 Title = "Size of your organisation",
                 Href = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation",
                     new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                Status = Model.OrganisationSizeStatus
+                Status = Model.OrganisationSizeStatus,
+                LoadTestId = "organisation-size"
             });
             aboutYourOrganisationSection.Items.Add(new TaskListItemViewModel
             {
@@ -216,7 +218,8 @@
                             </text>,
                 Href = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite",
                     new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}),
-                Status = Model.LinkStatus
+                Status = Model.LinkStatus,
+                LoadTestId = "link-to-gpg-information"
             });
 
             var submitSection = new TaskListSectionViewModel
@@ -231,7 +234,8 @@
                             ? Url.Action("ReportReview", "ReportReviewAndSubmit",
                                 new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
                             : null,
-                        Status = Model.ReviewAndSubmitStatus
+                        Status = Model.ReviewAndSubmitStatus,
+                        LoadTestId = "review-and-submit"
                     }
                 }
             };
