@@ -52,7 +52,8 @@
                         <div>
                             @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
                             {
-                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0 create-report-@detailsForYear.ReportingYear"
+                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0"
+                                   loadtest-id="create-report-@detailsForYear.ReportingYear"
                                    href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
                                     @detailsForYear.GetReportButtonText()
                                 </a>

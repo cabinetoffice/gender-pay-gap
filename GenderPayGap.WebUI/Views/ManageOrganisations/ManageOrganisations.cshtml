@@ -71,7 +71,7 @@
                         else
                         {
                             <td class="govuk-table__cell">
-                                <a class="govuk-link loadtest" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})">
+                                <a class="govuk-link" loadtest-id="organisation-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})">
                                     @(userOrganisation.Organisation.OrganisationName.ToUpper())
                                 </a>
                             </td>
