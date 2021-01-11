@@ -71,12 +71,12 @@ DO $$
                 INSERT INTO "Organisations"
                 ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "Modified", "OptedOutFromCompaniesHouseUpdate", "EmployerReference")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, '99999' || CAST(INDEX + 2 * NUM_OF_USERS AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS  AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)));
+                (STARTING_ID + NUM_OF_USERS + INDEX, '99999' || CAST(2 * NUM_OF_USERS + INDEX AS VARCHAR(16)), 'test_' || CAST(NUM_OF_USERS * 2 + INDEX AS VARCHAR(16)), 1, 3, '01/10/2020 12:26:44', 'PIN Confirmed', '01/10/2020 12:26:44', '01/10/2020 12:26:44', true, 'ABCDE' || CAST(2 * NUM_OF_USERS + INDEX AS VARCHAR(16)));
 
                 INSERT INTO "OrganisationNames"
                 ("OrganisationNameId", "OrganisationId", "Name", "Source", "Created")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 'test_' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 'User', '01/10/2020 12:26:44');
+                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 'test_' || CAST(NUM_OF_USERS * 2 + INDEX AS VARCHAR(16)), 'User', '01/10/2020 12:26:44');
 
                 INSERT INTO "OrganisationScopes"
                 ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "RegisterStatusId", "RegisterStatusDate", "SnapshotDate", "StatusId")
