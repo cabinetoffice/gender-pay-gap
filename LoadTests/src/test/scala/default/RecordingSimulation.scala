@@ -92,7 +92,7 @@ class RecordingSimulation extends Simulation {
 			.get("/login")
 			.headers(headers_0)
 			.check(
-				status.in(200, 302),
+				status.in(200),
 				regex("Sign in"),
 				regex("If you have a user account, enter your email address and password"),
 				css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
@@ -116,7 +116,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("button", "login")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(
-				status.in(200, 302),
+				status.in(200),
 				regex("Privacy Policy"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"))
 			)
@@ -342,7 +342,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Manage your organisation's reporting"),
 				regex("for ${organisationName}"),
-				css("a[loadtest-id='create-report-2020']", "href").find.saveAs("linkToTheLatestReport")
+				css(s"a[loadtest-id='create-report-${CURRENT_YEAR.substring(0, 4)}']", "href").find.saveAs("linkToTheLatestReport")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
@@ -352,7 +352,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='hourly-pay']", "href").find.saveAs("linkToHourlyPayPage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -363,7 +363,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Hourly pay")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -379,7 +379,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='bonus-pay']", "href").find.saveAs("linkToBonusPayPage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -390,7 +390,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Percentage of employees who received bonus pay"),
 				regex("Bonus pay")
 			))
@@ -409,7 +409,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='employees-by-pay-quarter']", "href").find.saveAs("linkToEmployeesByPayQuarterPage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -420,7 +420,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Employees by pay quarter")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -442,7 +442,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='responsible-person']", "href").find.saveAs("linkToResponsiblePersonPage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -453,7 +453,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Person responsible in your organisation")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -470,7 +470,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='organisation-size']", "href").find.saveAs("linkToOrganisationSizePage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -481,7 +481,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Size of your organisation")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -496,7 +496,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='link-to-gpg-information']", "href").find.saveAs("linkToLinkToGpgInformationPage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -507,7 +507,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Link to your gender pay gap information")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -522,7 +522,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				css("a[loadtest-id='review-and-submit']", "href").find.saveAs("linkToReviewAndSubmitPage")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -533,7 +533,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				regex("Report your gender pay gap"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21"),
+				regex(s"for reporting year ${CURRENT_YEAR}"),
 				regex("Review your gender pay gap report")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -546,7 +546,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("You've reported your gender pay gap data"),
 				regex("for ${organisationName}"),
-				regex("for reporting year 2020-21")
+				regex(s"for reporting year ${CURRENT_YEAR}")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
