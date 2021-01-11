@@ -9,7 +9,7 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
                     <h2>
-                        @Html.ActionLink(employer.Name, "Employer", "Viewing", new {employerIdentifier = employer.OrganisationIdEncrypted}, new {data_name = "ViewLink", data_id = employer.OrganisationIdEncrypted})
+                        @Html.ActionLink(employer.Name, "Employer", "Viewing", new {employerIdentifier = employer.OrganisationIdEncrypted}, new {data_name = "ViewLink", data_id = employer.OrganisationIdEncrypted, data_loadtestid = employer.Name})
                     </h2>
                     @if (string.IsNullOrWhiteSpace(employer.PreviousName) == false)
                     {

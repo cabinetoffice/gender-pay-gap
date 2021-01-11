@@ -44,12 +44,13 @@ class RecordingSimulation extends Simulation {
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
 
-	val searchFeeder = Iterator.continually(Map("searchCriteria1" -> "tes", "searchCriteria2" -> s"test_${MAX_NUM_USERS + Random.nextInt(MAX_NUM_USERS) + 1}"))
+	val searchFeeder = Iterator.continually(Map("searchCriterion" -> s"test_${MAX_NUM_USERS + Random.nextInt(MAX_NUM_USERS)}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
 	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
 
 	object HomePage {
-		val visit = exec(http("Visit home page")
+		val visit = feed(usersOrganisationsFeeder)
+			.exec(http("Visit home page")
 			.get("/")
 			.headers(headers_0)
 			.check(
@@ -70,24 +71,19 @@ class RecordingSimulation extends Simulation {
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val search = feed(searchFeeder)
-			.exec(http("Search a word first bit")
-			.get("/viewing/suggest-employer-name-js?search=${searchCriteria1}")
-			.headers(headers_2))
-			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
-			.exec(http("Search the whole word")
-			.get("/viewing/suggest-employer-name-js?search=${searchCriteria2}")
+			.exec(http("Search for an organisation")
+			.get("/viewing/search-results?t=1&search=${searchCriterion}")
 			.headers(headers_2)
 			.check(
 				status.is(200),
-				jsonPath("$.Matches[0].Id").find.saveAs("FirstSearchResultId"),
-				jsonPath("$.Matches[0].Text").find.saveAs("FirstSearchResultText")))
+				css("a[data-loadtestid='${searchCriterion}']", "href").find.saveAs("FirstSearchResultLink")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 			.exec(http("Select an organisation")
-			.get("/employer/${FirstSearchResultId}")
+			.get("${FirstSearchResultLink}")
 			.headers(headers_0)
 			.check(
 				status.is(200),
-				regex("${FirstSearchResultText}")))
+				regex("${searchCriterion}")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
@@ -111,8 +107,7 @@ class RecordingSimulation extends Simulation {
 					.get("/public/govuk_template/assets/stylesheets/images/govuk-crest-2x.png")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val signIn = feed(usersOrganisationsFeeder)
-			.exec(http("Sign in")
+		val signIn = exec(http("Sign in")
 			.post("/login")
 			.headers(headers_3)
 			.formParam("GovUk_Text_EmailAddress", "${email}")
