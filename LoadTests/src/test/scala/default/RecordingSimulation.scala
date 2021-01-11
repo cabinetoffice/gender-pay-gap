@@ -569,27 +569,84 @@ class RecordingSimulation extends Simulation {
 				regex("Manage your account")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		// TODO: Update these - change personal details is now multiple pages
-		val visitChangePersonalDetails = exec(http("Visit change personal details")
-			.get("/manage-account/change-details")
+		val visitChangeEmailAddressPage = exec(http("Visit change email address page")
+			.get("/manage-account/change-email")
 			.headers(headers_0)
 			.check(
-				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				regex("Change your personal details")))
+				status.is(200),
+				regex("Change email address")))
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val changeEmailAddress = exec(http("Change email address")
+			.post("/manage-account/change-email")
+			.headers(headers_3)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("GovUk_Text_NewEmailAddress", "newemail@example.com")
+			.check(
+				status.is(200),
+				regex("We have sent a verification email to your new email address")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val changePersonalDetails = exec(http("Change personal details")
-			.post("/manage-account/change-details")
+		val visitChangePasswordPage = exec(http("Visit change password page")
+			.get("/manage-account/change-password-new")
+			.headers(headers_0)
+			.check(
+				status.is(200),
+				regex("Change your password")))
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val changePassword = exec(http("Change password")
+			.post("/manage-account/change-password-new")
 			.headers(headers_3)
-			.formParam("FirstName", "test user")
-			.formParam("LastName", "test user")
-			.formParam("JobTitle", "test job")
-			.formParam("ContactPhoneNumber", "")
-			.formParam("AllowContact", "true")
-			.formParam("SendUpdates", "false")
-			.formParam("AllowContact", "false")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
-				.check(regex("Your details have been updated successfully")))
+			.formParam("GovUk_Text_CurrentPassword", "Genderpaygap1")
+			.formParam("GovUk_Text_NewPassword", "Genderpaygap2")
+			.formParam("GovUk_Text_ConfirmNewPassword", "Genderpaygap2")
+			.check(
+				status.is(200),
+				regex("Your password has been changed successfully")))
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitChangePersonalDetailsPage = exec(http("Visit change personal details page")
+			.get("/manage-account/change-personal-details")
+			.headers(headers_0)
+			.check(
+				status.is(200),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Change your personal details")))
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val changePersonalDetails = exec(http("Change personal details")
+			.post("/manage-account/change-personal-details")
+			.headers(headers_3)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("GovUk_Text_FirstName", "testing")
+			.formParam("GovUk_Text_LastName", "testing")
+			.formParam("GovUk_Text_JobTitle", "tester")
+			.formParam("GovUk_Text_ContactPhoneNumber", "")
+			.check(
+				status.is(200),
+				regex("Saved changes to personal details")))
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitChangeContactPreferencesPage = exec(http("Visit change contact preferences page")
+			.get("/manage-account/change-contact-preferences")
+			.headers(headers_0)
+			.check(
+				status.is(200),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				regex("Change your contact preferences")))
+  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val changeContactPreferences = exec(http("Change contact preferences")
+			.post("/manage-account/change-contact-preferences")
+			.headers(headers_3)
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("SendUpdates", "True")
+			.formParam("AllowContact", "True")
+			.check(
+				status.is(200),
+				regex("Saved changes to contact preferences")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
@@ -658,8 +715,15 @@ class RecordingSimulation extends Simulation {
 		ReportGenderPayGap.enterWebAddress,
 		ReportGenderPayGap.confirmGenderPayGapData,
 		ManageAccount.visit,
-		ManageAccount.visitChangePersonalDetails,
+		ManageAccount.visitChangeEmailAddressPage,
+		ManageAccount.changeEmailAddress,
+		ManageAccount.visit,
+		ManageAccount.visitChangePasswordPage,
+		ManageAccount.changePassword,
+		ManageAccount.visitChangePersonalDetailsPage,
 		ManageAccount.changePersonalDetails,
+		ManageAccount.visitChangeContactPreferencesPage,
+		ManageAccount.changeContactPreferences,
 		Feedback.visit,
 		Feedback.submit)
 
