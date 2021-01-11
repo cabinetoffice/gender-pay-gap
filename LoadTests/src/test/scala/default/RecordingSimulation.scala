@@ -13,6 +13,8 @@ class RecordingSimulation extends Simulation {
 	val PAUSE_MIN_DUR = 1 seconds
 	val PAUSE_MAX_DUR = 10 seconds
 
+	val CURRENT_YEAR = "2020-21"
+
 	val httpProtocol = http
 		.baseUrl("https://wa-t1pp-gpg.azurewebsites.net")
 		.inferHtmlResources()
