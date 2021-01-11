@@ -46,7 +46,7 @@ class RecordingSimulation extends Simulation {
 		"DNT" -> "1",
 		"Pragma" -> "no-cache")
 
-	val searchFeeder = Iterator.continually(Map("searchCriterion" -> s"test_${MAX_NUM_USERS + Random.nextInt(MAX_NUM_USERS)}"))
+	val searchFeeder = Iterator.continually(Map("searchCriterion" -> s"test_${Random.nextInt(MAX_NUM_USERS) + 1}"))
 	val registrationFeeder = Iterator.continually(Map("email" -> (Random.alphanumeric.take(20).mkString + "@example.com")))
 	val usersOrganisationsFeeder = csv("users_organisations.csv").circular
 
@@ -85,7 +85,7 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_0)
 			.check(
 				status.is(200),
-				regex("${searchCriterion}")))
+				regex("Gender pay gap reports")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
