@@ -63,7 +63,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompareViewService.SaveComparedEmployersToCookie(Request);
 
             //Redirect the user to the original page
-            return Redirect(returnUrl);
+            return LocalRedirect(returnUrl);
         }
 
         [HttpGet("add-employer-js/{employerIdentifier}")]
@@ -131,7 +131,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Save the compared employers to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
 
-            return Redirect(returnUrl);
+            return LocalRedirect(returnUrl);
         }
 
         [HttpGet("remove-employer-js/{employerIdentifier}")]
@@ -190,7 +190,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Save the compared employers to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
 
-            return Redirect(returnUrl);
+            return LocalRedirect(returnUrl);
         }
 
         [HttpGet("sort-employers/{column}")]
@@ -227,7 +227,7 @@ namespace GenderPayGap.WebUI.Controllers
                 CompareViewService.SortColumn = column;
             }
 
-            return Redirect(returnUrl);
+            return LocalRedirect(returnUrl);
         }
 
         [HttpGet("~/compare-employers/{year:int=0}")]
