@@ -7,6 +7,7 @@ using GenderPayGap.WebUI.Models.Login;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace GenderPayGap.WebUI.Controllers.Login
 {
@@ -75,7 +76,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
             if (ReturnUrlIsAllowed(viewModel.ReturnUrl))
             {
-                return Redirect(viewModel.ReturnUrl);
+                return new RedirectResult(viewModel.ReturnUrl);
             }
             else if (user.IsAdministrator())
             {
@@ -109,7 +110,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
             IActionResult suggestedResult;
             if (ReturnUrlIsAllowed(redirectUrl))
             {
-                suggestedResult = Redirect(redirectUrl);
+                suggestedResult = new RedirectResult(redirectUrl);
             }
             else
             {

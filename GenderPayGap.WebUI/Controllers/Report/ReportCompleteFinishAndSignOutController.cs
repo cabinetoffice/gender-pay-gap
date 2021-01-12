@@ -19,7 +19,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 ?? // Or, if we don't have a "done URL", take them to the homepage
                 Url.Action("Index", "Viewing", null, "https");
 
-            IActionResult suggestedResult = Redirect(nextPageUrl);
+            IActionResult suggestedResult = new RedirectResult(nextPageUrl);
 
             return LoginHelper.Logout(HttpContext, suggestedResult);
         }
