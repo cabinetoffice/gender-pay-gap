@@ -163,7 +163,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             // Act
-            var result = controller.AddEmployer(employerIdentifier, returnUrl) as RedirectResult;
+            var result = controller.AddEmployer(employerIdentifier, returnUrl) as LocalRedirectResult;
 
             // Assert
             Assert.NotNull(result);
@@ -486,7 +486,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(employerIdentifier);
 
             // Act
-            var result = controller.RemoveEmployer(employerIdentifier, returnUrl) as RedirectResult;
+            var result = controller.RemoveEmployer(employerIdentifier, returnUrl) as LocalRedirectResult;
 
             // Assert
             Assert.NotNull(result);
@@ -691,7 +691,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var result = controller.ClearEmployers(returnUrl) as RedirectResult;
+            var result = controller.ClearEmployers(returnUrl) as LocalRedirectResult;
 
             // Assert
             Assert.NotNull(result);
@@ -750,7 +750,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string returnUrl = @"\viewing\search-results";
 
             // Act
-            var result = controller.SortEmployers(column, returnUrl) as RedirectResult;
+            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
@@ -774,7 +774,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.SortAscending = true;
 
             // Act
-            var result = controller.SortEmployers(column, returnUrl) as RedirectResult;
+            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
 
             // Assert
             Assert.NotNull(result);
@@ -795,7 +795,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.SortAscending = false;
 
             // Act
-            var result = controller.SortEmployers(column, returnUrl) as RedirectResult;
+            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
