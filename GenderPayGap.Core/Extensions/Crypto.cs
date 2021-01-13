@@ -48,7 +48,7 @@ namespace GenderPayGap.Extensions
 
         public static string GeneratePasscode(char[] charset, int passcodeLength)
         {
-            //Ensure characters are distict and mixed up
+            //Ensure characters are distinct and mixed up
             charset = charset.Distinct().ToList().Randomise().ToArray();
 
             var chars = new char[passcodeLength];
@@ -60,7 +60,7 @@ namespace GenderPayGap.Extensions
                 generator.GetBytes(randomData);
             }
 
-            //use the randome number to pick from the character set
+            //use the random number to pick from the character set
             for (int i = 0; i < chars.Length; i++)
             {
                 chars[i] = charset[randomData[i] % charset.Length];
