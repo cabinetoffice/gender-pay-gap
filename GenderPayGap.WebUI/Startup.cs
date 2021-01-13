@@ -377,6 +377,8 @@ namespace GenderPayGap.WebUI
                 app.UseMiddleware<BasicAuthMiddleware>();
             }
 
+            app.UseMiddleware<NoCacheMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
