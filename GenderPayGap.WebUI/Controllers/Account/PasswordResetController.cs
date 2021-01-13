@@ -95,11 +95,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
                    && (VirtualDateTime.Now - userForPasswordReset.ResetSendDate.Value).TotalMinutes < Global.MinPasswordResetMinutes;
         }
 
-        // Generates and stores a GUID to act as a password reset code
+        // Generates and stores a string to act as a password reset code
         private void SendPasswordResetEmail(User userForPasswordReset)
         {
-            // Generate a random GUID as a unique identifier for the password reset
-            string resetCode = Guid.NewGuid().ToString("N");
+            // Generate a random string as a unique identifier for the password reset
+            string resetCode = Convert.ToBase64String(Crypto.GetSalt());
 
             // Store the reset code on the user entity for verification
             userForPasswordReset.PasswordResetCode = resetCode;
