@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.CodeQualityTests
@@ -22,7 +21,7 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
             };
 
             // Arrange
-            string rootCodeFolder = GetRootCodeFolder();
+            string rootCodeFolder = CodeQualityTestHelpers.GetRootCodeFolder();
 
             // Pre-Act Assert (to check we're running the test on the right folder)
             Assert.That(File.Exists($"{rootCodeFolder}\\GenderPayGap.sln"), $"We expect to find a file [GenderPayGap.sln] in the root folder [{rootCodeFolder}]");
@@ -41,7 +40,7 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
                 string filePath = fileInfo.FullName;
                 string filePathSuffix = filePath.Replace(rootCodeFolder, "");
 
-                if (FileIsExcluded(filePathSuffix, excludedFilesAndFolders))
+                if (CodeQualityTestHelpers.FileIsExcluded(filePathSuffix, excludedFilesAndFolders))
                 {
                     continue;
                 }
@@ -60,28 +59,6 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
             {
                 Assert.Fail($"The following {failedFiles.Count} files contain a call to Redirect with a return url, which is not allowed:\n- {string.Join("\n- ", failedFiles)}\n");
             }
-        }
-
-        private static string GetRootCodeFolder()
-        {
-            string compiledDllFilename = Assembly.GetExecutingAssembly().Location;
-            Console.WriteLine($"compiledDllFilename is [{compiledDllFilename}]");
-            string compiledDllDirectory = new FileInfo(compiledDllFilename).Directory.FullName;
-
-            string rootCodeFolder = new DirectoryInfo($"{compiledDllDirectory}\\..\\..\\..\\..\\..\\").FullName;
-            return rootCodeFolder;
-        }
-
-        private static bool FileIsExcluded(string filePathSuffix, List<string> excludedFilesAndFolders)
-        {
-            foreach (string excludedFilePath in excludedFilesAndFolders)
-            {
-                if (filePathSuffix.StartsWith(excludedFilePath))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }
