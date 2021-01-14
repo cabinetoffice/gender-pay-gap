@@ -8,11 +8,11 @@ namespace GenderPayGap.WebUI.Helpers
     /// GPG-581 We don't want to be caching html content as it may include secure info.
     /// Assets like css, js, images are still fine to cache
     /// </summary>
-    public class NoCacheMiddleware
+    public class NoHtmlCachingMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public NoCacheMiddleware(RequestDelegate next)
+        public NoHtmlCachingMiddleware(RequestDelegate next)
         {
             _next = next;
         }

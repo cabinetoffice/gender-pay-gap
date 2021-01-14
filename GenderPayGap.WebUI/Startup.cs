@@ -377,7 +377,8 @@ namespace GenderPayGap.WebUI
                 app.UseMiddleware<BasicAuthMiddleware>();
             }
 
-            app.UseMiddleware<NoCacheMiddleware>();
+            // Prevent caching of html responses as they may contain secure info - GPG-581
+            app.UseMiddleware<NoHtmlCachingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
