@@ -101,8 +101,12 @@ namespace GenderPayGap.WebUI
                 mvcBuilder.AddRazorRuntimeCompilation();
             }
 
-            //Add antiforgery token by default to forms
-            services.AddAntiforgery();
+            //Add antiforgery token by default to forms making sure the Secure flag is always set
+            services.AddAntiforgery(
+                options =>
+                {
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                });
 
             //Add services needed for sessions
             services.AddSession(
@@ -110,7 +114,7 @@ namespace GenderPayGap.WebUI
                 {
                     o.Cookie.IsEssential = true; //This is required otherwise session will not load
                     o.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Equivalent to <httpCookies requireSSL="true" /> from Web.Config
-                    o.Cookie.HttpOnly = false; //Always use https cookies
+                    o.Cookie.HttpOnly = true; //Session cookie should not be accessible by client-side scripts
                     o.IdleTimeout = TimeSpan.FromDays(30); // This is how long the session DATA is kept, not how long the cookie lasts
                 });
 
