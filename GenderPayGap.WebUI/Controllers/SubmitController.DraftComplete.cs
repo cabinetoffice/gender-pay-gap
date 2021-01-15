@@ -47,6 +47,8 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         {
             string doneUrl = Global.DoneUrl ?? Url.Action("Index", "Viewing", null, "https");
 
+            // Global.Done url is not local
+            //disable:DoNotUseRedirectWithReturnUrls
             return Redirect(doneUrl);
         }
 

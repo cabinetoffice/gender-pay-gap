@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
@@ -45,19 +46,22 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
                     continue;
                 }
 
-                string fileText = File.ReadAllText(filePath);
-                // There are a couple of actions on controllers Redirect() that wrap a RedirectToAction,
-                // we want to exclude these from the check as we are only concerned about redirecting with a url parameter
-                if (fileText.Contains(" Redirect(") && !fileText.Contains(" Redirect()"))
+                // We want to pick up all instances of Redirect(url) or new RedirectResult(url) that do not have the disable comment on the previous line.
+                // Ignores those without parameters so we don't pick up any methods defined as Redirect() for example
+                var lines = File.ReadAllLines(filePath);
+                for (var i = 0; i<lines.Length; i++)
                 {
-                    failedFiles.Add(filePathSuffix);
+                    if (Regex.IsMatch(lines[i], @"(new){0,1}\s+Redirect(Result){0,1}\s*\(\S+\)") && !lines[i-1].Contains("//disable:DoNotUseRedirectWithReturnUrls"))
+                    {
+                        failedFiles.Add(filePathSuffix);
+                    }
                 }
             }
 
             // Assert
             if (failedFiles.Any())
             {
-                Assert.Fail($"The following {failedFiles.Count} files contain a call to Redirect with a return url, which is not allowed:\n- {string.Join("\n- ", failedFiles)}\n");
+                Assert.Fail($"The following {failedFiles.Count} files contain a Redirect.\nIf this is to a local url LocalRedirect should be used, otherwise the redirect can be marked to be ignored by this test by adding the \n'//disable:DoNotUseRedirectWithReturnUrls' comment on the preceding line:\n- {string.Join("\n- ", failedFiles.Distinct())}\n");
             }
         }
     }
