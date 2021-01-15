@@ -75,6 +75,8 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
             if (ReturnUrlIsAllowed(viewModel.ReturnUrl))
             {
+                // Above condition prevents invalid return urls
+                //disable:DoNotUseRedirectWithReturnUrls
                 return Redirect(viewModel.ReturnUrl);
             }
             else if (user.IsAdministrator())
@@ -109,6 +111,8 @@ namespace GenderPayGap.WebUI.Controllers.Login
             IActionResult suggestedResult;
             if (ReturnUrlIsAllowed(redirectUrl))
             {
+                // Above condition prevents invalid return urls
+                //disable:DoNotUseRedirectWithReturnUrls
                 suggestedResult = Redirect(redirectUrl);
             }
             else
