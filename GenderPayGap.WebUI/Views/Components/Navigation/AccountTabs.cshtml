@@ -10,13 +10,13 @@
     <div class="govuk-grid-column-full">
 
         <nav class="account-tabs">
-            <ul>
+            <ul role="tablist">
                 @foreach (var navItem in navEntries)
                 {
                     bool isCurrentPage = (navItem.UrlPath == Context.Request.Path.Value);
 
-                    <li class="@(isCurrentPage ? "account-tab--selected" : null)">
-                        <a href="@(navItem.UrlPath)"
+                    <li role="presentation" class="@(isCurrentPage ? "account-tab--selected" : null)">
+                        <a role="tab" href="@(navItem.UrlPath)"
                            class="govuk-link govuk-link--no-visited-state">
                             @(navItem.Text)
                         </a>
