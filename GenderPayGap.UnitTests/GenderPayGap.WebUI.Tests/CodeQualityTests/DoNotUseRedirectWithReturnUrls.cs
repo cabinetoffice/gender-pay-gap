@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
                 var lines = File.ReadAllLines(filePath);
                 for (var i = 0; i<lines.Length; i++)
                 {
-                    if (Regex.IsMatch(lines[i], @"(new){0,1}\s+Redirect(Result){0,1}\s*\(\S+\)") && !lines[i-1].Contains("//disable:DoNotUseRedirectWithReturnUrls"))
+                    if (Regex.IsMatch(lines[i], @"(new)?\s+Redirect(Result)?\s*\(\S+\)") && !lines[i-1].Contains("//disable:DoNotUseRedirectWithReturnUrls"))
                     {
                         failedFiles.Add(filePathSuffix);
                     }
@@ -61,7 +61,9 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
             // Assert
             if (failedFiles.Any())
             {
-                Assert.Fail($"The following {failedFiles.Count} files contain a Redirect.\nIf this is to a local url LocalRedirect should be used, otherwise the redirect can be marked to be ignored by this test by adding the \n'//disable:DoNotUseRedirectWithReturnUrls' comment on the preceding line:\n- {string.Join("\n- ", failedFiles.Distinct())}\n");
+                Assert.Fail($"The following {failedFiles.Count} files contain a Redirect.\nIf this is to a local url LocalRedirect should be used, " + 
+                            @"otherwise the redirect can be marked to be ignored by this test by adding the \n'//disable:DoNotUseRedirectWithReturnUrls' " + 
+                            $"comment on the preceding line:\n- {string.Join("\n- ", failedFiles.Distinct())}\n");
             }
         }
     }
