@@ -31,7 +31,7 @@ namespace GenderPayGap.WebUI.Controllers
             CheckFileConnection();
             CheckSearchRepositoryIsLoaded();
 
-            return View("HealthCheckSuccessful");
+            return new JsonResult(new {Status = "OK"});
         }
 
         private void CheckDatabaseConnection()
@@ -66,6 +66,5 @@ namespace GenderPayGap.WebUI.Controllers
                 throw new Exception("SearchRepository was not loaded");
             }
         }
-
     }
 }
