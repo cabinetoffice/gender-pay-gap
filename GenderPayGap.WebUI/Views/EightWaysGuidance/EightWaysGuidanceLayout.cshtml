@@ -33,7 +33,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h3 class="govuk-heading-m">Contents</h3>
+        <h4 class="govuk-caption-m">Contents</h4>
 
         <ul class="govuk-list guidance-list-with-dashes">
             @foreach (PaginationPage page in EightWaysGuidanceController.GetPagesInThisGuidance(Url, Context.Request).Pages)
@@ -59,25 +59,14 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         
         @(RenderBody())
 
         <hr class="govuk-section-break govuk-section-break--l">
-
-        @{ await Html.RenderPartialAsync("/Views/Components/PaginationLinks/AutomaticPaginationLinks.cshtml",
-               EightWaysGuidanceController.GetPagesInThisGuidance(Url, Context.Request)); }
-
     </div>
 
     <div class="govuk-grid-column-one-third">
         <partial name="Sections/RelatedContent" />
-    </div>
-</div>
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="Sections/UpdatesRecord" />
     </div>
 </div>
