@@ -32,10 +32,8 @@
 
 <partial name="/Views/Components/CovidMessage.cshtml"/>
 
-<partial name="Launchpad/Parts/ServiceSurveyIntroAndLink"/>
-
 <div class="heading-medium" style="margin-bottom: 0.12em;">
-    Report your gender pay gap data
+    Prepare and report your gender pay gap data
 </div>
 
 @{
@@ -45,10 +43,17 @@
 
 <div class="grid-row">
     <div class="column-three-thirds">
-        <div class="column-two-thirds">
-            <div class="heading-xsmall">
-                For employers to <a href="@(Global.StartUrl ?? reportingUrl)" rel="noopener">submit gender pay gap data</a>
+        <div class="column-one-third">
+            <div class="heading-small">
+                <a href="@Global.GpgGuidanceLink">Guidance on gender pay gap reporting for employers</a>
             </div>
+            Step-by-step guidance on preparing your gender pay gap information
+        </div>
+        <div class="column-one-third">
+            <div class="heading-small">
+                <a href="@(Global.StartUrl ?? reportingUrl)" rel="noopener">Submit your gender pay gap information</a>
+            </div>
+            For employers to sign in, or create an account, and report gender pay gap information
         </div>
     </div>
 </div>
@@ -66,18 +71,11 @@
             </div>
             Identify potential causes of the gender pay gap in your organisation
         </div>
-
-        <div class="column-one-third">
-            <div class="heading-small">
-                <a href="@Global.GpgGuidanceLink">Guidance on gender pay gap reporting for employers</a>
-            </div>
-            Step-by-step guidance on preparing your gender pay gap information
-        </div>
     </div>
 </div>
 
 <div class="heading-medium" style="margin-bottom: 0;">
-    How to close the gender pay gap
+    Closing the gender pay gap
 </div>
 <div class="grid-row">
     <div class="column-three-thirds">
@@ -97,6 +95,8 @@
 
     </div>
 </div>
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<partial name="Launchpad/Parts/ServiceSurveyIntroAndLink" />
 
 @section Scripts {
     <script type="text/javascript">
