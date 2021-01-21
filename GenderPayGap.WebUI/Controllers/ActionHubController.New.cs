@@ -1,31 +1,14 @@
 ﻿using GenderPayGap.Core;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
 {
 
     [Route("actions-to-close-the-gap")]
-    public partial class ActionHubController : BaseController
+    public partial class ActionHubController : Controller
     {
-
-
-        #region Constructors
-
-        public ActionHubController(
-            IHttpCache cache,
-            IHttpSession session,
-            IDataRepository dataRepository,
-            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
-        {
-        }
-
-        #endregion
-
         private bool UseNewActionHub()
         {
             return VirtualDateTime.Now >= Global.ActionHubSwitchOverDate;
