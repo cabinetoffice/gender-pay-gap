@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -58,6 +59,13 @@ namespace GenderPayGap.WebUI
 
             //Allow handler for caching of http responses
             services.AddResponseCaching();
+
+            //Make sure the application uses the X-Forwarded-Proto header
+            services.Configure<ForwardedHeadersOptions>(
+                options =>
+                {
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+                });
 
             //Add a dedicated httpclient for Google Analytics tracking with exponential retry policy
             services.AddHttpClient<IWebTracker, GoogleAnalyticsTracker>(nameof(IWebTracker), GoogleAnalyticsTracker.SetupHttpClient)
@@ -122,7 +130,6 @@ namespace GenderPayGap.WebUI
             AddRedisCache(services);
 
             DataProtectionKeysHelper.AddDataProtectionKeyStorage(services);
-
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -319,6 +326,7 @@ namespace GenderPayGap.WebUI
                 app.UseStatusCodePagesWithReExecute("/error/{0}");
             }
 
+            app.UseForwardedHeaders();
             //app.UseHttpsRedirection();
             //app.UseResponseCompression(); //Disabled to use IIS compression which has better performance (see https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.1)
             app.UseStaticFiles(
