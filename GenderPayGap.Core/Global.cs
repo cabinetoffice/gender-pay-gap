@@ -58,7 +58,6 @@ namespace GenderPayGap.Core
         public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSetting("MaintenanceModeUpAgainTime")?.ToDateTime();
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>
             JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement", "[]"));
-        public static DateTime ActionHubSwitchOverDate => Config.GetAppSetting("ActionHubSwitchOverDate").ToDateTime();
         public static string ReminderEmailDays => Config.GetAppSetting("ReminderEmailDays");
         public static bool EnableSubmitAlerts
         {
