@@ -1,7 +1,7 @@
 ---
 
 applications:
-  - name: gpg-dev-service-app-name
+  - name: gpg-ipdeny
     instances: 1
     memory: 256M
 
@@ -12,10 +12,4 @@ applications:
     health-check-http-endpoint: /_route-service-health
 
     env:
-      APP_NAME: gpg-dev-ipdeny
-      ROUTE_SERVICE_APP_NAME: gpg-dev-ipdeny
-      ROUTE_SERVICE_NAME: gpg-dev-ipdeny-service
-      PROTECTED_APP_NAME: gender-pay-gap-dev
-      PROTECTED_APP_SPACE_NAME: gpg-dev
-      DENIED_IPS: |
-        deny 1.2.3.4;
+      APP_NAME: gpg-ipdeny

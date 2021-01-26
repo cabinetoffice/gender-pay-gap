@@ -6,17 +6,19 @@ if ! command -v jq >/dev/null; then
   exit 1
 fi
 
-while getopts ":a:e:r:s:" opt; do
+while getopts ":a:e:i:r:s:" opt; do
   case $opt in
     a) PROTECTED_APP_NAME="$OPTARG"
     ;;
     e) PROTECTED_APP_SPACE_NAME="$OPTARG"
     ;;
+    i) DENIED_IPS="$OPTARG"
+    ;;
     r) ROUTE_SERVICE_APP_NAME="$OPTARG"
     ;;
     s) ROUTE_SERVICE_NAME="$OPTARG"
     ;;
-    \?) echo "INvalid option -$OPTARG" >&2
+    \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
 done
@@ -41,10 +43,23 @@ if [ -z "${PROTECTED_APP_SPACE_NAME+set}" ]; then
   exit 1
 fi
 
+if [ -z "${DENIED_IPS+set}" ]; then
+  echo "Must provide DENIED_IPS parameter -i"
+  exit 1
+fi
+
+IFS="," read -ra IPS <<< "$DENIED_IPS"
+
+NGINX_DENY_STATEMENTS=""
+for addr in "${IPS[@]}";
+  do NGINX_DENY_STATEMENTS="$NGINX_DENY_STATEMENTS deny $addr;"; true;
+done;
+
 APPS_DOMAIN=$(cf curl "v3/domains" | jq -r '[.resources[] | select(.name|endswith("apps.digital"))][0].name')
 
 cf target -s "${PROTECTED_APP_SPACE_NAME}"
 cf push "${ROUTE_SERVICE_APP_NAME}" --no-start --var app-name="${ROUTE_SERVICE_APP_NAME}"
+cf set-env "${ROUTE_SERVICE_APP_NAME}" DENIED_IPS "$(printf "%s" "${NGINX_DENY_STATEMENTS}")"
 cf start "${ROUTE_SERVICE_APP_NAME}"
 
 ROUTE_SERVICE_DOMAIN="$(cf curl "v3/apps/$(cf app "${ROUTE_SERVICE_APP_NAME}" --guid)/routes" | jq -r --arg APPS_DOMAIN "${APPS_DOMAIN}" '[.resources[] | select(.url | endswith($APPS_DOMAIN))][0].url')"
