@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using CsvHelper;
+using CsvHelper.TypeConversion;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Helpers
@@ -17,6 +19,9 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
                 {
+                    var options = new TypeConverterOptions {Formats = new[] {"yyyy/MM/dd hh:mm:ss"}};
+                    csv.Configuration.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+                    csv.Configuration.TypeConverterOptionsCache.AddOptions<DateTime?>(options);
                     csv.WriteRecords(rows);
                 }
             }
