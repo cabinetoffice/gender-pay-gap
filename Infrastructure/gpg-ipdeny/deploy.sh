@@ -6,13 +6,13 @@ if ! command -v jq >/dev/null; then
   exit 1
 fi
 
-while getopts ":a:e:i:r:s:" opt; do
+while getopts ":a:e:f:r:s:" opt; do
   case $opt in
     a) PROTECTED_APP_NAME="$OPTARG"
     ;;
     e) PROTECTED_APP_SPACE_NAME="$OPTARG"
     ;;
-    i) DENIED_IPS="$OPTARG"
+    f) DENIED_IPS_FILENAME="$OPTARG"
     ;;
     r) ROUTE_SERVICE_APP_NAME="$OPTARG"
     ;;
@@ -43,16 +43,16 @@ if [ -z "${PROTECTED_APP_SPACE_NAME+set}" ]; then
   exit 1
 fi
 
-if [ -z "${DENIED_IPS+set}" ]; then
-  echo "Must provide DENIED_IPS parameter -i"
+if [ -z "${DENIED_IPS_FILENAME+set}" ]; then
+  echo "Must provide DENIED_IPS_FILENAME parameter -f"
   exit 1
 fi
 
-IFS="," read -ra IPS <<< "$DENIED_IPS"
+readarray -t IPS < "$DENIED_IPS_FILENAME"
 
 NGINX_DENY_STATEMENTS=""
 for addr in "${IPS[@]}";
-  do NGINX_DENY_STATEMENTS="$NGINX_DENY_STATEMENTS deny $addr;"; true;
+  do NGINX_DENY_STATEMENTS="$NGINX_DENY_STATEMENTS deny ${addr//[$'\r']};"; true;
 done;
 
 APPS_DOMAIN=$(cf curl "v3/domains" | jq -r '[.resources[] | select(.name|endswith("apps.digital"))][0].name')

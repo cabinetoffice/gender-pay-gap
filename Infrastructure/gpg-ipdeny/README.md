@@ -20,25 +20,16 @@ Before running the deployment script you must be logged into GOV.UK PaaS using t
 The deployment script takes the following parameters:
 * -a PROTECTED_APP_NAME The application to protect
 * -e PROTECTED_APP_SPACE_NAME The name of the space the apps are in
-* -i DENIED_IPS A comma separated list of IP addresses to be banned
+* -f DENIED_IPS_FILENAME The filename containing the list of IPs to block
 * -r ROUTE_SERVICE_APP_NAME The name of the service app to create/update
 * -s ROUTE_SERVICE_NAME The name of the service to create/update
 
-For example to set up ip denylisting on the dev space the command could be run (using the gitbash window set up with jq earlier) as 
+For example to set up ip denylisting on the dev space, if you've created/placed the denylist file in the same directory as the deployment script, the command could be run (using the gitbash window set up with jq earlier) as 
 ```
-./deploy.sh -e gpg-dev -r gpg-dev-ipdeny -s gpg-dev-ipdeny-service -a gender-pay-gap-dev -i "1.2.3.4,2.3.4.5"
+./deploy.sh -e gpg-dev -r gpg-dev-ipdeny -s gpg-dev-ipdeny-service -a gender-pay-gap-dev -f "GPG IP Denylist.txt"
 ```
 
-The comma separated list of banned IPs can be found in Zoho, when updating this list, newlines should be avoided as they can cause syntax errors within the nginx.conf. This can be seen by an error when deploying, and then if you try and run
-```
-cf start ROUTE_SERVICE_APP_NAME
-```
-an error similar to the following will display
-```
-2021/01/25 15:25:07 [emerg] 29#0: unknown directive "
-   " in /tmp/conf410448399/nginx.conf:73
-   nginx: configuration file /tmp/conf410448399/nginx.conf test failed
-          **ERROR** Could not validate nginx.conf: nginx.conf contains syntax errors: exit status 1
-   Failed to compile droplet: Failed to run all supply scripts: exit status 14
-```
-By checking the environment variables that have been set on the environment, it should be possible to tell where the issue is in the provided list of IPs
+The file listing banned IPs can be found in Zoho, and is called "GPG IP Denylist.txt". This should not be checked into source control, and that filename has been added to the .gitignore. Since the script accepts any file for the denylist, IP denylisting can be tested by providing a different file. Take care not to accidentally check in any differently name denylist file.
+
+When updating this list, each IP should be listed on a new line.
+If there are any errors when starting the app, these are most likely to have been caused by a syntax error in the list of IPs to deny. By checking the environment variables that have been set on the environment, it should be possible to tell where the issue is in the provided list of IPs
