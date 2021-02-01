@@ -176,7 +176,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 return $"{organisations[0].OrganisationName} and {organisations[1].OrganisationName}";
             }
 
-            return $"{organisations[0].OrganisationName} and {organisations.Count - 1} other organisations";
+            return $"{organisations[0].OrganisationName} and {organisations.Count - 1} other employers";
         }
 
         private bool IsAfterEarliestReminder(SectorTypes sectorType)
