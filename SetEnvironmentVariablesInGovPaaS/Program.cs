@@ -119,7 +119,7 @@ namespace SetEnvironmentVariablesInGovPaaS
 
         private static void SetPaasEnvironmentVariable(string appName, string variableName, string variableValue)
         {
-            CommandLineHelper.RunCommandAndPrintOutputToConsole("cf", $"v3-set-env {appName} \"{variableName}\" \"{variableValue}\"");
+            CommandLineHelper.RunCommandAndPrintOutputToConsole("cf", $"set-env {appName} \"{variableName}\" \"{variableValue}\"");
         }
 
     }
