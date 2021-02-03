@@ -46,7 +46,7 @@ namespace SetEnvironmentVariablesInGovPaaS
 
         private static List<string> GetAllCurrentPaasEnvironmentVariables(string appName)
         {
-            List<string> commandOutput = CommandLineHelper.RunCommandAndGetOutput("cf", $"v3-env {appName}");
+            List<string> commandOutput = CommandLineHelper.RunCommandAndGetOutput("cf", $"env {appName}");
 
             var possiblePaasEnvironmentVariables = new List<string>();
 
@@ -67,7 +67,7 @@ namespace SetEnvironmentVariablesInGovPaaS
 
         private static void UnsetPaasEnvironmentVariable(string appName, string variableName)
         {
-            CommandLineHelper.RunCommandAndPrintOutputToConsole("cf", $"v3-unset-env {appName} {variableName}");
+            CommandLineHelper.RunCommandAndPrintOutputToConsole("cf", $"unset-env {appName} {variableName}");
         }
 
         private static void SetNewPaasEnvironmentVaribales(string appName)
