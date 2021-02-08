@@ -7,6 +7,8 @@ The code:
 * Write access to this GitHub repository  
   Normally granted by adding you to the
   [Gender Pay Gap GitHub team](https://github.com/orgs/cabinetoffice/teams/gender-pay-gap)
+* Zoho
+  All the secrets are stored in Zoho in the GPG chamber
 
 Services that the Gender Pay Gap service depends on:
 * [Gov.UK Notify](https://www.notifications.service.gov.uk/)  
