@@ -67,6 +67,7 @@ Populate the database:
   * Fill in the form:
     * Hostname of remote server: `gender-pay-gap-dev.london.cloudapps.digital` (without https://)
     * Passwords: ask an existing developer for these
+    * The database migration password is stored in `appsettings.secrets.json`
   * Click the scary red button
   * Wait for a few minutes whilst the data is imported
   * The database should now be fully populated and ready to use

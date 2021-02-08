@@ -6,7 +6,8 @@ Install the following software:
     [licences for Visual Studio](https://swiki.softwire.com/display/Helpdesk/Visual+Studio) and
     [licences for ReSharper](https://swiki.softwire.com/display/Helpdesk/JetBrains+Licence+Keys)
 
-  * [Rider](https://www.jetbrains.com/rider/)  
+  * [Rider](https://www.jetbrains.com/rider/)
+    You may need to install ASP .NET Core Module as well. Please check [here](https://www.jetbrains.com/help/rider/Running_IISExpress.html)
     If you work for Softwire, read Softwire's guide about getting
     [licences for Rider](https://swiki.softwire.com/display/Helpdesk/JetBrains+Licence+Keys)
 
