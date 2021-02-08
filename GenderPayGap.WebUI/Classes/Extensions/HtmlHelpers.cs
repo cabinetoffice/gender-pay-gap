@@ -69,7 +69,6 @@ namespace GenderPayGap.WebUI.Classes
                 var existingRoute = HttpUtility.ParseQueryString(helper.ActionContext.HttpContext.Request.QueryString.Value);
                 newRoute.Add(existingRoute);
             }
-      
 
             foreach (KeyValuePair<string, object> item in new RouteValueDictionary(routeValues))
             {
