@@ -14,7 +14,7 @@ REDIS_SIZE="tiny-4.x"
 # App scale settings
 APP_INSTANCES=2     # We use 2 for most environments, 3 for production
 APP_DISK="1G"       # Not sure what this default should be - we'll have to test this and set a default later
-APP_MEMORY="4G"     # In Azure this is 4G for all environments
+APP_MEMORY="4G"     # In PaaS this is 4G for all environments
 
 
 
