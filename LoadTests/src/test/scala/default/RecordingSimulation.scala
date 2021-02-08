@@ -16,7 +16,7 @@ class RecordingSimulation extends Simulation {
 	val CURRENT_YEAR = "2020-21"
 
 	val httpProtocol = http
-		.baseUrl("https://wa-t1pp-gpg.azurewebsites.net")
+		.baseUrl("https://gender-pay-gap-loadtest.london.cloudapps.digital")
 		.inferHtmlResources()
 		.acceptHeader("*/*")
 		.acceptEncodingHeader("gzip, deflate")
@@ -33,7 +33,7 @@ class RecordingSimulation extends Simulation {
 
 	val headers_3 = Map(
 		"Accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-		"Origin" -> "https://wa-t1pp-gpg.azurewebsites.net",
+		"Origin" -> "https://gender-pay-gap-loadtest.london.cloudapps.digital",
 		"Upgrade-Insecure-Requests" -> "1")
 
 	val headers_4 = Map(
@@ -139,8 +139,8 @@ class RecordingSimulation extends Simulation {
 			.exec(http("Register an account")
 			.post("/create-user-account")
 			.headers(headers_3)
-			.formParam("GovUk_Text_EmailAddress", "${email}")
-			.formParam("GovUk_Text_ConfirmEmailAddress", "${email}")
+			.formParam("GovUk_Text_EmailAddress", "${email}-registration")
+			.formParam("GovUk_Text_ConfirmEmailAddress", "${email}-registration")
 			.formParam("GovUk_Text_FirstName", "Test")
 			.formParam("GovUk_Text_LastName", "Example")
 			.formParam("GovUk_Text_JobTitle", "Tester")
@@ -149,7 +149,9 @@ class RecordingSimulation extends Simulation {
 			.formParam("AllowContact", "true")
 			.formParam("SendUpdates", "false")
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
-			.check(regex("Confirm your email address")))
+			.check(
+				status.is(200),
+				regex("Confirm your email address")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
