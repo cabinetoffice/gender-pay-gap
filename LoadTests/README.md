@@ -13,7 +13,7 @@ Load tests aim to:
 * Determine the scalability of a system
 * Identify bottlenecks within the system which may need technical work
 
-## Why do we want to do it on GPG?
+## Why do we want to load test GPG?
 
 Each year, employers with more than 250 employees are required to report their gender pay gap figures through the [Gender Pay Gap Service](https://gender-pay-gap.service.gov.uk/).
 Employers provide data from a specific reference date (the snapshot date), which is:
@@ -25,7 +25,7 @@ We run load tests to ensure that the system will cope well with expected load at
 
 ## Zero to Hero
 
-This module can't be opened in Visual Studio so you'll need another IDE such as IntelliJ.
+This module can't be opened in Visual Studio so you'll need another IDE such as IntelliJ IDEA.
 
 1. Download and install [IntelliJ IDEA](https://www.jetbrains.com/idea/download) (Community edition is fine)
 1. Install **Java** 64bits JDK 8 (not compatible with JDK 12+)
@@ -44,10 +44,13 @@ and have it succeed.
 
 ## Preparing for a load test
 
+Load tests for this project are written in Scala using a developer tool called Gatling. Each file describing what will be tested in the load test is called a **scenario**, 
+and one is run at a time to perform a test.
+
 ### The Gatling recorder
 
 The scenarios in this project were originally created using the Gatling Recorder which can be downloaded [here](https://gatling.io/open-source/start-testing/). 
-You can run the recorder by finding and running the `recorder.bat` file
+You can run the recorder by finding and running the `recorder.bat` file. In order for this to work, you may need to right click on the scala directory, and mark it as Test Sources Root. 
 
 ### Creating or modifying a scenario
 
