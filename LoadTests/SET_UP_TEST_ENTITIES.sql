@@ -18,6 +18,7 @@ DO $$
         DELETE FROM "OrganisationNames" WHERE "OrganisationNames"."OrganisationId" > STARTING_ID;
         DELETE FROM "OrganisationSicCodes" WHERE "OrganisationSicCodes"."OrganisationId" > STARTING_ID;
         DELETE FROM "OrganisationAddresses" WHERE "OrganisationAddresses"."AddressId" > STARTING_ID;
+        DELETE FROM "DraftReturns" WHERE "OrganisationId" > STARTING_ID;
         DELETE FROM "ReturnStatus" WHERE "ReturnStatus"."ByUserId" > STARTING_ID;
         DELETE FROM "Returns" WHERE "Returns"."OrganisationId" > STARTING_ID;
 

@@ -329,7 +329,240 @@ class RecordingSimulation extends Simulation {
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
+	// Use this if FeatureFlagNewReportingJourney variable is set to false on live
 	object ReportGenderPayGap {
+		val visitManageOrganisation = exec(http("Visit manage organisation")
+			.get("/account/organisations")
+			.headers(headers_0)
+			.check(
+				regex("Add or select an organisation you're reporting for"),
+				css("a[loadtest-id='organisation-link']", "href").find.saveAs("linkToAnOrganisation")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitOrganisation = exec(http("Visit an organisation page")
+			.get("${linkToAnOrganisation}")
+			.headers(headers_0)
+			.check(
+				status.is(200),
+				regex("Manage your organisation's reporting"),
+				regex("for ${organisationName}"),
+				css(s"a[loadtest-id='create-report-${CURRENT_YEAR.substring(0, 4)}']", "href").find.saveAs("linkToTheLatestReport")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val visitReportOverviewPage = exec(http("Visit report overview page")
+			.get("${linkToTheLatestReport}")
+			.headers(headers_0)
+			.check(
+				regex("Reporting as ${organisationName}"),
+				regex(s"Enter your gender pay gap data for snapshot date 5 April ${CURRENT_YEAR.substring(0, 4)}"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
+				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId")
+			))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterCalculations = exec(http("Enter calculations")
+			.post("/Submit/enter-calculations")
+			.headers(headers_3)
+			.formParam("ReturnId", "0")
+			.formParam("OrganisationId", "${organisationId}")
+			.formParam("EncryptedOrganisationId", "${encryptedOrganisationId}")
+			.formParam("ShouldProvideLateReason", "False")
+			.formParam("ReportInfo.ReportModifiedDate", "")
+			.formParam("ReportInfo.ReportingStartDate", "05/04/2019 00:00:00")
+			.formParam("FirstName", "")
+			.formParam("JobTitle", "")
+			.formParam("LastName", "")
+			.formParam("AccountingDate", "05/04/2019 00:00:00")
+			.formParam("SectorType", "Private")
+			.formParam("OrganisationSize", "NotProvided")
+			.formParam("CompanyLinkToGPGInfo", "")
+			.formParam("EHRCResponse", "")
+			.formParam("LateReason", "")
+			.formParam("DiffMeanHourlyPayPercent", "1")
+			.formParam("DiffMedianHourlyPercent", "1")
+			.formParam("MaleMedianBonusPayPercent", "1")
+			.formParam("FemaleMedianBonusPayPercent", "1")
+			.formParam("DiffMeanBonusPercent", "1")
+			.formParam("DiffMedianBonusPercent", "")
+			.formParam("MaleUpperQuartilePayBand", "50")
+			.formParam("FemaleUpperQuartilePayBand", "50")
+			.formParam("MaleUpperPayBand", "50")
+			.formParam("FemaleUpperPayBand", "50")
+			.formParam("MaleMiddlePayBand", "50")
+			.formParam("FemaleMiddlePayBand", "50")
+			.formParam("MaleLowerPayBand", "50")
+			.formParam("FemaleLowerPayBand", "50")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
+				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
+				regex("Person responsible in your organisation")))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterResponsiblePerson = exec(http("Enter responsible person")
+			.post("/Submit/person-responsible")
+			.headers(headers_3)
+			.formParam("ReturnId", "0")
+			.formParam("OrganisationId", "${organisationId}")
+			.formParam("EncryptedOrganisationId", "${encryptedOrganisationId}")
+			.formParam("ShouldProvideLateReason", "False")
+			.formParam("ReportInfo.ReportModifiedDate", "")
+			.formParam("ReportInfo.ReportingStartDate", "05/04/2019 00:00:00")
+			.formParam("DiffMeanBonusPercent", "1.0")
+			.formParam("DiffMeanHourlyPayPercent", "1.0")
+			.formParam("DiffMedianBonusPercent", "")
+			.formParam("DiffMedianHourlyPercent", "1.0")
+			.formParam("FemaleLowerPayBand", "50.0")
+			.formParam("FemaleMedianBonusPayPercent", "1.0")
+			.formParam("FemaleMiddlePayBand", "50.0")
+			.formParam("FemaleUpperPayBand", "50.0")
+			.formParam("FemaleUpperQuartilePayBand", "50.0")
+			.formParam("MaleLowerPayBand", "50.0")
+			.formParam("MaleMedianBonusPayPercent", "1.0")
+			.formParam("MaleMiddlePayBand", "50.0")
+			.formParam("MaleUpperPayBand", "50.0")
+			.formParam("MaleUpperQuartilePayBand", "50.0")
+			.formParam("AccountingDate", "05/04/2019 00:00:00")
+			.formParam("SectorType", "Private")
+			.formParam("OrganisationSize", "NotProvided")
+			.formParam("CompanyLinkToGPGInfo", "")
+			.formParam("EHRCResponse", "")
+			.formParam("LateReason", "")
+			.formParam("FirstName", "test")
+			.formParam("LastName", "test")
+			.formParam("JobTitle", "test")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
+				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
+				regex("Size of your organisation")))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterSizeOfOrganisation = exec(http("Enter size of organisation")
+			.post("/Submit/organisation-size")
+			.headers(headers_3)
+			.formParam("ReturnId", "0")
+			.formParam("OrganisationId", "${organisationId}")
+			.formParam("EncryptedOrganisationId", "${encryptedOrganisationId}")
+			.formParam("ShouldProvideLateReason", "False")
+			.formParam("ReportInfo.ReportModifiedDate", "")
+			.formParam("ReportInfo.ReportingStartDate", "05/04/2019 00:00:00")
+			.formParam("DiffMeanBonusPercent", "1.0")
+			.formParam("DiffMeanHourlyPayPercent", "1.0")
+			.formParam("DiffMedianBonusPercent", "")
+			.formParam("DiffMedianHourlyPercent", "1.0")
+			.formParam("FemaleLowerPayBand", "50.0")
+			.formParam("FemaleMedianBonusPayPercent", "1.0")
+			.formParam("FemaleMiddlePayBand", "50.0")
+			.formParam("FemaleUpperPayBand", "50.0")
+			.formParam("FemaleUpperQuartilePayBand", "50.0")
+			.formParam("MaleLowerPayBand", "50.0")
+			.formParam("MaleMedianBonusPayPercent", "1.0")
+			.formParam("MaleMiddlePayBand", "50.0")
+			.formParam("MaleUpperPayBand", "50.0")
+			.formParam("MaleUpperQuartilePayBand", "50.0")
+			.formParam("AccountingDate", "05/04/2019 00:00:00")
+			.formParam("SectorType", "Private")
+			.formParam("OrganisationSize", "2")
+			.formParam("CompanyLinkToGPGInfo", "")
+			.formParam("EHRCResponse", "")
+			.formParam("LateReason", "")
+			.formParam("FirstName", "test")
+			.formParam("LastName", "test")
+			.formParam("JobTitle", "test")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
+				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
+				regex("Link to your gender pay gap information")))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val enterWebAddress = exec(http("Enter web address")
+			.post("/Submit/employer-website")
+			.headers(headers_3)
+			.formParam("ReturnId", "0")
+			.formParam("OrganisationId", "${organisationId}")
+			.formParam("EncryptedOrganisationId", "${encryptedOrganisationId}")
+			.formParam("ShouldProvideLateReason", "False")
+			.formParam("ReportInfo.ReportModifiedDate", "")
+			.formParam("ReportInfo.ReportingStartDate", "05/04/2019 00:00:00")
+			.formParam("DiffMeanBonusPercent", "1.0")
+			.formParam("DiffMeanHourlyPayPercent", "1.0")
+			.formParam("DiffMedianBonusPercent", "")
+			.formParam("DiffMedianHourlyPercent", "1.0")
+			.formParam("FemaleLowerPayBand", "50.0")
+			.formParam("FemaleMedianBonusPayPercent", "1.0")
+			.formParam("FemaleMiddlePayBand", "50.0")
+			.formParam("FemaleUpperPayBand", "50.0")
+			.formParam("FemaleUpperQuartilePayBand", "50.0")
+			.formParam("MaleLowerPayBand", "50.0")
+			.formParam("MaleMedianBonusPayPercent", "1.0")
+			.formParam("MaleMiddlePayBand", "50.0")
+			.formParam("MaleUpperPayBand", "50.0")
+			.formParam("MaleUpperQuartilePayBand", "50.0")
+			.formParam("AccountingDate", "05/04/2019 00:00:00")
+			.formParam("SectorType", "Private")
+			.formParam("OrganisationSize", "Employees250To499")
+			.formParam("CompanyLinkToGPGInfo", "http://example.com/")
+			.formParam("EHRCResponse", "")
+			.formParam("LateReason", "")
+			.formParam("FirstName", "test")
+			.formParam("LastName", "test")
+			.formParam("JobTitle", "test")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+				css("input[name='OrganisationId']", "value").saveAs("organisationId"),
+				css("input[name='EncryptedOrganisationId']", "value").saveAs("encryptedOrganisationId"),
+				regex("Review your gender pay gap data")))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+
+		val confirmGenderPayGapData = exec(http("Confirm gender pay gap data")
+			.post("/Submit/check-data")
+			.headers(headers_3)
+			.formParam("ReturnId", "0")
+			.formParam("OrganisationId", "${organisationId}")
+			.formParam("EncryptedOrganisationId", "${encryptedOrganisationId}")
+			.formParam("ShouldProvideLateReason", "False")
+			.formParam("ReportInfo.Draft", "GenderPayGap.BusinessLogic.Classes.Draft")
+			.formParam("ReportInfo.ReportModifiedDate", "")
+			.formParam("ReportInfo.ReportingStartDate", "05/04/2019 00:00:00")
+			.formParam("DiffMeanBonusPercent", "1.0")
+			.formParam("DiffMeanHourlyPayPercent", "1.0")
+			.formParam("DiffMedianBonusPercent", "")
+			.formParam("DiffMedianHourlyPercent", "1.0")
+			.formParam("FemaleLowerPayBand", "50.0")
+			.formParam("FemaleMedianBonusPayPercent", "1.0")
+			.formParam("FemaleMiddlePayBand", "50.0")
+			.formParam("FemaleUpperPayBand", "50.0")
+			.formParam("FemaleUpperQuartilePayBand", "50.0")
+			.formParam("MaleLowerPayBand", "50.0")
+			.formParam("MaleMedianBonusPayPercent", "1.0")
+			.formParam("MaleMiddlePayBand", "50.0")
+			.formParam("MaleUpperPayBand", "50.0")
+			.formParam("MaleUpperQuartilePayBand", "50.0")
+			.formParam("AccountingDate", "05/04/2019 00:00:00")
+			.formParam("SectorType", "Private")
+			.formParam("OrganisationSize", "Employees250To499")
+			.formParam("CompanyLinkToGPGInfo", "http://example.com/")
+			.formParam("EHRCResponse", "")
+			.formParam("LateReason", "")
+			.formParam("FirstName", "test")
+			.formParam("LastName", "test")
+			.formParam("JobTitle", "test")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.check(regex("You've submitted your gender pay gap data for 2019 to 2020")))
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+	}
+
+	// Use this if FeatureFlagNewReportingJourney variable is set to true on live
+	object ReportGenderPayGapStepByStep {
 		val visitManageOrganisation = exec(http("Visit manage organisation")
 			.get("/account/organisations")
 			.headers(headers_0)
@@ -569,7 +802,8 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_0)
 			.check(
 				status.is(200),
-				regex("Change email address")))
+				regex("Change email address"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
   		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changeEmailAddress = exec(http("Change email address")
@@ -587,7 +821,8 @@ class RecordingSimulation extends Simulation {
 			.headers(headers_0)
 			.check(
 				status.is(200),
-				regex("Change your password")))
+				regex("Change your password"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
   		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changePassword = exec(http("Change password")
@@ -608,7 +843,8 @@ class RecordingSimulation extends Simulation {
 			.check(
 				status.is(200),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				regex("Change your personal details")))
+				regex("Change your personal details"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
   		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changePersonalDetails = exec(http("Change personal details")
@@ -630,7 +866,8 @@ class RecordingSimulation extends Simulation {
 			.check(
 				status.is(200),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-				regex("Change your contact preferences")))
+				regex("Change your contact preferences"),
+				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
   		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changeContactPreferences = exec(http("Change contact preferences")
@@ -704,20 +941,11 @@ class RecordingSimulation extends Simulation {
 		ReportGenderPayGap.visitManageOrganisation,
 		ReportGenderPayGap.visitOrganisation,
 		ReportGenderPayGap.visitReportOverviewPage,
-		ReportGenderPayGap.visitHourlyPayPage,
-		ReportGenderPayGap.enterHourlyPayDetails,
-		ReportGenderPayGap.visitBonusPayPage,
-		ReportGenderPayGap.enterBonusPayDetails,
-		ReportGenderPayGap.visitEmployeesByPayQuarterPage,
-		ReportGenderPayGap.enterEmployeesByPayQuarterDetails,
-		ReportGenderPayGap.visitResponsiblePersonPage,
-		ReportGenderPayGap.enterResponsiblePersonDetails,
-		ReportGenderPayGap.visitOrganisationSizePage,
-		ReportGenderPayGap.enterOrganisationSizeDetails,
-		ReportGenderPayGap.visitLinkToGpgInformationPage,
-		ReportGenderPayGap.enterLinkToGpgInformationDetails,
-		ReportGenderPayGap.visitReviewAndSubmitPage,
-		ReportGenderPayGap.reviewAndSubmitReport,
+		ReportGenderPayGap.enterCalculations,
+		ReportGenderPayGap.enterResponsiblePerson,
+		ReportGenderPayGap.enterSizeOfOrganisation,
+		ReportGenderPayGap.enterWebAddress,
+		ReportGenderPayGap.confirmGenderPayGapData,
 		ManageAccount.visit,
 		ManageAccount.visitChangeEmailAddressPage,
 		ManageAccount.changeEmailAddress,
