@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Web;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes.Attributes;
@@ -62,10 +63,13 @@ namespace GenderPayGap.WebUI.Classes
         public static string WithQuery(this IUrlHelper helper, string actionName, object routeValues)
         {
             var newRoute = new NameValueCollection();
-            foreach (string key in helper.ActionContext.HttpContext.Request.Query.Keys)
+
+            if (helper.ActionContext.HttpContext.Request.QueryString.HasValue)
             {
-                newRoute[key] = helper.ActionContext.HttpContext.Request.Query[key];
+                var existingRoute = HttpUtility.ParseQueryString(helper.ActionContext.HttpContext.Request.QueryString.Value);
+                newRoute.Add(existingRoute);
             }
+      
 
             foreach (KeyValuePair<string, object> item in new RouteValueDictionary(routeValues))
             {
