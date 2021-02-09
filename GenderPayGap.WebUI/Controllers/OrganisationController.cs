@@ -133,7 +133,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (userOrg.PINConfirmedDate == null)
             {
                 return new HttpForbiddenResult(
-                    $"User {currentUser?.EmailAddress} has not completed registeration for organisation {userOrg.Organisation.EmployerReference}");
+                    $"User {currentUser?.EmailAddress} has not completed registration for organisation {userOrg.Organisation.EmployerReference}");
             }
 
             //Check the year parameters
