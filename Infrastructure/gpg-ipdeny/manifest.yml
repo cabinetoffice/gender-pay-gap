@@ -2,8 +2,8 @@
 
 applications:
   - name: gpg-ipdeny
-    instances: 3
-    memory: 3G
+    instances: 1
+    memory: 2G
 
     buildpacks:
       - nginx_buildpack
