@@ -93,7 +93,8 @@ PROTECTED_APP_HOSTNAME="$(cf curl "v3/apps/$(cf app "${PROTECTED_APP_NAME}" --gu
 cf bind-route-service "${APPS_DOMAIN}" "${ROUTE_SERVICE_NAME}" --hostname "${PROTECTED_APP_HOSTNAME}";
 
 # Autoscaling
-echo "{\"instance_min_count\":${MIN_COUNT_INSTANCES},\"instance_max_count\":${MAX_COUNT_INSTANCES},\"scaling_rules\":[{\"metric_type\":\"throughput\",\"breach_duration_secs\":60,\"threshold\":100,\"operator\":\"<\",\"cool_down_secs\":60,\"adjustment\":\"-1\"},{\"metric_type\":\"throughput\",\"breach_duration_secs\":60,\"threshold\":100,\"operator\":\">=\",\"cool_down_secs\":60,\"adjustment\":\"+1\"}]}" > autoscaling_policy.json
+sed -i "s/MIN_COUNT_INSTANCES/${MIN_COUNT_INSTANCES}/" autoscaling_policy.json
+sed -i "s/MAX_COUNT_INSTANCES/${MAX_COUNT_INSTANCES}/" autoscaling_policy.json
 cf install-plugin -r CF-Community app-autoscaler-plugin
 cf create-service autoscaler autoscaler-free-plan "scale-${ROUTE_SERVICE_NAME}"
 cf bind-service "${ROUTE_SERVICE_NAME}" "scale-${ROUTE_SERVICE_NAME}"
