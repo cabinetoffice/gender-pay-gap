@@ -77,3 +77,9 @@ fi
 PROTECTED_APP_HOSTNAME="$(cf curl "v3/apps/$(cf app "${PROTECTED_APP_NAME}" --guid)/routes" | jq -r --arg APPS_DOMAIN "${APPS_DOMAIN}" '[.resources[] | select(.url | endswith($APPS_DOMAIN))][0].host')"
 
 cf bind-route-service "${APPS_DOMAIN}" "${ROUTE_SERVICE_NAME}" --hostname "${PROTECTED_APP_HOSTNAME}";
+
+# Autoscaling
+cf install-plugin -r CF-Community app-autoscaler-plugin
+cf create-service autoscaler autoscaler-free-plan "scale-${ROUTE_SERVICE_NAME}"
+cf bind-service "${ROUTE_SERVICE_NAME}" "scale-${ROUTE_SERVICE_NAME}"
+cf attach-autoscaling-policy "${ROUTE_SERVICE_NAME}" autoscaling_policy.json
