@@ -6,7 +6,7 @@ if ! command -v jq >/dev/null; then
   exit 1
 fi
 
-while getopts ":a:e:f:r:s:" opt; do
+while getopts ":a:e:f:r:s:m:M" opt; do
   case $opt in
     a) PROTECTED_APP_NAME="$OPTARG"
     ;;
@@ -17,6 +17,10 @@ while getopts ":a:e:f:r:s:" opt; do
     r) ROUTE_SERVICE_APP_NAME="$OPTARG"
     ;;
     s) ROUTE_SERVICE_NAME="$OPTARG"
+    ;;
+    m) MIN_COUNT_INSTANCES="$OPTARG"
+    ;;
+    M) MAX_COUNT_INSTANCES="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
@@ -45,6 +49,16 @@ fi
 
 if [ -z "${DENIED_IPS_FILENAME+set}" ]; then
   echo "Must provide DENIED_IPS_FILENAME parameter -f"
+  exit 1
+fi
+
+if [ -z "${MIN_COUNT_INSTANCES+set}" ]; then
+  echo "Must provide MIN_COUNT_INSTANCES parameter -m"
+  exit 1
+fi
+
+if [ -z "${MAX_COUNT_INSTANCES+set}" ]; then
+  echo "Must provide MAX_COUNT_INSTANCES parameter -M"
   exit 1
 fi
 
@@ -79,6 +93,7 @@ PROTECTED_APP_HOSTNAME="$(cf curl "v3/apps/$(cf app "${PROTECTED_APP_NAME}" --gu
 cf bind-route-service "${APPS_DOMAIN}" "${ROUTE_SERVICE_NAME}" --hostname "${PROTECTED_APP_HOSTNAME}";
 
 # Autoscaling
+echo "{\"instance_min_count\":${MIN_COUNT_INSTANCES},\"instance_max_count\":${MAX_COUNT_INSTANCES},\"scaling_rules\":[{\"metric_type\":\"throughput\",\"breach_duration_secs\":60,\"threshold\":100,\"operator\":\"<\",\"cool_down_secs\":60,\"adjustment\":\"-1\"},{\"metric_type\":\"throughput\",\"breach_duration_secs\":60,\"threshold\":100,\"operator\":\">=\",\"cool_down_secs\":60,\"adjustment\":\"+1\"}]}" > autoscaling_policy.json
 cf install-plugin -r CF-Community app-autoscaler-plugin
 cf create-service autoscaler autoscaler-free-plan "scale-${ROUTE_SERVICE_NAME}"
 cf bind-service "${ROUTE_SERVICE_NAME}" "scale-${ROUTE_SERVICE_NAME}"
