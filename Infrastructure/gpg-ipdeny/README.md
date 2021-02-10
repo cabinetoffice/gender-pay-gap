@@ -23,6 +23,8 @@ The deployment script takes the following parameters:
 * -f DENIED_IPS_FILENAME The filename containing the list of IPs to block
 * -r ROUTE_SERVICE_APP_NAME The name of the service app to create/update
 * -s ROUTE_SERVICE_NAME The name of the service to create/update
+* -m MIN_COUNT_INSTANCES The minimum number of instances to run
+* -M MAX_COUNT_INSTANCES The maximum number of instances to run
 
 For example to set up ip denylisting on the dev space, if you've created/placed the denylist file in the same directory as the deployment script, the command could be run (using the gitbash window set up with jq earlier) as 
 ```
