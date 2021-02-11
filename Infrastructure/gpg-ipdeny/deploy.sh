@@ -6,7 +6,7 @@ if ! command -v jq >/dev/null; then
   exit 1
 fi
 
-while getopts ":a:e:f:r:s:m:M" opt; do
+while getopts ":a:e:f:r:s:m:M:" opt; do
   case $opt in
     a) PROTECTED_APP_NAME="$OPTARG"
     ;;
