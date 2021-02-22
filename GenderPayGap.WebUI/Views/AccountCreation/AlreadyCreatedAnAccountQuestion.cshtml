@@ -84,10 +84,7 @@
                 {
                     Text = "Continue"
                 }))
-                @{
-                    // We deal with the feature flag in the controller
-                    var reportingUrl = Url.Action("ManageOrganisationsGet", "ManageOrganisations");
-                }
+                @{ var reportingUrl = Url.Action("ManageOrganisationsGet", "ManageOrganisations"); }
                 <a href="@(Global.StartUrl ?? reportingUrl)" class="govuk-button" role="button">Cancel</a>
             </div>
             

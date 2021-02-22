@@ -39,5 +39,7 @@ namespace GenderPayGap.WebUI.Models.AccountCreation
 
         public bool AllowContact { get; set; }
 
+        public bool IsPartOfGovUkReportingJourney { get; set; }
+
     }
 }

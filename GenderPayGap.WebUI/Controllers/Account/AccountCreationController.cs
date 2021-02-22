@@ -26,7 +26,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             this.dataRepository = dataRepository;
             this.emailSendingService = emailSendingService;
         }
-        
+
+        // The 'Start Now' page (Global.StartUrl https://www.gov.uk/report-gender-pay-gap-data)
+        // links to this action as the starting point for the reporting journey
         [HttpGet("/already-created-an-account-question")]
         public IActionResult AlreadyCreatedAnAccountQuestionGet(AlreadyCreatedAnAccountViewModel viewModel)
         {
@@ -42,7 +44,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
                 case HaveYouAlreadyCreatedYourUserAccount.No:
                 case HaveYouAlreadyCreatedYourUserAccount.NotSure:
-                    return RedirectToAction("CreateUserAccountGet");
+                    return RedirectToAction("CreateUserAccountGet", new { isPartOfGovUkReportingJourney = true});
 
                 case HaveYouAlreadyCreatedYourUserAccount.Unspecified:
                     viewModel.AddErrorFor(
@@ -58,14 +60,14 @@ namespace GenderPayGap.WebUI.Controllers.Account
         }
         
         [HttpGet("/create-user-account")]
-        public IActionResult CreateUserAccountGet()
+        public IActionResult CreateUserAccountGet(bool isPartOfGovUkReportingJourney = false)
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
-            return View("CreateUserAccount", new CreateUserAccountViewModel());
+            return View("CreateUserAccount", new CreateUserAccountViewModel{IsPartOfGovUkReportingJourney = isPartOfGovUkReportingJourney });
         }
 
         [HttpPost("/create-user-account")]
