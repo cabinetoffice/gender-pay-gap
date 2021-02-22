@@ -20,7 +20,7 @@ namespace GenderPayGap.WebUI.Models.AccountCreation
         [GovUkRadioCheckboxLabelText(Text = "No, I don't have a user account")]
         No = 1,
 
-        [GovUkRadioCheckboxLabelText(Text = "My organisation has used this service before, but I haven't")]
+        [GovUkRadioCheckboxLabelText(Text = "My employer has used this service before, but I haven't")]
         NotSure = 2,
 
         [GovUkRadioCheckboxLabelText(Text = "Unspecified")]

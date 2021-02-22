@@ -18,7 +18,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Have you already created a user account?</h1>
+        <h1 class="govuk-heading-xl">Have you previously created a user account?</h1>
     </div>
 </div>
 
@@ -33,17 +33,17 @@
                 @{
                     string error = Model.GetErrorFor(m => m.HaveYouAlreadyCreatedYourUserAccount);
                     ErrorMessageViewModel errorMessageViewModel = error != null
-                        ? new ErrorMessageViewModel {Text = error} : null;
+                        ? new ErrorMessageViewModel { Text = error } : null;
                 }
 
                 @if (Model.HaveYouAlreadyCreatedYourUserAccount == null
-                     || Model.HaveYouAlreadyCreatedYourUserAccount == HaveYouAlreadyCreatedYourUserAccount.Unspecified)
+                   || Model.HaveYouAlreadyCreatedYourUserAccount == HaveYouAlreadyCreatedYourUserAccount.Unspecified)
                 {
                     <input type="radio"
                            name="HaveYouAlreadyCreatedYourUserAccount"
                            value="Unspecified"
                            checked
-                           style="display: none"/>
+                           style="display: none" />
                 }
 
                 @Html.GovUkRadios(new RadiosViewModel
@@ -58,7 +58,7 @@
                             string fieldValue = answer.ToString();
                             string fieldId = $"{fieldName}_{fieldValue}";
 
-                            return (ItemViewModel) new RadioItemViewModel
+                            return (ItemViewModel)new RadioItemViewModel
                             {
                                 Name = fieldName,
                                 Value = fieldValue,
@@ -76,15 +76,21 @@
                 })
 
                 <div class="govuk-inset-text">
-                    You will need to create your own user account even if someone else has previously reported your
-                    organisation's gender pay gap.
+                    You will need to create your own user account even if someone else has
+                    previously reported your employer’s gender pay gap.
                 </div>
 
                 @(Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Continue"
                 }))
+                @{
+                    // We deal with the feature flag in the controller
+                    var reportingUrl = Url.Action("ManageOrganisationsGet", "ManageOrganisations");
+                }
+                <a href="@(Global.StartUrl ?? reportingUrl)" class="govuk-button" role="button">Cancel</a>
             </div>
+            
         </form>
     </div>
     @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))

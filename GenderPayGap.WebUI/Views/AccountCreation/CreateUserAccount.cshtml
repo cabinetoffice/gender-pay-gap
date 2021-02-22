@@ -10,10 +10,16 @@
 
 @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
 {
-@section BeforeMain {
-    @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    @section BeforeMain {
+        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
+    }
 }
-}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <a class="govuk-link" href="@Url.Action("LoginGet", "Login")">Back</a>
+    </div>
+</div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -24,12 +30,12 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-inset-text">
-            You will need to create your own user account even if someone else has previously reported
-            your organisation's gender pay gap.
+            You will need to create your own user account even if someone else has
+            previously reported your employer’s gender pay gap.
         </div>
         <p class="govuk-body">
-            Once your email address is confirmed you will then be able to sign-in and add an organisation(s) to your
-            account and report your gender pay gap data.
+            After your email address is confirmed you will be able to sign in and add
+            employers to your account and report your gender pay gap information.
         </p>
         <p class="govuk-body">
             If you already have a user account, please
@@ -64,7 +70,6 @@
                         classes: "govuk-input--width-20",
                         autocomplete: "email"
                         ))
-
                     @(Html.GovUkTextInputFor(
                         m => m.ConfirmEmailAddress,
                         new LabelViewModel {Text = "Confirm your email address"},
@@ -85,14 +90,12 @@
                         classes: "govuk-input--width-20",
                         autocomplete: "given-name"
                         ))
-
                     @(Html.GovUkTextInputFor(
                         m => m.LastName,
                         new LabelViewModel {Text = "Last name"},
                         classes: "govuk-input--width-20",
                         autocomplete: "family-name"
                         ))
-
                     @(Html.GovUkTextInputFor(
                         m => m.JobTitle,
                         new LabelViewModel {Text = "Job title"},
@@ -132,7 +135,6 @@
                         classes: "govuk-input--width-20",
                         autocomplete: "new-password"
                         ))
-
                     @(Html.GovUkTextInputFor(
                         m => m.ConfirmPassword,
                         new LabelViewModel {Text = "Confirm your password"},
@@ -149,29 +151,27 @@
 
                 @(Html.GovUkCheckboxItemFor(m => m.SendUpdates,
                     new LabelViewModel {Text = "I would like to receive information about webinars, events, and new guidance"}))
-
                 @(Html.GovUkCheckboxItemFor(m => m.AllowContact,
                     new LabelViewModel {Text = "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"}))
-
-
                 @(Html.GovUkButton(new ButtonViewModel
                 {
-                    Text = "Continue",
+                    Text = "Save and Continue",
                     Classes = "govuk-!-margin-top-9"
                 }))
-
+                <a href="@Url.Action("LoginGet", "Login")" class="govuk-button govuk-!-margin-top-9" role="button">Cancel</a>
             </div>
+            
         </form>
     </div>
     @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
     {
         <div class="govuk-grid-column-one-third">
             @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
-                   new ReportingStepsViewModel
-                   {
-                       CurrentStep = 3,
-                       CurrentTask = 0
-                   }); }
+                    new ReportingStepsViewModel
+                    {
+                        CurrentStep = 3,
+                        CurrentTask = 0
+                    }); }
         </div>
     }
 </div>
