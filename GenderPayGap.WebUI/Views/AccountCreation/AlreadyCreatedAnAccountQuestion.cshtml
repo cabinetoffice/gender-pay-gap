@@ -85,7 +85,9 @@
                     Text = "Continue"
                 }))
                 @{ var reportingUrl = Url.Action("ManageOrganisationsGet", "ManageOrganisations"); }
-                <a href="@(Global.StartUrl ?? reportingUrl)" class="govuk-button" role="button">Cancel</a>
+                <p class="govuk-body">
+                    <a href="@(Global.StartUrl ?? reportingUrl)" class="govuk-link" role="button">Cancel</a>
+                </p>
             </div>
             
         </form>
