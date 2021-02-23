@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("add-organisation")]
+    [Route("add-employer")]
     public class AddOrganisationManualChooseSectorController : Controller
     {
         
@@ -21,7 +21,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         }
 
 
-        [HttpGet("manual/choose-sector")]
+        [HttpGet("manual/choose-employer-type")]
         public IActionResult ManualChooseSector(AddOrganisationManualViewModel viewModel)
         {
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);

@@ -3,7 +3,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchViewModel
 @{
-    ViewBag.Title = "Find organisation - Gender pay gap service";
+    ViewBag.Title = "Find employer - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -30,12 +30,12 @@
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        Can't find your organisation?
+                        Can't find your employer?
                     </span>
                 </summary>
                 <div class="govuk-details__text">
                     <p class="govuk-body">
-                        If your organisation is not listed, you can tell us the details of the organisation you want to add.
+                        If your employer is not listed, you can tell us the details of the employer you want to add.
                     </p>
                     <p class="govuk-body">
                         <a href="@Url.Action("ManualName", "AddOrganisationManualName",
@@ -45,7 +45,7 @@
                                          Query = Model.Query
                                      })"
                            class="govuk-link">
-                            Provide details of the organisation
+                            Provide employer details
                         </a>
                     </p>
                 </div>
@@ -62,28 +62,24 @@
             <div class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
                     <label class="govuk-label govuk-label--xl" for="query">
-                        Find your organisation
-                        <br/>
-                        <span class="govuk-!-font-size-36">
-                            (@(Model.Sector == AddOrganisationSector.Public ? "public sector" : "private sector"))
-                        </span>
+                        Find your employer
                     </label>
                 </h1>
 
                 @if (Model.Sector == AddOrganisationSector.Private)
                 {
                     <div id="query-hint" class="govuk-hint">
-                        You can search for an organisation by:
+                        You can search for private or voluntary sector employers by:
                         <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
-                            <li>registered name</li>
-                            <li>Companies House number</li>
+                            <li>the registered name</li>
+                            <li>the Companies House number</li>
                         </ul>
                     </div>
                 }
                 else
                 {
                     <div id="query-hint" class="govuk-hint">
-                        You can search for an organisation by their registered name
+                        Enter the public authority's registered name
                     </div>
                 }
 
@@ -107,8 +103,16 @@
             @if (Model.Sector == AddOrganisationSector.Private)
             {
                 <div class="govuk-inset-text govuk-!-margin-top-0">
-                    The registered name is sometimes different to the commonly-known brand name
-                    (e.g. for <i>Currys PC World</i>, you would search for the registered name of the company, <i>DSG Retail Limited</i>)
+                    The registered name of an employer is sometimes different to what
+                    they are commonly known as. For example, if you were searching for
+                    Currys PC World, you would need to search by their registered name
+                    of DSG Retail Limited.
+                </div>
+            }
+            else
+            {
+                <div class="govuk-inset-text govuk-!-margin-top-0">
+                    The registered name of an employer is sometimes different to what they are commonly known as.
                 </div>
             }
         }
@@ -128,23 +132,25 @@
                     <span class="govuk-!-font-weight-bold">
                         @(Model.Query)
                     </span>
-                    did not match any organisations
+                    did not match any employers
                 </p>
 
                 <div class="govuk-inset-text">
                     Suggestions:
 
                     <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-1" style="color: inherit;">
-                        <li>Check the spelling of the organisation name</li>
+                        <li>Check the spelling of the employer name</li>
                         @if (Model.Sector == AddOrganisationSector.Private)
                         {
                             <li>
                                 Check you are searching for the
                                 <span class="govuk-!-font-weight-bold">registered name</span>
-                                of the organisation.
+                                of the employer.
                                 <br />
-                                The registered name is sometimes different to the commonly-known brand name
-                                (e.g. to add Currys PC World, you would search for the registered name of the company, DSG Retail Limited)
+                                The registered name of an employer is sometimes different to what
+                                they are commonly known as. For example, if you were searching for
+                                Currys PC World, you would need to search by their registered name
+                                of DSG Retail Limited.
                             </li>
                         }
                     </ul>
@@ -164,7 +170,7 @@
                         @(Model.SearchResults.TooManyResults ? "more than" : "")
                         @(Model.SearchResults.SearchResults.Count)
                     </span>
-                    organisation@(Model.SearchResults.SearchResults.Count == 1 ? "" : "s")
+                    employer@(Model.SearchResults.SearchResults.Count == 1 ? "" : "s")
                 </p>
 
                 @if (Model.SearchResults.TooManyResults)
@@ -176,14 +182,14 @@
                             <li>Try refining your search</li>
                             @if (Model.Sector == AddOrganisationSector.Private)
                             {
-                                <li>Try searching by your organisation's Companies House number</li>
+                                <li>Try searching by your employer's Companies House number</li>
                             }
                         </ul>
                     </div>
                 }
 
                 <p class="govuk-body">
-                    Choose your organisation from the list below
+                    Choose your employer from the list below
                 </p>
 
                 @(cantFindYourOrganisationSection)
@@ -202,11 +208,11 @@
 
                                 <span class="govuk-visually-hidden">Address:</span>
                                 @(organisation.OrganisationAddress)
-                                
+
                                 <span class="govuk-!-font-size-16">
                                     @foreach (AddOrganisationSearchResultOrganisationIdentifier identifier in organisation.Identifiers)
                                     {
-                                        <br/>
+                                        <br />
                                         // ":" is a special character in C# Razor
                                         // To show an actual ":", we need to write "@::"
                                         @(identifier.IdentifierType)@:: @(identifier.Identifier)
@@ -216,8 +222,8 @@
                             <div class="add-organisation-add-button">
                                 @{
                                     object foundParams = organisation.EncryptedOrganisationId != null
-                                        ? (object) new {id = organisation.EncryptedOrganisationId, query = Model.Query, sector = Model.Sector}
-                                        : (object) new {companyNumber = organisation.CompanyNumber, query = Model.Query, sector = Model.Sector};
+                                        ? (object)new { id = organisation.EncryptedOrganisationId, query = Model.Query, sector = Model.Sector }
+                                        : (object)new { companyNumber = organisation.CompanyNumber, query = Model.Query, sector = Model.Sector };
                                 }
                                 <a href="@Url.Action("FoundGet", "AddOrganisationFound", foundParams)"
                                    class="govuk-link govuk-!-padding-2">
@@ -249,7 +255,7 @@
         <p class="govuk-body">
             <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                class="govuk-link">
-                Cancel and return to your organisations
+                Cancel and return to Manage Employers
             </a>
         </p>
 

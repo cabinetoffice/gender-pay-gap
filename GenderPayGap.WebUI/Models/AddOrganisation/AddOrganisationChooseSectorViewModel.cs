@@ -11,7 +11,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         //   but we only want to pass the Sector back to the previous page (we haven't specified a value for Validate)
         public bool? Validate { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Select which type of organisation you would like to add")]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Select which type of employer you would like to add")]
         public AddOrganisationSector? Sector { get; set; }
 
     }

@@ -3,7 +3,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
 @{
-    ViewBag.Title = "What type of organisation you would like to add? - Gender pay gap service";
+    ViewBag.Title = "What type of employer do you want to add? - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -56,7 +56,7 @@
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
-                        What type of organisation you would like to add?
+                        What type of employer do you want to add?
                     </h1>
                 </legend>
 
@@ -88,12 +88,12 @@
                                 Html = @<text>
                                            This includes:
                                            <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
-                                               <li>Most government departments</li>
-                                               <li>The armed forces</li>
-                                               <li>Local authorities</li>
+                                               <li>most government departments</li>
+                                               <li>the armed forces</li>
+                                               <li>local authorities</li>
                                                <li>NHS bodies</li>
-                                               <li>Universities</li>
-                                               <li>Most schools, including academies and multi-academy trusts (except private and independent schools)</li>
+                                               <li>universities</li>
+                                               <li>most schools, including academies and multi-academy trusts (except private and independent schools)</li>
                                            </ul>
                                         </text>
                             }
@@ -105,10 +105,10 @@
                                 Html = @<text>
                                            This includes:
                                            <ul class="govuk-list govuk-list--bullet" style="color: inherit;">
-                                               <li>Limited companies</li>
-                                               <li>Limited liability partnerships</li>
-                                               <li>Charities</li>
-                                               <li>Independent and private schools</li>
+                                               <li>limited companies</li>
+                                               <li>limited liability partnerships</li>
+                                               <li>charities</li>
+                                               <li>independent and private schools</li>
                                            </ul>
                                         </text>
                             }
@@ -118,12 +118,12 @@
             </fieldset>
 
             <div class="govuk-inset-text">
-                If you are not sure what type of organisation you are, please read the
-                <a href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview#public-sector-organisations---who-must-report-and-publish"
+                If you are not sure what type your employer is, please read the guidance on
+                <a href="https://www.gov.uk/guidance/who-needs-to-report-their-gender-pay-gap#public-regulations"
                    target="_blank"
                    rel="noopener"
                    class="govuk-link">
-                    guidance on gender pay gap regulations
+                    who needs to report their gender pay gap
                     <span class="govuk-visually-hidden">(opens in a new tab)</span>
                 </a>
             </div>
@@ -137,7 +137,7 @@
             <p class="govuk-body">
                 <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                    class="govuk-link">
-                    Cancel and return to your organisations
+                    Cancel and return to Manage Employers
                 </a>
             </p>
 

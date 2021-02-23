@@ -3,7 +3,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
 @{
-    ViewBag.Title = "Add a sector code to your organisation - Gender pay gap service";
+    ViewBag.Title = "Add a sector code to your employer - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -44,10 +44,10 @@
         @(Html.GovUkErrorSummary())
 
         <h1 class="govuk-heading-xl">
-            Add a sector code to your organisation
+            Add a sector code to your employer
         </h1>
         <p class="govuk-body">
-            Your organisation will be reported as "Private sector".
+            Your employer will be reported as "Private or voluntary sector".
         </p>
         <p class="govuk-body">
             You can also be reported under other business sectors by adding one or more Standard Industrial Classification (SIC) codes.
@@ -57,10 +57,10 @@
         </p>
         <ul class="govuk-list govuk-list--bullet">
             <li>
-                ensure your organisation is classified in the correct sector
+                ensure your employer is classified in the correct sector
             </li>
             <li>
-                allow for sector comparisons between other organisations
+                allow for sector comparisons between other employers
             </li>
         </ul>
         <p class="govuk-body">
@@ -184,7 +184,7 @@
             <p class="govuk-body">
                 <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                    class="govuk-link">
-                    Cancel and return to your organisations
+                    Cancel and return to Manage Employers
                 </a>
             </p>
 
