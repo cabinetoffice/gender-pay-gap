@@ -164,7 +164,9 @@
                     Classes = "govuk-!-margin-top-9"
                 }))
                 @{ var reportingUrl = Url.Action("ManageOrganisationsGet", "ManageOrganisations"); }
-                <a href="@(Model.IsPartOfGovUkReportingJourney ? Global.StartUrl ?? reportingUrl : reportingUrl)" class="govuk-button govuk-!-margin-top-9" role="button">Cancel</a>
+                <p class="govuk-body">
+                    <a href="@(Model.IsPartOfGovUkReportingJourney ? Global.StartUrl ?? reportingUrl : reportingUrl)" class="govuk-link govuk-!-margin-top-9" role="button">Cancel</a>
+                </p>
             </div>
             
         </form>
