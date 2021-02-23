@@ -38,17 +38,13 @@
 
         @(Html.GovUkErrorSummary())
 
-        <h2 class="govuk-heading-m">
-            Enter your new email address
-        </h2>
-        
         <form method="post" action="@(Url.Action("ChangeEmailPost", "ChangeEmail"))">
             @(Html.AntiForgeryToken())
 
             @(Html.GovUkTextInputFor(
                 m => m.NewEmailAddress,
                 type: "email",
-                labelOptions: new LabelViewModel { Text = "New email address" },
+                labelOptions: new LabelViewModel { Text = "Enter your new email address" },
                 classes: "govuk-input--width-20",
                 formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                 autocomplete: "email"

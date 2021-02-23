@@ -67,7 +67,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             if (OtherUserWithThisEmailAddressAlreadyExists(viewModel.NewEmailAddress))
             {
-                viewModel.AddErrorFor(m => m.NewEmailAddress, "This email address is already taken by another account");
+                viewModel.AddErrorFor(m => m.NewEmailAddress, "This email address is already taken by another user");
                 return View("ChangeEmail", viewModel);
             }
 
