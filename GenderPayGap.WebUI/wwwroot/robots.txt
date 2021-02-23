@@ -24,3 +24,4 @@ Disallow: /viewing/download-data?*
 Disallow: /viewing/download-compare-data?*
 Disallow: /viewing/help/*
 Disallow: /add-organisation/
+Disallow: /add-employer/

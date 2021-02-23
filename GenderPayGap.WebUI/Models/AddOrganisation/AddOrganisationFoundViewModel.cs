@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<string> AddressLines { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Select yes if this organisation's address (above) is a UK address")]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Select if this employer's registered address is a UK address")]
         public AddOrganisationIsUkAddress? IsUkAddress { get; set; }
 
         public bool? GetIsUkAddressAsBoolean()

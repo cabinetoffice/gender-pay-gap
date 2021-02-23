@@ -4,7 +4,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
 @{
-    ViewBag.Title = "Confirm your organisation's details - Gender pay gap service";
+    ViewBag.Title = "Confirm your employer's details - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -45,7 +45,7 @@
         @(Html.GovUkErrorSummary())
 
         <h1 class="govuk-heading-xl">
-            Confirm your organisation's details
+            Confirm your employer's details
         </h1>
 
         <table class="govuk-table">
@@ -56,7 +56,7 @@
                         @(Model.HasErrorFor(m => m.OrganisationName)
                             ? "add-organisation-manual-confirm-error"
                             : "")">
-                        Organisation name
+                        Employer name
                     </th>
                     <td class="govuk-table__cell">
                         @if (Model.HasErrorFor(m => m.OrganisationName))
@@ -83,7 +83,7 @@
                         <a href="@(Url.Action("ManualName", "AddOrganisationManualName", Model))"
                            class="govuk-link">
                             edit
-                            <span class="govuk-visually-hidden">organisation name</span>
+                            <span class="govuk-visually-hidden">employer name</span>
                         </a>
                     </td>
                 </tr>
@@ -168,7 +168,7 @@
                         @(Model.HasErrorFor(m => m.Sector)
                             ? "add-organisation-manual-confirm-error"
                             : "")">
-                        Sector
+                        Employer type
                     </th>
                     <td class="govuk-table__cell">
                         @if (Model.HasErrorFor(m => m.Sector))
@@ -180,11 +180,11 @@
                         }
                         @if (Model.Sector.HasValue)
                         {
-                            @(Model.Sector.Value)
+                            @(Model.Sector.Value == AddOrganisationSector.Private ? "Private or voluntary sector" : "Public authority")
                         }
                         else
                         {
-                            <span class="govuk-caption-m">Sector missing</span>
+                            <span class="govuk-caption-m">Employer type missing</span>
                         }
                     </td>
                     <td class="govuk-table__cell">
@@ -275,7 +275,7 @@
         <p class="govuk-body">
             <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                class="govuk-link">
-                Cancel and return to your organisations
+                Cancel and return to Manage Employers
             </a>
         </p>
 

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("add-organisation")]
+    [Route("add-employer")]
     public class AddOrganisationManualAddressController : Controller
     {
 

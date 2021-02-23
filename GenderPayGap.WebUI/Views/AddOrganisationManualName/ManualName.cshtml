@@ -2,7 +2,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
 @{
-    ViewBag.Title = "What is the name of the organisation? - Gender pay gap service";
+    ViewBag.Title = "Employer name - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -71,7 +71,7 @@
                 m => m.OrganisationName,
                 labelOptions: new LabelViewModel
                 {
-                    Text = "What is the name of the organisation?",
+                    Text = "Employer name",
                     IsPageHeading = true,
                     Classes = "govuk-label--xl"
                 },
@@ -87,7 +87,7 @@
             <p class="govuk-body">
                 <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
                    class="govuk-link">
-                    Cancel and return to your organisations
+                    Cancel and return to Manage Employers
                 </a>
             </p>
 
