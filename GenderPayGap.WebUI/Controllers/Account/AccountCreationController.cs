@@ -44,7 +44,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
                 case HaveYouAlreadyCreatedYourUserAccount.No:
                 case HaveYouAlreadyCreatedYourUserAccount.NotSure:
-                    return RedirectToAction("CreateUserAccountGet", new { isPartOfGovUkReportingJourney = true});
+                    return RedirectToAction("CreateUserAccountGet", new { isPartOfGovUkReportingJourney = true });
 
                 case HaveYouAlreadyCreatedYourUserAccount.Unspecified:
                     viewModel.AddErrorFor(
@@ -58,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     return View("AlreadyCreatedAnAccountQuestion", model);
             }
         }
-        
+
         [HttpGet("/create-user-account")]
         public IActionResult CreateUserAccountGet(bool isPartOfGovUkReportingJourney = false)
         {
@@ -67,7 +67,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
 
-            return View("CreateUserAccount", new CreateUserAccountViewModel{IsPartOfGovUkReportingJourney = isPartOfGovUkReportingJourney });
+            return View("CreateUserAccount", new CreateUserAccountViewModel { IsPartOfGovUkReportingJourney = isPartOfGovUkReportingJourney });
         }
 
         [HttpPost("/create-user-account")]
@@ -114,7 +114,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 {
                     viewModel.AddErrorFor(
                         m => m.EmailAddress,
-                        "This email address is awaiting confirmation. Please check you email inbox or enter a different email"
+                        "This email address is awaiting confirmation. Please check your email inbox or enter a different email"
                         + " address");
                 }
             }
@@ -130,20 +130,20 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             GenerateAndSendAccountVerificationEmail(newUser);
 
-            var confirmEmailAddressViewModel = new ConfirmEmailAddressViewModel {EmailAddress = viewModel.EmailAddress};
+            var confirmEmailAddressViewModel = new ConfirmEmailAddressViewModel { EmailAddress = viewModel.EmailAddress };
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
         }
-        
+
         [HttpGet("/verify-email")]
         public IActionResult VerifyEmail(string code)
         {
             User gpgUser = dataRepository.GetAll<User>().FirstOrDefault(u => u.EmailVerifyHash == code);
-            
+
             if (gpgUser == null)
             {
                 return View("UserNotFoundErrorPage");
             }
-            
+
             if (User.Identity.IsAuthenticated || gpgUser.EmailVerifiedDate != null)
             {
                 return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
@@ -152,7 +152,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             gpgUser.EmailVerifiedDate = VirtualDateTime.Now;
             gpgUser.SetStatus(UserStatuses.Active, gpgUser, "Email verified");
             dataRepository.SaveChanges();
-            
+
             return RedirectToAction("AccountCreationConfirmation");
         }
 
@@ -203,7 +203,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             string verificationUrl = Url.Action(
                 "VerifyEmail",
                 "AccountCreation",
-                new {code = verificationCode},
+                new { code = verificationCode },
                 "https");
 
             try
