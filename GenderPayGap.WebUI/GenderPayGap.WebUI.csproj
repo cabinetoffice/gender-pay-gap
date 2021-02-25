@@ -111,19 +111,19 @@
     <None Update="buildpack.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="manifest-preprod.yml">
+    <None Update="manifest-gpg-preprod.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="manifest-loadtest.yml">
+    <None Update="manifest-gpg-loadtest.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="manifest-test.yml">
+    <None Update="manifest-gpg-test.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="manifest-dev.yml">
+    <None Update="manifest-gpg-dev.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="manifest-prod.yml">
+    <None Update="manifest-gpg-prod.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
