@@ -1,0 +1,10 @@
+﻿---
+applications:
+ - name: gender-pay-gap-prod
+   instances: 3
+   memory: 8G
+   buildpacks:
+     - dotnet_core_buildpack
+   command: dotnet GenderPayGap.WebUI.dll
+   health-check-http-endpoint: /health-check
+   health-check-type: http
