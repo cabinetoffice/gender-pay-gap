@@ -72,5 +72,10 @@ namespace GenderPayGap.WebUI.ErrorHandling
             RedirectUrl = url.Action("PrivacyPolicyGet", "PrivacyPolicy");
         }
     }
-
+    
+    public class PinExpiredException : CustomErrorPageException
+    {
+        public override string ViewName => "../Errors/PinExpired";
+        public override int StatusCode => 400;
+    }
 }
