@@ -12,6 +12,7 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Services;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Organisation;
 using GenderPayGap.WebUI.Repositories;
@@ -239,7 +240,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/activate-organisation/{id}")]
         public IActionResult ActivateOrganisation(string id)
         {
-            //Ensure user has completed the registration process
+            // Ensure user has completed the registration process
             IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
             if (checkResult != null)
             {
@@ -257,6 +258,16 @@ namespace GenderPayGap.WebUI.Controllers
             if (userOrg == null)
             {
                 return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
+            }
+
+            // TODO - Delete this once PITP is enabled
+            if (userOrg.HasExpiredPin())
+            {
+                userOrg.Organisation.UserOrganisations.Remove(userOrg);
+                DataRepository.Delete(userOrg);
+                DataRepository.SaveChanges();
+
+                throw new PinExpiredException();
             }
 
             // Ensure this organisation needs activation on the users account

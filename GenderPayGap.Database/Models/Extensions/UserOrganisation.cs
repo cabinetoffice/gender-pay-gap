@@ -42,5 +42,10 @@ namespace GenderPayGap.Database
             return PINSentDate == null && PINConfirmedDate == null;
         }
 
+        public bool HasExpiredPin()
+        {
+            return IsAwaitingActivationPIN() && PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now;
+        }
+
     }
 }

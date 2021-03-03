@@ -365,11 +365,6 @@ namespace GenderPayGap.WebUI.Classes
                 return View("CustomError", new ErrorViewModel(1103));
             }
 
-            if (IsAction("ResetPin", "Register"))
-            {
-                return null;
-            }
-
             //Ensure admins always routed to their home page
             if (currentUser.IsAdministrator())
             {
@@ -482,8 +477,8 @@ namespace GenderPayGap.WebUI.Classes
                         {
                             return null;
                         }
-                        var encryptedOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
-                        return View("CustomError", new ErrorViewModel(1106, new {orgId = encryptedOrgId}));
+
+                        return View("CustomError", new ErrorViewModel(1106));
                     }
 
                     //If PIN resends are allowed and currently on PIN send page then allow it to continue
