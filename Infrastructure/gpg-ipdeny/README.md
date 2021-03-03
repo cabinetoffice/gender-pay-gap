@@ -4,7 +4,7 @@ gpg-ipdeny is an IP denylisting nginx application based upon the IP allowing ver
 
 It is designed to allow access to the Gender Pay Gap Service to all IP addresses except those specifically set, returning a 403 response to those banned IPs.
 
-## Deployment
+## Manual Deployment
 
 Since the list of banned IPs should not update particularly frequently, the application is deployed manually via the Deploy.sh script.
 
@@ -28,10 +28,18 @@ The deployment script takes the following parameters:
 
 For example to set up ip denylisting on the dev space, if you've created/placed the denylist file in the same directory as the deployment script, the command could be run (using the gitbash window set up with jq earlier) as 
 ```
-./deploy.sh -e gpg-dev -r gpg-dev-ipdeny -s gpg-dev-ipdeny-service -a gender-pay-gap-dev -f "GPG IP Denylist.txt"
+./deploy.sh -e gpg-dev -r gpg-dev-ipdeny -s gpg-dev-ipdeny-service -a gender-pay-gap-dev -f "GPG-IP-Denylist.txt" -m 1 -M 2
 ```
 
-The file listing banned IPs can be found in Zoho, and is called "GPG IP Denylist.txt". This should not be checked into source control, and that filename has been added to the .gitignore. Since the script accepts any file for the denylist, IP denylisting can be tested by providing a different file. Take care not to accidentally check in any differently name denylist file.
+The file listing banned IPs can be found in Zoho, and is called "GPG-IP-Denylist.txt". This should not be checked into source control, and that filename has been added to the .gitignore. Since the script accepts any file for the denylist, IP denylisting can be tested by providing a different file. Take care not to accidentally check in any differently name denylist file.
 
 When updating this list, each IP should be listed on a new line.
-If there are any errors when starting the app, these are most likely to have been caused by a syntax error in the list of IPs to deny. By checking the environment variables that have been set on the environment, it should be possible to tell where the issue is in the provided list of IPs
+If there are any errors when starting the app, these are most likely to have been caused by a syntax error in the list of IPs to deny. By checking the environment variables that have been set on the environment, it should be possible to tell where the issue is in the provided list of IPs.
+There is also a copy of the GPG-IP-Denylist.txt file stored in the Library - Secure Files of Azure. If the list of IPs is updated, this should be updated along with the version in Zoho.
+
+## Automated deployment
+The IP deny app is deployed via the same Azure release pipelines using a Bash step in the Deploy to PaaS (push) task group
+
+This relies on the copy of the GPG-IP-Denylist.txt file stored in the Library - Secure Files of Azure. If the list of IPs is updated, this should be updated along with the version in Zoho.
+
+The deployment is run via the same deploy script as the manual deployments, so changes to the deployment script may break the automated deployments. Due to the scripts reliance on jq, we need to have this available. There doesn't appear to be a simple way to do this in Azure, so the bash step that run the deployment handles adding a version and making sure the deployment script can access it.
