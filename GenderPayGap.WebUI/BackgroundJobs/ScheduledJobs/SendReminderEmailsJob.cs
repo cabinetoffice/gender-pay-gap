@@ -10,6 +10,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
 using Newtonsoft.Json;
 
@@ -141,8 +142,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         {
             emailSendingService.SendReminderEmail(
                 emailAddress: user.EmailAddress,
-                deadlineDate: sectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
-                daysUntilDeadline: sectorType.GetAccountingStartDate().AddYears(1).Subtract(VirtualDateTime.Now).Days,
+                deadlineDate: GetDeadlineDate(sectorType).AddDays(-1).ToString("d MMMM yyyy"),
+                daysUntilDeadline: GetDeadlineDate(sectorType).Subtract(VirtualDateTime.Now).Days,
                 organisationNames: GetOrganisationNameString(organisations),
                 organisationIsSingular: organisations.Count == 1,
                 organisationIsPlural: organisations.Count > 1,
@@ -211,7 +212,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private static DateTime GetDeadlineDate(SectorTypes sectorType)
         {
-            return sectorType.GetAccountingStartDate().AddYears(1);
+            return ReportingYearsHelper.GetDeadlineForAccountingDate(sectorType.GetAccountingStartDate()).AddDays(1);
         }
 
         private static List<int> GetReminderEmailDays()

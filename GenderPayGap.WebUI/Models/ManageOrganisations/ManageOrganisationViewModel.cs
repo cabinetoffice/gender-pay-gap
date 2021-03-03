@@ -108,7 +108,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             if (scopeForYear.IsInScopeVariant())
             {
                 DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(ReportingYear);
-                DateTime deadline = snapshotDate.AddYears(1).AddDays(-1);
+                DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
 
                 return "by " + deadline.ToString("d MMM yyyy");
             }

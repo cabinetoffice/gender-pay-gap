@@ -1,5 +1,6 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Shared
 @model EmployerDetailsViewModel
 @{
@@ -116,10 +117,11 @@
                                         {
                                             if (organisation.GetIsInscope(report.AccountingDate.Year))
                                             {
+                                                DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate);
                                                 <span>
                                                     This organisation
-                                                    @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
-                                                    required to report by @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy"))
+                                                    @(deadline.AddDays(1) > VirtualDateTime.Now ? "is" : "was")
+                                                    required to report by @(deadline.ToString("d MMMM yyyy"))
                                                 </span>
                                             }
                                             else

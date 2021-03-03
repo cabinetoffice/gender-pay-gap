@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Controllers
                         org.OrganisationName,
                         Address = org.GetLatestAddress()?.GetAddressString(),
                         Sector = org.SectorType,
-                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1),
+                        ReportingDeadline = ReportingYearsHelper.GetDeadlineForAccountingDate(org.SectorType.GetAccountingStartDate()),
                     })
                 .ToList();
 
@@ -238,7 +238,7 @@ namespace GenderPayGap.WebUI.Controllers
                 ScopeStatus = scopeForYear?.ScopeStatus.ToString() ?? "(no active scope)",
 
                 SnapshotDate = returnForYear.AccountingDate,
-                DeadlineDate = returnForYear.AccountingDate.AddYears(1).AddDays(-1),
+                DeadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(returnForYear.AccountingDate),
                 ModifiedDate = returnForYear.Modified,
                 IsLateSubmission = returnForYear.IsLateSubmission,
 
@@ -295,7 +295,7 @@ namespace GenderPayGap.WebUI.Controllers
                         org.OrganisationName,
                         org.SectorType,
                         Submitted = org.GetReturn(year) != null,
-                        ReportingDeadline = org.SectorType.GetAccountingStartDate().AddYears(1).AddDays(-1).ToString("d MMMM yyyy"),
+                        ReportingDeadline = ReportingYearsHelper.GetDeadlineForAccountingDate(org.SectorType.GetAccountingStartDate(year)).ToString("d MMMM yyyy"),
                         SubmittedDate = org.GetReturn(year)?.Created,
                         ModifiedDate = org.GetReturn(year)?.Modified,
                         org.GetReturn(year)?.LateReason

@@ -100,7 +100,7 @@ namespace GenderPayGap.Database
 
         public bool CalculateIsLateSubmission()
         {
-            return Modified > AccountingDate.AddYears(1)
+            return Modified > GetDueDate()
                    && OrganisationSize != OrganisationSizes.Employees0To249
                    && GetScopeStatus().IsAny(ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)
                    && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(AccountingDate.Year);
@@ -274,7 +274,7 @@ namespace GenderPayGap.Database
                 EmployerSize = OrganisationSize.GetAttribute<DisplayAttribute>().Name,
                 CurrentName = Organisation?.OrganisationName,
                 SubmittedAfterTheDeadline = IsLateSubmission,
-                DueDate = AccountingDate.AddYears(1),
+                DueDate = GetDueDate(),
                 DateSubmitted = Modified
             };
         }
@@ -282,6 +282,19 @@ namespace GenderPayGap.Database
         public string GetReportingPeriod()
         {
             return $"{AccountingDate.ToString("yyyy")}/{AccountingDate.AddYears(1).ToString("yy")}";
+        }
+
+        private DateTime GetDueDate()
+        {
+            const int deadlineExtensionFor2020InMonths = 6;
+
+            DateTime dueDate = AccountingDate.AddYears(1);
+            if (AccountingDate.Year == 2020)
+            {
+                dueDate = dueDate.AddMonths(deadlineExtensionFor2020InMonths);
+            }
+
+            return dueDate;
         }
 
         #endregion

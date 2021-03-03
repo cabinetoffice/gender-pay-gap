@@ -3,6 +3,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
+using GenderPayGap.WebUI.Helpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.Database.ReturnTests
@@ -23,8 +24,7 @@ namespace GenderPayGap.Database.ReturnTests
                 // Arrange 
                 int testYear = VirtualDateTime.Now.Year - yearOffset;
                 DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
-                DateTime nextSnapshotDate = snapshotDate.AddYears(1);
-                DateTime modifiedDate = nextSnapshotDate.AddDays(2);
+                DateTime modifiedDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(2);
 
                 Organisation testOrganisation = sector == SectorTypes.Private
                     ? OrganisationHelper.GetPrivateOrganisation()
