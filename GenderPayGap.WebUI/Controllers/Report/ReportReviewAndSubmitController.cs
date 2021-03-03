@@ -149,7 +149,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             
             DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
-            DateTime deadlineDate = snapshotDate.AddYears(1).AddDays(-1);
+            DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
 
             Return submittedReturn = organisation.GetReturn(reportingYear);
             bool isEditingSubmittedReturn = submittedReturn != null;

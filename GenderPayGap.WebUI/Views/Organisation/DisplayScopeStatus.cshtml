@@ -1,9 +1,10 @@
 ﻿@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Helpers
 @model dynamic
 @{
     ScopeStatuses scopeStatus = Model.scopeStatus;
     DateTime accountingDate = Model.accountingDate;
-    DateTime endDate = accountingDate.AddYears(1).AddDays(-1);
+    DateTime endDate = ReportingYearsHelper.GetDeadlineForAccountingDate(accountingDate);
 }
 @if (!scopeStatus.IsAny(ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope))
 {

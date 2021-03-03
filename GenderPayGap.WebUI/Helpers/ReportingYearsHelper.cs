@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -27,6 +28,19 @@ namespace GenderPayGap.WebUI.Helpers
 
             string formattedYear = $"{fourDigitStartYear}-{twoDigitEndYear}";
             return formattedYear;
+        }
+
+        public static DateTime GetDeadlineForAccountingDate(DateTime accountingDate)
+        {
+            const int deadlineExtensionFor2020InMonths = 6;
+            int reportingYear = accountingDate.Year;
+            DateTime deadline = accountingDate.AddYears(1).AddDays(-1);
+            if (reportingYear == 2020)
+            {
+                deadline = deadline.AddMonths(deadlineExtensionFor2020InMonths);
+            }
+
+            return deadline;
         }
 
     }

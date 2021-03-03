@@ -70,7 +70,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                         ReturnId = ret.ReturnId,
 
                         SnapshotDate = ret.AccountingDate,
-                        DeadlineDate = ret.AccountingDate.AddYears(1).AddDays(-1),
+                        DeadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(ret.AccountingDate),
                         ModifiedDate = ret.Modified,
 
                         Status = ret.Status,

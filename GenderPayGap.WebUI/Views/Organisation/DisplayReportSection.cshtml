@@ -2,6 +2,7 @@
 @using GenderPayGap.Core.Classes
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Classes.Formatters
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.Models.Organisation.DisplayReportModel
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
@@ -10,7 +11,7 @@
     OrganisationScope scopeForYear = Model.Organisation.GetScopeForYear(Model.ReportingYear);
     Return submittedReturn = Model.Organisation.GetReturn(Model.ReportingYear);
     DateTime snapshotDate = Model.Organisation.SectorType.GetAccountingStartDate(Model.ReportingYear);
-    DateTime deadline = snapshotDate.AddYears(1).AddDays(-1);
+    DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
 }
 
 <tr class="govuk-table__row">
