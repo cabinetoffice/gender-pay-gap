@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes.Formatters;
-using GenderPayGap.WebUI.Helpers;
 
 namespace GenderPayGap.WebUI.Models.ManageOrganisations
 {
