@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 
@@ -286,15 +287,7 @@ namespace GenderPayGap.Database
 
         private DateTime GetDueDate()
         {
-            const int deadlineExtensionFor2020InMonths = 6;
-
-            DateTime dueDate = AccountingDate.AddYears(1);
-            if (AccountingDate.Year == 2020)
-            {
-                dueDate = dueDate.AddMonths(deadlineExtensionFor2020InMonths);
-            }
-
-            return dueDate;
+            return ReportingYearsHelper.GetDeadlineForAccountingDate(AccountingDate).AddDays(1);
         }
 
         #endregion

@@ -8,12 +8,11 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
-using GenderPayGap.WebUI.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs

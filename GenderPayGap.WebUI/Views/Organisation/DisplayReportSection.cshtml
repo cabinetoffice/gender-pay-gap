@@ -1,8 +1,7 @@
-@using GenderPayGap.Core
 @using GenderPayGap.Core.Classes
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Classes.Formatters
-@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.Models.Organisation.DisplayReportModel
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
