@@ -2,7 +2,7 @@
 applications:
  - name: gender-pay-gap-preprod
    instances: 2
-   memory: 4G
+   memory: 8G
    buildpacks:
      - dotnet_core_buildpack
    command: dotnet GenderPayGap.WebUI.dll
