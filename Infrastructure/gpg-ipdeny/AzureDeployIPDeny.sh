@@ -27,13 +27,13 @@ while getopts ":a:d:e:f:r:s:m:M:w:" opt; do
 done
 
 # Get the latest version of jq into the working directory
-curl -L -o "${WORKING_DIRECTORY}/GPGIPDeny/jq.exe" https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
+curl -L -o "${WORKING_DIRECTORY}/GPGIPDeny/jq.exe" https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe;
 
 # go into the working directory so that the deployment picks up the nginx.conf
-cd /c/agent/_work/r9/a/GPGIPDeny
+cd "${WORKING_DIRECTORY}/GPGIPDeny"
 
 # replace the instances of jq in the deploy.sh script with the fully specified path of jq
-sed -i 's+jq+"/c/agent/_work/r9/a/GPGIPDeny/jq.exe"+g' /c/agent/_work/r9/a/GPGIPDeny/deploy.sh
+sed -i "s+jq+'${WORKING_DIRECTORY}/GPGIPDeny/jq.exe'+g" ${WORKING_DIRECTORY}/GPGIPDeny/deploy.sh
 
 # Run the deployment
-/c/agent/_work/r9/a/GPGIPDeny/deploy.sh -a ${PROTECTED_APP_NAME} -e ${PROTECTED_APP_SPACE_NAME} -f "${AGENT_TEMP_DIRECTORY}/GPG-IP-Denylist.txt" -r ${ROUTE_SERVICE_APP_NAME} -s ${ROUTE_SERVICE_NAME} -m ${MIN_COUNT_INSTANCES} -M ${MAX_COUNT_INSTANCES}
+${WORKING_DIRECTORY}/GPGIPDeny/deploy.sh -a ${PROTECTED_APP_NAME} -e ${PROTECTED_APP_SPACE_NAME} -f "${AGENT_TEMP_DIRECTORY}/GPG-IP-Denylist.txt" -r ${ROUTE_SERVICE_APP_NAME} -s ${ROUTE_SERVICE_NAME} -m ${MIN_COUNT_INSTANCES} -M ${MAX_COUNT_INSTANCES}
