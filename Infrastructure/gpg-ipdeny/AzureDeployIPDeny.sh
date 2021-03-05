@@ -26,6 +26,7 @@ while getopts ":a:d:e:f:r:s:m:M:w:" opt; do
   esac
 done
 
+# Convert windows path to a unix style path (i.e. C:\temp to /c/temp)
 WORKING_DIRECTORY=${WORKING_DIRECTORY/C://c}
 WORKING_DIRECTORY=${WORKING_DIRECTORY//\\//}
 AGENT_TEMP_DIRECTORY=${AGENT_TEMP_DIRECTORY/C://c}
