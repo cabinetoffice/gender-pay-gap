@@ -108,6 +108,9 @@
     <ProjectReference Include="..\GovUkDesignSystem\GovUkDesignSystem.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="AzureAttachAutoscalingPolicy.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="buildpack.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
