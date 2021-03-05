@@ -1,4 +1,7 @@
-﻿while getopts ":a:m:M:" opt; do
+﻿#!/usr/bin/env bash
+set -euo pipefail
+
+while getopts ":a:m:M:" opt; do
     case $opt in
 a) PROTECTED_APP_NAME="$OPTARG"
     ;;
