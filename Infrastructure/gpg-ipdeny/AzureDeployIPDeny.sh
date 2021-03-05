@@ -26,6 +26,11 @@ while getopts ":a:d:e:f:r:s:m:M:w:" opt; do
   esac
 done
 
+WORKING_DIRECTORY=${WORKING_DIRECTORY/C://c}
+WORKING_DIRECTORY=${WORKING_DIRECTORY//\\//}
+AGENT_TEMP_DIRECTORY=${AGENT_TEMP_DIRECTORY/C://c}
+AGENT_TEMP_DIRECTORY=${AGENT_TEMP_DIRECTORY//\\//}
+
 # Get the latest version of jq into the working directory
 curl -L -o "${WORKING_DIRECTORY}/GPGIPDeny/jq.exe" https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe;
 
