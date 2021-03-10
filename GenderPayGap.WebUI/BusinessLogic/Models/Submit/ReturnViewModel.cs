@@ -195,17 +195,19 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
                                             && FemaleUpperQuartilePayBand.HasValue
                                             && FemaleMoneyFromMeanHourlyRate >= 0
                                             && FemaleMoneyFromMedianHourlyRate >= 0;
+            bool hasValidBonusFigures = MaleMedianBonusPayPercent == 0 ||
+                 DiffMeanBonusPercent.HasValue && DiffMedianBonusPercent.HasValue;
 
             if (SectorType == SectorTypes.Public)
             {
-                return hasEnterCalculationsData;
+                return hasEnterCalculationsData && hasValidBonusFigures;
             }
 
             bool hasPersonResponsibleData = !string.IsNullOrWhiteSpace(JobTitle)
                                             && !string.IsNullOrWhiteSpace(FirstName)
                                             && !string.IsNullOrWhiteSpace(LastName);
 
-            return hasEnterCalculationsData && hasPersonResponsibleData;
+            return hasEnterCalculationsData && hasValidBonusFigures && hasPersonResponsibleData;
         }
 
         public bool HasUserData()

@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             ConfirmPayBandsAddUpToOneHundred(postedReturnViewModel);
 
-            ValidateBonusIntegrity(postedReturnViewModel);
+            ValidateBonusIntegrity(postedReturnViewModel, saveDraft: false);
 
             #region Keep draft file locked to this user
 
@@ -239,7 +239,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             }
         }
 
-        private void ValidateBonusIntegrity(ReturnViewModel postedReturnViewModel)
+        private void ValidateBonusIntegrity(ReturnViewModel postedReturnViewModel, bool saveDraft = true)
         {
             // ensure that bonus differences do not exceed 100% when females have a bonus
             if (postedReturnViewModel.FemaleMedianBonusPayPercent > 0)
@@ -266,6 +266,19 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 if (postedReturnViewModel.DiffMedianBonusPercent.HasValue)
                 {
                     AddModelError(2131, nameof(postedReturnViewModel.DiffMedianBonusPercent));
+                }
+            }
+            
+            if (postedReturnViewModel.MaleMedianBonusPayPercent > 0 && !saveDraft)
+            {
+                if (!postedReturnViewModel.DiffMeanBonusPercent.HasValue)
+                {
+                    AddModelError(2021, nameof(postedReturnViewModel.DiffMeanBonusPercent));
+                }
+
+                if (!postedReturnViewModel.DiffMedianBonusPercent.HasValue)
+                {
+                    AddModelError(2023, nameof(postedReturnViewModel.DiffMedianBonusPercent));
                 }
             }
         }
