@@ -285,6 +285,9 @@ namespace GenderPayGap.Database
             return $"{AccountingDate.ToString("yyyy")}/{AccountingDate.AddYears(1).ToString("yy")}";
         }
 
+        // The deadline date is the final day that a return can be submitted without being considered late
+        // The due date is a day later, the point at which a return is considered late
+        // i.e. if the deadline date is 2021/04/01, submissions on that day are not late, any after 2021/04/02 00:00:00 are
         private DateTime GetDueDate()
         {
             return ReportingYearsHelper.GetDeadlineForAccountingDate(AccountingDate).AddDays(1);

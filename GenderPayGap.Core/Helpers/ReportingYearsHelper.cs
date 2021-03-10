@@ -30,6 +30,7 @@ namespace GenderPayGap.Core.Helpers
             return formattedYear;
         }
 
+        //The deadline date is the final date on which returns are not considered late
         public static DateTime GetDeadlineForAccountingDate(DateTime accountingDate)
         {
             int reportingYear = accountingDate.Year;
