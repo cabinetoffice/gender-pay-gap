@@ -36,7 +36,8 @@ namespace GenderPayGap.Core.Helpers
             DateTime deadline = accountingDate.AddYears(1).AddDays(-1);
             if (reportingYear == 2020)
             {
-                deadline = deadline.AddMonths(DeadlineExtensionFor2020InMonths);
+                // Reporting deadline for 2020 was changed to 2021/10/05 for both public and private
+                deadline = new DateTime(2021,10,5);
             }
 
             return deadline;
