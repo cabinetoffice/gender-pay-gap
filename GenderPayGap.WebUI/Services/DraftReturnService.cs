@@ -2,6 +2,7 @@
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -179,8 +180,8 @@ namespace GenderPayGap.WebUI.Services
             int reportingYear = draftReturn.SnapshotYear;
 
             DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
-
-            bool isLate = VirtualDateTime.Now > snapshotDate.AddYears(1);
+            DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
+            bool isLate = VirtualDateTime.Now > deadlineDate;
             bool isMandatory = draftReturn.OrganisationSize != OrganisationSizes.Employees0To249;
             bool isInScope = organisation.GetScopeForYear(reportingYear).IsInScopeVariant();
             bool yearIsNotExcluded = !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
