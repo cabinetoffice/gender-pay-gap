@@ -180,7 +180,7 @@ namespace GenderPayGap.WebUI.Services
             int reportingYear = draftReturn.SnapshotYear;
 
             DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
-            DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
+            DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(1);
             bool isLate = VirtualDateTime.Now > deadlineDate;
             bool isMandatory = draftReturn.OrganisationSize != OrganisationSizes.Employees0To249;
             bool isInScope = organisation.GetScopeForYear(reportingYear).IsInScopeVariant();
