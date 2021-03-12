@@ -356,9 +356,13 @@ namespace GenderPayGap.WebUI.Services
         {
             DateTime currentYearSnapshotDate = organisation.SectorType.GetAccountingStartDate();
             SetInitialScopeForYear(organisation, currentYearSnapshotDate, ScopeStatuses.PresumedInScope);
-
-            DateTime previousYearSnapshotDate = currentYearSnapshotDate.AddYears(-1);
-            SetInitialScopeForYear(organisation, previousYearSnapshotDate, ScopeStatuses.PresumedOutOfScope);
+            
+            int firstYear = Global.FirstReportingYear;
+            for (int snapshotYear = firstYear; snapshotYear < currentYearSnapshotDate.Year; snapshotYear++)
+            {
+                var snapshotDate = new DateTime(snapshotYear, currentYearSnapshotDate.Month, currentYearSnapshotDate.Day);
+                SetInitialScopeForYear(organisation, snapshotDate, ScopeStatuses.PresumedOutOfScope);
+            }
         }
 
         private void SetInitialScopeForYear(Organisation organisation, DateTime snapshotDate, ScopeStatuses scopeStatus)
