@@ -20,16 +20,18 @@ namespace GenderPayGap.WebUI.Services
             Manual
         }
 
-
+        private readonly AuditLogger auditLogger;
         private readonly IDataRepository dataRepository;
         private readonly ICompaniesHouseAPI companiesHouseApi;
 
         public OrganisationService(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi)
+            ICompaniesHouseAPI companiesHouseApi,
+            AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
             this.companiesHouseApi = companiesHouseApi;
+            this.auditLogger = auditLogger;
         }
 
         public void UpdateIsUkAddressIfItIsNotAlreadySet(long organisationId, bool? isUkAddress)
@@ -49,39 +51,28 @@ namespace GenderPayGap.WebUI.Services
         {
             // If we already have an active organisation with this company number in our database,
             //   then no need to import it, just load it from the database
-            Organisation existingOrganisation = dataRepository.GetAll<Organisation>()
-                .Where(org => org.CompanyNumber == companyNumber)
-                .Where(org => org.Status == OrganisationStatuses.Active) // Only do this for Active organisations - if we have a Retired or Deleted organisation, then continue re-importing from CoHo
-                .FirstOrDefault();
+            Organisation existingOrganisation = dataRepository
+                .GetAll<Organisation>()
+                .FirstOrDefault(org => org.CompanyNumber == companyNumber);
 
-            if (existingOrganisation != null)
+            if (existingOrganisation != null && existingOrganisation.Status == OrganisationStatuses.Active)
             {
                 return existingOrganisation;
             }
 
-            CompaniesHouseCompany companiesHouseCompany = companiesHouseApi.GetCompany(companyNumber);
-
-            Organisation organisation = new Organisation
+            // Reactivate the existing organisation that has been found before returning it.
+            // Searchable organisations are either retired or active. This allows users to select
+            // previously retired or deleted organisations with the company number rather than having to
+            // contact the admin team to get the CompanyNumber removed from the organisation and adding a
+            // new one.
+            if (existingOrganisation != null &&
+                (existingOrganisation.Status == OrganisationStatuses.Retired ||
+                 existingOrganisation.Status == OrganisationStatuses.Deleted))
             {
-                SectorType = SectorTypes.Private, // All companies imported from CoHo are private-sector
-                CompanyNumber = companyNumber,
-                EmployerReference = GenerateUniqueEmployerReference()
-            };
+                return SetDeletedRetiredOrganisationToActive(existingOrganisation, requestingUser);
+            }
 
-            SetInitialStatus(organisation, requestingUser, SourceOfData.CompaniesHouse);
-
-            AddOrganisationName(organisation, companiesHouseCompany.CompanyName, SourceOfData.CompaniesHouse);
-
-            AddOrganisationAddress(organisation, companiesHouseCompany.RegisteredOfficeAddress);
-
-            AddOrganisationSicCodes(organisation, companiesHouseCompany.SicCodes, SourceOfData.CompaniesHouse);
-
-            SetInitialScopes(organisation);
-
-            dataRepository.Insert(organisation);
-            dataRepository.SaveChanges();
-
-            return organisation;
+            return SaveNewOrganisation(companyNumber, requestingUser);
         }
 
         public Organisation CreateOrganisationFromManualDataEntry(SectorTypes sector,
@@ -131,6 +122,49 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.Insert(organisation);
             dataRepository.SaveChanges();
 
+            return organisation;
+        }
+
+        private Organisation SetDeletedRetiredOrganisationToActive(Organisation existingOrganisation, User requestingUser)
+        {
+            var oldStatus = existingOrganisation.Status;
+
+            existingOrganisation.SetStatus(OrganisationStatuses.Active, requestingUser.UserId, "Automatic reactivation");
+
+            auditLogger.AuditChangeToOrganisation(
+                AuditedAction.UserReactivatedOrganisationAutomatically,
+                existingOrganisation,
+                new { PreviousStatus = oldStatus, NewStatus = OrganisationStatuses.Active, Reason = "Automatic reactivation" },
+                requestingUser);
+
+            dataRepository.SaveChanges();
+
+            return existingOrganisation;
+        }
+
+        private Organisation SaveNewOrganisation(string companyNumber, User requestingUser)
+        {
+            CompaniesHouseCompany companiesHouseCompany = companiesHouseApi.GetCompany(companyNumber);
+
+            Organisation organisation = new Organisation
+            {
+                SectorType = SectorTypes.Private, // All companies imported from CoHo are private-sector
+                CompanyNumber = companyNumber,
+                EmployerReference = GenerateUniqueEmployerReference()
+            };
+
+            SetInitialStatus(organisation, requestingUser, SourceOfData.CompaniesHouse);
+
+            AddOrganisationName(organisation, companiesHouseCompany.CompanyName, SourceOfData.CompaniesHouse);
+
+            AddOrganisationAddress(organisation, companiesHouseCompany.RegisteredOfficeAddress);
+
+            AddOrganisationSicCodes(organisation, companiesHouseCompany.SicCodes, SourceOfData.CompaniesHouse);
+
+            SetInitialScopes(organisation);
+
+            dataRepository.Insert(organisation);
+            dataRepository.SaveChanges();
             return organisation;
         }
 
@@ -220,7 +254,7 @@ namespace GenderPayGap.WebUI.Services
                 UpdateFromCompaniesHouseService.CreateOrganisationAddressFromCompaniesHouseAddress(companiesHouseAddress);
 
             organisationAddress.StatusDetails = "Initial import from CoHo";
-            
+
             organisationAddress.Organisation = organisation;
             organisation.OrganisationAddresses.Add(organisationAddress);
 
@@ -356,7 +390,7 @@ namespace GenderPayGap.WebUI.Services
         {
             DateTime currentYearSnapshotDate = organisation.SectorType.GetAccountingStartDate();
             SetInitialScopeForYear(organisation, currentYearSnapshotDate, ScopeStatuses.PresumedInScope);
-            
+
             int firstYear = Global.FirstReportingYear;
             for (int snapshotYear = firstYear; snapshotYear < currentYearSnapshotDate.Year; snapshotYear++)
             {
