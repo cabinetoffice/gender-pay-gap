@@ -262,6 +262,13 @@ namespace GenderPayGap.WebUI.Classes
         {
             Dictionary<string, object> htmlAttr = CustomAttributesFor(helper, expression, htmlAttributes);
 
+            // By default, decimals are truncated to 2 decimal places in edit mode
+            // On error, this can be confusing as the value displayed is not the user input
+            // As a workaround, we use the String template in order to display the exact same input
+            if (typeof(TProperty).FullName == typeof(decimal).FullName || typeof(TProperty).FullName == typeof(decimal?).FullName)
+            {
+                return helper.EditorFor(expression, "String", new {htmlAttributes = htmlAttr});
+            }
             return helper.EditorFor(expression, null, new {htmlAttributes = htmlAttr});
         }
 
