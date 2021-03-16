@@ -18,96 +18,96 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         [Display(Name = "Enter the difference in average (mean) hourly pay")]
         [Range(-499.99, 100, ErrorMessage = "Value must be between -499.99 and 100")]
         [RegularExpression(@"^[-]?\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Enter the difference in median hourly pay")]
         [Range(-499.99, 100, ErrorMessage = "Value must be between -499.99 and 100")]
         [RegularExpression(@"^[-]?\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianHourlyPercent { get; set; }
 
         [Display(Name = "Enter the average (mean) gender pay gap using bonus pay")]
         [Range((double) decimal.MinValue, 100, ErrorMessage = "Value must be lower than 100")]
         [RegularExpression(@"^[-]?\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
 
         [Display(Name = "Enter the median gender pay gap using bonus pay")]
         [Range((double) decimal.MinValue, 100, ErrorMessage = "Value must be lower than 100")]
         [RegularExpression(@"^[-]?\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianBonusPercent { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Percentage of men who were paid a bonus")]
         [Range(0, 100, ErrorMessage = "Value must be between 0 and 100")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleMedianBonusPayPercent { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Percentage of women who were paid a bonus")]
         [Range(0, 100, ErrorMessage = "Value must be between 0 and 100")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleMedianBonusPayPercent { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerPayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerPayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleMiddlePayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleMiddlePayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperPayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperPayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperQuartilePayBand { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
-        [DisplayFormat(DataFormatString = "{0:0.#}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperQuartilePayBand { get; set; }
 
         public long ReturnId { get; set; }
