@@ -225,29 +225,39 @@ namespace GenderPayGap.Core
         [Display(Name = "Execute Manual Change: Convert sector: set accounting date")]
         ExecuteManualChangeConvertSectorSetAccountingDate = 21,
         [Display(Name = "Execute Manual Change: Delete submissions")]
-        /* See note above */ ExecuteManualChangeDeleteSubmissions = 22,
+        /* See note above */
+        ExecuteManualChangeDeleteSubmissions = 22,
         [Display(Name = "Execute Manual Change: Add organisations latest name")]
-        /* See note above */ ExecuteManualChangeAddOrganisationsLatestName = 23,
+        /* See note above */
+        ExecuteManualChangeAddOrganisationsLatestName = 23,
         [Display(Name = "Execute Manual Change: Reset organisation to only original name")]
-        /* See note above */ ExecuteManualChangeResetOrganisationToOnlyOriginalName = 24,
+        /* See note above */
+        ExecuteManualChangeResetOrganisationToOnlyOriginalName = 24,
         [Display(Name = "Execute Manual Change: Set organisation company number")]
         ExecuteManualChangeSetOrganisationCompanyNumber = 25,
         [Display(Name = "Execute Manual Change: Set organisation SIC codes")]
         ExecuteManualChangeSetOrganisationSicCodes = 26,
         [Display(Name = "Execute Manual Change: Set organisation addresses")]
-        /* See note above */ ExecuteManualChangeSetOrganisationAddresses = 27,
+        /* See note above */
+        ExecuteManualChangeSetOrganisationAddresses = 27,
         [Display(Name = "Execute Manual Change: Set public sector type")]
-        /* See note above */ ExecuteManualChangeSetPublicSectorType = 28,
+        /* See note above */
+        ExecuteManualChangeSetPublicSectorType = 28,
         [Display(Name = "Execute Manual Change: Set organisation scope")]
-        /* See note above */ ExecuteManualChangeSetOrganisationScope = 29,
+        /* See note above */
+        ExecuteManualChangeSetOrganisationScope = 29,
         [Display(Name = "Execute Manual Change: Create security code")]
-        /* See note above */ ExecuteManualChangeCreateOrExtendSecurityCode = 30,
+        /* See note above */
+        ExecuteManualChangeCreateOrExtendSecurityCode = 30,
         [Display(Name = "Execute Manual Change: Extend security code")]
-        /* See note above */ ExecuteManualChangeExpireSecurityCode = 31,
+        /* See note above */
+        ExecuteManualChangeExpireSecurityCode = 31,
         [Display(Name = "Execute Manual Change: Create security codes for all active and pending orgs")]
-        /* See note above */ ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs = 32,
+        /* See note above */
+        ExecuteManualChangeCreateOrExtendSecurityCodesForAllActiveAndPendingOrgs = 32,
         [Display(Name = "Execute Manual Change: Expire security codes for all active and pending orgs")]
-        /* See note above */ ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs = 33,
+        /* See note above */
+        ExecuteManualChangeExpireSecurityCodesForAllActiveAndPendingOrgs = 33,
 
         [Display(Name = "Purge organisation")]
         PurgeOrganisation = 34,
@@ -264,11 +274,14 @@ namespace GenderPayGap.Core
         AdminUpdatedSicSections = 39,
         [Display(Name = "Admin updated SIC codes")]
         AdminUpdatedSicCodes = 40,
-        
+
         [Display(Name = "Admin changed organisation company number")]
         AdminChangeOrganisationCompanyNumber = 41,
         [Display(Name = "Admin changed organisation sector")]
-        AdminChangedOrganisationSector = 42
+        AdminChangedOrganisationSector = 42,
+
+        [Display(Name = "User automatically reactivated a deleted or retired organisation")]
+        UserReactivatedOrganisationAutomatically = 43
     }
 
     public enum HashingAlgorithm
