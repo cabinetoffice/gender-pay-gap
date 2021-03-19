@@ -1,13 +1,43 @@
-﻿@model GenderPayGap.WebUI.Models.Organisation.RemoveOrganisationModel
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem
+@model GenderPayGap.WebUI.Models.Organisation.RemoveOrganisationModel
 @{
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
-    ViewBag.Title = "Confirm removal of organisation - Gender pay gap service";
+    ViewBag.Title = "Confirm removal of employer - Gender pay gap service";
     var controller = ViewData["Controller"] as BaseController;
 
     long userId = Encryption.DecryptQuerystring(Model.EncUserId).ToInt64();
     bool userRemovingSelf = controller.CurrentUser.UserId == userId && controller.IsImpersonatingUser == false;
     string userNamePostFix = userRemovingSelf ? "You" : "";
 }
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = Model.EncOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Remove user"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
@@ -15,7 +45,7 @@
             Confirm removal of user
         </h1>
         
-        <p class="govuk-body">You are about to remove the following user from reporting Gender Pay Gap data for this organisation.</p>
+        <p class="govuk-body">You are about to remove the following user from reporting Gender Pay Gap information for this employer.</p>
         
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
@@ -32,7 +62,7 @@
           </div>
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Organisation name
+              Employer
             </dt>
             <dd class="govuk-summary-list__value">
               @Model.OrganisationName
@@ -40,7 +70,7 @@
           </div>
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Address
+              Registered address
             </dt>
             <dd class="govuk-summary-list__value">
               @foreach (string addressLine in Model.OrganisationAddress)

@@ -122,7 +122,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
             if (returnForYear == null)
             {
-                return "Your organisation has not reported";
+                return "Your employer has not reported";
             }
 
             if (returnForYear.IsVoluntarySubmission())

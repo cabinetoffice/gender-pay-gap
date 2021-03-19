@@ -2,7 +2,7 @@
 @using GovUkDesignSystem
 @using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.WebUI.Classes.Formatters
-@model GenderPayGap.WebUI.Models.ScopeNew.OutOfScopeViewModel
+@model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
 @{
     ViewBag.Title = "Complete - Gender pay gap service";
@@ -20,10 +20,10 @@
 @section BeforeMain {
     @{
         var crumbs = new List<CrumbViewModel>
-        {
+{
             new CrumbViewModel
             {
-                Text = "Your Organisations",
+                Text = "Manage Employers",
                 Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
             },
             new CrumbViewModel
@@ -33,7 +33,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Change Scope (Reporting Year " + reportingYearsString + ")"
+                Text = "Change reporting requirement"
             }
         };
     }
@@ -48,78 +48,23 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
-                Complete
+                You've confirmed your employer is not required to report for the @reportingYearsString reporting year
             </h1>
         </div>
 
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-                @if (Model.Organisation.CompanyNumber != null)
-                {
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="row">
-                            Company Number
-                        </th>
-                        <td class="govuk-table__cell">
-                            @Model.Organisation.CompanyNumber
-                        </td>
-                    </tr>
-                }
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">
-                        Employer Name
-                    </th>
-                    <td class="govuk-table__cell">
-                        @Model.Organisation.OrganisationName
-                    </td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">
-                        Reporting Year
-                    </th>
-                    <td class="govuk-table__cell">
-                        @reportingYearsString
-                    </td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">
-                        New Scope
-                    </th>
-                    <td class="govuk-table__cell">
-                        OutOfScope
-                    </td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header" scope="row">
-                        Reason
-                    </th>
-                    <td class="govuk-table__cell">
-                        @reason
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        
+        <h1 class="heading-large">
+            <span class="heading-secondary">@Model.Organisation.OrganisationName</span>
+        </h1>
         <p class="govuk-body">
-            You have told us that your organisation is not in scope of the gender pay gap reporting regulations for the
-            @reportingYearsString reporting year.
-            We will contact you if we need more information.
+            You have acknowledged that your employer is subject the gender pay
+            gap regulations for the @(reportingYearsString) reporting year.
         </p>
-        
+
         <p class="govuk-body">
-            Return to
-            <a href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})"
-               class="govuk-link">
-                @Model.Organisation.OrganisationName
-            </a>
+            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})" role="button">Return to @Model.Organisation.OrganisationName</a>
         </p>
-        
         <p class="govuk-body">
-            Return to
-            <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
-               class="govuk-link">
-                Your Organisations
-            </a>
+            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = ViewContext.RouteData.Values["Id"]})" role="button">Return to Manage Employers</a>
         </p>
     </div>
 </div>

@@ -1,0 +1,143 @@
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Classes.Formatters
+@using GenderPayGap.WebUI.Models.ScopeNew
+@model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
+
+@{
+    ViewBag.Title = "Confirm that your employer is" + (Model.IsToSetInScope ? "" :  " not") + " in scope - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string whyOutOfScopeFormatted = Model.WhyOutOfScope == WhyOutOfScope.Under250 ? "My employer had a headcount less than 250 employees on our snapshot date of " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+        : "Other: " + Model.WhyOutOfScopeDetails;
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+{
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change reporting requirement"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Confirm your employer is@(Model.IsToSetInScope ? "" :  " not") required to report for a reporting year</h1>
+
+        <table class="govuk-table">
+            <tbody class="govuk-table__body">
+                @if (Model.Organisation.CompanyNumber != null)
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Company Number
+                        </th>
+                        <td class="govuk-table__cell">
+                            @Model.Organisation.CompanyNumber
+                        </td>
+                    </tr>
+                }
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Employer Name
+                    </th>
+                    <td class="govuk-table__cell">
+                        @Model.Organisation.OrganisationName
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Reporting year
+                    </th>
+                    <td class="govuk-table__cell">
+                        @reportingYearsString
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header" scope="row">
+                        Reporting requirement
+                    </th>
+                    <td class="govuk-table__cell">
+                        @(Model.IsToSetInScope? "Required to report" : "Not required to report")
+                    </td>
+                </tr>
+                @if (!Model.IsToSetInScope)
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="row">
+                            Reason
+                        </th>
+                        <td class="govuk-table__cell">
+                            @whyOutOfScopeFormatted
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <p class="govuk-body">
+            By confirming this change of reporting requirement, you are acknowledging
+            that your employer is@(Model.IsToSetInScope ? "" :  " not") subject the gender pay gap regulations for this
+            reporting year.
+        </p>
+
+        <p class="govuk-inset-text">
+            Before confirming this change, please ensure you have read the
+            guidance on <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap.</a>
+        </p>
+
+        <p class="govuk-body">
+            From 2017, if you are an employer who has a headcount of 250 or more on
+            your ‘snapshot date’ you must comply with regulations on gender pay gap
+            reporting.
+        </p>
+
+        <p class="govuk-body">
+            The information your provide may be shared with the Equality and Human
+            Rights Commission for the purposes of enforcing compliance with the
+            gender pay gap regulations.
+        </p>
+
+            <form method="POST" action="@Url.Action(Model.IsToSetInScope? "ConfirmInScopeAnswers":"ConfirmOutOfScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
+                @(Html.AntiForgeryToken())
+                @(Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Confirm"
+                }
+                ))
+
+                <p class="govuk-body">
+                    <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})">
+                        Cancel and return to @Model.Organisation.OrganisationName
+                    </a>
+                </p>
+            </form>
+    </div>
+</div>
+
+

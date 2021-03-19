@@ -5,7 +5,7 @@
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
 @{
-    ViewBag.Title = "Manage your organisations - Gender pay gap service";
+    ViewBag.Title = "Manage your employers - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -15,7 +15,7 @@
         {
             new CrumbViewModel
             {
-                Text = "Manage Organisations",
+                Text = "Manage Employers",
                 Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
             },
             new CrumbViewModel
@@ -41,7 +41,7 @@
     <div class="govuk-grid-column-full">
 
         <h1 class="govuk-heading-xl">
-            Manage your organisation's reporting
+            Manage your employer's reporting
             <br>
             <span class="govuk-!-font-size-27">
                 for @(Model.Organisation.OrganisationName)
@@ -50,7 +50,7 @@
         
         <dl>
             <dt class="govuk-body govuk-!-font-weight-bold">
-                Address
+                Registered Address
             </dt>
             <dd class="govuk-caption-m govuk-!-font-size-16 govuk-!-margin-left-0">
                 @foreach (string addressLine in Model.Organisation.GetLatestAddress().GetAddressLines())
@@ -63,12 +63,12 @@
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
-                    Need to make changes to your organisation details?
+                    Need to make changes to your employer's details?
                 </span>
             </summary>
             <div class="govuk-details__text">
-                If you are a private or voluntary organisation and need to change your organisation name, sector information,
-                or address you should do this via Companies House. Changes that you make will automatically be reflected on this site. 
+                If you are a private or voluntary employer and need to change your employer name, sector information,
+                or address you should do this via Companies House. Changes you make will automatically be reflected on this service. 
                 If this information is not available on Companies House, please contact 
                 <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
                     @Global.GpgReportingEmail
@@ -89,20 +89,20 @@
         @if (usersRegisteredToReportForOrganisation.Count == 0)
         {
             <p class="govuk-body">
-                You are the only person registered to report for this organisation.
+                You are the only person registered to report for this employer.
             </p>
             <p class="govuk-body">
                 If you remove yourself:
             </p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>You will not be able to report for this organisation</li>
-                <li>Someone else must register this organisation to report - this can take up to a week</li>
+                <li>You will not be able to report for this employer</li>
+                <li>Someone else must register this employer to report - this can take up to a week</li>
                 <li>Your account will remain open</li>
             </ul>
         } else
         {
             <p class="govuk-body">
-                The following people are registered to report gender pay gap data for this organisation. 
+                The following people are registered to report gender pay gap information for this employer. 
             </p>
 
             await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", Model);

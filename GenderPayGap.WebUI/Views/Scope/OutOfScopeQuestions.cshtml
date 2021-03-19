@@ -4,10 +4,10 @@
 @using GenderPayGap.WebUI.Controllers.SendFeedback
 @using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.Core
-@model GenderPayGap.WebUI.Models.ScopeNew.OutOfScopeViewModel
+@model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
 @{
-    ViewBag.Title = "Tell us why your organisation is not in scope - Gender pay gap service";
+    ViewBag.Title = "Tell us why your employer doesn't need to report - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -22,7 +22,7 @@
         {
             new CrumbViewModel
             {
-                Text = "Your Organisations",
+                Text = "Manage Employers",
                 Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
             },
             new CrumbViewModel
@@ -32,7 +32,7 @@
             },
             new CrumbViewModel
             {
-                Text = "Change Scope (Reporting Year " + reportingYearsString + ")"
+                Text = "Change reporting requirement"
             }
         };
     }
@@ -47,7 +47,7 @@
     <div class="govuk-grid-column-two-thirds">
         <form method="POST" action="@Url.Action("SubmitOutOfScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
             @(Html.AntiForgeryToken())
-            <h1 class="govuk-heading-xl">Tell us why your organisation doesn't need to report</h1>
+            <h1 class="govuk-heading-xl">Tell us why your employer doesn't need to report</h1>
 
             @(Html.GovUkErrorSummary())
 
@@ -71,7 +71,7 @@
                 {
                     Legend = new LegendViewModel
                     {
-                        Text = "Why is your organisation not required to report their gender pay gap data for the " + reportingYearsString + " reporting year?",
+                        Text = "Why is your employer not required to report gender pay gap information for the " + reportingYearsString + " reporting year?",
                         Classes = "govuk-fieldset__legend--m"
                     },
                     Classes = "govuk-!-margin-top-6"
@@ -82,7 +82,7 @@
                         WhyOutOfScope.Under250,
                         new LabelViewModel
                         {
-                            Text = "My organisation had fewer than 250 employees on " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+                            Text = "My employer had a head count of less than 250 employees on our snapshot date of " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
                         }
                     }
                 },
@@ -99,23 +99,11 @@
                         Classes = "govuk-fieldset__legend--m"
                     },
                     Classes = "govuk-!-margin-top-6"
-                },
-                new HintViewModel
-                {
-                    Html = @<text>
-                               If you would like to read the guidance then you can find it 
-                               <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">
-                                   <span class="govuk-visually-hidden">
-                                       Find the guidance
-                                   </span>
-                                   here
-                                   <span class="govuk-visually-hidden">
-                                       (opens in a new window)
-                                   </span>
-                               </a>
-                            </text>
-                }
-                ))
+                }))
+            
+            <p class="govuk-body">
+                Read  more about <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap.</a>
+            </p>
             
             @(Html.GovUkButton(
                 new ButtonViewModel
