@@ -65,21 +65,21 @@ namespace GenderPayGap.WebUI.Controllers
             // Decrypt org id
             if (!id.DecryptToId(out long organisationId))
             {
-                return new HttpBadRequestResult($"Cannot decrypt organisation id {id}");
+                return new HttpBadRequestResult($"Cannot decrypt employer id {id}");
             }
 
             // Check the user has permission for this organisation
             UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
             if (userOrg == null)
             {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
+                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
             }
 
             // Ensure this user is registered fully for this organisation
             if (userOrg.PINConfirmedDate == null)
             {
                 return new HttpForbiddenResult(
-                    $"User {currentUser?.EmailAddress} has not completed registration for organisation {userOrg.Organisation.EmployerReference}");
+                    $"User {currentUser?.EmailAddress} has not completed registration for employer {userOrg.Organisation.EmployerReference}");
             }
 
             //Get the current snapshot date
@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             // build the view model
-            var model = new DeclareScopeModel {OrganisationName = userOrg.Organisation.OrganisationName, SnapshotDate = snapshotDate};
+            var model = new DeclareScopeModel { OrganisationId = userOrg.OrganisationId, OrganisationName = userOrg.Organisation.OrganisationName, SnapshotDate = snapshotDate };
 
             return View(model);
         }
@@ -118,7 +118,7 @@ namespace GenderPayGap.WebUI.Controllers
             // Decrypt org id
             if (!id.DecryptToId(out long organisationId))
             {
-                return new HttpBadRequestResult($"Cannot decrypt organisation id {id}");
+                return new HttpBadRequestResult($"Cannot decrypt employer id {id}");
             }
 
 
@@ -126,14 +126,14 @@ namespace GenderPayGap.WebUI.Controllers
             UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
             if (userOrg == null)
             {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
+                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
             }
 
             // Ensure this user is registered fully for this organisation
             if (userOrg.PINConfirmedDate == null)
             {
                 return new HttpForbiddenResult(
-                    $"User {currentUser?.EmailAddress} has not completed registeration for organisation {userOrg.Organisation.EmployerReference}");
+                    $"User {currentUser?.EmailAddress} has not completed registration for employer {userOrg.Organisation.EmployerReference}");
             }
 
             //Check the year parameters
@@ -165,7 +165,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Create last years declared scope
-            var newScope = new OrganisationScope {
+            var newScope = new OrganisationScope
+            {
                 OrganisationId = userOrg.OrganisationId,
                 Organisation = userOrg.Organisation,
                 ContactEmailAddress = currentUser.EmailAddress,
@@ -196,21 +197,21 @@ namespace GenderPayGap.WebUI.Controllers
             // Decrypt org id
             if (!id.DecryptToId(out long organisationId))
             {
-                return new HttpBadRequestResult($"Cannot decrypt organisation id {id}");
+                return new HttpBadRequestResult($"Cannot decrypt employe id {id}");
             }
 
             // Check the user has permission for this organisation
             UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
             if (userOrg == null)
             {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
+                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
             }
 
             // Ensure this organisation needs activation on the users account
             if (userOrg.HasBeenActivated())
             {
                 throw new Exception(
-                    $"Attempt to activate organisation {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}' for {currentUser.EmailAddress} by '{(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)}' which has already been activated");
+                    $"Attempt to activate employer {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}' for {currentUser.EmailAddress} by '{(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)}' which has already been activated");
             }
 
             // begin ActivateService journey
@@ -268,26 +269,26 @@ namespace GenderPayGap.WebUI.Controllers
 
             var reportingRequirement =
                 ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, reportingStartYear);
-            
+
             bool requiredToReport =
                 reportingRequirement == ScopeStatuses.InScope || reportingRequirement == ScopeStatuses.PresumedInScope;
-            
+
             // When previous reporting year then do late submission flow
             // unless the reporting year has been excluded from late flag enforcement (eg. 2019/20 due to COVID-19)
 
             var yearsToExclude = Global.ReportingStartYearsToExcludeFromLateFlagEnforcement;
             var reportingYearShouldBeExcluded = yearsToExclude.Contains(reportingStartYear);
-            
-            if (isPrevReportingYear && requiredToReport && !reportingYearShouldBeExcluded )
+
+            if (isPrevReportingYear && requiredToReport && !reportingYearShouldBeExcluded)
             {
                 // Change an existing late submission
                 if (change)
                 {
-                    return RedirectToAction("LateWarning", "Submit", new {request, returnUrl = "CheckData"});
+                    return RedirectToAction("LateWarning", "Submit", new { request, returnUrl = "CheckData" });
                 }
 
                 // Create new a late submission
-                return RedirectToAction("LateWarning", "Submit", new {request});
+                return RedirectToAction("LateWarning", "Submit", new { request });
             }
 
             /*
@@ -331,14 +332,14 @@ namespace GenderPayGap.WebUI.Controllers
             // Decrypt org id
             if (!orgId.DecryptToId(out long organisationId))
             {
-                return new HttpBadRequestResult($"Cannot decrypt organisation id {orgId}");
+                return new HttpBadRequestResult($"Cannot decrypt employer id {orgId}");
             }
 
             // Check the current user has remove permission for this organisation
             UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
             if (userOrg == null)
             {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
+                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
             }
 
             // Decrypt user id
@@ -356,7 +357,7 @@ namespace GenderPayGap.WebUI.Controllers
                         uo => uo.OrganisationId == organisationId && uo.UserId == userIdToRemove);
                 if (otherUserOrg == null)
                 {
-                    return new HttpForbiddenResult($"User {userIdToRemove} is not registered for organisation id {organisationId}");
+                    return new HttpForbiddenResult($"User {userIdToRemove} is not registered for employer id {organisationId}");
                 }
 
                 userToRemove = otherUserOrg.User;
@@ -368,12 +369,13 @@ namespace GenderPayGap.WebUI.Controllers
                 TimeSpan remainingTime = userOrg.PINSentDate.Value.AddMinutes(Global.LockoutMinutes) - VirtualDateTime.Now;
                 if (remainingTime > TimeSpan.Zero)
                 {
-                    return View("CustomError", new ErrorViewModel(3023, new {remainingTime = remainingTime.ToFriendly(maxParts: 2)}));
+                    return View("CustomError", new ErrorViewModel(3023, new { remainingTime = remainingTime.ToFriendly(maxParts: 2) }));
                 }
             }
 
             // build the view model
-            var model = new RemoveOrganisationModel {
+            var model = new RemoveOrganisationModel
+            {
                 EncOrganisationId = orgId,
                 EncUserId = userId,
                 OrganisationName = userOrg.Organisation.OrganisationName,
@@ -401,14 +403,14 @@ namespace GenderPayGap.WebUI.Controllers
             // Decrypt org id
             if (!model.EncOrganisationId.DecryptToId(out long organisationId))
             {
-                return new HttpBadRequestResult($"Cannot decrypt organisation id {model.EncOrganisationId}");
+                return new HttpBadRequestResult($"Cannot decrypt employer id {model.EncOrganisationId}");
             }
 
             // Check the current user has permission for this organisation
             UserOrganisation userOrgToUnregister = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
             if (userOrgToUnregister == null)
             {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for organisation id {organisationId}");
+                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
             }
 
             // Decrypt user id
@@ -426,7 +428,7 @@ namespace GenderPayGap.WebUI.Controllers
                     sourceOrg.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId && uo.UserId == userIdToRemove);
                 if (otherUserOrg == null)
                 {
-                    return new HttpForbiddenResult($"User {userIdToRemove} is not registered for organisation id {organisationId}");
+                    return new HttpForbiddenResult($"User {userIdToRemove} is not registered for employer id {organisationId}");
                 }
 
                 userToUnregister = otherUserOrg.User;

@@ -46,14 +46,14 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             OrganisationScope organisationScope = organisation.GetScopeForYear(reportingYear);
             
-            var viewModel = new OutOfScopeViewModel {Organisation = organisation, ReportingYear = organisationScope.SnapshotDate};
+            var viewModel = new ScopeViewModel {Organisation = organisation, ReportingYear = organisationScope.SnapshotDate, IsToSetInScope = !organisationScope.IsInScopeVariant() };
             
-            return View(organisationScope.IsInScopeVariant()  ? "OutOfScopeQuestions" : "ConfirmInScope", viewModel);
+            return View(organisationScope.IsInScopeVariant() ? "OutOfScopeQuestions" : "ConfirmScope", viewModel);
         }
         
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out")]
         [ValidateAntiForgeryToken]
-        public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
+        public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, ScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
             
@@ -75,17 +75,18 @@ namespace GenderPayGap.WebUI.Controllers
 
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = organisationScope.SnapshotDate;
+            viewModel.IsToSetInScope = false;
             
             if (viewModel.HasAnyErrors())
             {
                 return View("OutOfScopeQuestions", viewModel);
             }
-            return View("ConfirmOutOfScope", viewModel);
+            return View("ConfirmScope", viewModel);
         }
 
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/out/confirm")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
+        public IActionResult ConfirmOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, ScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
             
@@ -121,7 +122,7 @@ namespace GenderPayGap.WebUI.Controllers
         
         [HttpPost("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope/in/confirm")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmInScopeAnswers(string encryptedOrganisationId, int reportingYear, OutOfScopeViewModel viewModel)
+        public IActionResult ConfirmInScopeAnswers(string encryptedOrganisationId, int reportingYear, ScopeViewModel viewModel)
         {
             long organisationId = DecryptOrganisationId(encryptedOrganisationId);
             

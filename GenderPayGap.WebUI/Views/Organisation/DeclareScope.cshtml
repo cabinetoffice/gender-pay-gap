@@ -16,11 +16,11 @@
             @Html.HiddenFor(m => m.OrganisationName)
 
             <h1 class="heading-large">
-                <span class="heading-secondary">@Model.OrganisationName</span>
                 <span>We need more information</span>
+                <span class="heading-secondary">@Model.OrganisationName</span>
             </h1>
 
-            <p>Was your organisation required to report for snapshot date @Model.SnapshotDate.ToString("d MMMM yyyy")?</p>
+            <p>Was your employer required to report for the @(Model.SnapshotDate.Year)/@(Model.SnapshotDate.AddYears(1).Year.ToTwoDigitYear()) reporting year?</p>
             @Html.ValidationMessageFor(model => model.ScopeStatus, null, new {@class = "error-danger"})
             <div class="form-group @Html.SetErrorClass(model => model.ScopeStatus, "error")">
                 <fieldset>
@@ -34,8 +34,8 @@
                     </div>
                 </fieldset>
             </div>
-            <p>
-                If you don't know if your organisation is required to report please read the <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener"><span class="visually-hidden">Gender Pay Gap reporting </span>guidance<span class="visually-hidden">(opens in a new window)</span></a>.
+            <p class="govuk-inset-text">
+                If you are unsure if your employer is required to report please read the guidance on <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>.
             </p>
 
             <div class="form-group">

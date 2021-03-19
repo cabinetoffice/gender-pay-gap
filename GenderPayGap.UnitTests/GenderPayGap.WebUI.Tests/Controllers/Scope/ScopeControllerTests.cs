@@ -45,7 +45,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
 
             // Act
             string encryptedOrganisationId = Encryption.EncryptQuerystring(organisation.OrganisationId.ToString());
-            controller.ConfirmOutOfScopeAnswers(encryptedOrganisationId, 2018, new OutOfScopeViewModel());
+            controller.ConfirmOutOfScopeAnswers(encryptedOrganisationId, 2018, new ScopeViewModel());
             
             // Assert
             // Old scopes from the same year should be retired
