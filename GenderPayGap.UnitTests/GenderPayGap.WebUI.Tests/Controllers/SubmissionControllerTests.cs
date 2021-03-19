@@ -2084,10 +2084,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.That(result.ViewName == "EnterCalculations", "Incorrect view returned");
             Assert.NotNull(result.Model as ReturnViewModel, "Expected ReturnViewModel");
             Assert.AreEqual(
-                "Please enter a percentage lower than or equal to 100",
+                "Enter a percentage lower than or equal to 100",
                 result.ViewData.ModelState["DiffMedianBonusPercent"].Errors[0].ErrorMessage);
             Assert.AreEqual(
-                "Please enter a percentage lower than or equal to 100",
+                "Enter a percentage lower than or equal to 100",
                 result.ViewData.ModelState["DiffMeanBonusPercent"].Errors[0].ErrorMessage);
         }
 
@@ -2154,10 +2154,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.That(result.ViewName == "EnterCalculations", "Incorrect view returned");
             Assert.NotNull(result.Model as ReturnViewModel, "Expected ReturnViewModel");
             Assert.AreEqual(
-                "Do not enter a bonus difference if 0% of your male employees received a bonus",
+                "Do not enter a bonus difference if 0% of men received a bonus",
                 result.ViewData.ModelState["DiffMedianBonusPercent"].Errors[0].ErrorMessage);
             Assert.AreEqual(
-                "Do not enter a bonus difference if 0% of your male employees received a bonus",
+                "Do not enter a bonus difference if 0% of men received a bonus",
                 result.ViewData.ModelState["DiffMeanBonusPercent"].Errors[0].ErrorMessage);
         }
 

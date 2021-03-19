@@ -1,9 +1,9 @@
 ﻿@model GenderPayGap.WebUI.Models.Shared.Details
-<details>
-    <summary aria-controls="@Model.Id" aria-expanded="@Model.Expanded" data-track-category="@Model.Id" data-track-label="@Model.LinkText" rel="track">
-        <span class="summary">@Model.LinkText</span>
+<details class="govuk-details" data-module="govuk-details">
+    <summary  class="govuk-details__summary" aria-controls="@Model.Id" aria-expanded="@Model.Expanded" data-track-category="@Model.Id" data-track-label="@Model.LinkText" rel="track">
+        <span class="govuk-details__summary-text">@Model.LinkText</span>
     </summary>
-    <div id="@Model.Id" class="@(Model.IsPanel ? "panel panel-border-narrow" : "")" aria-hidden="@(Model.Expanded == false)">
+    <div id="@Model.Id" class="@(Model.IsPanel ? "govuk-details__text" : "")" aria-hidden="@(Model.Expanded == false)">
         @if (string.IsNullOrWhiteSpace(Model.SummaryText) == false)
         {
             @Model.SummaryText

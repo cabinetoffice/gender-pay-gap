@@ -2,19 +2,21 @@
 
 @if (Model.WomenReceivedBonuses || Model.MenReceivedBonuses)
 {
-    <div class="data data-metric">
-        @if (Model.MenReceivedBonuses)
-        {
-            <span>When comparing mean bonus pay, women&rsquo;s @(Model.Statistic) bonus pay is </span>
-            <strong id="@(Model.Id)" class="data-item">
-                <span>@(string.Format("{0:0.#}", Model.Percent))% </span>
-                <span>@(Model.Compare)</span>
-            </strong>
-            <span>than men&rsquo;s.</span>
-        }
-        else
-        {
-            <span>Only women received bonuses.</span>
-        }
+    <div class="grid-row">
+        <div class="data data-metric column-two-thirds">
+            @if (Model.MenReceivedBonuses)
+            {
+                <span>When comparing mean (average) bonus pay, women&rsquo;s @(Model.Statistic) mean bonus pay is </span>
+                <span id="@(Model.Id)" class="data-item">
+                    <span>@(string.Format("{0:0.#}", Model.Percent))% </span>
+                    <span>@(Model.Compare)</span>
+                </span>
+                <span>than men&rsquo;s.</span>
+            }
+            else
+            {
+                <span>Only women received bonuses.</span>
+            }
+        </div>
     </div>
 }

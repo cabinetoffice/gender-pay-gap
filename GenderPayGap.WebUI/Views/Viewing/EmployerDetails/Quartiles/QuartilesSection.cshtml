@@ -2,12 +2,10 @@
 @using GenderPayGap.WebUI.Models.Viewing
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 @{
-
     var UpperQuartilePayBandModel = new PayQuartileBarChartModel
     {
         Id = "UpperQuartilePayBand",
-        Title = "Top quarter",
-        SecondaryTitle = "(highest paid)",
+        Title = "Upper hourly pay quarter (highest paid)",
         Male = Model.MaleUpperQuartilePayBand.Value,
         Female = Model.FemaleUpperQuartilePayBand.Value
     };
@@ -15,7 +13,7 @@
     var UpperPayBandModel = new PayQuartileBarChartModel
     {
         Id = "UpperPayBand",
-        Title = "Upper middle quarter",
+        Title = "Upper middle hourly pay quarter",
         Male = Model.MaleUpperPayBand.Value,
         Female = Model.FemaleUpperPayBand.Value
     };
@@ -23,7 +21,7 @@
     var MiddlePayBandModel = new PayQuartileBarChartModel
     {
         Id = "MiddlePayBand",
-        Title = "Lower middle quarter",
+        Title = "Lower middle hourly pay quarter",
         Male = Model.MaleMiddlePayBand.Value,
         Female = Model.FemaleMiddlePayBand.Value
     };
@@ -31,8 +29,7 @@
     var LowerPayBandModel = new PayQuartileBarChartModel
     {
         Id = "LowerPayBand",
-        Title = "Lower quarter",
-        SecondaryTitle = "(lowest paid)",
+        Title = "Lower hourly pay quarter (lowest paid)",
         Male = Model.MaleLowerPayBand.Value,
         Female = Model.FemaleLowerPayBand.Value
     };
@@ -43,11 +40,11 @@
 
         <section id="PayQuartilesInfo">
 
-            <h2 class="heading-medium">Proportion of women in each pay quarter</h2>
+            <h2 class="heading-medium">The percentage of women in each pay quarter</h2>
 
             <div class="grid-row">
                 <div class="column-two-thirds">
-                    In this organisation, women occupy <strong>@(UpperQuartilePayBandModel.FemaleFormatted)%</strong> of the highest paid jobs and <strong>@(LowerPayBandModel.FemaleFormatted)%</strong> of the lowest paid jobs.
+                    In this organisation, women occupy @(UpperQuartilePayBandModel.FemaleFormatted)% of the highest paid jobs and @(LowerPayBandModel.FemaleFormatted)% of the lowest paid jobs.
                 </div>
             </div>
 
@@ -80,6 +77,6 @@
             </div>
 
         </section>
-        <hr/>
+        <hr class="column-two-thirds"/>
     </div>
 </div>

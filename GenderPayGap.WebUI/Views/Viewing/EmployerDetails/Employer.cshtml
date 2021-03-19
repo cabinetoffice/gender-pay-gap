@@ -33,7 +33,7 @@
             <div class="column-full">
                 <h1 class="heading-large">
                     <span id="OrganisationName">
-                        @organisation.OrganisationName
+                        Gender pay gap reports for <br/> @organisation.OrganisationName
                     </span>
                 </h1>
                 @if (organisation.OrganisationNames.Count > 1)
@@ -50,53 +50,60 @@
             <div class="govuk-grid-column-full">
                 <dl class="metadata employer-report-metadata">
                     <div>
-                        <dt class="metadata-text-label">Address</dt>
+                        <dt class="metadata-text-label">Registered address:</dt>
                         <dd class="metadata-text-value">@(organisation.GetLatestAddress()?.GetAddressString())</dd>
                     </div>
                     <div>
-                        <dt class="metadata-text-label">Nature of business (SIC)</dt>
+                        <dt class="metadata-text-label">Nature of business (SIC):</dt>
                         <dd class="metadata-text-value">@organisation.GetSicSectorsString()</dd>
                     </div>
                 </dl>
             </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row add-remove-employer-section">
             <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
         </div>
 
         <div class="grid-row">
-            <div class="column-full">
-                <h2 class="heading-small">Gender pay gap reports</h2>
-                <div class="body" style="font-size: 16px;">
+            <div class="column-two-thirds">
+                <hr style="margin-top: 0"/>
+                <div class="body" style="margin-top: 3em">
                     <p>
-                        This page shows all reports submitted or expected from the employer. Employers with less than 250 staff may report voluntarily and these reports are marked as &quot;Voluntary&quot;. Reports submitted after the deadline are marked as &quot;Late&quot;.
+                        Below are all reports submitted, or expected from this employer. <br/>
+                        Employers with a headcount of less than 250 can voluntarily report their gender pay gap information.
                     </p>
                 </div>
 
                 @await Html.PartialModelAsync(new Details
                 {
                     Id = "WhoNeedsToReport",
-                    LinkText = "Who needs to report and what are the deadlines?",
+                    LinkText = "Who is required to report, and the deadlines",
                     SummaryPartial = "EmployerDetails/WhoNeedsToReport"
                 })
 
             </div>
+            @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
         </div>
 
         @foreach (Return report in organisation.GetRecentReports(Global.ShowReportYearCount))
         {
             <div class="grid-row">
-                <div class="column-full">
+                <div class="column-two-thirds">
                     <table>
                         <tbody>
                             <tr>
                                 <td style="border-bottom: none; width: 300px;">
-                                    <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod()</h3>
-                                </td>
-                                <td style="border-bottom: none;">
-                                    <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel { IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission() }"/>
+                                    <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
                                 </td>
                             </tr>
+                            @if (report.IsLateSubmission || report.IsVoluntarySubmission())
+                            {
+                                <tr>
+                                    <td style="border-bottom: none;">
+                                        <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel {IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission()}"/>
+                                    </td>
+                                </tr>
+                            }
                             @if (report.ReturnId == 0)
                             {
                                 <tr>
@@ -110,7 +117,7 @@
                                                 @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
                                                 @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
                                                 Coronavirus (COVID-19), enforcement of reporting deadlines does not
-                                                apply to organisations in the 2019/20 reporting year.
+                                                apply to employers in the 2019/20 reporting year.
                                             </span>
                                         }
                                         else
@@ -119,7 +126,7 @@
                                             {
                                                 DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate);
                                                 <span>
-                                                    This organisation
+                                                    This employer
                                                     @(deadline.AddDays(1) > VirtualDateTime.Now ? "is" : "was")
                                                     required to report by @(deadline.ToString("d MMMM yyyy"))
                                                 </span>
@@ -138,13 +145,13 @@
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
                                         <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
-                                            View Report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
+                                            View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
                                         </a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" style="border-bottom: none;">
-                                        This data has been taken from @(report.AccountingDate.ToString("d MMMM yyyy"))
+                                        The data in this report used a snapshot date of @(report.AccountingDate.ToString("dd MMMM yyyy"))
                                     </td>
                                 </tr>
                             }
@@ -170,9 +177,8 @@
                 </div>
             </div>
         }
-        <hr style="background: black; border: 1px solid black;"/>
+        <hr class="column-two-thirds"/>
         <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
-        <hr/>
     </div>
 </div>
 

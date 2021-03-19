@@ -6,22 +6,17 @@
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => Model.AccountingDate)
 
-            var controller = ViewData["Controller"] as BaseController;
-
             @await Html.CustomValidationSummaryAsync()
             <div class="govuk-box-highlight">
                 <h1 class="bold-large">You've saved a draft of your gender pay gap data for @(Model.AccountingDate.Year)/@(Model.AccountingDate.AddYears(1).Year.ToTwoDigitYear())</h1>
             </div>
-
-            <p>
-                <a class="button" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Continue</a>
-            </p>
+            <a class="govuk-button" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Continue</a>
         }
 
         <div>
             <ul class="font-xsmall" style="line-height: 1.75">
                 <li>
-                    <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/public/assets/pdf/understand-your-gender-pay-gap.pdf">Eight ways to understand your organisation’s gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
+                    <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/overview">Eight ways to understand your organisation&rsquo;s gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
                 </li>
                 <li>
                     <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">Actions to close the gap<span class="visually-hidden">(opens in a new window)</span></a>

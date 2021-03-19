@@ -86,10 +86,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.Null(result.ViewName, "Incorrect view returned");
             Assert.NotNull(result.Model as ReturnViewModel, "Expected ReturnViewModel");
             Assert.AreEqual(
-                "Do not enter a bonus difference if 0% of your male employees received a bonus",
+                "Do not enter a bonus difference if 0% of men received a bonus",
                 result.ViewData.ModelState["DiffMedianBonusPercent"].Errors[0].ErrorMessage);
             Assert.AreEqual(
-                "Do not enter a bonus difference if 0% of your male employees received a bonus",
+                "Do not enter a bonus difference if 0% of men received a bonus",
                 result.ViewData.ModelState["DiffMeanBonusPercent"].Errors[0].ErrorMessage);
         }
 

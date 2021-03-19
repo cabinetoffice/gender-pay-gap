@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 @{
@@ -16,25 +17,25 @@
 
 <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
 <div class="grid-row">
-    <div style="margin-top: 15px;"> 
+    <div style="margin-top: 15px;">
         <partial name="/Views/Components/EnforcementChangesMessage.cshtml"/>
-    </div> 
+    </div>
 </div>
 <div class="grid-row">
     <div class="column-full">
         <a class="link-back" href="@(Url.Action("Employer", new {employerIdentifier}))">View all reports for this employer</a>
         <h1 class="heading-large">
-            <div id="OrganisationName" class="heading-secondary">
+            <div id="OrganisationName">
                 @Model.LatestOrganisationName
             </div>
             <div>
-                Gender pay gap report
+                @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year, "/") Gender pay gap report
             </div>
         </h1>
 
         <div class="govuk-grid-row">
             <span>
-                <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel { IsLateSubmission = Model.IsLateSubmission, IsVoluntarySubmission = Model.IsVoluntarySubmission }"/>
+                <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel {IsLateSubmission = Model.IsLateSubmission, IsVoluntarySubmission = Model.IsVoluntarySubmission}"/>
             </span>
             <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
         </div>
@@ -46,11 +47,37 @@
     <div class="column-full">
         <dl class="metadata employer-report-metadata">
             <div>
-                <dt class="metadata-text-label">Snapshot date</dt>
+                <dt class="metadata-text-label">Registered address:</dt>
+                <dd class="metadata-text-value">
+                    @if (Model.Address != null)
+                    {
+                        @Model.Address
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </dd>
+            </div>
+            <div>
+                <dt class="metadata-text-label">Nature of business (SIC):</dt>
+                <dd class="metadata-text-value">
+                    @if (Model.Sector != null)
+                    {
+                        @Model.Sector
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </dd>
+            </div>
+            <div>
+                <dt class="metadata-text-label">Snapshot date:</dt>
                 <dd class="metadata-text-value">@Model.AccountingDate.ToString("d MMMM yyyy")</dd>
             </div>
             <div>
-                <dt class="metadata-text-label">Employer size</dt>
+                <dt class="metadata-text-label">Employee headcount:</dt>
                 <dd class="metadata-text-value">
                     @string.Format("{0}{1}", Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name, Model.OrganisationSize != OrganisationSizes.NotProvided ? " employees" : "")
                 </dd>
@@ -58,38 +85,32 @@
             @if (Model.SectorType == SectorTypes.Private)
             {
                 <div>
-                    <dt class="metadata-text-label">Person responsible</dt>
+                    <dt class="metadata-text-label">Person responsible:</dt>
                     <dd class="metadata-text-value">
-                        <span>@Model.FirstName @Model.LastName</span><br/><span>(@Model.JobTitle)</span>
+                        <span>@Model.FirstName @Model.LastName (@Model.JobTitle)</span>
                     </dd>
                 </div>
             }
-            <div>
-                <dt class="visually-hidden">More options</dt>
-                <dd>
-                    <div style="margin: 10px auto;">
-                        <a rel="track" data-track-category="Related Link Clicked" target="_blank" href="/public/assets/pdf/understand-your-gender-pay-gap.pdf">Potential causes of the gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
-                    </div>
-                    <div style="margin: 10px auto;">
-                        <a rel="track" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">How can employers close the gap</a>
-                    </div>
+
+        </dl>
+        <div>
+            <dt class="visually-hidden">More options</dt>
+            <dd>
+                <div style="margin-top:30px">
                     @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
                     {
-                        <div style="margin: 10px auto;">
-                            <a href="@Model.CompanyLinkToGPGInfo" rel="external noopener" target="_blank">
-                                What this employer says about their gender pay gap <span class="visually-hidden">(opens in a new window)</span>
-                            </a>
-                        </div>
+                        <a href="@Model.CompanyLinkToGPGInfo" rel="external noopener" target="_blank">
+                            What this employer says about their gender pay gap <span class="visually-hidden">(opens in a new window)</span>
+                        </a>
                     }
                     else
                     {
                         <span>This employer has not provided extra information on their gender pay gap</span>
                     }
-                </dd>
-            </div>
-        </dl>
-
-        <hr>
+                </div>
+            </dd>
+        </div>
+        <hr class="column-two-thirds"/>
     </div>
 </div>
 
@@ -99,7 +120,7 @@
 
 <partial name="EmployerDetails/BonusPay/BonusPaySection" model="Model"/>
 
-<hr style="border: 1px solid black; background: black;"/>
+<hr class="column-two-thirds"/>
 <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
 
 @section Scripts {
