@@ -43,7 +43,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (organisation.SectorType == SectorTypes.Public)
             {
                 string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
-                StatusMessageHelper.SetStatusMessage(Response, "Public sector organisations are not required to provide a person responsible", nextPageUrl);
+                StatusMessageHelper.SetStatusMessage(Response, "Public authority employers are not required to provide a person responsible", nextPageUrl);
                 return LocalRedirect(nextPageUrl);
             }
 
@@ -113,7 +113,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (organisation.SectorType == SectorTypes.Public)
             {
                 string nextPagePublicSectorUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
-                StatusMessageHelper.SetStatusMessage(Response, "Public sector organisations are not required to provide a person responsible", nextPagePublicSectorUrl);
+                StatusMessageHelper.SetStatusMessage(Response, "Public authority employers are not required to provide a person responsible", nextPagePublicSectorUrl);
                 return LocalRedirect(nextPagePublicSectorUrl);
             }
 

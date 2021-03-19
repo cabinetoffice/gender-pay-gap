@@ -2,70 +2,71 @@
 @using GenderPayGap.Core
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(model => model.ReturnId)
-            @Html.HiddenFor(model => model.OrganisationId)
-            @Html.HiddenFor(model => model.EncryptedOrganisationId)
-            @Html.HiddenFor(model => model.ShouldProvideLateReason)
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ReturnId)
+    @Html.HiddenFor(model => model.OrganisationId)
+    @Html.HiddenFor(model => model.EncryptedOrganisationId)
+    @Html.HiddenFor(model => model.ShouldProvideLateReason)
 
-            @Html.HiddenFor(model => model.ReportInfo.ReportModifiedDate)
-            @Html.HiddenFor(model => model.ReportInfo.ReportingStartDate)
+    @Html.HiddenFor(model => model.ReportInfo.ReportModifiedDate)
+    @Html.HiddenFor(model => model.ReportInfo.ReportingStartDate)
 
-            @Html.HiddenFor(model => model.FirstName)
-            @Html.HiddenFor(model => model.JobTitle)
-            @Html.HiddenFor(model => model.LastName)
-            @Html.HiddenFor(model => model.DiffMeanBonusPercent)
-            @Html.HiddenFor(model => model.DiffMeanHourlyPayPercent)
-            @Html.HiddenFor(model => model.DiffMedianBonusPercent)
-            @Html.HiddenFor(model => model.DiffMedianHourlyPercent)
-            @Html.HiddenFor(model => model.FemaleLowerPayBand)
-            @Html.HiddenFor(model => model.FemaleMedianBonusPayPercent)
-            @Html.HiddenFor(model => model.FemaleMiddlePayBand)
-            @Html.HiddenFor(model => model.FemaleUpperPayBand)
-            @Html.HiddenFor(model => model.FemaleUpperQuartilePayBand)
-            @Html.HiddenFor(model => model.MaleLowerPayBand)
-            @Html.HiddenFor(model => model.MaleMedianBonusPayPercent)
-            @Html.HiddenFor(model => model.MaleMiddlePayBand)
-            @Html.HiddenFor(model => model.MaleUpperPayBand)
-            @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
-            @Html.HiddenFor(model => model.AccountingDate)
-            @Html.HiddenFor(model => model.SectorType)
-            @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
-            @Html.HiddenFor(model => model.EHRCResponse)
-            @Html.HiddenFor(model => model.LateReason)
+    @Html.HiddenFor(model => model.FirstName)
+    @Html.HiddenFor(model => model.JobTitle)
+    @Html.HiddenFor(model => model.LastName)
+    @Html.HiddenFor(model => model.DiffMeanBonusPercent)
+    @Html.HiddenFor(model => model.DiffMeanHourlyPayPercent)
+    @Html.HiddenFor(model => model.DiffMedianBonusPercent)
+    @Html.HiddenFor(model => model.DiffMedianHourlyPercent)
+    @Html.HiddenFor(model => model.FemaleLowerPayBand)
+    @Html.HiddenFor(model => model.FemaleMedianBonusPayPercent)
+    @Html.HiddenFor(model => model.FemaleMiddlePayBand)
+    @Html.HiddenFor(model => model.FemaleUpperPayBand)
+    @Html.HiddenFor(model => model.FemaleUpperQuartilePayBand)
+    @Html.HiddenFor(model => model.MaleLowerPayBand)
+    @Html.HiddenFor(model => model.MaleMedianBonusPayPercent)
+    @Html.HiddenFor(model => model.MaleMiddlePayBand)
+    @Html.HiddenFor(model => model.MaleUpperPayBand)
+    @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
+    @Html.HiddenFor(model => model.AccountingDate)
+    @Html.HiddenFor(model => model.SectorType)
+    @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
+    @Html.HiddenFor(model => model.EHRCResponse)
+    @Html.HiddenFor(model => model.LateReason)
 
-            var controller = ViewData["Controller"] as BaseController;
+    var controller = ViewData["Controller"] as BaseController;
 
-            string backLink;
-            if (Model.ReturnUrl.EqualsI("CheckData"))
-            {
-                backLink = Url.Action("CheckData");
-            }
-            else
-            {
-                backLink = Url.Action(Model.SectorType == SectorTypes.Public ? "EnterCalculations" : "PersonResponsible");
-            }
+    string backLink;
+    if (Model.ReturnUrl.EqualsI("CheckData"))
+    {
+        backLink = Url.Action("CheckData");
+    }
+    else
+    {
+        backLink = Url.Action(Model.SectorType == SectorTypes.Public ? "EnterCalculations" : "PersonResponsible");
+    }
+    <div class="grid-row">
+        <div class="column-two-thirds">
 
             <a class="link-back" href="@backLink">Back <span class="visuallyhidden"> to the previous step</span></a>
 
             @await Html.CustomValidationSummaryAsync()
 
             <h1 class="heading-large">
-                @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
-                Size of your organisation
+                What was your employee headcount on your snapshot date?
             </h1>
+            @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
+        </div>
+    </div>
 
+    <div class="grid-row">
+        <div class="column-two-thirds">
             <div class="form-horizontal">
                 <div id="OrganisationSizeGroup" class="form-group @Html.SetErrorClass(model => model.OrganisationSize, "error")">
                     <fieldset>
                         <legend>
-                            <h2 class="heading-medium">
-                                How many employees are there in your organisation?
-                            </h2>
                             @Html.ValidationMessageFor(model => model.OrganisationSize, "", new {id = "OrganisationSizeError", @class = "error-message"})
                         </legend>
                         @foreach (OrganisationSizes orgSize in Enum.GetValues(typeof(OrganisationSizes)))
@@ -76,20 +77,27 @@
                             }
                             string id = Enum.GetName(typeof(OrganisationSizes), orgSize);
                             var display = orgSize.GetAttribute<DisplayAttribute>();
-                            string voluntarily = orgSize == OrganisationSizes.Employees0To249 ? "and I wish to report voluntarily" : "";
+                            var label = display.Name.Replace("to", "-");
+                            string voluntarily = orgSize == OrganisationSizes.Employees0To249 ? ", I wish to report voluntarily" : "";
                             <div class="multiple-choice">
                                 <input id="@id" type="radio" name="OrganisationSize" value="@((int) orgSize)" @(Model.OrganisationSize == orgSize ? "checked" : "")>
-                                <label for="@id">@display.Name @voluntarily</label>
+                                <label for="@id">@label @voluntarily</label>
                             </div>
                         }
                     </fieldset>
                 </div>
             </div>
-            <p>
-                <input id="ContinueStep" class="button" type="submit" role="button" value="Continue"/>
-                <br/>
-                <input id="CancelStep" class="link-button" type="submit" role="button" formaction="cancel-organisation-size" value="Cancel" style="margin-top: 15px"/>
-            </p>
-        }
+            <div class="panel panel-border-wide">
+                If you are unsure what type of employees should be included in your headcount, or what your snapshot date is please read the
+                <a href="https://www.gov.uk/guidance/who-needs-to-report-their-gender-pay-gap#headcount" target="_blank" rel="noopener">
+                    guidance on working out your headcount
+                    <span class="visually-hidden">(opens in a new window)</span>
+                </a>.
+            </div>
+            <br/>
+            @await Html.PartialAsync("SaveAndCancelButtons", controller.ReportingOrganisation.OrganisationName)
+        </div>
+
+        @await Html.PartialAsync("RelatedContent")
     </div>
-</div>
+}

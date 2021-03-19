@@ -3,31 +3,29 @@
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 
 <div class="grid-row">
-    <div class="column-full">
+    <div class="column-two-thirds">
         <section id="HourlyRateInfo">
             <h2 class="heading-medium">
-                <span>Hourly wages pay gap</span>
+                <span>Hourly pay gap</span>
             </h2>
 
             <div class="grid-row">
-                <div class="column-two-thirds">
+                <div class="column-full">
                     <span>
-                        In this organisation, <strong>women earn @(Model.FemaleMedianHourlyRateMonitised)</strong>
-                        for every <strong>@(Model.MaleMedianHourlyRateMonitised)</strong>
-                        that men earn when comparing median hourly wages.
+                        In this organisation, women earn @(Model.FemaleMedianHourlyRateMonitised)
+                        for every @(Model.MaleMedianHourlyRateMonitised)
+                        that men earn when comparing median hourly pay.
                     </span>
-                    <span>Their median hourly wage is <strong>@(string.Format("{0:0.#}", Math.Abs(Model.DiffMedianHourlyPercent.Value)))%</strong></span>
+                    <span>Their median hourly pay is @(string.Format("{0:0.#}", Math.Abs(Model.DiffMedianHourlyPercent.Value)))%</span>
                     <span>
-                        <strong>
-                            @(Model.FemaleHasLowerMedianHourlyPercent ? "lower" : "higher")
-                        </strong>
+                        @(Model.FemaleHasLowerMedianHourlyPercent ? "lower" : "higher")
                         than men&rsquo;s.
                     </span>
                 </div>
             </div>
 
             <div class="grid-row" aria-hidden="true">
-                <div class="column-two-thirds">
+                <div class="column-full">
                     <div class="govuk-legend">
                         <span class="font-xsmall">
                             <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
@@ -52,25 +50,23 @@
             </div>
 
             <div class="grid-row">
-                <div class="column-two-thirds">
-                    <span>When comparing mean hourly wages, </span>
-                    <span>women&rsquo;s mean hourly wage is <strong>@(string.Format("{0:0.#}", Math.Abs(Model.DiffMeanHourlyPayPercent.Value)))%</strong></span>
+                <div class="column-full">
+                    <span>When comparing mean (average) hourly pay, </span>
+                    <span>women&rsquo;s mean hourly pay is @(string.Format("{0:0.#}", Math.Abs(Model.DiffMeanHourlyPayPercent.Value)))%</span>
                     <span>
-                        <strong>
-                            @(Model.FemaleHasLowerMeanHourlyPercent ? "lower" : "higher")
-                        </strong>
+                        @(Model.FemaleHasLowerMeanHourlyPercent ? "lower" : "higher")
                         than men&rsquo;s.
                     </span>
                 </div>
             </div>
 
             <div class="grid-row">
-                <div class="column-two-thirds">
+                <div class="column-full">
                     <br/>
                     @await Html.PartialModelAsync(new Details
                     {
                         Id = "AboutHourlyRate",
-                        LinkText = "About mean and median",
+                        LinkText = "About median and mean",
                         SummaryPartial = "EmployerDetails/HourlyRate/AboutHourlyRate"
                     })
                 </div>
@@ -79,4 +75,5 @@
 
         <hr/>
     </div>
+    @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
 </div>

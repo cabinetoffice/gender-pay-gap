@@ -76,13 +76,15 @@ namespace GenderPayGap.WebUI.Controllers.Submission
         private async Task<IActionResult> PresentUserTheOptionOfSaveDraftOrIgnoreAsync(ReturnViewModel postedReturnViewModel,
             bool hasADraftBeenCreated)
         {
+            string encryptedOrganisationId = Encryption.EncryptQuerystring(postedReturnViewModel.OrganisationId.ToString());
+
             if (hasADraftBeenCreated)
             {
                 this.StashModel(postedReturnViewModel);
                 return View("DraftConfirm", postedReturnViewModel);
             }
 
-            return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
+            return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new { encryptedOrganisationId });
         }
 
         private void ExcludeBlankFieldsFromModelState(ReturnViewModel returnViewModel)

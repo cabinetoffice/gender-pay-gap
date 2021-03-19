@@ -1,102 +1,99 @@
 ﻿@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
-<div class="grid-row">
-    <div class="column-two-thirds">
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(model => model.ReturnId)
-            @Html.HiddenFor(model => model.OrganisationId)
-            @Html.HiddenFor(model => model.EncryptedOrganisationId)
-            @Html.HiddenFor(model => model.ShouldProvideLateReason)
 
-            @Html.HiddenFor(model => model.ReportInfo.ReportModifiedDate)
-            @Html.HiddenFor(model => model.ReportInfo.ReportingStartDate)
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ReturnId)
+    @Html.HiddenFor(model => model.OrganisationId)
+    @Html.HiddenFor(model => model.EncryptedOrganisationId)
+    @Html.HiddenFor(model => model.ShouldProvideLateReason)
 
-            @Html.HiddenFor(model => model.FirstName)
-            @Html.HiddenFor(model => model.JobTitle)
-            @Html.HiddenFor(model => model.LastName)
+    @Html.HiddenFor(model => model.ReportInfo.ReportModifiedDate)
+    @Html.HiddenFor(model => model.ReportInfo.ReportingStartDate)
 
-            @Html.HiddenFor(model => model.ReturnId)
-            @Html.HiddenFor(model => model.OrganisationId)
-            @Html.HiddenFor(model => model.DiffMeanBonusPercent)
-            @Html.HiddenFor(model => model.DiffMeanHourlyPayPercent)
-            @Html.HiddenFor(model => model.DiffMedianBonusPercent)
-            @Html.HiddenFor(model => model.DiffMedianHourlyPercent)
-            @Html.HiddenFor(model => model.FemaleLowerPayBand)
-            @Html.HiddenFor(model => model.FemaleMedianBonusPayPercent)
-            @Html.HiddenFor(model => model.FemaleMiddlePayBand)
-            @Html.HiddenFor(model => model.FemaleUpperPayBand)
-            @Html.HiddenFor(model => model.FemaleUpperQuartilePayBand)
-            @Html.HiddenFor(model => model.MaleLowerPayBand)
-            @Html.HiddenFor(model => model.MaleMedianBonusPayPercent)
-            @Html.HiddenFor(model => model.MaleMiddlePayBand)
-            @Html.HiddenFor(model => model.MaleUpperPayBand)
-            @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
-            @Html.HiddenFor(model => model.AccountingDate)
-            @Html.HiddenFor(model => model.SectorType)
-            @Html.HiddenFor(model => model.OrganisationSize)
-            @Html.HiddenFor(model => model.EHRCResponse)
-            @Html.HiddenFor(model => model.LateReason)
+    @Html.HiddenFor(model => model.FirstName)
+    @Html.HiddenFor(model => model.JobTitle)
+    @Html.HiddenFor(model => model.LastName)
 
-            var controller = ViewData["Controller"] as BaseController;
+    @Html.HiddenFor(model => model.ReturnId)
+    @Html.HiddenFor(model => model.OrganisationId)
+    @Html.HiddenFor(model => model.DiffMeanBonusPercent)
+    @Html.HiddenFor(model => model.DiffMeanHourlyPayPercent)
+    @Html.HiddenFor(model => model.DiffMedianBonusPercent)
+    @Html.HiddenFor(model => model.DiffMedianHourlyPercent)
+    @Html.HiddenFor(model => model.FemaleLowerPayBand)
+    @Html.HiddenFor(model => model.FemaleMedianBonusPayPercent)
+    @Html.HiddenFor(model => model.FemaleMiddlePayBand)
+    @Html.HiddenFor(model => model.FemaleUpperPayBand)
+    @Html.HiddenFor(model => model.FemaleUpperQuartilePayBand)
+    @Html.HiddenFor(model => model.MaleLowerPayBand)
+    @Html.HiddenFor(model => model.MaleMedianBonusPayPercent)
+    @Html.HiddenFor(model => model.MaleMiddlePayBand)
+    @Html.HiddenFor(model => model.MaleUpperPayBand)
+    @Html.HiddenFor(model => model.MaleUpperQuartilePayBand)
+    @Html.HiddenFor(model => model.AccountingDate)
+    @Html.HiddenFor(model => model.SectorType)
+    @Html.HiddenFor(model => model.OrganisationSize)
+    @Html.HiddenFor(model => model.EHRCResponse)
+    @Html.HiddenFor(model => model.LateReason)
 
-            string backLink;
-            if (Model.ReturnUrl.EqualsI("CheckData"))
-            {
-                backLink = Url.Action("CheckData");
-            }
-            else
-            {
-                backLink = Url.Action("OrganisationSize");
-            }
+    var controller = ViewData["Controller"] as BaseController;
+
+    string backLink;
+    if (Model.ReturnUrl.EqualsI("CheckData"))
+    {
+        backLink = Url.Action("CheckData");
+    }
+    else
+    {
+        backLink = Url.Action("OrganisationSize");
+    }
+    <div class="grid-row">
+        <div class="column-two-thirds">
 
             <a class="link-back" href="@backLink">Back <span class="visuallyhidden"> to the previous step</span></a>
 
             <h1 class="heading-large">
-                @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
-                Link to your gender pay gap information
+                Provide a link to your supporting narrative
             </h1>
-
+            @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
             <div class="form-horizontal">
-                <p>You can publish your gender pay gap narrative on your organisation's website. This can provide context for your figures.</p>
                 <fieldset>
                     <div class="form-group @Html.SetErrorClass(model => model.CompanyLinkToGPGInfo, "error")">
-                        <label class="form-label" for="CompanyLinkToGPGInfo">Enter the web address (URL). <br/>
-                            <span class="optional" style="font-size: inherit">This must start with http:// or https://</span></label>
+                        <label class="form-label" for="CompanyLinkToGPGInfo">
+                            Enter the web address of your supporting narrative (URL). <br/>
+                            <span class="optional" style="font-size: inherit; color: dimgrey">This must start with http:// or https://</span>
+                        </label>
                         @Html.ValidationMessageFor(model => model.CompanyLinkToGPGInfo, "", new {@class = "error-message"})
-                        @Html.TextAreaFor(model => model.CompanyLinkToGPGInfo, 6, 30, new {@class = "form-control form-control-3-4", placeholder = "http"})
+                        @Html.TextBoxFor(model => model.CompanyLinkToGPGInfo, new {@class = "form-control form-control-3-4"})
                     </div>
                 </fieldset>
             </div>
             <div class="panel panel-border-wide">
-                <div class="bold-small">If you don't have the URL to hand you can return and add it later.</div>
+                <span>If you don&rsquo;t have the URL you can return and add it later.</span>
+                <br/>
+                <span>You can also update your link for any reporting year, if needed.</span>
             </div>
             <p>
-                <input id="ContinueStep" class="button" type="submit" role="button" value="Continue"/>
-                <br/>
-                <input id="CancelStep" class="link-button" type="submit" role="button" formaction="cancel-employer-website" value="Cancel" style="margin-top: 15px"/>
+                Adding a supporting narrative helps anyone reading your gender pay gap report understand your employer&rsquo;s view of why a gender pay gap
+                is present and what your employer has already done to analyse and
+                close it. Your supporting narrative can signal your commitment to
+                closing your gender pay gap to your employees and anyone else
+                accessing your report
             </p>
-        }
+            <p>
+                <a href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#supporting-narrative" target="_blank" rel="noopener">
+                    Read more about supporting narratives
+                    <span class="visually-hidden">(opens in a new window)</span>
+                </a>
+            </p>
+            <br/>
+            @await Html.PartialAsync("SaveAndCancelButtons", controller.ReportingOrganisation.OrganisationName)
+        </div>
+        @await Html.PartialAsync("RelatedContent")
     </div>
-    <div class="column-third">
-        <aside class="govuk-related-items" role="complementary">
-            <h3 class="heading-small" id="subsection-title">Gender pay gap guidance</h3>
-            <nav role="navigation" aria-labelledby="subsection-title">
-                <ul class="font-xsmall">
-                    <li>
-                        <a rel="external noopener track" target="_blank" data-track-category="Related Link Clicked" href="https://www.gov.uk/guidance/gender-pay-gap-reporting-what-employers-must-publish">What employers must publish<span class="visually-hidden">(opens in a new window)</span></a>
-                    </li>
-                    <li>
-                        <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/public/assets/pdf/understand-your-gender-pay-gap.pdf">Eight ways to understand your organisation’s gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
-                    </li>
-                    <li>
-                        <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">Actions to close the gap<span class="visually-hidden">(opens in a new window)</span></a>
-                    </li>
-                    <li>
-                        <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan<span class="visually-hidden">(opens in a new window)</span></a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
+}

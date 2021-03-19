@@ -1,5 +1,6 @@
 @using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
@@ -8,6 +9,7 @@
         <partial name="/Views/Components/EnforcementChangesMessage.cshtml"/>
     </div>
 </div>
+@await Html.PartialAsync("ReportPageBreadcrumbs")
 <div class="grid-row">
 <div class="column-two-thirds">
 @using (Html.BeginForm())
@@ -48,12 +50,12 @@
 
 
     var controller = ViewData["Controller"] as BaseController;
-    var reportDateFormatter = new GDSDateFormatter(Model.ReportInfo.ReportingStartDate);
+    var reportingOrganisation = controller.ReportingOrganisation;
 
     <h1 class="heading-large">
-        @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
-        Review your gender pay gap data
+        Review your gender pay gap data for snapshot date @(Model.ReportInfo.ReportingStartDate.ToString("dd MMMM yyyy"))
     </h1>
+    @await Html.PartialAsync("ReportingOrgPart", reportingOrganisation.OrganisationName)
 
     @await Html.CustomValidationSummaryAsync()
 
@@ -68,12 +70,13 @@
         </div>
     }
 
-    <h2>
-        Your organisation&rsquo;s @(reportDateFormatter.StartYear) to @(reportDateFormatter.EndYear) gender pay gap data
-    </h2>
-
     <table class="table gpg-data">
         <thead>
+            <tr>
+                <th colspan="3">
+                    <span>@ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportInfo.ReportingStartDate.Year, "/") Reporting year</span>
+                </th>
+            </tr>
             <tr>
                 <th colspan="2">
                     <span>Percentage of men and women in each hourly pay quarter</span>
@@ -228,7 +231,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    <span>Average (mean) and median gender pay gap using hourly pay</span>
+                    <span>Mean and median gender pay gap using hourly pay</span>
                 </th>
                 <th class="question" colspan="3">
                     <span class="edit">
@@ -242,7 +245,7 @@
         <tbody>
             <tr>
                 <td>
-                    Average (mean) gender pay gap using hourly pay
+                    Mean gender pay gap using hourly pay
                 </td>
                 <td class="numeric" colspan="2">
                     <span id="DisplayDiffMeanHourlyPayPercent">
@@ -283,11 +286,11 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    <span>Bonus pay gap</span>
+                    <span>Percentage of men and women who received bonus pay</span>
                 </th>
                 <th>
                     <span class="edit">
-                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "BonusPay")">
+                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "BonusPayFigures")">
                             Edit<span class="visually-hidden"> bonus pay</span>
                         </a>
                     </span>
@@ -306,7 +309,7 @@
         <tbody>
             <tr>
                 <td style="vertical-align: bottom;">
-                    Percentage of employees who received bonus pay
+                    Percentage of men and women who received bonus pay
                 </td>
                 <td class="numeric">
                     <span id="DisplayMaleMedianBonusPayPercent">
@@ -335,11 +338,29 @@
                     </span>
                 </td>
             </tr>
+        </tbody>
+    </table>
+    <table class="table gpg-data">
+        <thead>
             <tr>
-                <td style="padding-top: 50px;">
-                    Average (mean) gender pay gap using bonus pay
+                <th>
+                    <span>Mean and median gender pay gap using bonus pay</span>
+                </th>
+                <th>
+                    <span class="edit">
+                        <a id="ChangeCalculations" href="@Url.Action("EnterCalculations", "Submit", new {returnUrl = "CheckData"}, null, null, "BonusPay")">
+                            Edit<span class="visually-hidden"> mean and median gender pay gap using bonus pay</span>
+                        </a>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Mean gender pay gap using bonus pay
                 </td>
-                <td class="numeric" colspan="2" style="padding-top: 50px;">
+                <td class="numeric">
                     <span id="DisplayDiffMeanBonusPercent">
                         @if (Model.DiffMeanBonusPercent.HasValue)
                         {
@@ -361,7 +382,7 @@
                 <td>
                     Median gender pay gap using bonus pay
                 </td>
-                <td class="numeric" colspan="2">
+                <td class="numeric">
                     <span id="DisplayDiffMedianBonusPercent">
                         @if (Model.DiffMedianBonusPercent.HasValue)
                         {
@@ -422,10 +443,10 @@
         <thead>
             <tr>
                 <th class="question" colspan="3">
-                    Size of your organisation
+                    Employee headcount
                     <span class="edit">
                         <a id="ChangeOrganisationSize" href="@Url.Action("OrganisationSize", new {returnUrl = "CheckData"})">
-                            Edit<span class="visually-hidden"> size of your organisation</span>
+                            Edit<span class="visually-hidden"> employee headcount</span>
                         </a>
                     </span>
                 </th>
@@ -434,7 +455,7 @@
         <tbody>
             <tr class="row" colspan="3">
                 <td>
-                    Number of employees within your organisation
+                    Number of employees used to establish your headcount for gender pay gap reporting, on your snapshot date
                 </td>
                 <td id="DisplayOrganisationSize">
                     <span class="@(Model.OrganisationSize == OrganisationSizes.NotProvided ? "gpg-data__status--notprovided" : "")">
@@ -487,38 +508,40 @@
 
     <div class="panel panel-border-wide">
         <p>
-            <span class="bold-small">On submission your data will be published on the gender pay gap service.</span>
+            <span>On submission your gender pay gap information will be published on the Gender pay gap service.</span>
             <br/>
             <br/>
             <span>
-                Please note that submission of inaccurate data means you have not complied with the gender pay gap regulations.
+                Submission of inaccurate data will mean your employer has not complied with the gender pay gap reporting regulations.
             </span>
         </p>
     </div>
     <br/>
-    if (Model.IsDifferentFromDatabase && Model.ShouldProvideLateReason && Model.IsValidReturn())
-    {
-        <a id="ContinueLateReasonStep" href="@Url.Action("LateReason")" class="button">Continue</a>
-    }
-    else if (Model.IsDifferentFromDatabase && Model.IsValidReturn())
-    {
-        <input id="ConfirmStep" class="button" type="submit" role="button" value="Confirm and submit"/>
-    }
-    else
-    {
-        <input id="ConfirmStep" class="button" type="submit" role="button" value="Confirm and submit" disabled="disabled"/>
-    }
 
-    if (Model.ReportInfo.Draft.HasDraftBeenModifiedDuringThisSession && Model.HasUserData())
-    {
-        @:&nbsp;&nbsp;<a href="@Url.Action("DraftComplete")" class="button">Save Draft</a>
-    }
-    else
-    {
-        @:&nbsp;&nbsp;<a class="button" disabled="disabled">Save Draft</a>
-    }
+    <div style="display: inline-grid" class="govuk-!-width-one-quarter">
+        @if (Model.ReportInfo.Draft.HasDraftBeenModifiedDuringThisSession && Model.HasUserData())
+        {
+            @:&nbsp;&nbsp;<a href="@Url.Action("DraftComplete")" class="govuk-button govuk-button--secondary">Save draft</a>
+        }
+        else
+        {
+            @:&nbsp;&nbsp;<a class="govuk-button govuk-button--secondary govuk-button--disabled" disabled="disabled">Save draft</a>
+        }
+        @if (Model.IsDifferentFromDatabase && Model.ShouldProvideLateReason && Model.IsValidReturn())
+        {
+            <a id="ContinueLateReasonStep" href="@Url.Action("LateReason")" class="govuk-button">Continue</a>
+        }
+        else if (Model.IsDifferentFromDatabase && Model.IsValidReturn())
+        {
+            <input id="ConfirmStep" class="govuk-button" type="submit" role="button" value="Submit"/>
+        }
+        else
+        {
+            <input id="ConfirmStep" class="govuk-button" type="submit" role="button" value="Submit" disabled="disabled"/>
+        }
+    </div>
     <br/>
-    <input id="CancelStep" class="link-button" type="submit" role="button" formaction="cancel-check-data" value="Cancel" style="margin-top: 15px"/>
+    <input id="CancelStep" class="link-button" type="submit" role="button" formaction="cancel-check-data" value="Cancel and return to @reportingOrganisation.OrganisationName"/>
 }
 
 </div>

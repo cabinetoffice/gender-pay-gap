@@ -2225,8 +2225,7 @@ input[type=number] {
 
 /* line 21, /app/app/assets/sass/application.scss */
 .govuk-related-items {
-  margin-top: 55px;
-  border-top: 10px solid #005ea5;
+  border-top: 2px solid #005ea5;
   padding-top: 5px;
 }
 
@@ -2249,14 +2248,6 @@ input[type=number] {
 
 /* line 39, /app/app/assets/sass/application.scss */
 table td {
-  font-size: 16px;
-}
-
-/* line 42, /app/app/assets/sass/application.scss */
-details,
-details p,
-details a,
-details li {
   font-size: 16px;
 }
 
@@ -2817,7 +2808,8 @@ span.status-tag {
 
 /* line 467, /app/app/assets/sass/application.scss */
 .govuk-related-items .heading-small {
-  margin-top: 0;
+  margin-top: 0.5em;
+  margin-bottom: 0.75em;
 }
 
 /* line 470, /app/app/assets/sass/application.scss */
@@ -3421,4 +3413,14 @@ ol {
     content: "";
     display: block;
     clear: both
+}
+
+.reporting-header {
+  margin: 1.25em 0;
+  font-weight: normal;
+}
+
+.add-remove-employer-section button {
+  margin-top: 30px;
+  margin-bottom: 25px;
 }

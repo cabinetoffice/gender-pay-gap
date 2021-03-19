@@ -19,14 +19,14 @@ namespace GenderPayGap.Core.Helpers
             return reportingYears;
         }
 
-        public static string FormatYearAsReportingPeriod(int reportingPeriodStartYear)
+        public static string FormatYearAsReportingPeriod(int reportingPeriodStartYear, string separator = "-")
         {
             int fourDigitStartYear = reportingPeriodStartYear;
 
             int fourDigitEndYear = reportingPeriodStartYear + 1;
             int twoDigitEndYear = fourDigitEndYear % 100;
 
-            string formattedYear = $"{fourDigitStartYear}-{twoDigitEndYear}";
+            string formattedYear = $"{fourDigitStartYear}{separator}{twoDigitEndYear}";
             return formattedYear;
         }
 

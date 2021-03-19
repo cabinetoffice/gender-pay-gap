@@ -132,7 +132,11 @@ govuk-chart-vert__head {
     left: 0;
     right: 0;
     position: absolute;
-    top: 1.25em;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 .govuk-chart-horz {

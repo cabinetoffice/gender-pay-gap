@@ -246,12 +246,12 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             {
                 if (postedReturnViewModel.DiffMeanBonusPercent > 100)
                 {
-                    AddModelError(2130, nameof(postedReturnViewModel.DiffMeanBonusPercent));
+                    AddModelError(2130, nameof(postedReturnViewModel.DiffMeanBonusPercent), new {bonusDifference = "mean"});
                 }
 
                 if (postedReturnViewModel.DiffMedianBonusPercent > 100)
                 {
-                    AddModelError(2130, nameof(postedReturnViewModel.DiffMedianBonusPercent));
+                    AddModelError(2130, nameof(postedReturnViewModel.DiffMedianBonusPercent), new {bonusDifference = "median"});
                 }
             }
 
@@ -260,12 +260,12 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             {
                 if (postedReturnViewModel.DiffMeanBonusPercent.HasValue)
                 {
-                    AddModelError(2131, nameof(postedReturnViewModel.DiffMeanBonusPercent));
+                    AddModelError(2131, nameof(postedReturnViewModel.DiffMeanBonusPercent), new {bonusDifference = "mean"});
                 }
 
                 if (postedReturnViewModel.DiffMedianBonusPercent.HasValue)
                 {
-                    AddModelError(2131, nameof(postedReturnViewModel.DiffMedianBonusPercent));
+                    AddModelError(2131, nameof(postedReturnViewModel.DiffMedianBonusPercent), new {bonusDifference = "median"});
                 }
             }
             

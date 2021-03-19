@@ -58,15 +58,13 @@
         <div class="grid-row">
             <div class="column-two-thirds">
                 <span>
-                    In this organisation, <strong>women earn @(Model.FemaleMedianBonusPayMonitised)</strong>
-                    for every <strong>@(Model.MaleMedianBonusPayMonitised)</strong>
+                    In this organisation, women earn @(Model.FemaleMedianBonusPayMonitised)
+                    for every @(Model.MaleMedianBonusPayMonitised)
                     that men earn when comparing median bonus pay.
                 </span>
-                <span>Their median bonus pay is <strong>@(string.Format("{0:0.#}", Math.Abs(diffMedianBonus)))%</strong></span>
+                <span>Their median bonus pay is @(string.Format("{0:0.#}", Math.Abs(diffMedianBonus)))%</span>
                 <span>
-                    <strong>
-                        @(Model.FemaleHasLowerMedianBonusPay ? "lower" : "higher")
-                    </strong>
+                    @(Model.FemaleHasLowerMedianBonusPay ? "lower" : "higher")
                     than men&rsquo;s.
                 </span>
             </div>
@@ -89,7 +87,7 @@
 
     <div class="grid-row">
         <div class="column-two-thirds">
-            <h3 id="ReceivedBonusPay" class="heading-small">Who received bonus pay</h3>
+            <h3 id="ReceivedBonusPay" class="heading-small" style="margin-bottom: 1.25em">Who received bonus pay</h3>
         </div>
     </div>
 
