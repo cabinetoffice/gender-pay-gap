@@ -1,7 +1,6 @@
-﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
-@using GovUkDesignSystem
-@using GenderPayGap.WebUI.Models.ScopeNew
+﻿@using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.WebUI.Classes.Formatters
+@using GenderPayGap.WebUI.Models.Shared.Patterns
 @model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
 @{
@@ -15,33 +14,16 @@
     string reason = Model.WhyOutOfScope == WhyOutOfScope.Under250
         ? "My organisation had fewer than 250 employees on " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
         : Model.WhyOutOfScopeDetails;
+    var breadcrumbModel = new ManageOrganisationBreadcrumbs 
+    { 
+        OrganisationName = Model.Organisation.OrganisationName, 
+        EncryptedOrganisationId = encryptedOrganisationId, 
+        PageText = "Change reporting requirement"
+    };
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-{
-            new CrumbViewModel
-            {
-                Text = "Manage Employers",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = "Change reporting requirement"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="Patterns/ManageOrganisationBreadcrumbs" model="breadcrumbModel" />
 }
 
 <div class="govuk-grid-row">
@@ -61,10 +43,10 @@
         </p>
 
         <p class="govuk-body">
-            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})" role="button">Return to @Model.Organisation.OrganisationName</a>
+            <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})">Return to @Model.Organisation.OrganisationName</a>
         </p>
         <p class="govuk-body">
-            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = ViewContext.RouteData.Values["Id"]})" role="button">Return to Manage Employers</a>
+            <a class="govuk-link" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Return to Manage Employers</a>
         </p>
     </div>
 </div>
