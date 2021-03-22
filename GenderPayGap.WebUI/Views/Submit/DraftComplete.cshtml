@@ -1,4 +1,5 @@
-﻿@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
+﻿@using GenderPayGap.WebUI.Controllers.Guidance
+@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 <div class="grid-row">
     <div class="column-two-thirds">
         @using (Html.BeginForm())
@@ -16,10 +17,10 @@
         <div>
             <ul class="font-xsmall" style="line-height: 1.75">
                 <li>
-                    <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/overview">Eight ways to understand your organisation&rsquo;s gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
+                    <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">Eight ways to understand your organisation&rsquo;s gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
                 </li>
                 <li>
-                    <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/actions-to-close-the-gap">Actions to close the gap<span class="visually-hidden">(opens in a new window)</span></a>
+                    <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="@Url.Action("Overview", "ActionHub")">Actions to close the gap<span class="visually-hidden">(opens in a new window)</span></a>
                 </li>
                 <li>
                     <a rel="track" target="_blank" data-track-category="Related Link Clicked" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan<span class="visually-hidden">(opens in a new window)</span></a>

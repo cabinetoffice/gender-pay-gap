@@ -282,7 +282,7 @@ namespace GenderPayGap.Database
 
         public string GetReportingPeriod()
         {
-            return $"{AccountingDate.ToString("yyyy")}/{AccountingDate.AddYears(1).ToString("yy")}";
+            return ReportingYearsHelper.FormatYearAsReportingPeriod(AccountingDate.Year, "/");
         }
 
         // The deadline date is the final day that a return can be submitted without being considered late

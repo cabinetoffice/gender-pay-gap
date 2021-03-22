@@ -1,5 +1,6 @@
 ﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminDownloadsViewModel
 @{
     ViewBag.Title = $"Downloads - Administration - Gender pay gap service";
@@ -85,13 +86,14 @@
 
         @foreach (var year in Model.ReportingYears)
         {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
             <p class="govuk-body">
-                <a href="@Url.Action("DownloadOrganisationScopesForYear", "AdminDownloads", new { year = year })"
+                <a href="@Url.Action("DownloadOrganisationScopesForYear", "AdminDownloads", new {year})"
                    class="govuk-link govuk-!-font-weight-bold">
-                    Organisation Scopes for @(year)-@((year + 1) % 100)
+                    Organisation Scopes for @reportingYear
                 </a>
-                <br />
-                The latest organisation scope statuses for each organisation for @(year)-@((year + 1) % 100)
+                <br/>
+                The latest organisation scope statuses for each organisation for @reportingYear
             </p>
         }
 
@@ -102,13 +104,14 @@
 
         @foreach (var year in Model.ReportingYears)
         {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
             <p class="govuk-body">
-                <a href="@Url.Action("DownloadAllSubmissionsForYear", "AdminDownloads", new { year = year })"
+                <a href="@Url.Action("DownloadAllSubmissionsForYear", "AdminDownloads", new {year})"
                    class="govuk-link govuk-!-font-weight-bold">
-                    All submissions for @(year)-@((year + 1) % 100)
+                    All submissions for @reportingYear
                 </a>
-                <br />
-                The reported GPG data for all organisations for @(year)-@((year + 1) % 100)
+                <br/>
+                The reported GPG data for all organisations for @reportingYear
             </p>
         }
 
@@ -119,13 +122,14 @@
 
         @foreach (var year in Model.ReportingYears)
         {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
             <p class="govuk-body">
-                <a href="@Url.Action("DownloadFullSubmissionHistoryForYear", "AdminDownloads", new { year = year })"
+                <a href="@Url.Action("DownloadFullSubmissionHistoryForYear", "AdminDownloads", new {year})"
                    class="govuk-link govuk-!-font-weight-bold">
-                    Full submission history for @(year)-@((year + 1) % 100)
+                    Full submission history for @reportingYear
                 </a>
-                <br />
-                The full history of changes each organisation made the their submission for @(year)-@((year + 1) % 100)
+                <br/>
+                The full history of changes each organisation made the their submission for @reportingYear
             </p>
         }
 
@@ -136,13 +140,14 @@
 
         @foreach (var year in Model.ReportingYears)
         {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
             <p class="govuk-body">
-                <a href="@Url.Action("DownloadLateSubmissions", "AdminDownloads", new { year = year })"
+                <a href="@Url.Action("DownloadLateSubmissions", "AdminDownloads", new {year})"
                    class="govuk-link govuk-!-font-weight-bold">
-                    Late Submissions for @(year)-@((year + 1) % 100)
+                    Late Submissions for @reportingYear
                 </a>
-                <br />
-                Organisations who reported or changed their submission late for @(year)-@((year + 1) % 100)
+                <br/>
+                Organisations who reported or changed their submission late for @reportingYear
             </p>
         }
 
@@ -214,13 +219,14 @@
 
         @foreach (var year in Model.ReportingYears)
         {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
             <p class="govuk-body">
-                <a href="@Url.Action("EhrcAllOrganisationsForYear_AdminPage", "AdminDownloads", new { year = year })"
+                <a href="@Url.Action("EhrcAllOrganisationsForYear_AdminPage", "AdminDownloads", new {year})"
                    class="govuk-link govuk-!-font-weight-bold">
-                    EHRC Organisations for @(year)-@((year + 1) % 100)
+                    EHRC Organisations for @reportingYear
                 </a>
-                <br />
-                Organisations who reported or changed their submission late for @(year)-@((year + 1) % 100)
+                <br/>
+                Organisations who reported or changed their submission late for @reportingYear
             </p>
         }
 

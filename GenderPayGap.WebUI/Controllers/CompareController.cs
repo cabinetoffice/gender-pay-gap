@@ -6,6 +6,7 @@ using System.Net.Mime;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -368,7 +369,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Setup the HTTP response
             var contentDisposition = new ContentDisposition {
-                FileName = $"Compared GPG Data {year}-{(year + 1).ToTwoDigitYear()}.csv", Inline = false
+                FileName = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(year)}.csv", Inline = false
             };
             HttpContext.SetResponseHeader("Content-Disposition", contentDisposition.ToString());
 

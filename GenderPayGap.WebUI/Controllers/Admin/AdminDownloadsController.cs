@@ -511,7 +511,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"GPG-Organisations_{year}-{(year + 1) % 100}.csv";
+            string fileDownloadName = $"GPG-Organisations_{ReportingYearsHelper.FormatYearAsReportingPeriod(year)}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
