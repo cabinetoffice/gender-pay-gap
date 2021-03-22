@@ -16,4 +16,4 @@ Load testing:
 * [Load testing](Load%20testing.md)
 
 External Services:
-* [Companies House API](Companies%20HouseHouse%20Api.md)
+* [Companies House API](Companies%20House%20Api.md)
