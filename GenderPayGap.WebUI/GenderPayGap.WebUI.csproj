@@ -21,8 +21,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+  </ItemGroup>
   
   <ItemGroup>
+    <None Include="Views\Shared\Patterns\ManageOrganisationBreadcrumbs.cshtml" />
     <None Include="wwwroot\assets\javascripts\application.min.js" />
     <None Include="wwwroot\assets\stylesheets\application.min.css" />
   </ItemGroup>
@@ -143,5 +148,11 @@
     </PropertyGroup>
     <Exec Command="dotnet transform-xdt --xml &quot;$(_SourceWebConfig)&quot; --transform &quot;$(_XdtTransform)&quot; --output &quot;$(_TargetWebConfig)&quot;" Condition="Exists('$(_XdtTransform)')" />
   </Target>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+  </ItemGroup>
 
 </Project>

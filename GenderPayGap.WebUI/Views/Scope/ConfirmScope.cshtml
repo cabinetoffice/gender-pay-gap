@@ -3,6 +3,7 @@
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Models.ScopeNew
+@using GenderPayGap.WebUI.Models.Shared.Patterns
 @model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
 @{
@@ -15,33 +16,16 @@
     string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
     string whyOutOfScopeFormatted = Model.WhyOutOfScope == WhyOutOfScope.Under250 ? "My employer had a headcount less than 250 employees on our snapshot date of " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
         : "Other: " + Model.WhyOutOfScopeDetails;
+    var breadcrumbModel = new ManageOrganisationBreadcrumbs 
+    { 
+        OrganisationName = Model.Organisation.OrganisationName, 
+        EncryptedOrganisationId = encryptedOrganisationId, 
+        PageText = "Change reporting requirement"
+    };
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-{
-            new CrumbViewModel
-            {
-                Text = "Manage Employers",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = "Change reporting requirement"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="Patterns/ManageOrganisationBreadcrumbs" model="breadcrumbModel" />
 }
 
 <div class="govuk-grid-row">
@@ -107,7 +91,7 @@
 
         <p class="govuk-inset-text">
             Before confirming this change, please ensure you have read the
-            guidance on <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap.</a>
+            guidance on <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap.<span class="govuk-visually-hidden">(opens in a new window)</span></a>
         </p>
 
         <p class="govuk-body">

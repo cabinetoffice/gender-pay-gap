@@ -1,0 +1,28 @@
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem
+@model GenderPayGap.WebUI.Models.Shared.Patterns.ManageOrganisationBreadcrumbs
+
+@{
+    var crumbs = new List<CrumbViewModel>
+    {
+        new CrumbViewModel
+        {
+            Text = "Manage Employers",
+            Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+        },
+        new CrumbViewModel
+        {
+            Text = Model.OrganisationName,
+            Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = Model.EncryptedOrganisationId})
+        },
+        new CrumbViewModel
+        {
+            Text = Model.PageText
+        }
+    };
+}
+
+@(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+{
+    Crumbs = crumbs
+}))

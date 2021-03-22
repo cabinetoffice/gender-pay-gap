@@ -2,39 +2,23 @@
     ViewBag.Title = "We need more information - Gender pay gap reporting service";
 }
 @using GenderPayGap.Core
+@using GenderPayGap.WebUI.Models.Shared.Patterns
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Organisation.DeclareScopeModel
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
     string reportingYearsString = Model.SnapshotDate.Year + "/" + (Model.SnapshotDate.Year + 1).ToString().Substring(2, 2);
+    var breadcrumbModel = new ManageOrganisationBreadcrumbs 
+    { 
+        OrganisationName = Model.OrganisationName, 
+        EncryptedOrganisationId = encryptedOrganisationId, 
+        PageText = "Change reporting requirement"
+    };
 }
+
 @section BeforeMain {
-    @{
-
-        var crumbs = new List<CrumbViewModel>
-{
-            new CrumbViewModel
-            {
-                Text = "Manage Employers",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = "Change Scope (Reporting Year " + reportingYearsString + ")"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="Patterns/ManageOrganisationBreadcrumbs" model="breadcrumbModel" />
 }
 
 <main id="content" role="main">

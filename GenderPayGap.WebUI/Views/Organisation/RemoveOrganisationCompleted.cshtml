@@ -1,38 +1,20 @@
-﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
-@using GovUkDesignSystem
+﻿@using GenderPayGap.WebUI.Models.Shared.Patterns
 @model GenderPayGap.WebUI.Models.Organisation.RemoveOrganisationModel
 @{
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     ViewBag.Title = "Remove organisation reason - Gender pay gap service";
     var controller = ViewData["Controller"] as BaseController;
     long userId = Encryption.DecryptQuerystring(Model.EncUserId).ToInt64();
+    var breadcrumbModel = new ManageOrganisationBreadcrumbs 
+    { 
+        OrganisationName = Model.OrganisationName, 
+        EncryptedOrganisationId = Model.EncOrganisationId, 
+        PageText = "Remove user"
+    };
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Manage Employers",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = Model.EncOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = "Remove user"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="Patterns/ManageOrganisationBreadcrumbs" model="breadcrumbModel" />
 }
 
 <div class="govuk-grid-row">
