@@ -1,5 +1,6 @@
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminDeleteReturnViewModel
 
 @{
@@ -56,7 +57,7 @@
             <br />
             for @(Model.Organisation.OrganisationName)
             <br />
-            for reporting year year @(Model.Year)-@((Model.Year + 1) % 100)
+            for reporting year year @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.Year)
         </h2>
 
         @(Html.GovUkErrorSummary())

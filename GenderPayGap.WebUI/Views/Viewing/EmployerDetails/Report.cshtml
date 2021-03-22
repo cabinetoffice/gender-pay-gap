@@ -4,8 +4,9 @@
 @using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 @{
-    ViewBag.Title = $"{Model.OrganisationName} gender pay gap data for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year - GOV.UK";
-    ViewBag.pageDescription = $"View gender pay gap data for {Model.OrganisationName} for {Model.AccountingDate.Year}-{(Model.AccountingDate.Year + 1).ToTwoDigitYear()} reporting year and compare with other organisations";
+    var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year);
+    ViewBag.Title = $"{Model.OrganisationName} gender pay gap data for {reportingYear} reporting year - GOV.UK";
+    ViewBag.pageDescription = $"View gender pay gap data for {Model.OrganisationName} for {reportingYear} reporting year and compare with other organisations";
     ViewBag.ogTitle = ViewBag.Title;
     ViewBag.ogType = "business.gender_pay_gap";
     ViewBag.pageClass = "employer-report-page";

@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Controllers.Guidance
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -28,13 +29,13 @@
                 and how to create an effective action plan, please read our guidance:
             </p>
             <p>
-                <a rel="external noopener track" target="_blank" href="/guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/overview">Eight ways to understand your organisation's gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
+                <a rel="external noopener track" target="_blank" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">Eight ways to understand your organisation's gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>
             </p>
             <p>
                 <a rel="external noopener track" target="_blank" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan<span class="visually-hidden">(opens in a new window)</span></a>
             </p>
             <p>
-                <a rel="external noopener track" target="_blank" href="/actions-to-close-the-gap">Actions to close the gap<span class="visually-hidden">(opens in a new window)</span></a>
+                <a rel="external noopener track" target="_blank" href="@Url.Action("Overview", "ActionHub")">Actions to close the gap<span class="visually-hidden">(opens in a new window)</span></a>
             </p>
 
             <p>

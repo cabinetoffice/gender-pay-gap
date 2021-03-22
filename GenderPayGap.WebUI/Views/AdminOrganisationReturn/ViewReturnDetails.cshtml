@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -52,7 +53,7 @@
             <span class="govuk-!-font-size-27" style="display: inline-block; margin-top: 15px;">
                 for @(Model.Organisation.OrganisationName)
                 <br />
-                for reporting year @(Model.Year)-@((Model.Year + 1) % 100)
+                for reporting year @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.Year)
             </span>
         </h1>
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
 
@@ -9,7 +10,7 @@ namespace GenderPayGap.WebUI.Models
 
         public int Year { get; set; }
 
-        public string YearFormatted => $"{Year}-{(Year + 1).ToTwoDigitYear()}";
+        public string YearFormatted => ReportingYearsHelper.FormatYearAsReportingPeriod(Year);
 
         public IEnumerable<CompareReportModel> CompareReports { get; set; }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -944,7 +945,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
-            var filename = $"Compared GPG Data {firstReportingYear}-{(firstReportingYear+1).ToTwoDigitYear()}.csv";
+            var filename = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(firstReportingYear)}.csv";
             controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
 
             Assert.NotNull(result);
@@ -997,7 +998,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Assert
 
             //Test the google analytics tracker was executed once on the controller
-            var filename = $"Compared GPG Data {firstReportingYear}-{(firstReportingYear + 1).ToTwoDigitYear()}.csv";
+            var filename = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(firstReportingYear)}.csv";
             controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
 
             Assert.NotNull(result);

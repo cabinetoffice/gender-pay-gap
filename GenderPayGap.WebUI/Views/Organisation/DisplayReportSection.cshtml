@@ -5,7 +5,7 @@
 @model GenderPayGap.WebUI.Models.Organisation.DisplayReportModel
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-    string year = $"{Model.ReportingYear}/{(Model.ReportingYear + 1).ToTwoDigitYear()}";
+    string year = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear, "/");
 
     OrganisationScope scopeForYear = Model.Organisation.GetScopeForYear(Model.ReportingYear);
     Return submittedReturn = Model.Organisation.GetReturn(Model.ReportingYear);

@@ -1,4 +1,5 @@
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
 @using GenderPayGap.WebUI.Views.Components.TaskList
 @using GovUkDesignSystem
@@ -7,7 +8,7 @@
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-    string formattedReportingYears = $"{Model.ReportingYear}-{(Model.ReportingYear + 1) % 100}";
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
 
     string editOrReportTitle = Model.IsEditingSubmittedReturn
         ? "Edit your gender pay gap"

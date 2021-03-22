@@ -20,10 +20,10 @@
             @foreach (int year in ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y))
             {
                 <li>
-                    <a href="@Url.Action("DownloadData", "Viewing", new { year = year })"
+                    <a href="@Url.Action("DownloadData", "Viewing", new {year})"
                        class="govuk-link">
                         <span class="govuk-visually-hidden">Download gender pay gap data for</span>
-                        Reporting year @(year)-@((year + 1) % 100) (CSV file)
+                        Reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(year)) (CSV file)
                     </a>
                 </li>
             }
