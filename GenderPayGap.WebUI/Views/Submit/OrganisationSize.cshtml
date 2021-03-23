@@ -81,7 +81,7 @@
                             string voluntarily = orgSize == OrganisationSizes.Employees0To249 ? ", I wish to report voluntarily" : "";
                             <div class="multiple-choice">
                                 <input id="@id" type="radio" name="OrganisationSize" value="@((int) orgSize)" @(Model.OrganisationSize == orgSize ? "checked" : "")>
-                                <label for="@id">@label @voluntarily</label>
+                                <label for="@id">@label@voluntarily</label>
                             </div>
                         }
                     </fieldset>
