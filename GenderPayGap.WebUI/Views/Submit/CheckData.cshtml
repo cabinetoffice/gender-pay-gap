@@ -3,13 +3,24 @@
 @using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Helpers
+@using GenderPayGap.WebUI.Models.Shared.Patterns
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 <div class="grid-row">
     <div style="margin-top: 15px;">
         <partial name="/Views/Components/EnforcementChangesMessage.cshtml"/>
     </div>
 </div>
-@await Html.PartialAsync("ReportPageBreadcrumbs")
+@{
+    var breadcrumbModel = new ManageOrganisationBreadcrumbs
+    {
+        OrganisationName = Model.OrganisationName,
+        EncryptedOrganisationId = Encryption.EncryptQuerystring(Model.EncryptedOrganisationId),
+        PageText = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportInfo.ReportingStartDate.Year) + " Reporting year"
+    };
+}
+
+<partial name="Patterns/ManageOrganisationBreadcrumbs" model="breadcrumbModel" />
+
 <div class="grid-row">
 <div class="column-two-thirds">
 @using (Html.BeginForm())
