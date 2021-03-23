@@ -18,12 +18,14 @@
             <p>Your gender pay gap information has now been published on the Gender pay gap service.</p>
             <p>@Html.ActionLink("View your published gender pay gap information", "Report", "Viewing", new {employerIdentifier = Model.EncryptedOrganisationId, year = Model.AccountingDate.Year}, new {id = "btnViewData"})</p>
 
-            <h2 class="heading-medium">Next steps</h2>
-            <p>
+            <h2 class="heading-small">Next steps</h2>
+            <span>
                 You must also publish your gender pay gap report (and
                 <a href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement" target="_blank" rel="noopener">written statement<span class="visually-hidden">(opens in a new window)</span></a> if applicable) in a prominent place on your employer's public facing website.
-            </p>
-            <h2 class="heading-medium">Understanding your gender pay gap and taking action to close it</h2>
+            </span>
+            <br/>
+            <br/>
+            <h2 class="heading-small">Understanding your gender pay gap and taking action to close it</h2>
             <p>
                 For more information on diagnosing your employer's gender pay gap,
                 and how to create an effective action plan, please read our guidance:
