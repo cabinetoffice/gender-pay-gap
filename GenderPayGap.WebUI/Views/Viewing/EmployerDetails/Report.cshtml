@@ -115,12 +115,16 @@
     </div>
 </div>
 
-<partial name="EmployerDetails/HourlyRate/HourlyRateSection" model="Model"/>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <partial name="EmployerDetails/HourlyRate/HourlyRateSection" model="Model"/>
 
-<partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
+        <partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
 
-<partial name="EmployerDetails/BonusPay/BonusPaySection" model="Model"/>
-
+        <partial name="EmployerDetails/BonusPay/BonusPaySection" model="Model"/>
+    </div>
+    @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
+</div>
 <hr class="column-two-thirds"/>
 <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
 
@@ -129,8 +133,6 @@
 
         (function () {
             "use strict";
-
-            GOVUK.details.addDetailsPolyfill();
 
             new GOVUK.Ajaxify({
                 onError: function (errorCode, error, errorThrown) {

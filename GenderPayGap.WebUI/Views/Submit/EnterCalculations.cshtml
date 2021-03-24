@@ -3,10 +3,12 @@
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 
 @{
+    var controller = ViewData["Controller"] as BaseController;
+    var reportingOrganisation = controller.ReportingOrganisation;
     var breadcrumbModel = new ManageOrganisationBreadcrumbs
     {
-        OrganisationName = Model.OrganisationName,
-        EncryptedOrganisationId = Encryption.EncryptQuerystring(Model.EncryptedOrganisationId),
+        OrganisationName = reportingOrganisation.OrganisationName,
+        EncryptedOrganisationId = Encryption.EncryptQuerystring(reportingOrganisation.OrganisationId.ToString()),
         PageText = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportInfo.ReportingStartDate.Year) + " Reporting year"
     };
 }
@@ -38,8 +40,6 @@
             @Html.HiddenFor(model => model.LateReason)
 
             @{
-                var controller = ViewData["Controller"] as BaseController;
-
                 if (Model.ReturnUrl.EqualsI("CheckData"))
                 {
                     <a class="link-back" href="@Url.Action("CheckData")">Back <span class="visuallyhidden"> to the previous step</span></a>
