@@ -1,6 +1,7 @@
 ﻿@using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Models.Shared.Patterns
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
 @{
@@ -10,7 +11,7 @@
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string reportingYearsString = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear.Year);
     string reason = Model.WhyOutOfScope == WhyOutOfScope.Under250
         ? "My organisation had fewer than 250 employees on " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
         : Model.WhyOutOfScopeDetails;
@@ -34,11 +35,11 @@
             </h1>
         </div>
 
-        <h1 class="heading-large">
-            <span class="heading-secondary">@Model.Organisation.OrganisationName</span>
-        </h1>
+        <h2 class="govuk-heading-m">
+            @Model.Organisation.OrganisationName
+        </h2>
         <p class="govuk-body">
-            You have acknowledged that your employer is subject the gender pay
+            You have acknowledged that your employer is not subject the gender pay
             gap regulations for the @(reportingYearsString) reporting year.
         </p>
 

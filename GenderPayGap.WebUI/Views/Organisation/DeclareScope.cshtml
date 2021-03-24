@@ -2,6 +2,7 @@
     ViewBag.Title = "We need more information - Gender pay gap reporting service";
 }
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.Organisation.DeclareScopeModel
 <div class="grid-row">
     <div class="column-full">
@@ -20,7 +21,7 @@
                 <span class="heading-secondary">@Model.OrganisationName</span>
             </h1>
 
-            <p>Was your employer required to report for the @(Model.SnapshotDate.Year)/@(Model.SnapshotDate.AddYears(1).Year.ToTwoDigitYear()) reporting year?</p>
+            <p>Was your employer required to report for the @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.SnapshotDate.Year) reporting year?</p>
             @Html.ValidationMessageFor(model => model.ScopeStatus, null, new {@class = "error-danger"})
             <div class="form-group @Html.SetErrorClass(model => model.ScopeStatus, "error")">
                 <fieldset>
