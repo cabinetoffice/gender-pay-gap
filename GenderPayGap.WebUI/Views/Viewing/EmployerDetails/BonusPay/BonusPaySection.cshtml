@@ -48,7 +48,7 @@
 <section id="BonusPayGap">
 
     <div class="grid-row">
-        <div class="column-two-thirds">
+        <div class="column-full">
             <h2 class="heading-medium">Bonus pay gap</h2>
         </div>
     </div>
@@ -56,7 +56,7 @@
     @if (Model.MenReceivedBonuses)
     {
         <div class="grid-row">
-            <div class="column-two-thirds">
+            <div class="column-full">
                 <span>
                     In this organisation, women earn @(Model.FemaleMedianBonusPayMonitised)
                     for every @(Model.MaleMedianBonusPayMonitised)
@@ -71,7 +71,7 @@
         </div>
 
         <div class="grid-row" aria-hidden="true">
-            <div class="column-two-thirds">
+            <div class="column-full">
                 <div class="govuk-legend">
                     <span class="font-xsmall">
                         <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
@@ -86,13 +86,13 @@
     <partial name="EmployerDetails/BonusPay/BonusDiffText" model="diffMeanBonusText"/>
 
     <div class="grid-row">
-        <div class="column-two-thirds">
+        <div class="column-full">
             <h3 id="ReceivedBonusPay" class="heading-small" style="margin-bottom: 1.25em">Who received bonus pay</h3>
         </div>
     </div>
 
     <div class="grid-row">
-        <div class="column-two-thirds">
+        <div class="column-full">
             @if (Model.WomenReceivedBonuses || Model.MenReceivedBonuses)
             {
                 <partial name="EmployerDetails/BonusPay/BonusProportionText" model="femaleBonusPayText"/>

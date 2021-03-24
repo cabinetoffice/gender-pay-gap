@@ -66,118 +66,124 @@
 
         <div class="grid-row">
             <div class="column-two-thirds">
-                <hr style="margin-top: 0"/>
-                <div class="body" style="margin-top: 3em">
-                    <p>
-                        Below are all reports submitted, or expected from this employer. <br/>
-                        Employers with a headcount of less than 250 can voluntarily report their gender pay gap information.
-                    </p>
-                </div>
+                <div class="grid-row">
+                    <div class="column-full">
+                        <hr style="margin-top: 0"/>
+                        <div class="body" style="margin-top: 3em">
+                            <p>
+                                Below are all reports submitted, or expected from this employer. <br/>
+                                Employers with a headcount of less than 250 can voluntarily report their gender pay gap information.
+                            </p>
+                        </div>
 
-                @await Html.PartialModelAsync(new Details
+                        @await Html.PartialModelAsync(new Details
+                        {
+                            Id = "WhoNeedsToReport",
+                            LinkText = "Who is required to report, and the deadlines",
+                            SummaryPartial = "EmployerDetails/WhoNeedsToReport"
+                        })
+
+                    </div>
+                </div>
+                @foreach (Return report in organisation.GetRecentReports(Global.ShowReportYearCount))
                 {
-                    Id = "WhoNeedsToReport",
-                    LinkText = "Who is required to report, and the deadlines",
-                    SummaryPartial = "EmployerDetails/WhoNeedsToReport"
-                })
+                    <div class="grid-row">
+                        <div class="column-full">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td style="border-bottom: none; width: 300px;">
+                                            <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
+                                        </td>
+                                    </tr>
+                                    @if (report.IsLateSubmission || report.IsVoluntarySubmission())
+                                    {
+                                        <tr>
+                                            <td style="border-bottom: none;">
+                                                <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel {IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission()}"/>
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (report.ReturnId == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="2" style="border-bottom: none;">
+                                                @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
+                                                    .Contains(report.AccountingDate.Year)
+                                                     && report.AccountingDate.Year == 2019)
+                                                {
+                                                    <span>
+                                                        The deadline for 2019/20
+                                                        @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
+                                                        @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
+                                                        Coronavirus (COVID-19), enforcement of reporting deadlines does not
+                                                        apply to employers in the 2019/20 reporting year.
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    if (organisation.GetIsInscope(report.AccountingDate.Year))
+                                                    {
+                                                        DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate);
+                                                        <span>
+                                                            This employer
+                                                            @(deadline.AddDays(1) > VirtualDateTime.Now ? "is" : "was")
+                                                            required to report by @(deadline.ToString("d MMMM yyyy"))
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Not required to report</span>
+                                                    }
+                                                }
+
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="2" style="border-bottom: none;">
+                                                <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
+                                                    View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-bottom: none;">
+                                                The data in this report used a snapshot date of @(report.AccountingDate.ToString("dd MMMM yyyy"))
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (report.ReturnId > 0 && organisation.SectorType == SectorTypes.Private)
+                                    {
+                                        <tr>
+                                            <td colspan="2" style="border-bottom: none;">
+
+                                                <div class="heading-xsmall" style="font-weight: bold">Person responsible</div>
+                                                <div>
+                                                    <span>@report.FirstName @report.LastName</span>
+                                                </div>
+                                                <div>
+                                                    <span>(@report.JobTitle)</span>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                    <hr/>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
 
             </div>
+
             @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
         </div>
-
-        @foreach (Return report in organisation.GetRecentReports(Global.ShowReportYearCount))
-        {
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td style="border-bottom: none; width: 300px;">
-                                    <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
-                                </td>
-                            </tr>
-                            @if (report.IsLateSubmission || report.IsVoluntarySubmission())
-                            {
-                                <tr>
-                                    <td style="border-bottom: none;">
-                                        <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel {IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission()}"/>
-                                    </td>
-                                </tr>
-                            }
-                            @if (report.ReturnId == 0)
-                            {
-                                <tr>
-                                    <td colspan="2" style="border-bottom: none;">
-                                        @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
-                                            .Contains(report.AccountingDate.Year)
-                                             && report.AccountingDate.Year == 2019)
-                                        {
-                                            <span>
-                                                The deadline for 2019/20
-                                                @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
-                                                @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
-                                                Coronavirus (COVID-19), enforcement of reporting deadlines does not
-                                                apply to employers in the 2019/20 reporting year.
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            if (organisation.GetIsInscope(report.AccountingDate.Year))
-                                            {
-                                                DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate);
-                                                <span>
-                                                    This employer
-                                                    @(deadline.AddDays(1) > VirtualDateTime.Now ? "is" : "was")
-                                                    required to report by @(deadline.ToString("d MMMM yyyy"))
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <span>Not required to report</span>
-                                            }
-                                        }
-
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="2" style="border-bottom: none;">
-                                        <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
-                                            View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" style="border-bottom: none;">
-                                        The data in this report used a snapshot date of @(report.AccountingDate.ToString("dd MMMM yyyy"))
-                                    </td>
-                                </tr>
-                            }
-                            @if (report.ReturnId > 0 && organisation.SectorType == SectorTypes.Private)
-                            {
-                                <tr>
-                                    <td colspan="2" style="border-bottom: none;">
-
-                                        <div class="heading-xsmall" style="font-weight: bold">Person responsible</div>
-                                        <div>
-                                            <span>@report.FirstName @report.LastName</span>
-                                        </div>
-                                        <div>
-                                            <span>(@report.JobTitle)</span>
-                                        </div>
-
-                                    </td>
-                                </tr>
-                            }
-                            <hr/>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        }
         <hr class="column-two-thirds"/>
+
         <partial name="~/Views/Viewing/Launchpad/Parts/ServiceSurveyIntroAndLink.cshtml"/>
     </div>
 </div>
@@ -187,8 +193,6 @@
 
         (function() {
             "use strict";
-
-            GOVUK.details.addDetailsPolyfill();
 
             new GOVUK.Ajaxify({
                 onError: function(errorCode, error, errorThrown) {

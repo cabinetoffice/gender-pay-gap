@@ -11,10 +11,12 @@
     </div>
 </div>
 @{
+    var controller = ViewData["Controller"] as BaseController;
+    var reportingOrganisation = controller.ReportingOrganisation;
     var breadcrumbModel = new ManageOrganisationBreadcrumbs
     {
-        OrganisationName = Model.OrganisationName,
-        EncryptedOrganisationId = Encryption.EncryptQuerystring(Model.EncryptedOrganisationId),
+        OrganisationName = reportingOrganisation.OrganisationName,
+        EncryptedOrganisationId = Encryption.EncryptQuerystring(reportingOrganisation.OrganisationId.ToString()),
         PageText = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportInfo.ReportingStartDate.Year) + " Reporting year"
     };
 }
@@ -58,10 +60,6 @@
 
     @Html.HiddenFor(model => model.OrganisationSize)
     @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
-
-
-    var controller = ViewData["Controller"] as BaseController;
-    var reportingOrganisation = controller.ReportingOrganisation;
 
     <h1 class="heading-large">
         Review your gender pay gap data for snapshot date @(Model.ReportInfo.ReportingStartDate.ToString("dd MMMM yyyy"))
@@ -529,26 +527,27 @@
     </div>
     <br/>
 
-    <div style="display: inline-grid" class="govuk-!-width-one-quarter">
+    <div>
         @if (Model.ReportInfo.Draft.HasDraftBeenModifiedDuringThisSession && Model.HasUserData())
         {
-            @:&nbsp;&nbsp;<a href="@Url.Action("DraftComplete")" class="govuk-button govuk-button--secondary">Save draft</a>
+            @:<a href="@Url.Action("DraftComplete")" class="govuk-button govuk-button--secondary govuk-!-width-one-quarter">Save draft</a>
         }
         else
         {
-            @:&nbsp;&nbsp;<a class="govuk-button govuk-button--secondary govuk-button--disabled" disabled="disabled">Save draft</a>
+            @:<a class="govuk-button govuk-button--secondary govuk-button--disabled govuk-!-width-one-quarter" disabled="disabled">Save draft</a>
         }
+        <br/>
         @if (Model.IsDifferentFromDatabase && Model.ShouldProvideLateReason && Model.IsValidReturn())
         {
-            <a id="ContinueLateReasonStep" href="@Url.Action("LateReason")" class="govuk-button">Continue</a>
+            <a id="ContinueLateReasonStep" href="@Url.Action("LateReason")" class="govuk-button govuk-!-width-one-quarter">Continue</a>
         }
         else if (Model.IsDifferentFromDatabase && Model.IsValidReturn())
         {
-            <input id="ConfirmStep" class="govuk-button" type="submit" role="button" value="Submit"/>
+            <input id="ConfirmStep" class="govuk-button govuk-!-width-one-quarter" type="submit" role="button" value="Submit"/>
         }
         else
         {
-            <input id="ConfirmStep" class="govuk-button" type="submit" role="button" value="Submit" disabled="disabled"/>
+            <input id="ConfirmStep" class="govuk-button govuk-!-width-one-quarter" type="submit" role="button" value="Submit" disabled="disabled"/>
         }
     </div>
     <br/>

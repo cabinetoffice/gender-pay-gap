@@ -43,13 +43,13 @@
             <h2 class="heading-medium">The percentage of women in each pay quarter</h2>
 
             <div class="grid-row">
-                <div class="column-two-thirds">
+                <div class="column-full">
                     In this organisation, women occupy @(UpperQuartilePayBandModel.FemaleFormatted)% of the highest paid jobs and @(LowerPayBandModel.FemaleFormatted)% of the lowest paid jobs.
                 </div>
             </div>
 
             <div class="grid-row">
-                <div class="column-two-thirds">
+                <div class="column-full">
                     <div class="govuk-legend">
                         <span class="font-xsmall">
                             <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
@@ -65,7 +65,7 @@
             </div>
 
             <div class="grid-row">
-                <div class="column-two-thirds">
+                <div class="column-full">
                     <br/>
                     @await Html.PartialModelAsync(new Details
                     {
@@ -77,6 +77,6 @@
             </div>
 
         </section>
-        <hr class="column-two-thirds"/>
+        <hr/>
     </div>
 </div>
