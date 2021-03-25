@@ -143,7 +143,7 @@ namespace GenderPayGap.WebUI.Controllers
             
             SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.InScope);
 
-            return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new { encryptedOrganisationId = encryptedOrganisationId });
+            return RedirectToAction("ScopeDeclared", "Organisation", new {id = encryptedOrganisationId});
         }
 
         public void RetireOldScopes(Organisation organisation, int reportingYear)

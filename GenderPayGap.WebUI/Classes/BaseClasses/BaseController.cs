@@ -434,7 +434,8 @@ namespace GenderPayGap.WebUI.Classes
                 "Organisation/ChangeOrganisationScope",
                 "Organisation/ActivateOrganisation",
                 "Organisation/ReportForOrganisation",
-                "Organisation/DeclareScope"))
+                "Organisation/DeclareScope",
+                "Organisation/ScopeDeclared"))
             {
                 return null;
             }

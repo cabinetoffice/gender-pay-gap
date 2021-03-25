@@ -184,6 +184,58 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [Authorize]
+        [HttpGet("~/scope-declared/{id}")]
+        public IActionResult ScopeDeclared(string id)
+        {
+            //Ensure user has completed the registration process
+            IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
+            if (checkResult != null)
+            {
+                return checkResult;
+            }
+
+            // Decrypt org id
+            if (!id.DecryptToId(out long organisationId))
+            {
+                return new HttpBadRequestResult($"Cannot decrypt employer id {id}");
+            }
+
+            // Check the user has permission for this organisation
+            UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
+            if (userOrg == null)
+            {
+                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
+            }
+
+            // Ensure this user is registered fully for this organisation
+            if (userOrg.PINConfirmedDate == null)
+            {
+                return new HttpForbiddenResult(
+                    $"User {currentUser?.EmailAddress} has not completed registration for employer {userOrg.Organisation.EmployerReference}");
+            }
+
+            //Get the current snapshot date
+            DateTime snapshotDate = userOrg.Organisation.SectorType.GetAccountingStartDate().AddYears(-1);
+            if (snapshotDate.Year < Global.FirstReportingYear)
+            {
+                return new HttpBadRequestResult($"Snapshot year {snapshotDate.Year} is invalid");
+            }
+
+            ScopeStatuses scopeStatus =
+                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, snapshotDate.Year);
+
+            var model = new DeclareScopeModel
+            {
+                OrganisationId = userOrg.OrganisationId, 
+                OrganisationName = userOrg.Organisation.OrganisationName, 
+                SnapshotDate = snapshotDate, 
+                ScopeStatus = scopeStatus
+            };
+
+            return View("ScopeDeclared", model);
+        }
+
+        [Authorize]
         [HttpGet("~/activate-organisation/{id}")]
         public IActionResult ActivateOrganisation(string id)
         {
