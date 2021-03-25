@@ -122,17 +122,19 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             OrganisationAddress newOrganisationAddressFromCompaniesHouse =
                 CreateOrganisationAddressFromCompaniesHouseAddress(companiesHouseAddress);
             OrganisationAddress oldOrganisationAddress = organisation.GetLatestAddress();
-            if (oldOrganisationAddress.AddressMatches(newOrganisationAddressFromCompaniesHouse)
-                || IsNewOrganisationAddressNullOrEmpty(newOrganisationAddressFromCompaniesHouse))
+            if (oldOrganisationAddress != null)
             {
-                return;
+                if (oldOrganisationAddress.AddressMatches(newOrganisationAddressFromCompaniesHouse)
+                    || IsNewOrganisationAddressNullOrEmpty(newOrganisationAddressFromCompaniesHouse))
+                {
+                    return;
+                }
+                oldOrganisationAddress.Status = AddressStatuses.Retired;
+                oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
             }
 
             newOrganisationAddressFromCompaniesHouse.OrganisationId = organisation.OrganisationId;
             organisation.OrganisationAddresses.Add(newOrganisationAddressFromCompaniesHouse);
-
-            oldOrganisationAddress.Status = AddressStatuses.Retired;
-            oldOrganisationAddress.StatusDate = VirtualDateTime.Now;
 
             dataRepository.Insert(newOrganisationAddressFromCompaniesHouse);
         }
