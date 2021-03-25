@@ -57,10 +57,10 @@
         }
 
         <p class="govuk-body">
-            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})" role="button">Return to @Model.OrganisationName</a>
+            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = ViewContext.RouteData.Values["Id"]})" role="button">Return to @Model.OrganisationName</a>
         </p>
         <p class="govuk-body">
-            <a class="button" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = ViewContext.RouteData.Values["Id"]})" role="button">Return to Manage Employers</a>
+            <a class="govuk-link" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Return to Manage Employers</a>
         </p>
     </div>
 </div>
