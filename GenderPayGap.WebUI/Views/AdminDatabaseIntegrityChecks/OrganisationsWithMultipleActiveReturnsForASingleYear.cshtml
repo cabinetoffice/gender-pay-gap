@@ -1,41 +1,19 @@
 ﻿@using GenderPayGap.Database
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model List<GenderPayGap.Database.Organisation>
+
 @{
-    ViewBag.Title = "Organisations with multiple active returns for a single year - Administration - Gender pay gap service";
+    var title = "Organisations with multiple active returns for a single year";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Admin",
-                Href = Url.Action("AdminHomePage", "AdminHomepage")
-            },
-            new CrumbViewModel
-            {
-                Text = "Database integrity checks",
-                Href = Url.Action("DatabaseIntegrityChecks", "AdminDatabaseIntegrityChecks")
-            },
-            new CrumbViewModel
-            {
-                Text = "Organisations with multiple active returns for a single year"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
 }
 
 <span class="govuk-caption-xl">Database integrity checks</span>
-<h1 class="govuk-heading-xl">Organisations with multiple active returns for a single year</h1>
+<h1 class="govuk-heading-xl">@title</h1>
 
 <p class="govuk-body">
     This shows a list of organisations who have multiple active submissions for a reporting year. When a submission 

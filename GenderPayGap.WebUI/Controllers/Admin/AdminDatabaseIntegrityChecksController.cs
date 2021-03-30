@@ -9,6 +9,7 @@ using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static GenderPayGap.WebUI.Helpers.IntegrationChecksHelper;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
@@ -30,7 +31,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             return View("DatabaseIntegrityChecks");
         }
-        
+
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-name")]
         public IActionResult ActiveOrganisationsWithTheSameName()
         {
@@ -46,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("ActiveOrganisationsWithTheSameName", duplicateOrganisationNames);
         }
-        
+
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number")]
         public IActionResult ActiveOrganisationsWithTheSameCompanyNumber()
         {
@@ -74,7 +75,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
         }
-        
+
         [HttpGet("database-integrity-checks/organisations-without-an-active-address")]
         public IActionResult OrganisationsWithoutAnActiveAddress()
         {
@@ -85,7 +86,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("OrganisationsWithoutAnActiveAddress", organisationsWithoutAnActiveAddress);
         }
-        
+
         [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active")]
         public IActionResult OrganisationsWhereLatestAddressIsNotActive()
         {
@@ -99,7 +100,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
-        
+
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year")]
         public IActionResult OrganisationsWithMultipleActiveScopesForASingleYear()
         {
@@ -200,5 +201,192 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
         }
 
+        [HttpGet("database-integrity-checks/returns-with-figures-with-more-than-one-decimal-place")]
+        public IActionResult ReturnsWithFiguresWithMoreThanOneDecimalPlace()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => HasMoreThanOneDecimalPlace(r.FemaleLowerPayBand)
+                             || HasMoreThanOneDecimalPlace(r.MaleLowerPayBand)
+                             || HasMoreThanOneDecimalPlace(r.FemaleMiddlePayBand)
+                             || HasMoreThanOneDecimalPlace(r.MaleMiddlePayBand)
+                             || HasMoreThanOneDecimalPlace(r.FemaleUpperPayBand)
+                             || HasMoreThanOneDecimalPlace(r.MaleUpperPayBand)
+                             || HasMoreThanOneDecimalPlace(r.FemaleUpperQuartilePayBand)
+                             || HasMoreThanOneDecimalPlace(r.MaleUpperQuartilePayBand)
+                             || HasMoreThanOneDecimalPlace(r.FemaleMedianBonusPayPercent)
+                             || HasMoreThanOneDecimalPlace(r.MaleMedianBonusPayPercent)
+                             || HasMoreThanOneDecimalPlace(r.DiffMeanBonusPercent)
+                             || HasMoreThanOneDecimalPlace(r.DiffMedianBonusPercent)
+                             || HasMoreThanOneDecimalPlace(r.DiffMedianHourlyPercent)
+                             || HasMoreThanOneDecimalPlace(r.DiffMeanHourlyPayPercent))
+                    .ToList();
+
+            return PartialView("ReturnsWithFiguresWithMoreThanOneDecimalPlace", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-quarters-figures-sum-different-than-100")]
+        public IActionResult ReturnsWithQuartersFiguresSumDifferentThan100()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => SumNotEqualTo100(r.FemaleLowerPayBand, r.MaleLowerPayBand)
+                             || SumNotEqualTo100(r.FemaleMiddlePayBand, r.MaleMiddlePayBand)
+                             || SumNotEqualTo100(r.FemaleUpperPayBand, r.MaleUpperPayBand)
+                             || SumNotEqualTo100(r.FemaleUpperQuartilePayBand, r.MaleUpperQuartilePayBand))
+                    .ToList();
+
+            return PartialView("ReturnsWithQuartersFiguresSumDifferentThan100", invalidReturns);
+        }
+
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-quarters-figures")]
+        public IActionResult ReturnsWithInvalidQuartersFigures()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => FigureGreaterThan100OrLessThan(r.FemaleLowerPayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.MaleLowerPayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.FemaleMiddlePayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.MaleMiddlePayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.MaleUpperPayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.FemaleUpperPayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.MaleUpperQuartilePayBand, 0)
+                             || FigureGreaterThan100OrLessThan(r.FemaleUpperQuartilePayBand, 0))
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidQuartersFigures", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-mean-median-figures")]
+        public IActionResult ReturnsWithInvalidMeanMedianFigures()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => FigureGreaterThan100OrLessThan(r.DiffMedianHourlyPercent, -499.9m)
+                             || FigureGreaterThan100OrLessThan(r.DiffMeanHourlyPayPercent, -499.9m))
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidMeanMedianFigures", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-bonus-figures")]
+        public IActionResult ReturnsWithInvalidBonusFigures()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => FigureGreaterThan100OrLessThan(r.FemaleMedianBonusPayPercent, 0)
+                             || FigureGreaterThan100OrLessThan(r.MaleMedianBonusPayPercent, 0))
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidBonusFigures", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-bonus-mean-median-figures")]
+        public IActionResult ReturnsWithInvalidBonusMeanMedianFigures()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(r => r.DiffMedianBonusPercent > 100 || r.DiffMeanBonusPercent > 100)
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidBonusMeanMedianFigures", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-missing-figures")]
+        public IActionResult ReturnsWithMissingFigures()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => r.MaleMedianBonusPayPercent != 0 && (!r.DiffMeanBonusPercent.HasValue || !r.DiffMedianBonusPercent.HasValue))
+                    .ToList();
+
+            return PartialView("ReturnsWithMissingFigures", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/private-employers-returns-without-responsible-person")]
+        public IActionResult PrivateEmployersReturnsWithoutResponsiblePerson()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted && r.Organisation.SectorType == SectorTypes.Private)
+                    .AsEnumerable()
+                    .Where(r => String.IsNullOrEmpty(r.FirstName) || String.IsNullOrEmpty(r.LastName) || String.IsNullOrEmpty(r.JobTitle))
+                    .ToList();
+
+            return PartialView("PrivateEmployersReturnsWithoutResponsiblePerson", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-bonus-figures-given-no-women-bonus")]
+        public IActionResult ReturnsWithInvalidBonusFiguresGivenNoWomenBonus()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(r => r.FemaleMedianBonusPayPercent == 0 && r.MaleMedianBonusPayPercent != 0)
+                    .Where(r => r.DiffMeanBonusPercent != 100 && r.DiffMedianBonusPercent != 100)
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidBonusFiguresGivenNoWomenBonus", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-text-fields-values")]
+        public IActionResult ReturnsWithInvalidTextFieldsValues()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(
+                        r => r.CompanyLinkToGPGInfo != null && r.CompanyLinkToGPGInfo.Length > 255
+                             || r.LateReason != null && r.LateReason.Length > 200)
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidTextFieldsValues", invalidReturns);
+        }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-company-link")]
+        public IActionResult ReturnsWithInvalidCompanyLink()
+        {
+            
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .AsEnumerable()
+                    .Where(r =>
+                    {
+                        if (String.IsNullOrEmpty(r.CompanyLinkToGPGInfo))
+                        {
+                            return false;
+                        }
+
+                        return !(Uri.TryCreate(r.CompanyLinkToGPGInfo, UriKind.Absolute, out Uri uriResult)
+                                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps));
+                    })
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidCompanyLink", invalidReturns);
+        }
     }
 }

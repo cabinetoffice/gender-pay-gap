@@ -1,0 +1,33 @@
+﻿@model List<GenderPayGap.Database.Return>
+
+@{
+    var title = "Submitted reports with figures with more than one decimal place";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
+}
+
+<span class="govuk-caption-xl">Database integrity checks</span>
+<h1 class="govuk-heading-xl">@title</h1>
+
+<p class="govuk-body">
+    This shows submitted reports that contain figures with more than one decimal place.
+    <br/>
+    Please note that only one decimal is displayed everywhere on the service but you can see the bad data by downloading the CSV.
+</p>
+
+@if (!Model.Any())
+{
+    <div class="govuk-body">
+        No reports
+    </div>
+}
+else
+{
+    <h2 class="govuk-heading-m">@(Model.Count) reports with invalid data</h2>
+    <partial name="ReturnsTable.cshtml" model="Model"/>
+}

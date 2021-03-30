@@ -1,41 +1,19 @@
 ﻿@using GenderPayGap.Database
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model List<GenderPayGap.Database.Organisation>
+
 @{
-    ViewBag.Title = "Active private organisations with a public sector type - Administration - Gender pay gap service";
+    var title = "Active private organisations with a public sector type";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Admin",
-                Href = Url.Action("AdminHomePage", "AdminHomepage")
-            },
-            new CrumbViewModel
-            {
-                Text = "Database integrity checks",
-                Href = Url.Action("DatabaseIntegrityChecks", "AdminDatabaseIntegrityChecks")
-            },
-            new CrumbViewModel
-            {
-                Text = "Active private organisations with a public sector type"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
 }
 
 <span class="govuk-caption-xl">Database integrity checks</span>
-<h1 class="govuk-heading-xl">Active private organisations with a public sector type</h1>
+<h1 class="govuk-heading-xl">@title</h1>
 
 <p class="govuk-body">
     This shows active private organisations, that are either in scope or presumed in scope, with a public sector 

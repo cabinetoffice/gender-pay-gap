@@ -1,40 +1,18 @@
-﻿@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
-@model List<string>
+﻿@model List<string>
+
 @{
-    ViewBag.Title = "Active organisations with the same name - Administration - Gender pay gap service";
+    var title = "Active organisations with the same name";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Admin",
-                Href = Url.Action("AdminHomePage", "AdminHomepage")
-            },
-            new CrumbViewModel
-            {
-                Text = "Database integrity checks",
-                Href = Url.Action("DatabaseIntegrityChecks", "AdminDatabaseIntegrityChecks")
-            },
-            new CrumbViewModel
-            {
-                Text = "Active organisations with the same name"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
 }
 
 <span class="govuk-caption-xl">Database integrity checks</span>
-<h1 class="govuk-heading-xl">Active organisations with the same name</h1>
+<h1 class="govuk-heading-xl">@title</h1>
 
 <p class="govuk-body">
     This shows a list of all active organisations that have one or more exact matches for their name in the database. 
