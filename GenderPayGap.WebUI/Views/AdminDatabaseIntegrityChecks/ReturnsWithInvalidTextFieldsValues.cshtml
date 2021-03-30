@@ -1,0 +1,38 @@
+﻿@model List<GenderPayGap.Database.Return>
+@{
+    var title = "Submitted reports with text fields that exceed the length limit";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
+}
+
+<span class="govuk-caption-xl">Database integrity checks</span>
+<h1 class="govuk-heading-xl">@title</h1>
+
+<p class="govuk-body">
+    This shows submitted reports that contain text fields that exceed the length limit. The following rules are in place:
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            the late reason should not exceed 200 characters
+        </li>
+        <li>
+            the company link should not exceed 255 characters
+        </li>
+    </ul>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="govuk-body">
+        No reports
+    </div>
+}
+else
+{
+    <h2 class="govuk-heading-m">@(Model.Count) reports with invalid data</h2>
+    <partial name="ReturnsTable.cshtml" model="Model"/>
+}

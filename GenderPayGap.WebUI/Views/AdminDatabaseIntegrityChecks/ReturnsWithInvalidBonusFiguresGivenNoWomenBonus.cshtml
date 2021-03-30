@@ -1,0 +1,30 @@
+﻿@model List<GenderPayGap.Database.Return>
+@{
+    var title = "Submitted reports with no women receiving bonus and the bonus mean/median not equal to 100%";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
+}
+
+<span class="govuk-caption-xl">Database integrity checks</span>
+<h1 class="govuk-heading-xl">@title</h1>
+
+<p class="govuk-body">
+    This shows submitted reports where the % of women receiving a bonus equals 0% and the bonus mean or median is not 100%.
+</p>
+
+@if (!Model.Any())
+{
+    <div class="govuk-body">
+        No reports
+    </div>
+}
+else
+{
+    <h2 class="govuk-heading-m">@(Model.Count) reports with invalid bonus figures</h2>
+    <partial name="ReturnsTable.cshtml" model="Model"/>
+}

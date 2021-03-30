@@ -1,0 +1,27 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+
+@{
+    var crumbs = new List<CrumbViewModel>
+    {
+        new CrumbViewModel
+        {
+            Text = "Admin",
+            Href = Url.Action("AdminHomePage", "AdminHomepage")
+        },
+        new CrumbViewModel
+        {
+            Text = "Database integrity checks",
+            Href = Url.Action("DatabaseIntegrityChecks", "AdminDatabaseIntegrityChecks")
+        },
+        new CrumbViewModel
+        {
+            Text = Model
+        }
+    };
+}
+
+@(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+{
+    Crumbs = crumbs
+}))

@@ -1,41 +1,19 @@
 ﻿@using GenderPayGap.Database
-@using GovUkDesignSystem
-@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model List<GenderPayGap.Database.Organisation>
+
 @{
-    ViewBag.Title = "Organisations where the latest address is not active - Administration - Gender pay gap service";
+    var title = "Organisations where the latest address is not active";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Admin",
-                Href = Url.Action("AdminHomePage", "AdminHomepage")
-            },
-            new CrumbViewModel
-            {
-                Text = "Database integrity checks",
-                Href = Url.Action("DatabaseIntegrityChecks", "AdminDatabaseIntegrityChecks")
-            },
-            new CrumbViewModel
-            {
-                Text = "Organisations where the latest address is not active"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
 }
 
 <span class="govuk-caption-xl">Database integrity checks</span>
-<h1 class="govuk-heading-xl">Organisations where the latest address is not active</h1>
+<h1 class="govuk-heading-xl">@title</h1>
 
 <p class="govuk-body">
     This shows a list of all organisations where the latest address is not active. This could be investigated to 
