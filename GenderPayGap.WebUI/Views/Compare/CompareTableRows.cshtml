@@ -10,7 +10,7 @@
         <tr class="row @(isOddRow ? "" : "row-even")">
             <td class="LeftmostColumn">
                 <div class="OrganisationName">
-                    <button type="submit" name="command" value="@(compareReport.EncOrganisationId == null ? "employer" : "report"):@compareReport.EncOrganisationId" class="link-button">
+                    <button type="submit" name="command" value="@(compareReport.EncOrganisationId == null || !compareReport.HasReported ? "employer" : "report"):@compareReport.EncOrganisationId" class="link-button">
                         <span class="govuk-visually-hidden">View </span>
                         @compareReport.OrganisationName
                     </button>
