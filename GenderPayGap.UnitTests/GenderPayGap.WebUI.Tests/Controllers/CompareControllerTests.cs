@@ -812,7 +812,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         #region CompareEmployers
         [Test]
-        public void CompareController_CompareEmployers_NoYear_DefaultSortFirstYearAsync()
+        public void CompareController_CompareEmployers_NoYear_DefaultSortTheMostRecentCompletedReportingYearAsync()
         {
             // Arrange
             var routeData = new RouteData();
@@ -825,9 +825,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUri = new Uri("https://localhost/Viewing/compare-employers");
             controller.AddMockUriHelper(testUri.ToString(), "CompareEmployers");
 
-            var firstReportingYear = Global.FirstReportingYear;
-            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
+            var reportingYear = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
+            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", reportingYear);
+            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(reportingYear);
 
             //create the comparison data
             var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
@@ -855,7 +855,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var actualModel = result.Model as CompareViewModel;
             Assert.NotNull(actualModel);
             Assert.NotNull(actualModel.CompareReports);
-            Assert.IsTrue(actualModel.CompareReports.All(obj => actualModel.Year == firstReportingYear));
+            Assert.IsTrue(actualModel.CompareReports.All(obj => actualModel.Year == reportingYear));
             actualModel.CompareReports.Compare(expectedModel);
         }
 
@@ -913,7 +913,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
         #region DownloadCompareData
         [Test]
-        public void CompareController_DownloadCompareData_NoYear_DefaultSortFirstYearAsync()
+        public void CompareController_DownloadCompareData_NoYear_DefaultSortTheMostRecentCompletedReportingYearAsync()
         {
             // Arrange
             var routeData = new RouteData();
@@ -921,9 +921,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             routeData.Values.Add("Controller", "Viewing");
 
             var controller = UiTestHelper.GetController<CompareController>(0, routeData);
-            var firstReportingYear = Global.FirstReportingYear;
-            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
+            var reportingYear = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
+            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", reportingYear);
+            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(reportingYear);
 
             //create the comparison data
             var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
@@ -945,7 +945,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             //Test the google analytics tracker was executed once on the controller
-            var filename = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(firstReportingYear)}.csv";
+            var filename = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear)}.csv";
             controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
 
             Assert.NotNull(result);

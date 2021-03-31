@@ -238,7 +238,7 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 CompareViewService.SortColumn = null;
                 CompareViewService.SortAscending = true;
-                year = Global.FirstReportingYear;
+                year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
             }
 
             //Load employers from querystring (via shared email)
@@ -324,7 +324,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (year == 0)
             {
-                year = Global.FirstReportingYear;
+                year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
             }
 
             string args = command.AfterFirst(":");
@@ -352,7 +352,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             if (year == 0)
             {
-                year = Global.FirstReportingYear;
+                year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
             }
 
             var result = CompareEmployers(year) as ViewResult;
