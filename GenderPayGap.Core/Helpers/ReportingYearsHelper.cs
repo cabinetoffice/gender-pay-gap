@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Core.Helpers
 {
     public static class ReportingYearsHelper
     {
-        public const int DeadlineExtensionFor2020InMonths = 6;
-
         public static List<int> GetReportingYears()
         {
             int firstReportingYear = Global.FirstReportingYear;
@@ -42,6 +41,21 @@ namespace GenderPayGap.Core.Helpers
             }
 
             return deadline;
+        }
+
+        public static int GetTheMostRecentCompletedReportingYear()
+        {
+            int mostRecentReportingYear = Global.FirstReportingYear;
+            foreach (int year in from year in GetReportingYears()
+                let accountingDate = SectorTypes.Private.GetAccountingStartDate(year)
+                where GetDeadlineForAccountingDate(accountingDate) < VirtualDateTime.Now
+                select year)
+            {
+                mostRecentReportingYear = year;
+                break;
+            }
+
+            return mostRecentReportingYear;
         }
 
     }
