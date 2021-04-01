@@ -9,6 +9,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
@@ -164,8 +165,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 return SortCompareReports(compareReports, sortColumn, sortAscending);
             }
 
-            // Return the results
-            return compareReports;
+            // Return the results ordered by the order they were added by default
+            return compareReports.OrderBy(x => encBasketOrgIds.IndexOf(x.EncOrganisationId)).ToList();
         }
 
         public virtual DataTable GetCompareDatatable(IEnumerable<CompareReportModel> data)
