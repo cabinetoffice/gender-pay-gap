@@ -234,12 +234,11 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(
-                        r => SumNotEqualTo100(r.FemaleLowerPayBand, r.MaleLowerPayBand)
-                             || SumNotEqualTo100(r.FemaleMiddlePayBand, r.MaleMiddlePayBand)
-                             || SumNotEqualTo100(r.FemaleUpperPayBand, r.MaleUpperPayBand)
-                             || SumNotEqualTo100(r.FemaleUpperQuartilePayBand, r.MaleUpperQuartilePayBand))
+                        r => r.FemaleLowerPayBand + r.MaleLowerPayBand != 100
+                             || r.FemaleMiddlePayBand + r.MaleMiddlePayBand != 100
+                             || r.FemaleUpperPayBand + r.MaleUpperPayBand != 100
+                             || r.FemaleUpperQuartilePayBand + r.MaleUpperQuartilePayBand != 100)
                     .ToList();
 
             return PartialView("ReturnsWithQuartersFiguresSumDifferentThan100", invalidReturns);
@@ -252,16 +251,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(
-                        r => FigureGreaterThan100OrLessThan(r.FemaleLowerPayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.MaleLowerPayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.FemaleMiddlePayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.MaleMiddlePayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.MaleUpperPayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.FemaleUpperPayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.MaleUpperQuartilePayBand, 0)
-                             || FigureGreaterThan100OrLessThan(r.FemaleUpperQuartilePayBand, 0))
+                        r => r.FemaleLowerPayBand > 100 || r.FemaleLowerPayBand < 0
+                             || r.MaleLowerPayBand > 100 || r.MaleLowerPayBand < 0
+                             || r.FemaleMiddlePayBand > 100 || r.FemaleMiddlePayBand < 0
+                             || r.MaleMiddlePayBand > 100 || r.MaleMiddlePayBand < 0
+                             || r.MaleUpperPayBand > 100 || r.MaleUpperPayBand < 0
+                             || r.FemaleUpperPayBand > 100 || r.FemaleUpperPayBand < 0
+                             || r.MaleUpperQuartilePayBand > 100 || r.MaleUpperQuartilePayBand < 0
+                             || r.FemaleUpperQuartilePayBand > 100 || r.FemaleUpperQuartilePayBand < 0)
                     .ToList();
 
             return PartialView("ReturnsWithInvalidQuartersFigures", invalidReturns);
@@ -273,10 +271,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(
-                        r => FigureGreaterThan100OrLessThan(r.DiffMedianHourlyPercent, -499.9m)
-                             || FigureGreaterThan100OrLessThan(r.DiffMeanHourlyPayPercent, -499.9m))
+                        r => r.DiffMedianHourlyPercent > 100 || r.DiffMedianHourlyPercent < -499.9m
+                             || r.DiffMeanHourlyPayPercent > 100 || r.DiffMeanHourlyPayPercent < -499.9m)
                     .ToList();
 
             return PartialView("ReturnsWithInvalidMeanMedianFigures", invalidReturns);
@@ -288,10 +285,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(
-                        r => FigureGreaterThan100OrLessThan(r.FemaleMedianBonusPayPercent, 0)
-                             || FigureGreaterThan100OrLessThan(r.MaleMedianBonusPayPercent, 0))
+                        r => r.FemaleMedianBonusPayPercent > 100 || r.FemaleMedianBonusPayPercent < 0
+                             || r.MaleMedianBonusPayPercent > 100 || r.MaleMedianBonusPayPercent < 0)
                     .ToList();
 
             return PartialView("ReturnsWithInvalidBonusFigures", invalidReturns);
@@ -303,7 +299,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(r => r.DiffMedianBonusPercent > 100 || r.DiffMeanBonusPercent > 100)
                     .ToList();
 
@@ -316,7 +311,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(
                         r => r.MaleMedianBonusPayPercent != 0 && (!r.DiffMeanBonusPercent.HasValue || !r.DiffMedianBonusPercent.HasValue))
                     .ToList();
@@ -330,7 +324,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted && r.Organisation.SectorType == SectorTypes.Private)
-                    .AsEnumerable()
                     .Where(r => String.IsNullOrEmpty(r.FirstName) || String.IsNullOrEmpty(r.LastName) || String.IsNullOrEmpty(r.JobTitle))
                     .ToList();
 
@@ -343,7 +336,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(r => r.FemaleMedianBonusPayPercent == 0 && r.MaleMedianBonusPayPercent != 0)
                     .Where(r => r.DiffMeanBonusPercent != 100 && r.DiffMedianBonusPercent != 100)
                     .ToList();
@@ -357,7 +349,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .AsEnumerable()
                     .Where(
                         r => r.CompanyLinkToGPGInfo != null && r.CompanyLinkToGPGInfo.Length > 255
                              || r.LateReason != null && r.LateReason.Length > 200)
@@ -374,16 +365,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
                     .AsEnumerable()
-                    .Where(r =>
-                    {
-                        if (String.IsNullOrEmpty(r.CompanyLinkToGPGInfo))
-                        {
-                            return false;
-                        }
-
-                        return !(Uri.TryCreate(r.CompanyLinkToGPGInfo, UriKind.Absolute, out Uri uriResult)
-                                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps));
-                    })
+                    .Where(r => !String.IsNullOrEmpty(r.CompanyLinkToGPGInfo)
+                                && !(Uri.TryCreate(r.CompanyLinkToGPGInfo, UriKind.Absolute, out Uri uriResult)
+                                     && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)
+                                    ))
                     .ToList();
 
             return PartialView("ReturnsWithInvalidCompanyLink", invalidReturns);
