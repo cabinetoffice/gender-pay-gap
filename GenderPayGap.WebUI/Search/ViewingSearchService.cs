@@ -173,10 +173,14 @@ namespace GenderPayGap.WebUI.Search
 
             if (selectedReportingStatuses.Any())
             {
+                var reportingStatusFilteredOrgs = new List<SearchCachedOrganisation>();
+
                 foreach (SearchReportingStatusFilter status in selectedReportingStatuses)
                 {
-                    filteredOrgs = ApplyReportingStatusesFilter(filteredOrgs, status, selectedReportingYears);
+                    reportingStatusFilteredOrgs = reportingStatusFilteredOrgs.Union(ApplyReportingStatusesFilter(filteredOrgs, status, selectedReportingYears)).ToList();
                 }
+
+                filteredOrgs = reportingStatusFilteredOrgs;
             }
 
             
