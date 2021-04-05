@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
+using Castle.Core.Internal;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -108,9 +110,11 @@ namespace GenderPayGap.WebUI.Search
 
                         foreach (var osc in o.OrganisationSicCodes)
                         {
-                                sicCodeSynonyms.Add(new SearchReadyValue(osc.SicCode.Description));
+                            sicCodeSynonyms.Add(new SearchReadyValue(osc.SicCode.Description));
                         }
-                        
+
+                        var submittedReports = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).ToList();
+
                         return new SearchCachedOrganisation
                             {
                                 OrganisationId = o.OrganisationId,
@@ -120,18 +124,26 @@ namespace GenderPayGap.WebUI.Search
                                 EmployerReference = o.EmployerReference?.Trim(),
                                 OrganisationNames =
                                     o.OrganisationNames.OrderByDescending(n => n.Created)
-                                        .Select(on => new SearchReadyValue(@on.Name))
+                                        .Select(on => new SearchReadyValue(on.Name))
                                         .ToList(),
                                 MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
                                 Status = o.Status,
-                                OrganisationSizes = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Select(r => r.OrganisationSize).Distinct().ToList(),
+                                ReportingYearToOrganisationSizesMap = submittedReports
+                                    .GroupBy(r => r.AccountingDate.Year)
+                                    .ToDictionary(
+                                        g => g.Key,
+                                        g => g.ToList().Select(r => r.OrganisationSize).Distinct().ToList()),
                                 SicSectionIds =
                                     o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList(),
-                                ReportingYears = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Select(r => r.AccountingDate.Year).ToList(),
-                                DateOfLatestReport =
-                                    o.GetLatestReturn() != null ? o.GetLatestReturn().StatusDate.Date : new DateTime(1999, 1, 1),
-                                ReportedWithCompanyLinkToGpgInfo = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Any(r => r.CompanyLinkToGPGInfo != null),
-                                ReportedLate = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).Any(r => r.IsLateSubmission),
+                                ReportingYears = submittedReports.Select(r => r.AccountingDate.Year).ToList(),
+                                ReportingYearToDateOfLatestReportMap = ReportingYearsHelper.GetReportingYears()
+                                    .ToDictionary(
+                                        y => y,
+                                        y => o.GetReturn(y) != null ? o.GetReturn(y).StatusDate.Date : new DateTime(1999, 1, 1)),
+                                ReportedWithCompanyLinkToGpgInfoYears = submittedReports.Where(r => !r.CompanyLinkToGPGInfo.IsNullOrEmpty())
+                                    .Select(r => r.AccountingDate.Year)
+                                    .ToList(),
+                                ReportedLateYears = submittedReports.Where(r => r.IsLateSubmission).Select(r => r.AccountingDate.Year).ToList(),
                                 SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
                                 SicCodeSynonyms = sicCodeSynonyms,
                                 IncludeInViewingService = GetIncludeInViewingService(o),

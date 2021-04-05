@@ -150,7 +150,7 @@ namespace GenderPayGap.WebUI.Search
         {
             IEnumerable<OrganisationSizes> selectedOrganisationSizes = searchParams.FilterEmployerSizes.Select(s => (OrganisationSizes) s);
             IEnumerable<char> selectedSicSections = searchParams.FilterSicSectionIds;
-            IEnumerable<int> selectedReportingYears = searchParams.FilterReportedYears;
+            List<int> selectedReportingYears = searchParams.FilterReportedYears.ToList();
             IEnumerable<SearchReportingStatusFilter> selectedReportingStatuses =
                 searchParams.FilterReportingStatus.Select(s => (SearchReportingStatusFilter) s);
 
@@ -158,7 +158,7 @@ namespace GenderPayGap.WebUI.Search
 
             if (selectedOrganisationSizes.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes.Intersect(selectedOrganisationSizes).Any());
+                filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes(selectedReportingYears).Intersect(selectedOrganisationSizes).Any());
             }
 
             if (selectedSicSections.Any())
@@ -175,26 +175,28 @@ namespace GenderPayGap.WebUI.Search
             {
                 foreach (SearchReportingStatusFilter status in selectedReportingStatuses)
                 {
-                    filteredOrgs = ApplyReportingStatusesFilter(filteredOrgs, status);
+                    filteredOrgs = ApplyReportingStatusesFilter(filteredOrgs, status, selectedReportingYears);
                 }
             }
+
+            
 
             return filteredOrgs.ToList();
         }
 
         private IEnumerable<SearchCachedOrganisation> ApplyReportingStatusesFilter(IEnumerable<SearchCachedOrganisation> organisations,
-            SearchReportingStatusFilter filter)
+            SearchReportingStatusFilter filter, List<int> reportingYears)
         {
             switch (filter)
             {
                 case SearchReportingStatusFilter.ReportedInTheLast7Days:
-                    return organisations.Where(o => o.DateOfLatestReport > VirtualDateTime.Now.AddDays(-7));
+                    return organisations.Where(o => o.DatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-7)));
                 case SearchReportingStatusFilter.ReportedInTheLast30Days:
-                    return organisations.Where(o => o.DateOfLatestReport > VirtualDateTime.Now.AddDays(-30));
+                    return organisations.Where(o => o.DatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-30)));
                 case SearchReportingStatusFilter.ReportedLate:
-                    return organisations.Where(o => o.ReportedLate);
+                    return organisations.Where(o => o.ReportedLate(reportingYears));
                 case SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo:
-                    return organisations.Where(o => o.ReportedWithCompanyLinkToGpgInfo);
+                    return organisations.Where(o => o.ReportedWithCompanyLinkToGpgInfo(reportingYears));
                 default:
                     throw new Exception();
             }
