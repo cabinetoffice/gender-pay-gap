@@ -97,7 +97,9 @@ namespace GenderPayGap.WebUI.Controllers
                 CanAddEmployers = false,
                 CanClearCompare = true,
                 CanViewCompare = fromSearchResults && CompareViewService.BasketItemCount > 1
-                                 || fromEmployer && CompareViewService.BasketItemCount > 0
+                                 || fromEmployer && CompareViewService.BasketItemCount > 0,
+                IsSearchPage = fromSearchResults,
+                IsEmployerPage = fromEmployer
             };
 
             ViewBag.ReturnUrl = returnUrl;
@@ -165,7 +167,9 @@ namespace GenderPayGap.WebUI.Controllers
                 CanAddEmployers = false,
                 CanClearCompare = true,
                 CanViewCompare = fromSearchResults && CompareViewService.BasketItemCount > 1
-                                 || fromEmployer && CompareViewService.BasketItemCount > 0
+                                 || fromEmployer && CompareViewService.BasketItemCount > 0,
+                IsSearchPage = fromSearchResults,
+                IsEmployerPage = fromEmployer
             };
 
             ViewBag.ReturnUrl = returnUrl;

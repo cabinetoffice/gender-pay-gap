@@ -118,10 +118,12 @@
 
     LiveSearch.prototype.showLoadingIndicator = function showLoadingIndicator() {
         this.$loadingBlock.text('Loading...');
+        this.$loadingBlock.show();
     };
 
     LiveSearch.prototype.clearLoadingIndicator = function showLoadingIndicator() {
         this.$loadingBlock.html('&nbsp;');
+        this.$loadingBlock.hide();
     };
 
     LiveSearch.prototype.displayResults = function displayResults(results, action) {

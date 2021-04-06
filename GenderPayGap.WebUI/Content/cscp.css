@@ -24,7 +24,7 @@
     }
 }
 
-#comparison-basket {
+.comparison-basket {
     z-index: 10000;
     font-size: 16px;
     background-color: #d9ece2;
@@ -33,7 +33,7 @@
     width:100%;
 }
 
-.content-fixed#comparison-basket {
+.content-fixed.comparison-basket {
     margin-top: 0;
 }
 
@@ -53,6 +53,10 @@
 
 .comparison-button-container {
     display: block;
+}
+
+.comparison-divider {
+    border-bottom: solid 1px #bfc1c3;
 }
 
 @media (min-width: 769px) {
@@ -106,7 +110,7 @@
     }
 }
 
-#AddAllOrgsToCompare {
+.search-results-divider {
     border-bottom: solid 1px #bfc1c3;
     margin-bottom: 15px;
 }

@@ -7,30 +7,32 @@
         ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
     }
 }
-<div class="grid-row">
-    <div class="column-full">
-        @using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new {id = "FinderForm", @class = "js-live-search-form"}))
-        {
-            <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
-            <div class="grid-row">
-                <div style="margin-top: 15px;"> 
-                    <partial name="/Views/Components/EnforcementChangesMessage.cshtml"/>
-                </div> 
-            </div>
-            <div class="grid-row finder">
-                <div class="column-two-thirds">
-                    <partial name="Finder/Parts/Facets/Keywords" model="Model"/>
-                </div>
-            </div>
 
-            <div class="grid-row finder">
-                <div class="column-one-third">
-                    <partial name="Finder/Parts/Filter" model="Model"/>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        @using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new { id = "FinderForm", @class = "js-live-search-form" }))
+        {
+            <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel" />
+            <div class="govuk-grid-row">
+                <div style="margin-top: 15px;">
+                    <partial name="/Views/Components/EnforcementChangesMessage.cshtml" />
                 </div>
-                <div class="column-two-thirds js-live-search-results-block" aria-live="assertive">
+            </div>
+            <div class="govuk-grid-row finder comparison-divider">
+                <div class="govuk-grid-column-two-thirds">
+                    <partial name="Finder/Parts/Facets/Keywords" model="Model" />
+                </div>
+            </div>
+            <br/>
+            <div class="govuk-grid-row finder">
+                <div class="govuk-grid-column-one-third">
+                    <partial name="Finder/Parts/Filter" model="Model" />
+                </div>
+                <div class="govuk-grid-column-two-thirds js-live-search-results-block" aria-live="assertive">
                     <div id="loading"></div>
                     <div id="main">
-                        <partial name="Finder/Parts/MainContent" model="Model"/>
+                        <partial name="Finder/Parts/OrderBy" model="Model" />
+                        <partial name="Finder/Parts/MainContent" model="Model" />
                     </div>
                 </div>
             </div>

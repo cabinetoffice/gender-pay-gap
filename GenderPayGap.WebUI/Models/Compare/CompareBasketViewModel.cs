@@ -9,5 +9,10 @@
 
         public bool CanClearCompare { get; set; }
 
+        public bool IsSearchPage { get; set; }
+
+        public bool IsEmployerPage { get; set; }
+
+        public bool IsComparePage { get; set; }
     }
 }
