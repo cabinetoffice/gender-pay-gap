@@ -2,20 +2,19 @@
 
 <h2 class="govuk-visually-hidden">Search results</h2>
 
-<div>
+<div class="search-results-divider govuk-body">
     <partial name="~/Views/Viewing/Finder/Parts/ResultsInfo.cshtml" model="Model"/>
+    @if (Model.Employers.ActualRecordTotal > 1)
+    {
+        <div id="AddAllOrgsToCompare" style="@(Model.t == "1" ? "display: none;" : "display: block;");">
+            <a rel="track" data-track-category="Compare Link Clicked" href="@(Url.Action(nameof(ViewingController.AddSearchResultsToCompare), "Viewing"))@(Context.Request.QueryString)">
+                Add all employers to comparison list
+            </a>
+            <br/>
+            <br/>
+        </div>
+    }
 </div>
-
-@if (Model.Employers.ActualRecordTotal > 1)
-{
-    <div id="AddAllOrgsToCompare" style="@(Model.t == "1" ? "display: none;" : "display: block;");">
-        <a rel="track" data-track-category="Compare Link Clicked" href="@(Url.Action(nameof(ViewingController.AddSearchResultsToCompare), "Viewing"))@(Context.Request.QueryString)">
-            Add all organisations to comparison list
-        </a>
-        <br/>
-        <br/>
-    </div>
-}
 
 <div>
     @if (Model.Employers.Results.Count < 1)

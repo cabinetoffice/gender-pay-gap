@@ -2,89 +2,82 @@
 @{
     ViewBag.Title = "Select and compare gender pay gap data for employers - GOV.UK";
     string backUrl = string.IsNullOrWhiteSpace(Model.LastSearchUrl) ? "/" : Model.LastSearchUrl;
+    var basketModel = ViewBag.BasketViewModel as CompareBasketViewModel;
+    basketModel.IsComparePage = true;
 }
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
-    <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
-
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1 class="heading-large">
+    <br/>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">
                 Employer comparison
                 <span class="print-only"> (@Model.YearFormatted)</span>
             </h1>
         </div>
     </div>
 
-    <div class="grid-row">
-        <div class="column-two-thirds govuk-!-margin-bottom-2">
-            <a class="link-button" rel="track" data-track-category="Related Link Clicked" href="@Url.Action("Overview", "ActionHub")">How can employers close the gap</a>
+    <partial name="~/Views/Compare/ComparisonBasketContent.cshtml" model="basketModel" />
+
+    <div class="govuk-grid-row comparison-divider">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-2">
+            Read more about <a class="link-button" rel="track" data-track-category="Related Link Clicked" href="@Url.Action("Overview", "ActionHub")">actions to close the gap</a>
         </div>
-        <div class="column-two-thirds">
+    </div>
+    <br/>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <details class="govuk-details govuk-!-margin-bottom-2" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        More information about mean and median
+                        About mean and median
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <p>The <strong>mean</strong> hourly rate is the average hourly wage across the entire organisation so the mean gender pay gap is a measure of the difference between women’s mean hourly wage and men’s mean hourly wage.</p>
-                    <p>The <strong>median</strong> hourly rate is calculated by ranking all employees from the highest paid to the lowest paid, and taking the hourly wage of the person in the middle; so the median gender pay gap is the difference between women’s median hourly wage (the middle paid woman) and men’s median hourly wage (the middle paid man).</p>
+                    <partial name="AboutHourlyRate" />
                 </div>
             </details>
-            
+
             <details class="govuk-details" data-module="govuk-details">
-              <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                  More information about quartiles
-                </span>
-              </summary>
-              <div class="govuk-details__text">
-                <p>Pay quartiles are calculated by splitting all employees in an organisation into four even groups according to their level of pay. Looking at the proportion of women in each quartile gives an indication of women's representation at different levels of the organisation.</p>
-              </div>
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        About pay quarters
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <partial name="AboutQuartiles" />
+                </div>
             </details>
         </div>
-        <div class="column-full">
-            
+        <div class="govuk-grid-column-full">
+
         </div>
     </div>
 
     @if (Model.CompareBasketCount > 0)
     {
-        <div class="grid-row">
-            <div class="column-full">
-                <partial name="YearTabs"/>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="YearTabs" />
             </div>
         </div>
 
-        <div class="grid-row">
-            <div class="column-full">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
                 <div class="overflowx">
                     <table id="table" class="gpg-govuk-table">
-                        <partial name="CompareTableHeaders"/>
-                        <partial name="CompareTableRows"/>
+                        <partial name="CompareTableHeaders" />
+                        <partial name="CompareTableRows" />
                     </table>
                 </div>
             </div>
         </div>
 
-        <div class="grid-row">
-            <div class="column-full">
-                <partial name="CompareActions"/>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <p>
-                    You have no employers to compare.
-                </p>
-                <a class="button no-print" href="@backUrl">Search for employers</a>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="CompareActions" />
             </div>
         </div>
     }

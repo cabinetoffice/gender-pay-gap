@@ -1,0 +1,62 @@
+﻿@inject ISearchViewService SearchViewService
+@inject ICompareViewService CompareViewService
+@model CompareBasketViewModel
+@{
+    int compareCount = CompareViewService.BasketItemCount;
+    bool hasMaximumItemsInBasket = compareCount >= CompareViewService.MaxCompareBasketCount;
+}
+
+<div id="comparison-basket" class="govuk-body" aria-hidden="@(compareCount < 1 ? "true" : null)" data-basket-count="@(compareCount)">
+    <div>
+        <div style="padding-top: .5em;">
+            @if (hasMaximumItemsInBasket)
+            {
+                <p class="govuk-error-message">
+                    The maximum number of employers you can compare is @CompareViewService.MaxCompareBasketCount
+                </p>
+            }
+            <p class="govuk-body">
+                Your comparison list contains @(compareCount) employer@(compareCount != 1 ? "s" : "").
+            </p>
+
+            @if (compareCount == 0)
+            {
+                <p class="govuk-body">
+                    <a class="govuk-link" href="@Url.Action("SearchResults", "Viewing")">Search and Compare employers</a>
+                </p>
+            }
+            @if (hasMaximumItemsInBasket)
+            {
+                <p class="govuk-body">
+                    <span><a href="@Url.Action(nameof(ViewingController.Download), "Viewing")">Download gender pay gap data</a> to view all employer submissions</span>
+                </p>
+            }
+        </div>
+
+        <div class="govuk-body">
+            @if (compareCount > 0 && !Model.IsSearchPage)
+            {
+                <p class="govuk-body">
+                    <a href="@SearchViewService.GetLastSearchUrl()">Add another employer</a>
+                </p>
+            }
+            @if (compareCount > 0)
+            {
+                string clearBasketUrl = Url.Action(
+                    nameof(CompareController.ClearEmployers), "Compare",
+                    new { returnUrl = SearchViewService.GetLastSearchUrl() }
+                    );
+                <p class="govuk-body">
+                    <a href="@clearBasketUrl">Clear list@(Model.IsSearchPage ? "" : " and return to Search and Compare")</a>
+                </p>
+                @if (!Model.IsComparePage)
+                {
+                    string viewBasketUrl = Url.Action(nameof(CompareController.CompareEmployers), "Compare");
+                    <p class="govuk-body">
+                        <a class="govuk-button govuk-!-margin-0" href="@viewBasketUrl">View comparison</a>
+                    </p>
+                }
+            }
+        </div>
+    </div>
+</div>

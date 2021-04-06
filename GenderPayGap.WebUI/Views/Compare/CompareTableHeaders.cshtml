@@ -3,9 +3,9 @@
 <thead class="report-header">
 <tr>
     <th class="header" rowspan="2">Employer</th>
-    <th class="header" rowspan="2">Employer size</th>
-    <th class="header" colspan="2">Difference in hourly rate</th>
-    <th class="header" colspan="4">Proportion of women in each pay quartile</th>
+    <th class="header" rowspan="2">Employee headcount</th>
+    <th class="header" colspan="2">Difference in hourly pay</th>
+    <th class="header" colspan="4">Percentage of women in each pay quarter</th>
     <th class="header" colspan="2">
         <div class="groupingHeader">Who received bonus pay</div>
     </th>
@@ -46,7 +46,7 @@
                href="@Url.Action("SortEmployers", new {column = "FemaleLowerPayBand", returnUrl = ViewBag.ReturnUrl})"
                role="button">
                 <span class="visually-hidden">Sort by </span>
-                Lower quartile
+                Lower hourly pay quarter
             </a>
             <a class="no-print" aria-label="FemaleLowerPayBand" href="@Url.Action("SortEmployers", new {column = "FemaleLowerPayBand", returnUrl = ViewBag.ReturnUrl})">
                 <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleLowerPayBand") alt=""/>
@@ -59,7 +59,7 @@
                href="@Url.Action("SortEmployers", new {column = "FemaleMiddlePayBand", returnUrl = ViewBag.ReturnUrl})"
                role="button">
                 <span class="visually-hidden">Sort by </span>
-                Lower middle quartile
+                Lower middle hourly pay quarter
             </a>
             <a class="no-print" aria-label="FemaleMiddlePayBand" href="@Url.Action("SortEmployers", new {column = "FemaleMiddlePayBand", returnUrl = ViewBag.ReturnUrl})">
                 <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleMiddlePayBand") alt=""/>
@@ -72,7 +72,7 @@
                href="@Url.Action("SortEmployers", new {column = "FemaleUpperPayBand", returnUrl = ViewBag.ReturnUrl})"
                role="button">
                 <span class="visually-hidden">Sort by </span>
-                Upper middle quartile
+                Upper middle hourly pay quarter
             </a>
             <a class="no-print" aria-label="FemaleUpperPayBand" href="@Url.Action("SortEmployers", new {column = "FemaleUpperPayBand", returnUrl = ViewBag.ReturnUrl})">
                 <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleUpperPayBand") alt=""/>
@@ -85,7 +85,7 @@
                href="@Url.Action("SortEmployers", new {column = "FemaleUpperQuartilePayBand", returnUrl = ViewBag.ReturnUrl})"
                role="button">
                 <span class="visually-hidden">Sort by </span>
-                Top quartile
+                Top hourly pay quarter
             </a>
             <a class="no-print" aria-label="FemaleUpperQuartilePayBand" href="@Url.Action("SortEmployers", new {column = "FemaleUpperQuartilePayBand", returnUrl = ViewBag.ReturnUrl})">
                 <img style="margin-left: 7px;" src=@Model.GetColumnSortIcon("FemaleUpperQuartilePayBand") alt=""/>
