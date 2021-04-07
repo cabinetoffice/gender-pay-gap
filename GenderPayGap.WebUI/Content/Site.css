@@ -498,7 +498,6 @@ input[type=submit] {
 
                 .table-collapsible tbody th:first-child:before, .table-collapsible tbody td:first-child:before {
                     content: attr(data-prefix);
-                    /*margin-right: 7px;*/
                     width: auto;
                 }
 
@@ -518,9 +517,6 @@ input[type=submit] {
 
         .table-collapsible-report tr {
             display: block;
-            /*padding-bottom: 15px;
-            
-            margin-bottom: 15px;*/
         }
 
         .table-collapsible-report thead th {
@@ -540,8 +536,6 @@ input[type=submit] {
             display: block;
             text-align: left;
             border-bottom: 0;
-            /*padding-top: 5px;
-            padding-bottom: 5px;*/
             width: auto;
         }
 
@@ -562,7 +556,6 @@ input[type=submit] {
 
                 .table-collapsible-report tbody th:first-child:before, .table-collapsible tbody td:first-child:before {
                     content: attr(data-prefix);
-                    /*margin-right: 7px;*/
                     width: auto;
                 }
 
@@ -753,14 +746,12 @@ input[type=submit] {
         font-family: "nta", Arial, sans-serif;
         font-weight: 400;
         text-transform: none;
-        font-size: 14px;
         line-height: 1.1428571429;
         margin-bottom: 30px;
     }
 
 @media (min-width: 641px) {
     .finder p {
-        font-size: 16px;
         line-height: 1.25;
     }
 }
@@ -851,7 +842,6 @@ input[type=submit] {
     font-size: 18px;
     line-height: 1.2;
     margin-top: 15px;
-    /*margin-bottom: 15px;*/
 }
 
     .finder .button-update:visited {
@@ -967,16 +957,13 @@ input[type=submit] {
     font-family: "nta", Arial, sans-serif;
     font-weight: 400;
     text-transform: none;
-    font-size: 14px;
     line-height: 1.1428571429;
     vertical-align: baseline;
     margin: 0 0 15px 0;
-    /*padding-bottom: 15px; TODO put this back */
 }
 
 @media (min-width: 641px) {
     .finder .result-info {
-        font-size: 16px;
         line-height: 1.25;
     }
 }
@@ -1134,7 +1121,6 @@ input[type=submit] {
 }
 
 .employer-report-metadata a {
-    /*text-decoration: none;*/
     word-wrap: break-word;
 }
 
@@ -1160,7 +1146,6 @@ input[type=submit] {
 .document h2 {
     font-family: "nta", Arial, sans-serif;
     font-weight: 700;
-    /*text-transform: uppercase;*/
     font-size: 24px;
     line-height: 1.25;
     margin: 0;
