@@ -25,3 +25,9 @@ Disallow: /viewing/download-compare-data?*
 Disallow: /viewing/help/*
 Disallow: /add-organisation/
 Disallow: /add-employer/
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: SemrushBot/2
+Disallow: /
