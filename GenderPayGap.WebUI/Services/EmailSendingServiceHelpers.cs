@@ -11,7 +11,7 @@ namespace GenderPayGap.WebUI.Services
         {
             IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
                 .Select(uo => uo.User.EmailAddress)
-                .Where(ea => ea != addedUser.EmailAddress);
+                .Where(ea => ea != addedUser.EmailAddress && ea != "anonymised");
 
             foreach (string emailAddress in emailAddressesForOrganisation)
             {
