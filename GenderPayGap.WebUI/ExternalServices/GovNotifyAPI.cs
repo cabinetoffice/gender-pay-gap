@@ -27,6 +27,11 @@ namespace GenderPayGap.WebUI.ExternalServices
 
         public EmailNotificationResponse SendEmail(NotifyEmail notifyEmail)
         {
+            if (EmailIsAnonymised(notifyEmail.EmailAddress))
+            {
+                return null;
+            }
+
             try
             {
                 EmailNotificationResponse response = _client.SendEmail(
@@ -71,6 +76,11 @@ namespace GenderPayGap.WebUI.ExternalServices
 
                 return null;
             }
+        }
+
+        private static bool EmailIsAnonymised(string email)
+        {
+            return email.ToLower() == "anonymised";
         }
 
     }
