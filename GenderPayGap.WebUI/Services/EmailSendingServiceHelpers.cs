@@ -10,8 +10,9 @@ namespace GenderPayGap.WebUI.Services
         public static void SendUserAddedEmailToExistingUsers(Organisation organisation, User addedUser, EmailSendingService emailSendingService)
         {
             IEnumerable<string> emailAddressesForOrganisation = organisation.UserOrganisations
+                .Where(uo => !uo.User.HasBeenAnonymised)
                 .Select(uo => uo.User.EmailAddress)
-                .Where(ea => ea != addedUser.EmailAddress && ea != "anonymised");
+                .Where(ea => ea != addedUser.EmailAddress);
 
             foreach (string emailAddress in emailAddressesForOrganisation)
             {
