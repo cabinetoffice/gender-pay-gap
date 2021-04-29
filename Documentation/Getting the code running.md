@@ -8,10 +8,7 @@ Get the code:
 * Open the Solution in your IDE by opening the
   `GenderPayGap.sln` file (don't just open the folder in your IDE)
 
-* Ask an existing developer for a copy of
-  `GenderPayGap.WebUI/appsettings.secret.json`
-  and save it to your local repo
-  (the file is git ignored, so it shouldn't get committed)
+* Find the "GPG - appsettings.secret.json" secret on Keeper, download the appsettings.secret.json file and save it to your local repository in the GenderPayGap.WebUI directory. Alternatively, you can also ask an existing developer for a copy of the file. (the file is git ignored, so it shouldn't get committed)
 
 Create an empty database:
 * Open your database UI (e.g. DataGrip)
