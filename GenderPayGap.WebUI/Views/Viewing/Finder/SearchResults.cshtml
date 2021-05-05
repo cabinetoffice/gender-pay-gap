@@ -53,15 +53,9 @@
             //Keep comparison basket within viewport
             GOVUK.stickAtTopWhenScrolling.init();
 
-            // Instantiate an option select for each one found on the page
-            var filters = $('#FinderForm .govuk-option-select').map(function () {
-                return new GOVUK.OptionSelect({ $el: $(this) });
-            });
-
             new GOVUK.LiveSearch({
                 formId: "FinderForm",
                 $results: $('.js-live-search-results-block'),
-                //$atomAutodiscoveryLink: $atomAutodiscoveryLink,
                 onRefresh: function () {
                     $("#AddAllOrgsToCompare").toggle();
                 },
@@ -84,8 +78,6 @@
                     window.location.href = '/error/1146';
                 }
             });
-
         }());
-
     </script>
 }
