@@ -17,6 +17,7 @@
         this.$loadingBlock = options.$results.find('#loading');
         this.action = this.$form.attr('action') + '-js';
         this.$atomAutodiscoveryLink = options.$atomAutodiscoveryLink;
+        this.GATrackFilters = options.GATrackFilters;
 
         if (GOVUK.support.history()) {
             //save the initial state
@@ -98,6 +99,10 @@
         var liveSearch = this;
         //if (typeof cachedResultData === 'undefined') {
             this.showLoadingIndicator();
+        if (this.GATrackFilters) 
+        {
+            this.sendFilterEventToGA();
+        }
             return $.ajax({
                 url: this.action,
                 data: this.state,
@@ -201,6 +206,65 @@
 
     LiveSearch.prototype.collapseFilters = function collapseFilters() {
         $(".govuk-option-select.js-collapsible .js-container-head[aria-expanded=true]").click();
+    };
+    
+    LiveSearch.prototype.sendFilterEventToGA = function sendFilterEventToGA() {
+        let selectedFilters = this.state.filter(
+            parameter =>  this.GATrackFilters.filters.map(
+                filter => filter.Group
+            ).includes(parameter.name)
+        );
+        let GAEvent = {
+            hitType: 'event',
+            eventCategory: this.GATrackFilters.category,
+            eventAction: [],
+            eventLabel: {}
+        };
+        sendGpgEvent(this.convertGAEventToHumanReadableFormat(this.addFiltersToGAEvent(selectedFilters, GAEvent)));
+    };
+
+    LiveSearch.prototype.addFiltersToGAEvent = function addFiltersToGAEvent(filters, GAEvent) {
+        filters.forEach(filter => {
+            if (!GAEvent.eventAction.includes(filter.name))
+            {
+                GAEvent.eventAction.push(filter.name);
+                GAEvent.eventLabel[filter.name] = [];
+            }
+            if (!(GAEvent.eventLabel[filter.name].includes(filter.value)))
+            {
+                GAEvent.eventLabel[filter.name].push(filter.value);
+            }
+        });
+        return GAEvent;
+    };
+    
+    LiveSearch.prototype.convertGAEventToHumanReadableFormat = function convertGAEventToHumanReadableFormat(GAEvent) {
+        GAEvent.eventAction = this.convertEventActionToHumanReadableString(GAEvent.eventAction);
+        GAEvent.eventLabel = this.convertEventLabelToHumanReadableString(GAEvent.eventLabel);
+        return GAEvent;
+    };
+
+    LiveSearch.prototype.convertEventActionToHumanReadableString = function convertEventActionToHumanReadableString(eventAction) {
+        return eventAction.map(
+            filterGroup => this.GATrackFilters.filters.find(
+                filter => filter.Group === filterGroup
+            ).Label
+        ).join('; ');
+    };
+
+    LiveSearch.prototype.convertEventLabelToHumanReadableString = function convertEventLabelToHumanReadableString(eventLabel) {
+        let eventLabelString = '';
+        for (const filterGroup in eventLabel)
+        {
+            eventLabelString += this.GATrackFilters.filters.find(filter => filter.Group === filterGroup).Label + ': ';
+            eventLabelString += eventLabel[filterGroup].map(
+                value => this.GATrackFilters.filters.find(
+                    filter => filter.Group === filterGroup).Metadata.find(
+                        filter => filter.Value === value).Label
+            ).join(', ');
+            eventLabelString += '; '
+        }
+        return eventLabelString
     };
 
     GOVUK.LiveSearch = LiveSearch;
