@@ -41,6 +41,10 @@
         // Track the current page view using the GDS Google Analytics shared tracking account
         ga('govuk_shared.send', 'pageview');
     }
+    
+    function sendGpgEvent(Event) {      
+        ga('send', Event);
+    }
 
     function deleteGoogleAnalyticsCookies() {
         function deleteCookie(cookieName) {
@@ -51,7 +55,7 @@
         deleteCookie('_gid');
         deleteCookie('_gat');
     }
-
+    
     @if (cookieSettings.GoogleAnalyticsGpg || cookieSettings.GoogleAnalyticsGovUk)
     {
         @:initialiseGoogleAnalytics();

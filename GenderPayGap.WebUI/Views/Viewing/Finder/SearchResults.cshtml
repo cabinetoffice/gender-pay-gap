@@ -64,6 +64,15 @@
                 //$atomAutodiscoveryLink: $atomAutodiscoveryLink,
                 onRefresh: function () {
                     $("#AddAllOrgsToCompare").toggle();
+                },
+                GATrackFilters: {
+                    category: "Search filters",
+                    filters: [
+                        @Html.Raw(Json.Serialize(Model.SizeFilterGroup)), 
+                        @Html.Raw(Json.Serialize(Model.SectorFilterGroup)), 
+                        @Html.Raw(Json.Serialize(Model.ReportingYearFilterGroup)), 
+                        @Html.Raw(Json.Serialize(Model.ReportingStatusFilterGroup))
+                        ]
                 }
             });
 

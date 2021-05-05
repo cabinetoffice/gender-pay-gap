@@ -1,43 +1,5 @@
 ﻿@using GenderPayGap.WebUI.Models.Search
 @model GenderPayGap.WebUI.Models.Search.SearchViewModel
-@{
-    var size = new FilterGroup
-    {
-        Id = "SizeFilter",
-        Group = "es",
-        Label = "Employer size",
-        Expanded = false,
-        Metadata = Model.SizeOptions
-    };
-
-    var sectors = new FilterGroup
-    {
-        Id = "SectorFilter",
-        Group = "s",
-        Label = "Sector",
-        Expanded = false,
-        Metadata = Model.SectorOptions,
-        MaxHeight = "300px"
-    };
-
-    var years = new FilterGroup
-    {
-        Id = "ReportingYearFilter",
-        Group = "y",
-        Label = "Reporting year",
-        Expanded = false,
-        Metadata = Model.ReportingYearOptions
-    };
-
-    var statuses = new FilterGroup
-    {
-        Id = "ReportingStatusFilter",
-        Group = "st",
-        Label = "Reporting status",
-        Expanded = false,
-        Metadata = Model.ReportingStatusOptions
-    };
-}
 
 <a id="ClearFilters" href="search-results?search=@(Model.search)">Clear all filters</a>
 
@@ -45,19 +7,19 @@
 
 <div class="filter-divider"></div>
 
-<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="size"/>
+<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="Model.SizeFilterGroup"/>
 
 <div class="filter-divider"></div>
 
-<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="sectors"/>
+<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="Model.SectorFilterGroup"/>
 
 <div class="filter-divider"></div>
 
-<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="years"/>
+<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="Model.ReportingYearFilterGroup"/>
 
 <div class="filter-divider"></div>
 
-<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="statuses"/>
+<partial name="~/Views/Viewing/Finder/Parts/Facets/OptionSelect.cshtml" model="Model.ReportingStatusFilterGroup"/>
 
 <div class="filter-divider"></div>
 

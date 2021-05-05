@@ -107,7 +107,7 @@ namespace GenderPayGap.WebUI.Models.Search
                 return _sizeFilterInfo;
             }
         }
-
+        
         public List<string> ReportingYearFilterInfo
         {
             get
@@ -134,6 +134,68 @@ namespace GenderPayGap.WebUI.Models.Search
             }
         }
 
+        public FilterGroup SectorFilterGroup
+        {
+            get
+            {
+                return new FilterGroup
+                {
+                    Id = "SectorFilter",
+                    Group = "s",
+                    Label = "Sector",
+                    Expanded = false,
+                    Metadata = SectorOptions,
+                    MaxHeight = "300px"
+                };
+            }
+        }
+
+
+        public FilterGroup SizeFilterGroup
+        {
+            get
+            {
+                return new FilterGroup
+                {
+                    Id = "SizeFilter",
+                    Group = "es",
+                    Label = "Employer size",
+                    Expanded = false,
+                    Metadata = SizeOptions
+                };
+            }
+        }
+        
+        public FilterGroup ReportingYearFilterGroup
+        {
+            get
+            {
+                return new FilterGroup
+                {
+                    Id = "ReportingYearFilter",
+                    Group = "y",
+                    Label = "Reporting year",
+                    Expanded = false,
+                    Metadata = ReportingYearOptions
+                };
+            }
+        }
+        
+        public FilterGroup ReportingStatusFilterGroup
+        {
+            get
+            {
+                return new FilterGroup
+                {
+                    Id = "ReportingStatusFilter",
+                    Group = "st",
+                    Label = "Reporting status",
+                    Expanded = false,
+                    Metadata = ReportingStatusOptions
+                };
+            }
+        }
+
         public EmployerSearchModel GetEmployer(string employerIdentifier)
         {
             //Get the employer from the last search results
@@ -149,6 +211,5 @@ namespace GenderPayGap.WebUI.Models.Search
             public string Description { get; set; }
 
         }
-
     }
 }
