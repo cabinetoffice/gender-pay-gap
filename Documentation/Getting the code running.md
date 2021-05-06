@@ -8,7 +8,7 @@ Get the code:
 * Open the Solution in your IDE by opening the
   `GenderPayGap.sln` file (don't just open the folder in your IDE)
 
-* Find the "GPG - appsettings.secret.json" secret on Keeper, download the appsettings.secret.json file and save it to your local repository in the GenderPayGap.WebUI directory. Alternatively, you can also ask an existing developer for a copy of the file. (the file is git ignored, so it shouldn't get committed)
+* Ask an existing developer for a copy of the appsettings.secret.json file and save it to your local repository in the GenderPayGap.WebUI directory. Alternatively, if you're a Softwire developer, you can follow the instructions under "How to get the appsettings.secret.json file" [here](https://softwiretech.atlassian.net/wiki/spaces/LAX/pages/edit-v2/8989377266) (the file is git ignored, so it shouldn't get committed).
 
 Create an empty database:
 * Open your database UI (e.g. DataGrip)
@@ -50,8 +50,8 @@ Populate the database:
   ['Create an account' page on the Dev environment](https://gender-pay-gap-dev.london.cloudapps.digital/create-user-account)  
   **Note:** see ['Our environments' page](Our%20environments.md) for details about the username/password prompt
   * Sign up for an account
-  * Ask an existing developer to send you the email verify link
-  * Ask an existing developer how to create an administrator account
+  * Ask an existing developer to send you the email verify link. Alternatively, if you're a Softwire developer, check the "Finding the email verify link" section [here](https://softwiretech.atlassian.net/wiki/spaces/LAX/pages/edit-v2/8989377266).
+  * Ask an existing developer how to create an administrator account. Alternatively, if you're a Softwire developer, check the "How to create an admin account" section [here](https://softwiretech.atlassian.net/wiki/spaces/LAX/pages/edit-v2/8989377266).
 
 * Import a database from the Dev server
   * Stop!  
@@ -63,7 +63,7 @@ Populate the database:
     Note: this page works better in Chrome than in Firefox
   * Fill in the form:
     * Hostname of remote server: `gender-pay-gap-dev.london.cloudapps.digital` (without https://)
-    * Passwords: ask an existing developer for these
+    * Passwords: ask an existing developer for these. Alternatively, if you're a Softwire developer, check the "How to access the dev site" section [here](https://softwiretech.atlassian.net/wiki/spaces/LAX/pages/edit-v2/8989377266).
     * The database migration password is stored in `appsettings.secrets.json`
   * Click the scary red button
   * Wait for a few minutes whilst the data is imported
