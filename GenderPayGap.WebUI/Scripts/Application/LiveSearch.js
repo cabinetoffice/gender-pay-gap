@@ -17,7 +17,8 @@
         this.$loadingBlock = options.$results.find('#loading');
         this.action = this.$form.attr('action') + '-js';
         this.$atomAutodiscoveryLink = options.$atomAutodiscoveryLink;
-        this.GATrackFilters = options.GATrackFilters;
+        this.isTrackingFilters = options.isTrackingFilters;
+        this.filterInfo = options.filterInfo;
 
         if (GOVUK.support.history()) {
             //save the initial state
@@ -97,7 +98,7 @@
         var searchState = $.param(this.state);
         var liveSearch = this;
         this.showLoadingIndicator();
-        if (this.GATrackFilters) 
+        if (this.isTrackingFilters) 
         {
             this.sendFilterEventToGA();
         }
@@ -199,62 +200,53 @@
     };
     
     LiveSearch.prototype.sendFilterEventToGA = function sendFilterEventToGA() {
-        let selectedFilters = this.state.filter(
-            parameter =>  this.GATrackFilters.filters.map(
-                filter => filter.Group
-            ).includes(parameter.name)
-        );
-        let GAEvent = {
-            hitType: 'event',
-            eventCategory: this.GATrackFilters.category,
-            eventAction: [],
-            eventLabel: {}
-        };
-        sendGpgEvent(this.convertGAEventToHumanReadableFormat(this.addFiltersToGAEvent(selectedFilters, GAEvent)));
-    };
-
-    LiveSearch.prototype.addFiltersToGAEvent = function addFiltersToGAEvent(filters, GAEvent) {
-        filters.forEach(filter => {
-            if (!GAEvent.eventAction.includes(filter.name))
-            {
-                GAEvent.eventAction.push(filter.name);
-                GAEvent.eventLabel[filter.name] = [];
-            }
-            if (!(GAEvent.eventLabel[filter.name].includes(filter.value)))
-            {
-                GAEvent.eventLabel[filter.name].push(filter.value);
-            }
-        });
-        return GAEvent;
+        let selectedFilters = this.getSelectedFilters();
+        let GAEvent = {eventCategory: this.filterInfo.category};
+        
+        sendGpgEvent(this.addFiltersToGAEvent(selectedFilters, GAEvent));
     };
     
-    LiveSearch.prototype.convertGAEventToHumanReadableFormat = function convertGAEventToHumanReadableFormat(GAEvent) {
-        GAEvent.eventAction = this.convertEventActionToHumanReadableString(GAEvent.eventAction);
-        GAEvent.eventLabel = this.convertEventLabelToHumanReadableString(GAEvent.eventLabel);
-        return GAEvent;
-    };
+    LiveSearch.prototype.getSelectedFilters = function getSelectedFilters() {
+        let selectedFilters = [];
+        
+        this.filterInfo.filterGroups.forEach(filterGroup => {
+            let selectedFiltersInGroup = this.getSelectedFiltersInGroup(filterGroup);
 
-    LiveSearch.prototype.convertEventActionToHumanReadableString = function convertEventActionToHumanReadableString(eventAction) {
-        return eventAction.map(
-            filterGroup => this.GATrackFilters.filters.find(
-                filter => filter.Group === filterGroup
-            ).Label
+            if (selectedFiltersInGroup.length) {
+                selectedFilters.push({
+                    filterGroupLabel: filterGroup.Label,
+                    filterLabels: selectedFiltersInGroup.map(
+                        selectedFilter => this.getFilterLabelFromGroup(selectedFilter, filterGroup)
+                    )
+                })
+            }
+        });
+        
+        return selectedFilters;
+    };
+    
+    LiveSearch.prototype.getSelectedFiltersInGroup = function getSelectedFiltersInGroup(filterGroup) {
+        // the state has various parameters, some of which will be filters.
+        // this function returns an array with the parameters that are filters of the given filter group.
+        return this.state.filter(parameter => parameter.name === filterGroup.Group);
+    };
+    
+    LiveSearch.prototype.getFilterLabelFromGroup = function getFilterLabelFromGroup(filter, filterGroup) {
+        return  filterGroup.Metadata.find(
+            availableFilter => availableFilter.Value === filter.value
+        ).Label
+    };
+    
+    LiveSearch.prototype.addFiltersToGAEvent = function addFiltersToGAEvent(filters, GAEvent) {
+        GAEvent.eventAction = filters.map(
+            filterGroup => filterGroup.filterGroupLabel
         ).join('; ');
-    };
-
-    LiveSearch.prototype.convertEventLabelToHumanReadableString = function convertEventLabelToHumanReadableString(eventLabel) {
-        let eventLabelString = '';
-        for (const filterGroup in eventLabel)
-        {
-            eventLabelString += this.GATrackFilters.filters.find(filter => filter.Group === filterGroup).Label + ': ';
-            eventLabelString += eventLabel[filterGroup].map(
-                value => this.GATrackFilters.filters.find(
-                    filter => filter.Group === filterGroup).Metadata.find(
-                        filter => filter.Value === value).Label
-            ).join(', ');
-            eventLabelString += '; '
-        }
-        return eventLabelString
+        
+        GAEvent.eventLabel = filters.map(
+            filterGroup => filterGroup.filterGroupLabel + ': ' + filterGroup.filterLabels.join(', ')
+        ).join('; ');
+        
+        return GAEvent;
     };
 
     GOVUK.LiveSearch = LiveSearch;

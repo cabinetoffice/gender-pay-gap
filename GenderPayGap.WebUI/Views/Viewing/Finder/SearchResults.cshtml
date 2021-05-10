@@ -52,6 +52,8 @@
 
             //Keep comparison basket within viewport
             GOVUK.stickAtTopWhenScrolling.init();
+            
+            let serializedModel = @Html.Raw(Json.Serialize(Model));
 
             new GOVUK.LiveSearch({
                 formId: "FinderForm",
@@ -59,13 +61,14 @@
                 onRefresh: function () {
                     $("#AddAllOrgsToCompare").toggle();
                 },
-                GATrackFilters: {
+                isTrackingFilters: true,
+                filterInfo: {
                     category: "Search filters",
-                    filters: [
-                        @Html.Raw(Json.Serialize(Model.SizeFilterGroup)), 
-                        @Html.Raw(Json.Serialize(Model.SectorFilterGroup)), 
-                        @Html.Raw(Json.Serialize(Model.ReportingYearFilterGroup)), 
-                        @Html.Raw(Json.Serialize(Model.ReportingStatusFilterGroup))
+                    filterGroups: [
+                        serializedModel['SizeFilterGroup'], 
+                        serializedModel['SectorFilterGroup'], 
+                        serializedModel['ReportingYearFilterGroup'], 
+                        serializedModel['ReportingStatusFilterGroup']
                         ]
                 }
             });

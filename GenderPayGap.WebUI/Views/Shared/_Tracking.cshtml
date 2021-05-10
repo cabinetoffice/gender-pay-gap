@@ -42,8 +42,13 @@
         ga('govuk_shared.send', 'pageview');
     }
     
-    function sendGpgEvent(Event) {      
-        ga('send', Event);
+    function sendGpgEvent(Event) {
+        Event.hitType = 'event';
+        
+        // Only send GA event if required fields present
+        if (Event.eventCategory && Event.eventAction) {
+            ga('send', Event);
+        }
     }
 
     function deleteGoogleAnalyticsCookies() {
