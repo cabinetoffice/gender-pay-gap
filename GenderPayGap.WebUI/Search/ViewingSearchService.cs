@@ -183,8 +183,6 @@ namespace GenderPayGap.WebUI.Search
                 filteredOrgs = reportingStatusFilteredOrgs;
             }
 
-            
-
             return filteredOrgs.ToList();
         }
 
