@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.WebUI.Controllers.Guidance
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -9,7 +10,7 @@
 
             @await Html.CustomValidationSummaryAsync()
             <div class="govuk-box-highlight">
-                <h1 class="bold-large">You've saved a draft of your gender pay gap data for @(Model.AccountingDate.Year)/@(Model.AccountingDate.AddYears(1).Year.ToTwoDigitYear())</h1>
+                <h1 class="bold-large">You've saved a draft of your gender pay gap data for @(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year, "/"))</h1>
             </div>
             <a class="govuk-button" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Continue</a>
         }

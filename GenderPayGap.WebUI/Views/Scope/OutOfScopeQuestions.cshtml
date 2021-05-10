@@ -4,6 +4,7 @@
 @using GenderPayGap.WebUI.Controllers.SendFeedback
 @using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Models.Shared.Patterns
 @model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
@@ -14,7 +15,7 @@
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string reportingYearsString = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear.Year, "/");
     var breadcrumbModel = new ManageOrganisationBreadcrumbs 
     { 
         OrganisationName = Model.Organisation.OrganisationName, 
