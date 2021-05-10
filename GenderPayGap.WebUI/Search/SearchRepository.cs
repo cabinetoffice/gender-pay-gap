@@ -140,7 +140,7 @@ namespace GenderPayGap.WebUI.Search
                                     .ToDictionary(
                                         y => y,
                                         y => o.GetReturn(y) != null ? o.GetReturn(y).StatusDate.Date : new DateTime(1999, 1, 1)),
-                                ReportedWithCompanyLinkToGpgInfoYears = submittedReports.Where(r => !r.CompanyLinkToGPGInfo.IsNullOrEmpty())
+                                ReportedWithCompanyLinkYears = submittedReports.Where(r => !r.CompanyLinkToGPGInfo.IsNullOrEmpty())
                                     .Select(r => r.AccountingDate.Year)
                                     .ToList(),
                                 ReportedLateYears = submittedReports.Where(r => r.IsLateSubmission).Select(r => r.AccountingDate.Year).ToList(),

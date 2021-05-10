@@ -28,10 +28,10 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public SectorTypes Sector { get; set; }
         public Dictionary<int, List<OrganisationSizes>> ReportingYearToOrganisationSizesMap { get; set; }
         public List<int> ReportedLateYears { get; set; }
-        public List<int> ReportedWithCompanyLinkToGpgInfoYears { get; set; }
+        public List<int> ReportedWithCompanyLinkYears { get; set; }
         public Dictionary<int, DateTime> ReportingYearToDateOfLatestReportMap { get; set; }
         
-        public List<OrganisationSizes> OrganisationSizes(List<int> years)
+        public List<OrganisationSizes> GetOrganisationSizes(List<int> years)
         {
             if (years.IsNullOrEmpty())
             {
@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             return organisationSizes;
         }
 
-        public List<DateTime> DatesOfLatestReports(List<int> years)
+        public List<DateTime> GetDatesOfLatestReports(List<int> years)
         {
             if (years.IsNullOrEmpty())
             {
@@ -71,17 +71,17 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
             return latestReports;
         }
 
-        public bool ReportedWithCompanyLinkToGpgInfo(List<int> years)
+        public bool HasReportedWithCompanyLink(List<int> years)
         {
             if (years.IsNullOrEmpty())
             {
-                return !ReportedWithCompanyLinkToGpgInfoYears.IsNullOrEmpty();
+                return !ReportedWithCompanyLinkYears.IsNullOrEmpty();
             }
 
-            return ReportedWithCompanyLinkToGpgInfoYears.Intersect(years).Any();
+            return ReportedWithCompanyLinkYears.Intersect(years).Any();
         }
 
-        public bool ReportedLate(List<int> years)
+        public bool HasReportedLate(List<int> years)
         {
             if (years.IsNullOrEmpty())
             {
