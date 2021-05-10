@@ -1,6 +1,7 @@
 ﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GovUkDesignSystem
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.WebUI.Models.Shared.Patterns
@@ -13,7 +14,7 @@
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-    string reportingYearsString = Model.ReportingYear.Year + "/" + (Model.ReportingYear.Year + 1).ToString().Substring(2, 2);
+    string reportingYearsString = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear.Year, "/");
     string whyOutOfScopeFormatted = Model.WhyOutOfScope == WhyOutOfScope.Under250 ? "My employer had a headcount less than 250 employees on our snapshot date of " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
         : "Other: " + Model.WhyOutOfScopeDetails;
     var breadcrumbModel = new ManageOrganisationBreadcrumbs 

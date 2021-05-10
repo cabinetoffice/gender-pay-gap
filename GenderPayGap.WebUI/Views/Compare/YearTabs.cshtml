@@ -1,5 +1,6 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Core.Classes
+@using GenderPayGap.Core.Helpers
 @model CompareViewModel
 @{
     int endYear = SectorTypes.Private.GetAccountingStartDate().Year;
@@ -18,7 +19,7 @@
         {
             <li class="govuk-tabs__list-item @(Model.Year == year ? "govuk-tabs__list-item--selected" : "")">
                 <a class="govuk-tabs__tab" href="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})">
-                    @year/@((year + 1).ToTwoDigitYear())
+                    @(ReportingYearsHelper.FormatYearAsReportingPeriod(year, "/"))
                 </a>
             </li>
         }

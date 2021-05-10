@@ -198,11 +198,5 @@ namespace GenderPayGap.Extensions
 
             return defaultMaxDateTime ? DateTime.MaxValue : DateTime.MinValue;
         }
-
-        public static int ToTwoDigitYear(this int year)
-        {
-            return new DateTime(year, 1, 1).ToString("yy").ToInt32();
-        }
-
     }
 }
