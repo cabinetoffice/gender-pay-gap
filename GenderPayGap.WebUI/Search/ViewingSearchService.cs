@@ -158,7 +158,7 @@ namespace GenderPayGap.WebUI.Search
 
             if (selectedOrganisationSizes.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes(selectedReportingYears).Intersect(selectedOrganisationSizes).Any());
+                filteredOrgs = filteredOrgs.Where(o => o.GetOrganisationSizes(selectedReportingYears).Intersect(selectedOrganisationSizes).Any());
             }
 
             if (selectedSicSections.Any())
@@ -194,13 +194,13 @@ namespace GenderPayGap.WebUI.Search
             switch (filter)
             {
                 case SearchReportingStatusFilter.ReportedInTheLast7Days:
-                    return organisations.Where(o => o.DatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-7)));
+                    return organisations.Where(o => o.GetDatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-7)));
                 case SearchReportingStatusFilter.ReportedInTheLast30Days:
-                    return organisations.Where(o => o.DatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-30)));
+                    return organisations.Where(o => o.GetDatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-30)));
                 case SearchReportingStatusFilter.ReportedLate:
-                    return organisations.Where(o => o.ReportedLate(reportingYears));
+                    return organisations.Where(o => o.HasReportedLate(reportingYears));
                 case SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo:
-                    return organisations.Where(o => o.ReportedWithCompanyLinkToGpgInfo(reportingYears));
+                    return organisations.Where(o => o.HasReportedWithCompanyLink(reportingYears));
                 default:
                     throw new Exception();
             }
