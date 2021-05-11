@@ -118,7 +118,7 @@ Errors:
                 onError(requestObject, error, errorThrown);
             }
             else {
-                window.location = '/error/1146';
+                window.location = '/error';
             }
         }).complete(function () {
             //Ensable all other ajaxified buttons

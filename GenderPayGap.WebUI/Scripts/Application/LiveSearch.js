@@ -111,7 +111,7 @@
             liveSearch.displayResults(response, this.searchState);
             liveSearch.clearLoadingIndicator();
         }).error(function () {
-            window.location = '/error/1146';
+            window.location = '/error';
         });
     };
 
