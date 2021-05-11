@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.Controllers
         [Route("/error/{errorCode?}")]
         public IActionResult Default(int errorCode = 500)
         {
-            if (errorCode == 0)
+            if (errorCode == 0 || !Enum.IsDefined(typeof(System.Net.HttpStatusCode), errorCode))
             {
                 if (Response.StatusCode.Between(400, 599))
                 {
