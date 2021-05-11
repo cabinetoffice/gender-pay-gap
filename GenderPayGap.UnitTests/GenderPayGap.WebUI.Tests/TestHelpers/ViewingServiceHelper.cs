@@ -16,6 +16,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             {
                 var returnViewModel = new CompareReportModel {
                     OrganisationName = "Org" + i,
+                    OrganisationSicCodes = "",
                     EncOrganisationId = "X{i:000}",
                     OrganisationSize = (OrganisationSizes) Numeric.Rand(0, 6),
                     DiffMeanHourlyPayPercent = Numeric.Rand(0, 100),

@@ -260,10 +260,10 @@ namespace GenderPayGap.Database
         }
 
         /// <summary>
-        ///     Returns the latest organisation name before specified date/time
+        ///     Returns the latest SIC Codes before specified date/time
         /// </summary>
-        /// <param name="maxDate">Ignore name changes after this date/time - if empty returns the latest name</param>
-        /// <returns>The name of the organisation</returns>
+        /// <param name="maxDate">Ignore SIC codes changes after this date/time - if empty returns the latest SIC codes</param>
+        /// <returns>The employer SIC codes</returns>
         public IEnumerable<OrganisationSicCode> GetSicCodes(DateTime? maxDate = null)
         {
             if (maxDate == null || maxDate.Value == DateTime.MinValue)
