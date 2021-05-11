@@ -15,6 +15,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Compare
         public string EncOrganisationId { get; set; }
 
         public string OrganisationName { get; set; }
+        
+        public string OrganisationSicCodes { get; set; }
 
         public ScopeStatuses ScopeStatus { get; set; }
 

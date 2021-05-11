@@ -197,6 +197,10 @@
     word-wrap: normal;
 }
 
+.gpg-govuk-table .NatureOfBusiness {
+    white-space: pre-line;
+}
+
 .gpg-govuk-table .LeftmostColumn {
     border-left-width: 0px !important;
 }

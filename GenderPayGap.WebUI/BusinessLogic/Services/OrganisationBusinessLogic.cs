@@ -137,10 +137,12 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
             // build the compare reports list
             List<CompareReportModel> compareReports = dbResults.Select(
-                    r => {
+                    r =>
+                    {
                         return new CompareReportModel {
                             EncOrganisationId = _obfuscator.Obfuscate(r.Scope.OrganisationId.ToString()),
                             OrganisationName = r.Scope.Organisation.OrganisationName,
+                            OrganisationSicCodes = r.Scope.Organisation.GetSicSectorsString(r.Return?.AccountingDate, "\n\n"),
                             ScopeStatus = r.Scope.ScopeStatus,
                             HasReported = r.Return != null,
                             OrganisationSize = r.Return?.OrganisationSize,

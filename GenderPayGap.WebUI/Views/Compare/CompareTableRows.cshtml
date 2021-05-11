@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.WebUI.BusinessLogic.Models.Compare
+@using Castle.Core.Internal
 @model CompareViewModel
 
 <tbody class="compare-table">
@@ -19,6 +20,17 @@
                 <div class="RemoveLink no-print">
                     <a href="@Url.Action("RemoveEmployer", "Compare", new {employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl})">Remove <span class="visually-hidden">@compareReport.OrganisationName from comparison</span></a>
                 </div>
+            </td>
+
+            <td class="cell cell--text">
+                @if (!compareReport.OrganisationSicCodes.IsNullOrEmpty())
+                {
+                    <span class="NatureOfBusiness">@compareReport.OrganisationSicCodes</span>                   
+                }
+                else
+                {
+                    <span>-</span>
+                }
             </td>
 
             @if (!compareReport.HasReported)
