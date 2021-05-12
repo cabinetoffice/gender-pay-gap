@@ -48,7 +48,7 @@ namespace GenderPayGap.Core.Helpers
             int mostRecentReportingYear = Global.FirstReportingYear;
             foreach (int year in from year in GetReportingYears()
                 let accountingDate = SectorTypes.Private.GetAccountingStartDate(year)
-                where GetDeadlineForAccountingDate(accountingDate) < VirtualDateTime.Now
+                where DeadlineForAccountingDateHasPassed(accountingDate)
                 select year)
             {
                 mostRecentReportingYear = year;
@@ -56,6 +56,11 @@ namespace GenderPayGap.Core.Helpers
             }
 
             return mostRecentReportingYear;
+        }
+
+        public static bool DeadlineForAccountingDateHasPassed(DateTime accountingDate)
+        {
+            return GetDeadlineForAccountingDate(accountingDate) < VirtualDateTime.Now;
         }
 
     }

@@ -6,6 +6,7 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -67,20 +68,12 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         public bool IsCurrentSnapshotYear(SectorTypes sector, int snapshotYear)
         {
-            // Get the current reporting year
-            int currentReportingStartYear = GetCurrentSnapshotDate(sector).Year;
-
-            // Return year compare result
-            return snapshotYear == currentReportingStartYear;
+            return !ReportingYearsHelper.DeadlineForAccountingDateHasPassed(sector.GetAccountingStartDate(snapshotYear));
         }
 
         public bool IsHistoricSnapshotYear(SectorTypes sector, int snapshotYear)
         {
-            // Get the previous reporting year
-            int currentReportingStartYear = GetCurrentSnapshotDate(sector).Year;
-
-            // Return year compare result
-            return snapshotYear < currentReportingStartYear;
+            return ReportingYearsHelper.DeadlineForAccountingDateHasPassed(sector.GetAccountingStartDate(snapshotYear));
         }
 
         public virtual bool IsValidSnapshotYear(int snapshotYear)
