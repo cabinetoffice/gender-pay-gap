@@ -31,10 +31,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         [TestCase(SectorTypes.Public, 2018)]
         public void ReturnsTrueForHistoricYears(SectorTypes testSector, int testHistoricYear)
         {
-            // Arrange
-            DateTime testSnapshotDate = testSector.GetAccountingStartDate();
-            var expectCalledGetSnapshotDate = false;
-
             // Mocks
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,
@@ -42,19 +38,10 @@ namespace GenderPayGap.Tests.Services.SubmissionService
                 mockDraftFileBL.Object);
             mockService.CallBase = true;
 
-            // Override GetPreviousReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsIn(testSector), It.IsAny<int>()))
-                .Returns(
-                    () => {
-                        expectCalledGetSnapshotDate = true;
-                        return testSnapshotDate;
-                    });
-
             // Assert
             WebUI.Classes.Services.SubmissionService testService = mockService.Object;
             bool actual = testService.IsHistoricSnapshotYear(testSector, testHistoricYear);
 
-            Assert.IsTrue(expectCalledGetSnapshotDate, "Expected to call GetSnapshotDate");
             Assert.IsTrue(actual, "Expected IsHistoricSnapshotYear to return true");
         }
 
@@ -65,7 +52,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
             // Arrange
             DateTime testSnapshotDate = testSector.GetAccountingStartDate();
             int testHistoricYear = testSnapshotDate.Year;
-            var expectCalledGetSnapshotDate = false;
 
             // Mocks
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
@@ -74,19 +60,10 @@ namespace GenderPayGap.Tests.Services.SubmissionService
                 mockDraftFileBL.Object);
             mockService.CallBase = true;
 
-            // Override GetPreviousReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsIn(testSector), It.IsAny<int>()))
-                .Returns(
-                    () => {
-                        expectCalledGetSnapshotDate = true;
-                        return testSnapshotDate;
-                    });
-
             // Assert
             WebUI.Classes.Services.SubmissionService testService = mockService.Object;
             bool actual = testService.IsHistoricSnapshotYear(testSector, testHistoricYear);
 
-            Assert.IsTrue(expectCalledGetSnapshotDate, "Expected to call GetSnapshotDate");
             Assert.IsFalse(actual, "Expected IsHistoricSnapshotYear to return false");
         }
 

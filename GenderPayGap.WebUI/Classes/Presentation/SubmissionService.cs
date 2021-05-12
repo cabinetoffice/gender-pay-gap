@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         public bool IsHistoricSnapshotYear(SectorTypes sector, int snapshotYear)
         {
-            return ReportingYearsHelper.DeadlineForAccountingDateHasPassed(sector.GetAccountingStartDate(snapshotYear));
+            return !IsCurrentSnapshotYear(sector, snapshotYear);
         }
 
         public virtual bool IsValidSnapshotYear(int snapshotYear)

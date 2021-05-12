@@ -547,7 +547,7 @@ namespace GenderPayGap.Tests
         [Description("IsCurrentSnapshotYear: Returns false When SnapshotYear is not the Current Year")]
         public void IsCurrentSnapshotYear_Returns_false_When_SnapshotYear_is_not_the_Current_Year()
         {
-            var currentSnapshotYear = 2001;
+            var currentSnapshotYear = VirtualDateTime.Now.Year;
             var testSnapshotYear = 1999;
 
             // Mocks
@@ -556,10 +556,6 @@ namespace GenderPayGap.Tests
                 mockScopeBL.Object,
                 _mockDraftFileBL.Object);
             mockService.CallBase = true;
-
-            // Override GetCurrentReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsIn(SectorTypes.Private), It.IsIn(testSnapshotYear)))
-                .Returns(new DateTime(currentSnapshotYear, 4, 5));
 
             // Sanity checks
             Expect(currentSnapshotYear != testSnapshotYear, "SanityCheck: curReportingYear should not equal the testReportingStartYear");
@@ -573,8 +569,8 @@ namespace GenderPayGap.Tests
         [Description("IsCurrentSnapshotYear: Returns true When SnapshotYear is the Current Year")]
         public void IsCurrentSnapshotYear_Returns_true_When_SnapshotYear_is_the_Current_Year()
         {
-            var currentSnapshotYear = 2001;
-            var testSnapshotYear = 2001;
+            var currentSnapshotYear = VirtualDateTime.Now.Year;
+            var testSnapshotYear = VirtualDateTime.Now.Year;
 
             // Mocks
             var mockService = new Mock<SubmissionService>(
@@ -582,10 +578,6 @@ namespace GenderPayGap.Tests
                 mockScopeBL.Object,
                 _mockDraftFileBL.Object);
             mockService.CallBase = true;
-
-            // Override GetReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsAny<SectorTypes>(), It.IsAny<int>()))
-                .Returns(new DateTime(currentSnapshotYear, 4, 5));
 
             // Sanity checks
             Expect(currentSnapshotYear == testSnapshotYear, "SanityCheck: curReportingYear should equal the testReportingStartYear");
