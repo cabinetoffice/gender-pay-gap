@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -321,7 +322,7 @@ namespace GenderPayGap.WebUI.Controllers
             SectorTypes sectorType = userOrg.Organisation.SectorType;
 
             // Determine if this is for the previous reporting year
-            bool isPrevReportingYear = SubmissionService.IsCurrentSnapshotYear(sectorType, reportingStartYear) == false;
+            bool isPrevReportingYear = SubmissionService.IsHistoricSnapshotYear(sectorType, reportingStartYear);
 
             // Set the reporting session globals
             ReportingOrganisationId = organisationId;
