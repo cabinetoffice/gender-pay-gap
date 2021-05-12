@@ -31,10 +31,6 @@ namespace GenderPayGap.Tests.Services.SubmissionService
         [TestCase(SectorTypes.Public, 2018)]
         public void ReturnsFalseWhenNotCurrentYear(SectorTypes testSector, int testYear)
         {
-            // Arrange
-            DateTime testSnapshotDate = testSector.GetAccountingStartDate();
-            var expectCalledGetSnapshotDate = false;
-
             // Mocks
             var mockService = new Mock<WebUI.Classes.Services.SubmissionService>(
                 mockDataRepo.Object,
@@ -42,19 +38,10 @@ namespace GenderPayGap.Tests.Services.SubmissionService
                 mockDraftFileBL.Object);
             mockService.CallBase = true;
 
-            // Override GetPreviousReportingStartDate and return expectedYear
-            mockService.Setup(ss => ss.GetSnapshotDate(It.IsIn(testSector), It.IsAny<int>()))
-                .Returns(
-                    () => {
-                        expectCalledGetSnapshotDate = true;
-                        return testSnapshotDate;
-                    });
-
             // Assert
             WebUI.Classes.Services.SubmissionService testService = mockService.Object;
             bool actual = testService.IsCurrentSnapshotYear(testSector, testYear);
 
-            Assert.IsTrue(expectCalledGetSnapshotDate, "Expected to call GetSnapshotDate");
             Assert.IsFalse(actual, "Expected IsCurrentSnapshotYear to return true");
         }
 
