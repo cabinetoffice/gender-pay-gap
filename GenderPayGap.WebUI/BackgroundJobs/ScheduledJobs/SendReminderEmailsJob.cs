@@ -56,69 +56,75 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void SendReminderEmailsForSectorType(SectorTypes sector, string runId, DateTime startTime)
         {
-            if (IsAfterEarliestReminder(sector))
+            var activeReportingYears = GetActiveReportingYears(sector);
+            foreach (int year in activeReportingYears)
             {
-                DateTime latestReminderEmailDate = GetLatestReminderEmailDate(sector);
-
-                IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
-                    .Where(user => !user.ReminderEmails
-                            .Where(re => re.SectorType == sector)
-                            .Where(re => re.DateChecked > latestReminderEmailDate)
-                            .Any());
-
-                foreach (User user in usersUncheckedSinceLatestReminderDate)
+                if (IsAfterEarliestReminder(sector, year))
                 {
-                    if (VirtualDateTime.Now > startTime.AddMinutes(59))
-                    {
-                        var endTime = VirtualDateTime.Now;
-                        CustomLogger.Information($"Function finished: {nameof(SendReminderEmails)}. Hit timeout break.",
-                            new
-                            {
-                                runId,
-                                environment = Config.EnvironmentName,
-                                endTime,
-                                TimeTakenInSeconds = (endTime - startTime).TotalSeconds
-                            });
-                        break;
-                    }
+                    DateTime latestReminderEmailDate = GetLatestReminderEmailDate(sector, year);
 
-                    CheckUserAndSendReminderEmailsForSectorType(user, sector);
+                    IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
+                        .Where(
+                            user => !user.ReminderEmails
+                                .Where(re => re.SectorType == sector)
+                                .Any(re => re.DateChecked > latestReminderEmailDate));
+
+                    foreach (User user in usersUncheckedSinceLatestReminderDate)
+                    {
+                        if (VirtualDateTime.Now > startTime.AddMinutes(59))
+                        {
+                            var endTime = VirtualDateTime.Now;
+                            CustomLogger.Information($"Function finished: {nameof(SendReminderEmails)}. Hit timeout break.",
+                                new
+                                {
+                                    runId,
+                                    environment = Config.EnvironmentName,
+                                    endTime,
+                                    TimeTakenInSeconds = (endTime - startTime).TotalSeconds
+                                });
+                            break;
+                        }
+
+                        CheckUserAndSendReminderEmailsForSectorType(user, sector, year);
+                    }
                 }
             }
         }
 
-        private void CheckUserAndSendReminderEmailsForSectorType(User user, SectorTypes sector)
+        private void CheckUserAndSendReminderEmailsForSectorType(User user, SectorTypes sector, int year)
         {
             List<Organisation> inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
                 .Where(uo => uo.HasBeenActivated())
                 .Select(uo => uo.Organisation)
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Where(o => o.SectorType == sector)
-                .Where(o => o.OrganisationScopes.Any(
-                    s => s.Status == ScopeRowStatuses.Active &&
-                         s.SnapshotDate == sector.GetAccountingStartDate() &&
-                         (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
+                .Where(
+                    o => o.OrganisationScopes.Any(
+                        s => s.Status == ScopeRowStatuses.Active
+                             && s.SnapshotDate == sector.GetAccountingStartDate(year)
+                             && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
                 .Where(
                     o =>
                         !o.Returns.Any(r =>
                             r.Status == ReturnStatuses.Submitted &&
-                            r.AccountingDate == sector.GetAccountingStartDate()))
+                            r.AccountingDate == sector.GetAccountingStartDate(year)))
                 .ToList();
 
-            SendReminderEmailsForSectorType(user, inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport, sector);
+            SendReminderEmailsForSectorType(user, inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport, sector, year);
         }
 
         private void SendReminderEmailsForSectorType(
             User user,
             List<Organisation> inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport,
-            SectorTypes sectorType)
+            SectorTypes sectorType,
+            int year)
         {
             try
             {
                 bool anyOrganisationsToEmailAbout = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Count > 0;
                 if (anyOrganisationsToEmailAbout)
                 {
-                    SendReminderEmail(user, sectorType, inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport);
+                    SendReminderEmail(user, sectorType, inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport, year);
                 }
                 SaveReminderEmailRecord(user, sectorType, anyOrganisationsToEmailAbout);
             }
@@ -138,12 +144,14 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void SendReminderEmail(User user,
             SectorTypes sectorType,
-            List<Organisation> organisations)
+            List<Organisation> organisations,
+            int year)
         {
+            var deadlineDate = GetDeadlineDate(sectorType, year);
             emailSendingService.SendReminderEmail(
                 emailAddress: user.EmailAddress,
-                deadlineDate: GetDeadlineDate(sectorType).AddDays(-1).ToString("d MMMM yyyy"),
-                daysUntilDeadline: GetDeadlineDate(sectorType).Subtract(VirtualDateTime.Now).Days,
+                deadlineDate: deadlineDate.AddDays(-1).ToString("d MMMM yyyy"),
+                daysUntilDeadline: deadlineDate.Subtract(VirtualDateTime.Now).Days,
                 organisationNames: GetOrganisationNameString(organisations),
                 organisationIsSingular: organisations.Count == 1,
                 organisationIsPlural: organisations.Count > 1,
@@ -180,39 +188,39 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             return $"{organisations[0].OrganisationName} and {organisations.Count - 1} other employers";
         }
 
-        private bool IsAfterEarliestReminder(SectorTypes sectorType)
+        private bool IsAfterEarliestReminder(SectorTypes sectorType, int year)
         {
-            return VirtualDateTime.Now > GetEarliestReminderDate(sectorType);
+            return VirtualDateTime.Now > GetEarliestReminderDate(sectorType, year);
         }
 
-        private static DateTime GetEarliestReminderDate(SectorTypes sectorType)
+        private static DateTime GetEarliestReminderDate(SectorTypes sectorType, int year)
         {
             List<int> reminderEmailDays = GetReminderEmailDays();
             int earliestReminderDay = reminderEmailDays[reminderEmailDays.Count - 1];
 
-            DateTime deadlineDate = GetDeadlineDate(sectorType);
+            DateTime deadlineDate = GetDeadlineDate(sectorType, year);
             return deadlineDate.AddDays(-earliestReminderDay);
         }
 
-        private static DateTime GetLatestReminderEmailDate(SectorTypes sectorType)
+        private static DateTime GetLatestReminderEmailDate(SectorTypes sectorType, int year)
         {
-            return GetReminderDates(sectorType)
+            return GetReminderDates(sectorType, year)
                 .Where(reminderDate => reminderDate < VirtualDateTime.Now)
                 .OrderByDescending(reminderDate => reminderDate)
                 .FirstOrDefault();
         }
 
-        private static List<DateTime> GetReminderDates(SectorTypes sectorType)
+        private static List<DateTime> GetReminderDates(SectorTypes sectorType, int year)
         {
             List<int> reminderDays = GetReminderEmailDays();
-            DateTime deadlineDate = GetDeadlineDate(sectorType);
+            DateTime deadlineDate = GetDeadlineDate(sectorType, year);
 
             return reminderDays.Select(reminderDay => deadlineDate.AddDays(-reminderDay)).ToList();
         }
 
-        private static DateTime GetDeadlineDate(SectorTypes sectorType)
+        private static DateTime GetDeadlineDate(SectorTypes sectorType, int year)
         {
-            return ReportingYearsHelper.GetDeadlineForAccountingDate(sectorType.GetAccountingStartDate()).AddDays(1);
+            return ReportingYearsHelper.GetDeadlineForAccountingDate(sectorType.GetAccountingStartDate(year)).AddDays(1);
         }
 
         private static List<int> GetReminderEmailDays()
@@ -220,6 +228,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             var reminderEmailDays = JsonConvert.DeserializeObject<List<int>>(Global.ReminderEmailDays);
             reminderEmailDays.Sort();
             return reminderEmailDays;
+        }
+
+        private static List<int> GetActiveReportingYears(SectorTypes sectorType)
+        {
+            return ReportingYearsHelper.GetReportingYears()
+                .Where(year => GetDeadlineDate(sectorType, year) > VirtualDateTime.Now)
+                .ToList();
         }
 
     }
