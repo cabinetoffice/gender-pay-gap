@@ -102,3 +102,6 @@ cf create-service autoscaler autoscaler-free-plan "scale-${ROUTE_SERVICE_NAME}"
 cf bind-service "${ROUTE_SERVICE_APP_NAME}" "scale-${ROUTE_SERVICE_NAME}"
 cf attach-autoscaling-policy "${ROUTE_SERVICE_APP_NAME}" autoscaling_policy.json
 rm autoscaling_policy.json
+
+# Bind App to Logit Drain
+cf bind-service "${ROUTE_SERVICE_APP_NAME}" logit-ssl-drain
