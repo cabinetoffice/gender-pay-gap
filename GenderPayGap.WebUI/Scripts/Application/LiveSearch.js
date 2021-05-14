@@ -232,7 +232,7 @@
     };
     
     LiveSearch.prototype.getFilterLabelFromGroup = function getFilterLabelFromGroup(filter, filterGroup) {
-        return  filterGroup.Metadata.find(
+        return filterGroup.Metadata.find(
             availableFilter => availableFilter.Value === filter.value
         ).Label
     };
