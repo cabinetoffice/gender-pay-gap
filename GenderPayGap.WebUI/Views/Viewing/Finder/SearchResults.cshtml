@@ -53,7 +53,7 @@
             //Keep comparison basket within viewport
             GOVUK.stickAtTopWhenScrolling.init();
             
-            let serializedModel = @Html.Raw(Json.Serialize(Model));
+            let serializedModel = @Json.Serialize(Model);
 
             new GOVUK.LiveSearch({
                 formId: "FinderForm",
