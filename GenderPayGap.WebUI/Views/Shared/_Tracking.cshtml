@@ -45,8 +45,8 @@
     function sendGpgEvent(Event) {
         Event.hitType = 'event';
         
-        // Only send GA event if required fields present
-        if (Event.eventCategory && Event.eventAction) {
+        // Only send GA event if GA is initialised and the required fields are present
+        if (ga && Event.eventCategory && Event.eventAction) {
             ga('send', Event);
         }
     }
