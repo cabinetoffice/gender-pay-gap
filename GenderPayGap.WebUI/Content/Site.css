@@ -663,6 +663,10 @@ input[type=submit] {
     height: 20px;
 }
 
+.finder .govuk-option-select .options-container .option-select-legend {
+    display: none;
+}
+
 .js-enabled .finder .govuk-option-select {
     padding: 0 0 1px 0;
     /* styles for collapsibleness. .js-collapsible is added by the javascript if the browser is not ie6/7 in which case these don't collapse */
