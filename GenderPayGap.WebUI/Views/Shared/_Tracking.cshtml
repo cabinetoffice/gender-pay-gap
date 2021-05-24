@@ -46,7 +46,7 @@
         Event.hitType = 'event';
         
         // Only send GA event if GA is initialised and the required fields are present
-        if (ga && Event.eventCategory && Event.eventAction) {
+        if (typeof ga !== 'undefined' && Event.eventCategory && Event.eventAction) {
             ga('send', Event);
         }
     }
