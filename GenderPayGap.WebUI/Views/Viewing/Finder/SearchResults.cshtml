@@ -52,6 +52,12 @@
 
             //Keep comparison basket within viewport
             GOVUK.stickAtTopWhenScrolling.init();
+
+            // Instantiate an option select for each one found on the page
+            // This will make each filter group expandable and add a counter of selected filters
+            $('#FinderForm .govuk-option-select').map(function () {
+                new GOVUK.OptionSelect({ $el: $(this) });
+            });
             
             let serializedModel = @Json.Serialize(Model);
 
