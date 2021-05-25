@@ -7,3 +7,6 @@ applications:
 
     buildpacks:
       - https://github.com/alphagov/prometheus-buildpack.git
+
+    env:
+      PROMETHEUS_FLAGS: --storage.tsdb.retention.time=5d
