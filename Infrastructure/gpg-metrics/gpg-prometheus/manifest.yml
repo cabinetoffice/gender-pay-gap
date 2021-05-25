@@ -1,7 +1,7 @@
 ---
 applications:
   - name: gpg-prometheus
-    memory: 512M
+    memory: 3G
     routes:
       - route: gpg-prometheus.apps.internal
 
