@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Data;
-using System.Globalization;
-using System.IO;
-using CsvHelper;
 using CsvHelper.Configuration;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Core.Classes
 {
     public static class Extensions
     {
-
 
         /// <summary>
         ///     Returns the accounting start date for the specified sector and year
@@ -55,41 +52,35 @@ namespace GenderPayGap.Core.Classes
 
         public static string ToCSV(this DataTable datatable)
         {
-            using (var stream = new MemoryStream())
-            {
-                using (var reader = new StreamReader(stream))
+            return CsvWriter.Write(
+                (memoryStream, streamReader, streamWriter, csvWriter) =>
                 {
-                    using (var textWriter = new StreamWriter(stream))
+                    csvWriter.Configuration.ShouldQuote = (s, context) => true;
+                    csvWriter.Configuration.TrimOptions = TrimOptions.InsideQuotes;
+
+                    // Write columns
+                    foreach (DataColumn column in datatable.Columns) // copy datatable CHAIN to DT, or just use CHAIN
                     {
-                        var config = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes, SanitizeForInjection = true};
-                        using (var writer = new CsvWriter(textWriter, config))
-                        {
-                            // Write columns
-                            foreach (DataColumn column in datatable.Columns) //copy datatable CHAIN to DT, or just use CHAIN
-                            {
-                                writer.WriteField(column.ColumnName);
-                            }
-
-                            writer.NextRecord();
-
-                            // Write row values
-                            foreach (DataRow row1 in datatable.Rows)
-                            {
-                                for (var i = 0; i < datatable.Columns.Count; i++)
-                                {
-                                    writer.WriteField(row1[i]);
-                                }
-
-                                writer.NextRecord();
-                            }
-
-                            textWriter.Flush();
-                            stream.Position = 0;
-                            return reader.ReadToEnd();
-                        }
+                        csvWriter.WriteField(column.ColumnName);
                     }
-                }
-            }
+
+                    csvWriter.NextRecord();
+
+                    // Write row values
+                    foreach (DataRow row1 in datatable.Rows)
+                    {
+                        for (var i = 0; i < datatable.Columns.Count; i++)
+                        {
+                            csvWriter.WriteField(row1[i]);
+                        }
+
+                        csvWriter.NextRecord();
+                    }
+
+                    streamWriter.Flush();
+                    memoryStream.Position = 0;
+                    return streamReader.ReadToEnd();
+                });
         }
 
         #endregion

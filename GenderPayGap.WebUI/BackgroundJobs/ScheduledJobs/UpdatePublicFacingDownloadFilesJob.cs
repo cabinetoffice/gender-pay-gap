@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using CsvHelper;
 using CsvHelper.Configuration;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
@@ -19,6 +17,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
     public class UpdatePublicFacingDownloadFilesJob
     {
+
         private readonly IDataRepository dataRepository;
         private readonly IFileRepository fileRepository;
 
@@ -36,7 +35,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             JobHelpers.RunAndLogJob(UpdateDownloadFilesAction, nameof(UpdateDownloadFiles));
         }
 
-        public void UpdateDownloadFilesAction()
+        private void UpdateDownloadFilesAction()
         {
             CustomLogger.Information($"UpdateDownloadFiles: Loading Organisations");
             // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
@@ -81,6 +80,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 {
                     CustomLogger.Error(ex.Message, new {Error = ex});
                 }
+
                 CustomLogger.Information($"UpdateDownloadFiles: Done for year {year}");
             }
 
@@ -89,22 +89,22 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void SaveCsvFile(IEnumerable records, string relativeFilePath)
         {
-            var csvConfiguration = new CsvConfiguration(CultureInfo.CurrentCulture) { ShouldQuote = (s, context) => true, TrimOptions = TrimOptions.InsideQuotes, SanitizeForInjection = true};
+            CsvWriter.Write<object>(
+                (memoryStream, streamReader, streamWriter, csvWriter) =>
+                {
+                    csvWriter.Configuration.ShouldQuote = (s, context) => true;
+                    csvWriter.Configuration.TrimOptions = TrimOptions.InsideQuotes;
+                    csvWriter.WriteRecords(records);
+                    streamWriter.Flush();
+                    memoryStream.Position = 0;
 
-            using (var memoryStream = new MemoryStream())
-            using (var streamReader = new StreamReader(memoryStream))
-            using (var streamWriter = new StreamWriter(memoryStream))
-            using (var csvWriter = new CsvWriter(streamWriter, csvConfiguration))
-            {
-                // Create CSV file (as string)
-                csvWriter.WriteRecords(records);
-                streamWriter.Flush();
-                memoryStream.Position = 0;
-                string csvFileContents = streamReader.ReadToEnd();
+                    string csvFileContents = streamReader.ReadToEnd();
 
-                //Save CSV to storage
-                fileRepository.Write(relativeFilePath, csvFileContents);
-            }
+                    // Save CSV to storage
+                    fileRepository.Write(relativeFilePath, csvFileContents);
+
+                    return null;
+                });
         }
 
     }

@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using CsvHelper;
-using CsvHelper.Configuration;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
@@ -55,19 +51,7 @@ namespace GenderPayGap.WebUI.Controllers
                 feedback = feedback.Where(f => f.FeedbackStatus == FeedbackStatus.NotSpam);
             }
 
-            var memoryStream = new MemoryStream();
-            using (var writer = new StreamWriter(memoryStream))
-            {
-                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { SanitizeForInjection = true };
-                using (var csv = new CsvWriter(writer, config))
-                {
-                    csv.WriteRecords(feedback.ToList());
-                }
-            }
-
-            var fileContentResult = new FileContentResult(memoryStream.GetBuffer(), "text/csv") {FileDownloadName = "Feedback.csv"};
-
-            return fileContentResult;
+            return DownloadHelper.CreateCsvDownload(feedback, "Feedback.csv");
         }
 
     }
