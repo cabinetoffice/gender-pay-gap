@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Globalization;
 using System.IO;
 using System.Text;
-using CsvHelper;
 using CsvHelper.TypeConversion;
+using GenderPayGap.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Helpers
@@ -14,29 +13,28 @@ namespace GenderPayGap.WebUI.Helpers
 
         public static FileContentResult CreateCsvDownload(IEnumerable rows, string fileDownloadName)
         {
-            var memoryStream = new MemoryStream();
-            using (var writer = new StreamWriter(memoryStream))
-            {
-                using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
+            MemoryStream stream = CsvWriter.Write(
+                (memoryStream, streamReader, streamWriter, csvWriter) =>
                 {
                     var options = new TypeConverterOptions {Formats = new[] {"yyyy/MM/dd hh:mm:ss"}};
-                    csv.Configuration.TypeConverterOptionsCache.AddOptions<DateTime>(options);
-                    csv.Configuration.TypeConverterOptionsCache.AddOptions<DateTime?>(options);
-                    csv.WriteRecords(rows);
-                }
-            }
+                    csvWriter.Configuration.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+                    csvWriter.Configuration.TypeConverterOptionsCache.AddOptions<DateTime?>(options);
+                    csvWriter.WriteRecords(rows);
+                    return memoryStream;
+                });
 
-            var fileContentResult = new FileContentResult(memoryStream.GetBuffer(), "text/csv")
-            {
-                FileDownloadName = fileDownloadName
-            };
-            return fileContentResult;
+            return CreateCsvFile(stream.GetBuffer(), fileDownloadName);
         }
 
         public static FileContentResult CreateCsvDownload(string csvFileContents, string fileDownloadName)
         {
             byte[] fileContentsBytes = Encoding.UTF8.GetBytes(csvFileContents);
 
+            return CreateCsvFile(fileContentsBytes, fileDownloadName);
+        }
+
+        private static FileContentResult CreateCsvFile(byte[] fileContentsBytes, string fileDownloadName)
+        {
             var fileContentResult = new FileContentResult(fileContentsBytes, "text/csv")
             {
                 FileDownloadName = fileDownloadName
