@@ -5,7 +5,7 @@ applications:
    memory: 4G
    buildpacks:
      - dotnet_core_buildpack
-   command: dotnet GenderPayGap.WebUI.dll
+   command: TZ=Europe/London dotnet GenderPayGap.WebUI.dll
    health-check-http-endpoint: /health-check
    health-check-type: http
    timeout: 60
