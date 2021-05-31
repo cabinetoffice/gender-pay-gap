@@ -6,6 +6,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 
 namespace GenderPayGap.WebUI.Services
@@ -106,7 +107,8 @@ namespace GenderPayGap.WebUI.Services
                     OriginalUser = users.OriginalUser,
                     ImpersonatedUser = users.ImpersonatedUser,
                     Organisation = organisation,
-                    Details = details
+                    Details = details,
+                    CreatedDate = VirtualDateTime.Now
                 });
 
             dataRepository.SaveChanges();

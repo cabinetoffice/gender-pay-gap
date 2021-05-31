@@ -9,3 +9,5 @@ applications:
    health-check-http-endpoint: /health-check
    health-check-type: http
    timeout: 60
+   env:
+     TZ: Europe/London

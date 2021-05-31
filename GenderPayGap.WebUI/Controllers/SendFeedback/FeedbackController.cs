@@ -5,6 +5,7 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
@@ -112,7 +113,9 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
 
                 Details = TruncateDetails(feedbackViewModel.Details),
                 EmailAddress = feedbackViewModel.EmailAddress,
-                PhoneNumber = feedbackViewModel.PhoneNumber
+                PhoneNumber = feedbackViewModel.PhoneNumber,
+                
+                CreatedDate = VirtualDateTime.Now
             };
         }
 
