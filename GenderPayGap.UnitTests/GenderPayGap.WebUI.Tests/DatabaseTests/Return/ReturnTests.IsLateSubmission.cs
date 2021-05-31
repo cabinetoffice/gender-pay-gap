@@ -23,6 +23,10 @@ namespace GenderPayGap.Database.ReturnTests
             {
                 // Arrange 
                 int testYear = VirtualDateTime.Now.Year - yearOffset;
+                if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(testYear))
+                {
+                    continue;
+                }
                 DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
                 DateTime modifiedDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(2);
 
@@ -110,5 +114,36 @@ namespace GenderPayGap.Database.ReturnTests
             }
         }
 
+        [TestCase(SectorTypes.Public, ScopeStatuses.InScope)]
+        [TestCase(SectorTypes.Public, ScopeStatuses.PresumedInScope)]
+        [TestCase(SectorTypes.Private, ScopeStatuses.InScope)]
+        [TestCase(SectorTypes.Private, ScopeStatuses.PresumedInScope)]
+        [TestCase(SectorTypes.Public, ScopeStatuses.OutOfScope)]
+        [TestCase(SectorTypes.Public, ScopeStatuses.PresumedOutOfScope)]
+        [TestCase(SectorTypes.Private, ScopeStatuses.OutOfScope)]
+        [TestCase(SectorTypes.Private, ScopeStatuses.PresumedOutOfScope)]
+        public void IsFalse_When_ModifiedDate_Is_Late_And_ExcludeFromLateFlagEnforcement_Year(SectorTypes sector, ScopeStatuses scopeStatus)
+        {
+            foreach (int testYear in Global.ReportingStartYearsToExcludeFromLateFlagEnforcement)
+            {
+                // Arrange 
+                DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
+                DateTime modifiedDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(2);
+
+                Organisation testOrganisation = sector == SectorTypes.Private
+                    ? OrganisationHelper.GetPrivateOrganisation()
+                    : OrganisationHelper.GetPublicOrganisation();
+
+                OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
+
+                Return testReturn = ReturnHelper.CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
+
+                // Act
+                bool actual = testReturn.IsLateSubmission;
+
+                // Assert
+                Assert.AreEqual(false, actual);
+            }
+        }
     }
 }
