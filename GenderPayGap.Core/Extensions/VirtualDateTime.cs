@@ -7,6 +7,7 @@ namespace GenderPayGap.Extensions
 
         private static TimeSpan offsetCurrentDateTimeForSite = TimeSpan.Zero;
 
+        // This uses the system timezone
         public static DateTime Now => DateTime.Now.Add(offsetCurrentDateTimeForSite);
 
         public static DateTime UtcNow => DateTime.UtcNow.Add(offsetCurrentDateTimeForSite);
