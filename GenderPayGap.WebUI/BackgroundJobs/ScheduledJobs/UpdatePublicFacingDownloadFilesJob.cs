@@ -45,6 +45,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.OrganisationAddresses)
                 .Include(o => o.OrganisationSicCodes)
+                .Include(o => o.OrganisationId)
                 .ToList();
 
             CustomLogger.Information($"UpdateDownloadFiles: Loading Returns");
