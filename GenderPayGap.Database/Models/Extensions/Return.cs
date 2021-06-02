@@ -253,7 +253,7 @@ namespace GenderPayGap.Database
         {
             return new DownloadResult {
                 EmployerName = Organisation?.GetName(StatusDate)?.Name ?? Organisation.OrganisationName,
-                OrganisationId = OrganisationId,
+                EmployerId = OrganisationId,
                 Address = Organisation.GetLatestAddress()?.GetAddressString(),
                 CompanyNumber = Organisation?.CompanyNumber,
                 SicCodes = Organisation?.GetSicCodeIdsString(StatusDate, "," + Environment.NewLine),
