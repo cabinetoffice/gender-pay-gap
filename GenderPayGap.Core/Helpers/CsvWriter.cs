@@ -10,6 +10,13 @@ namespace GenderPayGap.Core.Helpers
     public static class CsvWriter
     {
 
+        /*
+         * The default injection characters are: '=', '@', '+', '-'
+         * We ignore '-' because we don't want the negative figures to be sanitized (i.e., prepended with a tab character)
+         * We sanitize manually the other fields that start with '-' using the CustomConverter
+         */
+        private static readonly char[] InjectionCharacters = {'=', '@', '+'};
+
         public static T Write<T>(Func<MemoryStream, StreamReader, StreamWriter, CsvHelper.CsvWriter, T> write)
         {
             var config = new CsvConfiguration(CultureInfo.CurrentCulture)
@@ -25,13 +32,6 @@ namespace GenderPayGap.Core.Helpers
                 return write(memoryStream, streamReader, streamWriter, csvWriter);
             }
         }
-
-        /*
-         * The default injection characters are: '=', '@', '+', '-'
-         * We ignore '-' because we don't want the negative figures to be sanitized (i.e., prepended with a tab character)
-         * We sanitize manually the other fields that start with '-' using the CustomConverter
-         */
-        private static readonly char[] InjectionCharacters = {'=', '@', '+'};
 
         private class CustomConverter : DefaultTypeConverter
         {
