@@ -8,6 +8,7 @@ namespace GenderPayGap.Core.Models
         public string EmployerName { get; set; }
         public long EmployerId { get; set; }
         public string Address { get; set; }
+        public string PostCode { get; set; }
         public string CompanyNumber { get; set; }
         public string SicCodes { get; set; }
         public decimal DiffMeanHourlyPercent { get; set; }
