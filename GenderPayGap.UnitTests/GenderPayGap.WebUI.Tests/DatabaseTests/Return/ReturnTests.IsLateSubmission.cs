@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
@@ -12,38 +14,32 @@ namespace GenderPayGap.Database.ReturnTests
     public class IsLateSubmissionTests
     {
 
+        private static List<int> reportingStartYearsToExcludeFromLateFlagEnforcement = Global.ReportingStartYearsToExcludeFromLateFlagEnforcement;
+
         [TestCase(SectorTypes.Public, ScopeStatuses.InScope)]
         [TestCase(SectorTypes.Public, ScopeStatuses.PresumedInScope)]
         [TestCase(SectorTypes.Private, ScopeStatuses.InScope)]
         [TestCase(SectorTypes.Private, ScopeStatuses.PresumedInScope)]
         public void Is_True_When_ModifiedDate_Is_Late_And_InScope(SectorTypes sector, ScopeStatuses scopeStatus)
         {
-            var totalYearOffsets = 4;
-            for (var yearOffset = 0; yearOffset < totalYearOffsets; yearOffset++)
-            {
-                // Arrange 
-                int testYear = VirtualDateTime.Now.Year - yearOffset;
-                if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(testYear))
-                {
-                    continue;
-                }
-                DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
-                DateTime modifiedDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(2);
+            // Arrange 
+            int testYear = GetRandomReportingYear(ignoreYearsExcludedFromLateFlagEnforcement: true);
+            DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
+            DateTime modifiedDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(2);
 
-                Organisation testOrganisation = sector == SectorTypes.Private
-                    ? OrganisationHelper.GetPrivateOrganisation()
-                    : OrganisationHelper.GetPublicOrganisation();
+            Organisation testOrganisation = sector == SectorTypes.Private
+                ? OrganisationHelper.GetPrivateOrganisation()
+                : OrganisationHelper.GetPublicOrganisation();
 
-                OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
+            OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
 
-                Return testReturn = ReturnHelper.CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
+            Return testReturn = ReturnHelper.CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
 
-                // Act
-                bool actual = testReturn.IsLateSubmission;
+            // Act
+            bool actual = testReturn.IsLateSubmission;
 
-                // Assert
-                Assert.AreEqual(true, actual);
-            }
+            // Assert
+            Assert.AreEqual(true, actual);
         }
 
         [TestCase(SectorTypes.Public, ScopeStatuses.InScope)]
@@ -56,29 +52,17 @@ namespace GenderPayGap.Database.ReturnTests
         [TestCase(SectorTypes.Private, ScopeStatuses.PresumedOutOfScope)]
         public void Is_False_When_ModifiedDate_Is_Not_Late_And_AnyScope(SectorTypes sector, ScopeStatuses scopeStatus)
         {
-            var totalYearOffsets = 4;
-            for (var yearOffset = 0; yearOffset < totalYearOffsets; yearOffset++)
-            {
-                // Arrange 
-                int testYear = VirtualDateTime.Now.Year - yearOffset;
-                DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
-                DateTime nextSnapshotDate = snapshotDate.AddYears(1);
-                DateTime modifiedDate = nextSnapshotDate.AddDays(-1);
+            // Arrange 
+            int testYear = GetRandomReportingYear();
+            int modifiedDateOffset = -1;
 
-                Organisation testOrganisation = sector == SectorTypes.Private
-                    ? OrganisationHelper.GetPrivateOrganisation()
-                    : OrganisationHelper.GetPublicOrganisation();
+            Return testReturn = ReturnHelper.CreateLateReturn(testYear, sector, scopeStatus, modifiedDateOffset);
 
-                OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
+            // Act
+            bool actual = testReturn.IsLateSubmission;
 
-                Return testReturn = ReturnHelper.CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
-
-                // Act
-                bool actual = testReturn.IsLateSubmission;
-
-                // Assert
-                Assert.AreEqual(false, actual);
-            }
+            // Assert
+            Assert.AreEqual(false, actual);
         }
 
         [Test]
@@ -88,30 +72,17 @@ namespace GenderPayGap.Database.ReturnTests
         [TestCase(SectorTypes.Private, ScopeStatuses.PresumedOutOfScope)]
         public void Is_False_When_ModifiedDate_Is_Late_And_OutOfScope(SectorTypes sector, ScopeStatuses scopeStatus)
         {
-            var totalYearOffsets = 4;
+            // Arrange 
+            int testYear = GetRandomReportingYear();
+            int modifiedDateOffset = 2;
 
-            for (var yearOffset = 0; yearOffset < totalYearOffsets; yearOffset++)
-            {
-                // Arrange 
-                int testYear = VirtualDateTime.Now.Year - yearOffset;
-                DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
-                DateTime nextSnapshotDate = snapshotDate.AddYears(1);
-                DateTime modifiedDate = nextSnapshotDate.AddDays(2);
+            Return testReturn = ReturnHelper.CreateLateReturn(testYear, sector, scopeStatus, modifiedDateOffset);
 
-                Organisation testOrganisation = sector == SectorTypes.Private
-                    ? OrganisationHelper.GetPrivateOrganisation()
-                    : OrganisationHelper.GetPublicOrganisation();
+            // Act
+            bool actual = testReturn.IsLateSubmission;
 
-                OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
-
-                Return testReturn = ReturnHelper.CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
-
-                // Act
-                bool actual = testReturn.IsLateSubmission;
-
-                // Assert
-                Assert.AreEqual(false, actual);
-            }
+            // Assert
+            Assert.AreEqual(false, actual);
         }
 
         [TestCase(SectorTypes.Public, ScopeStatuses.InScope)]
@@ -122,28 +93,56 @@ namespace GenderPayGap.Database.ReturnTests
         [TestCase(SectorTypes.Public, ScopeStatuses.PresumedOutOfScope)]
         [TestCase(SectorTypes.Private, ScopeStatuses.OutOfScope)]
         [TestCase(SectorTypes.Private, ScopeStatuses.PresumedOutOfScope)]
-        public void IsFalse_When_ModifiedDate_Is_Late_And_ExcludeFromLateFlagEnforcement_Year(SectorTypes sector, ScopeStatuses scopeStatus)
+        public void Is_False_When_ModifiedDate_Is_Late_And_ExcludeFromLateFlagEnforcement_Year_And_AnyScope(SectorTypes sector,
+            ScopeStatuses scopeStatus)
         {
-            foreach (int testYear in Global.ReportingStartYearsToExcludeFromLateFlagEnforcement)
-            {
-                // Arrange 
-                DateTime snapshotDate = sector.GetAccountingStartDate(testYear);
-                DateTime modifiedDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(2);
+            // Arrange 
+            int testYear = Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.First();
+            int modifiedDateOffset = 2;
 
-                Organisation testOrganisation = sector == SectorTypes.Private
-                    ? OrganisationHelper.GetPrivateOrganisation()
-                    : OrganisationHelper.GetPublicOrganisation();
+            Return testReturn = ReturnHelper.CreateLateReturn(testYear, sector, scopeStatus, modifiedDateOffset);
 
-                OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
 
-                Return testReturn = ReturnHelper.CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
+            // Act
+            bool actual = testReturn.IsLateSubmission;
 
-                // Act
-                bool actual = testReturn.IsLateSubmission;
-
-                // Assert
-                Assert.AreEqual(false, actual);
-            }
+            // Assert
+            Assert.AreEqual(false, actual);
         }
+
+        [TestCaseSource(nameof(reportingStartYearsToExcludeFromLateFlagEnforcement))]
+        public void Is_False_When_ModifiedDate_Is_Late_Given_Any_ExcludeFromLateFlagEnforcement_Year(int testYear)
+        {
+            // Arrange 
+            int modifiedDateOffset = 2;
+
+            Return testReturn = ReturnHelper.CreateLateReturn(testYear, SectorTypes.Private, ScopeStatuses.InScope, modifiedDateOffset);
+
+            // Act
+            bool actual = testReturn.IsLateSubmission;
+
+            // Assert
+            Assert.AreEqual(false, actual);
+        }
+
+        private int GetRandomReportingYear(bool ignoreYearsExcludedFromLateFlagEnforcement = false)
+        {
+            var reportingYears = ReportingYearsHelper.GetReportingYears();
+            if (ignoreYearsExcludedFromLateFlagEnforcement)
+            {
+                reportingYears = ReportingYearsHelper.GetReportingYears()
+                    .Except(reportingStartYearsToExcludeFromLateFlagEnforcement)
+                    .ToList();
+            }
+
+            var random = new Random();
+            int index = random.Next(reportingYears.Count);
+
+            var reportingYear = reportingYears[index];
+            Console.WriteLine("Testing Reporting Year: " + reportingYear);
+
+            return reportingYear;
+        }
+
     }
 }

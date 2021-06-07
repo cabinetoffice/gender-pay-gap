@@ -160,5 +160,20 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             return lateReturn;
         }
 
+        public static Return CreateLateReturn(int reportingYear, SectorTypes sector, ScopeStatuses scopeStatus, int modifiedDateOffset)
+        {
+            DateTime snapshotDate = sector.GetAccountingStartDate(reportingYear);
+            DateTime nextSnapshotDate = snapshotDate.AddYears(1);
+            DateTime modifiedDate = nextSnapshotDate.AddDays(modifiedDateOffset);
+
+            Organisation testOrganisation = sector == SectorTypes.Private
+                ? OrganisationHelper.GetPrivateOrganisation()
+                : OrganisationHelper.GetPublicOrganisation();
+
+            OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
+            
+            return CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
+        }
+
     }
 }
