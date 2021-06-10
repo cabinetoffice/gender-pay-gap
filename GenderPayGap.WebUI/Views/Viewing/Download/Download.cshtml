@@ -16,13 +16,18 @@
         <p class="govuk-body">
             These files are in a CSV (Comma Separated Values) format that can be read by any spreadsheet program or word processor. They are not formatted for printing.
         </p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
         @await Html.PartialModelAsync(new Details
         {
             Id = "AboutCSVData",
             LinkText = "About CSV data",
             SummaryPartial = "Download/CSVDataTable"
         })
-        <hr />
+        <hr/>
 
         <ul class="govuk-list">
             @foreach (int year in ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y))
@@ -36,7 +41,5 @@
                 </li>
             }
         </ul>
-
-
     </div>
 </div>
