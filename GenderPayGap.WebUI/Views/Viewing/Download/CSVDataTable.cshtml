@@ -1,0 +1,190 @@
+﻿@using GenderPayGap.WebUI.Models.Viewing.Download
+
+@{
+    var data = new List<CSVFieldDetails>()
+    {
+        new CSVFieldDetails
+        {
+            Name = "EmployerName",
+            Description = "The name of the employer at the time of reporting",
+            Source = CSVDataSource.CoHoApiOrUser
+        },
+        new CSVFieldDetails
+        {
+            Name = "EmployerID",
+            Description = "Unique ID assigned to each employer that is consistent across every reporting year",
+            Source = CSVDataSource.System
+        },
+        new CSVFieldDetails
+        {
+            Name = "Address",
+            Description = "The current registered address of the employer",
+            Source = CSVDataSource.CoHoApiOrUser
+        },
+        new CSVFieldDetails
+        {
+            Name = "PostCode",
+            Description = "The postal code of the current registered address of the employer",
+            Source = CSVDataSource.CoHoApiOrUser
+        },
+        new CSVFieldDetails
+        {
+            Name = "CompanyNumber",
+            Description = "The Company Number of the employer as listed on Companies House (null for public sector)",
+            Source = CSVDataSource.CoHoApi
+        },
+        new CSVFieldDetails
+        {
+            Name = "SicCodes",
+            Description = "List of comma-separated SIC codes used to describe the employer's purpose and sectors of work at the time of reporting",
+            Source = CSVDataSource.CoHoApiOrUser
+        },
+        new CSVFieldDetails
+        {
+            Name = "DiffMeanHourlyPercent",
+            Description = "Mean % difference between male and female hourly pay (negative = women's mean hourly pay is higher)",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "DiffMedianHourlyPercent",
+            Description = "Median % difference between male and female hourly pay (negative = women's median hourly pay is higher)",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "DiffMeanBonusPercent",
+            Description = "Mean % difference between male and female bonus pay (negative = women's mean bonus pay is higher)",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "DiffMedianBonusPercent",
+            Description = "Median % difference between male and female bonus pay (negative = women's median bonus pay is higher)",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "MaleBonusPercent",
+            Description = "Percentage of male employees paid a bonus",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "FemaleBonusPercent",
+            Description = "Percentage of female employees paid a bonus",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "MaleLowerQuartile",
+            Description = "Percentage of males in the bottom hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "FemaleLowerQuartile",
+            Description = "Percentage of females in the lower hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "MaleLowerMiddleQuartile",
+            Description = "Percentage of males in the lower middle hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "FemaleLowerMiddleQuartile",
+            Description = "Percentage of females in the lower middle hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "MaleUpperMiddleQuartile",
+            Description = "Percentage of males in the upper middle hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "FemaleUpperMiddleQuartile",
+            Description = "Percentage of females in the upper middle hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "MaleTopQuartile",
+            Description = "Percentage of males in the top hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "FemaleTopQuartile",
+            Description = "Percentage of females in the top hourly pay quarter",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "CompanyLinkToGPGInfo",
+            Description = "Voluntary link to additional GPG data published by the reporting employer",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "ResponsiblePerson",
+            Description = "The name of the responsible person who confirms that the published information is accurate - Employers covered by the private sector regulations only",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "EmployerSize",
+            Description = "Number of employees employed by an employer",
+            Source = CSVDataSource.Reporting
+        },
+        new CSVFieldDetails
+        {
+            Name = "CurrentName",
+            Description = "The current name of the employer",
+            Source = CSVDataSource.CoHoApiOrUser
+        },
+        new CSVFieldDetails
+        {
+            Name = "SubmittedAfterTheDeadline",
+            Description = "TRUE/FALSE value showing whether the employee submitted their GPG data after the relevant reporting deadline. If a report is updated, it is marked as late only if the figures are changed",
+            Source = CSVDataSource.System
+        },
+        new CSVFieldDetails
+        {
+            Name = "DueDate",
+            Description = "The date that the GPG data should have been submitted by. Format: dd/MM/yyyy HH:mm:ss",
+            Source = CSVDataSource.System
+        },
+        new CSVFieldDetails
+        {
+            Name = "DateSubmitted",
+            Description = "Date that GPG data was submitted (if this was updated after the initial submission, this date also changes). Format: dd/MM/yyyy HH:mm:ss",
+            Source = CSVDataSource.System
+        }
+    };
+}
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header app-custom-class">Field</th>
+            <th scope="col" class="govuk-table__header app-custom-class">Description</th>
+            <th scope="col" class="govuk-table__header app-custom-class">Source</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+
+        @foreach (CSVFieldDetails item in data)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@item.Name</td>
+                <td class="govuk-table__cell">@item.Description</td>
+                <td class="govuk-table__cell">@item.Source</td>
+            </tr>
+        }
+    </tbody>
+</table>

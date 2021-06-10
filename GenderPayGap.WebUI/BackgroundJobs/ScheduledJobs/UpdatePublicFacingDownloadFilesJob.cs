@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Helpers;
@@ -94,6 +95,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 {
                     csvWriter.Configuration.ShouldQuote = (s, context) => true;
                     csvWriter.Configuration.TrimOptions = TrimOptions.InsideQuotes;
+
+                    var options = new TypeConverterOptions {Formats = new[] {"yyyy/MM/dd HH:mm:ss"}};
+                    csvWriter.Configuration.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+                    csvWriter.Configuration.TypeConverterOptionsCache.AddOptions<DateTime?>(options);
+
                     csvWriter.WriteRecords(records);
                     streamWriter.Flush();
                     memoryStream.Position = 0;
