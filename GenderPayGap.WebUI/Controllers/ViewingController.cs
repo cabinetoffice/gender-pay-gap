@@ -212,7 +212,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("download")]
         public IActionResult Download()
         {
-            return View("Download");
+            return View("Download/Download");
         }
 
         [HttpGet("download-data")]

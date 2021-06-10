@@ -1,0 +1,42 @@
+﻿@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Models.Shared
+
+@{
+    ViewBag.Title = "Download gender pay gap figures - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Download gender pay gap data
+        </h1>
+
+        <p class="govuk-body">
+            These files are in a CSV (Comma Separated Values) format that can be read by any spreadsheet program or word processor. They are not formatted for printing.
+        </p>
+        @await Html.PartialModelAsync(new Details
+        {
+            Id = "AboutCSVData",
+            LinkText = "About CSV data",
+            SummaryPartial = "Download/CSVDataTable"
+        })
+        <hr />
+
+        <ul class="govuk-list">
+            @foreach (int year in ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y))
+            {
+                <li>
+                    <a href="@Url.Action("DownloadData", "Viewing", new {year})"
+                       class="govuk-link">
+                        <span class="govuk-visually-hidden">Download gender pay gap data for</span>
+                        Reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(year)) (CSV file)
+                    </a>
+                </li>
+            }
+        </ul>
+
+
+    </div>
+</div>
