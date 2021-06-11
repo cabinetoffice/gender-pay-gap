@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                     foreach (User user in usersUncheckedSinceLatestReminderDate)
                     {
-                        if (VirtualDateTime.Now > startTime.AddMinutes(59))
+                        if (VirtualDateTime.Now > startTime.AddMinutes(45))
                         {
                             var endTime = VirtualDateTime.Now;
                             CustomLogger.Information(
@@ -88,13 +88,16 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                             break;
                         }
 
-                        CheckUserAndSendReminderEmailsForSectorTypeAndReportingYear(user, sector, year);
+                        CheckUserAndSendReminderEmailsForSectorTypeAndReportingYear(user, sector, year, latestReminderEmailDate);
                     }
                 }
             }
         }
 
-        private void CheckUserAndSendReminderEmailsForSectorTypeAndReportingYear(User user, SectorTypes sector, int year)
+        private void CheckUserAndSendReminderEmailsForSectorTypeAndReportingYear(User user,
+            SectorTypes sector,
+            int year,
+            DateTime latestReminderEmailDate)
         {
             List<Organisation> inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
                 .Where(uo => uo.HasBeenActivated())
@@ -117,15 +120,22 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 user,
                 inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport,
                 sector,
-                year);
+                year,
+                latestReminderEmailDate);
         }
 
         private void SendReminderEmailsForSectorTypeAndReportingYear(
             User user,
             List<Organisation> inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport,
             SectorTypes sectorType,
-            int year)
+            int year,
+            DateTime latestReminderEmailDate)
         {
+            if (UserHasAlreadyBeenEmailed(user, sectorType, latestReminderEmailDate))
+            {
+                return;
+            }
+
             try
             {
                 bool anyOrganisationsToEmailAbout = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Count > 0;
@@ -152,6 +162,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         Exception = ex.Message
                     });
             }
+        }
+
+        private bool UserHasAlreadyBeenEmailed(User user, SectorTypes sectorType, DateTime latestReminderEmailDate)
+        {
+            return dataRepository.GetAll<ReminderEmail>()
+                .Where(email => email.UserId == user.UserId && email.SectorType == sectorType)
+                .Any(email => email.DateChecked > latestReminderEmailDate);
         }
 
         private void SendReminderEmailForReportingYear(User user,
