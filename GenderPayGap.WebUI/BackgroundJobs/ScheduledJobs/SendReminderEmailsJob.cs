@@ -72,7 +72,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                                     re => re.SectorType == sector
                                           && re.ReminderDate.HasValue
                                           && re.ReminderDate.Value.Date == latestReminderEmailDate.Date)
-                                .Any(re => ReminderEmailHasAlreadyBeenSent(re)));
+                                .Any(
+                                    reminderEmail => reminderEmail.Status == ReminderEmailStatus.Completed
+                                                     || reminderEmail.Status == ReminderEmailStatus.InProgress
+                                                     && reminderEmail.DateChecked > VirtualDateTime.Now.AddHours(-1)));
 
                     foreach (User user in usersUncheckedSinceLatestReminderDate)
                     {
@@ -109,13 +112,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     }
                 }
             }
-        }
-
-        private bool ReminderEmailHasAlreadyBeenSent(ReminderEmail reminderEmail)
-        {
-            return reminderEmail.Status == ReminderEmailStatus.Completed
-                   || reminderEmail.Status == ReminderEmailStatus.InProgress
-                   && reminderEmail.DateChecked > VirtualDateTime.Now.AddHours(-1);
         }
 
         private void CheckUserAndSendReminderEmailsForSectorTypeAndReportingYear(User user, int year, ReminderEmail reminderEmail)
