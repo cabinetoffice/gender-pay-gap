@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                                     re => re.SectorType == sector
                                           && re.ReminderDate.HasValue
                                           && re.ReminderDate.Value.Date == latestReminderEmailDate.Date)
-                                .Any(ReminderEmailHasAlreadyBeenSent));
+                                .Any(re => ReminderEmailHasAlreadyBeenSent(re)));
 
                     foreach (User user in usersUncheckedSinceLatestReminderDate)
                     {
