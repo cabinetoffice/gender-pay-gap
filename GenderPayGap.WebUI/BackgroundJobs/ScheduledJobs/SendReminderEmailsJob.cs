@@ -94,20 +94,31 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                             break;
                         }
 
+                        ReminderEmail reminderEmail;
+
                         try
                         {
-                            var reminderEmail = AddNewReminderEmailRecord(user, sector, latestReminderEmailDate);
+                            reminderEmail = AddNewReminderEmailRecord(user, sector, latestReminderEmailDate);
+                        }
+                        catch (Exception ex)
+                        {
+                            CustomLogger.Information(
+                                "Failed whilst saving reminder email",
+                                new
+                                {
+                                    user.UserId,
+                                    SectorType = sector,
+                                    Exception = ex.Message
+                                });
+                            continue;
+                        }
+
+                        if (reminderEmail != null)
+                        {
                             CheckUserAndSendReminderEmailsForSectorTypeAndReportingYear(
                                 user,
                                 year,
                                 reminderEmail);
-                        }
-                        catch (Exception ex)
-                        {
-                            CustomLogger.Error(
-                                "Failed whilst saving reminder email",
-                                new {user.UserId, Exception = ex.Message});
-                            continue;
                         }
                     }
                 }
@@ -159,8 +170,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         year);
                 }
 
-                reminderEmail.Status = ReminderEmailStatus.Completed;
-
                 MarkReminderEmailAsCompleted(
                     reminderEmail,
                     anyOrganisationsToEmailAbout);
@@ -197,18 +206,34 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private static ReminderEmail AddNewReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
         {
-            var reminderEmailRecord = new ReminderEmail
-            {
-                UserId = user.UserId,
-                SectorType = sectorType,
-                DateChecked = VirtualDateTime.Now,
-                ReminderDate = reminderDate,
-                EmailSent = false,
-                Status = ReminderEmailStatus.InProgress
-            };
-
             var dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
-            dataRepository.Insert(reminderEmailRecord);
+
+            var reminderEmailRecord = dataRepository
+                .GetAll<ReminderEmail>()
+                .FirstOrDefault(re => re.UserId == user.UserId && re.ReminderDate == reminderDate && re.SectorType == sectorType);
+
+            if (reminderEmailRecord == null)
+            {
+                reminderEmailRecord =  new ReminderEmail
+                {
+                    UserId = user.UserId,
+                    SectorType = sectorType,
+                    DateChecked = VirtualDateTime.Now,
+                    ReminderDate = reminderDate,
+                    EmailSent = false,
+                    Status = ReminderEmailStatus.InProgress
+                };
+                dataRepository.Insert(reminderEmailRecord);
+            } else if (reminderEmailRecord.Status == ReminderEmailStatus.InProgress
+                       && reminderEmailRecord.DateChecked > VirtualDateTime.Now.AddHours(-1))
+            {
+                reminderEmailRecord.DateChecked = VirtualDateTime.Now;
+            }
+            else
+            {
+                return null;
+            }
+            
             dataRepository.SaveChanges();
 
             return reminderEmailRecord;
