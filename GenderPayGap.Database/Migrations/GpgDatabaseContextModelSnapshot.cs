@@ -405,15 +405,21 @@ namespace GenderPayGap.Database.Migrations
                     b.Property<bool>("EmailSent")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("ReminderDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<int>("SectorType")
                         .HasColumnType("integer");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("smallint");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("ReminderEmailId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "SectorType", "ReminderDate");
 
                     b.ToTable("ReminderEmails");
                 });

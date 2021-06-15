@@ -571,6 +571,12 @@ namespace GenderPayGap.Database
                 .HasDefaultValueSql(Database.IsNpgsql() ? "now()" : "getdate()");
 
             #endregion
+            
+            #region ReminderEmail
+
+            modelBuilder.Entity<ReminderEmail>(entity => { entity.HasIndex(e => new {e.UserId, e.SectorType, e.ReminderDate}); });
+
+            #endregion
         }
 
     }
