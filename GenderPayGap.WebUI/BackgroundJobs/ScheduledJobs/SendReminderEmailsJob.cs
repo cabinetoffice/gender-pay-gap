@@ -72,15 +72,14 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                                     re => re.SectorType == sector
                                           && re.ReminderDate.HasValue
                                           && re.ReminderDate.Value.Date == latestReminderEmailDate.Date)
-                                .Any(
-                                    reminderEmail => reminderEmail.Status == ReminderEmailStatus.Completed
-                                                     || reminderEmail.Status == ReminderEmailStatus.InProgress
-                                                     && reminderEmail.DateChecked > VirtualDateTime.Now.AddHours(-1)));
+                                .Any(reminderEmail => reminderEmail.Status == ReminderEmailStatus.Completed));
+                    
 
                     foreach (User user in usersUncheckedSinceLatestReminderDate)
                     {
                         if (VirtualDateTime.Now > startTime.AddMinutes(45))
                         {
+                            Console.WriteLine("done");
                             var endTime = VirtualDateTime.Now;
                             CustomLogger.Information(
                                 $"Function finished: {nameof(SendReminderEmails)}. Hit timeout break.",
@@ -102,6 +101,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         }
                         catch (Exception ex)
                         {
+                            Console.WriteLine("failed");
                             CustomLogger.Information(
                                 "Failed whilst saving reminder email",
                                 new
@@ -210,7 +210,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             var reminderEmailRecord = dataRepository
                 .GetAll<ReminderEmail>()
-                .FirstOrDefault(re => re.UserId == user.UserId && re.ReminderDate == reminderDate && re.SectorType == sectorType);
+                .FirstOrDefault(re => re.UserId == user.UserId && re.ReminderDate.HasValue
+                                                               && re.ReminderDate.Value.Date == reminderDate.Date && re.SectorType == sectorType);
 
             if (reminderEmailRecord == null)
             {
@@ -225,12 +226,13 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 };
                 dataRepository.Insert(reminderEmailRecord);
             } else if (reminderEmailRecord.Status == ReminderEmailStatus.InProgress
-                       && reminderEmailRecord.DateChecked < VirtualDateTime.Now.AddHours(-1))
+                       && reminderEmailRecord.DateChecked < VirtualDateTime.Now.AddMinutes(-15))
             {
                 reminderEmailRecord.DateChecked = VirtualDateTime.Now;
             }
             else
             {
+                Console.WriteLine("not today");
                 return null;
             }
             

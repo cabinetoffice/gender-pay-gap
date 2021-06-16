@@ -17,8 +17,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
                 x =>
                 {
                     x.UsePostgreSqlStorage(Global.DatabaseConnectionString);
-                    x.UseSerilogLogProvider();
                 });
+
+            GlobalConfiguration.Configuration.UseColouredConsoleLogProvider();
 
             if (!Config.IsProduction())
             {
