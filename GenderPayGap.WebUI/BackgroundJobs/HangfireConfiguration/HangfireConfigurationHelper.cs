@@ -13,7 +13,12 @@ namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
 
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddHangfire(x => x.UsePostgreSqlStorage(Global.DatabaseConnectionString));
+            services.AddHangfire(
+                x =>
+                {
+                    x.UsePostgreSqlStorage(Global.DatabaseConnectionString);
+                    x.UseSerilogLogProvider();
+                });
 
             if (!Config.IsProduction())
             {
