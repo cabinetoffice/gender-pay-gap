@@ -194,14 +194,14 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             int year)
         {
             var deadlineDate = GetDeadlineDateForReportingYear(sectorType, year);
-            emailSendingService.SendReminderEmail(
-                emailAddress: user.EmailAddress,
-                deadlineDate: deadlineDate.AddDays(-1).ToString("d MMMM yyyy"),
-                daysUntilDeadline: deadlineDate.Subtract(VirtualDateTime.Now).Days,
-                organisationNames: GetOrganisationNameString(organisations),
-                organisationIsSingular: organisations.Count == 1,
-                organisationIsPlural: organisations.Count > 1,
-                sectorType: sectorType.ToString().ToLower());
+            // emailSendingService.SendReminderEmail(
+            //     emailAddress: user.EmailAddress,
+            //     deadlineDate: deadlineDate.AddDays(-1).ToString("d MMMM yyyy"),
+            //     daysUntilDeadline: deadlineDate.Subtract(VirtualDateTime.Now).Days,
+            //     organisationNames: GetOrganisationNameString(organisations),
+            //     organisationIsSingular: organisations.Count == 1,
+            //     organisationIsPlural: organisations.Count > 1,
+            //     sectorType: sectorType.ToString().ToLower());
         }
 
         private static ReminderEmail AddNewReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
