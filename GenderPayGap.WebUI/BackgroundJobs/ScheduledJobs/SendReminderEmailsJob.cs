@@ -225,7 +225,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 };
                 dataRepository.Insert(reminderEmailRecord);
             } else if (reminderEmailRecord.Status == ReminderEmailStatus.InProgress
-                       && reminderEmailRecord.DateChecked > VirtualDateTime.Now.AddHours(-1))
+                       && reminderEmailRecord.DateChecked < VirtualDateTime.Now.AddHours(-1))
             {
                 reminderEmailRecord.DateChecked = VirtualDateTime.Now;
             }
