@@ -94,11 +94,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         }
 
                         ReminderEmail reminderEmail;
-                        reminderEmail = AddNewReminderEmailRecord(user, sector, latestReminderEmailDate);
 
-                        /*
                         try
                         {
+                            reminderEmail = AddNewReminderEmailRecord(user, sector, latestReminderEmailDate);
                         }
                         catch (Exception ex)
                         {
@@ -112,7 +111,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                                     Exception = ex.Message
                                 });
                             continue;
-                        }*/
+                        }
 
                         if (reminderEmail != null)
                         {
