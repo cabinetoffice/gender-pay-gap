@@ -94,10 +94,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         }
 
                         ReminderEmail reminderEmail;
+                        reminderEmail = AddNewReminderEmailRecord(user, sector, latestReminderEmailDate);
 
+                        /*
                         try
                         {
-                            reminderEmail = AddNewReminderEmailRecord(user, sector, latestReminderEmailDate);
                         }
                         catch (Exception ex)
                         {
@@ -111,7 +112,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                                     Exception = ex.Message
                                 });
                             continue;
-                        }
+                        }*/
 
                         if (reminderEmail != null)
                         {
@@ -204,10 +205,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             //     sectorType: sectorType.ToString().ToLower());
         }
 
-        private static ReminderEmail AddNewReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
+        private ReminderEmail AddNewReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
         {
-            var dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
-
             var reminderEmailRecord = dataRepository
                 .GetAll<ReminderEmail>()
                 .FirstOrDefault(re => re.UserId == user.UserId && re.ReminderDate.HasValue
