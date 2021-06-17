@@ -8,6 +8,7 @@ namespace GenderPayGap.Database.Models
     [JsonObject(MemberSerialization.OptIn)]
     public class ReminderEmail
     {
+
         [JsonProperty]
         public long ReminderEmailId { get; set; }
 
@@ -24,5 +25,12 @@ namespace GenderPayGap.Database.Models
 
         [JsonProperty]
         public bool EmailSent { get; set; }
+
+        [JsonProperty]
+        public ReminderEmailStatus Status { get; set; }
+        
+        [JsonProperty]
+        public DateTime? ReminderDate { get; set; }
+
     }
 }
