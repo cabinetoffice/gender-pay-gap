@@ -299,6 +299,12 @@ namespace GenderPayGap.Core
         Spam = 2
     }
 
+    public enum ReminderEmailStatus : byte
+    {
+        InProgress = 0,
+        Completed = 1
+    }
+
     public static class EnumHelper
     {
 
