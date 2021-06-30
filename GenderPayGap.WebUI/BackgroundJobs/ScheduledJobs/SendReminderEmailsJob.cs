@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
@@ -72,14 +73,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
                 .Where(user => !user.HasBeenAnonymised)
-                .Where(
-                    user => !user.ReminderEmails
-                        .Where(
-                            re => re.SectorType == sector
-                                  && re.ReminderDate.HasValue
-                                  && re.ReminderDate.Value.Date == latestReminderEmailDate.Date)
-                        .Any(reminderEmail => reminderEmail.Status == ReminderEmailStatus.Completed));
-
+                .Where(UserHasNotBeenEmailedYet(sector, latestReminderEmailDate));
 
             foreach (User user in usersUncheckedSinceLatestReminderDate)
             {
@@ -98,91 +92,144 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     break;
                 }
 
-                ReminderEmail reminderEmail;
-
                 try
                 {
-                    reminderEmail = GetReminderEmailRecord(user, sector, latestReminderEmailDate);
+                    SendReminderEmailRecordIfNotInProgress(user, sector, latestReminderEmailDate, year);
                 }
                 catch (Exception ex)
                 {
                     CustomLogger.Information(
-                        "Failed whilst saving reminder email",
+                        "Failed whilst saving or sending reminder email",
                         new {user.UserId, SectorType = sector, Exception = ex.Message});
-                    continue;
-                }
-
-                if (reminderEmail != null)
-                {
-                    CheckUserAndSendReminderEmailsForReportingYear(
-                        user,
-                        year,
-                        reminderEmail);
                 }
             }
         }
 
-        private void CheckUserAndSendReminderEmailsForReportingYear(User user, int year, ReminderEmail reminderEmail)
+        private Expression<Func<User, bool>> UserHasNotBeenEmailedYet(SectorTypes sector, DateTime reminderEmailDate)
         {
+            return user => !user.ReminderEmails
+                .Any(ReminderEmailHasBeenSentForSectorAndDate(sector, reminderEmailDate));
+        }
+
+        private Func<ReminderEmail, bool> ReminderEmailHasBeenSentForSectorAndDate(SectorTypes sector,
+            DateTime reminderEmailDate)
+        {
+            return reminderEmail => reminderEmail.SectorType == sector
+                                    && reminderEmail.ReminderDate.HasValue
+                                    && reminderEmail.ReminderDate.Value.Date == reminderEmailDate.Date
+                                    && reminderEmail.Status == ReminderEmailStatus.Completed;
+        }
+
+        private void SendReminderEmailsForReportingYear(User user, int year, ReminderEmail reminderEmail)
+        {
+            var snapshotDate = reminderEmail.SectorType.GetAccountingStartDate(year);
+
             List<Organisation> inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport = user.UserOrganisations
                 .Where(uo => uo.HasBeenActivated())
                 .Select(uo => uo.Organisation)
                 .Where(o => o.Status == OrganisationStatuses.Active)
                 .Where(o => o.SectorType == reminderEmail.SectorType)
-                .Where(
-                    o => o.OrganisationScopes.Any(
-                        s => s.Status == ScopeRowStatuses.Active
-                             && s.SnapshotDate == reminderEmail.SectorType.GetAccountingStartDate(year)
-                             && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
-                .Where(
-                    o =>
-                        !o.Returns.Any(
-                            r =>
-                                r.Status == ReturnStatuses.Submitted
-                                && r.AccountingDate == reminderEmail.SectorType.GetAccountingStartDate(year)))
+                .Where(OrganisationIsInScopeForSnapshotDate(snapshotDate))
+                .Where(OrganisationHasNotReportedForSnapshotDate(snapshotDate))
                 .ToList();
 
-            SendReminderEmailsForReportingYear(
+            CheckAndSendReminderEmailsForReportingYear(
                 user,
                 inScopeActiveOrganisationsForUserAndSectorTypeThatStillNeedToReport,
                 year,
                 reminderEmail);
         }
 
-        private void SendReminderEmailsForReportingYear(
+        private Func<Organisation, bool> OrganisationIsInScopeForSnapshotDate(DateTime snapshotDate)
+        {
+            return o => o.OrganisationScopes.Any(
+                s => s.Status == ScopeRowStatuses.Active
+                     && s.SnapshotDate == snapshotDate
+                     && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope));
+        }
+
+        private Func<Organisation, bool> OrganisationHasNotReportedForSnapshotDate(DateTime snapshotDate)
+        {
+            return o => !o.Returns.Any(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate == snapshotDate);
+        }
+
+        private void SendReminderEmailRecordIfNotInProgress(User user, SectorTypes sectorType, DateTime reminderDate, int year)
+        {
+            var reminderEmailRecord = GetReminderEmailRecord(user, sectorType, reminderDate);
+
+            if (reminderEmailRecord == null)
+            {
+                reminderEmailRecord = CreateAndGetReminderEmailRecord(user, sectorType, reminderDate);
+                SendReminderEmailsForReportingYear(
+                    user,
+                    year,
+                    reminderEmailRecord);
+            }
+            else if (ReminderEmailSendingHasExpired(reminderEmailRecord))
+            {
+                reminderEmailRecord = GetRecheckedReminderEmail(reminderEmailRecord);
+                SendReminderEmailsForReportingYear(
+                    user,
+                    year,
+                    reminderEmailRecord);
+            }
+        }
+
+        private ReminderEmail GetReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
+        {
+            return dataRepository
+                .GetAll<ReminderEmail>()
+                .FirstOrDefault(
+                    re => re.UserId == user.UserId
+                          && re.ReminderDate.HasValue
+                          && re.ReminderDate.Value.Date == reminderDate.Date
+                          && re.SectorType == sectorType);
+        }
+
+        private ReminderEmail CreateAndGetReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
+        {
+            var reminderEmailRecord = new ReminderEmail
+            {
+                UserId = user.UserId,
+                SectorType = sectorType,
+                DateChecked = VirtualDateTime.Now,
+                ReminderDate = reminderDate,
+                EmailSent = false,
+                Status = ReminderEmailStatus.InProgress
+            };
+            dataRepository.Insert(reminderEmailRecord);
+            dataRepository.SaveChanges();
+
+            return reminderEmailRecord;
+        }
+
+        private ReminderEmail GetRecheckedReminderEmail(ReminderEmail reminderEmailRecord)
+        {
+            reminderEmailRecord.DateChecked = VirtualDateTime.Now;
+            dataRepository.SaveChanges();
+
+            return reminderEmailRecord;
+        }
+
+        private void CheckAndSendReminderEmailsForReportingYear(
             User user,
             List<Organisation> inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport,
             int year,
             ReminderEmail reminderEmail)
         {
-            try
+            bool anyOrganisationsToEmailAbout = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Count > 0;
+            if (anyOrganisationsToEmailAbout)
             {
-                bool anyOrganisationsToEmailAbout = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Count > 0;
-                if (anyOrganisationsToEmailAbout)
-                {
-                    SendReminderEmailForReportingYear(
-                        user,
-                        reminderEmail.SectorType,
-                        inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport,
-                        year);
-                }
+                SendReminderEmailForReportingYear(
+                    user,
+                    reminderEmail.SectorType,
+                    inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport,
+                    year);
+            }
 
-                MarkReminderEmailAsCompleted(
-                    reminderEmail,
-                    anyOrganisationsToEmailAbout);
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error(
-                    "Failed whilst sending or saving reminder email",
-                    new
-                    {
-                        user.UserId,
-                        SectorType = reminderEmail.SectorType,
-                        OrganisationIds = inScopeOrganisationsForUserAndSectorTypeThatStillNeedToReport.Select(o => o.OrganisationId),
-                        Exception = ex.Message
-                    });
-            }
+            MarkReminderEmailAsCompleted(
+                reminderEmail,
+                anyOrganisationsToEmailAbout);
         }
 
         private void SendReminderEmailForReportingYear(User user,
@@ -201,42 +248,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 sectorType: sectorType.ToString().ToLower());
         }
 
-        private ReminderEmail GetReminderEmailRecord(User user, SectorTypes sectorType, DateTime reminderDate)
-        {
-            var reminderEmailRecord = dataRepository
-                .GetAll<ReminderEmail>()
-                .FirstOrDefault(
-                    re => re.UserId == user.UserId
-                          && re.ReminderDate.HasValue
-                          && re.ReminderDate.Value.Date == reminderDate.Date
-                          && re.SectorType == sectorType);
-
-            if (reminderEmailRecord == null)
-            {
-                reminderEmailRecord = new ReminderEmail
-                {
-                    UserId = user.UserId,
-                    SectorType = sectorType,
-                    DateChecked = VirtualDateTime.Now,
-                    ReminderDate = reminderDate,
-                    EmailSent = false,
-                    Status = ReminderEmailStatus.InProgress
-                };
-                dataRepository.Insert(reminderEmailRecord);
-            }
-            else if (ReminderEmailSendingHasExpired(reminderEmailRecord))
-            {
-                reminderEmailRecord.DateChecked = VirtualDateTime.Now;
-            }
-            else
-            {
-                return null;
-            }
-
-            dataRepository.SaveChanges();
-
-            return reminderEmailRecord;
-        }
 
         private bool ReminderEmailSendingHasExpired(ReminderEmail reminderEmailRecord)
         {
