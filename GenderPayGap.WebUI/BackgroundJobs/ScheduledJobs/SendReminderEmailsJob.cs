@@ -108,16 +108,11 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         private Expression<Func<User, bool>> UserHasNotBeenEmailedYet(SectorTypes sector, DateTime reminderEmailDate)
         {
             return user => !user.ReminderEmails
-                .Any(ReminderEmailHasBeenSentForSectorAndDate(sector, reminderEmailDate));
-        }
-
-        private Expression<Func<ReminderEmail, bool>> ReminderEmailHasBeenSentForSectorAndDate(SectorTypes sector,
-            DateTime reminderEmailDate)
-        {
-            return reminderEmail => reminderEmail.SectorType == sector
-                                    && reminderEmail.ReminderDate.HasValue
-                                    && reminderEmail.ReminderDate.Value.Date == reminderEmailDate.Date
-                                    && reminderEmail.Status == ReminderEmailStatus.Completed;
+                .Any(
+                    reminderEmail => reminderEmail.SectorType == sector
+                                     && reminderEmail.ReminderDate.HasValue
+                                     && reminderEmail.ReminderDate.Value.Date == reminderEmailDate.Date
+                                     && reminderEmail.Status == ReminderEmailStatus.Completed);
         }
 
         private void SendReminderEmailsForReportingYear(User user, int year, ReminderEmail reminderEmail)
@@ -140,7 +135,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 reminderEmail);
         }
 
-        private Expression<Func<Organisation, bool>> OrganisationIsInScopeForSnapshotDate(DateTime snapshotDate)
+        private Func<Organisation, bool> OrganisationIsInScopeForSnapshotDate(DateTime snapshotDate)
         {
             return o => o.OrganisationScopes.Any(
                 s => s.Status == ScopeRowStatuses.Active
@@ -148,7 +143,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                      && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope));
         }
 
-        private Expression<Func<Organisation, bool>> OrganisationHasNotReportedForSnapshotDate(DateTime snapshotDate)
+        private Func<Organisation, bool> OrganisationHasNotReportedForSnapshotDate(DateTime snapshotDate)
         {
             return o => !o.Returns.Any(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate == snapshotDate);
         }
