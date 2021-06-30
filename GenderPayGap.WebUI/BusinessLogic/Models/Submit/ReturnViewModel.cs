@@ -119,14 +119,17 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         public DateTime Modified { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        [MaxLength(100)]
         [Display(Name = "Job title")]
         public string JobTitle { get; set; }
 
+        [MaxLength(50)]
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        [MaxLength(50)]
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
