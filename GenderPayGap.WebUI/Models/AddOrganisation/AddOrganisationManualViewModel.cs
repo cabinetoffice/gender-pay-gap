@@ -34,9 +34,9 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
 
         public string Query { get; set; }
 
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
         [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Employer name", NameWithinSentence = "employer name")]
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter the name of the employer")]
+        [GovUkValidateCharacterCount(MaxCharacters = 100)]
         public string OrganisationName { get; set; }
 
         [GovUkDisplayNameForErrors(NameAtStartOfSentence = "PO Box", NameWithinSentence = "PO Box")]
