@@ -34,6 +34,9 @@
             @Html.HiddenFor(model => Model.SectorType)
             @Html.HiddenFor(model => Model.OrganisationSize)
 
+            @Html.HiddenFor(model => model.ReportInfo.ReportModifiedDate)
+            @Html.HiddenFor(model => model.ReportInfo.ReportingStartDate)
+
             // handles the reason error css class
             HtmlString reasonErrorClass = null;
             if (string.IsNullOrEmpty(Model.LateReason))
