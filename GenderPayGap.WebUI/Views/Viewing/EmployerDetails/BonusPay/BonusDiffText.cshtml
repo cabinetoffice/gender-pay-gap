@@ -6,7 +6,7 @@
         <div class="data data-metric column-full">
             @if (Model.MenReceivedBonuses)
             {
-                <span>When comparing mean (average) bonus pay, women&rsquo;s @(Model.Statistic) mean bonus pay is </span>
+                <span>When comparing @(Model.Statistic) (average) bonus pay, women&rsquo;s @(Model.Statistic) bonus pay is </span>
                 <span id="@(Model.Id)" class="data-item">
                     <span>@(string.Format("{0:0.#}", Model.Percent))% </span>
                     <span>@(Model.Compare)</span>
