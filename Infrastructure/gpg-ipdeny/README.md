@@ -43,3 +43,38 @@ The IP deny app is deployed via the same Azure release pipelines using a Bash st
 This relies on the copy of the GPG-IP-Denylist.txt file stored in the Library - Secure Files of Azure. If the list of IPs is updated, this should be updated along with the version in Zoho.
 
 The deployment is run via the same deploy script as the manual deployments, so changes to the deployment script may break the automated deployments. Due to the scripts reliance on jq, we need to have this available. There doesn't appear to be a simple way to do this in Azure, so the bash step that run the deployment handles adding a version and making sure the deployment script can access it.
+
+## Rate Limiting
+The IP deny app has some rate limiting configurations documented below
+
+```
+limit_req_zone $binary_remote_addr zone=rate_limiting_ip_address_bucket:10m rate=50r/s;
+
+...
+
+location / {
+      ... 
+      
+      limit_req zone=rate_limiting_ip_address_bucket;
+      
+      ...
+}
+```
+
+IP addresses of requests to the service are stored in the `rate_limiting_ip_address_bucket` with a size of __10 Megabytes__.
+We then define a maximum request rate of `rate=50r/s` meaning __50 Request per second__. The rate limiting is then applied to any route on the site matching: `/` (all pages/routes)
+
+These restrictions are applied per IP address.
+
+To test the rate limiting client side, you can use the "hey" package (you'll need to [download GoLang](https://golang.org/dl/) first). To install this package just run:
+```
+go get -u github.com/rakyll/hey
+```
+
+You can then test the rate limiting using the command `hey` like so:
+
+```
+ hey -n 100 -c 10 -q 5 https://gender-pay-gap-loadtest.london.cloudapps.digital/
+```
+
+This makes a total of __100 Requests__ to `https://gender-pay-gap-loadtest.london.cloudapps.digital/` with __10 concurrent workers__ all making __5 Queries per second__
