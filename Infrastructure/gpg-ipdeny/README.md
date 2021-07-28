@@ -55,14 +55,20 @@ limit_req_zone $binary_remote_addr zone=rate_limiting_ip_address_bucket:10m rate
 location / {
       ... 
       
-      limit_req zone=rate_limiting_ip_address_bucket;
+      limit_req zone=rate_limiting_ip_address_bucket burst=100 nodelay;
       
       ...
 }
 ```
 
 IP addresses of requests to the service are stored in the `rate_limiting_ip_address_bucket` with a size of __10 Megabytes__.
-We then define a maximum request rate of `rate=50r/s` meaning __50 Request per second__. The rate limiting is then applied to any route on the site matching: `/` (all pages/routes)
+We then define a maximum request rate of `rate=50r/s` meaning __50 Request per second__.
+
+The `50r/s` value is applied practically as a 1 request per 20 millisecond value. This means if a request is sent within 20ms of another, then it will return a 503. To avoid this we use `burst`. This represents a queue where request exceeding the 1 request per 20ms rate are moved to. The requests are then resolved at a rate suitable for the rate limit (1 request per 20ms in this case).
+
+To prevent the site from appearing slow, we can use the `nodelay` option which does some smart stuff to make sure requests are handled without a delay. You can find out more info [here](https://www.nginx.com/blog/rate-limiting-nginx/).
+
+The rate limiting is then applied to any route on the site matching: `/` (all pages/routes).
 
 These restrictions are applied per IP address.
 
