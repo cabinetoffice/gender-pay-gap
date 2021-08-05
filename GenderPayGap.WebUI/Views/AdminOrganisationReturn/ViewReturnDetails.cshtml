@@ -288,9 +288,9 @@
                                           (thisVersion.FemaleUpperQuartilePayBand != previousVersion.FemaleUpperQuartilePayBand));
 
                         <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
-                            <span style="white-space: nowrap;">@(thisVersion.MaleUpperQuartilePayBand.ToString("0"))% male</span>
+                            <span style="white-space: nowrap;">@(thisVersion.MaleUpperQuartilePayBand?.ToString("0"))% male</span>
                             <br />
-                            <span style="white-space: nowrap;">@(thisVersion.FemaleUpperQuartilePayBand.ToString("0"))% female</span>
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleUpperQuartilePayBand?.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
@@ -307,9 +307,9 @@
                                           (thisVersion.FemaleUpperPayBand != previousVersion.FemaleUpperPayBand));
 
                         <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
-                            <span style="white-space: nowrap;">@(thisVersion.MaleUpperPayBand.ToString("0"))% male</span>
+                            <span style="white-space: nowrap;">@(thisVersion.MaleUpperPayBand?.ToString("0"))% male</span>
                             <br />
-                            <span style="white-space: nowrap;">@(thisVersion.FemaleUpperPayBand.ToString("0"))% female</span>
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleUpperPayBand?.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
@@ -326,9 +326,9 @@
                                           (thisVersion.FemaleMiddlePayBand != previousVersion.FemaleMiddlePayBand));
 
                         <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
-                            <span style="white-space: nowrap;">@(thisVersion.MaleMiddlePayBand.ToString("0"))% male</span>
+                            <span style="white-space: nowrap;">@(thisVersion.MaleMiddlePayBand?.ToString("0"))% male</span>
                             <br />
-                            <span style="white-space: nowrap;">@(thisVersion.FemaleMiddlePayBand.ToString("0"))% female</span>
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleMiddlePayBand?.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>
@@ -345,9 +345,9 @@
                                           (thisVersion.FemaleLowerPayBand != previousVersion.FemaleLowerPayBand));
 
                         <td class="govuk-table__cell @(isChanged ? "value-changed-from-previous-return" : null)">
-                            <span style="white-space: nowrap;">@(thisVersion.MaleLowerPayBand.ToString("0"))% male</span>
+                            <span style="white-space: nowrap;">@(thisVersion.MaleLowerPayBand?.ToString("0"))% male</span>
                             <br />
-                            <span style="white-space: nowrap;">@(thisVersion.FemaleLowerPayBand.ToString("0"))% female</span>
+                            <span style="white-space: nowrap;">@(thisVersion.FemaleLowerPayBand?.ToString("0"))% female</span>
                         </td>
                     }
                 </tr>

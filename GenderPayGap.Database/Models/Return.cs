@@ -34,21 +34,21 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public decimal FemaleMedianBonusPayPercent { get; set; }
         [JsonProperty]
-        public decimal MaleLowerPayBand { get; set; }
+        public decimal? MaleLowerPayBand { get; set; }
         [JsonProperty]
-        public decimal FemaleLowerPayBand { get; set; }
+        public decimal? FemaleLowerPayBand { get; set; }
         [JsonProperty]
-        public decimal MaleMiddlePayBand { get; set; }
+        public decimal? MaleMiddlePayBand { get; set; }
         [JsonProperty]
-        public decimal FemaleMiddlePayBand { get; set; }
+        public decimal? FemaleMiddlePayBand { get; set; }
         [JsonProperty]
-        public decimal MaleUpperPayBand { get; set; }
+        public decimal? MaleUpperPayBand { get; set; }
         [JsonProperty]
-        public decimal FemaleUpperPayBand { get; set; }
+        public decimal? FemaleUpperPayBand { get; set; }
         [JsonProperty]
-        public decimal MaleUpperQuartilePayBand { get; set; }
+        public decimal? MaleUpperQuartilePayBand { get; set; }
         [JsonProperty]
-        public decimal FemaleUpperQuartilePayBand { get; set; }
+        public decimal? FemaleUpperQuartilePayBand { get; set; }
         [JsonProperty]
         public string CompanyLinkToGPGInfo { get; set; }
         [JsonProperty]
@@ -80,9 +80,10 @@ namespace GenderPayGap.Database
         public string Modifications { get; set; }
         [JsonProperty]
         public bool EHRCResponse { get; set; }
+        [JsonProperty]
+        public bool OptedOutOfReportingPayQuarters { get; set; }
 
         public virtual Organisation Organisation { get; set; }
         public virtual ICollection<ReturnStatus> ReturnStatuses { get; set; }
-
     }
 }

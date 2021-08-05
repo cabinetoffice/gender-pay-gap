@@ -119,7 +119,14 @@
     <div class="column-two-thirds">
         <partial name="EmployerDetails/HourlyRate/HourlyRateSection" model="Model"/>
 
-        <partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
+        @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate) && Model.OptedOutOfReportingPayQuarters)
+        {
+            <div>Copy TODO</div>
+        }
+        else
+        {
+            <partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
+        }
 
         <partial name="EmployerDetails/BonusPay/BonusPaySection" model="Model"/>
     </div>

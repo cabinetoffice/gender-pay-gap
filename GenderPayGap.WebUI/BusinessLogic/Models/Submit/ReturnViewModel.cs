@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
+using GenderPayGap.WebUI.Views.Models.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
 {
@@ -54,56 +56,56 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleMedianBonusPayPercent { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerPayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerPayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleMiddlePayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleMiddlePayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperPayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperPayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Men")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperQuartilePayBand { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [RequiredIf("OptedOutOfReportingPayQuarters", false)]
         [Display(Name = "Women")]
         [Range(0, 200.9, ErrorMessage = "Value must be between 0 and 200.9")]
         [RegularExpression(@"^\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
@@ -137,6 +139,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         [MaxLength(255, ErrorMessage = "The web address (URL) cannot be longer than 255 characters.")]
         [Display(Name = "Link to your gender pay gap information")]
         public string CompanyLinkToGPGInfo { get; set; }
+
+        public bool OptedOutOfReportingPayQuarters { get; set; }
 
         public string ReturnUrl { get; set; }
         public string OriginatingAction { get; set; }
@@ -184,33 +188,35 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
 
         public bool IsValidReturn()
         {
+            bool optOutOfReporting =
+                ReportingYearsHelper.IsReportingYearWithFurloughScheme(AccountingDate) && OptedOutOfReportingPayQuarters;
+
+            bool hasPayQuartersData = MaleLowerPayBand.HasValue
+                                      && FemaleLowerPayBand.HasValue
+                                      && MaleMiddlePayBand.HasValue
+                                      && FemaleMiddlePayBand.HasValue
+                                      && MaleUpperPayBand.HasValue
+                                      && FemaleUpperPayBand.HasValue
+                                      && MaleUpperQuartilePayBand.HasValue
+                                      && FemaleUpperQuartilePayBand.HasValue;
             bool hasEnterCalculationsData = DiffMeanHourlyPayPercent.HasValue
                                             && DiffMedianHourlyPercent.HasValue
                                             && MaleMedianBonusPayPercent.HasValue
                                             && FemaleMedianBonusPayPercent.HasValue
-                                            && MaleLowerPayBand.HasValue
-                                            && FemaleLowerPayBand.HasValue
-                                            && MaleMiddlePayBand.HasValue
-                                            && FemaleMiddlePayBand.HasValue
-                                            && MaleUpperPayBand.HasValue
-                                            && FemaleUpperPayBand.HasValue
-                                            && MaleUpperQuartilePayBand.HasValue
-                                            && FemaleUpperQuartilePayBand.HasValue
                                             && FemaleMoneyFromMeanHourlyRate >= 0
                                             && FemaleMoneyFromMedianHourlyRate >= 0;
-            bool hasValidBonusFigures = MaleMedianBonusPayPercent == 0 ||
-                 DiffMeanBonusPercent.HasValue && DiffMedianBonusPercent.HasValue;
-
+            bool hasValidBonusFigures = MaleMedianBonusPayPercent == 0 || DiffMeanBonusPercent.HasValue && DiffMedianBonusPercent.HasValue;
+            bool hasValidGpgFigures = (optOutOfReporting || hasPayQuartersData) && hasEnterCalculationsData && hasValidBonusFigures;
             if (SectorType == SectorTypes.Public)
             {
-                return hasEnterCalculationsData && hasValidBonusFigures;
+                return hasValidGpgFigures;
             }
 
             bool hasPersonResponsibleData = !string.IsNullOrWhiteSpace(JobTitle)
                                             && !string.IsNullOrWhiteSpace(FirstName)
                                             && !string.IsNullOrWhiteSpace(LastName);
 
-            return hasEnterCalculationsData && hasValidBonusFigures && hasPersonResponsibleData;
+            return hasValidGpgFigures && hasPersonResponsibleData;
         }
 
         public bool HasUserData()

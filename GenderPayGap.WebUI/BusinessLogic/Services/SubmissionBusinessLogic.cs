@@ -74,7 +74,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 LatestAddress = reportToConvert.Organisation.GetLatestAddress()?.GetAddressString(),
                 EHRCResponse = reportToConvert.EHRCResponse.ToString(),
                 IsVoluntarySubmission = reportToConvert.IsVoluntarySubmission(),
-                IsLateSubmission = reportToConvert.IsLateSubmission
+                IsLateSubmission = reportToConvert.IsLateSubmission,
+                OptedOutOfReportingPayQuarters = reportToConvert.OptedOutOfReportingPayQuarters
             };
 
             if (model.Address.EqualsI(model.LatestAddress))

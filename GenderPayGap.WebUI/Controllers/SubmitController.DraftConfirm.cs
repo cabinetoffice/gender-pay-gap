@@ -54,8 +54,8 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             postedReturnViewModel.ReportInfo = stashedReturnViewModel.ReportInfo;
 
             ExcludeBlankFieldsFromModelState(postedReturnViewModel);
-
-            ConfirmPayBandsAddUpToOneHundred(postedReturnViewModel);
+            
+            ValidatePayBands(postedReturnViewModel);
 
             ValidateBonusIntegrity(postedReturnViewModel);
 

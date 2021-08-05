@@ -1,5 +1,7 @@
 ﻿@using GenderPayGap.WebUI.Models.Shared.Patterns
 @using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
 
 @{
@@ -54,6 +56,8 @@
             @await Html.PartialAsync("ReportingOrgPart", controller.ReportingOrganisation.OrganisationName)
         </div>
     </div>
+
+
     <div class="grid-row">
         <div class="column-two-thirds">
             <p>For differences in hourly pay and bonus pay, a positive <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid more than women in your organisation.</p>
@@ -65,70 +69,83 @@
 
             <div class="form-horizontal">
                 <h2 id="PayQuartiles" class="heading-medium">Percentage of men and women in each hourly pay quarter</h2>
+                @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate))
+                {
+                    <div class="govuk-form-group">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="OptedOutOfReportingPayQuarters" value="true" name="OptedOutOfReportingPayQuarters" type="checkbox" onChange="showOrHidePayQuarters();" checked="@Model.OptedOutOfReportingPayQuarters">
+                            <label class="govuk-label govuk-checkboxes__label" for="OptedOutOfReportingPayQuarters">
+                                TO DO OptedOutOfReportingPayQuarters
+                            </label>
+                        </div>
+                    </div>
+                }
+                @{ var payQuartersDisplay = Model.OptedOutOfReportingPayQuarters ? "none" : "block";}
+                <div id="PayQuarters" style="display: @payQuartersDisplay">
+                    <fieldset>
+                        <legend>
+                            <h3 class="heading-small">Upper hourly pay quarter</h3>
+                        </legend>
+                        <div class="form-group @Html.SetErrorClass(model => model.MaleUpperQuartilePayBand, "error")">
+                            @Html.LabelFor(model => model.MaleUpperQuartilePayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.MaleUpperQuartilePayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.MaleUpperQuartilePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                        <div class="form-group @Html.SetErrorClass(model => model.FemaleUpperQuartilePayBand, "error") @Html.SetErrorClass(model => model.FemaleUpperQuartilePayBand, "error")">
+                            @Html.LabelFor(model => model.FemaleUpperQuartilePayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.FemaleUpperQuartilePayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.FemaleUpperQuartilePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                    </fieldset>
 
-                <fieldset>
-                    <legend>
-                        <h3 class="heading-small">Upper hourly pay quarter</h3>
-                    </legend>
-                    <div class="form-group @Html.SetErrorClass(model => model.MaleUpperQuartilePayBand, "error")">
-                        @Html.LabelFor(model => model.MaleUpperQuartilePayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.MaleUpperQuartilePayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.MaleUpperQuartilePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                    <div class="form-group @Html.SetErrorClass(model => model.FemaleUpperQuartilePayBand, "error") @Html.SetErrorClass(model => model.FemaleUpperQuartilePayBand, "error")">
-                        @Html.LabelFor(model => model.FemaleUpperQuartilePayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.FemaleUpperQuartilePayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.FemaleUpperQuartilePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                </fieldset>
+                    <fieldset>
+                        <legend>
+                            <h3 class="heading-small">Upper middle hourly pay quarter</h3>
+                        </legend>
+                        <div class="form-group @Html.SetErrorClass(model => model.MaleUpperPayBand, "error")">
+                            @Html.LabelFor(model => model.MaleUpperPayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.MaleUpperPayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.MaleUpperPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                        <div class="form-group @Html.SetErrorClass(model => model.FemaleUpperPayBand, "error")">
+                            @Html.LabelFor(model => model.FemaleUpperPayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.FemaleUpperPayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.FemaleUpperPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                    </fieldset>
 
-                <fieldset>
-                    <legend>
-                        <h3 class="heading-small">Upper middle hourly pay quarter</h3>
-                    </legend>
-                    <div class="form-group @Html.SetErrorClass(model => model.MaleUpperPayBand, "error")">
-                        @Html.LabelFor(model => model.MaleUpperPayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.MaleUpperPayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.MaleUpperPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                    <div class="form-group @Html.SetErrorClass(model => model.FemaleUpperPayBand, "error")">
-                        @Html.LabelFor(model => model.FemaleUpperPayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.FemaleUpperPayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.FemaleUpperPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                </fieldset>
+                    <fieldset>
+                        <legend>
+                            <h3 class="heading-small">Lower middle hourly pay quarter</h3>
+                        </legend>
+                        <div class="form-group @Html.SetErrorClass(model => model.MaleMiddlePayBand, "error")">
+                            @Html.LabelFor(model => model.MaleMiddlePayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.MaleMiddlePayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.MaleMiddlePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                        <div class="form-group @Html.SetErrorClass(model => model.FemaleMiddlePayBand, "error")">
+                            @Html.LabelFor(model => model.FemaleMiddlePayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.FemaleMiddlePayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.FemaleMiddlePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                    </fieldset>
 
-                <fieldset>
-                    <legend>
-                        <h3 class="heading-small">Lower middle hourly pay quarter</h3>
-                    </legend>
-                    <div class="form-group @Html.SetErrorClass(model => model.MaleMiddlePayBand, "error")">
-                        @Html.LabelFor(model => model.MaleMiddlePayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.MaleMiddlePayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.MaleMiddlePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                    <div class="form-group @Html.SetErrorClass(model => model.FemaleMiddlePayBand, "error")">
-                        @Html.LabelFor(model => model.FemaleMiddlePayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.FemaleMiddlePayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.FemaleMiddlePayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend>
-                        <h3 class="heading-small">Lower hourly pay quarter</h3>
-                    </legend>
-                    <div class="form-group @Html.SetErrorClass(model => model.MaleLowerPayBand, "error")">
-                        @Html.LabelFor(model => model.MaleLowerPayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.MaleLowerPayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.MaleLowerPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                    <div class="form-group @Html.SetErrorClass(model => model.FemaleLowerPayBand, "error")">
-                        @Html.LabelFor(model => model.FemaleLowerPayBand, new { @class = "form-label" })
-                        @Html.ValidationMessageFor(model => model.FemaleLowerPayBand, "", new { @class = "error-message" })
-                        @Html.CustomEditorFor(model => model.FemaleLowerPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
-                    </div>
-                </fieldset>
+                    <fieldset>
+                        <legend>
+                            <h3 class="heading-small">Lower hourly pay quarter</h3>
+                        </legend>
+                        <div class="form-group @Html.SetErrorClass(model => model.MaleLowerPayBand, "error")">
+                            @Html.LabelFor(model => model.MaleLowerPayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.MaleLowerPayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.MaleLowerPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                        <div class="form-group @Html.SetErrorClass(model => model.FemaleLowerPayBand, "error")">
+                            @Html.LabelFor(model => model.FemaleLowerPayBand, new { @class = "form-label" })
+                            @Html.ValidationMessageFor(model => model.FemaleLowerPayBand, "", new { @class = "error-message" })
+                            @Html.CustomEditorFor(model => model.FemaleLowerPayBand, new { @class = "form-control form-control-1-4" }) <span aria-hidden="true" aria-label="percent">%</span>
+                        </div>
+                    </fieldset>
+                </div>
 
                 <fieldset id="HourlyPay">
                     <legend>
@@ -196,4 +213,36 @@
         </div>
         @await Html.PartialAsync("RelatedContent")
     </div>
+}
+
+
+@section Scripts {
+    <script>
+        function clearChildren(element) {
+            for (var i = 0; i < element.childNodes.length; i++) {
+                var e = element.childNodes[i];
+                if (e.tagName && e.tagName.toLowerCase() === "input") {
+                    e.value = null;
+                } else {
+                    clearChildren(e);
+                }
+            }
+        }
+
+        function showOrHidePayQuarters() {
+            const payQuarters = document.getElementById("PayQuarters");
+            if (!payQuarters) {
+                return;
+            }
+
+            const optedOutOfReportingPayQuarters = document.getElementById("OptedOutOfReportingPayQuarters");
+            if (optedOutOfReportingPayQuarters && optedOutOfReportingPayQuarters.checked) {
+                payQuarters.style.display = "none";
+                clearChildren(payQuarters);
+            }
+            else {
+                payQuarters.style.display = "block";
+            }
+        }
+    </script>
 }

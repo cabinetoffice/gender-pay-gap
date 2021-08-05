@@ -17,14 +17,14 @@ namespace GenderPayGap.Core.Models
         public decimal? DiffMedianBonusPercent { get; set; }
         public decimal MaleBonusPercent { get; set; }
         public decimal FemaleBonusPercent { get; set; }
-        public decimal MaleLowerQuartile { get; set; }
-        public decimal FemaleLowerQuartile { get; set; }
-        public decimal MaleLowerMiddleQuartile { get; set; }
-        public decimal FemaleLowerMiddleQuartile { get; set; }
-        public decimal MaleUpperMiddleQuartile { get; set; }
-        public decimal FemaleUpperMiddleQuartile { get; set; }
-        public decimal MaleTopQuartile { get; set; }
-        public decimal FemaleTopQuartile { get; set; }
+        public decimal? MaleLowerQuartile { get; set; }
+        public decimal? FemaleLowerQuartile { get; set; }
+        public decimal? MaleLowerMiddleQuartile { get; set; }
+        public decimal? FemaleLowerMiddleQuartile { get; set; }
+        public decimal? MaleUpperMiddleQuartile { get; set; }
+        public decimal? FemaleUpperMiddleQuartile { get; set; }
+        public decimal? MaleTopQuartile { get; set; }
+        public decimal? FemaleTopQuartile { get; set; }
         public string CompanyLinkToGPGInfo { get; set; }
         public string ResponsiblePerson { get; set; }
         public string EmployerSize { get; set; }

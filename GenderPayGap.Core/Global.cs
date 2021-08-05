@@ -57,7 +57,9 @@ namespace GenderPayGap.Core
         public static bool MaintenanceMode => Config.GetAppSetting("MaintenanceMode").ToBoolean(false);
         public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSetting("MaintenanceModeUpAgainTime")?.ToDateTime();
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>
-            JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting("ReportingStartYearsToExcludeFromLateFlagEnforcement", "[]"));
+            LoadListOfIntegers("ReportingStartYearsToExcludeFromLateFlagEnforcement");
+        public static List<int> ReportingStartYearsWithFurloughScheme => 
+            LoadListOfIntegers("ReportingStartYearsWithFurloughScheme");
         public static string ReminderEmailDays => Config.GetAppSetting("ReminderEmailDays");
         public static bool EnableSubmitAlerts
         {
@@ -151,5 +153,13 @@ namespace GenderPayGap.Core
 
         #endregion
 
+        #region Private
+
+        private static List<int> LoadListOfIntegers(string setting)
+        {
+            return JsonConvert.DeserializeObject<List<int>>(Config.GetAppSetting(setting, "[]"));
+        }
+
+        #endregion
     }
 }

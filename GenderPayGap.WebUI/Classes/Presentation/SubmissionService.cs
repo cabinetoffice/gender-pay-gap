@@ -178,6 +178,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             result.LateReason = stashedReturnViewModel.LateReason;
             result.EHRCResponse = stashedReturnViewModel.EHRCResponse.ToBoolean();
             result.IsLateSubmission = result.CalculateIsLateSubmission();
+            result.OptedOutOfReportingPayQuarters = stashedReturnViewModel.OptedOutOfReportingPayQuarters;
 
             return result;
         }
@@ -231,7 +232,7 @@ namespace GenderPayGap.WebUI.Classes.Services
                 figuresChanged = true;
             }
 
-            if (stashedReturn.FemaleLowerPayBand.ToString(decimalFormat) != databaseReturn.FemaleLowerPayBand.ToString(decimalFormat))
+            if (stashedReturn.FemaleLowerPayBand?.ToString(decimalFormat) != databaseReturn.FemaleLowerPayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
@@ -242,23 +243,23 @@ namespace GenderPayGap.WebUI.Classes.Services
                 figuresChanged = true;
             }
 
-            if (stashedReturn.FemaleMiddlePayBand.ToString(decimalFormat) != databaseReturn.FemaleMiddlePayBand.ToString(decimalFormat))
+            if (stashedReturn.FemaleMiddlePayBand?.ToString(decimalFormat) != databaseReturn.FemaleMiddlePayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
 
-            if (stashedReturn.FemaleUpperPayBand.ToString(decimalFormat) != databaseReturn.FemaleUpperPayBand.ToString(decimalFormat))
+            if (stashedReturn.FemaleUpperPayBand?.ToString(decimalFormat) != databaseReturn.FemaleUpperPayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
 
-            if (stashedReturn.FemaleUpperQuartilePayBand.ToString(decimalFormat)
-                != databaseReturn.FemaleUpperQuartilePayBand.ToString(decimalFormat))
+            if (stashedReturn.FemaleUpperQuartilePayBand?.ToString(decimalFormat)
+                != databaseReturn.FemaleUpperQuartilePayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
 
-            if (stashedReturn.MaleLowerPayBand.ToString(decimalFormat) != databaseReturn.MaleLowerPayBand.ToString(decimalFormat))
+            if (stashedReturn.MaleLowerPayBand?.ToString(decimalFormat) != databaseReturn.MaleLowerPayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
@@ -269,18 +270,18 @@ namespace GenderPayGap.WebUI.Classes.Services
                 figuresChanged = true;
             }
 
-            if (stashedReturn.MaleUpperQuartilePayBand.ToString(decimalFormat)
-                != databaseReturn.MaleUpperQuartilePayBand.ToString(decimalFormat))
+            if (stashedReturn.MaleUpperQuartilePayBand?.ToString(decimalFormat)
+                != databaseReturn.MaleUpperQuartilePayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
 
-            if (stashedReturn.MaleMiddlePayBand.ToString(decimalFormat) != databaseReturn.MaleMiddlePayBand.ToString(decimalFormat))
+            if (stashedReturn.MaleMiddlePayBand?.ToString(decimalFormat) != databaseReturn.MaleMiddlePayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
 
-            if (stashedReturn.MaleUpperPayBand.ToString(decimalFormat) != databaseReturn.MaleUpperPayBand.ToString(decimalFormat))
+            if (stashedReturn.MaleUpperPayBand?.ToString(decimalFormat) != databaseReturn.MaleUpperPayBand?.ToString(decimalFormat))
             {
                 figuresChanged = true;
             }
@@ -313,6 +314,8 @@ namespace GenderPayGap.WebUI.Classes.Services
             {
                 organisationSizeChanged = true;
             }
+
+            var optedOutOfReportingPayQuartersChanged = stashedReturn.OptedOutOfReportingPayQuarters != databaseReturn.OptedOutOfReportingPayQuarters;
 
             // is previous reporting start year
             bool isPrevReportingStartYear = IsHistoricSnapshotYear(
@@ -350,6 +353,11 @@ namespace GenderPayGap.WebUI.Classes.Services
                 modifications.Add("LateReason");
             }
 
+            if (optedOutOfReportingPayQuartersChanged)
+            {
+                modifications.Add("OptedOutOfReportingPayQuarters");
+            }
+
             return new SubmissionChangeSummary {
                 FiguresChanged = figuresChanged,
                 PersonResonsibleChanged = personResonsibleChanged,
@@ -357,6 +365,7 @@ namespace GenderPayGap.WebUI.Classes.Services
                 WebsiteUrlChanged = websiteUrlChanged,
                 IsPrevReportingStartYear = isPrevReportingStartYear,
                 LateReasonChanged = lateReasonChanged,
+                OptedOutOfReportingPayQuartersChanged = optedOutOfReportingPayQuartersChanged,
                 Modifications = string.Join(",", modifications)
             };
         }
@@ -457,6 +466,7 @@ namespace GenderPayGap.WebUI.Classes.Services
             result.OrganisationName = returnFromDatabase.Organisation.OrganisationName;
             result.LateReason = returnFromDatabase.LateReason;
             result.EHRCResponse = returnFromDatabase.EHRCResponse.ToString();
+            result.OptedOutOfReportingPayQuarters = returnFromDatabase.OptedOutOfReportingPayQuarters;
 
             // set the report info
             result.ReportInfo = await GetReportInfoModelWithDraftAsync(

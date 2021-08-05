@@ -44,6 +44,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Compare
 
         public bool? HasBonusesPaid { get; set; }
 
+        public bool? OptedOutOfReportingPayQuarters { get; set; }
+
         public bool RequiredToReport => ScopeStatus == ScopeStatuses.InScope || ScopeStatus == ScopeStatuses.PresumedInScope;
 
         public string OrganisationSizeName =>
