@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
@@ -155,6 +156,23 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                     nameof(postedReturnViewModel.JobTitle));
             }
 
+            if (postedReturnViewModel.OptedOutOfReportingPayQuarters)
+            {
+                if (!ReportingYearsHelper.IsReportingYearWithFurloughScheme(postedReturnViewModel.AccountingDate))
+                {
+                    return new HttpBadRequestResult("Opting out of reporting pay quarters is not allowed");
+                }
+                ModelState.Exclude(
+                    nameof(postedReturnViewModel.FemaleLowerPayBand),
+                    nameof(postedReturnViewModel.MaleLowerPayBand),
+                    nameof(postedReturnViewModel.FemaleUpperPayBand),
+                    nameof(postedReturnViewModel.MaleUpperPayBand),
+                    nameof(postedReturnViewModel.FemaleUpperQuartilePayBand),
+                    nameof(postedReturnViewModel.MaleUpperQuartilePayBand),
+                    nameof(postedReturnViewModel.FemaleMiddlePayBand),
+                    nameof(postedReturnViewModel.MaleMiddlePayBand));
+            }
+
             Return postedReturn = submissionService.CreateDraftSubmissionFromViewModel(postedReturnViewModel);
 
             SubmissionChangeSummary changeSummary = null;
@@ -230,11 +248,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                     postedReturn.AccountingDate.Year.ToString(),
                     postedReturn.Organisation.OrganisationName,
                     postedReturn.StatusDate.ToShortDateString(),
-                    Url.Action(
-                        "Report",
-                        "Viewing",
-                        new {employerIdentifier = postedReturnViewModel.EncryptedOrganisationId, year = postedReturn.AccountingDate.Year},
-                        "https"));
+                    GetReportLink(postedReturn));
             }
 
             EmailSendingServiceHelpers.SendSuccessfulSubmissionEmailToRegisteredUsers(

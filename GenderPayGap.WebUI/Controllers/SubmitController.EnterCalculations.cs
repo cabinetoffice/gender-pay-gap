@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -75,7 +76,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             ExcludeBlankFieldsFromModelState(postedReturnViewModel);
 
-            ConfirmPayBandsAddUpToOneHundred(postedReturnViewModel);
+            ValidatePayBands(postedReturnViewModel);
 
             ValidateBonusIntegrity(postedReturnViewModel, saveDraft: false);
 
@@ -187,6 +188,8 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             bool hasMaleUpperQuartilePayBandChanged = HasThisEnterCalculationPropertyChanged(
                 postedReturnViewModel.MaleUpperQuartilePayBand,
                 stashedReturnViewModel.MaleUpperQuartilePayBand);
+            bool hasOptedOutOfReportingPayQuartersChanged = postedReturnViewModel.OptedOutOfReportingPayQuarters
+                                                            != stashedReturnViewModel.OptedOutOfReportingPayQuarters;
 
             return hasDiffMeanBonusPercentChanged
                    || hasDiffMeanHourlyPayPercentChanged
@@ -201,7 +204,32 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                    || hasMaleMedianBonusPayPercentChanged
                    || hasMaleMiddlePayBandChanged
                    || hasMaleUpperPayBandChanged
-                   || hasMaleUpperQuartilePayBandChanged;
+                   || hasMaleUpperQuartilePayBandChanged
+                   || hasOptedOutOfReportingPayQuartersChanged;
+        }
+
+        private void ValidatePayBands(ReturnViewModel postedReturnViewModel)
+        {
+            if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(postedReturnViewModel.AccountingDate)
+                && postedReturnViewModel.OptedOutOfReportingPayQuarters)
+            {
+                var hasPayQuartersFigures = postedReturnViewModel.MaleLowerPayBand.HasValue
+                                            || postedReturnViewModel.FemaleLowerPayBand.HasValue
+                                            || postedReturnViewModel.MaleMiddlePayBand.HasValue
+                                            || postedReturnViewModel.FemaleMiddlePayBand.HasValue
+                                            || postedReturnViewModel.MaleUpperPayBand.HasValue
+                                            || postedReturnViewModel.FemaleUpperPayBand.HasValue
+                                            || postedReturnViewModel.MaleUpperQuartilePayBand.HasValue
+                                            || postedReturnViewModel.FemaleUpperQuartilePayBand.HasValue;
+                if (hasPayQuartersFigures)
+                {
+                    AddModelError(2051, nameof(postedReturnViewModel.OptedOutOfReportingPayQuarters));
+                }
+            }
+            else
+            {
+                ConfirmPayBandsAddUpToOneHundred(postedReturnViewModel);
+            }
         }
 
         private void ConfirmPayBandsAddUpToOneHundred(ReturnViewModel postedReturnViewModel)

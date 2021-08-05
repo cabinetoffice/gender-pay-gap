@@ -60,6 +60,7 @@
 
     @Html.HiddenFor(model => model.OrganisationSize)
     @Html.HiddenFor(model => model.CompanyLinkToGPGInfo)
+    @Html.HiddenFor(model => model.OptedOutOfReportingPayQuarters)
 
     <h1 class="heading-large">
         Review your gender pay gap data for snapshot date @(Model.ReportInfo.ReportingStartDate.ToString("dd MMMM yyyy"))
@@ -121,6 +122,10 @@
                             @Html.ValueFor(model => model.MaleUpperQuartilePayBand)
                             @:%
                         }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
+                        }
                         else
                         {
                             <span class="gpg-data__status--notcompleted">Not completed</span>
@@ -133,6 +138,10 @@
                         {
                             @Html.ValueFor(model => model.FemaleUpperQuartilePayBand)
                             @:%
+                        }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
                         }
                         else
                         {
@@ -152,6 +161,10 @@
                             @Html.ValueFor(model => model.MaleUpperPayBand)
                             @:%
                         }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
+                        }
                         else
                         {
                             <span class="gpg-data__status--notcompleted">Not completed</span>
@@ -164,6 +177,10 @@
                         {
                             @Html.ValueFor(model => model.FemaleUpperPayBand)
                             @:%
+                        }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
                         }
                         else
                         {
@@ -183,6 +200,10 @@
                             @Html.ValueFor(model => model.MaleMiddlePayBand)
                             @:%
                         }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
+                        }
                         else
                         {
                             <span class="gpg-data__status--notcompleted">Not completed</span>
@@ -195,6 +216,10 @@
                         {
                             @Html.ValueFor(model => model.FemaleMiddlePayBand)
                             @:%
+                        }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
                         }
                         else
                         {
@@ -214,6 +239,10 @@
                             @Html.ValueFor(model => model.MaleLowerPayBand)
                             @:%
                         }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
+                        }
                         else
                         {
                             <span class="gpg-data__status--notcompleted">Not completed</span>
@@ -226,6 +255,10 @@
                         {
                             @Html.ValueFor(model => model.FemaleLowerPayBand)
                             @:%
+                        }
+                        else if (Model.OptedOutOfReportingPayQuarters)
+                        {
+                            <span>Not applicable</span>
                         }
                         else
                         {

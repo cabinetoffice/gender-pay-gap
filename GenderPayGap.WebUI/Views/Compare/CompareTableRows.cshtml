@@ -46,11 +46,17 @@
                 <td class="cell cell--text">@compareReport.OrganisationSizeName</td>
                 <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMeanHourlyPayPercent"))">@(Model.FormatValue(compareReport.DiffMeanHourlyPayPercent))</td>
                 <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMedianHourlyPercent"))">@(Model.FormatValue(compareReport.DiffMedianHourlyPercent))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleLowerPayBand"))">@(Model.FormatValue(compareReport.FemaleLowerPayBand))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleMiddlePayBand"))">@(Model.FormatValue(compareReport.FemaleMiddlePayBand))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperPayBand"))">@(Model.FormatValue(compareReport.FemaleUpperPayBand))</td>
-                <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperQuartilePayBand"))">@(Model.FormatValue(compareReport.FemaleUpperQuartilePayBand))</td>
-
+                if (compareReport.OptedOutOfReportingPayQuarters.GetValueOrDefault(false))
+                {
+                    <td class="cell cell--text" colspan="4">Copy TBD</td>
+                }
+                else
+                {
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleLowerPayBand"))">@(Model.FormatValue(compareReport.FemaleLowerPayBand))</td>
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleMiddlePayBand"))">@(Model.FormatValue(compareReport.FemaleMiddlePayBand))</td>
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperPayBand"))">@(Model.FormatValue(compareReport.FemaleUpperPayBand))</td>
+                    <td class="cell cell--text @(Model.GetColumnSortCssClass("FemaleUpperQuartilePayBand"))">@(Model.FormatValue(compareReport.FemaleUpperQuartilePayBand))</td>
+                }
                 if (compareReport.HasBonusesPaid == false)
                 {
                     <td class="cell cell--text" colspan="4">No bonuses were paid</td>

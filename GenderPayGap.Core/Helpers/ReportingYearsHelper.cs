@@ -63,5 +63,10 @@ namespace GenderPayGap.Core.Helpers
             return GetDeadlineForAccountingDate(accountingDate) < VirtualDateTime.Now;
         }
 
+        public static bool IsReportingYearWithFurloughScheme(DateTime accountingDate)
+        {
+            return Global.ReportingStartYearsWithFurloughScheme.Contains(accountingDate.Year);
+        }
+
     }
 }

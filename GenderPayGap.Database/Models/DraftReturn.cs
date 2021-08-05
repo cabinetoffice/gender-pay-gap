@@ -62,6 +62,8 @@ namespace GenderPayGap.Database.Models
         [JsonProperty]
         public string CompanyLinkToGPGInfo { get; set; }
 
+        [JsonProperty]
+        public bool OptedOutOfReportingPayQuarters { get; set; }
 
         public bool IsEmpty()
         {

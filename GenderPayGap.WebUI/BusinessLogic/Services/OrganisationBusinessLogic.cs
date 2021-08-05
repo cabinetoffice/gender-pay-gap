@@ -156,7 +156,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                             FemaleUpperPayBand = r.Return?.FemaleUpperPayBand,
                             FemaleUpperQuartilePayBand = r.Return?.FemaleUpperQuartilePayBand,
                             MaleMedianBonusPayPercent = r.Return?.MaleMedianBonusPayPercent,
-                            HasBonusesPaid = r.Return?.HasBonusesPaid()
+                            HasBonusesPaid = r.Return?.HasBonusesPaid(),
+                            OptedOutOfReportingPayQuarters = r.Return?.OptedOutOfReportingPayQuarters
                         };
                     })
                 .ToList();
@@ -174,19 +175,36 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         public virtual DataTable GetCompareDatatable(IEnumerable<CompareReportModel> data)
         {
             DataTable datatable = data.Select(
-                    r => new {
-                        r.OrganisationName,
-                        r.OrganisationSizeName,
-                        DiffMeanHourlyPayPercent = r.HasReported == false ? null : r.DiffMeanHourlyPayPercent.FormatDecimal("0.0"),
-                        DiffMedianHourlyPercent = r.HasReported == false ? null : r.DiffMedianHourlyPercent.FormatDecimal("0.0"),
-                        FemaleLowerPayBand = r.HasReported == false ? null : r.FemaleLowerPayBand.FormatDecimal("0.0"),
-                        FemaleMiddlePayBand = r.HasReported == false ? null : r.FemaleMiddlePayBand.FormatDecimal("0.0"),
-                        FemaleUpperPayBand = r.HasReported == false ? null : r.FemaleUpperPayBand.FormatDecimal("0.0"),
-                        FemaleUpperQuartilePayBand = r.HasReported == false ? null : r.FemaleUpperQuartilePayBand.FormatDecimal("0.0"),
-                        FemaleMedianBonusPayPercent = r.HasReported == false ? null : r.FemaleMedianBonusPayPercent.FormatDecimal("0.0"),
-                        MaleMedianBonusPayPercent = r.HasReported == false ? null : r.MaleMedianBonusPayPercent.FormatDecimal("0.0"),
-                        DiffMeanBonusPercent = r.HasReported == false ? null : r.DiffMeanBonusPercent.FormatDecimal("0.0"),
-                        DiffMedianBonusPercent = r.HasReported == false ? null : r.DiffMedianBonusPercent.FormatDecimal("0.0")
+                    r =>
+                    {
+                        var optedOutOfReportingPayQuarters = r.OptedOutOfReportingPayQuarters.GetValueOrDefault(false);
+                        return new
+                        {
+                            r.OrganisationName,
+                            r.OrganisationSizeName,
+                            DiffMeanHourlyPayPercent = !r.HasReported ? null : r.DiffMeanHourlyPayPercent.FormatDecimal("0.0"),
+                            DiffMedianHourlyPercent = !r.HasReported ? null : r.DiffMedianHourlyPercent.FormatDecimal("0.0"),
+                            FemaleLowerPayBand =
+                                !r.HasReported || optedOutOfReportingPayQuarters
+                                    ? null
+                                    : r.FemaleLowerPayBand.FormatDecimal("0.0"),
+                            FemaleMiddlePayBand =
+                                !r.HasReported || optedOutOfReportingPayQuarters
+                                    ? null
+                                    : r.FemaleMiddlePayBand.FormatDecimal("0.0"),
+                            FemaleUpperPayBand =
+                                !r.HasReported || optedOutOfReportingPayQuarters
+                                    ? null
+                                    : r.FemaleUpperPayBand.FormatDecimal("0.0"),
+                            FemaleUpperQuartilePayBand =
+                                !r.HasReported || optedOutOfReportingPayQuarters
+                                    ? null
+                                    : r.FemaleUpperQuartilePayBand.FormatDecimal("0.0"),
+                            FemaleMedianBonusPayPercent = !r.HasReported ? null : r.FemaleMedianBonusPayPercent.FormatDecimal("0.0"),
+                            MaleMedianBonusPayPercent = !r.HasReported ? null : r.MaleMedianBonusPayPercent.FormatDecimal("0.0"),
+                            DiffMeanBonusPercent = !r.HasReported ? null : r.DiffMeanBonusPercent.FormatDecimal("0.0"),
+                            DiffMedianBonusPercent = !r.HasReported ? null : r.DiffMedianBonusPercent.FormatDecimal("0.0")
+                        };
                     })
                 .ToDataTable();
 

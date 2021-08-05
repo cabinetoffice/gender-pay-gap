@@ -237,6 +237,9 @@ namespace GenderPayGap.Database.Migrations
                     b.Property<DateTime>("Modified")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("OptedOutOfReportingPayQuarters")
+                        .HasColumnType("boolean");
+
                     b.Property<long>("OrganisationId")
                         .HasColumnType("bigint");
 
@@ -405,7 +408,7 @@ namespace GenderPayGap.Database.Migrations
                     b.Property<bool>("EmailSent")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ReminderDate")
+                    b.Property<DateTime?>("ReminderDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("SectorType")
@@ -892,19 +895,19 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValueSql("false");
 
-                    b.Property<decimal>("FemaleLowerPayBand")
+                    b.Property<decimal?>("FemaleLowerPayBand")
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("FemaleMedianBonusPayPercent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("FemaleMiddlePayBand")
+                    b.Property<decimal?>("FemaleMiddlePayBand")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("FemaleUpperPayBand")
+                    b.Property<decimal?>("FemaleUpperPayBand")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("FemaleUpperQuartilePayBand")
+                    b.Property<decimal?>("FemaleUpperQuartilePayBand")
                         .HasColumnType("numeric");
 
                     b.Property<string>("FirstName")
@@ -926,19 +929,19 @@ namespace GenderPayGap.Database.Migrations
                         .HasColumnType("character varying(200)")
                         .HasMaxLength(200);
 
-                    b.Property<decimal>("MaleLowerPayBand")
+                    b.Property<decimal?>("MaleLowerPayBand")
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("MaleMedianBonusPayPercent")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MaleMiddlePayBand")
+                    b.Property<decimal?>("MaleMiddlePayBand")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MaleUpperPayBand")
+                    b.Property<decimal?>("MaleUpperPayBand")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MaleUpperQuartilePayBand")
+                    b.Property<decimal?>("MaleUpperQuartilePayBand")
                         .HasColumnType("numeric");
 
                     b.Property<int>("MaxEmployees")
@@ -957,6 +960,9 @@ namespace GenderPayGap.Database.Migrations
 
                     b.Property<DateTime>("Modified")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("OptedOutOfReportingPayQuarters")
+                        .HasColumnType("boolean");
 
                     b.Property<long>("OrganisationId")
                         .HasColumnType("bigint");
