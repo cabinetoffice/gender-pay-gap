@@ -51,12 +51,15 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             return result;
         }
 
-        public static Return GetSubmittedReturnForOrganisationAndYear(UserOrganisation userOrganisation, int snapshotYear)
+        public static Return GetSubmittedReturnForOrganisationAndYear(UserOrganisation userOrganisation,
+            int snapshotYear,
+            bool optedOutOfReportingPayQuarters = false)
         {
             Return result = GetSubmittedReturnWithAllDataPoints(userOrganisation.User);
             result.Organisation = userOrganisation.Organisation;
             result.OrganisationId = userOrganisation.Organisation.OrganisationId;
             result.AccountingDate = userOrganisation.Organisation.SectorType.GetAccountingStartDate(snapshotYear);
+            result.OptedOutOfReportingPayQuarters = optedOutOfReportingPayQuarters;
             return result;
         }
 

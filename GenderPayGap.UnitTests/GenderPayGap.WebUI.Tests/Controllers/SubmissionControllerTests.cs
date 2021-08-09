@@ -1033,6 +1033,186 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("Session has expired", ((ErrorViewModel)result.Model).Title);
         }
 
+        [Test]
+        [Description("Ensure that CheckData form returns error when employer is not allowed to opt out of reporting pay quarters")]
+        public async Task SubmitController_CheckData_POST_When_Should_Not_OptOutOfReportingPayQuarters_Then_BadRequest()
+        {
+            User mockedUser = UserHelper.GetNotAdminUserWithVerifiedEmailAddress();
+            Organisation mockedOrganisation = OrganisationHelper.GetPublicOrganisation();
+            UserOrganisation mockedUserOrganisation = UserOrganisationHelper.LinkUserWithOrganisation(mockedUser, mockedOrganisation);
+            Return mockedReturn = ReturnHelper.GetSubmittedReturnForOrganisationAndYear(mockedUserOrganisation, Global.FirstReportingYear, true);
+
+            OrganisationHelper.LinkOrganisationAndReturn(mockedOrganisation, mockedReturn);
+
+            // route data
+            var routeData = new RouteData();
+            routeData.Values.Add("action", "EnterCalculations");
+            routeData.Values.Add("controller", "submit");
+
+            var controller = UiTestHelper.GetController<SubmitController>(mockedUser.UserId, routeData);
+            controller.ReportingOrganisationId = mockedOrganisation.OrganisationId;
+            controller.ReportingOrganisationStartYear = Global.FirstReportingYear;
+
+            Mock<IDataRepository> mockedDatabase = AutoFacExtensions.ResolveAsMock<IDataRepository>();
+
+            mockedDatabase.SetupGetAll(mockedUser, mockedOrganisation, mockedUserOrganisation, mockedReturn);
+
+            mockedDatabase
+                .Setup(x => x.Get<User>(It.IsAny<long>()))
+                .Returns(mockedUser);
+
+            mockedDatabase.Setup(x => x.Get<Organisation>(It.IsAny<long>())).Returns(mockedOrganisation);
+
+            mockedDatabase
+                .Setup(md => md.Insert(It.IsAny<Return>()))
+                .Callback<Return>(returnSentIn => { returnSentIn.Organisation = mockedOrganisation; });
+
+            var returnViewModel = new ReturnViewModel
+            {
+                CompanyLinkToGPGInfo = "http://www.gov.uk",
+                DiffMeanBonusPercent = mockedReturn.DiffMeanBonusPercent,
+                DiffMeanHourlyPayPercent = mockedReturn.DiffMeanHourlyPayPercent,
+                DiffMedianBonusPercent = mockedReturn.DiffMedianBonusPercent,
+                DiffMedianHourlyPercent = mockedReturn.DiffMedianHourlyPercent,
+                FirstName = "Test FirstName",
+                LastName = "Test LastName",
+                JobTitle = "Developer",
+                MaleUpperQuartilePayBand = mockedReturn.MaleUpperQuartilePayBand,
+                OrganisationId = mockedOrganisation.OrganisationId,
+                ReturnId = mockedOrganisation.Returns.First().ReturnId,
+                LateReason = "Test Late Reason",
+                EHRCResponse = "1",
+                OptedOutOfReportingPayQuarters = true
+            };
+
+            #region We must load a draft if we are calling Enter calculations with a stashed model
+
+            var testDataRepository = UiTestHelper.DIContainer.Resolve<IDataRepository>();
+            var testDraftFileBL = new DraftFileBusinessLogic(testDataRepository);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
+
+            returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
+                mockedOrganisation.OrganisationId,
+                mockedOrganisation.SectorType.GetAccountingStartDate().Year,
+                mockedUser.UserId);
+
+            #endregion
+
+            controller.Bind(returnViewModel);
+            controller.StashModel(returnViewModel);
+
+            Global.EnableSubmitAlerts = true;
+
+            // Act
+            var result = await controller.CheckData(returnViewModel) as HttpStatusViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(400, result.StatusCode);
+        }
+        
+        [Test]
+        [Description("Ensure that CheckData Excludes The Pay Quarters when Opted out of reporting pay quarters")]
+        public async Task SubmitController_CheckData_POST_Success_When_OptedOutOfReportingPayQuarters_Then_Exclude_Pay_Quarters_Section()
+        {
+            // Arrange
+            var testUserId = 1000;
+            var testReturnId = 1000;
+            var testOrganisationId = 2421;
+            var year = Global.ReportingStartYearsWithFurloughScheme.First();
+            var user = new User { UserId = testUserId, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
+            var address = new OrganisationAddress
+            {
+                OrganisationId = testOrganisationId,
+                Address1 = "Address line 1",
+                PostCode = "PC1",
+                Status = AddressStatuses.Active
+            };
+            var organisation = new Organisation { OrganisationId = testOrganisationId, SectorType = SectorTypes.Public };
+            var userOrganisation = new UserOrganisation
+            {
+                OrganisationId = organisation.OrganisationId,
+                Organisation = organisation,
+                UserId = testUserId,
+                PINConfirmedDate = VirtualDateTime.Now,
+                PIN = "1"
+            };
+            DateTime testAccountingDate = SectorTypes.Public.GetAccountingStartDate(year);
+
+            // mock return existing in the DB
+            var @return = new Return
+            {
+                ReturnId = testReturnId,
+                OrganisationId = testOrganisationId,
+                CompanyLinkToGPGInfo = "http://www.test.com",
+                AccountingDate = testAccountingDate
+            };
+
+            // set mock routeData
+            var routeData = new RouteData();
+            routeData.Values.Add("Action", "CheckData");
+            routeData.Values.Add("Controller", "Submit");
+
+            // mock entered 'return' at review CheckData view
+            var model = new ReturnViewModel
+            {
+                SectorType = SectorTypes.Public,
+                AccountingDate = testAccountingDate,
+                CompanyLinkToGPGInfo = "http://www.gov.uk",
+                DiffMeanBonusPercent = 10,
+                DiffMeanHourlyPayPercent = 20,
+                DiffMedianBonusPercent = 30,
+                DiffMedianHourlyPercent = 20,
+                FemaleMedianBonusPayPercent = 50,
+                MaleMedianBonusPayPercent = 11,
+                OptedOutOfReportingPayQuarters = true,
+                OrganisationId = organisation.OrganisationId,
+                ReturnId = testReturnId,
+                LateReason = "Test Late Reason",
+                EHRCResponse = "1"
+            };
+
+            #region We must load a draft if we are calling Enter calculations with a stashed model
+
+            var testDataRepository = UiTestHelper.DIContainer.Resolve<IDataRepository>();
+            var testDraftFileBL = new DraftFileBusinessLogic(testDataRepository);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
+
+            model.ReportInfo.Draft = await testService.GetDraftFileAsync(
+                organisation.OrganisationId,
+                year,
+                user.UserId);
+
+            #endregion
+
+            var controller = UiTestHelper.GetController<SubmitController>(
+                testUserId,
+                routeData,
+                user,
+                address,
+                organisation,
+                userOrganisation,
+                @return);
+            controller.ReportingOrganisationId = organisation.OrganisationId;
+            controller.ReportingOrganisationStartYear = year;
+
+            controller.Bind(model);
+
+            controller.StashModel(model);
+
+            // Act
+            var result = await controller.CheckData(model) as RedirectToActionResult;
+
+            // Assert
+            Assert.That(
+                result != null && result.GetType() == typeof(RedirectToActionResult),
+                "Expected RedirectToActionResult or Incorrect resultType returned");
+            Assert.AreEqual("SubmissionComplete", result.ActionName, "Incorrect view returned");
+
+            // Clean up
+            await testService.DiscardDraftFileAsync(model);
+        }
+
 
         [Test]
         [Description("Ensure the employer Website form is returned for the current user ")]
@@ -2744,6 +2924,210 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                     Assert.That(resultModel.JobTitle == returnViewModel.JobTitle, "Input value does not match model");
                     Assert.That(resultModel.LastName == returnViewModel.LastName, "Input value does not match model");
                 });
+
+            // Cleanup
+            await testService.DiscardDraftFileAsync(returnViewModel);
+        }
+
+        [Test]
+        [Description("EnterCalculations should succeed when no pay quarters if opted out of reporting pay quarters")]
+        public async Task SubmitController_EnterCalculations_POST_PayQuarters_Not_Required_If_OptedOutOfReportingPayQuarters()
+        {
+            // Arrange
+            var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
+            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var userOrganisation = new UserOrganisation
+            {
+                OrganisationId = organisation.OrganisationId,
+                Organisation = organisation,
+                UserId = 1,
+                PINConfirmedDate = VirtualDateTime.Now,
+                PIN = "1"
+            };
+
+            //set mock routeData
+            var routeData = new RouteData();
+            routeData.Values.Add("action", "EnterCalculations");
+            routeData.Values.Add("controller", "submit");
+
+            var returnurl = "CheckData";
+            DateTime PrivateAccountingDate = SectorTypes.Private.GetAccountingStartDate(2020);
+            var validValue1 = 100M;
+            var validValue2 = 95M;
+
+            var returnViewModel = new ReturnViewModel
+            {
+                AccountingDate = PrivateAccountingDate,
+                DiffMeanBonusPercent = validValue1,
+                DiffMedianBonusPercent = validValue1,
+                DiffMeanHourlyPayPercent = validValue2,
+                DiffMedianHourlyPercent = validValue2,
+                FemaleMedianBonusPayPercent = validValue1,
+                MaleMedianBonusPayPercent = validValue1,
+                OptedOutOfReportingPayQuarters = true,
+                SectorType = SectorTypes.Private,
+                ReportInfo = new ReportInfoModel()
+            };
+
+            #region We must load a draft if we are calling Enter calculations with a stashed model
+
+            var testDataRepository = UiTestHelper.DIContainer.Resolve<IDataRepository>();
+            var testDraftFileBL = new DraftFileBusinessLogic(testDataRepository);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
+
+            returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
+                organisation.OrganisationId,
+                organisation.SectorType.GetAccountingStartDate().Year,
+                user.UserId);
+
+            #endregion
+
+            var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
+            controller.ReportingOrganisationId = organisation.OrganisationId;
+            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.Bind(returnViewModel);
+
+            controller.StashModel(returnViewModel);
+
+            // Act
+            var result = await controller.EnterCalculations(returnViewModel, returnurl) as RedirectToActionResult;
+            var resultModel = controller.UnstashModel<ReturnViewModel>();
+
+            // Assert
+            Assert.NotNull(resultModel, "Unstashed model is Invalid Expected ReturnViewModel");
+            Assert.That(result.ActionName == "CheckData", "Expected a RedirectToActionResult to CheckData");
+
+            Assert.NotNull(result, "Expected RedirectResult");
+            var x = controller.ViewData.Model as ReturnViewModel;
+
+            Assert.That(controller.ViewData.ModelState.IsValid, "Model is Invalid");
+
+            Assert.Multiple(
+                () =>
+                {
+                    Assert.NotNull(result, "Expected ViewResult");
+                    Assert.That(resultModel.AccountingDate == returnViewModel.AccountingDate, "Input value does not match model");
+                    Assert.That(resultModel.Address == returnViewModel.Address, "Input value does not match model");
+                    Assert.That(
+                        resultModel.CompanyLinkToGPGInfo == returnViewModel.CompanyLinkToGPGInfo,
+                        "Input value does not match model");
+                    Assert.That(
+                        resultModel.DiffMeanBonusPercent == returnViewModel.DiffMeanBonusPercent,
+                        "Input value does not match model");
+                    Assert.That(
+                        resultModel.DiffMeanHourlyPayPercent == returnViewModel.DiffMeanHourlyPayPercent,
+                        "Input value does not match model");
+                    Assert.That(
+                        resultModel.DiffMedianBonusPercent == returnViewModel.DiffMedianBonusPercent,
+                        "Input value does not match model");
+                    Assert.That(
+                        resultModel.DiffMedianHourlyPercent == returnViewModel.DiffMedianHourlyPercent,
+                        "Input value does not match model");
+                    Assert.That(resultModel.FemaleLowerPayBand == null, "Input value does not match model");
+                    Assert.That(
+                        resultModel.FemaleMedianBonusPayPercent == returnViewModel.FemaleMedianBonusPayPercent,
+                        "Input value does not match model");
+                    Assert.That(resultModel.FemaleMiddlePayBand == null, "Input value does not match model");
+                    Assert.That(resultModel.FemaleUpperPayBand == null, "Input value does not match model");
+                    Assert.That(
+                        resultModel.FemaleUpperQuartilePayBand == null,
+                        "Input value does not match model");
+                    Assert.That(resultModel.MaleLowerPayBand == null, "Input value does not match model");
+                    Assert.That(resultModel.MaleMiddlePayBand == null, "Input value does not match model");
+
+                    Assert.That(resultModel.MaleUpperPayBand == null, "Input value does not match model");
+                    Assert.That(
+                        resultModel.MaleUpperQuartilePayBand == null,
+                        "Input value does not match model");
+                    Assert.That(resultModel.OrganisationId == returnViewModel.OrganisationId, "Input value does not match model");
+                    Assert.That(resultModel.OrganisationName == returnViewModel.OrganisationName, "Input value does not match model");
+                    Assert.That(resultModel.ReturnId == returnViewModel.ReturnId, "Input value does not match model");
+                    Assert.That(resultModel.ReturnUrl == returnViewModel.ReturnUrl, "Input value does not match model");
+                    Assert.That(resultModel.Sector == returnViewModel.Sector, "Input value does not match model");
+                    Assert.That(resultModel.SectorType == returnViewModel.SectorType, "Input value does not match model");
+                    Assert.That(resultModel.FirstName == returnViewModel.FirstName, "Input value does not match model");
+                    Assert.That(resultModel.JobTitle == returnViewModel.JobTitle, "Input value does not match model");
+                    Assert.That(resultModel.LastName == returnViewModel.LastName, "Input value does not match model");
+                    Assert.That(resultModel.OptedOutOfReportingPayQuarters == returnViewModel.OptedOutOfReportingPayQuarters, "Input value does not match model");
+                });
+
+            // Cleanup
+            await testService.DiscardDraftFileAsync(returnViewModel);
+        }
+
+        [Test]
+        [Description("EnterCalculations should succeed when no pay quarters if opted out of reporting pay quarters")]
+        public async Task SubmitController_EnterCalculations_POST_PayQuarters_And_OptedOutOfReportingPayQuarters_Shows_Error()
+        {
+            // Arrange
+            var user = new User { UserId = 1, EmailAddress = "magnuski@hotmail.com", EmailVerifiedDate = VirtualDateTime.Now };
+            var organisation = new Organisation { OrganisationId = 1, SectorType = SectorTypes.Private };
+            var userOrganisation = new UserOrganisation
+            {
+                OrganisationId = organisation.OrganisationId,
+                Organisation = organisation,
+                UserId = 1,
+                PINConfirmedDate = VirtualDateTime.Now,
+                PIN = "1"
+            };
+
+            // set mock routeData
+            var routeData = new RouteData();
+            routeData.Values.Add("action", "EnterCalculations");
+            routeData.Values.Add("controller", "submit");
+
+            var returnurl = "CheckData";
+            DateTime PrivateAccountingDate = SectorTypes.Private.GetAccountingStartDate(2020);
+            var validValue1 = 100M;
+            var validValue2 = 95M;
+
+            var returnViewModel = new ReturnViewModel
+            {
+                AccountingDate = PrivateAccountingDate,
+                DiffMeanBonusPercent = validValue1,
+                DiffMedianBonusPercent = validValue1,
+                DiffMeanHourlyPayPercent = validValue2,
+                DiffMedianHourlyPercent = validValue2,
+                FemaleMedianBonusPayPercent = validValue1,
+                FemaleLowerPayBand = 10,
+                MaleMedianBonusPayPercent = validValue1,
+                OptedOutOfReportingPayQuarters = true,
+                SectorType = SectorTypes.Private,
+                ReportInfo = new ReportInfoModel()
+            };
+
+            #region We must load a draft if we are calling Enter calculations with a stashed model
+
+            var testDataRepository = UiTestHelper.DIContainer.Resolve<IDataRepository>();
+            var testDraftFileBL = new DraftFileBusinessLogic(testDataRepository);
+            var testService = new SubmissionService(null, null, testDraftFileBL);
+
+            returnViewModel.ReportInfo.Draft = await testService.GetDraftFileAsync(
+                organisation.OrganisationId,
+                organisation.SectorType.GetAccountingStartDate().Year,
+                user.UserId);
+
+            #endregion
+
+            var controller = UiTestHelper.GetController<SubmitController>(1, routeData, user, organisation, userOrganisation);
+            controller.ReportingOrganisationId = organisation.OrganisationId;
+            controller.ReportingOrganisationStartYear = SectorTypes.Private.GetAccountingStartDate().Year;
+            controller.ReportingOrganisation.SectorType = SectorTypes.Private;
+            controller.Bind(returnViewModel);
+
+            controller.StashModel(returnViewModel);
+
+            // Act
+            var result = await controller.EnterCalculations(returnViewModel) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result, "Expected ViewResult");
+            Assert.That(result.ViewName == "EnterCalculations", "Incorrect view returned");
+            Assert.NotNull(result.Model as ReturnViewModel, "Expected ReturnViewModel");
+            Assert.AreEqual(
+                "Do not enter the data for the percentage of men and women in each hourly pay quarter",
+                result.ViewData.ModelState["OptedOutOfReportingPayQuarters"].Errors[0].ErrorMessage);
 
             // Cleanup
             await testService.DiscardDraftFileAsync(returnViewModel);
