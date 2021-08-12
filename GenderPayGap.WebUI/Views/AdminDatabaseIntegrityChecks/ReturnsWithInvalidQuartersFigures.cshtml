@@ -1,6 +1,6 @@
 ﻿@model List<GenderPayGap.Database.Return>
 @{
-    var title = "Submitted reports with % of men or women greater than 100 or lower than 0";
+    var title = "Submitted reports with invalid quarters figures";
 
     ViewBag.Title = $"{title} - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -14,8 +14,15 @@
 <h1 class="govuk-heading-xl">@title</h1>
 
 <p class="govuk-body">
-    This shows submitted reports that contain invalid hourly pay quarter figures. The percentage of men and women in each hourly pay quarter
-    should be greater than 0 and lower than 100.
+    This shows submitted reports that contain invalid hourly pay quarter figures. The following rules are in place:
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            the percentage of men and women in each hourly pay quarter should be greater than 0 and lower than 100
+        </li>
+        <li>
+            the figures should not be provided if the employer opted out of reporting pay quarters
+        </li>
+    </ul>
 </p>
 
 @if (!Model.Any())

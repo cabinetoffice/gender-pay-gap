@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
@@ -234,6 +236,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
+                    .Where(r => !r.OptedOutOfReportingPayQuarters)
                     .Where(
                         r => r.FemaleLowerPayBand + r.MaleLowerPayBand != 100
                              || r.FemaleMiddlePayBand + r.MaleMiddlePayBand != 100
@@ -251,15 +254,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .Where(
-                        r => r.FemaleLowerPayBand > 100 || r.FemaleLowerPayBand < 0
-                             || r.MaleLowerPayBand > 100 || r.MaleLowerPayBand < 0
-                             || r.FemaleMiddlePayBand > 100 || r.FemaleMiddlePayBand < 0
-                             || r.MaleMiddlePayBand > 100 || r.MaleMiddlePayBand < 0
-                             || r.MaleUpperPayBand > 100 || r.MaleUpperPayBand < 0
-                             || r.FemaleUpperPayBand > 100 || r.FemaleUpperPayBand < 0
-                             || r.MaleUpperQuartilePayBand > 100 || r.MaleUpperQuartilePayBand < 0
-                             || r.FemaleUpperQuartilePayBand > 100 || r.FemaleUpperQuartilePayBand < 0)
+                    .Where(HasInvalidPayQuarterFigures())
                     .ToList();
 
             return PartialView("ReturnsWithInvalidQuartersFigures", invalidReturns);
@@ -311,8 +306,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
-                    .Where(
-                        r => r.MaleMedianBonusPayPercent != 0 && (!r.DiffMeanBonusPercent.HasValue || !r.DiffMedianBonusPercent.HasValue))
+                    .Where(HasMissingFigures())
                     .ToList();
 
             return PartialView("ReturnsWithMissingFigures", invalidReturns);
@@ -360,7 +354,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("database-integrity-checks/returns-with-invalid-company-link")]
         public IActionResult ReturnsWithInvalidCompanyLink()
         {
-            
             List<Return> invalidReturns =
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
@@ -373,5 +366,68 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("ReturnsWithInvalidCompanyLink", invalidReturns);
         }
+
+        [HttpGet("database-integrity-checks/returns-with-invalid-opted-out-of-reporting-pay-quarters-value")]
+        public IActionResult ReturnsWithInvalidOptedOutOfReportingPayQuartersValue()
+        {
+            List<Return> invalidReturns =
+                dataRepository.GetAll<Return>()
+                    .Where(r => r.OptedOutOfReportingPayQuarters)
+                    .Where(IsNotReportingYearWithFurloughScheme())
+                    .ToList();
+
+            return PartialView("ReturnsWithInvalidOptedOutOfReportingPayQuartersValue", invalidReturns);
+        }
+
+        private Expression<Func<Return, bool>> HasInvalidPayQuarterFigures()
+        {
+            return r => (!r.OptedOutOfReportingPayQuarters
+                         && (r.FemaleLowerPayBand > 100
+                             || r.FemaleLowerPayBand < 0
+                             || r.MaleLowerPayBand > 100
+                             || r.MaleLowerPayBand < 0
+                             || r.FemaleMiddlePayBand > 100
+                             || r.FemaleMiddlePayBand < 0
+                             || r.MaleMiddlePayBand > 100
+                             || r.MaleMiddlePayBand < 0
+                             || r.MaleUpperPayBand > 100
+                             || r.MaleUpperPayBand < 0
+                             || r.FemaleUpperPayBand > 100
+                             || r.FemaleUpperPayBand < 0
+                             || r.MaleUpperQuartilePayBand > 100
+                             || r.MaleUpperQuartilePayBand < 0
+                             || r.FemaleUpperQuartilePayBand > 100
+                             || r.FemaleUpperQuartilePayBand < 0))
+                        || (r.OptedOutOfReportingPayQuarters
+                            && (r.FemaleLowerPayBand.HasValue
+                                || r.MaleLowerPayBand.HasValue
+                                || r.FemaleMiddlePayBand.HasValue
+                                || r.MaleMiddlePayBand.HasValue
+                                || r.FemaleUpperQuartilePayBand.HasValue
+                                || r.MaleUpperQuartilePayBand.HasValue
+                                || r.FemaleUpperPayBand.HasValue
+                                || r.MaleUpperPayBand.HasValue));
+        }
+
+        private Expression<Func<Return, bool>> HasMissingFigures()
+        {
+            return r => (r.MaleMedianBonusPayPercent != 0
+                         && (!r.DiffMeanBonusPercent.HasValue || !r.DiffMedianBonusPercent.HasValue))
+                        || (!r.OptedOutOfReportingPayQuarters
+                            && (!r.MaleLowerPayBand.HasValue
+                                || !r.FemaleLowerPayBand.HasValue
+                                || !r.MaleMiddlePayBand.HasValue
+                                || !r.FemaleMiddlePayBand.HasValue
+                                || !r.MaleUpperPayBand.HasValue
+                                || !r.FemaleUpperPayBand.HasValue
+                                || !r.MaleUpperQuartilePayBand.HasValue
+                                || !r.FemaleUpperQuartilePayBand.HasValue));
+        }
+
+        private Expression<Func<Return, bool>> IsNotReportingYearWithFurloughScheme()
+        {
+            return r => !Global.ReportingStartYearsWithFurloughScheme.Contains(r.AccountingDate.Year);
+        }
+
     }
 }
