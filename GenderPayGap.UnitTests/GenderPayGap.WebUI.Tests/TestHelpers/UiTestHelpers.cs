@@ -255,8 +255,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .As<ISubmissionBusinessLogic>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
-
-            //
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
 
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
@@ -299,6 +297,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterType<AdminUnconfirmedPinsController>().InstancePerLifetimeScope();
+            builder.RegisterType<AdminDatabaseIntegrityChecksController>().InstancePerLifetimeScope();
 
             builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
             builder.RegisterType<HttpCache>().As<IHttpCache>().SingleInstance();
