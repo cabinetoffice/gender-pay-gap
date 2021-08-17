@@ -1,16 +1,12 @@
 # Our environments
 
-The Gender Pay gap service currently has 4 environments:
+The Gender Pay gap service currently has 3 environments:
 
 * **Development (Dev)**  
   https://gender-pay-gap-dev.london.cloudapps.digital  
   Each commit to the `master` branch deploys to Dev.  
   This is mainly used by developers - expect it to be broken some of the time.  
   This is where the Delivery Manager and Product Owner do some initial testing.
-
-* **Testing (Test)**  
-  https://gender-pay-gap-test.london.cloudapps.digital  
-  This is mainly used for User Research / testing out new ideas with users
 
 * **Pre-Production (PreProd)**  
   https://gender-pay-gap-preprod.london.cloudapps.digital  

@@ -9,9 +9,9 @@ PAAS_ENV_SHORTNAME="mynewtestenv" # This is the bit after gpg- (e.g. for gpg-dev
 #################
 # Start of script
 
-if [ "${PAAS_ENV_SHORTNAME}" == "dev" ] || [ "${PAAS_ENV_SHORTNAME}" == "test" ] || [ "${PAAS_ENV_SHORTNAME}" == "preprod" ] || [ "${PAAS_ENV_SHORTNAME}" == "prod" ];
+if [ "${PAAS_ENV_SHORTNAME}" == "dev" ] || [ "${PAAS_ENV_SHORTNAME}" == "preprod" ] || [ "${PAAS_ENV_SHORTNAME}" == "prod" ];
 then
-	echo "You probably don't want to delete one of the main 4 environment (${PAAS_ENV_SHORTNAME})"
+	echo "You probably don't want to delete one of the main 3 environment (${PAAS_ENV_SHORTNAME})"
 	exit 1
 fi
 echo "Deleting ${PAAS_ENV_SHORTNAME}"

@@ -57,10 +57,9 @@ If you work for Softwire, use [HYP](https://hyp.softwire.com/) to join:
 Employer/admin accounts on the actual Gender Pay Gap service (testing environments)
 * Create an account  
   * [Create an account on the Dev environment](https://gender-pay-gap-dev.london.cloudapps.digital/create-user-account)
-  * [Create an account on the Test environment](https://gender-pay-gap-test.london.cloudapps.digital/create-user-account)
   * [Create an account on the PreProd environment](https://gender-pay-gap-preprod.london.cloudapps.digital/create-user-account)
 * Ask an existing team member to send you a link to verify your email address  
-  In the Live environment, you would receive an email, but emails are turned off on Dev / Test / PreProd
+  In the Live environment, you would receive an email, but emails are turned off on Dev / PreProd
 * Ask an existing team member how to register an administrator account
 
 Some old systems that we have access to, but rarely use:
