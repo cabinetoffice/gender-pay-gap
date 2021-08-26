@@ -48,8 +48,7 @@
                 <td class="cell cell--text @(Model.GetColumnSortCssClass("DiffMedianHourlyPercent"))">@(Model.FormatValue(compareReport.DiffMedianHourlyPercent))</td>
                 if (compareReport.OptedOutOfReportingPayQuarters.GetValueOrDefault(false))
                 {
-                    // TODO GPG-793
-                    <td class="cell cell--text" colspan="4">Copy TBD</td>
+                    <td class="cell cell--text" colspan="4">Due to the number of employees placed on the Coronavirus Job Retention Scheme (furlough) this employer was not required to provide quarter data.</td>
                 }
                 else
                 {

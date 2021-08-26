@@ -1,39 +1,7 @@
 ﻿@using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.WebUI.Models.Viewing
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
-@{
-    var UpperQuartilePayBandModel = new PayQuartileBarChartModel
-    {
-        Id = "UpperQuartilePayBand",
-        Title = "Upper hourly pay quarter (highest paid)",
-        Male = Model.MaleUpperQuartilePayBand.Value,
-        Female = Model.FemaleUpperQuartilePayBand.Value
-    };
-
-    var UpperPayBandModel = new PayQuartileBarChartModel
-    {
-        Id = "UpperPayBand",
-        Title = "Upper middle hourly pay quarter",
-        Male = Model.MaleUpperPayBand.Value,
-        Female = Model.FemaleUpperPayBand.Value
-    };
-
-    var MiddlePayBandModel = new PayQuartileBarChartModel
-    {
-        Id = "MiddlePayBand",
-        Title = "Lower middle hourly pay quarter",
-        Male = Model.MaleMiddlePayBand.Value,
-        Female = Model.FemaleMiddlePayBand.Value
-    };
-
-    var LowerPayBandModel = new PayQuartileBarChartModel
-    {
-        Id = "LowerPayBand",
-        Title = "Lower hourly pay quarter (lowest paid)",
-        Male = Model.MaleLowerPayBand.Value,
-        Female = Model.FemaleLowerPayBand.Value
-    };
-}
 
 <div class="grid-row">
     <div class="column-full">
@@ -42,39 +10,81 @@
 
             <h2 class="heading-medium">The percentage of women in each pay quarter</h2>
 
-            <div class="grid-row">
-                <div class="column-full">
-                    In this organisation, women occupy @(UpperQuartilePayBandModel.FemaleFormatted)% of the highest paid jobs and @(LowerPayBandModel.FemaleFormatted)% of the lowest paid jobs.
-                </div>
-            </div>
-
-            <div class="grid-row">
-                <div class="column-full">
-                    <div class="govuk-legend">
-                        <span class="font-xsmall">
-                            <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
-                            <span class="govuk-legend__caption govuk-legend__caption--men" data-legend-text="Men"></span>
-                        </span>
+            @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate) && Model.OptedOutOfReportingPayQuarters)
+            {
+                <div class="grid-row">
+                    <div class="column-full">
+                        Due to the number of employees placed on the Coronavirus Job Retention Scheme (furlough) this employer was not required to provide quarter data.
                     </div>
-
-                    <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="UpperQuartilePayBandModel"/>
-                    <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="UpperPayBandModel"/>
-                    <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="MiddlePayBandModel"/>
-                    <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="LowerPayBandModel"/>
                 </div>
-            </div>
+            }
+            else
+            {
+                var UpperQuartilePayBandModel = new PayQuartileBarChartModel
+                {
+                    Id = "UpperQuartilePayBand",
+                    Title = "Upper hourly pay quarter (highest paid)",
+                    Male = Model.MaleUpperQuartilePayBand.Value,
+                    Female = Model.FemaleUpperQuartilePayBand.Value
+                };
 
-            <div class="grid-row">
-                <div class="column-full">
-                    <br/>
-                    @await Html.PartialModelAsync(new Details
-                    {
-                        Id = "AboutQuartiles",
-                        LinkText = "About pay quarters",
-                        SummaryPartial = "AboutQuartiles"
-                    })
+                var UpperPayBandModel = new PayQuartileBarChartModel
+                {
+                    Id = "UpperPayBand",
+                    Title = "Upper middle hourly pay quarter",
+                    Male = Model.MaleUpperPayBand.Value,
+                    Female = Model.FemaleUpperPayBand.Value
+                };
+
+                var MiddlePayBandModel = new PayQuartileBarChartModel
+                {
+                    Id = "MiddlePayBand",
+                    Title = "Lower middle hourly pay quarter",
+                    Male = Model.MaleMiddlePayBand.Value,
+                    Female = Model.FemaleMiddlePayBand.Value
+                };
+
+                var LowerPayBandModel = new PayQuartileBarChartModel
+                {
+                    Id = "LowerPayBand",
+                    Title = "Lower hourly pay quarter (lowest paid)",
+                    Male = Model.MaleLowerPayBand.Value,
+                    Female = Model.FemaleLowerPayBand.Value
+                };
+                <div class="grid-row">
+                    <div class="column-full">
+                        In this organisation, women occupy @(UpperQuartilePayBandModel.FemaleFormatted)% of the highest paid jobs and @(LowerPayBandModel.FemaleFormatted)% of the lowest paid jobs.
+                    </div>
                 </div>
-            </div>
+
+                <div class="grid-row">
+                    <div class="column-full">
+                        <div class="govuk-legend">
+                            <span class="font-xsmall">
+                                <span class="govuk-legend__caption govuk-legend__caption--women" data-legend-text="Women"></span>
+                                <span class="govuk-legend__caption govuk-legend__caption--men" data-legend-text="Men"></span>
+                            </span>
+                        </div>
+
+                        <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="UpperQuartilePayBandModel"/>
+                        <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="UpperPayBandModel"/>
+                        <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="MiddlePayBandModel"/>
+                        <partial name="EmployerDetails/Quartiles/QuartilesBarChart" model="LowerPayBandModel"/>
+                    </div>
+                </div>
+
+                <div class="grid-row">
+                    <div class="column-full">
+                        <br/>
+                        @await Html.PartialModelAsync(new Details
+                        {
+                            Id = "AboutQuartiles",
+                            LinkText = "About pay quarters",
+                            SummaryPartial = "AboutQuartiles"
+                        })
+                    </div>
+                </div>
+            }
 
         </section>
         <hr/>
