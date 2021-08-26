@@ -118,17 +118,7 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <partial name="EmployerDetails/HourlyRate/HourlyRateSection" model="Model"/>
-
-        @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate) && Model.OptedOutOfReportingPayQuarters)
-        {
-            // TODO GPG-793
-            <div>Copy TODO</div>
-        }
-        else
-        {
-            <partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
-        }
-
+        <partial name="EmployerDetails/Quartiles/QuartilesSection" model="Model"/>
         <partial name="EmployerDetails/BonusPay/BonusPaySection" model="Model"/>
     </div>
     @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
