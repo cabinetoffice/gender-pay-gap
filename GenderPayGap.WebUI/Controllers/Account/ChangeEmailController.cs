@@ -57,8 +57,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 return View("ChangeEmail", viewModel);
             }
-
+            var timeNow = DateTime.Now;
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            Console.WriteLine("GetGpgUserFromAspNetUser: " + (DateTime.Now - timeNow).ToString());
             if (viewModel.NewEmailAddress == user.EmailAddress)
             {
                 viewModel.AddErrorFor(m => m.NewEmailAddress, "The new email address must be different to your current email address");
@@ -196,7 +197,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
         private bool OtherUserWithThisEmailAddressAlreadyExists(string emailAddress)
         {
+
+            var timeNow = DateTime.Now;
             User otherUserWithSameEmailAddress = userRepository.FindByEmail(emailAddress, UserStatuses.New, UserStatuses.Active);
+
+            Console.WriteLine("otherUserWithSameEmailAddress: " + (DateTime.Now - timeNow).ToString());
             return otherUserWithSameEmailAddress != null;
         }
 

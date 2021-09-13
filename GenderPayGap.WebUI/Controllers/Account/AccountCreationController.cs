@@ -100,7 +100,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     "The password and confirmation do not match.");
             }
 
-            User existingUser = CheckForExistingUserForGivenEmailAddress(viewModel.EmailAddress);
+      var timeNow = DateTime.Now;
+      User existingUser = CheckForExistingUserForGivenEmailAddress(viewModel.EmailAddress);
+      Console.WriteLine("existingUser: " + (DateTime.Now - timeNow).ToString());
             if (existingUser?.EmailVerifySendDate != null)
             {
                 if (existingUser.EmailVerifiedDate != null)
@@ -124,9 +126,14 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return View("CreateUserAccount", viewModel);
             }
 
+
+            timeNow = DateTime.Now;
             User newUser = CreateNewUser(viewModel);
             dataRepository.Insert(newUser);
+            Console.WriteLine("Create new user + insert: " + (DateTime.Now - timeNow).ToString());
+            timeNow = DateTime.Now;
             dataRepository.SaveChanges();
+            Console.WriteLine("Save changes after create " + (DateTime.Now - timeNow).ToString());
 
             GenerateAndSendAccountVerificationEmail(newUser);
 
@@ -211,8 +218,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 emailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
                 user.EmailVerifyHash = verificationCode;
                 user.EmailVerifySendDate = VirtualDateTime.Now;
-
+                var timeNow = DateTime.Now;
                 dataRepository.SaveChanges();
+                Console.WriteLine("Save Changes verif email: " + (DateTime.Now - timeNow).ToString());
             }
             catch
             {
