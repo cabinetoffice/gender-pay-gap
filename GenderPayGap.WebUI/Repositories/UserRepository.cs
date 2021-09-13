@@ -27,18 +27,9 @@ namespace GenderPayGap.WebUI.Repositories
             return dataRepository.GetAll<User>()
                 .Where(user => filterStatuses.Length == 0 || filterStatuses.ToList().Contains(user.Status))
                 .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)
-                // filter by email address
                 .FirstOrDefault(user => user.EmailAddress.ToLower() == email.ToLower());
-                // skip or filter by user status
-                // return first match otherwise null
-            
-            // return dataRepository.GetAll<User>()
-            //     .Where(user => filterStatuses.Length == 0 || filterStatuses.ToList().Contains(user.Status))
-            //     .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)
-            //     // filter by email address
-            //     .Where(user => user.EmailAddress.ToLower() == email.ToLower())
-            //     .FirstOrDefault();
         }
+
         public bool CheckPassword(User user, string password)
         {
             try

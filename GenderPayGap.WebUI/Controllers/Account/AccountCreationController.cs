@@ -132,10 +132,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
             dataRepository.Insert(newUser);
             Console.WriteLine("Create new user + insert: " + (DateTime.Now - timeNow).ToString());
             timeNow = DateTime.Now;
-            dataRepository.SaveChanges();
-            Console.WriteLine("Save changes after create " + (DateTime.Now - timeNow).ToString());
-
             GenerateAndSendAccountVerificationEmail(newUser);
+            Console.WriteLine("After verif email: " + (DateTime.Now - timeNow).ToString());
+            timeNow = DateTime.Now;
+            dataRepository.SaveChanges();
+            Console.WriteLine("After save changes: " + (DateTime.Now - timeNow).ToString());
 
             var confirmEmailAddressViewModel = new ConfirmEmailAddressViewModel { EmailAddress = viewModel.EmailAddress };
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
@@ -218,9 +219,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 emailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
                 user.EmailVerifyHash = verificationCode;
                 user.EmailVerifySendDate = VirtualDateTime.Now;
-                var timeNow = DateTime.Now;
-                dataRepository.SaveChanges();
-                Console.WriteLine("Save Changes verif email: " + (DateTime.Now - timeNow).ToString());
             }
             catch
             {
