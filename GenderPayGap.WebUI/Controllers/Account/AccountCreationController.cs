@@ -4,6 +4,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
@@ -17,13 +18,16 @@ namespace GenderPayGap.WebUI.Controllers.Account
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly IUserRepository userRepository;
         private readonly EmailSendingService emailSendingService;
 
         public AccountCreationController(
             IDataRepository dataRepository,
+            IUserRepository userRepository,
             EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;
+            this.userRepository = userRepository;
             this.emailSendingService = emailSendingService;
         }
 
@@ -100,7 +104,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     "The password and confirmation do not match.");
             }
 
-            User existingUser = CheckForExistingUserForGivenEmailAddress(viewModel.EmailAddress);
+            User existingUser = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Active, UserStatuses.New);
             if (existingUser?.EmailVerifySendDate != null)
             {
                 if (existingUser.EmailVerifiedDate != null)
@@ -126,9 +130,10 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             User newUser = CreateNewUser(viewModel);
             dataRepository.Insert(newUser);
-            dataRepository.SaveChanges();
 
             GenerateAndSendAccountVerificationEmail(newUser);
+
+            dataRepository.SaveChanges();
 
             var confirmEmailAddressViewModel = new ConfirmEmailAddressViewModel { EmailAddress = viewModel.EmailAddress };
             return View("ConfirmEmailAddress", confirmEmailAddressViewModel);
@@ -160,15 +165,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
         public IActionResult AccountCreationConfirmation()
         {
             return View("ConfirmationPage");
-        }
-
-        private User CheckForExistingUserForGivenEmailAddress(string emailAddress)
-        {
-            return dataRepository
-                .GetAll<User>()
-                .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active)
-                .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - string.Equals cannot be translated */ )
-                .FirstOrDefault(u => string.Equals(u.EmailAddress, emailAddress, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private User CreateNewUser(CreateUserAccountViewModel viewModel)
@@ -211,8 +207,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 emailSendingService.SendAccountVerificationEmail(user.EmailAddress, verificationUrl);
                 user.EmailVerifyHash = verificationCode;
                 user.EmailVerifySendDate = VirtualDateTime.Now;
-
-                dataRepository.SaveChanges();
             }
             catch
             {
