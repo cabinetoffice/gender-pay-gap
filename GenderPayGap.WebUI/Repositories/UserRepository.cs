@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -24,15 +25,20 @@ namespace GenderPayGap.WebUI.Repositories
         public User FindByEmail(string email, params UserStatuses[] filterStatuses)
         {
             return dataRepository.GetAll<User>()
+                .Where(user => filterStatuses.Length == 0 || filterStatuses.ToList().Contains(user.Status))
                 .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)
                 // filter by email address
-                .Where(user => user.EmailAddress.ToLower() == email.ToLower())
+                .FirstOrDefault(user => user.EmailAddress.ToLower() == email.ToLower());
                 // skip or filter by user status
-                .Where(user => filterStatuses.Length == 0 || filterStatuses.Contains(user.Status))
                 // return first match otherwise null
-                .FirstOrDefault();
+            
+            // return dataRepository.GetAll<User>()
+            //     .Where(user => filterStatuses.Length == 0 || filterStatuses.ToList().Contains(user.Status))
+            //     .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)
+            //     // filter by email address
+            //     .Where(user => user.EmailAddress.ToLower() == email.ToLower())
+            //     .FirstOrDefault();
         }
-
         public bool CheckPassword(User user, string password)
         {
             try
