@@ -141,31 +141,21 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
             if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && DeadlineHasPassed()) // Required-NotSubmitted-DeadlinePassed
             {
-                // Report overdue: RED
                 return ReportStatus.Overdue;
             }
-
-            // if (!OrganisationIsRequiredToSubmit() && reportIsNotSubmitted) // NotRequired-NotSubmitted
-            // {
-            //     // Report not required: GREY
-            //     return "Report not required";
-            // }
 
             if (!reportIsNotSubmitted
                 && (returnForYear.IsRequired() && returnForYear.IsSubmittedOnTime()
                     || !returnForYear.IsRequired() && returnForYear.IsSubmitted())) // Required-Submitted OR NotRequired-Submitted
             {
-                // Report submitted: GREEN
                 return ReportStatus.Submitted;
             }
 
             if (!reportIsNotSubmitted && returnForYear.IsRequired() && returnForYear.IsLateSubmission) // Required-SubmittedLate
             {
-                // Report submitted late: GREEN
                 return ReportStatus.SubmittedLate;
             }
             
-            // Report not required: GREY
             return ReportStatus.NotRequired;
 
         }
@@ -192,14 +182,14 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             switch (GetReportStatus())
             {
                 case ReportStatus.Due:
-                    return "blue";
+                    return "govuk-tag--blue";
                 case ReportStatus.Overdue:
-                    return "red";
+                    return "govuk-tag--red";
                 case ReportStatus.Submitted:
                 case ReportStatus.SubmittedLate:
-                    return "green";
+                    return "govuk-tag--green";
                 default:
-                    return "grey";
+                    return "govuk-tag--grey";
             }
         }
 
@@ -229,7 +219,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             {
                 return "Last edited on " + returnForYear.Modified.ToString("d MMM yyyy");
             } 
-            if (hasDraftReturnForYear)
+            if (hasDraftReturnForYear && draftReturnForYear.Modified != DateTime.MinValue)
             {
                 return "Last edited on " + draftReturnForYear.Modified.ToString("d MMM yyyy");
             }
