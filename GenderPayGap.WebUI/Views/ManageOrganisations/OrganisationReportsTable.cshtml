@@ -37,20 +37,22 @@
                     </td>
                     
                     <td class="govuk-table__cell">
-                        <strong class="govuk-tag govuk-tag--@detailsForYear.GetReportStatusColour()">
+                        <strong class="govuk-tag @detailsForYear.GetReportStatusColour()">
                             @detailsForYear.GetReportStatusText().ToUpper()
                         </strong>
                         @{
                             string description = detailsForYear.GetReportStatusDescription();
                             string modifiedDateText = detailsForYear.GetModifiedDateText();
+                            string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
+                            
                             if (description != null)
                             {
-                                <div>@description</div>
+                                <div class="govuk-!-margin-top-3">@description</div>
                             }
 
                             if (modifiedDateText != null)
                             {
-                                <div>@modifiedDateText</div>
+                                <div class="@modifiedDateTextClass">@modifiedDateText</div>
                             }
                         }
                     </td>
