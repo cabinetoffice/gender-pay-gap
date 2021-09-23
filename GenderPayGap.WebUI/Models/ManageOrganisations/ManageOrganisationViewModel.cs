@@ -57,7 +57,11 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                         new ManageOrganisationDetailsForYearViewModel(
                             Organisation,
                             reportingYear,
-                            allDraftReturns.FirstOrDefault(d => d.SnapshotYear == reportingYear)));
+                            allDraftReturns.Where(d => d.SnapshotYear == reportingYear)
+                                .OrderByDescending(d => d.Modified)
+                                .FirstOrDefault()
+                        )
+                    );
                 }
             }
 
@@ -81,7 +85,6 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             ReportingYear = reportingYear;
             this.draftReturnForYear = draftReturnForYear;
             hasDraftReturnForYear = draftReturnForYear != null;
-
         }
 
 
@@ -128,64 +131,63 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                    && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(GetAccountingDate().Year);
         }
 
-        private ReportStatus GetReportStatus()
+        private ReportTag GetReportStatus()
         {
             Return returnForYear = organisation.GetReturn(ReportingYear);
-            bool reportIsNotSubmitted = returnForYear == null;
-
-            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && !DeadlineHasPassed())
-            {
-                return ReportStatus.Due;
-            }
-
-            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && DeadlineHasPassed())
-            {
-                return ReportStatus.Overdue;
-            }
-
-            if (!reportIsNotSubmitted
-                && (returnForYear.IsRequired() && returnForYear.IsSubmittedOnTime()
-                    || !returnForYear.IsRequired() && returnForYear.IsSubmitted()))
-            {
-                return ReportStatus.Submitted;
-            }
-
-            if (!reportIsNotSubmitted && returnForYear.IsRequired() && returnForYear.IsLateSubmission)
-            {
-                return ReportStatus.SubmittedLate;
-            }
+            bool reportIsSubmitted = returnForYear != null;
             
-            return ReportStatus.NotRequired;
+            return reportIsSubmitted ? GetSubmittedReportStatus(returnForYear) : GetNotSubmittedReportStatus();
+        }
 
+        private ReportTag GetSubmittedReportStatus(Return returnForYear)
+        {
+            bool returnIsRequired = returnForYear.IsRequired();
+            
+            if (returnIsRequired && !returnForYear.IsLateSubmission || !returnIsRequired && returnForYear.IsSubmitted())
+            {
+                return ReportTag.Submitted;
+            }
+
+            return ReportTag.SubmittedLate;
+        }
+
+        private ReportTag GetNotSubmittedReportStatus()
+        {
+            if (!OrganisationIsRequiredToSubmit())
+            {
+                return ReportTag.NotRequired;
+            }
+
+            return DeadlineHasPassed() ? ReportTag.Overdue : ReportTag.Due;
         }
 
         public string GetReportStatusText()
         {
             switch (GetReportStatus())
             {
-                case ReportStatus.Due:
+                case ReportTag.Due:
                     return "Report due by " + GetReportingDeadline().ToString("d MMMM yyyy");
-                case ReportStatus.Overdue:
+                case ReportTag.Overdue:
                     return "Report overdue";
-                case ReportStatus.Submitted:
+                case ReportTag.Submitted:
                     return "Report submitted";
-                case ReportStatus.SubmittedLate:
+                case ReportTag.SubmittedLate:
                     return "Report submitted late";
                 default:
                     return "Report not required";
             }
         }
         
-        public string GetReportStatusColour()
+        public string GetReportStatusClassName()
         {
             switch (GetReportStatus())
             {
-                case ReportStatus.Due:
+                case ReportTag.Due:
                     return "govuk-tag--blue";
-                case ReportStatus.Overdue:
+                case ReportTag.Overdue:
                     return "govuk-tag--red";
-                case ReportStatus.Submitted:
-                case ReportStatus.SubmittedLate:
+                case ReportTag.Submitted:
+                case ReportTag.SubmittedLate:
                     return "govuk-tag--green";
                 default:
                     return "govuk-tag--grey";
@@ -194,15 +196,15 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
         public string GetReportStatusDescription()
         {
-            ReportStatus status = GetReportStatus();
+            ReportTag tag = GetReportStatus();
             Return returnForYear = organisation.GetReturn(ReportingYear);
 
-            switch (status)
+            switch (tag)
             {
-                case ReportStatus.Overdue:
+                case ReportTag.Overdue:
                     return "This report was due on " + GetReportingDeadline().ToString("d MMMM yyyy");
-                case ReportStatus.Submitted:
-                case ReportStatus.SubmittedLate:
+                case ReportTag.Submitted:
+                case ReportTag.SubmittedLate:
                     return "Reported on " + returnForYear.Modified.ToString("d MMMM yyyy");
                 default:
                     return null;
@@ -211,13 +213,6 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
         public string GetModifiedDateText()
         {
-            Return returnForYear = organisation.GetReturn(ReportingYear);
-            bool hasReturnForYear = returnForYear != null;
-
-            if (hasReturnForYear)
-            {
-                return "Last edited on " + returnForYear.Modified.ToString("d MMMM yyyy");
-            } 
             if (hasDraftReturnForYear && draftReturnForYear.Modified != DateTime.MinValue)
             {
                 return "Last edited on " + draftReturnForYear.Modified.ToString("d MMMM yyyy");
@@ -235,7 +230,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             return hasReturnForYear || hasDraftReturnForYear;
         }
 
-        public string GetReportButtonText()
+        public string GetReportLinkText()
         {
             Return returnForYear = organisation.GetReturn(ReportingYear);
             bool hasReturnForYear = returnForYear != null;
