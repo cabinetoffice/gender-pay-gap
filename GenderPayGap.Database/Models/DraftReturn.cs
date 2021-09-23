@@ -64,6 +64,9 @@ namespace GenderPayGap.Database.Models
 
         [JsonProperty]
         public bool OptedOutOfReportingPayQuarters { get; set; }
+        
+        [JsonProperty]
+        public DateTime Modified { get; set; }
 
         public bool IsEmpty()
         {
@@ -142,9 +145,6 @@ namespace GenderPayGap.Database.Models
         [JsonProperty]
         [Obsolete("Only used by old Submit journey")]
         public DateTime? AccountingDate { get; set; }
-        [JsonProperty]
-        [Obsolete("Only used by old Submit journey")]
-        public DateTime Modified { get; set; }
 
         [JsonProperty]
         [Obsolete("Only used by old Submit journey")]

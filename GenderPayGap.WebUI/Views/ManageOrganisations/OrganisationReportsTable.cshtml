@@ -8,6 +8,7 @@
             <th scope="col" class="govuk-table__header">Year</th>
             <th scope="col" class="govuk-table__header">Reporting requirement</th>
             <th scope="col" class="govuk-table__header">Report status</th>
+            <th scope="col" class="govuk-table__header"> </th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -24,16 +25,6 @@
                     <td class="govuk-table__cell">
                         <div>
                             @detailsForYear.GetRequiredToReportOrNotText()
-                            
-                            @{
-                                var reportingDeadlineText = detailsForYear.GetByReportingDeadlineText();
-                            }
-                            
-                            @if (reportingDeadlineText != null)
-                            {
-                                <br/>
-                                @reportingDeadlineText
-                            }
                         </div>
                         @if (detailsForYear.CanChangeScope()) 
                         {
@@ -46,30 +37,42 @@
                     </td>
                     
                     <td class="govuk-table__cell">
-                        <div>
-                            @detailsForYear.GetReportStatusText()
-                        </div>
-                        <div>
-                            @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
+                        <strong class="govuk-tag govuk-tag--@detailsForYear.GetReportStatusColour()">
+                            @detailsForYear.GetReportStatusText().ToUpper()
+                        </strong>
+                        @{
+                            string description = detailsForYear.GetReportStatusDescription();
+                            string modifiedDateText = detailsForYear.GetModifiedDateText();
+                            if (description != null)
                             {
-                                <a class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0"
-                                   loadtest-id="create-report-@detailsForYear.ReportingYear"
-                                   href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
-                                    @detailsForYear.GetReportButtonText()
-                                </a>
+                                <div>@description</div>
                             }
-                            else
-                            {
-                                var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
 
-                                <a role="button"
-                                   href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
-                                   class="govuk-button govuk-!-margin-top-4 govuk-!-margin-bottom-0"
-                                   loadtest-id="create-report-@detailsForYear.ReportingYear">
-                                    @detailsForYear.GetReportButtonText()
-                                </a>
+                            if (modifiedDateText != null)
+                            {
+                                <div>@modifiedDateText</div>
                             }
-                        </div>
+                        }
+                    </td>
+
+                    <td class="govuk-table__cell">
+                        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
+                        {
+                            <a loadtest-id="create-report-@detailsForYear.ReportingYear"
+                                href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
+                                @detailsForYear.GetReportButtonText()
+                            </a>
+                        }
+                        else
+                        {
+                            var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
+
+                            <a role="button"
+                               href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
+                               loadtest-id="create-report-@detailsForYear.ReportingYear">
+                                @detailsForYear.GetReportButtonText()
+                            </a>
+                        }
                     </td>
                 </tr>
             }
