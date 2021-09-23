@@ -153,7 +153,8 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 MinEmployees = 250,
                 MaxEmployees = 499,
                 Created = modifiedDate,
-                Modified = modifiedDate
+                Modified = modifiedDate,
+                Status = ReturnStatuses.Submitted
             };
 
             OrganisationHelper.LinkOrganisationAndReturn(organisation, lateReturn);
@@ -176,6 +177,15 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             OrganisationScope testScope = ScopeHelper.CreateScope(scopeStatus, snapshotDate);
             
             return CreateLateReturn(testOrganisation, snapshotDate, modifiedDate, testScope);
+        }
+        
+        public static Return CreateLateReturn(int reportingYear, Organisation organisation, int modifiedDateOffset)
+        {
+            DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
+            DateTime nextSnapshotDate = snapshotDate.AddYears(1);
+            DateTime modifiedDate = nextSnapshotDate.AddDays(modifiedDateOffset);
+
+            return CreateLateReturn(organisation, snapshotDate, modifiedDate, organisation.GetScopeForYear(reportingYear));
         }
 
     }

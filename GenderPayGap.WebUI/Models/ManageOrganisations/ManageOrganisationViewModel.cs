@@ -7,7 +7,6 @@ using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes.Formatters;
 
 namespace GenderPayGap.WebUI.Models.ManageOrganisations
 {
@@ -134,24 +133,24 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             Return returnForYear = organisation.GetReturn(ReportingYear);
             bool reportIsNotSubmitted = returnForYear == null;
 
-            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && !DeadlineHasPassed()) // Required-NotSubmitted-DeadlineNotPassed
+            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && !DeadlineHasPassed())
             {
                 return ReportStatus.Due;
             }
 
-            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && DeadlineHasPassed()) // Required-NotSubmitted-DeadlinePassed
+            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && DeadlineHasPassed())
             {
                 return ReportStatus.Overdue;
             }
 
             if (!reportIsNotSubmitted
                 && (returnForYear.IsRequired() && returnForYear.IsSubmittedOnTime()
-                    || !returnForYear.IsRequired() && returnForYear.IsSubmitted())) // Required-Submitted OR NotRequired-Submitted
+                    || !returnForYear.IsRequired() && returnForYear.IsSubmitted()))
             {
                 return ReportStatus.Submitted;
             }
 
-            if (!reportIsNotSubmitted && returnForYear.IsRequired() && returnForYear.IsLateSubmission) // Required-SubmittedLate
+            if (!reportIsNotSubmitted && returnForYear.IsRequired() && returnForYear.IsLateSubmission)
             {
                 return ReportStatus.SubmittedLate;
             }
@@ -165,7 +164,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             switch (GetReportStatus())
             {
                 case ReportStatus.Due:
-                    return "Report due by " + GetReportingDeadline().ToString("d MMM yyyy");
+                    return "Report due by " + GetReportingDeadline().ToString("d MMMM yyyy");
                 case ReportStatus.Overdue:
                     return "Report overdue";
                 case ReportStatus.Submitted:
@@ -201,10 +200,10 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             switch (status)
             {
                 case ReportStatus.Overdue:
-                    return "This report was due on " + GetReportingDeadline().ToString("d MMM yyyy");
+                    return "This report was due on " + GetReportingDeadline().ToString("d MMMM yyyy");
                 case ReportStatus.Submitted:
                 case ReportStatus.SubmittedLate:
-                    return "Reported on " + returnForYear.Modified.ToString("d MMM yyyy");
+                    return "Reported on " + returnForYear.Modified.ToString("d MMMM yyyy");
                 default:
                     return null;
             }
@@ -217,11 +216,11 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
             if (hasReturnForYear)
             {
-                return "Last edited on " + returnForYear.Modified.ToString("d MMM yyyy");
+                return "Last edited on " + returnForYear.Modified.ToString("d MMMM yyyy");
             } 
             if (hasDraftReturnForYear && draftReturnForYear.Modified != DateTime.MinValue)
             {
-                return "Last edited on " + draftReturnForYear.Modified.ToString("d MMM yyyy");
+                return "Last edited on " + draftReturnForYear.Modified.ToString("d MMMM yyyy");
             }
 
             return null;
