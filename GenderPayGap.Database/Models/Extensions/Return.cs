@@ -84,11 +84,6 @@ namespace GenderPayGap.Database
             return Status == Core.ReturnStatuses.Submitted;
         }
 
-        public bool IsSubmittedOnTime()
-        {
-            return IsSubmitted() && Modified <= GetDueDate();
-        }
-        
         public bool IsRequired()
         {
             return OrganisationSize != OrganisationSizes.Employees0To249

@@ -78,7 +78,6 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
                 dataRepository.GetAll<DraftReturn>()
                     .Where(d => d.OrganisationId == organisationId)
                     .ToList();
-            
             var viewModel = new ManageOrganisationViewModel(organisation, user, allDraftReturns);
 
             return View("ManageOrganisation", viewModel);

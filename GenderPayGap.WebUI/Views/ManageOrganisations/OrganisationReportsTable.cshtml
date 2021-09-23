@@ -8,7 +8,7 @@
             <th scope="col" class="govuk-table__header">Year</th>
             <th scope="col" class="govuk-table__header">Reporting requirement</th>
             <th scope="col" class="govuk-table__header">Report status</th>
-            <th scope="col" class="govuk-table__header"> </th>
+            <th scope="col" class="govuk-table__header"></th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -37,7 +37,7 @@
                     </td>
                     
                     <td class="govuk-table__cell">
-                        <strong class="govuk-tag @detailsForYear.GetReportStatusColour()">
+                        <strong class="govuk-tag @detailsForYear.GetReportStatusClassName()">
                             @detailsForYear.GetReportStatusText().ToUpper()
                         </strong>
                         @{
@@ -62,17 +62,16 @@
                         {
                             <a loadtest-id="create-report-@detailsForYear.ReportingYear"
                                 href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
-                                @detailsForYear.GetReportButtonText()
+                                @detailsForYear.GetReportLinkText()
                             </a>
                         }
                         else
                         {
                             var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
 
-                            <a role="button"
-                               href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
+                            <a href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
                                loadtest-id="create-report-@detailsForYear.ReportingYear">
-                                @detailsForYear.GetReportButtonText()
+                                @detailsForYear.GetReportLinkText()
                             </a>
                         }
                     </td>

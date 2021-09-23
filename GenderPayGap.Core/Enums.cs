@@ -305,7 +305,7 @@ namespace GenderPayGap.Core
         Completed = 1
     }
 
-    public enum ReportStatus
+    public enum ReportTag
     {
         Submitted = 0,
         SubmittedLate = 1,
