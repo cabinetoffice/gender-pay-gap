@@ -179,8 +179,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         private void SetMetadata(Draft draft, long userIdRequestingAccess)
         {
             DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
-
-            // TOJ
+            
             if (originalDraftReturn != null)
             {
                 // These 2 properties are obsolete
