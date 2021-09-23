@@ -74,13 +74,12 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             }
 
             // build the view model
-            List<int> yearsWithDraftReturns =
+            List<DraftReturn> allDraftReturns =
                 dataRepository.GetAll<DraftReturn>()
                     .Where(d => d.OrganisationId == organisationId)
-                    .Select(d => d.SnapshotYear)
                     .ToList();
-
-            var viewModel = new ManageOrganisationViewModel(organisation, user, yearsWithDraftReturns);
+            
+            var viewModel = new ManageOrganisationViewModel(organisation, user, allDraftReturns);
 
             return View("ManageOrganisation", viewModel);
         }

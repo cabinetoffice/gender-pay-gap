@@ -305,6 +305,15 @@ namespace GenderPayGap.Core
         Completed = 1
     }
 
+    public enum ReportStatus
+    {
+        Submitted = 0,
+        SubmittedLate = 1,
+        Due = 2,
+        Overdue = 3,
+        NotRequired = 4
+    }
+
     public static class EnumHelper
     {
 

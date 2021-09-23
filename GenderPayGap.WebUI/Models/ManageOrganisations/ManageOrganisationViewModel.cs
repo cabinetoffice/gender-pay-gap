@@ -5,6 +5,8 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
+using GenderPayGap.Database.Models;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes.Formatters;
 
 namespace GenderPayGap.WebUI.Models.ManageOrganisations
@@ -15,13 +17,13 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
         public Database.Organisation Organisation { get; }
         public User User { get; }
 
-        private readonly List<int> yearsWithDraftReturns;
+        private readonly List<DraftReturn> allDraftReturns;
 
-        public ManageOrganisationViewModel(Database.Organisation organisation, User user, List<int> yearsWithDraftReturns)
+        public ManageOrganisationViewModel(Database.Organisation organisation, User user, List<DraftReturn> allDraftReturns)
         {
             Organisation = organisation;
             User = user;
-            this.yearsWithDraftReturns = yearsWithDraftReturns;
+            this.allDraftReturns = allDraftReturns;
         }
 
         public List<User> GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst()
@@ -30,13 +32,13 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                 .Where(uo => uo.PINConfirmedDate.HasValue)
                 .Select(uo => uo.User)
                 .ToList();
-            
+
             // The current user must be in this list (otherwise we wouldn't be able to visit this page)
             // So, remove the user from wherever they are n the list
             // And insert them at the start of the list
             users.Remove(User);
             users.Insert(0, User);
-            
+
             return users;
         }
 
@@ -52,11 +54,11 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
                 if (scopeForYear != null)
                 {
-                    detailsForYears.Add(new ManageOrganisationDetailsForYearViewModel(
-                        Organisation,
-                        reportingYear,
-                        yearsWithDraftReturns.Contains(reportingYear)
-                    ));
+                    detailsForYears.Add(
+                        new ManageOrganisationDetailsForYearViewModel(
+                            Organisation,
+                            reportingYear,
+                            allDraftReturns.FirstOrDefault(d => d.SnapshotYear == reportingYear)));
                 }
             }
 
@@ -67,16 +69,20 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
     public class ManageOrganisationDetailsForYearViewModel
     {
+
         public int ReportingYear { get; }
 
         private readonly Database.Organisation organisation;
+        private readonly DraftReturn draftReturnForYear;
         private readonly bool hasDraftReturnForYear;
 
-        public ManageOrganisationDetailsForYearViewModel(Database.Organisation organisation, int reportingYear, bool hasDraftReturnForYear)
+        public ManageOrganisationDetailsForYearViewModel(Database.Organisation organisation, int reportingYear, DraftReturn draftReturnForYear)
         {
             this.organisation = organisation;
             ReportingYear = reportingYear;
-            this.hasDraftReturnForYear = hasDraftReturnForYear;
+            this.draftReturnForYear = draftReturnForYear;
+            hasDraftReturnForYear = draftReturnForYear != null;
+
         }
 
 
@@ -101,36 +107,135 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                 : "NOT REQUIRED TO REPORT";
         }
 
-        public string GetByReportingDeadlineText()
+        private DateTime GetAccountingDate()
         {
-            OrganisationScope scopeForYear = organisation.GetScopeForYear(ReportingYear);
+            return organisation.SectorType.GetAccountingStartDate(ReportingYear);
+        }
 
-            if (scopeForYear.IsInScopeVariant())
+        private DateTime GetReportingDeadline()
+        {
+            DateTime snapshotDate = GetAccountingDate();
+            return ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
+        }
+
+        private bool DeadlineHasPassed()
+        {
+            return VirtualDateTime.Now > GetReportingDeadline();
+        }
+
+        private bool OrganisationIsRequiredToSubmit()
+        {
+            return organisation.GetScopeForYear(ReportingYear).IsInScopeVariant()
+                   && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(GetAccountingDate().Year);
+        }
+
+        private ReportStatus GetReportStatus()
+        {
+            Return returnForYear = organisation.GetReturn(ReportingYear);
+            bool reportIsNotSubmitted = returnForYear == null;
+
+            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && !DeadlineHasPassed()) // Required-NotSubmitted-DeadlineNotPassed
             {
-                DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(ReportingYear);
-                DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
-
-                return "by " + deadline.ToString("d MMM yyyy");
+                return ReportStatus.Due;
             }
 
-            return null;
+            if (OrganisationIsRequiredToSubmit() && reportIsNotSubmitted && DeadlineHasPassed()) // Required-NotSubmitted-DeadlinePassed
+            {
+                // Report overdue: RED
+                return ReportStatus.Overdue;
+            }
+
+            // if (!OrganisationIsRequiredToSubmit() && reportIsNotSubmitted) // NotRequired-NotSubmitted
+            // {
+            //     // Report not required: GREY
+            //     return "Report not required";
+            // }
+
+            if (!reportIsNotSubmitted
+                && (returnForYear.IsRequired() && returnForYear.IsSubmittedOnTime()
+                    || !returnForYear.IsRequired() && returnForYear.IsSubmitted())) // Required-Submitted OR NotRequired-Submitted
+            {
+                // Report submitted: GREEN
+                return ReportStatus.Submitted;
+            }
+
+            if (!reportIsNotSubmitted && returnForYear.IsRequired() && returnForYear.IsLateSubmission) // Required-SubmittedLate
+            {
+                // Report submitted late: GREEN
+                return ReportStatus.SubmittedLate;
+            }
+            
+            // Report not required: GREY
+            return ReportStatus.NotRequired;
+
         }
 
         public string GetReportStatusText()
         {
+            switch (GetReportStatus())
+            {
+                case ReportStatus.Due:
+                    return "Report due by " + GetReportingDeadline().ToString("d MMM yyyy");
+                case ReportStatus.Overdue:
+                    return "Report overdue";
+                case ReportStatus.Submitted:
+                    return "Report submitted";
+                case ReportStatus.SubmittedLate:
+                    return "Report submitted late";
+                default:
+                    return "Report not required";
+            }
+        }
+        
+        public string GetReportStatusColour()
+        {
+            switch (GetReportStatus())
+            {
+                case ReportStatus.Due:
+                    return "blue";
+                case ReportStatus.Overdue:
+                    return "red";
+                case ReportStatus.Submitted:
+                case ReportStatus.SubmittedLate:
+                    return "green";
+                default:
+                    return "grey";
+            }
+        }
+
+        public string GetReportStatusDescription()
+        {
+            ReportStatus status = GetReportStatus();
             Return returnForYear = organisation.GetReturn(ReportingYear);
 
-            if (returnForYear == null)
+            switch (status)
             {
-                return "Your employer has not reported";
+                case ReportStatus.Overdue:
+                    return "This report was due on " + GetReportingDeadline().ToString("d MMM yyyy");
+                case ReportStatus.Submitted:
+                case ReportStatus.SubmittedLate:
+                    return "Reported on " + returnForYear.Modified.ToString("d MMM yyyy");
+                default:
+                    return null;
+            }
+        }
+
+        public string GetModifiedDateText()
+        {
+            Return returnForYear = organisation.GetReturn(ReportingYear);
+            bool hasReturnForYear = returnForYear != null;
+
+            if (hasReturnForYear)
+            {
+                return "Last edited on " + returnForYear.Modified.ToString("d MMM yyyy");
+            } 
+            if (hasDraftReturnForYear)
+            {
+                return "Last edited on " + draftReturnForYear.Modified.ToString("d MMM yyyy");
             }
 
-            if (returnForYear.IsVoluntarySubmission())
-            {
-                return "Reported voluntarily on " + new GDSDateFormatter(returnForYear.Modified).FullStartDate;
-            }
+            return null;
 
-            return "Reported on " + new GDSDateFormatter(returnForYear.Modified).FullStartDate;
         }
 
         public bool DoesReturnOrDraftReturnExistForYear()

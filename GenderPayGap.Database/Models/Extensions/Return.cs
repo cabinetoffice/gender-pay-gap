@@ -84,6 +84,18 @@ namespace GenderPayGap.Database
             return Status == Core.ReturnStatuses.Submitted;
         }
 
+        public bool IsSubmittedOnTime()
+        {
+            return IsSubmitted() && Modified <= GetDueDate();
+        }
+        
+        public bool IsRequired()
+        {
+            return OrganisationSize != OrganisationSizes.Employees0To249
+                && GetScopeStatus().IsAny(ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)
+                && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(AccountingDate.Year);
+        }
+
         public bool HasBonusesPaid()
         {
             return FemaleMedianBonusPayPercent != default(long)

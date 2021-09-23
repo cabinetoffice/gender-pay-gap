@@ -180,10 +180,14 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         {
             DraftReturn originalDraftReturn = GetDraftReturnFromDatabase(draft.OrganisationId, draft.SnapshotYear);
 
+            // TOJ
             if (originalDraftReturn != null)
             {
+                // These 2 properties are obsolete
                 originalDraftReturn.LastWrittenByUserId = userIdRequestingAccess;
                 originalDraftReturn.LastWrittenDateTime = VirtualDateTime.Now;
+
+                originalDraftReturn.Modified = VirtualDateTime.Now;
 
                 dataRepository.SaveChanges();
             }
