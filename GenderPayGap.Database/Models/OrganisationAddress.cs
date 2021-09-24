@@ -58,7 +58,7 @@ namespace GenderPayGap.Database
 
         public string GetPostCodeInAllCaps()
         {
-            return PostCode != null ? PostCode.ToUpper() : PostCode;
+            return PostCode?.ToUpper();
         }
 
     }
