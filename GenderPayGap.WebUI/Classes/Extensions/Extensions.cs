@@ -10,6 +10,7 @@ using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Classes.Formatters;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -33,6 +34,11 @@ namespace GenderPayGap.WebUI.Classes
 
             int index = option.ModelBinderProviders.IndexOf(binderToFind);
             option.ModelBinderProviders.Insert(index, new TrimmingModelBinderProvider());
+        }
+        
+        public static GDSDateFormatter ToGDSDate(this DateTime dateTime)
+        {
+            return new GDSDateFormatter(dateTime);
         }
 
         #region AntiSpam

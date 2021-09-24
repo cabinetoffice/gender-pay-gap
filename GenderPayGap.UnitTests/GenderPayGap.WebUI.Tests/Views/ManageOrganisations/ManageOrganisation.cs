@@ -33,9 +33,9 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
         {
             var viewModel = new ManageOrganisationDetailsForYearViewModel(organisationOutOfScope, ReportingYear, new DraftReturn());
 
-            string reportStatusText = viewModel.GetReportStatusText();
+            string reportTagText = viewModel.GetReportTagText();
             
-            Assert.AreEqual("Report not required", reportStatusText);
+            Assert.AreEqual("Report not required", reportTagText);
         }
         
         [Test]
@@ -43,9 +43,9 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
         {
             var viewModel = new ManageOrganisationDetailsForYearViewModel(organisationInScope, ReportingYear, null);
 
-            string reportStatusText = viewModel.GetReportStatusText();
+            string reportTagText = viewModel.GetReportTagText();
             
-            Assert.True(reportStatusText.Contains("Report due by"));
+            Assert.True(reportTagText.Contains("Report due by"));
         }
         
         [Test]
@@ -53,9 +53,9 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
         {
             var viewModel = new ManageOrganisationDetailsForYearViewModel(organisationInScopeForPastYear, PastReportingYear, null);
 
-            string reportStatusText = viewModel.GetReportStatusText();
+            string reportTagText = viewModel.GetReportTagText();
             
-            Assert.AreEqual("Report overdue", reportStatusText);
+            Assert.AreEqual("Report overdue", reportTagText);
         }
         
         [Test]
@@ -67,9 +67,9 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
 
             var viewModel = new ManageOrganisationDetailsForYearViewModel(organisationInScope, ReportingYear, null);
 
-            string reportStatusText = viewModel.GetReportStatusText();
+            string reportTagText = viewModel.GetReportTagText();
             
-            Assert.AreEqual("Report submitted", reportStatusText);
+            Assert.AreEqual("Report submitted", reportTagText);
         }
         
         [Test]
@@ -80,9 +80,9 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
 
             var viewModel = new ManageOrganisationDetailsForYearViewModel(organisationInScopeForPastYear, PastReportingYear, null);
 
-            string reportStatusText = viewModel.GetReportStatusText();
+            string reportTagText = viewModel.GetReportTagText();
             
-            Assert.AreEqual("Report submitted late", reportStatusText);
+            Assert.AreEqual("Report submitted late", reportTagText);
         }
 
     }
