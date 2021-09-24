@@ -124,6 +124,7 @@ namespace GenderPayGap.WebUI.Controllers
                     org =>
                     {
                         OrganisationAddress address = org.GetLatestAddress();
+                        string postCode = address.GetPostCodeInAllCaps();
                         return new
                         {
                             org.OrganisationId,
@@ -135,7 +136,7 @@ namespace GenderPayGap.WebUI.Controllers
                             address.TownCity,
                             address.County,
                             address.Country,
-                            address.PostCode,
+                            postCode,
                         };
                     })
                 .ToList();

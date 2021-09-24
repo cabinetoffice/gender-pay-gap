@@ -145,7 +145,7 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Post code</th>
                         <td class="govuk-table__cell">
-                            @(Model.Organisation.GetLatestAddress().PostCode)
+                            @(Model.Organisation.GetLatestAddress().GetPostCodeInAllCaps())
                         </td>
                         <td class="govuk-table__cell">
                             @(Model.PostCode)

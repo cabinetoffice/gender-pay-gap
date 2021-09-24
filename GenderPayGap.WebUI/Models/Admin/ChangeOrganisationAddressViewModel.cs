@@ -36,7 +36,7 @@ namespace GenderPayGap.WebUI.Models.Admin
             TownCity = address?.TownCity;
             County = address?.County;
             Country = address?.Country;
-            PostCode = address?.PostCode;
+            PostCode = address?.GetPostCodeInAllCaps();
 
             if (address?.IsUkAddress != null)
             {

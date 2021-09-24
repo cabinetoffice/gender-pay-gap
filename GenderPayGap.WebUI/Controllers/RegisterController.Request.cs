@@ -113,7 +113,7 @@ namespace GenderPayGap.WebUI.Controllers
             model.Address2 = userOrg.Address.Address2;
             model.Address3 = userOrg.Address.Address3;
             model.Country = userOrg.Address.Country;
-            model.Postcode = userOrg.Address.PostCode;
+            model.Postcode = userOrg.Address.GetPostCodeInAllCaps();
             model.PoBox = userOrg.Address.PoBox;
 
             model.RegisteredAddress = userOrg.Address.Status == AddressStatuses.Pending

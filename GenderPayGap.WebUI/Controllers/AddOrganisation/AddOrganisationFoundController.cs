@@ -270,7 +270,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             }
             else
             {
-                viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(organisationAddress?.PostCode)
+                viewModel.IsUkAddress = PostcodesIoApi.IsValidPostcode(organisationAddress?.GetPostCodeInAllCaps())
                     ? AddOrganisationIsUkAddress.Yes
                     : (AddOrganisationIsUkAddress?) null;
             }
