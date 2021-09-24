@@ -152,7 +152,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 && string.IsNullOrEmpty(address.County)
                 && string.IsNullOrEmpty(address.Country)
                 && string.IsNullOrEmpty(address.PoBox)
-                && string.IsNullOrEmpty(address.PostCode)
+                && string.IsNullOrEmpty(address.GetPostCodeInAllCaps())
             )
             {
                 return true;

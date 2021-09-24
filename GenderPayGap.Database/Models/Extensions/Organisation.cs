@@ -108,7 +108,7 @@ namespace GenderPayGap.Database
                 City = address.TownCity,
                 County = address.County,
                 Country = address.Country,
-                PostCode = address.PostCode,
+                PostCode = address.GetPostCodeInAllCaps(),
                 PoBox = address.PoBox,
                 IsUkAddress = address.IsUkAddress,
                 RegistrationStatus = GetRegistrationStatus(),

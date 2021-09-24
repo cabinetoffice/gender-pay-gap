@@ -262,7 +262,7 @@ namespace GenderPayGap.Database
                 EmployerName = Organisation?.GetName(StatusDate)?.Name ?? Organisation.OrganisationName,
                 EmployerId = OrganisationId,
                 Address = Organisation.GetLatestAddress()?.GetAddressString(),
-                PostCode = Organisation.GetLatestAddress()?.PostCode,
+                PostCode = Organisation.GetLatestAddress()?.GetPostCodeInAllCaps(),
                 CompanyNumber = Organisation?.CompanyNumber,
                 SicCodes = Organisation?.GetSicCodeIdsString(StatusDate, "," + Environment.NewLine),
                 DiffMeanHourlyPercent = DiffMeanHourlyPayPercent,

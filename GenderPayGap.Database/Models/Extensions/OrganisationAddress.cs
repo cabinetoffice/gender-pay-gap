@@ -46,10 +46,10 @@ namespace GenderPayGap.Database
             {
                 list.Add(address.Country.TrimI());
             }
-
-            if (!string.IsNullOrWhiteSpace(address.PostCode))
+            
+            if (!string.IsNullOrWhiteSpace(address.GetPostCodeInAllCaps()))
             {
-                list.Add(address.PostCode.TrimI());
+                list.Add(address.GetPostCodeInAllCaps().TrimI());
             }
 
             if (!string.IsNullOrWhiteSpace(address.PoBox))
@@ -111,7 +111,7 @@ namespace GenderPayGap.Database
                    && string.Equals(TownCity, other.TownCity, StringComparison.Ordinal)
                    && string.Equals(County, other.County, StringComparison.Ordinal)
                    && string.Equals(Country, other.Country, StringComparison.Ordinal)
-                   && string.Equals(PostCode, other.PostCode, StringComparison.Ordinal)
+                   && string.Equals(GetPostCodeInAllCaps(), other.GetPostCodeInAllCaps(), StringComparison.Ordinal)
                    && string.Equals(PoBox, other.PoBox, StringComparison.Ordinal);
         }
 

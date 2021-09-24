@@ -48,8 +48,8 @@ namespace GenderPayGap.WebUI.Services
             string companyName = userOrganisation.Organisation.OrganisationName;
 
             List<string> address = GetAddressInFourLineFormat(userOrganisation.Organisation);
-
-            string postCode = userOrganisation.Organisation.GetLatestAddress().PostCode;
+            
+            string postCode = userOrganisation.Organisation.GetLatestAddress().GetPostCodeInAllCaps();
 
             string returnUrl = urlHelper.Action("ManageOrganisationsGet", "ManageOrganisations", null, "https");
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);

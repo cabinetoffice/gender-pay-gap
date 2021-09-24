@@ -56,5 +56,10 @@ namespace GenderPayGap.Database
 
         public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
 
+        public string GetPostCodeInAllCaps()
+        {
+            return PostCode.ToUpper();
+        }
+
     }
 }
