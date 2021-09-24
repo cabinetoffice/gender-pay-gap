@@ -49,7 +49,7 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.County).HasMaxLength(100);
 
                     entity.Property(e => e.PoBox).HasMaxLength(30);
-                    
+        
                     entity.Property(e => e.PostCode).HasMaxLength(20);
 
                     entity.Property(e => e.Source).HasMaxLength(255);
