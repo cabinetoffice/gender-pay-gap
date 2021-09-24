@@ -9,6 +9,7 @@ using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Classes.Formatters;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -62,7 +63,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-AllOrganisations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-AllOrganisations-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -100,7 +101,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-OrphanOrganisations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrphanOrganisations-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -139,7 +140,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-OrganisationAddresses-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrganisationAddresses-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -164,7 +165,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-OrganisationScopesForYear-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-OrganisationScopesForYear-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -191,7 +192,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-AllSubmissionsForYear-{year}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-AllSubmissionsForYear-{year}--{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -215,7 +216,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .Select(ConvertReturnToDownloadFormat)
                 .ToList();
 
-            string fileDownloadName = $"Gpg-FullSubmissionHistoryForYear-{year}--{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-FullSubmissionHistoryForYear-{year}--{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -305,7 +306,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-LateSubmissions-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-LateSubmissions-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -333,7 +334,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-AllUsers-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-AllUsers-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -365,7 +366,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UserOrganisationRegistrations-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -397,7 +398,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UnverifiedUserOrganisationRegistrations-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UnverifiedUserOrganisationRegistrations-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -422,7 +423,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UserConsent-SendUpdates-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -447,7 +448,7 @@ namespace GenderPayGap.WebUI.Controllers
                     })
                 .ToList();
 
-            string fileDownloadName = $"Gpg-UserConsent-AllowContactForFeedback-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-UserConsent-AllowContactForFeedback-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -466,7 +467,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             IEnumerable<dynamic> records = BuildOrganisationsWithNoSubmittedReturnsRecords(organisationsWithNoSubmittedReturns);
 
-            string fileDownloadName = $"Gpg-NoSubmissionsFor{year}-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            string fileDownloadName = $"Gpg-NoSubmissionsFor{year}-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;

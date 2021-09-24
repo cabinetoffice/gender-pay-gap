@@ -32,6 +32,8 @@ namespace GenderPayGap.WebUI.Classes.Formatters
 
         public string FullYearRange => $"{StartYear} to {EndYear}";
 
+        public string FullStartDateTime => StartDate.ToString("yyyy-MM-dd HH:mm");
+
     }
 
 }
