@@ -29,16 +29,16 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         public void PopulateFromOrganisationAddress(OrganisationAddress address)
         {
-            PoBox = address.PoBox;
-            Address1 = address.Address1;
-            Address2 = address.Address2;
-            Address3 = address.Address3;
-            TownCity = address.TownCity;
-            County = address.County;
-            Country = address.Country;
-            PostCode = address.PostCode;
+            PoBox = address?.PoBox;
+            Address1 = address?.Address1;
+            Address2 = address?.Address2;
+            Address3 = address?.Address3;
+            TownCity = address?.TownCity;
+            County = address?.County;
+            Country = address?.Country;
+            PostCode = address?.PostCode;
 
-            if (address.IsUkAddress.HasValue)
+            if (address?.IsUkAddress != null)
             {
                 IsUkAddress = address.IsUkAddress.Value
                     ? ManuallyChangeOrganisationAddressIsUkAddress.Yes

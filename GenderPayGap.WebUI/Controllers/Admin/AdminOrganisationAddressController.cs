@@ -58,7 +58,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                         UpdateFromCompaniesHouseService.CreateOrganisationAddressFromCompaniesHouseAddress(
                         organisationFromCompaniesHouse.RegisteredOfficeAddress);
 
-                    if (!organisation.GetLatestAddress().AddressMatches(addressFromCompaniesHouse))
+                    OrganisationAddress latestAddress = organisation.GetLatestAddress();
+                    if (latestAddress != null && !latestAddress.AddressMatches(addressFromCompaniesHouse))
                     {
                         return OfferNewCompaniesHouseAddress(organisation, addressFromCompaniesHouse);
                     }
@@ -93,7 +94,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult SendToManualChangePage(Organisation organisation)
         {
-            OrganisationAddress address = organisation.OrganisationAddresses.OrderByDescending(a => a.Created).First();
+            OrganisationAddress address = organisation.OrganisationAddresses.OrderByDescending(a => a.Created).FirstOrDefault();
 
             var viewModel = new ChangeOrganisationAddressViewModel
             {
@@ -202,9 +203,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private void SaveChangesAndAuditAction(ChangeOrganisationAddressViewModel viewModel, Organisation organisation)
         {
-            string oldAddressString = organisation.GetLatestAddress().GetAddressString();
+            OrganisationAddress latestAddress = organisation.GetLatestAddress();
+            string oldAddressString = latestAddress?.GetAddressString();
 
-            RetireOldAddress(organisation);
+            if (latestAddress != null)
+            {
+                RetireOldAddress(organisation);
+            }
 
             OrganisationAddress newOrganisationAddress = CreateOrganisationAddressFromViewModel(viewModel);
             AddNewAddressToOrganisation(newOrganisationAddress, organisation);
