@@ -37,11 +37,11 @@
                     </td>
                     
                     <td class="govuk-table__cell">
-                        <strong class="govuk-tag @detailsForYear.GetReportStatusClassName()">
-                            @detailsForYear.GetReportStatusText().ToUpper()
+                        <strong class="govuk-tag @detailsForYear.GetReportTagClassName()">
+                            @detailsForYear.GetReportTagText().ToUpper()
                         </strong>
                         @{
-                            string description = detailsForYear.GetReportStatusDescription();
+                            string description = detailsForYear.GetReportTagDescription();
                             string modifiedDateText = detailsForYear.GetModifiedDateText();
                             string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
                             
