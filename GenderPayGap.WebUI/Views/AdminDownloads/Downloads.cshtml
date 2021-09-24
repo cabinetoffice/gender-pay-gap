@@ -230,5 +230,20 @@
             </p>
         }
 
+        <h2 class="govuk-heading-m">
+            Organisations with no submitted reports
+        </h2>
+        @foreach (var year in Model.ReportingYears.Where(year => year >= 2020))
+        {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadOrganisationsWithNoSubmittedReturns", "AdminDownloads", new {year})"
+                   class="govuk-link govuk-!-font-weight-bold">Organisations with no submissions for @reportingYear
+                </a>
+                <br/>
+                Organisations who did not submit a report for @reportingYear
+            </p>
+        }
+
     </div>
 </div>

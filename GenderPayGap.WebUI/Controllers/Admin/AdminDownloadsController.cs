@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -456,6 +457,64 @@ namespace GenderPayGap.WebUI.Controllers
         public FileContentResult EhrcAllOrganisationsForYear_AdminPage(int year)
         {
             return GenerateEhrcAllOrganisationsForYearFile(dataRepository, year);
+        }
+
+        [HttpGet("downloads/organisations-without-submitted-returns")]
+        public FileContentResult DownloadOrganisationsWithNoSubmittedReturns(int year)
+        {
+            List<Organisation> organisationsWithNoSubmittedReturns = dataRepository.GetAll<Organisation>()
+                .Where(org => org.Status == OrganisationStatuses.Active)
+                .Where(
+                    org => !org.OrganisationScopes.Any(s => s.SnapshotDate.Year == year)
+                           || org.OrganisationScopes.Any(
+                               s => s.SnapshotDate.Year == year
+                                    && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
+                .Where(org => !org.Returns.Any(r => r.AccountingDate.Year == year && r.Status == ReturnStatuses.Submitted))
+                .Include(o => o.OrganisationAddresses)
+                .Include(o => o.UserOrganisations)
+                .Include(o => o.Returns)
+                .ToList();
+
+            var records = organisationsWithNoSubmittedReturns.Select(
+                    org =>
+                    {
+                        dynamic record = new ExpandoObject();
+                        record.OrganisationId = org.OrganisationId;
+                        record.EmployerReference = org.EmployerReference;
+                        record.OrganisationName = org.OrganisationName;
+                        record.CompanyNumber = org.CompanyNumber;
+                        record.SectorType = org.SectorType;
+                        record.Address = org.GetLatestAddress()?.GetAddressString();
+
+                        UserOrganisation userOrg = org.UserOrganisations
+                            .OrderByDescending(uo => uo.Modified)
+                            .FirstOrDefault(
+                                uo => uo.HasBeenActivated()
+                                      && uo.User.Status == UserStatuses.Active);
+                        Return latestReturn = org.Returns
+                            .OrderByDescending(r => r.StatusDate)
+                            .FirstOrDefault(r => r.Status == ReturnStatuses.Submitted);
+
+                        record.Size = latestReturn?.OrganisationSize.GetAttribute<DisplayAttribute>().Name;
+                        record.FirstName = userOrg?.User.Firstname;
+                        record.LastName = userOrg?.User.Lastname;
+                        record.JobTitle = userOrg?.User.JobTitle;
+                        record.PhoneNumber = userOrg?.User.ContactPhoneNumber;
+                        record.EmailAddress = userOrg?.User.EmailAddress;
+
+                        foreach (var repYear in ReportingYearsHelper.GetReportingYears().ToSortedSet())
+                        {
+                            ((IDictionary<string, object>) record)["ReportDateTimeFor" + repYear] = org.GetReturn(repYear)?.StatusDate;
+                        }
+
+                        return record;
+                    })
+                .ToList();
+
+            string fileDownloadName = $"Gpg-NoSubmissionsFor{year}-{VirtualDateTime.Now:yyyy-MM-dd HH:mm}.csv";
+            FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
+
+            return fileContentResult;
         }
 
         public static FileContentResult GenerateEhrcAllOrganisationsForYearFile(IDataRepository dataRepository, int year)
