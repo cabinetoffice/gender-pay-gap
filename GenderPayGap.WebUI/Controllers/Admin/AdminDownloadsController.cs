@@ -462,7 +462,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads/organisations-without-submitted-returns")]
         public FileContentResult DownloadOrganisationsWithNoSubmittedReturns(int year)
         {
-            List<Organisation> organisationsWithNoSubmittedReturns = GetOrganisationsWithNoSubmittedReturns(year);
+            IEnumerable<Organisation> organisationsWithNoSubmittedReturns = GetOrganisationsWithNoSubmittedReturns(year);
 
             IEnumerable<dynamic> records = BuildOrganisationsWithNoSubmittedReturnsRecords(organisationsWithNoSubmittedReturns);
 
@@ -531,7 +531,7 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        private List<Organisation> GetOrganisationsWithNoSubmittedReturns(int year)
+        private IEnumerable<Organisation> GetOrganisationsWithNoSubmittedReturns(int year)
         {
             return dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
@@ -543,11 +543,10 @@ namespace GenderPayGap.WebUI.Controllers
                 .Where(org => !org.Returns.Any(r => r.AccountingDate.Year == year && r.Status == ReturnStatuses.Submitted))
                 .Include(o => o.OrganisationAddresses)
                 .Include(o => o.UserOrganisations)
-                .Include(o => o.Returns)
-                .ToList();
+                .Include(o => o.Returns);
         }
 
-        private IEnumerable<dynamic> BuildOrganisationsWithNoSubmittedReturnsRecords(List<Organisation> organisationsWithNoSubmittedReturns)
+        private IEnumerable<dynamic> BuildOrganisationsWithNoSubmittedReturnsRecords(IEnumerable<Organisation> organisationsWithNoSubmittedReturns)
         {
             return organisationsWithNoSubmittedReturns.Select(
                     org =>
