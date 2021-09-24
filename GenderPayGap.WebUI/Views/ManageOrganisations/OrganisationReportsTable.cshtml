@@ -2,7 +2,8 @@
 @using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
-<table class="govuk-table">
+<div class="overflowx">
+    <table class="govuk-table">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Year</th>
@@ -61,7 +62,7 @@
                         @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewReportingJourney))
                         {
                             <a loadtest-id="create-report-@detailsForYear.ReportingYear"
-                                href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
+                               href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})">
                                 @detailsForYear.GetReportLinkText()
                             </a>
                         }
@@ -80,3 +81,4 @@
         }
     </tbody>
 </table>
+</div>
