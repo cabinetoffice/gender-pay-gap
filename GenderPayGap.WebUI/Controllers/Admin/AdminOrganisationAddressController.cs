@@ -203,10 +203,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private void SaveChangesAndAuditAction(ChangeOrganisationAddressViewModel viewModel, Organisation organisation)
         {
-            OrganisationAddress latestAddress = organisation.GetLatestAddress();
-            string oldAddressString = latestAddress?.GetAddressString();
+            string oldAddressString = organisation.GetLatestAddress()?.GetAddressString();
 
-            if (latestAddress != null)
+            if (oldAddressString != null)
             {
                 RetireOldAddress(organisation);
             }
