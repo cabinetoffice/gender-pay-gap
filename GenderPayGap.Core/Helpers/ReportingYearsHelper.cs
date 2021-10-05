@@ -60,7 +60,7 @@ namespace GenderPayGap.Core.Helpers
 
         public static bool DeadlineForAccountingDateHasPassed(DateTime accountingDate)
         {
-            return GetDeadlineForAccountingDate(accountingDate) < VirtualDateTime.Now;
+            return GetDeadlineForAccountingDate(accountingDate).AddDays(1) < VirtualDateTime.Now;
         }
 
         public static bool IsReportingYearWithFurloughScheme(DateTime accountingDate)
