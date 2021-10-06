@@ -540,7 +540,8 @@ namespace GenderPayGap.WebUI.Controllers
                     org => !org.OrganisationScopes.Any(s => s.SnapshotDate.Year == year)
                            || org.OrganisationScopes.Any(
                                s => s.SnapshotDate.Year == year
-                                    && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)))
+                                    && (s.ScopeStatus == ScopeStatuses.InScope || s.ScopeStatus == ScopeStatuses.PresumedInScope)
+                                    && s.Status != ScopeRowStatuses.Retired))
                 .Where(org => !org.Returns.Any(r => r.AccountingDate.Year == year && r.Status == ReturnStatuses.Submitted))
                 .Include(o => o.OrganisationAddresses)
                 .Include(o => o.UserOrganisations)
