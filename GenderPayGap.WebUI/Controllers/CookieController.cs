@@ -51,15 +51,16 @@ namespace GenderPayGap.WebUI.Controllers
             return View("CookieSettings", cookieSettingsViewModel);
         }
 
-        [HttpPost("/accept-all-cookies")]
+        [HttpPost("/cookie-consent")]
         [ValidateAntiForgeryToken]
-        public IActionResult AcceptAllCookies()
+        public IActionResult CookieConsent(CookieConsent consent)
         {
+            var additionalCookiesConsent = consent.AdditionalCookies == "accept";
             var cookieSettings = new CookieSettings
             {
-                GoogleAnalyticsGpg = true,
-                GoogleAnalyticsGovUk = true,
-                RememberSettings = true
+                GoogleAnalyticsGpg = additionalCookiesConsent,
+                GoogleAnalyticsGovUk = additionalCookiesConsent,
+                RememberSettings = additionalCookiesConsent
             };
 
             CookieHelper.SetCookieSettingsCookie(Response, cookieSettings);
