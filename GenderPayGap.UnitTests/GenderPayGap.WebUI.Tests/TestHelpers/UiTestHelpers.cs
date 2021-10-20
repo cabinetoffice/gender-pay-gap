@@ -22,6 +22,7 @@ using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Classes.Services;
+using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Controllers.Admin;
 using GenderPayGap.WebUI.Cookies;
 using GenderPayGap.WebUI.ExternalServices;
@@ -298,6 +299,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterType<AdminUnconfirmedPinsController>().InstancePerLifetimeScope();
             builder.RegisterType<AdminDatabaseIntegrityChecksController>().InstancePerLifetimeScope();
+            builder.RegisterType<CookieController>().InstancePerLifetimeScope();
 
             builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
             builder.RegisterType<HttpCache>().As<IHttpCache>().SingleInstance();
