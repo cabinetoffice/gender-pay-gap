@@ -159,10 +159,21 @@ namespace GenderPayGap.WebUI.Search
 
         private static bool GetIncludeInViewingService(Organisation organisation)
         {
-            return (organisation.Status == OrganisationStatuses.Active || organisation.Status == OrganisationStatuses.Retired) 
-                && (organisation.Returns.Any(r => r.Status == ReturnStatuses.Submitted) || organisation.OrganisationScopes.Any(
-                             sc => sc.Status == ScopeRowStatuses.Active
-                                   && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope)));
+            return OrganisationIsActiveAndInScope(organisation) || OrganisationHasSubmittedReturns(organisation);
+        }
+
+        private static bool OrganisationIsActiveAndInScope(Organisation organisation)
+        {
+            return organisation.Status == OrganisationStatuses.Active
+                   && organisation.OrganisationScopes.Any(
+                       sc => sc.Status == ScopeRowStatuses.Active
+                             && (sc.ScopeStatus == ScopeStatuses.InScope || sc.ScopeStatus == ScopeStatuses.PresumedInScope));
+        }
+
+        private static bool OrganisationHasSubmittedReturns(Organisation organisation)
+        {
+            return (organisation.Status == OrganisationStatuses.Active || organisation.Status == OrganisationStatuses.Retired)
+                   && organisation.Returns.Any(r => r.Status == ReturnStatuses.Submitted);
         }
 
         private static List<SearchCachedUser> LoadAllUsers(IDataRepository repository)
