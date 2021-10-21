@@ -13,11 +13,6 @@
         @using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new { id = "FinderForm", @class = "js-live-search-form" }))
         {
             <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel" />
-            <div class="govuk-grid-row">
-                <div style="margin-top: 15px;">
-                    <partial name="/Views/Components/EnforcementChangesMessage.cshtml" />
-                </div>
-            </div>
             <div class="govuk-grid-row finder comparison-divider">
                 <div class="govuk-grid-column-two-thirds">
                     <partial name="Finder/Parts/Facets/Keywords" model="Model" />

@@ -5,11 +5,6 @@
 @using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Shared.Patterns
 @model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
-<div class="grid-row">
-    <div style="margin-top: 15px;">
-        <partial name="/Views/Components/EnforcementChangesMessage.cshtml"/>
-    </div>
-</div>
 @{
     var controller = ViewData["Controller"] as BaseController;
     var reportingOrganisation = controller.ReportingOrganisation;
