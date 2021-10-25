@@ -122,6 +122,54 @@ namespace GenderPayGap.WebUI.Tests.Search
         }
 
         [Test]
+        public void LoadSearchDataIntoCache_DoesNotInclude_RetiredOrganisationsPreviouslyInScope()
+        {
+            // Arrange
+            var retiredOrganisationPreviouslyInScope = new Organisation
+            {
+                OrganisationId = 1,
+                OrganisationName = "Test organisation",
+                SectorType = SectorTypes.Private,
+                Status = OrganisationStatuses.Retired,
+                OrganisationScopes = new List<OrganisationScope>
+                {
+                    new OrganisationScope {Status = ScopeRowStatuses.Retired, ScopeStatus = ScopeStatuses.InScope}
+                }
+            };
+            Global.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationPreviouslyInScope);
+
+            // Act
+            SearchRepository.LoadSearchDataIntoCache();
+
+            // Assert
+            AssertOrganisationIsNotIncludedInViewingService(retiredOrganisationPreviouslyInScope);
+        }
+
+        [Test]
+        public void LoadSearchDataIntoCache_DoesNotInclude_RetiredOrganisationsOutOfScope()
+        {
+            // Arrange
+            var retiredOrganisationOutOfScope = new Organisation
+            {
+                OrganisationId = 1,
+                OrganisationName = "Test organisation",
+                SectorType = SectorTypes.Private,
+                Status = OrganisationStatuses.Retired,
+                OrganisationScopes = new List<OrganisationScope>
+                {
+                    new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.OutOfScope}
+                }
+            };
+            Global.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationOutOfScope);
+
+            // Act
+            SearchRepository.LoadSearchDataIntoCache();
+
+            // Assert
+            AssertOrganisationIsNotIncludedInViewingService(retiredOrganisationOutOfScope);
+        }
+
+        [Test]
         public void LoadSearchDataIntoCache_Includes_ActiveOrganisationsWithSubmittedReports()
         {
             // Arrange
@@ -140,6 +188,31 @@ namespace GenderPayGap.WebUI.Tests.Search
 
             // Assert
             AssertOrganisationIsIncludedInViewingService(activeOrganisationWithSubmittedReports);
+        }
+
+        [Test]
+        public void LoadSearchDataIntoCache_Includes_ActiveOrganisationsWithDraftReports()
+        {
+            // Arrange
+            var activeOrganisationWithDraftReports = new Organisation
+            {
+                OrganisationId = 1,
+                OrganisationName = "Test organisation",
+                SectorType = SectorTypes.Private,
+                Status = OrganisationStatuses.Active,
+                Returns = new List<Return> {new Return {Status = ReturnStatuses.Draft}},
+                OrganisationScopes = new List<OrganisationScope>
+                {
+                    new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.PresumedInScope}
+                }
+            };
+            Global.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationWithDraftReports);
+
+            // Act
+            SearchRepository.LoadSearchDataIntoCache();
+
+            // Assert
+            AssertOrganisationIsIncludedInViewingService(activeOrganisationWithDraftReports);
         }
 
         [Test]
