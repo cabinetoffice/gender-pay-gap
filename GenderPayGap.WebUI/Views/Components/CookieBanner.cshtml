@@ -66,9 +66,7 @@
                 });
         }
 
-        function acceptAllCookiesButtonClicked(event) {
-            @* Don't submit the form / change the page - we can handle setting the cookies in javascript *@
-            event.preventDefault();
+        function acceptAllCookiesButtonClicked() {
             setEssentialCookies(true);
             document.getElementById('cookies-details').hidden = true;
             document.getElementById('confirmation-message').hidden = false;
@@ -80,9 +78,7 @@
             window.sendGovUkPageView && window.sendGovUkPageView();
         }
         
-        function rejectAllCookiesButtonClicked(event) {
-            @* Don't submit the form / change the page - we can handle setting the cookies in javascript *@
-            event.preventDefault();
+        function rejectAllCookiesButtonClicked() {
             setEssentialCookies(false);
             document.getElementById('cookies-details').hidden = true;
             document.getElementById('confirmation-message').hidden = false;
@@ -91,6 +87,7 @@
 
         document.getElementById('cookies-consent-form')
             .addEventListener("submit", function(e) {
+                @* Don't submit the form / change the page - we can handle setting the cookies in javascript *@
                 e.preventDefault();	
             });
          document.getElementById('accept-cookies')
