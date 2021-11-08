@@ -67,9 +67,13 @@
                         <div class="body" style="margin-top: 3em">
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
-                                <p class="govuk-!-font-weight-bold">
-                                    Notice: This page is no longer updated. The organisation may no longer be in operation or operating under a different name
-                                </p>
+                                <div class="govuk-warning-text">
+                                    <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
+                                    <strong class="govuk-warning-text__text">
+                                        <span class="govuk-warning-text__assistive">Notice</span>
+                                        This page is no longer updated. The organisation may no longer be in operation or operating under a different name
+                                    </strong>
+                                </div>
                             }
                             <p>
                                 Below are all reports submitted, or expected from this employer. <br/>
