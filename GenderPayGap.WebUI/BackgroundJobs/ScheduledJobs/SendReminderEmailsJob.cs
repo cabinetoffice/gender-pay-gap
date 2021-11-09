@@ -73,7 +73,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
                 .Where(user => !user.HasBeenAnonymised)
-                .Where(UserHasNotBeenEmailedYet(sector, latestReminderEmailDate));
+                .Where(UserHasNotBeenEmailedYet(sector, latestReminderEmailDate))
+                .Take(1);
 
             foreach (User user in usersUncheckedSinceLatestReminderDate)
             {
