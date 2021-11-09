@@ -73,8 +73,9 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             IEnumerable<User> usersUncheckedSinceLatestReminderDate = dataRepository.GetAll<User>()
                 .Where(user => !user.HasBeenAnonymised)
-                .Where(UserHasNotBeenEmailedYet(sector, latestReminderEmailDate))
-                .Take(1);
+                .Where(UserHasNotBeenEmailedYet(sector, latestReminderEmailDate));
+                
+                
 
             foreach (User user in usersUncheckedSinceLatestReminderDate)
             {
@@ -95,7 +96,20 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 try
                 {
-                    SendReminderEmailRecordIfNotInProgress(user, sector, latestReminderEmailDate, year);
+                    var snapshotDate = sector.GetAccountingStartDate(year);
+                    var test = user.UserOrganisations
+                        .Where(uo => uo.HasBeenActivated())
+                        .Select(uo => uo.Organisation)
+                        .Where(o => o.Status == OrganisationStatuses.Active)
+                        .Where(o => o.SectorType == sector)
+                        .Where(OrganisationIsInScopeForSnapshotDate(snapshotDate))
+                        .Where(OrganisationHasNotReportedForSnapshotDate(snapshotDate))
+                        .ToList();
+                    if (test.Count > 0)
+                    {
+                        SendReminderEmailRecordIfNotInProgress(user, sector, latestReminderEmailDate, year);
+                        break;
+                    }
                 }
                 catch (Exception ex)
                 {
