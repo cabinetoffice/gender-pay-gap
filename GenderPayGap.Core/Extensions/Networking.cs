@@ -66,41 +66,6 @@ namespace GenderPayGap.Extensions
             return false;
         }
 
-        public static bool IsTrustedAddress(this string hostName, string[] trustedIPdomains)
-        {
-            if (string.IsNullOrWhiteSpace(hostName))
-            {
-                throw new ArgumentNullException(nameof(hostName));
-            }
-
-            if (trustedIPdomains == null || trustedIPdomains.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(trustedIPdomains));
-            }
-
-            if (trustedIPdomains.ContainsI(hostName))
-            {
-                return true;
-            }
-
-            try
-            {
-                IPAddress[] IPs = Dns.GetHostAddresses(hostName);
-                if (IPs == null || IPs.Length < 1)
-                {
-                    throw new Exception("Could not resolve host name '" + hostName + "'");
-                }
-
-                if (IPs.Any(address => trustedIPdomains.ContainsI(address.ToString()) || address.IsOnLocalSubnet()))
-                {
-                    return true;
-                }
-            }
-            catch { }
-
-            return hostName.IsOnLocalSubnet();
-        }
-
         private static bool IsOnLocalSubnet(this IPAddress clientIP)
         {
             if (clientIP.ToString().EqualsI("::1", "127.0.0.1"))
