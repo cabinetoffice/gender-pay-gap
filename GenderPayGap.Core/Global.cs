@@ -42,7 +42,6 @@ namespace GenderPayGap.Core
             Config.GetAppSetting("VCAP_SERVICES") != null
                 ? JsonConvert.DeserializeObject<VcapServices>(Config.GetAppSetting("VCAP_SERVICES"))
                 : null;
-        public static string EhrcIPRange => Config.GetAppSetting("EhrcIPRange");
         public static string GpgAnalysisAppApiPassword => Config.GetAppSetting("GpgAnalysisAppApiPassword");
         public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
         public static string BasicAuthUsername => Config.GetAppSetting("BasicAuthUsername");

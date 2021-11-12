@@ -4,6 +4,7 @@ gpg-ipdeny is an IP denylisting nginx application based upon the IP allowing ver
 
 It is designed to allow access to the Gender Pay Gap Service to all IP addresses except those specifically set, returning a 403 response to those banned IPs.
 
+It has been configured to protect the EHRC download endpoint, whitelisting specific IP addresses.
 ## Manual Deployment
 
 Since the list of banned IPs should not update particularly frequently, the application is deployed manually via the Deploy.sh script.
@@ -25,13 +26,14 @@ The deployment script takes the following parameters:
 * -s ROUTE_SERVICE_NAME The name of the service to create/update
 * -m MIN_COUNT_INSTANCES The minimum number of instances to run
 * -M MAX_COUNT_INSTANCES The maximum number of instances to run
+* -w DOWNLOAD_WHITELIST_FILENAME The filename containing the list of IPs whitelisted to access the EHRC download endpoint
 
 For example to set up ip denylisting on the dev space, if you've created/placed the denylist file in the same directory as the deployment script, the command could be run (using the gitbash window set up with jq earlier) as 
 ```
-./deploy.sh -e gpg-dev -r gpg-dev-ipdeny -s gpg-dev-ipdeny-service -a gender-pay-gap-dev -f "GPG-IP-Denylist.txt" -m 1 -M 2
+./deploy.sh -e gpg-dev -r gpg-dev-ipdeny -s gpg-dev-ipdeny-service -a gender-pay-gap-dev -f "GPG-IP-Denylist.txt" -m 1 -M 2 -w "EHRCDownload-IP-Whitelist.txt"
 ```
 
-The file listing banned IPs can be found in Zoho, and is called "GPG-IP-Denylist.txt". This should not be checked into source control, and that filename has been added to the .gitignore. Since the script accepts any file for the denylist, IP denylisting can be tested by providing a different file. Take care not to accidentally check in any differently name denylist file.
+The file listing banned IPs can be found in Keeper, and is called "GPG-IP-Denylist.txt". This should not be checked into source control, and that filename has been added to the .gitignore. Since the script accepts any file for the denylist, IP denylisting can be tested by providing a different file. Take care not to accidentally check in any differently name denylist file.
 
 When updating this list, each IP should be listed on a new line.
 If there are any errors when starting the app, these are most likely to have been caused by a syntax error in the list of IPs to deny. By checking the environment variables that have been set on the environment, it should be possible to tell where the issue is in the provided list of IPs.
