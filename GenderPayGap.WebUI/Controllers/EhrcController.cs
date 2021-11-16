@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using GenderPayGap.Core.Filters;
 using GenderPayGap.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +14,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [Route("/download")]
-        [AllowOnlyTrustedIps(AllowOnlyTrustedIps.IpRangeTypes.EhrcIPRange)]
         public IActionResult EhrcAllOrganisationsForYear_EhrcIpProtectedLink(
             string p
             /* The EHRC are given URLs of the form:
