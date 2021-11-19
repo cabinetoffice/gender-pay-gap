@@ -31,6 +31,7 @@ namespace GenderPayGap.WebUI.Classes.Services
         SubmissionChangeSummary GetSubmissionChangeSummary(Return stashedReturn, Return databaseReturn);
 
         Return GetSubmissionById(long returnId);
+        Return GetReturnFromDatabase(long organisationId, int snapshotYear);
 
         // presentation
         Task<ReturnViewModel> GetReturnViewModelAsync(long organisationId, int snapshotYear, long userId);

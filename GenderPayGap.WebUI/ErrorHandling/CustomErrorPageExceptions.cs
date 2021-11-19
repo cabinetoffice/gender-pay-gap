@@ -78,4 +78,12 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public override string ViewName => "../Errors/PinExpired";
         public override int StatusCode => 400;
     }
+    
+    public class ReportAlreadySubmittedException : CustomErrorPageException
+    {
+        public override string ViewName => "../Errors/ReportAlreadySubmitted";
+        public override int StatusCode => 403;
+        public long OrganisationId { get; set; }
+        public int ReportingYear { get; set; }
+    }
 }
