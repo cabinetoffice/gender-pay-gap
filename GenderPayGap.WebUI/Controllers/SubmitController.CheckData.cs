@@ -9,6 +9,7 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Classes;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models.Submit;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -174,11 +175,20 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             }
 
             Return postedReturn = submissionService.CreateDraftSubmissionFromViewModel(postedReturnViewModel);
+            Return databaseReturn = submissionService.GetReturnFromDatabase(postedReturnViewModel.OrganisationId, postedReturnViewModel.AccountingDate.Year);
 
             SubmissionChangeSummary changeSummary = null;
-            Return databaseReturn = submissionService.GetSubmissionById(postedReturnViewModel.ReturnId);
             if (databaseReturn != null)
             {
+                if (databaseReturn.ReturnId != postedReturnViewModel.ReturnId)
+                {
+                    throw new ReportAlreadySubmittedException
+                    {
+                        OrganisationId = postedReturn.Organisation.OrganisationId,
+                        ReportingYear = postedReturn.AccountingDate.Year
+                    };
+                }
+
                 changeSummary = submissionService.GetSubmissionChangeSummary(postedReturn, databaseReturn);
 
                 if (!changeSummary.HasChanged)

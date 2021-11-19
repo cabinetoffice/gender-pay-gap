@@ -1,0 +1,27 @@
+﻿@using GenderPayGap.Core.Helpers
+@model GenderPayGap.WebUI.ErrorHandling.ReportAlreadySubmittedException
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
+    ViewBag.Title = $"Report already submitted - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">
+            Report already submitted
+        </h1>
+        
+        <p class="govuk-body">
+            The @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear) report has already been submitted. <br/>
+            You can see it on
+            <a href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new { encryptedOrganisationId })"
+               class="govuk-link">
+                your employer page
+            </a> and update it if required.
+        </p>
+
+    </div>
+</div>
