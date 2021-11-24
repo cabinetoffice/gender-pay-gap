@@ -716,7 +716,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<SubmitController>(mockedUser.UserId, routeData);
             controller.ReportingOrganisationId = mockedOrganisation.OrganisationId;
             controller.ReportingOrganisationStartYear = Global.FirstReportingYear;
-            ;
 
             Mock<IDataRepository> mockedDatabase = AutoFacExtensions.ResolveAsMock<IDataRepository>();
 
@@ -756,7 +755,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 OrganisationId = mockedOrganisation.OrganisationId,
                 ReturnId = mockedOrganisation.Returns.First().ReturnId,
                 LateReason = mockedReturn.LateReason,
-                EHRCResponse = mockedReturn.EHRCResponse.ToString()
+                EHRCResponse = mockedReturn.EHRCResponse.ToString(),
+                AccountingDate = mockedReturn.AccountingDate
             };
 
             returnViewModel.ReportInfo = new ReportInfoModel
