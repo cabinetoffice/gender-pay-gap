@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+using System;
+using System.Text.RegularExpressions;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,22 +30,51 @@ namespace GenderPayGap.WebUI.Controllers
             */
         )
         {
-            // Check if query is for an 'EHRC All Organisations file' and get year from query parameter
-            Match match = Regex.Match(p, @"^App_Data\\Downloads\\GPG-Organisations_(?<year4digits>\d\d\d\d)-(?<year2digits>\d\d)\.csv$");
+            var organisationsForYearFile = ValidatePathAndGenerateFile(
+                p,
+                "GPG-Organisations",
+                AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile,
+                Global.FirstReportingYear);
+
+            if (organisationsForYearFile != null)
+            {
+                return organisationsForYearFile;
+            }
+
+            var organisationsWithoutReportsForYearFile = ValidatePathAndGenerateFile(
+                p,
+                "GPG-Organisations-Without-Reports",
+                AdminDownloadsController.GenerateOrganisationsWithNoSubmittedReturnsForYear,
+                2020);
+
+            if (organisationsWithoutReportsForYearFile != null)
+            {
+                return organisationsWithoutReportsForYearFile;
+            }
+
+            return NotFound();
+        }
+
+        private IActionResult ValidatePathAndGenerateFile(string p,
+            string fileName,
+            Func<IDataRepository, int, IActionResult> callback, int minYear)
+        {
+            Match match = Regex.Match(p, $@"^App_Data\\Downloads\\{fileName}_(?<year4digits>\d\d\d\d)-(?<year2digits>\d\d)\.csv$");
             if (match.Success)
             {
                 string year4digitsString = match.Groups["year4digits"].Value;
                 string year2digitsString = match.Groups["year2digits"].Value;
 
-                if (int.TryParse(year4digitsString, out int year4digits) &&
-                    int.TryParse(year2digitsString, out int year2digits) &&
-                    (year4digits + 1) % 100 == year2digits)
+                if (int.TryParse(year4digitsString, out int year4digits)
+                    && int.TryParse(year2digitsString, out int year2digits)
+                    && (year4digits + 1) % 100 == year2digits
+                    && year4digits >= minYear)
                 {
-                    return AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile(dataRepository, year4digits);
+                    return callback(dataRepository, year4digits);
                 }
             }
 
-            return NotFound();
+            return null;
         }
 
     }
