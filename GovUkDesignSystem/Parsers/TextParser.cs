@@ -44,7 +44,7 @@ namespace GovUkDesignSystem.Parsers
                     }
                 }
                     
-                property.SetValue(model, parameterValue);
+                property.SetValue(model, parameterValue.Trim());
             }
 
             model.ValueWasSuccessfullyParsed(property);
