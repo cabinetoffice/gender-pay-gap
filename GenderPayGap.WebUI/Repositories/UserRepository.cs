@@ -30,14 +30,21 @@ namespace GenderPayGap.WebUI.Repositories
                 .FirstOrDefault(user => user.EmailAddress.ToLower() == email.ToLower());
         }
 
-        public bool CheckPassword(User user, string password)
+        public bool CheckPassword(User user, string password, bool isLogin = true)
         {
             try
             {
                 user.LoginDate = VirtualDateTime.Now;
                 if (CheckPasswordBasedOnHashingAlgorithm(user, password))
                 {
-                    user.LoginAttempts = 0;
+                    if (isLogin)
+                    {
+                        user.LoginAttempts = 0;
+                    }
+                    else
+                    {
+                        user.ResetAttempts = 0;
+                    }
 
                     if (user.HashingAlgorithm != HashingAlgorithm.PBKDF2)
                     {
@@ -47,7 +54,15 @@ namespace GenderPayGap.WebUI.Repositories
                     return true;
                 }
 
-                user.LoginAttempts++;
+                if (isLogin)
+                {
+                    user.LoginAttempts++;
+                }
+                else
+                {
+                    user.ResetAttempts++;
+                }
+
                 return false;
             }
             finally

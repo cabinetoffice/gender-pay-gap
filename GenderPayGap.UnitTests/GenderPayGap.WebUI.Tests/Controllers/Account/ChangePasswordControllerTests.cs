@@ -10,6 +10,7 @@ using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
@@ -240,5 +241,62 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             Assert.IsTrue(isExpectedPassword);
         }
 
+        [Test]
+        [Description("POST: Password is not updated when old password is incorrect")]
+        public void POST_Password_Is_Not_Updated_When_Old_Password_Is_Incorrect()
+        {
+            // Arrange
+            User user = new UserBuilder().WithPassword("password").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_CurrentPassword", "incorrect_password");
+            requestFormValues.Add("GovUk_Text_NewPassword", "Password1");
+            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Password1");
+
+            var controller = new ControllerBuilder<ChangePasswordController>()
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user)
+                .WithMockUriHelper()
+                .Build();
+
+            // Act
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            
+            // Assert
+            bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
+            Assert.IsTrue(isExpectedPassword);
+        }
+        
+        [Test]
+        [Description("POST: User is logged out if failing to change the password for 5 times")]
+        public void POST_User_Is_Logged_Out_If_Failing_To_Change_The_Password_For_Five_Times()
+        {
+            // Arrange
+            User user = new UserBuilder().WithPassword("password").Build();
+            
+            var requestFormValues = new Dictionary<string, StringValues>();
+            requestFormValues.Add("GovUk_Text_CurrentPassword", "incorrect_password");
+            requestFormValues.Add("GovUk_Text_NewPassword", "Password1");
+            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Password1");
+
+            var controller = new ControllerBuilder<ChangePasswordController>()
+                .WithLoggedInUser(user)
+                .WithRequestFormValues(requestFormValues)
+                .WithDatabaseObjects(user)
+                .WithMockUriHelper()
+                .Build();
+
+            // Act
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            var result = controller.ChangePasswordPost(new ChangePasswordViewModel()) as RedirectToActionResult;
+            
+            // Assert
+            Assert.That(result != null, "Expected RedirectToActionResult");
+            Assert.That(result.ActionName == "LoggedOut", "Expected redirect to LoggedOut");
+        }
     }
 }

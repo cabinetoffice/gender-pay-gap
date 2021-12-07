@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
@@ -61,6 +62,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
             
             // Check that passwords are valid
             ValidatePasswords(viewModel, currentUser);
+            if (currentUser.ResetAttempts == Global.MaxLoginAttempts)
+            {
+                currentUser.ResetAttempts = 0;
+                dataRepository.SaveChanges();
+                return LoginHelper.Logout(HttpContext, RedirectToAction("LoggedOut", "Login"));
+            }
 
             if (viewModel.HasAnyErrors())
             {
@@ -73,17 +80,16 @@ namespace GenderPayGap.WebUI.Controllers.Account
             emailSendingService.SendChangePasswordCompletedEmail(currentUser.EmailAddress);
 
             // Set up success notification on Manage Account page
-            string nextPageUrl = Url.Action("ManageAccountGet", "ManageAccount");
+            string nextPageUrl = Url.Action("LoggedOut", "Login");
             StatusMessageHelper.SetStatusMessage(Response, "Your password has been changed successfully", nextPageUrl);
 
-            // Return user to the Manage Account page
-            return LocalRedirect(nextPageUrl);
-        }
+            return LoginHelper.Logout(HttpContext, RedirectToAction("LoggedOut", "Login"));
+    }
 
         public void ValidatePasswords(ChangePasswordViewModel viewModel, User currentUser)
         {
             // Check if current password is correct
-            bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword);
+            bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword, false);
             if (!isValidPassword)
             {
                 viewModel.AddErrorFor(m => m.CurrentPassword, "Could not verify your current password.");
