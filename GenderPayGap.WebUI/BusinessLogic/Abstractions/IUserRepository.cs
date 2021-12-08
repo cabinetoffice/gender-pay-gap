@@ -7,7 +7,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Abstractions
     public interface IUserRepository
     {
 
-        bool CheckPassword(User user, string password, bool isLogin = true);
+        bool CheckPassword(User user, string password, bool isReset = false);
 
         User FindByEmail(string email, params UserStatuses[] filterStatuses);
 
