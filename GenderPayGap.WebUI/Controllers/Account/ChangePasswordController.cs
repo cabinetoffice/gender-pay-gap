@@ -66,6 +66,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 currentUser.ResetAttempts = 0;
                 dataRepository.SaveChanges();
+                StatusMessageHelper.SetStatusMessage(Response, "You have been logged out for security reasons", Url.Action("LoggedOut", "Login"));
                 return LoginHelper.Logout(HttpContext, RedirectToAction("LoggedOut", "Login"));
             }
 
@@ -89,7 +90,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         public void ValidatePasswords(ChangePasswordViewModel viewModel, User currentUser)
         {
             // Check if current password is correct
-            bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword, false);
+            bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword, true);
             if (!isValidPassword)
             {
                 viewModel.AddErrorFor(m => m.CurrentPassword, "Could not verify your current password.");
