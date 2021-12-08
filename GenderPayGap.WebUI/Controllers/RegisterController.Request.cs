@@ -612,7 +612,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("confirm-cancellation")]
         public async Task<IActionResult> ConfirmCancellation(OrganisationViewModel model, string command)
         {
-            //Ensure user has completed the registration process
+            // Ensure user has completed the registration process
             User currentUser;
             IActionResult checkResult = CheckUserRegisteredOk(out currentUser);
             if (checkResult != null)
@@ -627,13 +627,13 @@ namespace GenderPayGap.WebUI.Controllers
                 View("ConfirmCancellation", model);
             }
 
-            //If cancel button clicked the n return to review page
+            // If cancel button clicked the n return to review page
             if (command.EqualsI("Cancel"))
             {
                 return RedirectToAction("ReviewRequest");
             }
 
-            //Unwrap code
+            // Unwrap code
             UserOrganisation userOrg;
             ActionResult result = UnwrapRegistrationRequest(model, out userOrg);
             if (result != null)
@@ -641,7 +641,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return result;
             }
 
-            //Log the rejection
+            // Log the rejection
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.RegistrationLog,
                 userOrg.Organisation,
@@ -665,17 +665,17 @@ namespace GenderPayGap.WebUI.Controllers
                 },
                 User);
 
-            //Delete address for this user and organisation
+            // Delete address for this user and organisation
             if (userOrg.Address.Status != AddressStatuses.Active && userOrg.Address.CreatedByUserId == userOrg.UserId)
             {
                 DataRepository.Delete(userOrg.Address);
             }
 
-            //Delete the org user
+            // Delete the org user
             long orgId = userOrg.OrganisationId;
             string emailAddress = userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress);
 
-            //Delete the organisation if it has no returns, is not in scopes table, and is not registered to another user
+            // Delete the organisation if it has no returns, is not in scopes table, and is not registered to another user
             if (userOrg.Organisation != null
                 && !userOrg.Organisation.Returns.Any()
                 && !userOrg.Organisation.OrganisationScopes.Any()
@@ -685,6 +685,12 @@ namespace GenderPayGap.WebUI.Controllers
                 CustomLogger.Information(
                     $"Unused organisation {userOrg.OrganisationId}:'{userOrg.Organisation.OrganisationName}' deleted by {(OriginalUser == null ? currentUser.EmailAddress : OriginalUser.EmailAddress)} when declining manual registration for {userOrg.User.EmailAddress}");
                 DataRepository.Delete(userOrg.Organisation);
+            }
+            if (userOrg.Organisation != null
+                && userOrg.Organisation.UserOrganisations.Count == 1
+                && userOrg.Organisation.Status == OrganisationStatuses.Pending)
+            {
+                userOrg.Organisation.SetStatus(OrganisationStatuses.Deleted, details: "Manually Rejected");
             }
 
             EmployerSearchModel searchRecord = userOrg.Organisation.ToEmployerSearchResult(true);
