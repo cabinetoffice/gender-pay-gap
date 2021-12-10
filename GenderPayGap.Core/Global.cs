@@ -106,7 +106,7 @@ namespace GenderPayGap.Core
         public static int EmailVerificationMinResendHours => 1;
         public static int LevenshteinDistance => 2;
         public static int LockoutMinutes => 30;
-        public static int MaxLoginAttempts => 5;
+        public static int MaxAuthAttempts => 5;
         public static int MaxPinAttempts => 3;
         public static int MinPasswordResetMinutes => 10;
         public static TimeSpan PasswordResetCodeExpiryDays => TimeSpan.FromDays(1);
