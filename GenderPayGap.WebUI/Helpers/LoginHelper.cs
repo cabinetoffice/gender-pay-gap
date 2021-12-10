@@ -137,7 +137,7 @@ namespace GenderPayGap.WebUI.Helpers
         public static bool UserIsLockedOutBecauseOfTooManyRecentFailedLoginAttempts(User user)
         {
             int failedLoginAttempts = user.LoginAttempts;
-            int maxAllowedFailedLoginAttempts = Global.MaxLoginAttempts;
+            int maxAllowedFailedLoginAttempts = Global.MaxAuthAttempts;
 
             if (failedLoginAttempts < maxAllowedFailedLoginAttempts)
             {

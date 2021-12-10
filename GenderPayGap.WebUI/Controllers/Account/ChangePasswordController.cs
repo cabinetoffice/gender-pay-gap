@@ -62,7 +62,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             
             // Check that passwords are valid
             ValidatePasswords(viewModel, currentUser);
-            if (currentUser.ResetAttempts == Global.MaxLoginAttempts)
+            if (currentUser.ResetAttempts == Global.MaxAuthAttempts)
             {
                 currentUser.ResetAttempts = 0;
                 dataRepository.SaveChanges();
