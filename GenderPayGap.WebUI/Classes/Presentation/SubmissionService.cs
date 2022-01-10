@@ -561,7 +561,8 @@ namespace GenderPayGap.WebUI.Classes.Services
 
         public async Task DiscardDraftFileAsync(ReturnViewModel returnViewModel)
         {
-            _draftFileBusinessLogic.DiscardDraft(returnViewModel.ReportInfo.Draft);
+            var submittedReturn = this.GetReturnFromDatabase(returnViewModel.OrganisationId, returnViewModel.AccountingDate.Year);
+            _draftFileBusinessLogic.DiscardDraft(returnViewModel.ReportInfo.Draft, submittedReturn);
         }
 
         #endregion
