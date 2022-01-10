@@ -27,10 +27,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
 
             #endregion
 
-            if (stashedReturnViewModel.HasReported())
-            {
-                await submissionService.DiscardDraftFileAsync(stashedReturnViewModel);
-            }
+            await submissionService.DiscardDraftFileAsync(stashedReturnViewModel);
 
             return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
         }

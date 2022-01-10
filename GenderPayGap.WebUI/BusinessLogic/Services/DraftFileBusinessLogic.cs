@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Classes;
@@ -18,7 +19,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         Draft GetExistingOrNew(long organisationId, int snapshotYear, long userIdRequestingAccess);
         Draft UpdateAndCommit(ReturnViewModel postedReturnViewModel, Draft draft, long userIdRequestingAccess);
         void KeepDraftFileLockedToUser(Draft draftExpectedToBeLocked, long userIdRequestingLock);
-        void DiscardDraft(Draft draftToDiscard);
+        void DiscardDraft(Draft draftToDiscard, Return submittedReturn);
 
     }
 
@@ -97,11 +98,13 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             SetDraftAccessInformation(userIdRequestingLock, draftExpectedToBeLocked);
         }
 
-        public void DiscardDraft(Draft draftToDiscard)
+        public void DiscardDraft(Draft draftToDiscard, Return submittedReturn)
         {
             List<DraftReturn> matchingReturns = dataRepository.GetAll<DraftReturn>()
                 .Where(dr => dr.OrganisationId == draftToDiscard.OrganisationId)
                 .Where(dr => dr.SnapshotYear == draftToDiscard.SnapshotYear)
+                .AsEnumerable()
+                .Where(dr => dr.IsEmpty() || dr.IsSameAsSubmittedReturn(submittedReturn))
                 .ToList();
 
             foreach (DraftReturn matchingReturn in matchingReturns)

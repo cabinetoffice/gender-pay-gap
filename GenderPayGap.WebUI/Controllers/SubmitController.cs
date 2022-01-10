@@ -83,6 +83,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 this.StashModel(postedReturnViewModel);
                 return View("DraftConfirm", postedReturnViewModel);
             }
+            await submissionService.DiscardDraftFileAsync(postedReturnViewModel);
 
             return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new { encryptedOrganisationId });
         }
