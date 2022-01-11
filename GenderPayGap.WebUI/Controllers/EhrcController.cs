@@ -41,17 +41,6 @@ namespace GenderPayGap.WebUI.Controllers
                 return organisationsForYearFile;
             }
 
-            var organisationsWithoutReportsForYearFile = ValidatePathAndGenerateFile(
-                p,
-                "GPG-Organisations-Without-Reports",
-                AdminDownloadsController.GenerateOrganisationsWithNoSubmittedReturnsForYear,
-                2020);
-
-            if (organisationsWithoutReportsForYearFile != null)
-            {
-                return organisationsWithoutReportsForYearFile;
-            }
-
             return NotFound();
         }
 
