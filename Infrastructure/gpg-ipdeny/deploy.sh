@@ -83,12 +83,19 @@ for addr in "${ALLOWED_IPS[@]}";
   do NGINX_DOWNLOAD_WHITELIST="$NGINX_DOWNLOAD_WHITELIST allow ${addr//[$'\r']};"; true;
 done;
 
+readarray AWS_CLOUDFRONT_IP_RANGES < <(curl https://ip-ranges.amazonaws.com/ip-ranges.json | jq -r '.prefixes' | jq -c '.[] | select( .service=="CLOUDFRONT") | .ip_prefix')
+AWS_CLOUDFRONT_IP_RANGES_TRUST=""
+for addr in "${AWS_CLOUDFRONT_IP_RANGES[@]}";
+  do AWS_CLOUDFRONT_IP_RANGES_TRUST="$AWS_CLOUDFRONT_IP_RANGES_TRUST set_real_ip_from ${addr//[$'\r']};"; true;
+done;
+
 APPS_DOMAIN=$(cf curl "v3/domains" | jq -r '[.resources[] | select(.name|endswith("apps.digital"))][0].name')
 
 cf target -s "${PROTECTED_APP_SPACE_NAME}"
 cf push "${ROUTE_SERVICE_APP_NAME}" --no-start --var app-name="${ROUTE_SERVICE_APP_NAME}"
 cf set-env "${ROUTE_SERVICE_APP_NAME}" DENIED_IPS "$(printf "%s" "${NGINX_DENY_STATEMENTS}")"
 cf set-env "${ROUTE_SERVICE_APP_NAME}" DOWNLOAD_WHITELIST "$(printf "%s" "${NGINX_DOWNLOAD_WHITELIST}")"
+cf set-env "${ROUTE_SERVICE_APP_NAME}" AWS_CLOUDFRONT_TRUSTED "$(printf "%s" "${AWS_CLOUDFRONT_IP_RANGES_TRUST}")"
 cf start "${ROUTE_SERVICE_APP_NAME}"
 
 ROUTE_SERVICE_DOMAIN="$(cf curl "v3/apps/$(cf app "${ROUTE_SERVICE_APP_NAME}" --guid)/routes" | jq -r --arg APPS_DOMAIN "${APPS_DOMAIN}" '[.resources[] | select(.url | endswith($APPS_DOMAIN))][0].url')"
