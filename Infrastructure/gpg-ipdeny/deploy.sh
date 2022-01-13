@@ -83,10 +83,13 @@ for addr in "${ALLOWED_IPS[@]}";
   do NGINX_DOWNLOAD_WHITELIST="$NGINX_DOWNLOAD_WHITELIST allow ${addr//[$'\r']};"; true;
 done;
 
-readarray AWS_CLOUDFRONT_IP_RANGES < <(curl https://ip-ranges.amazonaws.com/ip-ranges.json | jq -r '.prefixes' | jq -c '.[] | select( .service=="CLOUDFRONT") | .ip_prefix')
+AWS_CLOUDFRONT_IP_RANGES=$(curl https://ip-ranges.amazonaws.com/ip-ranges.json)
+readarray -t AWS_IP4_RANGES < <(echo "${AWS_CLOUDFRONT_IP_RANGES}" | jq -r '.prefixes' | jq -rc '.[] | select( .service=="CLOUDFRONT") | .ip_prefix')
+readarray -t AWS_IP6_RANGES < <(echo "${AWS_CLOUDFRONT_IP_RANGES}" | jq -r '.ipv6_prefixes' | jq -rc '.[] | select( .service=="CLOUDFRONT") | .ipv6_prefix')
+AWS_ALL_IP_RANGES=("${AWS_IP4_RANGES[@]}" "${AWS_IP6_RANGES[@]}")
 AWS_CLOUDFRONT_IP_RANGES_TRUST=""
-for addr in "${AWS_CLOUDFRONT_IP_RANGES[@]}";
-  do AWS_CLOUDFRONT_IP_RANGES_TRUST="$AWS_CLOUDFRONT_IP_RANGES_TRUST set_real_ip_from ${addr//[$'\r']};"; true;
+for addr in "${AWS_ALL_IP_RANGES[@]}";
+  do AWS_CLOUDFRONT_IP_RANGES_TRUST="$AWS_CLOUDFRONT_IP_RANGES_TRUST set_real_ip_from ${addr};"; true;
 done;
 
 APPS_DOMAIN=$(cf curl "v3/domains" | jq -r '[.resources[] | select(.name|endswith("apps.digital"))][0].name')
