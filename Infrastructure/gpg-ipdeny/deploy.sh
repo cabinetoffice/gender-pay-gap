@@ -89,7 +89,7 @@ readarray -t AWS_IP6_RANGES < <(echo "${AWS_CLOUDFRONT_IP_RANGES}" | jq -r '.ipv
 AWS_ALL_IP_RANGES=("${AWS_IP4_RANGES[@]}" "${AWS_IP6_RANGES[@]}")
 AWS_CLOUDFRONT_IP_RANGES_TRUST=""
 for addr in "${AWS_ALL_IP_RANGES[@]}";
-  do AWS_CLOUDFRONT_IP_RANGES_TRUST="$AWS_CLOUDFRONT_IP_RANGES_TRUST set_real_ip_from ${addr};"; true;
+  do AWS_CLOUDFRONT_IP_RANGES_TRUST="$AWS_CLOUDFRONT_IP_RANGES_TRUST set_real_ip_from ${addr//[$'\r']};"; true;
 done;
 
 APPS_DOMAIN=$(cf curl "v3/domains" | jq -r '[.resources[] | select(.name|endswith("apps.digital"))][0].name')
