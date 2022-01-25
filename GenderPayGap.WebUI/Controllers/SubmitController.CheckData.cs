@@ -182,6 +182,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
             {
                 if (databaseReturn.ReturnId != postedReturnViewModel.ReturnId)
                 {
+                    await submissionService.DiscardDraftFileAsync(postedReturnViewModel, true);
                     throw new ReportAlreadySubmittedException
                     {
                         OrganisationId = postedReturn.Organisation.OrganisationId,
@@ -267,7 +268,7 @@ namespace GenderPayGap.WebUI.Controllers.Submission
                 GetSubmittedOrUpdated(postedReturn),
                 emailSendingService);
 
-            await submissionService.DiscardDraftFileAsync(postedReturnViewModel);
+            await submissionService.DiscardDraftFileAsync(postedReturnViewModel, true);
 
             return RedirectToAction("SubmissionComplete");
         }

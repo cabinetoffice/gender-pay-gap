@@ -427,7 +427,7 @@ namespace GenderPayGap.Tests
             Assert.AreEqual(testOrganisation.OrganisationId, actualModel.OrganisationId);
             Assert.AreEqual(testYear, actualModel.AccountingDate.Year);
 
-            testDraftFileFileBusinessLogic.DiscardDraft(actualDraftFile, null);
+            testDraftFileFileBusinessLogic.DiscardDraft(actualDraftFile, null, true);
         }
 
         [Test]
