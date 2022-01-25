@@ -248,7 +248,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 "Expected ReturnViewModel or Incorrect viewModel returned");
             Assert.That(result.ViewData.ModelState.IsValid, "Model is Invalid");
 
-            await testService.DiscardDraftFileAsync(model);
+            await testService.DiscardDraftFileAsync(model, true);
         }
 
         [Test]
@@ -523,7 +523,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("SubmissionComplete", result.ActionName, "Incorrect view returned");
 
             // Clean up
-            await testService.DiscardDraftFileAsync(model);
+            await testService.DiscardDraftFileAsync(model, true);
         }
 
         [Test]
@@ -946,7 +946,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("SubmissionComplete", result.ActionName);
 
             // Clean up
-            await testService.DiscardDraftFileAsync(model);
+            await testService.DiscardDraftFileAsync(model, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -1206,7 +1206,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("SubmissionComplete", result.ActionName, "Incorrect view returned");
 
             // Clean up
-            await testService.DiscardDraftFileAsync(model);
+            await testService.DiscardDraftFileAsync(model, true);
         }
 
 
@@ -1272,7 +1272,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.Null(resultModel.CompanyLinkToGPGInfo, "CompanyLinkToGPGInfo:Expected a null  or empty field");
 
             // Clean up
-            await testService.DiscardDraftFileAsync(model);
+            await testService.DiscardDraftFileAsync(model, true);
         }
 
         [Test]
@@ -1412,7 +1412,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual(result.ViewName, "EmployerWebsite");
 
             // Clean up
-            await testService.DiscardDraftFileAsync(model);
+            await testService.DiscardDraftFileAsync(model, true);
         }
 
         //I don't think this test is necessary as the above does the same thing this just does the same but in opposite
@@ -1514,7 +1514,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //TODO not really a valid test as there is no code which changes this - you should maybe just be checking there are no modelstate errors but then its a repeat test of one you did earlier
             //TODO also your not checking for the correct redirectresult and the rest of the model the correct model - why just test one field remains unchanged?
 
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -1630,7 +1630,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 controller.ModelState.Values.Select(e => e.Errors).FirstOrDefault()?[0].ErrorMessage);
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -1725,7 +1725,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.That(resultModel.CompanyLinkToGPGInfo.StartsWith("http://"), "Expected CompanyLinkToGPGInfoLink URL Prefix:'http://' ");
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -1811,7 +1811,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //TODO you should be checking modelstate.isvalid and also that all other fields dont fail in modelstate
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -2115,7 +2115,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             expectedReturnViewModel.Compare(actualReturnViewModel, null, null, false, true, -1, false);
 
             // Clean up
-            await testService.DiscardDraftFileAsync(expectedReturnViewModel);
+            await testService.DiscardDraftFileAsync(expectedReturnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -2173,7 +2173,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testDataRepository = UiTestHelper.DIContainer.Resolve<IDataRepository>();
             var testDraftFileBL = new DraftFileBusinessLogic(testDataRepository);
             var testService = new SubmissionService(testDataRepository, null, testDraftFileBL);
-            await testService.DiscardDraftFileAsync(actualReturnViewModel);
+            await testService.DiscardDraftFileAsync(actualReturnViewModel, true);
         }
 
         [Test]
@@ -2417,7 +2417,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("CheckData", result.ActionName, "Expected a RedirectToRouteResult to CheckData");
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -2500,7 +2500,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("CheckData", result.ActionName, "Expected a RedirectToRouteResult to CheckData");
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -2650,7 +2650,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 });
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -2787,7 +2787,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 });
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -2922,7 +2922,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 });
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -3049,7 +3049,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 });
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -3126,7 +3126,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 result.ViewData.ModelState["OptedOutOfReportingPayQuarters"].Errors[0].ErrorMessage);
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -3328,7 +3328,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 });
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test]
@@ -3881,7 +3881,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("EmployerWebsite", result.ActionName, "Expected a RedirectToActionResult to EmployerWebsite");
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -3967,7 +3967,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
 
             // Clean up
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -4136,7 +4136,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.Null(resultModel.JobTitle, "JobTitle:Expected a null  or empty field");
 
             // Clean up
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
@@ -4302,7 +4302,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //TODO you should be checking each error message is exact as per config file
 
             // Cleanup
-            await testService.DiscardDraftFileAsync(returnViewModel);
+            await testService.DiscardDraftFileAsync(returnViewModel, true);
         }
 
         [Test(Author = "Oscar Lagatta")]
