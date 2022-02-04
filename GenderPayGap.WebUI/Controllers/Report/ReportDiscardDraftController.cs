@@ -42,7 +42,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (!draftReturnExists)
             {
-                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
                 StatusMessageHelper.SetStatusMessage(Response, "No draft to discard", nextPageUrl);
                 return LocalRedirect(nextPageUrl);
             }
@@ -50,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             var viewModel = new ReportDiscardDraftViewModel();
             PopulateViewModel(viewModel, organisationId, reportingYear);
 
-            return View("ReportDiscardDraft", viewModel);
+            return View("NewReportDiscardDraft", viewModel);
         }
 
         private void PopulateViewModel(ReportDiscardDraftViewModel viewModel, long organisationId, int reportingYear)
@@ -81,7 +81,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             bool draftReturnExists = draftReturn != null;
             if (!draftReturnExists)
             {
-                string nextPageNoDraftUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                string nextPageNoDraftUrl = Url.Action("NewReportOverview", "NewReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
                 StatusMessageHelper.SetStatusMessage(Response, "No draft to discard", nextPageNoDraftUrl);
                 return LocalRedirect(nextPageNoDraftUrl);
             }
@@ -95,7 +95,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             string yourChangesOrYourDraftReport = isEditingSubmittedReturn ? "your changes" : "your draft report";
 
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, $"Discarded {yourChangesOrYourDraftReport}", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }

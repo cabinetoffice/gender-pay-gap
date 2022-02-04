@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using GovUkDesignSystem.GovUkDesignSystemComponents;
@@ -17,7 +18,8 @@ namespace GovUkDesignSystem.HtmlGenerators
             LabelViewModel labelOptions = null,
             HintViewModel hintOptions = null,
             Conditional conditional = null,
-            bool disabled = false)
+            bool disabled = false,
+            string onChange = null)
         {
             PropertyInfo property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
             string propertyName = property.Name;
@@ -30,6 +32,13 @@ namespace GovUkDesignSystem.HtmlGenerators
                 labelOptions.For = propertyName;
             }
 
+            var attributesDictionary = new Dictionary<string, string>();
+
+            if (onChange != null)
+            {
+                attributesDictionary.Add("onChange", onChange);
+            }
+            
             var checkboxItemViewModel = new CheckboxItemViewModel
             {
                 Id = propertyName,
@@ -39,7 +48,8 @@ namespace GovUkDesignSystem.HtmlGenerators
                 Hint = hintOptions,
                 Conditional = conditional,
                 Disabled = disabled,
-                Checked = isChecked
+                Checked = isChecked,
+                Attributes = attributesDictionary
             };
 
             return htmlHelper.Partial("/GovUkDesignSystemComponents/CheckboxItem.cshtml", checkboxItemViewModel);

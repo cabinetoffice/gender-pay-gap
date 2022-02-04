@@ -1,0 +1,293 @@
+@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Views.Components.ReportOverview
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using System.ComponentModel.DataAnnotations
+@using GenderPayGap.WebUI.Views.Components.StatusMessages
+@model GenderPayGap.WebUI.Models.Report.NewReportOverviewViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
+
+    string editOrReportTitle = Model.IsEditingSubmittedReturn
+        ? "Edit your gender pay gap"
+        : "Report your gender pay gap";
+    
+    ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+                
+        @(Html.GovUkErrorSummary())
+
+        <h1 class="govuk-heading-xl"> Review your gender pay gap data for snapshot date @(Model.SnapshotDate.ToString("dd MMMM yyyy"))</h1>
+        
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
+        
+        @if (!Model.AllRequiredFieldsAreFilled() && !Model.IsEditingSubmittedReturn)
+        {
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    More information is required to complete your submission
+                </strong>
+            </div>
+        }
+
+        @{
+            var hourlyPayQuarterPercentageSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Percentage of men and women in each hourly pay quarter",
+                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                    new 
+                    {
+                        encryptedOrganisationId = encryptedOrganisationId,
+                        reportingYear = Model.ReportingYear
+                    }),
+                LeftTitle = "Men",
+                RightTitle = "Women",
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Upper hourly pay quarter</text>,
+                        LeftValue = Model.GetPayQuarterValue(Model.MaleUpperPayBand),
+                        RightValue = Model.GetPayQuarterValue(Model.FemaleUpperPayBand)
+                    },
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Upper middle hourly pay quarter</text>,
+                        LeftValue = Model.GetPayQuarterValue(Model.MaleUpperMiddlePayBand),
+                        RightValue = Model.GetPayQuarterValue(Model.FemaleUpperMiddlePayBand)
+                    },
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Lower middle hourly pay quarter</text>,
+                        LeftValue = Model.GetPayQuarterValue(Model.MaleLowerMiddlePayBand),
+                        RightValue = Model.GetPayQuarterValue(Model.FemaleLowerMiddlePayBand)
+                    },
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Lower hourly pay quarter</text>,
+                        LeftValue = Model.GetPayQuarterValue(Model.MaleLowerPayBand),
+                        RightValue = Model.GetPayQuarterValue(Model.FemaleLowerPayBand)
+                    }
+
+                }
+            };
+
+            var hourlyPayMeanAndMedianSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Mean and Median gender pay gap using hourly pay",
+                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                    new 
+                    {
+                        encryptedOrganisationId = encryptedOrganisationId,
+                        reportingYear = Model.ReportingYear
+                    }),
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Mean gender pay gap using hourly pay</text>,
+                        RightValue = Model.GetPercentageValue(Model.DiffMeanHourlyPayPercent)
+                    },
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Median gender pay gap using hourly pay</text>,
+                        RightValue = Model.GetPercentageValue(Model.DiffMedianHourlyPercent)
+                    }
+                }
+            };
+            
+            var bonusPayPercentageSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Percentage of men and women who received bonus pay",
+                LeftTitle = "Men",
+                RightTitle = "Women",
+                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                    new 
+                    {
+                        encryptedOrganisationId = encryptedOrganisationId,
+                        reportingYear = Model.ReportingYear
+                    }),
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Percentage of men and women who received bonus pay</text>,
+                        LeftValue = Model.GetPercentageValue(Model.MaleBonusPayPercent),
+                        RightValue = Model.GetPercentageValue(Model.FemaleBonusPayPercent)
+                    }
+                }
+            };
+            
+            var bonusPayMeanAndMedianGenderPayGapSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Mean and Median gender pay gap using bonus pay",
+                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                    new 
+                    {
+                        encryptedOrganisationId = encryptedOrganisationId,
+                        reportingYear = Model.ReportingYear
+                    }),
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Mean gender pay gap using bonus pay</text>,
+                        RightValue = Model.GetPercentageValue(Model.DiffMeanBonusPercent)
+                    },
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Median gender pay gap using bonus pay</text>,
+                        RightValue = Model.GetPercentageValue(Model.DiffMedianBonusPercent)
+                    }
+                }
+            };
+            
+            var personResponsibleSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Person responsible in your organisation",
+                EditLink = Url.Action("NewReportResponsiblePersonGet", "NewReportResponsiblePerson", new 
+                {
+                    encryptedOrganisationId = encryptedOrganisationId,
+                    reportingYear = Model.ReportingYear
+                }),
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>@(Model.ResponsiblePersonFirstName) @(Model.ResponsiblePersonLastName)<br/>@(Model.ResponsiblePersonJobTitle)</text>,
+                        RightValue = Model.PersonResponsibleNotProvided() ? "Not Provided" : ""
+                    }
+                }
+            };
+
+            var employeeHeadcountSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Employee headcount",
+                EditLink = Url.Action("NewReportSizeOfOrganisationGet", "NewReportSizeOfOrganisation", new 
+                {
+                    encryptedOrganisationId = encryptedOrganisationId,
+                    reportingYear = Model.ReportingYear
+                }),
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>Number of employees used to establish your headcount for gender pay gap reporting, on your snapshot date</text>,
+                        RightValue = !Model.SizeOfOrganisation.HasValue ? "Not Provided" : $"{Model.SizeOfOrganisation.GetAttribute<DisplayAttribute>().Name}"
+                    }
+                }
+            };
+            
+            var linkToGenderPayGapInformationSection = new ReportOverviewSectionViewModel
+            {
+                Title = "Link to your gender pay gap information",
+                EditLink = Url.Action("NewReportLinkToWebsiteGet", "NewReportLinkToWebsite", new 
+                {
+                    encryptedOrganisationId = encryptedOrganisationId,
+                    reportingYear = Model.ReportingYear
+                }),
+                Rows = new List<ReportOverviewSectionRowViewModel>
+                {
+                    new ReportOverviewSectionRowViewModel
+                    {
+                        Title = @<text>@(Model.LinkToOrganisationWebsite)</text>,
+                        RightValue = Model.LinkToOrganisationWebsite == null ? "Not Provided" : ""
+                    }
+                }
+            };
+            
+            var reportOverviewSections = new ReportOverviewSectionsViewModel
+            {
+                Title = $"{formattedReportingYears} Reporting year",
+                Sections = new List<ReportOverviewSectionViewModel>
+                {
+                    hourlyPayQuarterPercentageSection,
+                    hourlyPayMeanAndMedianSection,
+                    bonusPayPercentageSection,
+                    bonusPayMeanAndMedianGenderPayGapSection,
+                    personResponsibleSection,
+                    employeeHeadcountSection,
+                    linkToGenderPayGapInformationSection
+                }
+            };
+
+            await Html.RenderPartialAsync("../Components/ReportOverview/ReportOverviewSections", reportOverviewSections);
+        }
+        
+        <div class="govuk-inset-text">
+            <p>
+                <span>On submission your gender pay gap information will be published on the Gender pay gap service.</span>
+                <br/>
+                <br/>
+                <span>
+                    Submission of inaccurate data will mean your employer has not complied with the gender pay gap reporting regulations.
+                </span>
+            </p>
+        </div>
+
+        <div class="govuk-button-group">
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Discard draft",
+                Classes = $"govuk-button govuk-button--secondary govuk-!-margin-bottom-6",
+                Href = Model.DraftReturnExists ? 
+                    Url.Action("ReportDiscardDraftGet", "ReportDiscardDraft", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
+                    : null,
+                Disabled = !Model.DraftReturnExists
+            }))
+
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Submit",
+                Classes = "govuk-button govuk-!-margin-bottom-6",
+                Disabled = !Model.AllRequiredFieldsAreFilled(),
+                Href = Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnGet", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
+                    : null
+            }))
+        </div>
+        
+        <p class="govuk-body">
+            <a class="govuk-link" href=@(Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId}))>
+               Cancel and return to @(Model.Organisation.OrganisationName)
+            </a>
+        </p>
+    </div>
+</div>

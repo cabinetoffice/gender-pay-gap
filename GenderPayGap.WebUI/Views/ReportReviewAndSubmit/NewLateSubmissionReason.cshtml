@@ -1,0 +1,106 @@
+﻿@using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.NewLateSubmissionReasonViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
+
+    string editOrReportTitle = Model.IsEditingSubmittedReturn
+        ? "Edit your gender pay gap"
+        : "Report your gender pay gap";
+
+    ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+            var crumbs = new List<CrumbViewModel>
+            {
+                new CrumbViewModel
+                {
+                    Text = "Your Organisations",
+                    Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+                },
+                new CrumbViewModel
+                {
+                    Text = Model.Organisation.OrganisationName,
+                    Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+                },
+                new CrumbViewModel
+                {
+                    Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
+                    Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                },
+                new CrumbViewModel
+                {
+                    Text = "Late Submission Reason"
+                }
+            };
+        }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @(Html.GovUkErrorSummary(new []
+        {
+            nameof(Model.ReceivedLetterFromEhrc),
+            nameof(Model.Reason)
+        }))
+        
+        <form method="post" action="@Url.Action("NewLateSubmissionReasonPost", "NewLateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+            
+            @(Html.AntiForgeryToken())
+
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h1>
+                    
+                    <h2 class="govuk-fieldset__heading">We need more information</h2>
+                </legend>
+
+                @(Html.GovUkRadiosFor(
+                    m => m.ReceivedLetterFromEhrc,
+                    fieldsetOptions: new FieldsetViewModel
+                    {
+                        Legend = new LegendViewModel
+                        {
+                            Text = "Have you received a letter about a breach of the regulations from the Equality and Human Rights Commission?",
+                            Classes = "govuk-fieldset__legend--m"
+                        },
+                        Classes = "govuk-radios--inline govuk-!-margin-top-6"
+                    }
+                    ))
+
+                @(Html.GovUkTextAreaFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "Please explain why your organisation is reporting or changing your gender pay gap "
+                               + "figures or senior responsible person after the deadline.",
+                    }
+                    ))
+
+                @(Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm and submit",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+                       class="govuk-link">
+                        Go back and continue editing this report
+                    </a>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+</div>

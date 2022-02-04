@@ -1,0 +1,137 @@
+﻿@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Controllers.Guidance
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.Database.Return
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    int reportingYear = Model.AccountingDate.Year;
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear);
+
+    ViewBag.Title = $"You've reported your gender pay gap data - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Report your gender pay gap (reporting year {formattedReportingYears})",
+                Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = "Confirmation"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-6">
+            <h1 class="govuk-panel__title">
+                You've submitted your gender pay gap data for the @(formattedReportingYears) reporting year.
+            </h1>
+        </div>
+        
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            Your gender pay gap information has now been published on the Gender pay gap service.
+        </p>
+        
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.Organisation.GetEncryptedId(), year = reportingYear})"
+               class="govuk-link">
+                View your published gender pay gap information
+                <span class="govuk-visually-hidden">
+                    (opens in a new window)
+                </span>
+            </a>
+        </p>
+        
+        <p class="govuk-body govuk-!-font-weight-bold">Next steps</p>
+        
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            You must also publish your gender pay gap report (and
+            <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement">
+                written statement
+                <span class="govuk-visually-hidden">
+                    (opens in a new window)
+                </span>
+            </a>
+            if applicable) in a prominent place on your employer's public facing website.
+        </p>
+        
+        <p class="govuk-body govuk-!-font-weight-bold">Understanding your gender pay gap and taking action to close it</p>
+        
+        <p class="govuk-body govuk-!-margin-bottom-6">
+            For more information on diagnosing your employer's gender pay gap,
+            and how to create an effective action plan, please read our guidance:
+        </p>
+        
+        <p class="govuk-body govuk-!-margin-bottom-4">
+            <a class="govuk-link" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">
+                Eight ways to understand your organisation's gender pay gap
+                <span class="govuk-visually-hidden">
+                    (opens in a new window)
+                </span>
+            </a>
+        </p>    
+        
+        <p class="govuk-body govuk-!-margin-bottom-4">
+            <a class="govuk-link" href="/public/assets/pdf/action-plan-guidance.pdf">
+                Four steps to developing a gender pay gap action plan
+                <span class="govuk-visually-hidden">
+                    (opens in a new window)
+                </span>
+            </a>
+        </p>    
+
+        <p class="govuk-body govuk-!-margin-bottom-4">
+            <a class="govuk-link" href="@Url.Action("Overview", "ActionHub")">
+                Actions to close the gap
+                <span class="govuk-visually-hidden">
+                    (opens in a new window)
+                </span>
+            </a>
+        </p>
+        
+        
+        <form method="post"
+              action="@Url.Action("NewReportCompleteFinishAndSignOut", "NewReportConfirmation")">
+            @(Html.AntiForgeryToken())
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Sign out"
+            }))
+            
+            <p class="govuk-body govuk-!-margin-bottom-4">
+                <a class="govuk-link" href="@(Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear}))">Return to @(Model.Organisation.OrganisationName)</a>
+            </p>
+            
+            <p class="govuk-body govuk-!-margin-bottom-4">
+                <a class="govuk-link" href="@(Url.Action("ManageOrganisationsGet", "ManageOrganisations"))">Return to Manage Employers</a>
+            </p>
+        </form>
+        
+    </div>
+</div>
