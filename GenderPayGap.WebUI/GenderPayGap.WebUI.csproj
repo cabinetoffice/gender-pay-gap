@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Components\Submit\ReportFiguresFormSections.cshtml" />
   </ItemGroup>
 
 </Project>

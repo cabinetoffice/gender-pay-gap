@@ -119,14 +119,46 @@ namespace GenderPayGap.WebUI.Services
                 return false;
             }
 
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            
+            return HourlyPaySectionIsComplete(draftReturn)
+                   && BonusPaySectionIsComplete(draftReturn)
+                   && EmployeesByPayQuartileSectionIsFilledIn(draftReturn)
+                   && ResponsiblePersonSectionIsComplete(draftReturn, organisation)
+                   && OrganisationSizeSectionIsComplete(draftReturn)
+                   && WebsiteLinkSectionIsComplete(draftReturn);
+        }
+        
+        public bool DraftReturnExistsAndRequiredFieldsAreComplete(long organisationId, int reportingYear)
+        {
+            DraftReturn draftReturn = GetDraftReturn(organisationId, reportingYear);
+            if (draftReturn == null)
+            {
+                return false;
+            }
 
-            // Hourly pay
-            bool hourlyPaySectionIsComplete =
-                draftReturn.DiffMeanHourlyPayPercent != null
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+
+            bool employeesByPayQuartileSectionIsComplete =
+                (ReportingYearsHelper.IsReportingYearWithFurloughScheme(reportingYear) && draftReturn.OptedOutOfReportingPayQuarters) 
+                || EmployeesByPayQuartileSectionIsFilledIn(draftReturn);
+
+            return HourlyPaySectionIsComplete(draftReturn)
+                   && BonusPaySectionIsComplete(draftReturn)
+                   && employeesByPayQuartileSectionIsComplete
+                   && ResponsiblePersonSectionIsComplete(draftReturn, organisation)
+                   && OrganisationSizeSectionIsComplete(draftReturn)
+                   && WebsiteLinkSectionIsComplete(draftReturn);
+        }
+
+        private bool HourlyPaySectionIsComplete(DraftReturn draftReturn)
+        {
+            return draftReturn.DiffMeanHourlyPayPercent != null
                 && draftReturn.DiffMedianHourlyPercent != null;
-
-            // Bonus pay
+        }
+        
+        private bool BonusPaySectionIsComplete(DraftReturn draftReturn)
+        {
             bool noBonusesPaid =
                 draftReturn.MaleMedianBonusPayPercent == 0
                 && draftReturn.FemaleMedianBonusPayPercent == 0;
@@ -136,42 +168,41 @@ namespace GenderPayGap.WebUI.Services
                 && draftReturn.FemaleMedianBonusPayPercent != null
                 && draftReturn.DiffMeanBonusPercent != null
                 && draftReturn.DiffMedianBonusPercent != null;
+            
+            return noBonusesPaid || allValuesComplete;
+        }
 
-            bool bonusPaySectionIsComplete = noBonusesPaid || allValuesComplete;
+        private bool EmployeesByPayQuartileSectionIsFilledIn(DraftReturn draftReturn)
+        {
+            return draftReturn.MaleLowerPayBand != null
+                   && draftReturn.FemaleLowerPayBand != null
+                   && draftReturn.MaleMiddlePayBand != null
+                   && draftReturn.FemaleMiddlePayBand != null
+                   && draftReturn.MaleUpperPayBand != null
+                   && draftReturn.FemaleUpperPayBand != null
+                   && draftReturn.MaleUpperQuartilePayBand != null
+                   && draftReturn.FemaleUpperQuartilePayBand != null;
+        }
 
-            // Employees by pay quartile
-            bool employeesByPayQuartileSectionIsComplete =
-                draftReturn.MaleLowerPayBand != null
-                && draftReturn.FemaleLowerPayBand != null
-                && draftReturn.MaleMiddlePayBand != null
-                && draftReturn.FemaleMiddlePayBand != null
-                && draftReturn.MaleUpperPayBand != null
-                && draftReturn.FemaleUpperPayBand != null
-                && draftReturn.MaleUpperQuartilePayBand != null
-                && draftReturn.FemaleUpperQuartilePayBand != null;
+        private bool ResponsiblePersonSectionIsComplete(DraftReturn draftReturn, Organisation organisation)
+        {
+            return organisation.SectorType == SectorTypes.Public // Public sector organisations don't have to provide a responsible person
+                   || (!string.IsNullOrWhiteSpace(draftReturn.FirstName)
+                       && !string.IsNullOrWhiteSpace(draftReturn.LastName)
+                       && !string.IsNullOrWhiteSpace(draftReturn.JobTitle));
+        }
 
-            // Responsible person
-            bool responsiblePersonSectionIsComplete =
-                organisation.SectorType == SectorTypes.Public // Public sector organisations don't have to provide a responsible person
-                || (!string.IsNullOrWhiteSpace(draftReturn.FirstName)
-                    && !string.IsNullOrWhiteSpace(draftReturn.LastName)
-                    && !string.IsNullOrWhiteSpace(draftReturn.JobTitle));
+        private bool OrganisationSizeSectionIsComplete(DraftReturn draftReturn)
+        {
+            return draftReturn.OrganisationSize != null;
+        }
 
-            // Organisation size
-            bool organisationSizeSectionIsComplete = draftReturn.OrganisationSize != null;
-
-            // Website link
+        private bool WebsiteLinkSectionIsComplete(DraftReturn draftReturn)
+        {
             // The website link is optional, so we should allow it to be missing
             bool linkIsMissing = string.IsNullOrEmpty(draftReturn.CompanyLinkToGPGInfo);
             bool linkIsValid = UriSanitiser.IsValidHttpOrHttpsLink(draftReturn.CompanyLinkToGPGInfo);
-            bool websiteLinkSectionIsComplete = linkIsMissing || linkIsValid;
-
-            return hourlyPaySectionIsComplete
-                   && bonusPaySectionIsComplete
-                   && employeesByPayQuartileSectionIsComplete
-                   && responsiblePersonSectionIsComplete
-                   && organisationSizeSectionIsComplete
-                   && websiteLinkSectionIsComplete;
+            return linkIsMissing || linkIsValid;
         }
 
         public bool DraftReturnWouldBeNewlyLateIfSubmittedNow(DraftReturn draftReturn)

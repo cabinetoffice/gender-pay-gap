@@ -1,0 +1,97 @@
+﻿
+@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Views.Components.StatusMessages
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.ReportSizeOfOrganisationViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
+
+    string editOrReportTitle = Model.IsEditingSubmittedReturn
+        ? "Edit your gender pay gap"
+        : "Report your gender pay gap";
+
+    ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
+                Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = "Size of your organisation"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+        
+        @(Html.GovUkErrorSummary())
+
+        <form method="post" action="@Url.Action("NewReportSizeOfOrganisationPost", "NewReportSizeOfOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+
+            @(Html.AntiForgeryToken())
+
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    What was your employee headcount on your snapshot date?
+                </h1>
+
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
+            </legend>
+
+            @(Html.GovUkRadiosFor(m => m.SizeOfOrganisation))
+
+            <div class="govuk-inset-text">
+                <p>
+                    If you are unsure what type of employees should be included in your headcount, or what your snapshot date is please read the
+                    <a href="https://www.gov.uk/guidance/who-needs-to-report-their-gender-pay-gap#headcount" target="_blank" rel="noopener">
+                        guidance on working out your headcount
+                        <span class="govuk-visually-hidden">(opens in a new window)</span>
+                    </a>.
+                </p>
+            </div>
+
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save and continue",
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+
+        </form>
+
+        <p class="govuk-body">
+            <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                Cancel and return to report overview
+            </a>
+        </p>
+
+    </div>
+</div>

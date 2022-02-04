@@ -106,7 +106,8 @@ namespace GovUkDesignSystem
             LabelViewModel labelOptions = null,
             HintViewModel hintOptions = null,
             Conditional conditional = null,
-            bool disabled = false)
+            bool disabled = false,
+            string onChange = null)
         {
             return CheckboxItemHtmlGenerator.GenerateHtml(
                 htmlHelper,
@@ -114,7 +115,8 @@ namespace GovUkDesignSystem
                 labelOptions,
                 hintOptions,
                 conditional,
-                disabled);
+                disabled,
+                onChange);
         }
 
         public static IHtmlContent GovUkErrorMessage(

@@ -1,0 +1,71 @@
+﻿
+@using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Report.NewLateSubmissionWarningViewModel
+
+@{
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
+
+    ViewBag.Title = $"Submit your Gender Pay Gap for reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Your Organisations",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Late submission warning"
+            }
+        };
+    }
+
+    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-4" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
+        
+        <p class="govuk-body">Late submission</p>
+        
+        <p class="govuk-body">You are adding or changing a Gender Pay Gap report after the deadline.</p>
+        
+        <p class="govuk-body govuk-!-font-weight-bold">You will not be asked for a reason and your report will not be treated as late if you are changing:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>your Senior Responsible Person</li>
+            <li>your organisation size</li>
+            <li>the link to your organisation's gender pay gap narrative</li>
+        </ul>
+        
+        <p class="govuk-body govuk-!-font-weight-bold">You will be asked for a reason and your information may be shared with the Equalities and Human Rights Commission if you are:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>changing previously reported figures</li>
+            <li>reporting for the first time</li>
+        </ul>
+        
+         @(Html.GovUkButton(new ButtonViewModel
+         {
+             Text = "Continue",
+             Classes = "govuk-!-margin-bottom-6 govuk-!-margin-top-6",
+             Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+         }))
+
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿@using GenderPayGap.WebUI.Views.Components.ReportOverview
+@model GenderPayGap.WebUI.Views.Components.ReportOverview.ReportOverviewSectionsViewModel
+
+<h3 class="govuk-heading-m line">@(Model.Title)</h3>
+<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+@foreach (ReportOverviewSectionViewModel section in Model.Sections)
+{
+    <div>
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center">
+            <h3 class="govuk-heading-m govuk-!-margin-0">@(section.Title)</h3>
+            <a class="govuk-link govuk-!-font-size-19 govuk-!-margin-left-8" href="@(section.EditLink)">Edit</a>
+        </div>
+        
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <table class="govuk-table govuk-!-margin-bottom-9">
+
+            @if (section.LeftTitle != null && section.RightTitle != null)
+            {
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">
+                            <span class="govuk-visually-hidden">@(section.Title)</span>
+                        </th>
+                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">@(section.LeftTitle)</th>
+                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">@(section.RightTitle)</th>
+                    </tr>
+                </thead>
+            }
+
+            <tbody class="govuk-table__body">
+                @foreach (ReportOverviewSectionRowViewModel row in section.Rows)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@(row.Title.Invoke(null))</th>
+                        <td class="govuk-table__cell govuk-table__cell--numeric">@(row.LeftValue)</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric">@(row.RightValue)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
