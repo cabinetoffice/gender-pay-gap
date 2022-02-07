@@ -48,38 +48,36 @@
     }))
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-            
-        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-                
-        @(Html.GovUkErrorSummary())
+<form method="post" action="@(Url.Action("NewReportFiguresPost", "NewReportFigures", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear }))">
 
-        <h1 class="govuk-heading-xl"> Enter your gender pay gap data for snapshot date @(Model.SnapshotDate.ToString("dd MMMM yyyy"))</h1>
-
-        <h2 class="govuk-heading-m govuk-!-margin-bottom-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
-
-        <p class="govuk-body">For differences in hourly pay and bonus pay, a positive <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid more than women in your organisation.</p>
-        <p class="govuk-body">A negative <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid less than women in your organisation.</p>
-
-        <p class="govuk-body">
-            <strong>Please enter your data to 1 decimal point.</strong>
-        </p>
-                
-        <br/>
-        <br/>
-                
-        <form method="post" action="@(Url.Action("NewReportFiguresPost",
-                                        "NewReportFigures",
-                                        new 
-                                        {
-                                            encryptedOrganisationId = encryptedOrganisationId,
-                                            reportingYear = Model.ReportingYear
-                                        }))">
-                    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
-                        
+            @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+            @(Html.GovUkErrorSummary())
+
             <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        Enter your gender pay gap data for snapshot date @(Model.SnapshotDate.ToString("dd MMMM yyyy"))
+                    </h1>
+                    
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-4 govuk-!-font-weight-regular">Reporting as @(Model.Organisation.OrganisationName)</h2>
+                </legend>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">For differences in hourly pay and bonus pay, a positive <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid more than women in your organisation.</p>
+            <p class="govuk-body">A negative <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid less than women in your organisation.</p>
+
+            <p class="govuk-body govuk-!-font-weight-bold">
+                Please enter your data to 1 decimal point
+            </p>
+                
+            <fieldset class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h3 class="govuk-fieldset__heading">Percentage of men and women in each hourly pay quarter</h3>
                 </legend>
@@ -98,219 +96,231 @@
                     false,
                     "showOrHidePayQuarters();"
                     ))
-                
+
                 @{
                     var payQuartersDisplay = Model.OptedOutOfReportingPayQuarters ? "none" : "block";
                     <div id="PayQuarters" style="display: @payQuartersDisplay">
                         <h3 class="govuk-heading-s">Upper hourly pay quarter</h3>
-                                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.MaleUpperPayBand,
-                            new LabelViewModel{ Text = "Men" },
+                            new LabelViewModel {Text = "Men"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.FemaleUpperPayBand,
-                            new LabelViewModel{ Text = "Women" },
+                            new LabelViewModel {Text = "Women"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         <h3 class="govuk-heading-s">Upper middle hourly pay quarter</h3>
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.MaleUpperMiddlePayBand,
-                            new LabelViewModel{ Text = "Men" },
+                            new LabelViewModel {Text = "Men"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.FemaleUpperMiddlePayBand,
-                            new LabelViewModel{ Text = "Women" },
+                            new LabelViewModel {Text = "Women"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         <h3 class="govuk-heading-s">Lower middle hourly pay quarter</h3>
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.MaleLowerMiddlePayBand,
-                            new LabelViewModel{ Text = "Men" },
+                            new LabelViewModel {Text = "Men"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.FemaleLowerMiddlePayBand,
-                            new LabelViewModel{ Text = "Women" },
+                            new LabelViewModel {Text = "Women"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         <h3 class="govuk-heading-s">Lower hourly pay quarter</h3>
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.MaleLowerPayBand,
-                            new LabelViewModel{ Text = "Men" },
+                            new LabelViewModel {Text = "Men"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
-                                    
+
                         @(Html.GovUkTextInputFor(
                             m => m.FemaleLowerPayBand,
-                            new LabelViewModel{ Text = "Women" },
+                            new LabelViewModel {Text = "Women"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
-                            { Html = @<text>
-                                         <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                      </text>
+                            {
+                                Html = @<text>
+                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                        </text>
                             }
                             ))
                     </div>
                 }
             </fieldset>
-                        
+
             <fieldset class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h3 class="govuk-fieldset__heading">Mean gender pay gap using hourly pay</h3>
                 </legend>
-                            
+
                 @(Html.GovUkTextInputFor(
                     m => m.DiffMeanHourlyPayPercent,
-                    new LabelViewModel{ Text = "Enter the difference in mean hourly pay" },
+                    new LabelViewModel {Text = "Enter the difference in mean hourly pay"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
-                    { Html = @<text>
-                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                              </text>
+                    {
+                        Html = @<text>
+                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                </text>
                     }
                     ))
-                             
+
                 @(Html.GovUkTextInputFor(
                     m => m.DiffMedianHourlyPercent,
-                    new LabelViewModel{ Text = "Enter the difference in median hourly pay" },
+                    new LabelViewModel {Text = "Enter the difference in median hourly pay"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
-                    { Html = @<text>
-                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                              </text>
+                    {
+                        Html = @<text>
+                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                </text>
                     }
                     ))
 
             </fieldset>
-                        
+
             <fieldset class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h3 class="govuk-fieldset__heading">Percentage of men and women who received bonus pay</h3>
                 </legend>
-                            
+
                 @(Html.GovUkTextInputFor(
                     m => m.MaleBonusPayPercent,
-                    new LabelViewModel{ Text = "Percentage of men who received a bonus" },
+                    new LabelViewModel {Text = "Percentage of men who received a bonus"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
-                    { Html = @<text>
-                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                              </text>
+                    {
+                        Html = @<text>
+                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                </text>
                     }
                     ))
-                            
+
                 @(Html.GovUkTextInputFor(
                     m => m.FemaleBonusPayPercent,
-                    new LabelViewModel{ Text = "Percentage of women who received a bonus" },
+                    new LabelViewModel {Text = "Percentage of women who received a bonus"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
-                    { Html = @<text>
-                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                              </text>
+                    {
+                        Html = @<text>
+                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                </text>
                     }
                     ))
-                            
+
             </fieldset>
-                        
+
             <fieldset class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h3 class="govuk-fieldset__heading">Mean gender pay gap using bonus pay</h3>
                 </legend>
-                                
+
                 @(Html.GovUkTextInputFor(
                     m => m.DiffMeanBonusPercent,
-                    new LabelViewModel{ Text = "Enter the difference in mean bonus pay" },
+                    new LabelViewModel {Text = "Enter the difference in mean bonus pay"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
-                    { Html = @<text>
-                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                              </text>
+                    {
+                        Html = @<text>
+                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                </text>
                     }
                     ))
             </fieldset>
-                        
+
             <fieldset class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h3 class="govuk-fieldset__heading">Median gender pay gap using bonus pay</h3>
                 </legend>
-                            
+
                 @(Html.GovUkTextInputFor(
                     m => m.DiffMedianBonusPercent,
-                    new LabelViewModel{ Text = "Enter the difference in median bonus pay" },
+                    new LabelViewModel {Text = "Enter the difference in median bonus pay"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
-                    { Html = @<text>
-                                 <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                              </text>
+                    {
+                        Html = @<text>
+                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                </text>
                     }
                     ))
             </fieldset>
-                
-            <div class="govuk-button-group">
-                @(Html.GovUkButton(new ButtonViewModel
-                {
-                    Text = "Save and continue",
-                    Classes = "govuk-!-margin-bottom-6"
-                }))
-            </div>
 
-        </form>
-            
-        <p class="govuk-body">
-            <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-                Cancel and return to report overview
-            </a>
-        </p>
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save and continue",
+                Classes = "govuk-!-margin-bottom-6"
+            }))
 
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                    Cancel and return to report overview
+                </a>
+            </p>
+        </div>
+        @await Html.PartialAsync("~/Views/Submit/NewRelatedContent.cshtml")
     </div>
-</div>
+
+</form>
 
 @section AfterLoadedCompiledScripts {
     <script>

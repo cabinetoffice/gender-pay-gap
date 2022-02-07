@@ -65,6 +65,20 @@
                                href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear, shouldShowLateSubmissionWarning = true})">
                                 @detailsForYear.GetReportLinkText()
                             </a>
+                            
+                            var encryptedRequestParam = Encryption.EncryptAsParams(Model.Organisation.OrganisationId.ToString(), detailsForYear.ReportingYear.ToString(), detailsForYear.DoesReturnOrDraftReturnExistForYear().ToString());
+
+                            <a href="@Url.Action("ReportForOrganisation", "Organisation", new {request = encryptedRequestParam})"
+                               loadtest-id="create-report-@detailsForYear.ReportingYear">
+                                @detailsForYear.GetReportLinkText() - OLD
+                            </a>
+                            
+                            { 
+                                <a loadtest-id="create-report-@detailsForYear.ReportingYear" 
+                                   href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear})"> 
+                                    @detailsForYear.GetReportLinkText() - NEW
+                                </a> 
+                            } 
                         }
                         else
                         {

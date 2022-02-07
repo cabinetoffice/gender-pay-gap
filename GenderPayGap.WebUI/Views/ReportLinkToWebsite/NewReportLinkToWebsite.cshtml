@@ -48,63 +48,71 @@
     }))
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-        @(Html.GovUkErrorSummary())
-        
-        <form method="post" action="@Url.Action("NewReportLinkToWebsitePost", "NewReportLinkToWebsite", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+
+<form method="post" action="@Url.Action("NewReportLinkToWebsitePost", "NewReportLinkToWebsite", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
+            @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+            @(Html.GovUkErrorSummary())
             
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
                         Provide a link to your supporting narrative
                     </h1>
-    
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-4 govuk-!-margin-top-4" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
+
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-4 govuk-!-font-weight-regular">Reporting as @(Model.Organisation.OrganisationName)</h2>
                 </legend>
-                
+            </fieldset>   
+        </div>
+    </div>  
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <fieldset class="govuk-fieldset">
                 @(Html.GovUkTextAreaFor(
                     m => m.LinkToOrganisationWebsite,
                     rows: 1,
                     labelOptions: new LabelViewModel {Text = "Enter the web address of your supporting narrative (URL)."},
-                    hintOptions: new HintViewModel { Text = "This must start with http:// or https://" }
+                    hintOptions: new HintViewModel {Text = "This must start with http:// or https://"}
                     ))
-                
+
                 <div class="govuk-inset-text">
                     If you don’t have the URL you can return and add it later.
                     <br/>
                     You can also update your link for any reporting year, if needed.
                 </div>
-                
+
                 <p class="govuk-body">
-                    Adding a supporting narrative helps anyone reading your gender pay gap report understand your employer’s 
-                    view of why a gender pay gap is present and what your employer has already done to analyse and close it. 
-                    Your supporting narrative can signal your commitment to closing your gender pay gap to your employees 
+                    Adding a supporting narrative helps anyone reading your gender pay gap report understand your employer’s
+                    view of why a gender pay gap is present and what your employer has already done to analyse and close it.
+                    Your supporting narrative can signal your commitment to closing your gender pay gap to your employees
                     and anyone else accessing your report.
                 </p>
-                
+
                 <p class="govuk-body">
                     <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#supporting-narrative" target="_blank" rel="noopener">
                         Read more about supporting narratives
                         <span class="govuk-visually-hidden">(opens in a new window)</span>
                     </a>
                 </p>
-    
-                @(Html.GovUkButton(new ButtonViewModel
-                {
-                    Text = "Save and continue",
-                    Classes = "govuk-!-margin-bottom-6"
-                }))
             </fieldset>
-
-        </form>
-
-        <p class="govuk-body">
-            <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-                Cancel and return to report overview
-            </a>
-        </p>
+            
+            @(Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Save and continue",
+                Classes = "govuk-!-margin-bottom-6"
+            }))
+            
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                    Cancel and return to report overview
+                </a>
+            </p>
+        </div>
+        @await Html.PartialAsync("~/Views/Submit/NewRelatedContent.cshtml")
     </div>
-</div>
+    
+</form>

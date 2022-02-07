@@ -1,0 +1,24 @@
+﻿@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Controllers.Guidance
+
+<div class="govuk-grid-column-one-third">
+    <aside style="border-top: 2px solid #005ea5; padding-top: 5px;" role="complementary">
+        <h3 class="govuk-heading-m">Related content</h3>
+        <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-list--spaced">
+                <li>
+                    <a class="govuk-link" rel="external noopener track" target="_blank" data-track-category="Related Link Clicked" href="@Global.GpgGuidanceLink">Gender pay gap reporting<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                </li>
+                <li>
+                    <a class="govuk-link" rel="external noopener track" target="_blank" data-track-category="Related Link Clicked" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">Eight ways to understand your organisation's gender pay gap<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                </li>
+                <li>
+                    <a class="govuk-link" rel="external noopener track" target="_blank" data-track-category="Related Link Clicked" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                </li>
+                <li>
+                    <a class="govuk-link" rel="external noopener track" target="_blank" data-track-category="Related Link Clicked" href="@Url.Action("Overview", "ActionHub")">Actions to close the gap<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+</div>
