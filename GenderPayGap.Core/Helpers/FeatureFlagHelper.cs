@@ -32,7 +32,6 @@ namespace GenderPayGap.Core.Helpers
         ReportingStepByStep,
         PrivateManualRegistration,
         SendRegistrationReviewEmails,
-        NewReportingJourney,
         NewManageOrganisationsJourney
     }
 }
