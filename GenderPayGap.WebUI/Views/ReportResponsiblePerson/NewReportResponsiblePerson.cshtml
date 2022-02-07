@@ -48,15 +48,15 @@
     }))
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-                
-        @(Html.GovUkErrorSummary())
 
-        <form method="post"
-              action="@Url.Action("NewReportResponsiblePersonPost", "NewReportResponsiblePerson", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+
+<form method="post"
+      action="@Url.Action("NewReportResponsiblePersonPost", "NewReportResponsiblePerson", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
+            @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+            @(Html.GovUkErrorSummary())
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -64,21 +64,27 @@
                         Person responsible in your organisation
                     </h1>
 
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
-
-                    <p class="govuk-body">
-                        Enter the name and job title of the person in your organisation who has responsibility for confirming the
-                        accuracy of the gender pay gap information being submitted for this reporting year.
-                    </p>
-                    <p class="govuk-body">
-                        This person should be the same person that must sign your
-                        <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement" target="_blank" rel="noopener">
-                            written statement
-                            <span class="govuk-visually-hidden">(opens in a new window)</span>
-                        </a> confirming the accuracy of your submitted gender pay gap information. You must publish your written statement on your public-facing website.
-                    </p>
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-4 govuk-!-font-weight-regular">Reporting as @(Model.Organisation.OrganisationName)</h2>
                 </legend>
-
+            </fieldset>
+        </div>
+    </div>
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">
+                Enter the name and job title of the person in your organisation who has responsibility for confirming the
+                accuracy of the gender pay gap information being submitted for this reporting year.
+            </p>
+            <p class="govuk-body">
+                This person should be the same person that must sign your
+                <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement" target="_blank" rel="noopener">
+                    written statement
+                    <span class="govuk-visually-hidden">(opens in a new window)</span>
+                </a> confirming the accuracy of your submitted gender pay gap information. You must publish your written statement on your public-facing website.
+            </p>
+            
+            <fieldset class="govuk-fieldset">
                 @(Html.GovUkTextInputFor(
                     m => m.ResponsiblePersonFirstName,
                     labelOptions: new LabelViewModel {Text = "First name"},
@@ -99,19 +105,19 @@
 
             </fieldset>
 
-
             @(Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
                 Classes = "govuk-!-margin-bottom-6"
             }))
 
-        </form>
-
-        <p class="govuk-body">
-            <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-                Cancel and return to report overview
-            </a>
-        </p>
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                    Cancel and return to report overview
+                </a>
+            </p>
+        </div>
+        @await Html.PartialAsync("~/Views/Submit/NewRelatedContent.cshtml")
     </div>
-</div>
+    
+</form>

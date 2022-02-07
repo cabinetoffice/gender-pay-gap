@@ -49,35 +49,40 @@
     }))
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-        
-        @(Html.GovUkErrorSummary())
-
-        <form method="post" action="@Url.Action("NewReportSizeOfOrganisationPost", "NewReportSizeOfOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-
+<form method="post" action="@Url.Action("NewReportSizeOfOrganisationPost", "NewReportSizeOfOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
+            @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+            @(Html.GovUkErrorSummary())
+            
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        What was your employee headcount on your snapshot date?
+                    </h1>
 
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    What was your employee headcount on your snapshot date?
-                </h1>
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
+                </legend>
+            </fieldset>
+        </div>
+    </div>
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <fieldset class="govuk-fieldset">
+                @(Html.GovUkRadiosFor(m => m.SizeOfOrganisation))
 
-                <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
-            </legend>
-
-            @(Html.GovUkRadiosFor(m => m.SizeOfOrganisation))
-
-            <div class="govuk-inset-text">
-                <p>
-                    If you are unsure what type of employees should be included in your headcount, or what your snapshot date is please read the
-                    <a href="https://www.gov.uk/guidance/who-needs-to-report-their-gender-pay-gap#headcount" target="_blank" rel="noopener">
-                        guidance on working out your headcount
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>.
-                </p>
-            </div>
+                <div class="govuk-inset-text">
+                    <p>
+                        If you are unsure what type of employees should be included in your headcount, or what your snapshot date is please read the
+                        <a href="https://www.gov.uk/guidance/who-needs-to-report-their-gender-pay-gap#headcount" target="_blank" rel="noopener">
+                            guidance on working out your headcount
+                            <span class="govuk-visually-hidden">(opens in a new window)</span>
+                        </a>.
+                    </p>
+                </div>
+            </fieldset>
 
             @(Html.GovUkButton(new ButtonViewModel
             {
@@ -85,13 +90,13 @@
                 Classes = "govuk-!-margin-bottom-6"
             }))
 
-        </form>
-
-        <p class="govuk-body">
-            <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-                Cancel and return to report overview
-            </a>
-        </p>
-
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                    Cancel and return to report overview
+                </a>
+            </p>
+        </div>
+        @await Html.PartialAsync("~/Views/Submit/NewRelatedContent.cshtml")
     </div>
-</div>
+    
+</form>
