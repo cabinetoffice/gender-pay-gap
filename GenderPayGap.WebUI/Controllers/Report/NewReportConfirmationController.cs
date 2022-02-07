@@ -26,8 +26,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-confirmation")]
         public IActionResult NewReportConfirmation(string encryptedOrganisationId, int reportingYear, string confirmationId)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewReportingJourney);
-
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);

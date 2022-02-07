@@ -34,8 +34,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/figures")]
         public IActionResult NewReportFiguresGet(string encryptedOrganisationId, int reportingYear)
          {
-             ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewReportingJourney);
-             
              long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
              
              ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -165,8 +163,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
         [ValidateAntiForgeryToken]
         public IActionResult NewReportFiguresPost(string encryptedOrganisationId, int reportingYear, NewReportFiguresViewModel viewModel)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewReportingJourney);
-
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);

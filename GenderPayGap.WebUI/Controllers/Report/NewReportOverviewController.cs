@@ -37,8 +37,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
         public IActionResult SubmitReturnGet(string encryptedOrganisationId, int reportingYear)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewReportingJourney);
-            
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
@@ -88,8 +86,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report-new")]
         public IActionResult NewReportOverview(string encryptedOrganisationId, int reportingYear, bool shouldShowLateSubmissionWarning = false)
         {
-            ControllerHelper.Throw404IfFeatureDisabled(FeatureFlag.NewReportingJourney);
-
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
