@@ -227,7 +227,7 @@
                 {
                     new ReportOverviewSectionRowViewModel
                     {
-                        Title = @<text>@(Model.LinkToOrganisationWebsite)</text>,
+                        Title = @<a class="govuk-link" href="@(Model.LinkToOrganisationWebsite)">@(Model.LinkToOrganisationWebsite)</a>,
                         RightValue = Model.LinkToOrganisationWebsite == null ? "Not Provided" : ""
                     }
                 }
@@ -278,8 +278,8 @@
             {
                 Text = "Submit",
                 Classes = "govuk-button govuk-!-margin-bottom-6",
-                Disabled = !Model.AllRequiredFieldsAreFilled(),
-                Href = Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnGet", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
+                Disabled = !Model.DraftReturnExists || !Model.AllRequiredFieldsAreFilled(),
+                Href = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnGet", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
                     : null
             }))
         </div>
