@@ -28,6 +28,13 @@ namespace GovUkDesignSystem
             return htmlHelper.Partial("/GovUkDesignSystemComponents/Breadcrumbs.cshtml", breadcrumbsViewModel);
         }
 
+        public static IHtmlContent GovUkAccordion(
+            this IHtmlHelper htmlHelper,
+            AccordionViewModel accordionViewModel)
+        {
+            return htmlHelper.Partial("/GovUkDesignSystemComponents/Accordion.cshtml", accordionViewModel);
+        }
+
         public static IHtmlContent GovUkButton(
             this IHtmlHelper htmlHelper,
             ButtonViewModel buttonViewModel)

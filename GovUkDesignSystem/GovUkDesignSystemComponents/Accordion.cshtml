@@ -1,0 +1,20 @@
+﻿@model GovUkDesignSystem.GovUkDesignSystemComponents.AccordionViewModel
+
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion">
+    @for (var i = 0; i < Model.Sections.Count; i++)
+    {
+        var accordionSection = Model.Sections.ElementAt(i);
+        <div class="govuk-accordion__section ">
+            <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-default-heading-@i">
+                        @accordionSection.Heading
+                    </span>
+                </h2>
+            </div>
+            <div id="accordion-default-content-@i" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-@i">
+                @{ await Html.RenderPartialAsync("/GovUkDesignSystemComponents/SubComponents/HtmlText.cshtml", accordionSection); }
+            </div>
+        </div>
+    }
+</div>

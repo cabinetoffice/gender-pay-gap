@@ -1,4 +1,6 @@
 ﻿@using GenderPayGap.WebUI.Views.Components.PaginationLinks
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
     ViewBag.Title = "Actions to close the gap - Gender pay gap service";
     Layout = "ActionHubLayout";
@@ -27,7 +29,7 @@
                 <li>Encourage men to work flexibly, so that it isn’t seen as only a female benefit</li>
             </ul>
         </li>
-        
+
         <li>
             <h3 class="govuk-heading-s">Encourage the uptake of Shared Parental Leave</h3>
             <p class="govuk-body">
@@ -51,19 +53,19 @@
                 </li>
             </ul>
         </li>
-        
+
         <li>
             <h3 class="govuk-heading-s">Recruit returners</h3>
             <p class="govuk-body">
                 <strong class="govuk-tag">
-                  Government Initiative
+                    Government Initiative
                 </strong>
             </p>
             <p class="govuk-body">
                 Returners are people who have taken an extended career break for caring or other reasons and who are either not currently employed or are working in roles for which they are over-qualified.
             </p>
             <p class="govuk-body">
-                Use our 
+                Use our
                 <a class="govuk-link" target="_blank" rel="noopener" href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/685064/Returner_Programmes_-_Best_Practice_Guidance_for_Employers.pdf">
                     Returner Programmes: Best Practice Guidance for Employers PDF (opens in a new window)
                 </a>
@@ -75,14 +77,14 @@
                 <li>Offer support before and during the assessment</li>
             </ul>
         </li>
-        
+
         <li>
             <h3 class="govuk-heading-s">Offer mentoring and sponsorship</h3>
             <p class="govuk-body">
                 Although quite similar roles, mentors provide guidance and advice to their mentee while sponsors support the advancement and visibility of the person they are sponsoring. Some evidence suggests that mentoring programmes work very well for some women but not for others. It is not clear based on existing evidence whether sponsorships are more effective than mentoring, or how best to run mentoring and sponsorship programmes so they are effective.
             </p>
         </li>
-        
+
         <li>
             <h3 class="govuk-heading-s">Offer networking programmes</h3>
             <p class="govuk-body">
@@ -90,7 +92,7 @@
                 More work is needed to understand the effects of networking programmes, and whether they need to have particular features in order to be successful.
             </p>
         </li>
-        
+
         <li>
             <h3 class="govuk-heading-s">Set internal targets</h3>
             <p class="govuk-body">
@@ -100,62 +102,61 @@
     </ol>
 </div>
 
-<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
-    <div class="govuk-accordion__section ">
-        <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                    References
-                </span>
-            </h2>
-        </div>
-        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-            <div class="reference-list">
-                <ol class="govuk-list govuk-list--number">
-                    <li>
-                        <h4 class="govuk-heading-s">Improve workplace flexibility for men and women</h4>
-                        <p class="govuk-body">Not yet available.</p>
-                    </li>
-                    
-                    <li>
-                        <h4 class="govuk-heading-s">Encourage the uptake of Shared Parental Leave</h4>
-                        <p class="govuk-body">
-                            <a class="govuk-link" target="_blank" rel="noopener" href="https://sharedparentalleave.campaign.gov.uk/">sharedparentalleave.campaign.gov.uk<span class="govuk-visually-hidden">(opens in a new window)</span></a>
-                        </p>
-                    </li>
-                    
-                    <li>
-                        <h4 class="govuk-heading-s">Recruit returners</h4>
-                        <p class="govuk-body">
-                            <a class="govuk-link" target="_blank" class="nowrap" rel="noopener" href="https://gov.uk/government/uploads/system/uploads/attachment_data/file/685064/Returner_Programmes_-_Best_Practice_Guidance_for_Employers.pdf">Returner Programmes-Best Practice Guidance for Employers.pdf<span class="visually-hidden">(opens in a new window)</span></a>
-                        </p>
-                    </li>
-                    
-                    <li>
-                        <h4 class="govuk-heading-s">Offer mentoring and sponsorship</h4>
-                        <p class="govuk-body">
-                            Dobbin, F., & Kalev, A. (2016). Why diversity programs fail. Harvard Business Review, 94(7/8), 52-60.
-                        </p>
-                    </li>
-                    
-                    <li>
-                        <h4 class="govuk-heading-s">Offer networking programmes</h4>
-                        <p class="govuk-body">
-                            Dobbin, F., Kalev, A., & Kelly, E. (2007). Diversity management in corporate America. Contexts, 6(4), 21-27.
-                        </p>
-                    </li>
-                    
-                    <li>
-                        <h4 class="govuk-heading-s">Set internal targets</h4>
-                        <p class="govuk-body">
-                            Mento, A.J., Steel, R.P. & Karren, R.J. (1987). A meta-analytic study of the effects of goal setting on task performance: 1966–1984. Organizational Behaviour and Human Decision Processes, 39(1), 52-83.
-                        </p>
-                    </li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>
+@(Html.GovUkAccordion(new AccordionViewModel()
+{
+    Sections = new List<AccordionSectionViewModel>
+    {
+        new AccordionSectionViewModel
+        {
+            Heading = "References",
+            Html = @<text>
+                       <div class="reference-list">
+                           <ol class="govuk-list govuk-list--number">
+                               <li>
+                                   <h4 class="govuk-heading-s">Improve workplace flexibility for men and women</h4>
+                                   <p class="govuk-body">Not yet available.</p>
+                               </li>
+
+                               <li>
+                                   <h4 class="govuk-heading-s">Encourage the uptake of Shared Parental Leave</h4>
+                                   <p class="govuk-body">
+                                       <a class="govuk-link" target="_blank" rel="noopener" href="https://sharedparentalleave.campaign.gov.uk/">sharedparentalleave.campaign.gov.uk<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                                   </p>
+                               </li>
+
+                               <li>
+                                   <h4 class="govuk-heading-s">Recruit returners</h4>
+                                   <p class="govuk-body">
+                                       <a class="govuk-link" target="_blank" class="nowrap" rel="noopener" href="https://gov.uk/government/uploads/system/uploads/attachment_data/file/685064/Returner_Programmes_-_Best_Practice_Guidance_for_Employers.pdf">Returner Programmes-Best Practice Guidance for Employers.pdf<span class="visually-hidden">(opens in a new window)</span></a>
+                                   </p>
+                               </li>
+
+                               <li>
+                                   <h4 class="govuk-heading-s">Offer mentoring and sponsorship</h4>
+                                   <p class="govuk-body">
+                                       Dobbin, F., & Kalev, A. (2016). Why diversity programs fail. Harvard Business Review, 94(7/8), 52-60.
+                                   </p>
+                               </li>
+
+                               <li>
+                                   <h4 class="govuk-heading-s">Offer networking programmes</h4>
+                                   <p class="govuk-body">
+                                       Dobbin, F., Kalev, A., & Kelly, E. (2007). Diversity management in corporate America. Contexts, 6(4), 21-27.
+                                   </p>
+                               </li>
+
+                               <li>
+                                   <h4 class="govuk-heading-s">Set internal targets</h4>
+                                   <p class="govuk-body">
+                                       Mento, A.J., Steel, R.P. & Karren, R.J. (1987). A meta-analytic study of the effects of goal setting on task performance: 1966–1984. Organizational Behaviour and Human Decision Processes, 39(1), 52-83.
+                                   </p>
+                               </li>
+                           </ol>
+                       </div>
+                    </text>
+        }
+    }
+}))
 
 @{
     var leftLink = new PaginationLinkViewModel
@@ -164,14 +165,14 @@
         Text = "Effective actions",
         Url = Url.Action("Effective", "ActionHub")
     };
-    
+
     var rightLink = new PaginationLinkViewModel
     {
         Title = "Next",
         Text = "Actions with mixed results",
         Url = Url.Action("MixedResult", "ActionHub")
     };
-    
+
     await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
     {
         LeftLink = leftLink,

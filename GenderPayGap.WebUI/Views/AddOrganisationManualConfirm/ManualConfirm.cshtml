@@ -61,10 +61,10 @@
                     <td class="govuk-table__cell">
                         @if (Model.HasErrorFor(m => m.OrganisationName))
                         {
-                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.OrganisationName))-error">
+                            <p class="govuk-error-message" id="GovUk_@(nameof(Model.OrganisationName))-error">
                                 <span class="govuk-visually-hidden">Error</span>
                                 @(Model.GetErrorFor(m => m.OrganisationName))
-                            </span>
+                            </p>
                         }
                         @if (!string.IsNullOrWhiteSpace(Model.OrganisationName))
                         {
@@ -99,17 +99,17 @@
                     <td class="govuk-table__cell">
                         @if (Model.HasErrorFor(m => m.Address1))
                         {
-                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.Address1))-error">
+                            <p class="govuk-error-message" id="GovUk_@(nameof(Model.Address1))-error">
                                 <span class="govuk-visually-hidden">Error</span>
                                 @(Model.GetErrorFor(m => m.Address1))
-                            </span>
+                            </p>
                         }
                         @if (Model.HasErrorFor(m => m.IsUkAddress))
                         {
-                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.IsUkAddress))-error">
+                            <p class="govuk-error-message" id="GovUk_@(nameof(Model.IsUkAddress))-error">
                                 <span class="govuk-visually-hidden">Error</span>
                                 @(Model.GetErrorFor(m => m.IsUkAddress))
-                            </span>
+                            </p>
                         }
                         @{
                             var addressParts = new List<string>
@@ -173,10 +173,10 @@
                     <td class="govuk-table__cell">
                         @if (Model.HasErrorFor(m => m.Sector))
                         {
-                            <span class="govuk-error-message" id="GovUk_@(nameof(Model.Sector))-error">
+                            <p class="govuk-error-message" id="GovUk_@(nameof(Model.Sector))-error">
                                 <span class="govuk-visually-hidden">Error</span>
                                 @(Model.GetErrorFor(m => m.Sector))
-                            </span>
+                            </p>
                         }
                         @if (Model.Sector.HasValue)
                         {
