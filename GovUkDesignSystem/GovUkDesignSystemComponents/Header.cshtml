@@ -20,7 +20,7 @@
                     The SVG needs `focusable="false"` so that Internet Explorer does not
                     treat it as an interactive element - without this it will be
                     'focusable' when using the keyboard to navigate. *@
-                    <svg role="presentation"
+                    <svg aria-hidden="true"
                          focusable="false"
                          class="govuk-header__logotype-crown"
                          xmlns="http://www.w3.org/2000/svg"
@@ -70,16 +70,15 @@
                 }
                 @if (Model.Navigation != null && Model.Navigation.Count > 0)
                 {
-                    <button type="button" role="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
-                    <nav>
-                        <ul id="navigation" class="govuk-header__navigation @(Model.NavigationClasses ?? "")" aria-label="Top Level Navigation">
+                    <nav aria-label="Top Level Navigation" class="govuk-header__navigation @(Model.NavigationClasses ?? "")">
+                        <button type="button" role="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
+                        <ul id="navigation" class="govuk-header__navigation-list">
                             @foreach (HeaderNavigationViewModel navigationItem in Model.Navigation)
                             {
                                 @if (!string.IsNullOrEmpty(navigationItem.Href) && !string.IsNullOrEmpty(navigationItem.Text))
                                 {
                                     <li class="govuk-header__navigation-item @(navigationItem.Active ? " govuk-header__navigation-item--active" : "") @(navigationItem.Classes)">
                                         <a class="govuk-header__link" href="@(navigationItem.Href)">
-                                            @*@(Html.Raw( string.Join(" ", navigationItem.Attributes.Select(a => a.Key + "=\"" + a.Value + "\"")) ))*@
                                             @(navigationItem.Text)
                                         </a>
                                     </li>

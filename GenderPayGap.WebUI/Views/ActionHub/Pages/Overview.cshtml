@@ -1,7 +1,8 @@
-﻿@using GenderPayGap.WebUI.Models.Shared
-@using GenderPayGap.WebUI.Views.Components.PaginationLinks
+﻿@using GenderPayGap.WebUI.Views.Components.PaginationLinks
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
-    ViewBag.Title = "Actions to close the gap - Gender pay gap service";   
+    ViewBag.Title = "Actions to close the gap - Gender pay gap service";
     Layout = "ActionHubLayout";
 }
 
@@ -17,49 +18,43 @@
     Employers who use high quality data to understand the drivers of their gender pay gap will be able to target their actions and therefore deliver the most effective results.
 </p>
 
-<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
-    <div class="govuk-accordion__section ">
-        <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-                    What evidence we have used
-                </span>
-            </h2>
-        </div>
-        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-            <p class="govuk-body">
-                This guidance is based on the best available evidence currently.
-                It will be regularly updated as the evidence base develops.
-            </p>
-        
-            <p class="govuk-body">
-                Where possible, we have used evidence based on randomised controlled trials that were conducted in the field and that measure objective outcomes related to recruitment, progression and promotion.
-                High quality evidence is currently scarce in the field of gender equality in the workplace.
-            </p>
-        </div>
-    </div>
-    <div class="govuk-accordion__section ">
-        <div class="govuk-accordion__section-header">
-            <h2 class="govuk-accordion__section-heading">
-                <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-                    How you can help
-                </span>
-            </h2>
-        </div>
-        <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
-            <p class="govuk-body">
-                To build better evidence, we encourage researchers and employers to evaluate the actions they take to improve gender equality in the workplace.
-            </p>
-      
-            <p class="govuk-body">
-                The Government Equalities Office will be working with employers to build more evidence on what works.
-                If you represent an organisation with 4000 or more employees in the UK and would like to partner with us, please contact the Gender and Behavioural Insights programme <a class="govuk-link" href="mailto:gabiprogramme@bi.team">gabiprogramme@bi.team</a>
-                <br/>
-                This is a programme run by the Behavioural Insights Team for the Government Equalities Office.
-            </p>
-        </div>
-    </div>
-</div>
+@(Html.GovUkAccordion(new AccordionViewModel()
+{
+    Sections = new List<AccordionSectionViewModel>
+    {
+        new AccordionSectionViewModel
+        {
+            Heading = "What evidence we have used",
+            Html = @<text>
+                       <p class="govuk-body">
+                           This guidance is based on the best available evidence currently.
+                           It will be regularly updated as the evidence base develops.
+                       </p>
+
+                       <p class="govuk-body">
+                           Where possible, we have used evidence based on randomised controlled trials that were conducted in the field and that measure objective outcomes related to recruitment, progression and promotion.
+                           High quality evidence is currently scarce in the field of gender equality in the workplace.
+                       </p>
+                    </text>
+        },
+        new AccordionSectionViewModel
+        {
+            Heading = "How you can help",
+            Html = @<text>
+                       <p class="govuk-body">
+                           To build better evidence, we encourage researchers and employers to evaluate the actions they take to improve gender equality in the workplace.
+                       </p>
+
+                       <p class="govuk-body">
+                           The Government Equalities Office will be working with employers to build more evidence on what works.
+                           If you represent an organisation with 4000 or more employees in the UK and would like to partner with us, please contact the Gender and Behavioural Insights programme <a class="govuk-link" href="mailto:gabiprogramme@bi.team">gabiprogramme@bi.team</a>
+                           <br/>
+                           This is a programme run by the Behavioural Insights Team for the Government Equalities Office.
+                       </p>
+                    </text>
+        }
+    }
+}))
 
 @{
     var rightLink = new PaginationLinkViewModel
@@ -68,7 +63,7 @@
         Text = "Effective actions",
         Url = Url.Action("Effective", "ActionHub")
     };
-    
+
     await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
     {
         LeftLink = null,
@@ -89,7 +84,7 @@
             <span class="govuk-visually-hidden">Actions to close the gender pay gap (pdf)</span>
         </a>
     </span>
-    
+
     <span class="pdf-preview__text">
         <p class="govuk-body govuk-!-margin-bottom-1">
             <a class="govuk-link" href="/public/assets/pdf/Evidence-based_actions_for_employers.pdf">

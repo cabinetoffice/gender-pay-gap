@@ -23,9 +23,9 @@
                 Attributes = Model.Attributes
             });
     }
-    <span id="@($"{Model.Id}-info")"
+    <div id="@($"{Model.Id}-info")"
           class="govuk-hint govuk-character-count__message"
           aria-live="polite">
         You can enter up to @(Model.MaxLength ?? Model.MaxWords) @(Model.MaxLength != null ? "characters" : "words")
-    </span>
+    </div>
 </div>
