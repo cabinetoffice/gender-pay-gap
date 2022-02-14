@@ -12,19 +12,19 @@ namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
-    public class NewReportConfirmationController : Controller
+    public class ReportConfirmationController : Controller
     {
 
         private readonly IDataRepository dataRepository;
 
-        public NewReportConfirmationController(
+        public ReportConfirmationController(
             IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-confirmation")]
-        public IActionResult NewReportConfirmation(string encryptedOrganisationId, int reportingYear, string confirmationId)
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/confirmation")]
+        public IActionResult ReportConfirmation(string encryptedOrganisationId, int reportingYear, string confirmationId)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -33,7 +33,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             Return foundReturn = LoadReturnFromOrganisationIdReportingYearAndConfirmationId(organisationId, reportingYear, confirmationId);
 
-            return View("~/Views/ReportConfirmation/NewReportConfirmation.cshtml", foundReturn);
+            return View("~/Views/ReportConfirmation/ReportConfirmation.cshtml", foundReturn);
         }
 
         private Return LoadReturnFromOrganisationIdReportingYearAndConfirmationId(
@@ -55,9 +55,9 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return foundReturn;
         }
         
-        [HttpPost("/new-report-complete-finish-and-sign-out")]
+        [HttpPost("/report-complete-finish-and-sign-out")]
         [ValidateAntiForgeryToken]
-        public IActionResult NewReportCompleteFinishAndSignOut()
+        public IActionResult ReportCompleteFinishAndSignOut()
         {
             string nextPageUrl =
                 // Take the user to the "done" URL (the gov.uk survey page)

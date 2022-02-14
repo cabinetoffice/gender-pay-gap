@@ -14,13 +14,13 @@ namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
-    public class NewReportResponsiblePersonController : Controller
+    public class ReportResponsiblePersonController : Controller
     {
 
         private readonly IDataRepository dataRepository;
         private readonly DraftReturnService draftReturnService;
 
-        public NewReportResponsiblePersonController(
+        public ReportResponsiblePersonController(
             IDataRepository dataRepository,
             DraftReturnService draftReturnService)
         {
@@ -28,8 +28,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
             this.draftReturnService = draftReturnService;
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-responsible-person")]
-        public IActionResult NewReportResponsiblePersonGet(string encryptedOrganisationId, int reportingYear)
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/responsible-person")]
+        public IActionResult ReportResponsiblePersonGet(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -39,7 +39,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             if (organisation.SectorType == SectorTypes.Public)
             {
-                string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
                 StatusMessageHelper.SetStatusMessage(Response, "Public authority employers are not required to provide a person responsible", nextPageUrl);
                 return LocalRedirect(nextPageUrl);
             }
@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             PopulateViewModel(viewModel, organisationId, reportingYear);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
 
-            return View("~/Views/ReportResponsiblePerson/NewReportResponsiblePerson.cshtml", viewModel);
+            return View("~/Views/ReportResponsiblePerson/ReportResponsiblePerson.cshtml", viewModel);
         }
         
         private void PopulateViewModel(ReportResponsiblePersonViewModel viewModel, long organisationId, int reportingYear)
@@ -95,9 +95,9 @@ namespace GenderPayGap.WebUI.Controllers.Report
         }
         
         
-        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-responsible-person")]
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/responsible-person")]
         [ValidateAntiForgeryToken]
-        public IActionResult NewReportResponsiblePersonPost(string encryptedOrganisationId, int reportingYear, ReportResponsiblePersonViewModel viewModel)
+        public IActionResult ReportResponsiblePersonPost(string encryptedOrganisationId, int reportingYear, ReportResponsiblePersonViewModel viewModel)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -107,7 +107,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             if (organisation.SectorType == SectorTypes.Public)
             {
-                string nextPagePublicSectorUrl = Url.Action("NewReportOverview", "NewReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                string nextPagePublicSectorUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
                 StatusMessageHelper.SetStatusMessage(Response, "Public authority employers are not required to provide a person responsible", nextPagePublicSectorUrl);
                 return LocalRedirect(nextPagePublicSectorUrl);
             }
@@ -117,12 +117,12 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportResponsiblePerson/NewReportResponsiblePerson.cshtml", viewModel);
+                return View("~/Views/ReportResponsiblePerson/ReportResponsiblePerson.cshtml", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }

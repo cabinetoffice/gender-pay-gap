@@ -16,14 +16,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
-    public class NewLateSubmissionController: Controller
+    public class LateSubmissionController: Controller
     {
         
         private readonly IDataRepository dataRepository;
         private readonly DraftReturnService draftReturnService;
         private readonly ReturnService returnService;
 
-        public NewLateSubmissionController(
+        public LateSubmissionController(
             IDataRepository dataRepository,
             DraftReturnService draftReturnService,
             ReturnService returnService)
@@ -33,25 +33,25 @@ namespace GenderPayGap.WebUI.Controllers.Report
             this.returnService = returnService;
         }
 
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-late-submission-warning")]
-        public IActionResult NewLateSubmissionWarningGet(string encryptedOrganisationId, int reportingYear)
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission-warning")]
+        public IActionResult LateSubmissionWarningGet(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-            var viewModel = new NewLateSubmissionWarningViewModel();
+            var viewModel = new LateSubmissionWarningViewModel();
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
 
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
 
-            return View("~/Views/ReportReviewAndSubmit/NewLateSubmissionWarning.cshtml", viewModel);
+            return View("~/Views/ReportReviewAndSubmit/LateSubmissionWarning.cshtml", viewModel);
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-late-submission")]
-        public IActionResult NewLateSubmissionReasonGet(string encryptedOrganisationId, int reportingYear)
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission")]
+        public IActionResult LateSubmissionReasonGet(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -67,17 +67,17 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (!draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 // If this is not a late submission, send the user back to the Overview page
-                return RedirectToAction("NewReportOverview", "NewReportOverview",
+                return RedirectToAction("ReportOverview", "ReportOverview",
                     new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
             }
 
-            var viewModel = new NewLateSubmissionReasonViewModel();
+            var viewModel = new LateSubmissionReasonViewModel();
             PopulateLateSubmissionViewModel(viewModel, organisationId, reportingYear);
 
-            return View("~/Views/ReportReviewAndSubmit/NewLateSubmissionReason.cshtml", viewModel);
+            return View("~/Views/ReportReviewAndSubmit/LateSubmissionReason.cshtml", viewModel);
         }
 
-        private void PopulateLateSubmissionViewModel(NewLateSubmissionReasonViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateLateSubmissionViewModel(LateSubmissionReasonViewModel viewModel, long organisationId, int reportingYear)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             
@@ -93,9 +93,9 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
         }
 
-        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-late-submission")]
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission")]
         [ValidateAntiForgeryToken]
-        public IActionResult NewLateSubmissionReasonPost(string encryptedOrganisationId, int reportingYear, NewLateSubmissionReasonViewModel viewModel)
+        public IActionResult LateSubmissionReasonPost(string encryptedOrganisationId, int reportingYear, LateSubmissionReasonViewModel viewModel)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -111,7 +111,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (!draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 // If this is not a late submission, send the user back to the Overview page
-                return RedirectToAction("NewReportOverview", "NewReportOverview",
+                return RedirectToAction("ReportOverview", "ReportOverview",
                     new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
             }
 
@@ -121,14 +121,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateLateSubmissionViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportReviewAndSubmit/NewLateSubmissionReason.cshtml", viewModel);
+                return View("~/Views/ReportReviewAndSubmit/LateSubmissionReason.cshtml", viewModel);
             }
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            bool receivedLetterFromEhrc = viewModel.ReceivedLetterFromEhrc == NewReportLateSubmissionReceivedLetterFromEhrc.Yes;
+            bool receivedLetterFromEhrc = viewModel.ReceivedLetterFromEhrc == ReportLateSubmissionReceivedLetterFromEhrc.Yes;
             Return newReturn = returnService.CreateAndSaveLateReturnFromDraftReturn(draftReturn, user, Url, viewModel.Reason, receivedLetterFromEhrc);
 
-            return RedirectToAction("NewReportConfirmation", "NewReportConfirmation",
+            return RedirectToAction("ReportConfirmation", "ReportConfirmation",
                 new
                 {
                     encryptedOrganisationId = encryptedOrganisationId,
@@ -139,7 +139,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
         
         private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message)
         {
-            string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, message, nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }

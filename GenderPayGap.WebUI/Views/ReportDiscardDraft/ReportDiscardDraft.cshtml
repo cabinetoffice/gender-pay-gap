@@ -34,7 +34,7 @@
             new CrumbViewModel
             {
                 Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
             new CrumbViewModel
             {
@@ -78,7 +78,7 @@
         </form>
         
         <p class="govuk-body">
-            <a class="govuk-link" href="@(Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}))">
+            <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
                 Back to report overview
             </a>
         </p>

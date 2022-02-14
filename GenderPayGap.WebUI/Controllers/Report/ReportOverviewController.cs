@@ -17,14 +17,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
-    public class NewReportOverviewController: Controller
+    public class ReportOverviewController: Controller
     {
         
         private readonly IDataRepository dataRepository;
         private readonly DraftReturnService draftReturnService;
         private readonly ReturnService returnService;
 
-        public NewReportOverviewController(
+        public ReportOverviewController(
             IDataRepository dataRepository,
             DraftReturnService draftReturnService,
             ReturnService returnService)
@@ -53,7 +53,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (WillBeLateSubmission(draftReturn))
             {
                 // Late submission Reason
-                return RedirectToAction("NewLateSubmissionReasonGet", "NewLateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+                return RedirectToAction("LateSubmissionReasonGet", "LateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             }
             else
             {
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 Return newReturn = returnService.CreateAndSaveReturnFromDraftReturn(draftReturn, user, Url);
 
                 // Confirmation
-                return RedirectToAction("NewReportConfirmation", "NewReportConfirmation",
+                return RedirectToAction("ReportConfirmation", "ReportConfirmation",
                     new
                     {
                         encryptedOrganisationId = encryptedOrganisationId,
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
         private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message)
         {
-            string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, message, nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
@@ -83,8 +83,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn);
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report-new")]
-        public IActionResult NewReportOverview(string encryptedOrganisationId, int reportingYear, bool shouldShowLateSubmissionWarning = false)
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report")]
+        public IActionResult ReportOverview(string encryptedOrganisationId, int reportingYear, bool shouldShowLateSubmissionWarning = false)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -93,13 +93,13 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (ReportIsLate(organisationId, reportingYear) && shouldShowLateSubmissionWarning)
             {
-                return RedirectToAction("NewLateSubmissionWarningGet", "NewLateSubmission", new {encryptedOrganisationId, reportingYear});
+                return RedirectToAction("LateSubmissionWarningGet", "LateSubmission", new {encryptedOrganisationId, reportingYear});
             }
             
-            var viewModel = new NewReportOverviewViewModel();
+            var viewModel = new ReportOverviewViewModel();
             PopulateViewModel(viewModel, organisationId, reportingYear);
             
-            return View("~/Views/ReportOverview/NewReportOverview.cshtml", viewModel);
+            return View("~/Views/ReportOverview/ReportOverview.cshtml", viewModel);
             
         }
 
@@ -119,7 +119,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return isLate && isInScope && yearIsNotExcluded;
         }
         
-        private void PopulateViewModel(NewReportOverviewViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportOverviewViewModel viewModel, long organisationId, int reportingYear)
         {
             SetOrganisationInformation(viewModel, organisationId, reportingYear);
             
@@ -137,7 +137,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
         }
         
-        private void SetOrganisationInformation(NewReportOverviewViewModel viewModel, long organisationId, int reportingYear)
+        private void SetOrganisationInformation(ReportOverviewViewModel viewModel, long organisationId, int reportingYear)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             Return submittedReturn = organisation.GetReturn(reportingYear);
@@ -150,7 +150,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
         }
 
-        private void SetValuesFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetValuesFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             SetHourlyPayQuarterFiguresFromDraftReturn(viewModel, draftReturn);
             SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromDraftReturn(viewModel, draftReturn);
@@ -164,7 +164,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
         }
 
-        private void SetValuesFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetValuesFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             SetHourlyPayQuarterFiguresFromSubmittedReturn(viewModel, submittedReturn);
             SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromSubmittedReturn(viewModel, submittedReturn);
@@ -178,7 +178,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             SetOptedOutOfReportingPayQuarterFromSubmittedReturn(viewModel, submittedReturn);
         }
 
-        private void SetHourlyPayQuarterFiguresFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetHourlyPayQuarterFiguresFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.MaleUpperPayBand = draftReturn.MaleUpperQuartilePayBand;
             viewModel.FemaleUpperPayBand = draftReturn.FemaleUpperQuartilePayBand;
@@ -190,7 +190,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.FemaleLowerPayBand = draftReturn.FemaleLowerPayBand;
         }
 
-        private void SetHourlyPayQuarterFiguresFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetHourlyPayQuarterFiguresFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.MaleUpperPayBand = submittedReturn.MaleUpperQuartilePayBand;
             viewModel.FemaleUpperPayBand = submittedReturn.FemaleUpperQuartilePayBand;
@@ -202,19 +202,19 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.FemaleLowerPayBand = submittedReturn.FemaleLowerPayBand;
         }
 
-        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.DiffMeanHourlyPayPercent = draftReturn.DiffMeanHourlyPayPercent;
             viewModel.DiffMedianHourlyPercent = draftReturn.DiffMedianHourlyPercent;
         }
 
-        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.DiffMeanHourlyPayPercent = submittedReturn.DiffMeanHourlyPayPercent;
             viewModel.DiffMedianHourlyPercent = submittedReturn.DiffMedianHourlyPercent;
         }
 
-        private void SetBonusPayFiguresFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetBonusPayFiguresFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.FemaleBonusPayPercent = draftReturn.FemaleMedianBonusPayPercent;
             viewModel.MaleBonusPayPercent = draftReturn.MaleMedianBonusPayPercent;
@@ -222,7 +222,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.DiffMedianBonusPercent = draftReturn.DiffMedianBonusPercent;
         }
 
-        private void SetBonusPayFiguresFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetBonusPayFiguresFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.FemaleBonusPayPercent = submittedReturn.FemaleMedianBonusPayPercent;
             viewModel.MaleBonusPayPercent = submittedReturn.MaleMedianBonusPayPercent;
@@ -230,46 +230,46 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.DiffMedianBonusPercent = submittedReturn.DiffMedianBonusPercent;
         }
 
-        private void SetPersonResponsibleFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetPersonResponsibleFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.ResponsiblePersonFirstName = draftReturn.FirstName;
             viewModel.ResponsiblePersonLastName = draftReturn.LastName;
             viewModel.ResponsiblePersonJobTitle = draftReturn.JobTitle;
         }
 
-        private void SetPersonResponsibleFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetPersonResponsibleFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.ResponsiblePersonFirstName = submittedReturn.FirstName;
             viewModel.ResponsiblePersonLastName = submittedReturn.LastName;
             viewModel.ResponsiblePersonJobTitle = submittedReturn.JobTitle;
         }
 
-        private void SetOrganisationSizeFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetOrganisationSizeFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.SizeOfOrganisation = draftReturn.OrganisationSize;
         }
 
-        private void SetOrganisationSizeFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetOrganisationSizeFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.SizeOfOrganisation = submittedReturn.OrganisationSize;
         }
 
-        private void SetLinkToGenderPayGapInformationFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetLinkToGenderPayGapInformationFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.LinkToOrganisationWebsite = draftReturn.CompanyLinkToGPGInfo;
         }
 
-        private void SetLinkToGenderPayGapInformationFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetLinkToGenderPayGapInformationFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.LinkToOrganisationWebsite = submittedReturn.CompanyLinkToGPGInfo;
         }
 
-        private void SetOptedOutOfReportingPayQuarterFromDraftReturn(NewReportOverviewViewModel viewModel, DraftReturn draftReturn)
+        private void SetOptedOutOfReportingPayQuarterFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.OptedOutOfReportingPayQuarters = draftReturn.OptedOutOfReportingPayQuarters;
         }
         
-        private void SetOptedOutOfReportingPayQuarterFromSubmittedReturn(NewReportOverviewViewModel viewModel, Return submittedReturn)
+        private void SetOptedOutOfReportingPayQuarterFromSubmittedReturn(ReportOverviewViewModel viewModel, Return submittedReturn)
         {
             viewModel.OptedOutOfReportingPayQuarters = submittedReturn.OptedOutOfReportingPayQuarters;
         }

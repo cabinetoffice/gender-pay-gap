@@ -2,7 +2,7 @@
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Report.ReportLinkToWebsiteViewModel
+@model GenderPayGap.WebUI.Models.Report.ReportResponsiblePersonViewModel
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
@@ -33,11 +33,11 @@
             new CrumbViewModel
             {
                 Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
             new CrumbViewModel
             {
-                Text = "Link to your gender pay gap information"
+                Text = "Person responsible in your organisation"
             }
         };
     }
@@ -49,70 +49,75 @@
 }
 
 
-<form method="post" action="@Url.Action("NewReportLinkToWebsitePost", "NewReportLinkToWebsite", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-    
+
+<form method="post"
+      action="@Url.Action("ReportResponsiblePersonPost", "ReportResponsiblePerson", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
             @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
             @(Html.GovUkErrorSummary())
-            
+
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading">
-                        Provide a link to your supporting narrative
+                        Person responsible in your organisation
                     </h1>
 
                     <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-4 govuk-!-font-weight-regular">Reporting as @(Model.Organisation.OrganisationName)</h2>
                 </legend>
-            </fieldset>   
+            </fieldset>
         </div>
-    </div>  
+    </div>
     
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">
+                Enter the name and job title of the person in your organisation who has responsibility for confirming the
+                accuracy of the gender pay gap information being submitted for this reporting year.
+            </p>
+            <p class="govuk-body">
+                This person should be the same person that must sign your
+                <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement" target="_blank" rel="noopener">
+                    written statement
+                    <span class="govuk-visually-hidden">(opens in a new window)</span>
+                </a> confirming the accuracy of your submitted gender pay gap information. You must publish your written statement on your public-facing website.
+            </p>
+            
             <fieldset class="govuk-fieldset">
-                @(Html.GovUkTextAreaFor(
-                    m => m.LinkToOrganisationWebsite,
-                    rows: 1,
-                    labelOptions: new LabelViewModel {Text = "Enter the web address of your supporting narrative (URL)."},
-                    hintOptions: new HintViewModel {Text = "This must start with http:// or https://"}
+                @(Html.GovUkTextInputFor(
+                    m => m.ResponsiblePersonFirstName,
+                    labelOptions: new LabelViewModel {Text = "First name"},
+                    formGroupOptions: new FormGroupViewModel {Classes = "govuk-!-margin-bottom-2"},
+                    classes: "govuk-input--width-20"
+                    ))
+                @(Html.GovUkTextInputFor(
+                    m => m.ResponsiblePersonLastName,
+                    labelOptions: new LabelViewModel {Text = "Last name"},
+                    formGroupOptions: new FormGroupViewModel {Classes = "govuk-!-margin-bottom-2"},
+                    classes: "govuk-input--width-20"
+                    ))
+                @(Html.GovUkTextInputFor(
+                    m => m.ResponsiblePersonJobTitle,
+                    labelOptions: new LabelViewModel {Text = "Job title"},
+                    classes: "govuk-input--width-20"
                     ))
 
-                <div class="govuk-inset-text">
-                    If you don’t have the URL you can return and add it later.
-                    <br/>
-                    You can also update your link for any reporting year, if needed.
-                </div>
-
-                <p class="govuk-body">
-                    Adding a supporting narrative helps anyone reading your gender pay gap report understand your employer’s
-                    view of why a gender pay gap is present and what your employer has already done to analyse and close it.
-                    Your supporting narrative can signal your commitment to closing your gender pay gap to your employees
-                    and anyone else accessing your report.
-                </p>
-
-                <p class="govuk-body">
-                    <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#supporting-narrative" target="_blank" rel="noopener">
-                        Read more about supporting narratives
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>
-                </p>
             </fieldset>
-            
+
             @(Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
                 Classes = "govuk-!-margin-bottom-6"
             }))
-            
+
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
                     Cancel and return to report overview
                 </a>
             </p>
         </div>
-        @await Html.PartialAsync("~/Views/Submit/NewRelatedContent.cshtml")
+        @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
     </div>
     
 </form>

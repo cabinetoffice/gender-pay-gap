@@ -34,7 +34,7 @@
             new CrumbViewModel
             {
                 Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
             new CrumbViewModel
             {
@@ -49,7 +49,7 @@
     }))
 }
 
-<form method="post" action="@Url.Action("NewReportSizeOfOrganisationPost", "NewReportSizeOfOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+<form method="post" action="@Url.Action("ReportSizeOfOrganisationPost", "ReportSizeOfOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
@@ -91,12 +91,12 @@
             }))
 
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+                <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
                     Cancel and return to report overview
                 </a>
             </p>
         </div>
-        @await Html.PartialAsync("~/Views/Submit/NewRelatedContent.cshtml")
+        @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
     </div>
     
 </form>

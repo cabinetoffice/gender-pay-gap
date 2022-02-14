@@ -15,13 +15,13 @@ namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
-    public class NewReportFiguresController: Controller
+    public class ReportFiguresController: Controller
     {
         
         private readonly IDataRepository dataRepository;
         private readonly DraftReturnService draftReturnService;
 
-        public NewReportFiguresController(
+        public ReportFiguresController(
             IDataRepository dataRepository,
             DraftReturnService draftReturnService)
         {
@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
         #region GET
         
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/figures")]
-        public IActionResult NewReportFiguresGet(string encryptedOrganisationId, int reportingYear)
+        public IActionResult ReportFiguresGet(string encryptedOrganisationId, int reportingYear)
          {
              long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
              
@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
              ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-             var viewModel = new NewReportFiguresViewModel();
+             var viewModel = new ReportFiguresViewModel();
              
              PopulateViewModel(viewModel, organisationId, reportingYear);
              
@@ -49,10 +49,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
              
              SetFigures(viewModel, draftReturn, submittedReturn);
 
-             return View("~/Views/ReportFigures/NewReportFigures.cshtml", viewModel);
+             return View("~/Views/ReportFigures/ReportFigures.cshtml", viewModel);
          }
 
-        private void PopulateViewModel(NewReportFiguresViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportFiguresViewModel viewModel, long organisationId, int reportingYear)
          {
              Organisation organisation = dataRepository.Get<Organisation>(organisationId);
              Return submittedReturn = organisation.GetReturn(reportingYear);
@@ -65,7 +65,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
          }
 
-        private void SetFigures(NewReportFiguresViewModel viewModel, DraftReturn draftReturn, Return submittedReturn)
+        private void SetFigures(ReportFiguresViewModel viewModel, DraftReturn draftReturn, Return submittedReturn)
          {
              if (draftReturn != null)
              {
@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              }
          }
 
-        private void SetFiguresFromDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SetFiguresFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
          {
              SetHourlyPayQuarterFiguresFromDraftReturn(viewModel, draftReturn);
              SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromDraftReturn(viewModel, draftReturn);
@@ -85,7 +85,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              SetOptedOutOfReportingPayQuarterFromDraftReturn(viewModel, draftReturn);
          }
 
-        private void SetFiguresFromSubmittedReturn(NewReportFiguresViewModel viewModel, Return submittedReturn)
+        private void SetFiguresFromSubmittedReturn(ReportFiguresViewModel viewModel, Return submittedReturn)
          {
              SetHourlyPayQuarterFiguresFromSubmittedReturn(viewModel, submittedReturn);
              SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromSubmittedReturn(viewModel, submittedReturn);
@@ -93,7 +93,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              SetOptedOutOfReportingPayQuarterFromSubmittedReturn(viewModel, submittedReturn);
          }
          
-        private void SetHourlyPayQuarterFiguresFromDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SetHourlyPayQuarterFiguresFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.MaleUpperPayBand = draftReturn.MaleUpperQuartilePayBand;
             viewModel.FemaleUpperPayBand = draftReturn.FemaleUpperQuartilePayBand;
@@ -105,7 +105,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.FemaleLowerPayBand = draftReturn.FemaleLowerPayBand;
         }
 
-        private void SetHourlyPayQuarterFiguresFromSubmittedReturn(NewReportFiguresViewModel viewModel, Return submittedReturn)
+        private void SetHourlyPayQuarterFiguresFromSubmittedReturn(ReportFiguresViewModel viewModel, Return submittedReturn)
         {
             viewModel.MaleUpperPayBand = submittedReturn.MaleUpperQuartilePayBand;
             viewModel.FemaleUpperPayBand = submittedReturn.FemaleUpperQuartilePayBand;
@@ -117,19 +117,19 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.FemaleLowerPayBand = submittedReturn.FemaleLowerPayBand;
         }
 
-        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.DiffMeanHourlyPayPercent = draftReturn.DiffMeanHourlyPayPercent;
             viewModel.DiffMedianHourlyPercent = draftReturn.DiffMedianHourlyPercent;
         }
 
-        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromSubmittedReturn(NewReportFiguresViewModel viewModel, Return submittedReturn)
+        private void SetMeanAndMedianGenderPayGapUsingHourlyPayFiguresFromSubmittedReturn(ReportFiguresViewModel viewModel, Return submittedReturn)
         {
             viewModel.DiffMeanHourlyPayPercent = submittedReturn.DiffMeanHourlyPayPercent;
             viewModel.DiffMedianHourlyPercent = submittedReturn.DiffMedianHourlyPercent;
         }
 
-        private void SetBonusPayFiguresFromDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SetBonusPayFiguresFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.FemaleBonusPayPercent = draftReturn.FemaleMedianBonusPayPercent;
             viewModel.MaleBonusPayPercent = draftReturn.MaleMedianBonusPayPercent;
@@ -137,7 +137,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.DiffMedianBonusPercent = draftReturn.DiffMedianBonusPercent;
         }
 
-        private void SetBonusPayFiguresFromSubmittedReturn(NewReportFiguresViewModel viewModel, Return submittedReturn)
+        private void SetBonusPayFiguresFromSubmittedReturn(ReportFiguresViewModel viewModel, Return submittedReturn)
         {
             viewModel.FemaleBonusPayPercent = submittedReturn.FemaleMedianBonusPayPercent;
             viewModel.MaleBonusPayPercent = submittedReturn.MaleMedianBonusPayPercent;
@@ -145,12 +145,12 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.DiffMedianBonusPercent = submittedReturn.DiffMedianBonusPercent;
         }
         
-        private void SetOptedOutOfReportingPayQuarterFromDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SetOptedOutOfReportingPayQuarterFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             viewModel.OptedOutOfReportingPayQuarters = draftReturn.OptedOutOfReportingPayQuarters;
         }
         
-        private void SetOptedOutOfReportingPayQuarterFromSubmittedReturn(NewReportFiguresViewModel viewModel, Return submittedReturn)
+        private void SetOptedOutOfReportingPayQuarterFromSubmittedReturn(ReportFiguresViewModel viewModel, Return submittedReturn)
         {
             viewModel.OptedOutOfReportingPayQuarters = submittedReturn.OptedOutOfReportingPayQuarters;
         }
@@ -161,7 +161,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
         [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/figures")]
         [ValidateAntiForgeryToken]
-        public IActionResult NewReportFiguresPost(string encryptedOrganisationId, int reportingYear, NewReportFiguresViewModel viewModel)
+        public IActionResult ReportFiguresPost(string encryptedOrganisationId, int reportingYear, ReportFiguresViewModel viewModel)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -173,17 +173,17 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportFigures/NewReportFigures.cshtml", viewModel);
+                return View("~/Views/ReportFigures/ReportFigures.cshtml", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
 
-        private void ValidateUserInput(NewReportFiguresViewModel viewModel)
+        private void ValidateUserInput(ReportFiguresViewModel viewModel)
         {
             ValidateBonusPayFigures(viewModel);
             ValidateHourlyPayFigures(viewModel);
@@ -194,7 +194,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
         }
 
-        private void SaveChangesToDraftReturn(NewReportFiguresViewModel viewModel, long organisationId, int reportingYear)
+        private void SaveChangesToDraftReturn(ReportFiguresViewModel viewModel, long organisationId, int reportingYear)
         {
             DraftReturn draftReturn = draftReturnService.GetOrCreateDraftReturn(organisationId, reportingYear);
             
@@ -206,7 +206,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             draftReturnService.SaveDraftReturnOrDeleteIfNotRelevent(draftReturn);
         }
 
-        private void ValidateBonusPayFigures(NewReportFiguresViewModel viewModel)
+        private void ValidateBonusPayFigures(ReportFiguresViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.FemaleBonusPayPercent);
             viewModel.ParseAndValidateParameters(Request, m => m.MaleBonusPayPercent);
@@ -214,7 +214,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.ParseAndValidateParameters(Request, m => m.DiffMedianBonusPercent);
         }
 
-        private void ValidatePayQuartileFigures(NewReportFiguresViewModel viewModel)
+        private void ValidatePayQuartileFigures(ReportFiguresViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.MaleUpperPayBand);
             viewModel.ParseAndValidateParameters(Request, m => m.FemaleUpperPayBand);
@@ -261,13 +261,13 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
         }
 
-        private void ValidateHourlyPayFigures(NewReportFiguresViewModel viewModel)
+        private void ValidateHourlyPayFigures(ReportFiguresViewModel viewModel)
         {
             viewModel.ParseAndValidateParameters(Request, m => m.DiffMeanHourlyPayPercent);
             viewModel.ParseAndValidateParameters(Request, m => m.DiffMedianHourlyPercent);
         }
         
-        private void SavePayQuartileFiguresToDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SavePayQuartileFiguresToDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             draftReturn.MaleUpperQuartilePayBand = viewModel.MaleUpperPayBand;
             draftReturn.FemaleUpperQuartilePayBand = viewModel.FemaleUpperPayBand;
@@ -279,7 +279,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             draftReturn.FemaleLowerPayBand = viewModel.FemaleLowerPayBand;
         }
         
-        private void SaveBonusPayFiguresToDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SaveBonusPayFiguresToDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             draftReturn.FemaleMedianBonusPayPercent = viewModel.FemaleBonusPayPercent;
             draftReturn.MaleMedianBonusPayPercent = viewModel.MaleBonusPayPercent;
@@ -287,13 +287,13 @@ namespace GenderPayGap.WebUI.Controllers.Report
             draftReturn.DiffMedianBonusPercent = viewModel.DiffMedianBonusPercent;
         }
 
-        private void SaveHourlyPayFiguresToDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SaveHourlyPayFiguresToDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             draftReturn.DiffMeanHourlyPayPercent = viewModel.DiffMeanHourlyPayPercent;
             draftReturn.DiffMedianHourlyPercent = viewModel.DiffMedianHourlyPercent;
         }
 
-        private void SaveOptedOutOdReportingPayQuartersToDraftReturn(NewReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SaveOptedOutOdReportingPayQuartersToDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             draftReturn.OptedOutOfReportingPayQuarters = viewModel.OptedOutOfReportingPayQuarters;
         }

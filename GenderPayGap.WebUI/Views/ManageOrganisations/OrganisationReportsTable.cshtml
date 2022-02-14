@@ -60,7 +60,7 @@
 
                     <td class="govuk-table__cell">
                         <a loadtest-id="create-report-@detailsForYear.ReportingYear"
-                           href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear, shouldShowLateSubmissionWarning = true})">
+                           href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear, shouldShowLateSubmissionWarning = true})">
                             @detailsForYear.GetReportLinkText()
                         </a>
                     </td>

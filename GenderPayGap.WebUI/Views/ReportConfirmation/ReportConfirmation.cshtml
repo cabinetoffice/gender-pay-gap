@@ -30,7 +30,7 @@
             new CrumbViewModel
             {
                 Text = $"Report your gender pay gap (reporting year {formattedReportingYears})",
-                Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})
+                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})
             },
             new CrumbViewModel
             {
@@ -117,7 +117,7 @@
         
         
         <form method="post"
-              action="@Url.Action("NewReportCompleteFinishAndSignOut", "NewReportConfirmation")">
+              action="@Url.Action("ReportCompleteFinishAndSignOut", "ReportConfirmation")">
             @(Html.AntiForgeryToken())
             @(Html.GovUkButton(new ButtonViewModel
             {
@@ -125,7 +125,7 @@
             }))
             
             <p class="govuk-body govuk-!-margin-bottom-4">
-                <a class="govuk-link" href="@(Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear}))">Return to @(Model.Organisation.OrganisationName)</a>
+                <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})">Return to @(Model.Organisation.OrganisationName)</a>
             </p>
             
             <p class="govuk-body govuk-!-margin-bottom-4">

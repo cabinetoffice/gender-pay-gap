@@ -65,7 +65,7 @@ namespace GenderPayGap.Core.Helpers
 
         public static bool IsReportingYearWithFurloughScheme(DateTime accountingDate)
         {
-            return Global.ReportingStartYearsWithFurloughScheme.Contains(accountingDate.Year);
+            return IsReportingYearWithFurloughScheme(accountingDate.Year);
         }
         
         public static bool IsReportingYearWithFurloughScheme(int reportingYear)
