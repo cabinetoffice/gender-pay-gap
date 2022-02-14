@@ -1,7 +1,7 @@
 ﻿@using GenderPayGap.Core.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Report.NewLateSubmissionReasonViewModel
+@model GenderPayGap.WebUI.Models.Report.LateSubmissionReasonViewModel
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
@@ -32,7 +32,7 @@
                 new CrumbViewModel
                 {
                     Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                    Href = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                    Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
                 },
                 new CrumbViewModel
                 {
@@ -55,7 +55,7 @@
             nameof(Model.Reason)
         }))
         
-        <form method="post" action="@Url.Action("NewLateSubmissionReasonPost", "NewLateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+        <form method="post" action="@Url.Action("LateSubmissionReasonPost", "LateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
             
             @(Html.AntiForgeryToken())
 
@@ -95,7 +95,7 @@
                 }))
 
                 <p class="govuk-body">
-                    <a href="@Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+                    <a href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
                        class="govuk-link">
                         Go back and continue editing this report
                     </a>

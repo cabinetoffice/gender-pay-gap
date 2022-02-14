@@ -5,6 +5,7 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
+using GovUkDesignSystem;
 using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,13 @@ namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
     [Route("account/organisations")]
-    public class NewReportSizeOfOrganisationController : Controller
+    public class ReportLinkToWebsiteController: Controller
     {
 
         private readonly IDataRepository dataRepository;
         private readonly DraftReturnService draftReturnService;
 
-        public NewReportSizeOfOrganisationController(
+        public ReportLinkToWebsiteController(
             IDataRepository dataRepository,
             DraftReturnService draftReturnService)
         {
@@ -27,22 +28,22 @@ namespace GenderPayGap.WebUI.Controllers.Report
             this.draftReturnService = draftReturnService;
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-size-of-organisation")]
-        public IActionResult NewReportSizeOfOrganisationGet(string encryptedOrganisationId, int reportingYear)
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/link-to-organisation-website")]
+        public IActionResult ReportLinkToWebsiteGet(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-            var viewModel = new ReportSizeOfOrganisationViewModel();
+            var viewModel = new ReportLinkToWebsiteViewModel();
             PopulateViewModel(viewModel, organisationId, reportingYear);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
 
-            return View("~/Views/ReportSizeOfOrganisation/NewReportSizeOfOrganisation.cshtml", viewModel);
+            return View("~/Views/ReportLinkToWebsite/ReportLinkToWebsite.cshtml", viewModel);
         }
         
-        private void PopulateViewModel(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportLinkToWebsiteViewModel viewModel, long organisationId, int reportingYear)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
 
@@ -54,7 +55,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
         }
         
-        private void SetValuesFromDraftReturnOrSubmittedReturn(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)
+        private void SetValuesFromDraftReturnOrSubmittedReturn(ReportLinkToWebsiteViewModel viewModel, long organisationId, int reportingYear)
         {
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
             if (draftReturn != null)
@@ -70,21 +71,20 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 return;
             }
         }
-
-        private void SetValuesFromDraftReturn(ReportSizeOfOrganisationViewModel viewModel, DraftReturn draftReturn)
+        
+        private void SetValuesFromDraftReturn(ReportLinkToWebsiteViewModel viewModel, DraftReturn draftReturn)
         {
-            viewModel.SetSizeOfOrganisation(draftReturn.OrganisationSize);
+            viewModel.LinkToOrganisationWebsite = draftReturn.CompanyLinkToGPGInfo;
         }
 
-        private void SetValuesFromSubmittedReturn(ReportSizeOfOrganisationViewModel viewModel, Return submittedReturn)
+        private void SetValuesFromSubmittedReturn(ReportLinkToWebsiteViewModel viewModel, Return submittedReturn)
         {
-            viewModel.SetSizeOfOrganisation(submittedReturn.OrganisationSize);
+            viewModel.LinkToOrganisationWebsite = submittedReturn.CompanyLinkToGPGInfo;
         }
         
-        
-        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/new-size-of-organisation")]
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/link-to-organisation-website")]
         [ValidateAntiForgeryToken]
-        public IActionResult NewReportSizeOfOrganisationPost(string encryptedOrganisationId, int reportingYear, ReportSizeOfOrganisationViewModel viewModel)
+        public IActionResult ReportLinkToWebsitePost(string encryptedOrganisationId, int reportingYear, ReportLinkToWebsiteViewModel viewModel)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -96,29 +96,38 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportSizeOfOrganisation/NewReportSizeOfOrganisation.cshtml", viewModel);
+                return View("~/Views/ReportLinkToWebsite/ReportLinkToWebsite.cshtml", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("NewReportOverview", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
-        
-        private void ValidateUserInput(ReportSizeOfOrganisationViewModel viewModel)
+
+        private void ValidateUserInput(ReportLinkToWebsiteViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.SizeOfOrganisation);
+            viewModel.ParseAndValidateParameters(Request, m => m.LinkToOrganisationWebsite);
+
+            if (!string.IsNullOrEmpty(viewModel.LinkToOrganisationWebsite))
+            {
+                if (!UriSanitiser.IsValidHttpOrHttpsLink(viewModel.LinkToOrganisationWebsite))
+                {
+                    viewModel.AddErrorFor(m => m.LinkToOrganisationWebsite, "Enter a valid URL, starting with http:// or https://");
+                }
+            }
         }
 
-        private void SaveChangesToDraftReturn(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)
+        private void SaveChangesToDraftReturn(ReportLinkToWebsiteViewModel viewModel, long organisationId, int reportingYear)
         {
             DraftReturn draftReturn = draftReturnService.GetOrCreateDraftReturn(organisationId, reportingYear);
 
-            draftReturn.OrganisationSize = viewModel.GetSizeOfOrganisation();
+            draftReturn.CompanyLinkToGPGInfo = viewModel.LinkToOrganisationWebsite;
 
             draftReturnService.SaveDraftReturnOrDeleteIfNotRelevent(draftReturn);
         }
+
 
     }
 }

@@ -4,7 +4,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using System.ComponentModel.DataAnnotations
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
-@model GenderPayGap.WebUI.Models.Report.NewReportOverviewViewModel
+@model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
 
 @{
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
@@ -71,7 +71,7 @@
             var hourlyPayQuarterPercentageSection = new ReportOverviewSectionViewModel
             {
                 Title = "Percentage of men and women in each hourly pay quarter",
-                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
                     new 
                     {
                         encryptedOrganisationId = encryptedOrganisationId,
@@ -112,7 +112,7 @@
             var hourlyPayMeanAndMedianSection = new ReportOverviewSectionViewModel
             {
                 Title = "Mean and Median gender pay gap using hourly pay",
-                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
                     new 
                     {
                         encryptedOrganisationId = encryptedOrganisationId,
@@ -138,7 +138,7 @@
                 Title = "Percentage of men and women who received bonus pay",
                 LeftTitle = "Men",
                 RightTitle = "Women",
-                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
                     new 
                     {
                         encryptedOrganisationId = encryptedOrganisationId,
@@ -158,7 +158,7 @@
             var bonusPayMeanAndMedianGenderPayGapSection = new ReportOverviewSectionViewModel
             {
                 Title = "Mean and Median gender pay gap using bonus pay",
-                EditLink = Url.Action("NewReportFiguresGet", "NewReportFigures",
+                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
                     new 
                     {
                         encryptedOrganisationId = encryptedOrganisationId,
@@ -182,7 +182,7 @@
             var personResponsibleSection = new ReportOverviewSectionViewModel
             {
                 Title = "Person responsible in your organisation",
-                EditLink = Url.Action("NewReportResponsiblePersonGet", "NewReportResponsiblePerson", new 
+                EditLink = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson", new 
                 {
                     encryptedOrganisationId = encryptedOrganisationId,
                     reportingYear = Model.ReportingYear
@@ -200,7 +200,7 @@
             var employeeHeadcountSection = new ReportOverviewSectionViewModel
             {
                 Title = "Employee headcount",
-                EditLink = Url.Action("NewReportSizeOfOrganisationGet", "NewReportSizeOfOrganisation", new 
+                EditLink = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", new 
                 {
                     encryptedOrganisationId = encryptedOrganisationId,
                     reportingYear = Model.ReportingYear
@@ -218,7 +218,7 @@
             var linkToGenderPayGapInformationSection = new ReportOverviewSectionViewModel
             {
                 Title = "Link to your gender pay gap information",
-                EditLink = Url.Action("NewReportLinkToWebsiteGet", "NewReportLinkToWebsite", new 
+                EditLink = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite", new 
                 {
                     encryptedOrganisationId = encryptedOrganisationId,
                     reportingYear = Model.ReportingYear
@@ -274,14 +274,14 @@
             }))
 
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Submit",
                 Classes = "govuk-button govuk-!-margin-bottom-6",
                 Disabled = !Model.DraftReturnExists || !Model.AllRequiredFieldsAreFilled(),
-                Href = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnGet", "NewReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
+                Href = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnGet", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
                     : null
-            }))
+            })
         </div>
         
         <p class="govuk-body">
