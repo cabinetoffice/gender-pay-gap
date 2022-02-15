@@ -98,7 +98,7 @@ namespace GenderPayGap.WebUI.Services
             };
         }
 
-        public void SaveDraftReturnOrDeleteIfNotRelevent(DraftReturn draftReturn)
+        public void SaveDraftReturnOrDeleteIfNotRelevant(DraftReturn draftReturn)
         {
             Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
             Return submittedReturn = organisation.GetReturn(draftReturn.SnapshotYear);
@@ -111,24 +111,6 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.SaveChanges();
         }
 
-        public bool DraftReturnExistsAndIsComplete(long organisationId, int reportingYear)
-        {
-            DraftReturn draftReturn = GetDraftReturn(organisationId, reportingYear);
-            if (draftReturn == null)
-            {
-                return false;
-            }
-
-            var organisation = dataRepository.Get<Organisation>(organisationId);
-            
-            return HourlyPaySectionIsComplete(draftReturn)
-                   && BonusPaySectionIsComplete(draftReturn)
-                   && EmployeesByPayQuartileSectionIsFilledIn(draftReturn)
-                   && ResponsiblePersonSectionIsComplete(draftReturn, organisation)
-                   && OrganisationSizeSectionIsComplete(draftReturn)
-                   && WebsiteLinkSectionIsComplete(draftReturn);
-        }
-        
         public bool DraftReturnExistsAndRequiredFieldsAreComplete(long organisationId, int reportingYear)
         {
             DraftReturn draftReturn = GetDraftReturn(organisationId, reportingYear);
@@ -147,7 +129,6 @@ namespace GenderPayGap.WebUI.Services
                    && BonusPaySectionIsComplete(draftReturn)
                    && employeesByPayQuartileSectionIsComplete
                    && ResponsiblePersonSectionIsComplete(draftReturn, organisation)
-                   && OrganisationSizeSectionIsComplete(draftReturn)
                    && WebsiteLinkSectionIsComplete(draftReturn);
         }
 
@@ -190,11 +171,6 @@ namespace GenderPayGap.WebUI.Services
                    || (!string.IsNullOrWhiteSpace(draftReturn.FirstName)
                        && !string.IsNullOrWhiteSpace(draftReturn.LastName)
                        && !string.IsNullOrWhiteSpace(draftReturn.JobTitle));
-        }
-
-        private bool OrganisationSizeSectionIsComplete(DraftReturn draftReturn)
-        {
-            return draftReturn.OrganisationSize != null;
         }
 
         private bool WebsiteLinkSectionIsComplete(DraftReturn draftReturn)

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class ReportFiguresController: Controller
     {
         
@@ -57,8 +57,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              Organisation organisation = dataRepository.Get<Organisation>(organisationId);
              Return submittedReturn = organisation.GetReturn(reportingYear);
              bool isEditingSubmittedReturn = submittedReturn != null;
-            
-            
+
              viewModel.Organisation = organisation;
              viewModel.ReportingYear = reportingYear;
              viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
@@ -178,7 +177,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
@@ -200,10 +199,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
             
             SaveBonusPayFiguresToDraftReturn(viewModel, draftReturn);
             SaveHourlyPayFiguresToDraftReturn(viewModel, draftReturn);
-            SaveOptedOutOdReportingPayQuartersToDraftReturn(viewModel, draftReturn);
+            SaveOptedOutOfReportingPayQuartersToDraftReturn(viewModel, draftReturn);
             SavePayQuartileFiguresToDraftReturn(viewModel, draftReturn);
             
-            draftReturnService.SaveDraftReturnOrDeleteIfNotRelevent(draftReturn);
+            draftReturnService.SaveDraftReturnOrDeleteIfNotRelevant(draftReturn);
         }
 
         private void ValidateBonusPayFigures(ReportFiguresViewModel viewModel)
@@ -293,12 +292,11 @@ namespace GenderPayGap.WebUI.Controllers.Report
             draftReturn.DiffMedianHourlyPercent = viewModel.DiffMedianHourlyPercent;
         }
 
-        private void SaveOptedOutOdReportingPayQuartersToDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
+        private void SaveOptedOutOfReportingPayQuartersToDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn)
         {
             draftReturn.OptedOutOfReportingPayQuarters = viewModel.OptedOutOfReportingPayQuarters;
         }
         
         #endregion
-
     }
 }

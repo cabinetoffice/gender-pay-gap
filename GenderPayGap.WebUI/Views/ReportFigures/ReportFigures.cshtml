@@ -28,12 +28,12 @@
             new CrumbViewModel
             {
                 Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
             },
             new CrumbViewModel
             {
                 Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+                Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
             new CrumbViewModel
             {
@@ -48,7 +48,7 @@
     }))
 }
 
-<form method="post" action="@Url.Action("ReportFiguresPost", "ReportFigures", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear })">
+<form method="post" action="@Url.Action("ReportFiguresPost", "ReportFigures", new { encryptedOrganisationId, reportingYear = Model.ReportingYear })">
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -74,7 +74,7 @@
             <p class="govuk-body">A negative <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid less than women in your organisation.</p>
 
             <p class="govuk-body govuk-!-font-weight-bold">
-                Please enter your data to 1 decimal point
+                Please enter your data to 1 decimal point.
             </p>
                 
             <fieldset class="govuk-fieldset govuk-!-margin-top-8">
@@ -299,12 +299,17 @@
                     textInputAppendix: new TextInputAppendixViewModel
                     {
                         Html = @<text>
-                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
+                                   <span class="govuk-label govuk-!-margin-left-1">%</span>
                                 </text>
                     }
                     ))
             </fieldset>
-
+            
+            <p class="govuk-body">
+                Selecting continue will save a draft of your gender pay gap figures. 
+                You will be able to review and edit before submitting your gender pay gap information.
+            </p>
+        
             @(Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
@@ -312,8 +317,8 @@
             }))
 
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-                    Cancel and return to report overview
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">
+                    Cancel and return to @(Model.Organisation.OrganisationName)
                 </a>
             </p>
         </div>

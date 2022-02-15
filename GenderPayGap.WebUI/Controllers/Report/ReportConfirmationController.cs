@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class ReportConfirmationController : Controller
     {
 
@@ -36,6 +36,23 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return View("~/Views/ReportConfirmation/ReportConfirmation.cshtml", foundReturn);
         }
 
+        [HttpPost("/submission-complete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult ReportCompleteFinishAndSignOut()
+        {
+            string nextPageUrl =
+                // Take the user to the "done" URL (the gov.uk survey page)
+                Global.DoneUrl
+                ?? // Or, if we don't have a "done URL", take them to the homepage
+                Url.Action("Index", "Viewing", null, "https");
+
+            // Global.Done url is not local
+            //disable:DoNotUseRedirectWithReturnUrls
+            IActionResult suggestedResult = Redirect(nextPageUrl);
+
+            return LoginHelper.Logout(HttpContext, suggestedResult);
+        }
+        
         private Return LoadReturnFromOrganisationIdReportingYearAndConfirmationId(
             long organisationId,
             int reportingYear,
@@ -53,23 +70,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             return foundReturn;
-        }
-        
-        [HttpPost("/report-complete-finish-and-sign-out")]
-        [ValidateAntiForgeryToken]
-        public IActionResult ReportCompleteFinishAndSignOut()
-        {
-            string nextPageUrl =
-                // Take the user to the "done" URL (the gov.uk survey page)
-                Global.DoneUrl
-                ?? // Or, if we don't have a "done URL", take them to the homepage
-                Url.Action("Index", "Viewing", null, "https");
-
-            // Global.Done url is not local
-            //disable:DoNotUseRedirectWithReturnUrls
-            IActionResult suggestedResult = Redirect(nextPageUrl);
-
-            return LoginHelper.Logout(HttpContext, suggestedResult);
         }
 
     }

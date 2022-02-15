@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class ReportLinkToWebsiteController: Controller
     {
 
@@ -101,7 +101,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
@@ -125,7 +125,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             draftReturn.CompanyLinkToGPGInfo = viewModel.LinkToOrganisationWebsite;
 
-            draftReturnService.SaveDraftReturnOrDeleteIfNotRelevent(draftReturn);
+            draftReturnService.SaveDraftReturnOrDeleteIfNotRelevant(draftReturn);
         }
 
 

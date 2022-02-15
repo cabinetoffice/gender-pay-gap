@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class ReportOverviewController: Controller
     {
         
@@ -48,41 +48,33 @@ namespace GenderPayGap.WebUI.Controllers.Report
             {
                 return RedirectToReportOverviewPage(encryptedOrganisationId, reportingYear, "This report is not ready to submit. Complete the remaining sections");
             }
-            
-            
-            if (WillBeLateSubmission(draftReturn))
+
+            if (draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 // Late submission Reason
-                return RedirectToAction("LateSubmissionReasonGet", "LateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+                return RedirectToAction("LateSubmissionReasonGet", "LateSubmission", new { encryptedOrganisationId, reportingYear});
             }
-            else
-            {
-                User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-                Return newReturn = returnService.CreateAndSaveReturnFromDraftReturn(draftReturn, user, Url);
+            
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            Return newReturn = returnService.CreateAndSaveReturnFromDraftReturn(draftReturn, user, Url);
 
-                // Confirmation
-                return RedirectToAction("ReportConfirmation", "ReportConfirmation",
-                    new
-                    {
-                        encryptedOrganisationId = encryptedOrganisationId,
-                        reportingYear = reportingYear,
-                        confirmationId = Encryption.EncryptQuerystring(newReturn.ReturnId.ToString())
-                    });
-            }
+            // Confirmation
+            return RedirectToAction("ReportConfirmation", "ReportConfirmation",
+                new
+                {
+                    encryptedOrganisationId,
+                    reportingYear,
+                    confirmationId = Encryption.EncryptQuerystring(newReturn.ReturnId.ToString())
+                });
         }
 
         private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message)
         {
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, message, nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
-        
-        private bool WillBeLateSubmission(DraftReturn draftReturn)
-        {
-            return draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn);
-        }
-        
+
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report")]
         public IActionResult ReportOverview(string encryptedOrganisationId, int reportingYear, bool shouldShowLateSubmissionWarning = false)
         {
@@ -95,20 +87,26 @@ namespace GenderPayGap.WebUI.Controllers.Report
             {
                 return RedirectToAction("LateSubmissionWarningGet", "LateSubmission", new {encryptedOrganisationId, reportingYear});
             }
+
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
+            Return submittedReturn = organisation.GetReturn(reportingYear);
+
+            if (draftReturn == null && submittedReturn == null)
+            {
+                return RedirectToAction("ReportFiguresGet", "ReportFigures", new {encryptedOrganisationId, reportingYear});
+            }
+            
             
             var viewModel = new ReportOverviewViewModel();
-            PopulateViewModel(viewModel, organisationId, reportingYear);
+            PopulateViewModel(viewModel, organisation, draftReturn, submittedReturn, reportingYear);
             
             return View("~/Views/ReportOverview/ReportOverview.cshtml", viewModel);
-            
         }
 
-        private void PopulateViewModel(ReportOverviewViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportOverviewViewModel viewModel, Organisation organisation, DraftReturn draftReturn, Return submittedReturn, int reportingYear)
         {
-            SetOrganisationInformation(viewModel, organisationId, reportingYear);
-            
-            DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
-            Return submittedReturn = viewModel.Organisation.GetReturn(reportingYear);
+            SetOrganisationInformation(viewModel, organisation, submittedReturn, reportingYear);
             viewModel.DraftReturnExists = draftReturn != null;
 
             if (submittedReturn != null)
@@ -121,13 +119,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
         }
         
-        private void SetOrganisationInformation(ReportOverviewViewModel viewModel, long organisationId, int reportingYear)
+        private void SetOrganisationInformation(ReportOverviewViewModel viewModel, Organisation organisation, Return submittedReturn, int reportingYear)
         {
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-            Return submittedReturn = organisation.GetReturn(reportingYear);
             bool isEditingSubmittedReturn = submittedReturn != null;
-            
-            
+
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
             viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;

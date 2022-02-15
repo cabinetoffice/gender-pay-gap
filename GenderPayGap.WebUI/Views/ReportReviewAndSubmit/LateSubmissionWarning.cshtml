@@ -37,7 +37,7 @@
         {
             Text = "Continue",
             Classes = "govuk-!-margin-bottom-6 govuk-!-margin-top-6",
-            Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
         })
 
     </div>

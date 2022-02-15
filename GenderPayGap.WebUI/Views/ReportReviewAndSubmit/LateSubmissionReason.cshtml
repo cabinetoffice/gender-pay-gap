@@ -16,35 +16,12 @@
 }
 
 @section BeforeMain {
-    @{
-            var crumbs = new List<CrumbViewModel>
-            {
-                new CrumbViewModel
-                {
-                    Text = "Your Organisations",
-                    Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-                },
-                new CrumbViewModel
-                {
-                    Text = Model.Organisation.OrganisationName,
-                    Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
-                },
-                new CrumbViewModel
-                {
-                    Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                    Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
-                },
-                new CrumbViewModel
-                {
-                    Text = "Late Submission Reason"
-                }
-            };
+    @(Html.GovUkBackLink(
+        new BackLinkViewModel
+        {
+            Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
         }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
+    ))
 }
 
 <div class="govuk-grid-row">
@@ -55,13 +32,13 @@
             nameof(Model.Reason)
         }))
         
-        <form method="post" action="@Url.Action("LateSubmissionReasonPost", "LateSubmission", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+        <form method="post" action="@Url.Action("LateSubmissionReasonPost", "LateSubmission", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})">
             
             @(Html.AntiForgeryToken())
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h1>
+                    <h1 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-0" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h1>
                     
                     <h2 class="govuk-fieldset__heading">We need more information</h2>
                 </legend>
@@ -83,8 +60,7 @@
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
-                        Text = "Please explain why your organisation is reporting or changing your gender pay gap "
-                               + "figures or senior responsible person after the deadline.",
+                        Text = "Please explain why your organisation is reporting or changing your gender pay gap figures"
                     }
                     ))
 
@@ -93,13 +69,6 @@
                     Text = "Confirm and submit",
                     Classes = "govuk-!-margin-bottom-4"
                 }))
-
-                <p class="govuk-body">
-                    <a href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})"
-                       class="govuk-link">
-                        Go back and continue editing this report
-                    </a>
-                </p>
             </fieldset>
         </form>
     </div>

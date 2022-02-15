@@ -17,41 +17,16 @@
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Your Organisations",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
-                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})
-            },
-            new CrumbViewModel
-            {
-                Text = "Person responsible in your organisation"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(Html.GovUkBackLink(new BackLinkViewModel
     {
-        Crumbs = crumbs
+        Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
     }))
 }
 
 
 
 <form method="post"
-      action="@Url.Action("ReportResponsiblePersonPost", "ReportResponsiblePerson", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
+      action="@Url.Action("ReportResponsiblePersonPost", "ReportResponsiblePerson", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
@@ -112,8 +87,8 @@
             }))
 
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = Model.ReportingYear})">
-                    Cancel and return to report overview
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">
+                    Cancel and return to @(Model.Organisation.OrganisationName)
                 </a>
             </p>
         </div>
