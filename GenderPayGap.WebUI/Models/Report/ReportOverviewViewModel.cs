@@ -137,6 +137,11 @@ namespace GenderPayGap.WebUI.Models.Report
             return OptedOutOfReportingPayQuarters ? "Not Applicable" : GetPercentageValue(payQuarterValue);
         }
 
+        public string GetMeanOrMedianValue(decimal? meanOrMedianValue)
+        {
+            return MaleBonusPayPercent == 0 ? "Not Applicable" : GetPercentageValue(meanOrMedianValue);
+        }
+
         public string GetPercentageValue(decimal? value)
         {
             return value == null ? "Not Completed" : $"{value}%";

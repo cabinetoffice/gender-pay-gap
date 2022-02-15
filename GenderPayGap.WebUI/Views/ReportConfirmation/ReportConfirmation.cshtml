@@ -13,37 +13,6 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Your Organisations",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = $"Report your gender pay gap (reporting year {formattedReportingYears})",
-                Href = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})
-            },
-            new CrumbViewModel
-            {
-                Text = "Confirmation"
-            }
-        };
-    }
-
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
-    {
-        Crumbs = crumbs
-    }))
-}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -62,9 +31,6 @@
             <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.Organisation.GetEncryptedId(), year = reportingYear})"
                class="govuk-link">
                 View your published gender pay gap information
-                <span class="govuk-visually-hidden">
-                    (opens in a new window)
-                </span>
             </a>
         </p>
         
@@ -72,7 +38,7 @@
         
         <p class="govuk-body govuk-!-margin-bottom-6">
             You must also publish your gender pay gap report (and
-            <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement">
+            <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#written-statement" target="_blank">
                 written statement
                 <span class="govuk-visually-hidden">
                     (opens in a new window)
@@ -89,7 +55,7 @@
         </p>
         
         <p class="govuk-body govuk-!-margin-bottom-4">
-            <a class="govuk-link" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">
+            <a class="govuk-link" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")" target="_blank">
                 Eight ways to understand your organisation's gender pay gap
                 <span class="govuk-visually-hidden">
                     (opens in a new window)
@@ -98,7 +64,7 @@
         </p>    
         
         <p class="govuk-body govuk-!-margin-bottom-4">
-            <a class="govuk-link" href="/public/assets/pdf/action-plan-guidance.pdf">
+            <a class="govuk-link" href="/public/assets/pdf/action-plan-guidance.pdf" target="_blank">
                 Four steps to developing a gender pay gap action plan
                 <span class="govuk-visually-hidden">
                     (opens in a new window)
@@ -107,7 +73,7 @@
         </p>    
 
         <p class="govuk-body govuk-!-margin-bottom-4">
-            <a class="govuk-link" href="@Url.Action("Overview", "ActionHub")">
+            <a class="govuk-link" href="@Url.Action("Overview", "ActionHub")" target="_blank">
                 Actions to close the gap
                 <span class="govuk-visually-hidden">
                     (opens in a new window)
@@ -125,7 +91,7 @@
             }))
             
             <p class="govuk-body govuk-!-margin-bottom-4">
-                <a class="govuk-link" href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear})">Return to @(Model.Organisation.OrganisationName)</a>
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">Return to @(Model.Organisation.OrganisationName)</a>
             </p>
             
             <p class="govuk-body govuk-!-margin-bottom-4">

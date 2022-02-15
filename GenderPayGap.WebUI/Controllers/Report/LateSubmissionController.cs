@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class LateSubmissionController: Controller
     {
         
@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             {
                 // If this is not a late submission, send the user back to the Overview page
                 return RedirectToAction("ReportOverview", "ReportOverview",
-                    new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                    new { encryptedOrganisationId, reportingYear });
             }
 
             var viewModel = new LateSubmissionReasonViewModel();
@@ -77,23 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return View("~/Views/ReportReviewAndSubmit/LateSubmissionReason.cshtml", viewModel);
         }
 
-        private void PopulateLateSubmissionViewModel(LateSubmissionReasonViewModel viewModel, long organisationId, int reportingYear)
-        {
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-            
-            DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
-            DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
-
-            Return submittedReturn = organisation.GetReturn(reportingYear);
-            bool isEditingSubmittedReturn = submittedReturn != null;
-            
-            viewModel.Organisation = organisation;
-            viewModel.ReportingYear = reportingYear;
-            viewModel.DeadlineDate = deadlineDate;
-            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
-        }
-
-        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission")]
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-reason")]
         [ValidateAntiForgeryToken]
         public IActionResult LateSubmissionReasonPost(string encryptedOrganisationId, int reportingYear, LateSubmissionReasonViewModel viewModel)
         {
@@ -111,8 +95,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (!draftReturnService.DraftReturnWouldBeNewlyLateIfSubmittedNow(draftReturn))
             {
                 // If this is not a late submission, send the user back to the Overview page
-                return RedirectToAction("ReportOverview", "ReportOverview",
-                    new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                return  RedirectToReportOverviewPage(encryptedOrganisationId, reportingYear);
             }
 
             viewModel.ParseAndValidateParameters(Request, m => m.ReceivedLetterFromEhrc);
@@ -131,16 +114,36 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return RedirectToAction("ReportConfirmation", "ReportConfirmation",
                 new
                 {
-                    encryptedOrganisationId = encryptedOrganisationId,
-                    reportingYear = reportingYear,
+                    encryptedOrganisationId,
+                    reportingYear,
                     confirmationId = Encryption.EncryptQuerystring(newReturn.ReturnId.ToString())
                 });
         }
         
-        private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message)
+        private void PopulateLateSubmissionViewModel(LateSubmissionReasonViewModel viewModel, long organisationId, int reportingYear)
         {
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
-            StatusMessageHelper.SetStatusMessage(Response, message, nextPageUrl);
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            
+            DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
+            DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
+
+            Return submittedReturn = organisation.GetReturn(reportingYear);
+            bool isEditingSubmittedReturn = submittedReturn != null;
+            
+            viewModel.Organisation = organisation;
+            viewModel.ReportingYear = reportingYear;
+            viewModel.DeadlineDate = deadlineDate;
+            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
+        }
+        
+        private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message = null)
+        {
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
+
+            if (message != null)
+            {
+                StatusMessageHelper.SetStatusMessage(Response, message, nextPageUrl);
+            }
             return LocalRedirect(nextPageUrl);
         }
 

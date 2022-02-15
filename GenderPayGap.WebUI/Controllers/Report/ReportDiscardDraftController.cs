@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class ReportDiscardDraftController : Controller
     {
 
@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (!draftReturnExists)
             {
-                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear });
                 StatusMessageHelper.SetStatusMessage(Response, "No draft to discard", nextPageUrl);
                 return LocalRedirect(nextPageUrl);
             }
@@ -77,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             bool draftReturnExists = draftReturn != null;
             if (!draftReturnExists)
             {
-                string nextPageNoDraftUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear });
+                string nextPageNoDraftUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear });
                 StatusMessageHelper.SetStatusMessage(Response, "No draft to discard", nextPageNoDraftUrl);
                 return LocalRedirect(nextPageNoDraftUrl);
             }
@@ -91,7 +91,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             string yourChangesOrYourDraftReport = isEditingSubmittedReturn ? "your changes" : "your draft report";
 
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, $"Discarded {yourChangesOrYourDraftReport}", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }

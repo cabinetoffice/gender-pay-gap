@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
 {
-    [Route("account/organisations")]
+    [Route("account/employers")]
     public class ManageOrganisationsController : Controller
     {
 
@@ -59,7 +59,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             // Check for feature flag and redirect if not enabled
             if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
             {
-                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId = encryptedOrganisationId});
+                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId});
             }
             
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
