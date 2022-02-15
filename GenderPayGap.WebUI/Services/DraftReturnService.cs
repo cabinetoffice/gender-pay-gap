@@ -205,24 +205,50 @@ namespace GenderPayGap.WebUI.Services
             return linkIsMissing || linkIsValid;
         }
 
+        public bool ShouldShowLateWarning(long organisationId, int reportingYear)
+        {
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            
+            return ReportIsLate(organisation, reportingYear) 
+                   && OrganisationIsInScope(organisation, reportingYear) 
+                   && ReportingYearIsNotExcludedFromLateEnforcement(reportingYear);
+        }
+
         public bool DraftReturnWouldBeNewlyLateIfSubmittedNow(DraftReturn draftReturn)
         {
             Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
             int reportingYear = draftReturn.SnapshotYear;
-
-            DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
-
+            
+            return ReportIsLate(organisation, reportingYear) 
+                   && OrganisationSizeMakesReportMandatory(draftReturn) 
+                   && OrganisationIsInScope(organisation, reportingYear) 
+                   && ReportingYearIsNotExcludedFromLateEnforcement(reportingYear)
+                   && IsDraftReturnAMaterialChange(draftReturn, organisation);
+        }
+        
+        private bool ReportIsLate(Organisation organisation, int reportingYear)
+        {
             // The deadline date is the final day that a return can be submitted without being considered late
             // The due date is a day later, the point at which a return is considered late
             // i.e. if the deadline date is 2021/04/01, submissions on that day are not late, any after 2021/04/02 00:00:00 are
+            DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
             DateTime dueDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(1);
-            bool isLate = VirtualDateTime.Now > dueDate;
-            bool isMandatory = draftReturn.OrganisationSize != OrganisationSizes.Employees0To249;
-            bool isInScope = organisation.GetScopeForYear(reportingYear).IsInScopeVariant();
-            bool yearIsNotExcluded = !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
-            bool isMaterialChange = IsDraftReturnAMaterialChange(draftReturn, organisation);
+            return VirtualDateTime.Now > dueDate;
+        }
 
-            return isLate && isMandatory && isInScope && yearIsNotExcluded && isMaterialChange;
+        private bool OrganisationIsInScope(Organisation organisation, int reportingYear)
+        {
+            return organisation.GetScopeForYear(reportingYear).IsInScopeVariant();
+        }
+
+        private bool ReportingYearIsNotExcludedFromLateEnforcement(int reportingYear)
+        {
+            return !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
+        }
+        
+        private bool OrganisationSizeMakesReportMandatory(DraftReturn draftReturn)
+        {
+            return draftReturn.OrganisationSize != OrganisationSizes.Employees0To249;
         }
 
         private bool IsDraftReturnAMaterialChange(DraftReturn draftReturn, Organisation organisation)

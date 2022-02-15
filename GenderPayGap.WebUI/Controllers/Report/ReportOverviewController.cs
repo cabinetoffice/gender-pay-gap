@@ -91,7 +91,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-            if (ReportIsLate(organisationId, reportingYear) && shouldShowLateSubmissionWarning)
+            if (draftReturnService.ShouldShowLateWarning(organisationId, reportingYear) && shouldShowLateSubmissionWarning)
             {
                 return RedirectToAction("LateSubmissionWarningGet", "LateSubmission", new {encryptedOrganisationId, reportingYear});
             }
@@ -103,22 +103,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
             
         }
 
-        private bool ReportIsLate(long organisationId, int reportingYear)
-        {
-            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-            DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
-
-            // The deadline date is the final day that a return can be submitted without being considered late
-            // The due date is a day later, the point at which a return is considered late
-            // i.e. if the deadline date is 2021/04/01, submissions on that day are not late, any after 2021/04/02 00:00:00 are
-            DateTime dueDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate).AddDays(1);
-            bool isLate = VirtualDateTime.Now > dueDate;
-            bool isInScope = organisation.GetScopeForYear(reportingYear).IsInScopeVariant();
-            bool yearIsNotExcluded = !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
-
-            return isLate && isInScope && yearIsNotExcluded;
-        }
-        
         private void PopulateViewModel(ReportOverviewViewModel viewModel, long organisationId, int reportingYear)
         {
             SetOrganisationInformation(viewModel, organisationId, reportingYear);
