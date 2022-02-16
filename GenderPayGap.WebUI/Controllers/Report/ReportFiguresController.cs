@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              
              ReportFiguresHelper.SetFigures(viewModel, draftReturn, submittedReturn);
 
-             return View("~/Views/ReportFigures/ReportFigures.cshtml", viewModel);
+             return View("ReportFigures", viewModel);
         }
 
         private void PopulateViewModel(ReportFiguresViewModel viewModel, long organisationId, int reportingYear)
@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportFigures/ReportFigures.cshtml", viewModel);
+                return View("ReportFigures", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);

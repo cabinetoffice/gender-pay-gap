@@ -16,6 +16,17 @@
     
     ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+
+    string GetEditLinkForReportFigures(string elementId)
+    {
+        string reportFiguresLink = Url.Action("ReportFiguresGet", "ReportFigures",
+            new
+            {
+                encryptedOrganisationId,
+                reportingYear = Model.ReportingYear
+            });
+        return $"{reportFiguresLink}#{elementId}";
+    }
 }
 
 @section BeforeMain {
@@ -71,12 +82,7 @@
             var hourlyPayQuarterPercentageSection = new ReportOverviewSectionViewModel
             {
                 Title = "Percentage of men and women in each hourly pay quarter",
-                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
-                    new 
-                    {
-                        encryptedOrganisationId,
-                        reportingYear = Model.ReportingYear
-                    }),
+                EditLink = GetEditLinkForReportFigures("PayQuartersFieldset"),
                 LeftTitle = "Men",
                 RightTitle = "Women",
                 Rows = new List<ReportOverviewSectionRowViewModel>
@@ -112,12 +118,7 @@
             var hourlyPayMeanAndMedianSection = new ReportOverviewSectionViewModel
             {
                 Title = "Mean and Median gender pay gap using hourly pay",
-                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
-                    new 
-                    {
-                        encryptedOrganisationId,
-                        reportingYear = Model.ReportingYear
-                    }),
+                EditLink = GetEditLinkForReportFigures("HourlyPayFieldset"),
                 Rows = new List<ReportOverviewSectionRowViewModel>
                 {
                     new ReportOverviewSectionRowViewModel
@@ -138,12 +139,7 @@
                 Title = "Percentage of men and women who received bonus pay",
                 LeftTitle = "Men",
                 RightTitle = "Women",
-                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
-                    new 
-                    {
-                        encryptedOrganisationId,
-                        reportingYear = Model.ReportingYear
-                    }),
+                EditLink = GetEditLinkForReportFigures("BonusPayFieldset"),
                 Rows = new List<ReportOverviewSectionRowViewModel>
                 {
                     new ReportOverviewSectionRowViewModel
@@ -158,12 +154,7 @@
             var bonusPayMeanAndMedianGenderPayGapSection = new ReportOverviewSectionViewModel
             {
                 Title = "Mean and Median gender pay gap using bonus pay",
-                EditLink = Url.Action("ReportFiguresGet", "ReportFigures",
-                    new 
-                    {
-                        encryptedOrganisationId,
-                        reportingYear = Model.ReportingYear
-                    }),
+                EditLink = GetEditLinkForReportFigures("MeanBonusFieldset"),
                 Rows = new List<ReportOverviewSectionRowViewModel>
                 {
                     new ReportOverviewSectionRowViewModel

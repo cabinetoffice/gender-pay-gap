@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             PopulateViewModel(viewModel, organisationId, reportingYear);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
 
-            return View("~/Views/ReportLinkToWebsite/ReportLinkToWebsite.cshtml", viewModel);
+            return View("ReportLinkToWebsite", viewModel);
         }
         
         private void PopulateViewModel(ReportLinkToWebsiteViewModel viewModel, long organisationId, int reportingYear)
@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportLinkToWebsite/ReportLinkToWebsite.cshtml", viewModel);
+                return View("ReportLinkToWebsite", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             {
                 if (!UriSanitiser.IsValidHttpOrHttpsLink(viewModel.LinkToOrganisationWebsite))
                 {
-                    viewModel.AddErrorFor(m => m.LinkToOrganisationWebsite, "Enter a valid URL, starting with http:// or https://");
+                    viewModel.AddErrorFor(m => m.LinkToOrganisationWebsite, "Please enter a valid web address");
                 }
             }
         }

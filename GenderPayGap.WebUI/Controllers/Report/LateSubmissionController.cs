@@ -47,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
 
-            return View("~/Views/ReportReviewAndSubmit/LateSubmissionWarning.cshtml", viewModel);
+            return View("LateSubmissionWarning", viewModel);
         }
         
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission")]
@@ -74,7 +74,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             var viewModel = new LateSubmissionReasonViewModel();
             PopulateLateSubmissionViewModel(viewModel, organisationId, reportingYear);
 
-            return View("~/Views/ReportReviewAndSubmit/LateSubmissionReason.cshtml", viewModel);
+            return View("LateSubmissionReason", viewModel);
         }
 
         [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-reason")]
@@ -104,7 +104,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateLateSubmissionViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportReviewAndSubmit/LateSubmissionReason.cshtml", viewModel);
+                return View("LateSubmissionReason", viewModel);
             }
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
