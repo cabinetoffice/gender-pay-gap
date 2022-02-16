@@ -34,8 +34,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
             this.returnService = returnService;
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
-        public IActionResult SubmitReturnGet(string encryptedOrganisationId, int reportingYear)
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
+        public IActionResult SubmitReturnPost(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -106,7 +106,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
         private void PopulateViewModel(ReportOverviewViewModel viewModel, Organisation organisation, DraftReturn draftReturn, Return submittedReturn, int reportingYear)
         {
-            SetOrganisationInformation(viewModel, organisation, submittedReturn, reportingYear);
+            SetOrganisationInformation(viewModel, organisation, reportingYear);
             viewModel.DraftReturnExists = draftReturn != null;
 
             if (submittedReturn != null)
@@ -119,13 +119,11 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
         }
         
-        private void SetOrganisationInformation(ReportOverviewViewModel viewModel, Organisation organisation, Return submittedReturn, int reportingYear)
+        private void SetOrganisationInformation(ReportOverviewViewModel viewModel, Organisation organisation, int reportingYear)
         {
-            bool isEditingSubmittedReturn = submittedReturn != null;
-
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
-            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
+            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
             viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
         }
 

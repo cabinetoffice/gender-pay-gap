@@ -127,13 +127,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
             DateTime snapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
             DateTime deadlineDate = ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
 
-            Return submittedReturn = organisation.GetReturn(reportingYear);
-            bool isEditingSubmittedReturn = submittedReturn != null;
-            
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
             viewModel.DeadlineDate = deadlineDate;
-            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
+            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
         }
         
         private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message = null)
