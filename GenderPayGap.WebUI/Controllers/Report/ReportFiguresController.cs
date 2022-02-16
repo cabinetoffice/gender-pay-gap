@@ -55,12 +55,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
         private void PopulateViewModel(ReportFiguresViewModel viewModel, long organisationId, int reportingYear)
          {
              Organisation organisation = dataRepository.Get<Organisation>(organisationId);
-             Return submittedReturn = organisation.GetReturn(reportingYear);
-             bool isEditingSubmittedReturn = submittedReturn != null;
 
              viewModel.Organisation = organisation;
              viewModel.ReportingYear = reportingYear;
-             viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
+             viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
              viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
          }
 

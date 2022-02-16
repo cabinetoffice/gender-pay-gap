@@ -22,7 +22,7 @@
         {
             new CrumbViewModel
             {
-                Text = "Your Organisations",
+                Text = "Manage Employers",
                 Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
             },
             new CrumbViewModel
@@ -32,7 +32,7 @@
             },
             new CrumbViewModel
             {
-                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
+                Text = $"{formattedReportingYears} reporting year",
                 Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
             new CrumbViewModel
@@ -81,24 +81,33 @@
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h3 class="govuk-fieldset__heading">Percentage of men and women in each hourly pay quarter</h3>
                 </legend>
-                            
-                @(Html.GovUkCheckboxItemFor(
-                    m => m.OptedOutOfReportingPayQuarters,
-                    new LabelViewModel
-                    {
-                        Text = "If any employees go on reduced pay as a result of the Coronavirus Job Retention Scheme "
-                               + "(furlough), they would no longer count as 'full-pay relevant employees'. "
-                               + "If your organisation had three or fewer full-pay relevant employees on the "
-                               + "snapshot date, you can opt-out of providing quarter data by checking this box."
-                    },
-                    null,
-                    null,
-                    false,
-                    "showOrHidePayQuarters();"
-                    ))
+                
+                
+                @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.ReportingYear))
+                {
+                    @Html.GovUkCheckboxItemFor(
+                        m => m.OptedOutOfReportingPayQuarters,
+                        new LabelViewModel
+                        {
+                            Text = "If any employees go on reduced pay as a result of the Coronavirus Job Retention Scheme "
+                                   + "(furlough), they would no longer count as 'full-pay relevant employees'. "
+                                   + "If your organisation had three or fewer full-pay relevant employees on the "
+                                   + "snapshot date, you can opt-out of providing quarter data by checking this box."
+                        },
+                        null,
+                        null,
+                        false,
+                        "showOrHidePayQuarters();"
+                        )
+                }
 
                 @{
-                    var payQuartersDisplay = Model.OptedOutOfReportingPayQuarters ? "none" : "block";
+                    string payQuartersDisplay = Model.OptedOutOfReportingPayQuarters ? "none" : "block";
+                    Func<object, object> percentageText = @<text>
+                                                              <span class="govuk-label govuk-!-margin-left-1" style="display: inline">%</span>
+                                                           </text>;
+                    
+                    
                     <div id="PayQuarters" style="display: @payQuartersDisplay">
                         <h3 class="govuk-heading-s">Upper hourly pay quarter</h3>
 
@@ -108,9 +117,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -120,9 +127,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -134,9 +139,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -146,9 +149,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -160,9 +161,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -172,9 +171,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -186,9 +183,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
 
@@ -198,9 +193,7 @@
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
                             {
-                                Html = @<text>
-                                           <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                        </text>
+                                Html = percentageText
                             }
                             ))
                     </div>
@@ -218,9 +211,7 @@
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
-                        Html = @<text>
-                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                </text>
+                        Html = percentageText
                     }
                     ))
 
@@ -230,9 +221,7 @@
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
-                        Html = @<text>
-                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                </text>
+                        Html = percentageText
                     }
                     ))
 
@@ -249,9 +238,7 @@
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
-                        Html = @<text>
-                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                </text>
+                        Html = percentageText
                     }
                     ))
 
@@ -261,9 +248,7 @@
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
-                        Html = @<text>
-                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                </text>
+                        Html = percentageText
                     }
                     ))
 
@@ -280,9 +265,7 @@
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
-                        Html = @<text>
-                                   <span class="govuk-label" style="display: inline; margin-left: 5px;">%</span>
-                                </text>
+                        Html = percentageText
                     }
                     ))
             </fieldset>
@@ -298,9 +281,7 @@
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
-                        Html = @<text>
-                                   <span class="govuk-label govuk-!-margin-left-1">%</span>
-                                </text>
+                        Html = percentageText
                     }
                     ))
             </fieldset>

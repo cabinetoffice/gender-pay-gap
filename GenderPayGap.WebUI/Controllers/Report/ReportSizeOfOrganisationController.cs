@@ -48,10 +48,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
-
-            Return submittedReturn = organisation.GetReturn(reportingYear);
-            bool isEditingSubmittedReturn = submittedReturn != null;
-            viewModel.IsEditingSubmittedReturn = isEditingSubmittedReturn;
+            
+            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
         }
         
         private void SetValuesFromDraftReturnOrSubmittedReturn(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)

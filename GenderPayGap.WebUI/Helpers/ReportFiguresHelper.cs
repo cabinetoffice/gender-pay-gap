@@ -220,7 +220,7 @@ namespace GenderPayGap.WebUI.Helpers
 
             const string errorMessageMaleBonusGreaterThanZero = "Enter a percentage lower than or equal to 100";
              
-            if (viewModel.MaleBonusPayPercent > 0 && !saveDraft) 
+            if (viewModel.MaleBonusPayPercent > 0) // QQ TO: && !saveDraft 
             { 
                 if (!viewModel.DiffMeanBonusPercent.HasValue) 
                 {

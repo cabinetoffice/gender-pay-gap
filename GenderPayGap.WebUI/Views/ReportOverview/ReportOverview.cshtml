@@ -279,7 +279,7 @@
                 Text = "Submit",
                 Classes = "govuk-button govuk-!-margin-bottom-6",
                 Disabled = !Model.DraftReturnExists || !Model.AllRequiredFieldsAreFilled(),
-                Href = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnGet", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
+                Href = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnPost", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
                     : null
             })
         </div>

@@ -23,7 +23,7 @@
         {
             new CrumbViewModel
             {
-                Text = "Your Organisations",
+                Text = "Manage Employers",
                 Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
             },
             new CrumbViewModel
@@ -33,7 +33,7 @@
             },
             new CrumbViewModel
             {
-                Text = $"{editOrReportTitle} (reporting year {formattedReportingYears})",
+                Text = $"{formattedReportingYears} reporting year",
                 Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
             },
             new CrumbViewModel
