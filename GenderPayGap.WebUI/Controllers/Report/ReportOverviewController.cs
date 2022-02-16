@@ -34,7 +34,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             this.returnService = returnService;
         }
         
-        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
+        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
         public IActionResult SubmitReturnPost(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
@@ -76,14 +76,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
         }
 
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report")]
-        public IActionResult ReportOverview(string encryptedOrganisationId, int reportingYear, bool shouldShowLateSubmissionWarning = false)
+        public IActionResult ReportOverview(string encryptedOrganisationId, int reportingYear, bool canTriggerLateSubmissionWarning = false)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-            if (draftReturnService.ShouldShowLateWarning(organisationId, reportingYear) && shouldShowLateSubmissionWarning)
+            if (draftReturnService.ShouldShowLateWarning(organisationId, reportingYear) && canTriggerLateSubmissionWarning)
             {
                 return RedirectToAction("LateSubmissionWarningGet", "LateSubmission", new {encryptedOrganisationId, reportingYear});
             }
@@ -101,7 +101,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             var viewModel = new ReportOverviewViewModel();
             PopulateViewModel(viewModel, organisation, draftReturn, submittedReturn, reportingYear);
             
-            return View("~/Views/ReportOverview/ReportOverview.cshtml", viewModel);
+            return View("ReportOverview", viewModel);
         }
 
         private void PopulateViewModel(ReportOverviewViewModel viewModel, Organisation organisation, DraftReturn draftReturn, Return submittedReturn, int reportingYear)

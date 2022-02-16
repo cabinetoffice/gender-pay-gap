@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
@@ -24,88 +25,58 @@ namespace GenderPayGap.WebUI.Models.Report
         
         #region Quarter
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in upper quarter",
-            NameWithinSentence = "male employees in upper quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperPayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in upper quarter",
-            NameWithinSentence = "female employees in upper quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperPayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in upper-middle quarter",
-            NameWithinSentence = "male employees in upper-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperMiddlePayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in upper-middle quarter",
-            NameWithinSentence = "female employees in upper-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperMiddlePayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in lower-middle quarter",
-            NameWithinSentence = "male employees in lower-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerMiddlePayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in lower-middle quarter",
-            NameWithinSentence = "female employees in lower-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerMiddlePayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in lower quarter",
-            NameWithinSentence = "male employees in lower quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerPayBand { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in lower quarter",
-            NameWithinSentence = "female employees in lower quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerPayBand { get; set; }
 
         #endregion
 
         #region Hourly
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in hourly pay (mean)",
-            NameWithinSentence = "difference in hourly pay (mean)")]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in hourly pay (median)",
-            NameWithinSentence = "difference in hourly pay (median)")]
+        
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianHourlyPercent { get; set; }
 
         #endregion
 
         #region Bonus Percent
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Females who received bonus pay",
-            NameWithinSentence = "females who received bonus pay")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleBonusPayPercent { get; set; }
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Males who received bonus pay",
-            NameWithinSentence = "males who received bonus pay")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleBonusPayPercent { get; set; }
 
         #endregion
 
         #region Bonus Mean/Median
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in bonus pay (mean)",
-            NameWithinSentence = "difference in bonus pay (mean)")]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in bonus pay (median)",
-            NameWithinSentence = "difference in bonus pay (median)")]
+        [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianBonusPercent { get; set; }
 
         #endregion

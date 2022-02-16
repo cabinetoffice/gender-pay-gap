@@ -28,12 +28,6 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin)]
         public IActionResult ManageOrganisationsGet()
         {
-            // Check for feature flag and redirect if not enabled
-            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
-            {
-                return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
-            }
-
             if (User.IsInRole(LoginRoles.GpgAdmin))
             {
                 return RedirectToAction("AdminHomePage", "AdminHomepage");
@@ -56,12 +50,6 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         [Authorize(Roles = LoginRoles.GpgEmployer)]
         public IActionResult ManageOrganisationGet(string encryptedOrganisationId)
         {
-            // Check for feature flag and redirect if not enabled
-            if (!FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.NewManageOrganisationsJourney))
-            {
-                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId});
-            }
-            
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);

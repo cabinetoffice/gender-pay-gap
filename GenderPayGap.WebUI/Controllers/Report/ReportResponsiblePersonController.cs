@@ -47,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             PopulateViewModel(viewModel, organisationId, reportingYear);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
 
-            return View("~/Views/ReportResponsiblePerson/ReportResponsiblePerson.cshtml", viewModel);
+            return View("ReportResponsiblePerson", viewModel);
         }
         
         private void PopulateViewModel(ReportResponsiblePersonViewModel viewModel, long organisationId, int reportingYear)
@@ -114,7 +114,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (viewModel.HasAnyErrors())
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
-                return View("~/Views/ReportResponsiblePerson/ReportResponsiblePerson.cshtml", viewModel);
+                return View("ReportResponsiblePerson", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);

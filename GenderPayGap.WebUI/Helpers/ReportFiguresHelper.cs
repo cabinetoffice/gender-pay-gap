@@ -37,6 +37,12 @@ namespace GenderPayGap.WebUI.Helpers
 
             if (!viewModel.OptedOutOfReportingPayQuarters)
             {
+                if (!AllPayQuartileFiguresAreFilledIn(viewModel))
+                {
+                    const string errorMessage = "You must report all your pay quarter figures";
+                    viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
+                }
+                
                 ValidatePayQuartileFigures(viewModel, request);
             }
             else if (!ReportingYearsHelper.IsReportingYearWithFurloughScheme(reportingYear))
@@ -62,6 +68,18 @@ namespace GenderPayGap.WebUI.Helpers
                    || viewModel.FemaleUpperPayBand.HasValue
                    || viewModel.MaleUpperMiddlePayBand.HasValue
                    || viewModel.FemaleUpperMiddlePayBand.HasValue;
+        }
+
+        private static bool AllPayQuartileFiguresAreFilledIn(ReportFiguresViewModel viewModel)
+        {
+            return viewModel.MaleLowerPayBand.HasValue
+                   && viewModel.FemaleLowerPayBand.HasValue
+                   && viewModel.MaleLowerMiddlePayBand.HasValue
+                   && viewModel.FemaleLowerMiddlePayBand.HasValue
+                   && viewModel.MaleUpperPayBand.HasValue
+                   && viewModel.FemaleUpperPayBand.HasValue
+                   && viewModel.MaleUpperMiddlePayBand.HasValue
+                   && viewModel.FemaleUpperMiddlePayBand.HasValue;
         }
 
         private static void SetFiguresFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn) 

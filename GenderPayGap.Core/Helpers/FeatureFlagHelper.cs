@@ -31,7 +31,6 @@ namespace GenderPayGap.Core.Helpers
     {
         ReportingStepByStep,
         PrivateManualRegistration,
-        SendRegistrationReviewEmails,
-        NewManageOrganisationsJourney
+        SendRegistrationReviewEmails
     }
 }

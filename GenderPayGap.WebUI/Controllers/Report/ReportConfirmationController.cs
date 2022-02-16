@@ -33,7 +33,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             Return foundReturn = LoadReturnFromOrganisationIdReportingYearAndConfirmationId(organisationId, reportingYear, confirmationId);
 
-            return View("~/Views/ReportConfirmation/ReportConfirmation.cshtml", foundReturn);
+            return View("ReportConfirmation", foundReturn);
         }
 
         [HttpPost("/submission-complete")]
@@ -61,9 +61,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
             string returnIdString = Encryption.DecryptQuerystring(confirmationId);
             long returnId = long.Parse(returnIdString);
 
-            Return foundReturn = dataRepository.Get<Return>(returnId);
+            var foundReturn = dataRepository.Get<Return>(returnId);
 
-            if (foundReturn.OrganisationId != organisationId ||
+            if (foundReturn == null ||
+                foundReturn.OrganisationId != organisationId ||
                 foundReturn.AccountingDate.Year != reportingYear)
             {
                 throw new PageNotFoundException();
