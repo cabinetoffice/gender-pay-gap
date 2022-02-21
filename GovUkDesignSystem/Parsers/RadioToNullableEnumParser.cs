@@ -19,7 +19,7 @@ namespace GovUkDesignSystem.Parsers
             ThrowIfPropertyTypeIsNotNullableEnum(property);
             ParserHelpers.ThrowIfMoreThanOneValue(parameterValues, property);
 
-            if (ParserHelpers.IsValueRequiredAndMissing(property, parameterValues))
+            if (ParserHelpers.IsValueRequiredAndMissing(property, parameterValues, model))
             {
                 ParserHelpers.AddRequiredAndMissingErrorMessage(model, property);
                 return;

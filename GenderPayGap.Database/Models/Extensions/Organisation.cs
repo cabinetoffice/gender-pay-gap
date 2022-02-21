@@ -486,5 +486,10 @@ namespace GenderPayGap.Database
             return $"ref:{EmployerReference}, name:{OrganisationName}";
         }
 
+        public bool HasSubmittedReturn(int reportingYear)
+        {
+            return GetReturn(reportingYear) != null;
+        }
+
     }
 }

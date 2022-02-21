@@ -10,9 +10,11 @@
         <caption class="govuk-table__caption govuk-table__caption--s">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 @(section.Title)
-                <a class="govuk-link govuk-!-margin-left-8" href="@(section.EditLink)">Edit</a>
+                <div class="govuk-body-s">
+                    <a class="govuk-link govuk-!-margin-left-8" href="@(section.EditLink)">Edit</a>
+                </div>
             </div>
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible">
         </caption>
 
         @if (section.LeftTitle != null && section.RightTitle != null)

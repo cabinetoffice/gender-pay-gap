@@ -252,6 +252,7 @@
                 </span>
             </p>
         </div>
+    
 
         <div class="govuk-button-group">
             @(Html.GovUkButton(new ButtonViewModel
@@ -261,18 +262,40 @@
                 Href = Model.DraftReturnExists ? 
                     Url.Action("ReportDiscardDraftGet", "ReportDiscardDraft", new { encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
                     : null,
-                Disabled = !Model.DraftReturnExists
+                Disabled = !Model.DraftReturnExists,
+                Attributes = new Dictionary<string, string>
+                {
+                    {"aria-label", "Discard draft"}
+                }
             }))
 
-
-            @Html.GovUkButton(new ButtonViewModel
-            {
-                Text = "Submit",
-                Classes = "govuk-button govuk-!-margin-bottom-6",
-                Disabled = !Model.DraftReturnExists || !Model.AllRequiredFieldsAreFilled(),
-                Href = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled() ? Url.Action("SubmitReturnPost", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear}) 
-                    : null
-            })
+            
+            @{
+                bool canSubmit = Model.DraftReturnExists && Model.AllRequiredFieldsAreFilled();
+                string formAction = canSubmit ? 
+                    Url.Action("SubmitReturnPost", 
+                        "ReportOverview", 
+                        new
+                        {
+                            encryptedOrganisationId, 
+                            reportingYear = Model.ReportingYear
+                        }) 
+                    : "";
+    
+                <form method="post" action="@formAction" style="display: contents">
+                    @(Html.AntiForgeryToken())
+                    @Html.GovUkButton(new ButtonViewModel
+                    {
+                        Text = "Submit",
+                        Classes = "govuk-button govuk-!-margin-bottom-6",
+                        Disabled = !canSubmit,
+                        Attributes = new Dictionary<string, string>
+                        {
+                            {"aria-label", "Submit report"}
+                        }
+                    })
+                </form>
+            }
         </div>
         
         <p class="govuk-body">

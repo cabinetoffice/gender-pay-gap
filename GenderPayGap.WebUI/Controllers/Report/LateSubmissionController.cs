@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class LateSubmissionController: Controller
     {
         
@@ -130,7 +130,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
             viewModel.DeadlineDate = deadlineDate;
-            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
+            viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
         }
         
         private IActionResult RedirectToReportOverviewPage(string encryptedOrganisationId, int reportingYear, string message = null)

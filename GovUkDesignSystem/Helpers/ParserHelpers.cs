@@ -30,43 +30,45 @@ namespace GovUkDesignSystem.Helpers
         }
 
 
-        public static bool IsValueRequiredAndMissing(PropertyInfo property, StringValues parameterValues)
+        public static bool IsValueRequiredAndMissing(PropertyInfo property, StringValues parameterValues, GovUkViewModel model)
         {
-            var requiredAttribute = property.GetSingleCustomAttribute<GovUkValidateRequiredAttribute>();
-
-            bool valueIsRequired = requiredAttribute != null;
+            bool valueIsRequired = IsValueRequired(property, model);
             bool valueIsMissing = parameterValues.Count == 0;
 
             return (valueIsRequired && valueIsMissing);
         }
 
-        public static bool IsValueRequiredAndMissingOrEmpty(PropertyInfo property, StringValues parameterValues)
+        public static bool IsValueRequiredAndMissingOrEmpty(PropertyInfo property, StringValues parameterValues, GovUkViewModel model)
         {
-            var requiredAttribute = property.GetSingleCustomAttribute<GovUkValidateRequiredAttribute>();
-
-            bool valueIsRequired = requiredAttribute != null;
+            bool valueIsRequired = IsValueRequired(property, model);
             bool valueIsMissing = parameterValues.Count == 0 || string.IsNullOrWhiteSpace(parameterValues[0]);
 
-            return (valueIsRequired && valueIsMissing);
+            return valueIsRequired && valueIsMissing;
         }
 
         public static void AddRequiredAndMissingErrorMessage(GovUkViewModel model, PropertyInfo property)
         {
             var requiredAttribute = property.GetSingleCustomAttribute<GovUkValidateRequiredAttribute>();
+            var requiredIfAttribute = property.GetSingleCustomAttribute<GovUkValidationRequiredIfAttribute>();
+            
             var displayNameForErrorsAttribute = property.GetSingleCustomAttribute<GovUkDisplayNameForErrorsAttribute>();
 
+            string requiredErrorMessage = requiredAttribute != null
+                ? requiredAttribute.ErrorMessageIfMissing
+                : requiredIfAttribute?.ErrorMessageIfMissing;
+
             string errorMessage;
-            if (requiredAttribute.ErrorMessageIfMissing != null)
+            if (requiredErrorMessage != null)
             {
-                errorMessage = requiredAttribute.ErrorMessageIfMissing;
+                errorMessage = requiredErrorMessage;
             }
             else if (displayNameForErrorsAttribute != null)
             {
-                errorMessage = $"Select {displayNameForErrorsAttribute.NameWithinSentence}";
+                errorMessage = $"{displayNameForErrorsAttribute.NameAtStartOfSentence} is required";
             }
             else
             {
-                errorMessage = $"Select {property.Name}";
+                errorMessage = $"{property.Name} is required";
             }
 
             model.AddErrorFor(property, errorMessage);
@@ -101,6 +103,20 @@ namespace GovUkDesignSystem.Helpers
             }
 
             model.AddErrorFor(property, errorMessage);
+        }
+        
+        private static bool IsValueRequired(PropertyInfo property, GovUkViewModel model)
+        {
+            var requiredAttribute = property.GetSingleCustomAttribute<GovUkValidateRequiredAttribute>();
+            var requiredIfAttribute = property.GetSingleCustomAttribute<GovUkValidationRequiredIfAttribute>();
+            
+            bool hasRequiredAttribute = requiredAttribute != null;
+            bool hasRequiredIfAttribute = requiredIfAttribute != null;
+
+            bool requiredIfAttributeConditionIsMet =
+                hasRequiredIfAttribute && GovUkValidationRequiredIfAttribute.RequiredIfConditionIsMet(model, property);
+
+            return hasRequiredAttribute || requiredIfAttributeConditionIsMet;
         }
 
     }

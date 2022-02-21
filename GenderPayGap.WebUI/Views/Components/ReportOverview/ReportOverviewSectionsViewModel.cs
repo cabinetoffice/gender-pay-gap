@@ -7,6 +7,7 @@ namespace GenderPayGap.WebUI.Views.Components.ReportOverview
     public class ReportOverviewSectionsViewModel : GovUkViewModel
     {
         public string Title { get; set; }
+        
         public List<ReportOverviewSectionViewModel> Sections { get; set; }
     }
     
@@ -32,4 +33,3 @@ namespace GenderPayGap.WebUI.Views.Components.ReportOverview
         public string RightValue { get; set; }
     }
 }
-

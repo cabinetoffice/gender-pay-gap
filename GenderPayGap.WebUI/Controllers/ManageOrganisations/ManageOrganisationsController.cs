@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -13,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
 {
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class ManageOrganisationsController : Controller
     {
 

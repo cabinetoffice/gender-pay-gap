@@ -1,12 +1,8 @@
-﻿using System;
-using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Helpers;
+﻿using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
@@ -16,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class ReportOverviewController: Controller
     {
         
@@ -34,7 +30,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
             this.returnService = returnService;
         }
         
-        [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/submit")]
+        [ValidateAntiForgeryToken]
         public IActionResult SubmitReturnPost(string encryptedOrganisationId, int reportingYear)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
@@ -123,7 +120,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
         {
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
-            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
+            viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
             viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
         }
 

@@ -127,9 +127,8 @@ namespace GenderPayGap.Database.Models
                 && OrganisationSize == submittedReturn.OrganisationSize
 
                 && CompanyLinkToGPGInfo == submittedReturn.CompanyLinkToGPGInfo
-                
-                && OptedOutOfReportingPayQuarters == submittedReturn.OptedOutOfReportingPayQuarters
-                ;
+
+                && OptedOutOfReportingPayQuarters == submittedReturn.OptedOutOfReportingPayQuarters;
         }
 
 

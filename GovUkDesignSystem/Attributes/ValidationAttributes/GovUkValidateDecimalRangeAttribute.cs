@@ -43,8 +43,8 @@ namespace GovUkDesignSystem.Attributes.ValidationAttributes
 
             if (decimalRangeInForce)
             {
-                decimal minimumAllowed = (decimal) decimalRangeAttribute.Minimum;
-                decimal maximumAllowed = (decimal) decimalRangeAttribute.Maximum;
+                decimal minimumAllowed = SafelyConvertDoubleToDecimal(decimalRangeAttribute.Minimum);
+                decimal maximumAllowed = SafelyConvertDoubleToDecimal(decimalRangeAttribute.Maximum);
 
                 bool outOfRange = value < minimumAllowed || value > maximumAllowed;
                 return outOfRange;
@@ -57,12 +57,31 @@ namespace GovUkDesignSystem.Attributes.ValidationAttributes
         {
             var decimalRangeAttribute = property.GetSingleCustomAttribute<GovUkValidateDecimalRangeAttribute>();
 
-            decimal minimum = (decimal) decimalRangeAttribute.Minimum;
-            decimal maximum = (decimal) decimalRangeAttribute.Maximum;
+            decimal minimum = SafelyConvertDoubleToDecimal(decimalRangeAttribute.Minimum);
+            decimal maximum = SafelyConvertDoubleToDecimal(decimalRangeAttribute.Maximum);
 
             ParserHelpers.AddErrorMessageBasedOnPropertyDisplayName(model, property,
                 name => $"{name} must be between {minimum} and {maximum}",
                 ErrorMessagePropertyNamePosition.StartOfMessage);
+        }
+
+        private static decimal SafelyConvertDoubleToDecimal(double value)
+        {
+            // We do this because converting the lowest/highest possible value for a decimal into a double
+            // causes the resulting double to be just over what a decimal can store,
+            // hence making conversion back to a decimal impossible.
+
+            if (value >= (double) decimal.MaxValue)
+            {
+                return decimal.MaxValue;
+            }
+
+            if (value <= (double) decimal.MinValue)
+            {
+                return decimal.MinValue;
+            }
+            
+            return Convert.ToDecimal(value);
         }
 
     }

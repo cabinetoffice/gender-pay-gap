@@ -1,5 +1,4 @@
 ﻿using GenderPayGap.Core;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class ReportConfirmationController : Controller
     {
 

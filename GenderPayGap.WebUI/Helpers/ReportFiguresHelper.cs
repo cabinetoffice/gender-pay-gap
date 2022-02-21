@@ -34,27 +34,22 @@ namespace GenderPayGap.WebUI.Helpers
         {
             ValidateBonusPayFigures(viewModel, request);
             ValidateHourlyPayFigures(viewModel, request);
+            ValidatePayQuartileFigures(viewModel, request);
 
-            if (!viewModel.OptedOutOfReportingPayQuarters)
+            if (viewModel.OptedOutOfReportingPayQuarters)
             {
-                if (!AllPayQuartileFiguresAreFilledIn(viewModel))
+                if (!ReportingYearsHelper.IsReportingYearWithFurloughScheme(reportingYear))
                 {
-                    const string errorMessage = "You must report all your pay quarter figures";
+                    const string errorMessage = "You cannot opt out of reporting your pay quarter figures for this reporting year";
                     viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
                 }
-                
-                ValidatePayQuartileFigures(viewModel, request);
-            }
-            else if (!ReportingYearsHelper.IsReportingYearWithFurloughScheme(reportingYear))
-            {
-                const string errorMessage = "You cannot opt out of reporting your pay quarter figures for this reporting year";
-                viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
-            }
-            else if (HasPayQuarterFigures(viewModel))
-            {
-                const string errorMessage = "Do not enter the data for the percentage of men and women in each hourly pay quarter "
-                                            + "if you have opted out of reporting your pay quarter figures";
-                viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
+
+                if (HasPayQuarterFigures(viewModel))
+                {
+                    const string errorMessage = "Do not enter the data for the percentage of men and women in each hourly pay quarter "
+                                                + "if you have opted out of reporting your pay quarter figures";
+                    viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
+                }
             }
         }
 
@@ -68,18 +63,6 @@ namespace GenderPayGap.WebUI.Helpers
                    || viewModel.FemaleUpperPayBand.HasValue
                    || viewModel.MaleUpperMiddlePayBand.HasValue
                    || viewModel.FemaleUpperMiddlePayBand.HasValue;
-        }
-
-        private static bool AllPayQuartileFiguresAreFilledIn(ReportFiguresViewModel viewModel)
-        {
-            return viewModel.MaleLowerPayBand.HasValue
-                   && viewModel.FemaleLowerPayBand.HasValue
-                   && viewModel.MaleLowerMiddlePayBand.HasValue
-                   && viewModel.FemaleLowerMiddlePayBand.HasValue
-                   && viewModel.MaleUpperPayBand.HasValue
-                   && viewModel.FemaleUpperPayBand.HasValue
-                   && viewModel.MaleUpperMiddlePayBand.HasValue
-                   && viewModel.FemaleUpperMiddlePayBand.HasValue;
         }
 
         private static void SetFiguresFromDraftReturn(ReportFiguresViewModel viewModel, DraftReturn draftReturn) 

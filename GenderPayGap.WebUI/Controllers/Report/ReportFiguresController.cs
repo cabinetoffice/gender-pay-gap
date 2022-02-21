@@ -1,20 +1,17 @@
 ﻿using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class ReportFiguresController: Controller
     {
         
@@ -58,7 +55,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
              viewModel.Organisation = organisation;
              viewModel.ReportingYear = reportingYear;
-             viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
+             viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
              viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
          }
 
