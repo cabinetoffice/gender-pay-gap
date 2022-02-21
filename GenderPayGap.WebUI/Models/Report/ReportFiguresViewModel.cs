@@ -30,6 +30,7 @@ namespace GenderPayGap.WebUI.Models.Report
 
         #region Bonus Pay
 
+        [GovUkValidateRequired]
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Females who received bonus pay",
             NameWithinSentence = "females who received bonus pay")]
@@ -38,6 +39,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? FemaleBonusPayPercent { get; set; }
 
+        [GovUkValidateRequired]
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Males who received bonus pay",
             NameWithinSentence = "males who received bonus pay")]
@@ -46,6 +48,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? MaleBonusPayPercent { get; set; }
 
+        [GovUkValidateRequired]
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Difference in bonus pay (mean)",
             NameWithinSentence = "difference in bonus pay (mean)")]
@@ -54,6 +57,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
 
+        [GovUkValidateRequired]
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Difference in bonus pay (median)",
             NameWithinSentence = "difference in bonus pay (median)")]
@@ -142,6 +146,7 @@ namespace GenderPayGap.WebUI.Models.Report
 
         #region Hourly Pay
 
+        [GovUkValidateRequired]
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Difference in hourly pay (mean)",
             NameWithinSentence = "difference in hourly pay (mean)")]
@@ -150,6 +155,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
         
+        [GovUkValidateRequired]
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Difference in hourly pay (median)",
             NameWithinSentence = "difference in hourly pay (median)")]
