@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using GovUkDesignSystem.Helpers;
 
 namespace GovUkDesignSystem.Attributes.ValidationAttributes
 {
@@ -11,6 +12,11 @@ namespace GovUkDesignSystem.Attributes.ValidationAttributes
             GovUkViewModel model,
             PropertyInfo property,
             TProperty parameterValue);
+
+        protected static T GetAttribute<T>(MemberInfo property) where T: Attribute
+        {
+            return property.GetSingleCustomAttribute<T>();
+        }
 
     }
 }

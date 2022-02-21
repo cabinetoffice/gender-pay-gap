@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class ReportResponsiblePersonController : Controller
     {
 
@@ -57,7 +57,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
             
-            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
+            viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
         }
         
         private void SetValuesFromDraftReturnOrSubmittedReturn(ReportResponsiblePersonViewModel viewModel, long organisationId, int reportingYear)

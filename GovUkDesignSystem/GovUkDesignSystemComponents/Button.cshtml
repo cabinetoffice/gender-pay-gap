@@ -27,8 +27,8 @@
            data-module="govuk-button"
            href="@(Model.Href ?? "#")"
            role="button"
-           draggable="false">
-            @(Html.Raw( Model.Attributes != null ? string.Join(" ", Model.Attributes.Select(a => a.Key + "=\"" + a.Value + "\"")) : "" ))
+           draggable="false"
+           @(Html.Raw( Model.Attributes != null ? string.Join(" ", Model.Attributes.Select(a => a.Key + "=\"" + a.Value + "\"")) : "" ))>
             @{ await Html.RenderPartialAsync("/GovUkDesignSystemComponents/SubComponents/HtmlText.cshtml", Model); }
         </a>
     }

@@ -1,5 +1,4 @@
-﻿using GenderPayGap.Core.Helpers;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;
@@ -13,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Report
 {
     [Authorize(Roles = LoginRoles.GpgEmployer)]
-    [Route("account/employers")]
+    [Route("account/organisations")]
     public class ReportLinkToWebsiteController: Controller
     {
 
@@ -50,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
             
-            viewModel.IsEditingSubmittedReturn = ReportHelper.HasSubmittedReturn(organisation, reportingYear);
+            viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
         }
         
         private void SetValuesFromDraftReturnOrSubmittedReturn(ReportLinkToWebsiteViewModel viewModel, long organisationId, int reportingYear)

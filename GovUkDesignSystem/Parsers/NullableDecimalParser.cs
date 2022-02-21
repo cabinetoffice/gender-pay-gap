@@ -23,7 +23,7 @@ namespace GovUkDesignSystem.Parsers
             ParserHelpers.ThrowIfMoreThanOneValue(parameterValues, property);
             ParserHelpers.SaveUnparsedValueFromRequestToModel(model, httpRequest, parameterName);
 
-            if (ParserHelpers.IsValueRequiredAndMissingOrEmpty(property, parameterValues))
+            if (ParserHelpers.IsValueRequiredAndMissingOrEmpty(property, parameterValues, model))
             {
                 ParserHelpers.AddRequiredAndMissingErrorMessage(model, property);
                 return;
