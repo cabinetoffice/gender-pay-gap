@@ -122,9 +122,6 @@ namespace GenderPayGap.WebUI.Services
                 LastName = draftReturn.LastName,
                 JobTitle = draftReturn.JobTitle,
 
-                MinEmployees = (int) organisationSizeRange.Minimum,
-                MaxEmployees = (int) organisationSizeRange.Maximum,
-
                 CompanyLinkToGPGInfo = draftReturn.CompanyLinkToGPGInfo,
 
                 IsLateSubmission = isLateSubmission,
@@ -137,6 +134,12 @@ namespace GenderPayGap.WebUI.Services
                 // Maybe we should see if we can reduce this complexity!
                 Status = ReturnStatuses.Draft
             };
+
+            if (organisationSizeRange != null)
+            {
+                newReturn.MinEmployees = (int) organisationSizeRange.Minimum;
+                newReturn.MaxEmployees = (int) organisationSizeRange.Maximum;
+            }
 
             newReturn.Modifications = CalculateModifications(newReturn, existingReturn);
 

@@ -1,12 +1,18 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using GovUkDesignSystem.GovUkDesignSystemComponents;
+using GovUkDesignSystem.Helpers;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
@@ -102,21 +108,44 @@ namespace GenderPayGap.WebUI.Models.Report
         #endregion
         
         public bool OptedOutOfReportingPayQuarters { get; set; }
+
+        public IHtmlContent GetPayQuarterValue(
+            IHtmlHelper<ReportOverviewViewModel> htmlHelper,
+            Expression<Func<ReportOverviewViewModel, decimal?>> propertyLambdaExpression)
+        {
+            IHtmlContent notApplicableContent = htmlHelper.GovUkHtmlText(new HtmlTextViewModel { Text = "Not Applicable" });
+
+            return OptedOutOfReportingPayQuarters
+                ? notApplicableContent
+                : GetPercentageValue(htmlHelper, propertyLambdaExpression);
+        }
+
+        public IHtmlContent GetMeanOrMedianValue(
+            IHtmlHelper<ReportOverviewViewModel> htmlHelper,
+            Expression<Func<ReportOverviewViewModel, decimal?>> propertyLambdaExpression)
+        {
+            IHtmlContent notApplicableContent = htmlHelper.GovUkHtmlText(new HtmlTextViewModel { Text = "Not Applicable" });
+            
+            return MaleBonusPayPercent == 0
+                ? notApplicableContent
+                : GetPercentageValue(htmlHelper, propertyLambdaExpression);
+        }
+
+        public IHtmlContent GetPercentageValue(
+            IHtmlHelper<ReportOverviewViewModel> htmlHelper,
+            Expression<Func<ReportOverviewViewModel, decimal?>> propertyLambdaExpression)
+        {
+            IHtmlContent notProvidedContent = htmlHelper.GovUkHtmlText(new HtmlTextViewModel { Text = "Not Provided" });
+            IHtmlContent defaultHtmlContent = htmlHelper.GovUkHtmlTextFor(propertyLambdaExpression, "%");
+            
+            Func<ReportOverviewViewModel, decimal?> compiledExpression = propertyLambdaExpression.Compile();
+            decimal? value = compiledExpression(this);
+
+            return value == null
+                ? notProvidedContent
+                : defaultHtmlContent;
+        }
         
-        public string GetPayQuarterValue(decimal? payQuarterValue)
-        {
-            return OptedOutOfReportingPayQuarters ? "Not Applicable" : GetPercentageValue(payQuarterValue);
-        }
-
-        public string GetMeanOrMedianValue(decimal? meanOrMedianValue)
-        {
-            return MaleBonusPayPercent == 0 ? "Not Applicable" : GetPercentageValue(meanOrMedianValue);
-        }
-
-        public string GetPercentageValue(decimal? value)
-        {
-            return value == null ? "Not Completed" : $"{value}%";
-        }
         public bool PersonResponsibleNotProvided()
         {
             return ResponsiblePersonFirstName == null || ResponsiblePersonLastName == null || ResponsiblePersonJobTitle == null;

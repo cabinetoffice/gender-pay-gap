@@ -36,7 +36,7 @@ namespace GenderPayGap.WebUI.Models.Report
             NameWithinSentence = "females who received bonus pay")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleBonusPayPercent { get; set; }
 
         [GovUkValidateRequired]
@@ -45,7 +45,7 @@ namespace GenderPayGap.WebUI.Models.Report
             NameWithinSentence = "males who received bonus pay")]
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleBonusPayPercent { get; set; }
 
         [GovUkValidateRequired]
@@ -54,7 +54,7 @@ namespace GenderPayGap.WebUI.Models.Report
             NameWithinSentence = "difference in bonus pay (mean)")]
         [GovUkValidateDecimalRange(Minimum = (double) decimal.MinValue, Maximum = 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
 
         [GovUkValidateRequired]
@@ -63,7 +63,7 @@ namespace GenderPayGap.WebUI.Models.Report
             NameWithinSentence = "difference in bonus pay (median)")]
         [GovUkValidateDecimalRange(Minimum = (double) decimal.MinValue, Maximum = 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianBonusPercent { get; set; }
 
         #endregion
@@ -76,7 +76,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperPayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -85,7 +85,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperPayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -94,7 +94,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperMiddlePayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -103,7 +103,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperMiddlePayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerMiddlePayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -121,7 +121,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerMiddlePayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -130,7 +130,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerPayBand { get; set; }
         
         [GovUkDisplayNameForErrors(
@@ -139,7 +139,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidateDecimalRange(Minimum = 0, Maximum = 200.9)]
         [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerPayBand { get; set; }
 
         #endregion
@@ -152,7 +152,7 @@ namespace GenderPayGap.WebUI.Models.Report
             NameWithinSentence = "difference in hourly pay (mean)")]
         [GovUkValidateDecimalRange(Minimum = -499.99, Maximum = 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
         
         [GovUkValidateRequired]
@@ -161,7 +161,7 @@ namespace GenderPayGap.WebUI.Models.Report
             NameWithinSentence = "difference in hourly pay (median)")]
         [GovUkValidateDecimalRange(Minimum = -499.99, Maximum = 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
-        [DisplayFormat(DataFormatString = "{0:0.#}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianHourlyPercent { get; set; }
 
         #endregion

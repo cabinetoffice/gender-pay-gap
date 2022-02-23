@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -21,14 +22,21 @@ namespace GovUkDesignSystem.Helpers
             Expression<Func<TModel, TProperty>> propertyLambdaExpression)
             where TModel : GovUkViewModel
         {
+            var displayFormatAttribute = property.GetSingleCustomAttribute<DisplayFormatAttribute>();
             TProperty propertyValue = ExpressionHelpers.GetPropertyValueFromModelAndExpression(model, propertyLambdaExpression);
+            
+            string formattedPropertyValue = displayFormatAttribute?.ApplyFormatInEditMode == true && displayFormatAttribute?.DataFormatString != null
+                ? string.Format(displayFormatAttribute.DataFormatString, propertyValue)
+                : propertyValue.ToString();
+            
             if (model.HasSuccessfullyParsedValue(property))
             {
-                return propertyValue.ToString();
+                return formattedPropertyValue;
             }
-            else if (propertyValue != null)
+
+            if (propertyValue != null)
             {
-                return propertyValue.ToString();
+                return formattedPropertyValue;
             }
 
             string parameterName = $"GovUk_Text_{property.Name}";
