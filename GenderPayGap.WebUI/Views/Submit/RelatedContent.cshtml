@@ -1,4 +1,4 @@
-﻿@using GenderPayGap.Core
+@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Controllers.Guidance
 
 <div class="govuk-grid-column-one-third">
@@ -7,16 +7,52 @@
         <nav role="navigation" aria-labelledby="subsection-title">
             <ul class="govuk-body govuk-body-s govuk-list govuk-list--spaced">
                 <li>
-                    <a class="govuk-link" target="_blank" href="@Global.GpgGuidanceLink">Gender pay gap reporting<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                    <a class="govuk-link"
+                       href="@Global.GpgGuidanceLink"
+                       onclick="sendGpgEvent({
+                        eventCategory: 'Related Link Clicked',
+                        eventAction: '@Global.GpgGuidanceLink',
+                        eventLabel: 'Gender pay gap reporting'
+                       })">
+                        Gender pay gap reporting
+                        <span class="govuk-visually-hidden">(opens in a new window)</span>
+                    </a>
                 </li>
                 <li>
-                    <a class="govuk-link" target="_blank" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")">Eight ways to understand your organisation's gender pay gap<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                    <a class="govuk-link"
+                       href=""@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")
+                       onclick="sendGpgEvent({
+                        eventCategory: 'Related Link Clicked',
+                        eventAction: '@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")',
+                        eventLabel: 'Eight ways to understand your organisation\'s gender pay gap'
+                       })">
+                        Eight ways to understand your organisation's gender pay gap
+                        <span class="govuk-visually-hidden">(opens in a new window)</span>
+                    </a>
                 </li>
                 <li>
-                    <a class="govuk-link" target="_blank" href="/public/assets/pdf/action-plan-guidance.pdf">Four steps to developing a gender pay gap action plan<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                    <a class="govuk-link"
+                       href="/public/assets/pdf/action-plan-guidance.pdf"
+                       onclick="sendGpgEvent({
+                        eventCategory: 'Related Link Clicked',
+                        eventAction: '/public/assets/pdf/action-plan-guidance.pdf',
+                        eventLabel: 'Eight ways to understand your organisation\'s gender pay gap'
+                       })">
+                        Four steps to developing a gender pay gap action plan
+                        <span class="govuk-visually-hidden">(opens in a new window)</span>
+                    </a>
                 </li>
                 <li>
-                    <a class="govuk-link" target="_blank" href="@Url.Action("Overview", "ActionHub")">Actions to close the gap<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+                    <a class="govuk-link"
+                       href="@Url.Action("Overview", "ActionHub")"
+                       onclick="sendGpgEvent({
+                        eventCategory: 'Related Link Clicked',
+                        eventAction: '@Url.Action("Overview", "ActionHub")',
+                        eventLabel: 'Actions to close the gap'
+                       })">
+                        Actions to close the gap
+                        <span class="govuk-visually-hidden">(opens in a new window)</span>
+                    </a>
                 </li>
             </ul>
         </nav>

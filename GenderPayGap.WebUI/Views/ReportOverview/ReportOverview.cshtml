@@ -90,26 +90,26 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Upper hourly pay quarter</text>,
-                        LeftValue = Model.GetPayQuarterValue(Model.MaleUpperPayBand),
-                        RightValue = Model.GetPayQuarterValue(Model.FemaleUpperPayBand)
+                        LeftValue = Model.GetPayQuarterValue(Html, m => m.MaleUpperPayBand),
+                        RightValue = Model.GetPayQuarterValue(Html,m => m.FemaleUpperPayBand)
                     },
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Upper middle hourly pay quarter</text>,
-                        LeftValue = Model.GetPayQuarterValue(Model.MaleUpperMiddlePayBand),
-                        RightValue = Model.GetPayQuarterValue(Model.FemaleUpperMiddlePayBand)
+                        LeftValue = Model.GetPayQuarterValue(Html,m => m.MaleUpperMiddlePayBand),
+                        RightValue = Model.GetPayQuarterValue(Html,m => m.FemaleUpperMiddlePayBand)
                     },
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Lower middle hourly pay quarter</text>,
-                        LeftValue = Model.GetPayQuarterValue(Model.MaleLowerMiddlePayBand),
-                        RightValue = Model.GetPayQuarterValue(Model.FemaleLowerMiddlePayBand)
+                        LeftValue = Model.GetPayQuarterValue(Html,m => m.MaleLowerMiddlePayBand),
+                        RightValue = Model.GetPayQuarterValue(Html,m => m.FemaleLowerMiddlePayBand)
                     },
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Lower hourly pay quarter</text>,
-                        LeftValue = Model.GetPayQuarterValue(Model.MaleLowerPayBand),
-                        RightValue = Model.GetPayQuarterValue(Model.FemaleLowerPayBand)
+                        LeftValue = Model.GetPayQuarterValue(Html, m => m.MaleLowerPayBand),
+                        RightValue = Model.GetPayQuarterValue(Html,m => m.FemaleLowerPayBand)
                     }
 
                 }
@@ -124,12 +124,12 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Mean gender pay gap using hourly pay</text>,
-                        RightValue = Model.GetPercentageValue(Model.DiffMeanHourlyPayPercent)
+                        RightValue = Model.GetPercentageValue(Html, m => m.DiffMeanHourlyPayPercent)
                     },
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Median gender pay gap using hourly pay</text>,
-                        RightValue = Model.GetPercentageValue(Model.DiffMedianHourlyPercent)
+                        RightValue =  Model.GetPercentageValue(Html,m => m.DiffMedianHourlyPercent)
                     }
                 }
             };
@@ -145,8 +145,8 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Percentage of men and women who received bonus pay</text>,
-                        LeftValue = Model.GetPercentageValue(Model.MaleBonusPayPercent),
-                        RightValue = Model.GetPercentageValue(Model.FemaleBonusPayPercent)
+                        LeftValue = Model.GetPercentageValue(Html,m => m.MaleBonusPayPercent),
+                        RightValue = Model.GetPercentageValue(Html,m => m.FemaleBonusPayPercent)
                     }
                 }
             };
@@ -160,12 +160,12 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Mean gender pay gap using bonus pay</text>,
-                        RightValue = Model.GetMeanOrMedianValue(Model.DiffMeanBonusPercent)
+                        RightValue = Model.GetMeanOrMedianValue(Html, m => m.DiffMeanBonusPercent)
                     },
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Median gender pay gap using bonus pay</text>,
-                        RightValue = Model.GetMeanOrMedianValue(Model.DiffMedianBonusPercent)
+                        RightValue = Model.GetMeanOrMedianValue(Html,m => m.DiffMedianBonusPercent)
                     }
                 }
             };
@@ -183,7 +183,9 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>@(Model.ResponsiblePersonFirstName) @(Model.ResponsiblePersonLastName)<br/>@(Model.ResponsiblePersonJobTitle)</text>,
-                        RightValue = Model.PersonResponsibleNotProvided() ? "Not Provided" : ""
+                        RightValue = Model.PersonResponsibleNotProvided() ? 
+                            Html.GovUkHtmlText(new HtmlTextViewModel{ Text = "Not Provided" })
+                            : Html.GovUkHtmlText(new HtmlTextViewModel{ Text = "" })
                     }
                 }
             };
@@ -201,7 +203,9 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<text>Number of employees used to establish your headcount for gender pay gap reporting, on your snapshot date</text>,
-                        RightValue = !Model.SizeOfOrganisation.HasValue ? "Not Provided" : $"{Model.SizeOfOrganisation.GetAttribute<DisplayAttribute>().Name}"
+                        RightValue = !Model.SizeOfOrganisation.HasValue ? 
+                            Html.GovUkHtmlText(new HtmlTextViewModel{ Text = "Not Provided" })
+                            : Html.GovUkHtmlText(new HtmlTextViewModel{ Text = Model.SizeOfOrganisation.GetAttribute<DisplayAttribute>().Name })
                     }
                 }
             };
@@ -219,7 +223,9 @@
                     new ReportOverviewSectionRowViewModel
                     {
                         Title = @<a class="govuk-link" href="@(Model.LinkToOrganisationWebsite)">@(Model.LinkToOrganisationWebsite)</a>,
-                        RightValue = Model.LinkToOrganisationWebsite == null ? "Not Provided" : ""
+                        RightValue = Model.LinkToOrganisationWebsite == null ? 
+                            Html.GovUkHtmlText(new HtmlTextViewModel{ Text = "Not Provided" })
+                            : Html.GovUkHtmlText(new HtmlTextViewModel{ Text = "" })
                     }
                 }
             };

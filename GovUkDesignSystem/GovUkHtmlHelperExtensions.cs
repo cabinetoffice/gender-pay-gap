@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using GovUkDesignSystem.GovUkDesignSystemComponents;
 using GovUkDesignSystem.GovUkDesignSystemComponents.SubComponents;
+using GovUkDesignSystem.Helpers;
 using GovUkDesignSystem.HtmlGenerators;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -201,6 +204,28 @@ namespace GovUkDesignSystem
             this IHtmlHelper htmlHelper,
             IHtmlText htmlText)
         {
+            return htmlHelper.Partial("/GovUkDesignSystemComponents/SubComponents/HtmlText.cshtml", htmlText);
+        }
+
+        public static IHtmlContent GovUkHtmlTextFor<TModel, TProperty>(
+            this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> propertyLambdaExpression,
+            string appendix = null)
+            where TModel : GovUkViewModel
+        {
+            PropertyInfo property = ExpressionHelpers.GetPropertyFromExpression(propertyLambdaExpression);
+            TModel model = htmlHelper.ViewData.Model;
+            var displayFormatAttribute = property.GetSingleCustomAttribute<DisplayFormatAttribute>();
+            TProperty propertyValue = ExpressionHelpers.GetPropertyValueFromModelAndExpression(model, propertyLambdaExpression);
+            
+            string formattedPropertyValue = displayFormatAttribute?.DataFormatString != null
+                ? string.Format(displayFormatAttribute.DataFormatString, propertyValue)
+                : propertyValue.ToString();
+
+            string text = appendix != null ? $"{formattedPropertyValue}{appendix}" : formattedPropertyValue;
+
+            var htmlText = new HtmlTextViewModel{Text = text, Html = null};
+
             return htmlHelper.Partial("/GovUkDesignSystemComponents/SubComponents/HtmlText.cshtml", htmlText);
         }
 

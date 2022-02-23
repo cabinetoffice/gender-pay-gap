@@ -295,13 +295,12 @@ namespace GenderPayGap.WebUI.Helpers
             ParseAndValidateParameters(viewModel, request, m => m.DiffMedianHourlyPercent);
         }
 
-        private static void ParseAndValidateParameters<TModel, TProperty>(
-            TModel viewModel, 
+        private static void ParseAndValidateParameters(
+            ReportFiguresViewModel viewModel, 
             HttpRequest request, 
-            params Expression<Func<TModel, TProperty>>[] propertyLambdaExpressions)
-            where TModel : GovUkViewModel
+            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpressions)
         {
-            if (!viewModel.HasAnyErrors())
+            if (!viewModel.HasErrorFor(propertyLambdaExpressions))
             {
                 viewModel.ParseAndValidateParameters(request, propertyLambdaExpressions);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GovUkDesignSystem;
+using Microsoft.AspNetCore.Html;
 
 namespace GenderPayGap.WebUI.Views.Components.ReportOverview
 {
@@ -28,8 +29,8 @@ namespace GenderPayGap.WebUI.Views.Components.ReportOverview
     {
         public Func<object, object> Title { get; set; }
         
-        public string LeftValue { get; set; }
+        public IHtmlContent LeftValue { get; set; }
         
-        public string RightValue { get; set; }
+        public IHtmlContent RightValue { get; set; }
     }
 }
