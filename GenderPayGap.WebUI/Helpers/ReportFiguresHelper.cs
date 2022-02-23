@@ -1,4 +1,6 @@
-﻿using GenderPayGap.Core.Helpers;
+﻿using System;
+using System.Linq.Expressions;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Models.Report;
@@ -176,10 +178,10 @@ namespace GenderPayGap.WebUI.Helpers
         
         private static void ValidateBonusPayFigures(ReportFiguresViewModel viewModel, HttpRequest request)
         {
-            viewModel.ParseAndValidateParameters(request, m => m.FemaleBonusPayPercent);
-            viewModel.ParseAndValidateParameters(request, m => m.MaleBonusPayPercent);
-            viewModel.ParseAndValidateParameters(request, m => m.DiffMeanBonusPercent);
-            viewModel.ParseAndValidateParameters(request, m => m.DiffMedianBonusPercent);
+            ParseAndValidateParameters(viewModel, request, m => m.FemaleBonusPayPercent);
+            ParseAndValidateParameters(viewModel, request, m => m.MaleBonusPayPercent);
+            ParseAndValidateParameters(viewModel, request, m => m.DiffMeanBonusPercent);
+            ParseAndValidateParameters(viewModel, request, m => m.DiffMedianBonusPercent);
             
             ValidateBonusPayIntegrity(viewModel);
         }
@@ -237,14 +239,14 @@ namespace GenderPayGap.WebUI.Helpers
 
         private static void ValidatePayQuartileFigures(ReportFiguresViewModel viewModel, HttpRequest request)
         {
-            viewModel.ParseAndValidateParameters(request, m => m.MaleUpperPayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.FemaleUpperPayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.MaleUpperMiddlePayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.FemaleUpperMiddlePayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.MaleLowerMiddlePayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.FemaleLowerMiddlePayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.MaleLowerPayBand);
-            viewModel.ParseAndValidateParameters(request, m => m.FemaleLowerPayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.MaleUpperPayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.FemaleUpperPayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.MaleUpperMiddlePayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.FemaleUpperMiddlePayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.MaleLowerMiddlePayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.FemaleLowerMiddlePayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.MaleLowerPayBand);
+            ParseAndValidateParameters(viewModel, request, m => m.FemaleLowerPayBand);
 
             ValidatePayQuartersAddUpToOneHundred(viewModel);
         }
@@ -289,8 +291,20 @@ namespace GenderPayGap.WebUI.Helpers
 
         private static void ValidateHourlyPayFigures(ReportFiguresViewModel viewModel, HttpRequest request)
         {
-            viewModel.ParseAndValidateParameters(request, m => m.DiffMeanHourlyPayPercent);
-            viewModel.ParseAndValidateParameters(request, m => m.DiffMedianHourlyPercent);
+            ParseAndValidateParameters(viewModel, request, m => m.DiffMeanHourlyPayPercent);
+            ParseAndValidateParameters(viewModel, request, m => m.DiffMedianHourlyPercent);
+        }
+
+        private static void ParseAndValidateParameters<TModel, TProperty>(
+            TModel viewModel, 
+            HttpRequest request, 
+            params Expression<Func<TModel, TProperty>>[] propertyLambdaExpressions)
+            where TModel : GovUkViewModel
+        {
+            if (!viewModel.HasAnyErrors())
+            {
+                viewModel.ParseAndValidateParameters(request, propertyLambdaExpressions);
+            }
         }
     }
 }

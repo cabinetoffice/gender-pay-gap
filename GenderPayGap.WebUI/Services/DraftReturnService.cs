@@ -107,6 +107,10 @@ namespace GenderPayGap.WebUI.Services
             {
                 dataRepository.Delete(draftReturn);
             }
+            else
+            {
+                draftReturn.Modified = VirtualDateTime.Now;
+            }
 
             dataRepository.SaveChanges();
         }
