@@ -8,6 +8,7 @@
             <ul class="govuk-body govuk-body-s govuk-list govuk-list--spaced">
                 <li>
                     <a class="govuk-link"
+                       target="_blank"
                        href="@Global.GpgGuidanceLink"
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
@@ -20,6 +21,7 @@
                 </li>
                 <li>
                     <a class="govuk-link"
+                       target="_blank"
                        href=""@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
@@ -32,6 +34,7 @@
                 </li>
                 <li>
                     <a class="govuk-link"
+                       target="_blank"
                        href="/public/assets/pdf/action-plan-guidance.pdf"
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
@@ -44,6 +47,7 @@
                 </li>
                 <li>
                     <a class="govuk-link"
+                       target="_blank"
                        href="@Url.Action("Overview", "ActionHub")"
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
