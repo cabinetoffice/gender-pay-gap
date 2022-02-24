@@ -22,21 +22,14 @@ namespace GovUkDesignSystem.Helpers
             Expression<Func<TModel, TProperty>> propertyLambdaExpression)
             where TModel : GovUkViewModel
         {
-            var displayFormatAttribute = property.GetSingleCustomAttribute<DisplayFormatAttribute>();
             TProperty propertyValue = ExpressionHelpers.GetPropertyValueFromModelAndExpression(model, propertyLambdaExpression);
-            
-            string formattedPropertyValue = displayFormatAttribute?.ApplyFormatInEditMode == true && displayFormatAttribute?.DataFormatString != null
-                ? string.Format(displayFormatAttribute.DataFormatString, propertyValue)
-                : propertyValue.ToString();
-            
-            if (model.HasSuccessfullyParsedValue(property))
-            {
-                return formattedPropertyValue;
-            }
 
-            if (propertyValue != null)
+            if (model.HasSuccessfullyParsedValue(property) || propertyValue != null)
             {
-                return formattedPropertyValue;
+                var displayFormatAttribute = property.GetSingleCustomAttribute<DisplayFormatAttribute>();
+                return displayFormatAttribute?.ApplyFormatInEditMode == true && displayFormatAttribute?.DataFormatString != null
+                    ? string.Format(displayFormatAttribute.DataFormatString, propertyValue)
+                    : propertyValue.ToString();
             }
 
             string parameterName = $"GovUk_Text_{property.Name}";

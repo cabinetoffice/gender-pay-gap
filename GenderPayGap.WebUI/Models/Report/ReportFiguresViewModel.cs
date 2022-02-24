@@ -47,8 +47,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleBonusPayPercent { get; set; }
-
-        [GovUkValidateRequired]
+        
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Difference in bonus pay (mean)",
             NameWithinSentence = "difference in bonus pay (mean)")]
@@ -56,8 +55,7 @@ namespace GenderPayGap.WebUI.Models.Report
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
-
-        [GovUkValidateRequired]
+        
         [GovUkDisplayNameForErrors(
             NameAtStartOfSentence = "Difference in bonus pay (median)",
             NameWithinSentence = "difference in bonus pay (median)")]
