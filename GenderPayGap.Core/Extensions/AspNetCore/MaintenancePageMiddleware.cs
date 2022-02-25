@@ -20,6 +20,12 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         public async Task Invoke(HttpContext httpContext)
         {
+            if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
+            {
+                await _next.Invoke(httpContext);
+                return;
+            }
+
             // Redirect to holding page if in maintenance mode
             if (_enabled && !httpContext.GetUri().PathAndQuery.StartsWithI(@"/error/service-unavailable"))
             {
