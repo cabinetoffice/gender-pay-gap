@@ -172,7 +172,7 @@ namespace GenderPayGap.WebUI
                         {
                             options.ConfigurationOptions = new ConfigurationOptions
                             {
-                                EndPoints = { { redisConfiguration.Credentials.Host, redisConfiguration.Credentials.Port } },
+                                EndPoints = { { "invalid", redisConfiguration.Credentials.Port } },
                                 Password = redisConfiguration.Credentials.Password,
                                 Ssl = redisConfiguration.Credentials.TlsEnabled,
                                 AbortOnConnectFail = false
