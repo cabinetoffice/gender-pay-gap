@@ -607,6 +607,6 @@ class RecordingSimulation extends Simulation {
 	val scn = scenario("Gender pay gap").exec(userActions)
 
 	setUp(scn.inject(
-		constantUsersPerSec(1) during (1 second)
+		constantUsersPerSec(1) during (5 hours)
 	)).protocols(httpProtocol)
 }
