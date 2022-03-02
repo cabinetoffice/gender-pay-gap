@@ -109,7 +109,7 @@ class RecordingSimulation extends Simulation {
 					.get("/public/govuk_template/assets/stylesheets/images/govuk-crest-2x.png")))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
-		val signIn = feed(usersOrganisationsFeeder).exec(http("Sign in")
+		val signIn = exec(http("Sign in")
 			.post("/login")
 			.headers(headers_3)
 			.formParam("GovUk_Text_EmailAddress", "${email}")
@@ -163,7 +163,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				status.is(200)
 			))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
 
 	object SearchForOrganisation {
@@ -355,31 +355,31 @@ class RecordingSimulation extends Simulation {
 			.get("${linkToTheLatestReport}")
 			.headers(headers_0)
 			.check(
-        regex("Reporting as ${organisationName}"),
-        regex(s"Enter your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
+				regex("Reporting as ${organisationName}"),
+				regex(s"Enter your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val enterCalculations = exec(http("Enter calculations")
 			.post("${linkToAnOrganisation}" + s"/reporting-year-${CURRENT_YEAR.substring(0, 4)}/report/figures")
 			.headers(headers_0)
-      .formParam("__RequestVerificationToken", "${requestVerificationToken}")
-      .formParam("GovUk_Text_DiffMeanHourlyPayPercent", "50")
-      .formParam("GovUk_Text_DiffMedianHourlyPercent", "50")
-      .formParam("GovUk_Text_FemaleBonusPayPercent", "50")
-      .formParam("GovUk_Text_MaleBonusPayPercent", "50")
-      .formParam("GovUk_Text_DiffMeanBonusPercent", "0")
-      .formParam("GovUk_Text_DiffMedianBonusPercent", "0")
-      .formParam("GovUk_Text_MaleUpperPayBand", "50")
-      .formParam("GovUk_Text_FemaleUpperPayBand", "50")
-      .formParam("GovUk_Text_MaleUpperMiddlePayBand", "50")
-      .formParam("GovUk_Text_FemaleUpperMiddlePayBand", "50")
-      .formParam("GovUk_Text_MaleLowerMiddlePayBand", "50")
-      .formParam("GovUk_Text_FemaleLowerMiddlePayBand", "50")
-      .formParam("GovUk_Text_MaleLowerPayBand", "50")
-      .formParam("GovUk_Text_FemaleLowerPayBand", "50")
+			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
+			.formParam("GovUk_Text_DiffMeanHourlyPayPercent", "50")
+			.formParam("GovUk_Text_DiffMedianHourlyPercent", "50")
+			.formParam("GovUk_Text_FemaleBonusPayPercent", "50")
+			.formParam("GovUk_Text_MaleBonusPayPercent", "50")
+			.formParam("GovUk_Text_DiffMeanBonusPercent", "0")
+			.formParam("GovUk_Text_DiffMedianBonusPercent", "0")
+			.formParam("GovUk_Text_MaleUpperPayBand", "50")
+			.formParam("GovUk_Text_FemaleUpperPayBand", "50")
+			.formParam("GovUk_Text_MaleUpperMiddlePayBand", "50")
+			.formParam("GovUk_Text_FemaleUpperMiddlePayBand", "50")
+			.formParam("GovUk_Text_MaleLowerMiddlePayBand", "50")
+			.formParam("GovUk_Text_FemaleLowerMiddlePayBand", "50")
+			.formParam("GovUk_Text_MaleLowerPayBand", "50")
+			.formParam("GovUk_Text_FemaleLowerPayBand", "50")
 			.check(
-        status.is(200),
+				status.is(200),
 				regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
@@ -393,7 +393,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("GovUk_Text_ResponsiblePersonJobTitle", "Tester")
 			.check(
 				status.is(200),
-        regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
+				regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
@@ -404,18 +404,18 @@ class RecordingSimulation extends Simulation {
 			.formParam("GovUk_Radio_SizeOfOrganisation", "Employees250To499")
 			.check(
 				status.is(200),
-        regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
+				regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val enterLinkToGpgInformationDetails = exec(http("Enter link to GPG information details")
-      .post("${linkToAnOrganisation}" + s"/reporting-year-${CURRENT_YEAR.substring(0, 4)}/report/link-to-organisation-website")
+			.post("${linkToAnOrganisation}" + s"/reporting-year-${CURRENT_YEAR.substring(0, 4)}/report/link-to-organisation-website")
 			.headers(headers_0)
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.formParam("GovUk_Text_LinkToOrganisationWebsite", "http://test-employer-information.com/gpg")
 			.check(
-        status.is(200),
-        regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
+				status.is(200),
+				regex(s"Review your gender pay gap data for snapshot date 05 April ${CURRENT_YEAR.substring(0, 4)}")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
@@ -425,7 +425,7 @@ class RecordingSimulation extends Simulation {
 			.formParam("__RequestVerificationToken", "${requestVerificationToken}")
 			.check(
 				status.is(200),
-        regex(s"You've submitted your gender pay gap data for the $CURRENT_YEAR reporting year.")
+				regex(s"You've submitted your gender pay gap data for the $CURRENT_YEAR reporting year.")
 			))
 			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 	}
@@ -446,7 +446,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Change email address"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changeEmailAddress = exec(http("Change email address")
 			.post("/manage-account/change-email")
@@ -465,7 +465,7 @@ class RecordingSimulation extends Simulation {
 				status.is(200),
 				regex("Change your password"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changePassword = exec(http("Change password")
 			.post("/manage-account/change-password-new")
@@ -477,7 +477,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				status.is(200),
 				regex("Your password has been changed successfully")))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitChangePersonalDetailsPage = exec(http("Visit change personal details page")
 			.get("/manage-account/change-personal-details")
@@ -487,7 +487,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Change your personal details"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changePersonalDetails = exec(http("Change personal details")
 			.post("/manage-account/change-personal-details")
@@ -500,7 +500,7 @@ class RecordingSimulation extends Simulation {
 			.check(
 				status.is(200),
 				regex("Saved changes to personal details")))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val visitChangeContactPreferencesPage = exec(http("Visit change contact preferences page")
 			.get("/manage-account/change-contact-preferences")
@@ -510,7 +510,7 @@ class RecordingSimulation extends Simulation {
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
 				regex("Change your contact preferences"),
 				css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")))
-  		.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
+			.pause(PAUSE_MIN_DUR, PAUSE_MAX_DUR)
 
 		val changeContactPreferences = exec(http("Change contact preferences")
 			.post("/manage-account/change-contact-preferences")
@@ -582,13 +582,13 @@ class RecordingSimulation extends Simulation {
 			SelectExistingOrganisation.chooseAnOrganisation,
 			SelectExistingOrganisation.confirmOrganisationChoice,
 			ReportGenderPayGapStepByStep.visitManageOrganisation,
-      ReportGenderPayGapStepByStep.visitOrganisation,
-      ReportGenderPayGapStepByStep.visitReportOverviewPage,
-      ReportGenderPayGapStepByStep.enterCalculations,
-      ReportGenderPayGapStepByStep.enterResponsiblePersonDetails,
-      ReportGenderPayGapStepByStep.enterOrganisationSizeDetails,
-      ReportGenderPayGapStepByStep.enterLinkToGpgInformationDetails,
-      ReportGenderPayGapStepByStep.reviewAndSubmitReport,
+			ReportGenderPayGapStepByStep.visitOrganisation,
+			ReportGenderPayGapStepByStep.visitReportOverviewPage,
+			ReportGenderPayGapStepByStep.enterCalculations,
+			ReportGenderPayGapStepByStep.enterResponsiblePersonDetails,
+			ReportGenderPayGapStepByStep.enterOrganisationSizeDetails,
+			ReportGenderPayGapStepByStep.enterLinkToGpgInformationDetails,
+			ReportGenderPayGapStepByStep.reviewAndSubmitReport,
 			ManageAccount.visit,
 			ManageAccount.visitChangeEmailAddressPage,
 			ManageAccount.changeEmailAddress,
@@ -597,8 +597,8 @@ class RecordingSimulation extends Simulation {
 			ManageAccount.changePersonalDetails,
 			ManageAccount.visitChangeContactPreferencesPage,
 			ManageAccount.changeContactPreferences,
-      ManageAccount.visitChangePasswordPage,
-      ManageAccount.changePassword,
+			ManageAccount.visitChangePasswordPage,
+			ManageAccount.changePassword,
 			Feedback.visit,
 			Feedback.submit
 		)
