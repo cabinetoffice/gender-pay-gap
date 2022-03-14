@@ -123,7 +123,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
         private bool DeadlineHasPassed()
         {
-            return VirtualDateTime.Now > GetReportingDeadline();
+            return ReportingYearsHelper.DeadlineForAccountingDateHasPassed(GetAccountingDate());
         }
 
         private bool OrganisationIsRequiredToSubmit()
