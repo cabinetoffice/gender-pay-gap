@@ -49,7 +49,7 @@
             To complete the process for gender pay gap reporting please sign in to your account.
         </p>
         
-        <a class="govuk-button" href="/manage-organisations" role="button">Sign In</a>
+        <a class="govuk-button" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")" role="button">Sign In</a>
         
     </div>
     @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
