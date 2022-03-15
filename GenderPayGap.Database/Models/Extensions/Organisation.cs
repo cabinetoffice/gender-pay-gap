@@ -324,17 +324,17 @@ namespace GenderPayGap.Database
                 .FirstOrDefault();
         }
 
-        //Returns the latest return for the specified accounting year or the latest ever if no accounting year is 
+        // Returns the latest return for the specified accounting year or the latest ever if no accounting year is 
         public Return GetReturn(int year = 0)
         {
-            DateTime accountingStartDate = SectorType.GetAccountingStartDate(year);
+            int reportingYear = year == 0 ? VirtualDateTime.Now.Year : year;
             return Returns
-                .Where(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate == accountingStartDate)
+                .Where(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate.Year == reportingYear)
                 .OrderByDescending(r => r.StatusDate)
                 .FirstOrDefault();
         }
 
-        //Returns the latest scope for the current accounting date
+        // Returns the latest scope for the current accounting date
         public OrganisationScope GetCurrentScope()
         {
             var accountingStartDate = SectorType.GetAccountingStartDate();
