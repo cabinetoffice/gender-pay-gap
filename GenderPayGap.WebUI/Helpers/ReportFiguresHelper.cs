@@ -196,12 +196,12 @@ namespace GenderPayGap.WebUI.Helpers
             { 
                 if (viewModel.DiffMeanBonusPercent > 100) 
                 {
-                    viewModel.AddErrorFor(m => m.DiffMeanBonusPercent, errorMessageFemaleBonusGreaterThanZero);
+                    AddErrorFor(viewModel, m => m.DiffMeanBonusPercent, errorMessageFemaleBonusGreaterThanZero);
                 } 
  
                 if (viewModel.DiffMedianBonusPercent > 100)
                 {
-                    viewModel.AddErrorFor(m => m.DiffMedianBonusPercent, errorMessageFemaleBonusGreaterThanZero);
+                    AddErrorFor(viewModel, m => m.DiffMedianBonusPercent, errorMessageFemaleBonusGreaterThanZero);
                 } 
             }
 
@@ -212,12 +212,12 @@ namespace GenderPayGap.WebUI.Helpers
             { 
                 if (viewModel.DiffMeanBonusPercent.HasValue) 
                 {
-                    viewModel.AddErrorFor(m => m.DiffMeanBonusPercent, errorMessageMaleBonusIsZero);
+                    AddErrorFor(viewModel, m => m.DiffMeanBonusPercent, errorMessageMaleBonusIsZero);
                 } 
  
                 if (viewModel.DiffMedianBonusPercent.HasValue) 
                 {
-                    viewModel.AddErrorFor(m => m.DiffMedianBonusPercent, errorMessageMaleBonusIsZero);
+                    AddErrorFor(viewModel, m => m.DiffMedianBonusPercent, errorMessageMaleBonusIsZero);
                 } 
             }
 
@@ -227,12 +227,12 @@ namespace GenderPayGap.WebUI.Helpers
             { 
                 if (!viewModel.DiffMeanBonusPercent.HasValue) 
                 {
-                    viewModel.AddErrorFor(m => m.DiffMeanBonusPercent, errorMessageMaleBonusGreaterThanZero);
+                    AddErrorFor(viewModel, m => m.DiffMeanBonusPercent, errorMessageMaleBonusGreaterThanZero);
                 } 
  
                 if (!viewModel.DiffMedianBonusPercent.HasValue) 
                 {
-                    viewModel.AddErrorFor(m => m.DiffMedianBonusPercent, errorMessageMaleBonusGreaterThanZero);
+                    AddErrorFor(viewModel, m => m.DiffMedianBonusPercent, errorMessageMaleBonusGreaterThanZero);
                 } 
             }
         }
@@ -260,32 +260,32 @@ namespace GenderPayGap.WebUI.Helpers
                 && viewModel.MaleUpperPayBand.HasValue
                 && viewModel.FemaleUpperPayBand.Value + viewModel.MaleUpperPayBand.Value != 100)
             {
-                viewModel.AddErrorFor(m => m.FemaleUpperPayBand, errorMessage);
-                viewModel.AddErrorFor(m => m.MaleUpperPayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.FemaleUpperPayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.MaleUpperPayBand, errorMessage);
             }
 
             if (viewModel.FemaleUpperMiddlePayBand.HasValue
                 && viewModel.MaleUpperMiddlePayBand.HasValue
                 && viewModel.FemaleUpperMiddlePayBand.Value + viewModel.MaleUpperMiddlePayBand.Value != 100)
             {
-                viewModel.AddErrorFor(m => m.FemaleUpperMiddlePayBand, errorMessage);
-                viewModel.AddErrorFor(m => m.MaleUpperMiddlePayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.FemaleUpperMiddlePayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.MaleUpperMiddlePayBand, errorMessage);
             }
 
             if (viewModel.FemaleLowerMiddlePayBand.HasValue
                 && viewModel.MaleLowerMiddlePayBand.HasValue
                 && viewModel.FemaleLowerMiddlePayBand.Value + viewModel.MaleLowerMiddlePayBand.Value != 100)
             {
-                viewModel.AddErrorFor(m => m.FemaleLowerMiddlePayBand, errorMessage);
-                viewModel.AddErrorFor(m => m.MaleLowerMiddlePayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.FemaleLowerMiddlePayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.MaleLowerMiddlePayBand, errorMessage);
             }
 
             if (viewModel.FemaleLowerPayBand.HasValue
                 && viewModel.MaleLowerPayBand.HasValue
                 && viewModel.FemaleLowerPayBand.Value + viewModel.MaleLowerPayBand.Value != 100)
             {
-                viewModel.AddErrorFor(m => m.FemaleLowerPayBand, errorMessage);
-                viewModel.AddErrorFor(m => m.MaleLowerPayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.FemaleLowerPayBand, errorMessage);
+                AddErrorFor(viewModel, m => m.MaleLowerPayBand, errorMessage);
             }
         }
 
@@ -298,11 +298,32 @@ namespace GenderPayGap.WebUI.Helpers
         private static void ParseAndValidateParameters(
             ReportFiguresViewModel viewModel, 
             HttpRequest request, 
-            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpressions)
+            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression)
         {
-            if (!viewModel.HasErrorFor(propertyLambdaExpressions))
+            ValidateParameterIfNoErrors(
+                viewModel,
+                propertyLambdaExpression,
+                () => viewModel.ParseAndValidateParameters(request, propertyLambdaExpression));
+        }
+        private static void AddErrorFor(
+            ReportFiguresViewModel viewModel, 
+            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression,
+            string errorMessage)
+        {
+            ValidateParameterIfNoErrors(
+                viewModel,
+                propertyLambdaExpression,
+                () => viewModel.AddErrorFor(propertyLambdaExpression, errorMessage));
+        }
+
+        private static void ValidateParameterIfNoErrors(
+            ReportFiguresViewModel viewModel, 
+            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression,
+            Action callback)
+        {
+            if (!viewModel.HasErrorFor(propertyLambdaExpression))
             {
-                viewModel.ParseAndValidateParameters(request, propertyLambdaExpressions);
+                callback();
             }
         }
     }
