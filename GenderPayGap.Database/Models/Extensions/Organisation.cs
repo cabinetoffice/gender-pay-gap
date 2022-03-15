@@ -327,9 +327,9 @@ namespace GenderPayGap.Database
         // Returns the latest return for the specified accounting year or the latest ever if no accounting year is 
         public Return GetReturn(int year = 0)
         {
-            int reportingYear = year == 0 ? VirtualDateTime.Now.Year : year;
+            DateTime accountingStartDate = SectorType.GetAccountingStartDate(year);
             return Returns
-                .Where(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate.Year == reportingYear)
+                .Where(r => r.Status == ReturnStatuses.Submitted && r.AccountingDate.Year == accountingStartDate.Year)
                 .OrderByDescending(r => r.StatusDate)
                 .FirstOrDefault();
         }
