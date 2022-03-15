@@ -1,4 +1,5 @@
 ﻿using GovUkDesignSystem;
+using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -15,12 +16,21 @@ namespace GenderPayGap.WebUI.Models.Report
         public bool IsEditingSubmittedReturn { get; set; }
         
         [GovUkValidateCharacterCount(MaxCharacters = 50)]
+        [GovUkDisplayNameForErrors(
+            NameAtStartOfSentence = "The responsible person first name",
+            NameWithinSentence = "the responsible person first name")]
         public string ResponsiblePersonFirstName { get; set; }
         
         [GovUkValidateCharacterCount(MaxCharacters = 50)]
+        [GovUkDisplayNameForErrors(
+            NameAtStartOfSentence = "The responsible person last name",
+            NameWithinSentence = "the responsible person last name")]
         public string ResponsiblePersonLastName { get; set; }
         
         [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkDisplayNameForErrors(
+            NameAtStartOfSentence = "The responsible person job title",
+            NameWithinSentence = "the responsible person job title")]
         public string ResponsiblePersonJobTitle { get; set; }
 
     }

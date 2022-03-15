@@ -9,6 +9,7 @@ namespace GovUkDesignSystem.Attributes.ValidationAttributes
 
         public double Minimum { get; set; }
         public double Maximum { get; set; }
+        public string CustomErrorMessage { get; set; }
         
         public override bool CheckForValidationErrors<TProperty>(
             GovUkViewModel model,
@@ -59,9 +60,10 @@ namespace GovUkDesignSystem.Attributes.ValidationAttributes
 
             decimal minimum = SafelyConvertDoubleToDecimal(decimalRangeAttribute.Minimum);
             decimal maximum = SafelyConvertDoubleToDecimal(decimalRangeAttribute.Maximum);
+            string customErrorMessage = decimalRangeAttribute.CustomErrorMessage;
 
             ParserHelpers.AddErrorMessageBasedOnPropertyDisplayName(model, property,
-                name => $"{name} must be between {minimum} and {maximum}",
+                name => customErrorMessage ?? $"{name} must be between {minimum} and {maximum}",
                 ErrorMessagePropertyNamePosition.StartOfMessage);
         }
 
