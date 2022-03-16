@@ -26,7 +26,6 @@ namespace GenderPayGap.WebUI.Services
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                {"TimeWithUnits", "7 days"},
                 {"VerificationUrl", verificationUrl},
             };
 
