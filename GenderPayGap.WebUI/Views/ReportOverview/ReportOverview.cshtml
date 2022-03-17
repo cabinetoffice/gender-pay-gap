@@ -231,25 +231,19 @@
                 }
             };
 
-            var sections = new List<ReportOverviewSectionViewModel>
-            {
-                hourlyPayQuarterPercentageSection,
-                hourlyPayMeanAndMedianSection,
-                bonusPayPercentageSection,
-                bonusPayMeanAndMedianGenderPayGapSection
-            };
-            if (Model.SectorType == SectorTypes.Private)
-            {
-                sections.Add(personResponsibleSection);
-            }
-            sections.AddRange(new [] {
-                employeeHeadcountSection,
-                linkToGenderPayGapInformationSection
-            });
             var reportOverviewSections = new ReportOverviewSectionsViewModel
             {
                 Title = $"{formattedReportingYears} Reporting year",
-                Sections = sections
+                Sections = new List<ReportOverviewSectionViewModel>
+                {
+                    hourlyPayQuarterPercentageSection,
+                    hourlyPayMeanAndMedianSection,
+                    bonusPayPercentageSection,
+                    bonusPayMeanAndMedianGenderPayGapSection,
+                    Model.SectorType == SectorTypes.Private ? personResponsibleSection : null,
+                    employeeHeadcountSection,
+                    linkToGenderPayGapInformationSection
+                }.Where(s => !s.IsNull()).ToList()
             };
 
             await Html.RenderPartialAsync("../Components/ReportOverview/ReportOverviewSections", reportOverviewSections);
