@@ -3,6 +3,7 @@
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
 @model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
 
@@ -229,20 +230,26 @@
                     }
                 }
             };
-            
+
+            var sections = new List<ReportOverviewSectionViewModel>
+            {
+                hourlyPayQuarterPercentageSection,
+                hourlyPayMeanAndMedianSection,
+                bonusPayPercentageSection,
+                bonusPayMeanAndMedianGenderPayGapSection
+            };
+            if (Model.SectorType == SectorTypes.Private)
+            {
+                sections.Add(personResponsibleSection);
+            }
+            sections.AddRange(new [] {
+                employeeHeadcountSection,
+                linkToGenderPayGapInformationSection
+            });
             var reportOverviewSections = new ReportOverviewSectionsViewModel
             {
                 Title = $"{formattedReportingYears} Reporting year",
-                Sections = new List<ReportOverviewSectionViewModel>
-                {
-                    hourlyPayQuarterPercentageSection,
-                    hourlyPayMeanAndMedianSection,
-                    bonusPayPercentageSection,
-                    bonusPayMeanAndMedianGenderPayGapSection,
-                    personResponsibleSection,
-                    employeeHeadcountSection,
-                    linkToGenderPayGapInformationSection
-                }
+                Sections = sections
             };
 
             await Html.RenderPartialAsync("../Components/ReportOverview/ReportOverviewSections", reportOverviewSections);

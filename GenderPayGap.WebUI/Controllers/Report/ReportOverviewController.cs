@@ -122,6 +122,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.ReportingYear = reportingYear;
             viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
             viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
+            viewModel.SectorType = organisation.SectorType;
         }
 
         private void SetValuesFromDraftReturn(ReportOverviewViewModel viewModel, DraftReturn draftReturn)

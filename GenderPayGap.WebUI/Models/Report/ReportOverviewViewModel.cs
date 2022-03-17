@@ -25,6 +25,8 @@ namespace GenderPayGap.WebUI.Models.Report
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public bool DraftReturnExists { get; set; }
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public SectorTypes SectorType { get; set; }
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public bool IsEditingSubmittedReturn { get; set; }
 
         public DateTime SnapshotDate { get; set; }
