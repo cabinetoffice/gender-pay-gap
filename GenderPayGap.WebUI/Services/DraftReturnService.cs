@@ -61,6 +61,8 @@ namespace GenderPayGap.WebUI.Services
             {
                 OrganisationId = submittedReturn.OrganisationId,
                 SnapshotYear = submittedReturn.AccountingDate.Year,
+                
+                OptedOutOfReportingPayQuarters = submittedReturn.OptedOutOfReportingPayQuarters,
 
                 DiffMeanHourlyPayPercent = submittedReturn.DiffMeanHourlyPayPercent,
                 DiffMedianHourlyPercent = submittedReturn.DiffMedianHourlyPercent,
