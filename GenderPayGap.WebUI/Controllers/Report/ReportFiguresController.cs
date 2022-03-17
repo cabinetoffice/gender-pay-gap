@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core.Classes;
+﻿using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -68,6 +69,8 @@ namespace GenderPayGap.WebUI.Controllers.Report
         public IActionResult ReportFiguresPost(string encryptedOrganisationId, int reportingYear, ReportFiguresViewModel viewModel)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+                
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
@@ -81,8 +84,14 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
+            
+            var actionValues = new {encryptedOrganisationId, reportingYear};
+            
+            string personResponsibleUrl = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson", actionValues);
+            string employerSizeUrl = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", actionValues);
 
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
+            string nextPageUrl = organisation.SectorType == SectorTypes.Private ? personResponsibleUrl : employerSizeUrl;
+            
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }

@@ -98,7 +98,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear});
+            string nextPageUrl = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite", new { encryptedOrganisationId, reportingYear});
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
