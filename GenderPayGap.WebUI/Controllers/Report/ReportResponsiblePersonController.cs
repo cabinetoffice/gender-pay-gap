@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
         }
         
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/responsible-person")]
-        public IActionResult ReportResponsiblePersonGet(string encryptedOrganisationId, int reportingYear)
+        public IActionResult ReportResponsiblePersonGet(string encryptedOrganisationId, int reportingYear, [FromQuery] bool initialSubmission)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
@@ -44,18 +44,19 @@ namespace GenderPayGap.WebUI.Controllers.Report
             }
 
             var viewModel = new ReportResponsiblePersonViewModel();
-            PopulateViewModel(viewModel, organisationId, reportingYear);
+            PopulateViewModel(viewModel, organisationId, reportingYear, initialSubmission);
             SetValuesFromDraftReturnOrSubmittedReturn(viewModel, organisationId, reportingYear);
 
             return View("ReportResponsiblePerson", viewModel);
         }
         
-        private void PopulateViewModel(ReportResponsiblePersonViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportResponsiblePersonViewModel viewModel, long organisationId, int reportingYear, bool initialSubmission)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
 
             viewModel.Organisation = organisation;
             viewModel.ReportingYear = reportingYear;
+            viewModel.IsEditingForTheFirstTime = initialSubmission;
             
             viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
         }
@@ -73,7 +74,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
             if (submittedReturn != null)
             {
                 SetValuesFromSubmittedReturn(viewModel, submittedReturn);
-                return;
             }
         }
 
@@ -90,7 +90,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
             viewModel.ResponsiblePersonLastName = submittedReturn.LastName;
             viewModel.ResponsiblePersonJobTitle = submittedReturn.JobTitle;
         }
-        
         
         [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/responsible-person")]
         [ValidateAntiForgeryToken]
@@ -113,13 +112,16 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (viewModel.HasAnyErrors())
             {
-                PopulateViewModel(viewModel, organisationId, reportingYear);
+                PopulateViewModel(viewModel, organisationId, reportingYear, viewModel.IsEditingForTheFirstTime);
                 return View("ReportResponsiblePerson", viewModel);
             }
-
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
 
-            string nextPageUrl = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", new { encryptedOrganisationId, reportingYear});
+            var actionValues = new { encryptedOrganisationId, reportingYear, initialSubmission = viewModel.IsEditingForTheFirstTime };
+            string nextPageUrl = viewModel.IsEditingForTheFirstTime
+                ? Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", actionValues)
+                : Url.Action("ReportOverview", "ReportOverview", actionValues);
+
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }

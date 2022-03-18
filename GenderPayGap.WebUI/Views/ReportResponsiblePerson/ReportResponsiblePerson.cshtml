@@ -32,6 +32,7 @@
             @(Html.AntiForgeryToken())
             @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
             @(Html.GovUkErrorSummary())
+            @Html.HiddenFor(m => m.IsEditingForTheFirstTime)
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

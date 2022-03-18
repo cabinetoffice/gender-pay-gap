@@ -39,24 +39,24 @@ namespace GenderPayGap.WebUI.Controllers.Report
              ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
              var viewModel = new ReportFiguresViewModel();
-             
-             PopulateViewModel(viewModel, organisationId, reportingYear);
-             
+
              DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
+             PopulateViewModel(viewModel, organisationId, reportingYear, draftReturn != null);
+
              Return submittedReturn = viewModel.Organisation.GetReturn(reportingYear);
-             
              ReportFiguresHelper.SetFigures(viewModel, draftReturn, submittedReturn);
 
              return View("ReportFigures", viewModel);
         }
 
-        private void PopulateViewModel(ReportFiguresViewModel viewModel, long organisationId, int reportingYear)
+        private void PopulateViewModel(ReportFiguresViewModel viewModel, long organisationId, int reportingYear, bool hasDraftReturn)
          {
              Organisation organisation = dataRepository.Get<Organisation>(organisationId);
 
              viewModel.Organisation = organisation;
              viewModel.ReportingYear = reportingYear;
              viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
+             viewModel.IsEditingForTheFirstTime = !viewModel.IsEditingSubmittedReturn && !hasDraftReturn;
              viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
          }
 
@@ -79,19 +79,20 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             if (viewModel.HasAnyErrors())
             {
-                PopulateViewModel(viewModel, organisationId, reportingYear);
+                PopulateViewModel(viewModel, organisationId, reportingYear, !viewModel.IsEditingForTheFirstTime);
                 return View("ReportFigures", viewModel);
             }
 
             SaveChangesToDraftReturn(viewModel, organisationId, reportingYear);
             
-            var actionValues = new {encryptedOrganisationId, reportingYear};
+            var actionValues = new { encryptedOrganisationId, reportingYear, initialSubmission = viewModel.IsEditingForTheFirstTime };
             
             string personResponsibleUrl = Url.Action("ReportResponsiblePersonGet", "ReportResponsiblePerson", actionValues);
             string employerSizeUrl = Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", actionValues);
+            string initialJourneyNextPageUrl = organisation.SectorType == SectorTypes.Private ? personResponsibleUrl : employerSizeUrl;
+            string reportOverviewUrl = Url.Action("ReportOverview", "ReportOverview", actionValues);
+            string nextPageUrl = viewModel.IsEditingForTheFirstTime ? initialJourneyNextPageUrl : reportOverviewUrl;
 
-            string nextPageUrl = organisation.SectorType == SectorTypes.Private ? personResponsibleUrl : employerSizeUrl;
-            
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
         }
