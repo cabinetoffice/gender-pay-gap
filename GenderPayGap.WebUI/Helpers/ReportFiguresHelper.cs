@@ -300,30 +300,20 @@ namespace GenderPayGap.WebUI.Helpers
             HttpRequest request, 
             Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression)
         {
-            ValidateParameterIfNoErrors(
-                viewModel,
-                propertyLambdaExpression,
-                () => viewModel.ParseAndValidateParameters(request, propertyLambdaExpression));
+            if (!viewModel.HasErrorFor(propertyLambdaExpression))
+            {
+                viewModel.ParseAndValidateParameters(request, propertyLambdaExpression);
+            }
         }
+
         private static void AddErrorFor(
             ReportFiguresViewModel viewModel, 
             Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression,
             string errorMessage)
         {
-            ValidateParameterIfNoErrors(
-                viewModel,
-                propertyLambdaExpression,
-                () => viewModel.AddErrorFor(propertyLambdaExpression, errorMessage));
-        }
-
-        private static void ValidateParameterIfNoErrors(
-            ReportFiguresViewModel viewModel, 
-            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression,
-            Action callback)
-        {
             if (!viewModel.HasErrorFor(propertyLambdaExpression))
             {
-                callback();
+                viewModel.AddErrorFor(propertyLambdaExpression, errorMessage);
             }
         }
     }
