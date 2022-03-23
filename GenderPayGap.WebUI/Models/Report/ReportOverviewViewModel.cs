@@ -170,9 +170,7 @@ namespace GenderPayGap.WebUI.Models.Report
                                  && DiffMedianHourlyPercent.HasValue;
 
             bool hasBonusData = MaleBonusPayPercent.HasValue
-                                && FemaleBonusPayPercent.HasValue
-                                && DiffMeanBonusPercent.HasValue
-                                && DiffMedianBonusPercent.HasValue;
+                                && FemaleBonusPayPercent.HasValue;
 
 
             bool hasEnterCalculationsData = hasHourlyData && hasBonusData;
