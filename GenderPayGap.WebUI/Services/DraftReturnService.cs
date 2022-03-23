@@ -152,10 +152,8 @@ namespace GenderPayGap.WebUI.Services
 
             bool allValuesComplete =
                 draftReturn.MaleMedianBonusPayPercent != null
-                && draftReturn.FemaleMedianBonusPayPercent != null
-                && draftReturn.DiffMeanBonusPercent != null
-                && draftReturn.DiffMedianBonusPercent != null;
-            
+                && draftReturn.FemaleMedianBonusPayPercent != null;
+
             return noBonusesPaid || allValuesComplete;
         }
 
