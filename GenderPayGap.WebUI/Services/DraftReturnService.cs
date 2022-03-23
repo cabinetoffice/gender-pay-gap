@@ -146,15 +146,10 @@ namespace GenderPayGap.WebUI.Services
         
         private bool BonusPaySectionIsComplete(DraftReturn draftReturn)
         {
-            bool noBonusesPaid =
-                draftReturn.MaleMedianBonusPayPercent == 0
-                && draftReturn.FemaleMedianBonusPayPercent == 0;
-
-            bool allValuesComplete =
-                draftReturn.MaleMedianBonusPayPercent != null
-                && draftReturn.FemaleMedianBonusPayPercent != null;
-
-            return noBonusesPaid || allValuesComplete;
+            bool noMaleBonus = draftReturn.MaleMedianBonusPayPercent == 0;
+            bool requiredValuesComplete = draftReturn.MaleMedianBonusPayPercent != null && draftReturn.FemaleMedianBonusPayPercent != null;
+            bool conditionalValuesComplete = draftReturn.DiffMeanBonusPercent != null && draftReturn.DiffMedianBonusPercent != null;
+            return requiredValuesComplete && (noMaleBonus || conditionalValuesComplete);
         }
 
         private bool EmployeesByPayQuartileSectionIsFilledIn(DraftReturn draftReturn)
