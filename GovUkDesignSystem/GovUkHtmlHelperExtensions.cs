@@ -355,6 +355,7 @@ namespace GovUkDesignSystem
             string classes = null,
             TextInputAppendixViewModel textInputAppendix = null,
             string type = "text",
+            bool? spellcheck = null,
             string autocomplete = null)
             where TModel : GovUkViewModel
         {
@@ -367,6 +368,7 @@ namespace GovUkDesignSystem
                 classes,
                 textInputAppendix,
                 type,
+                spellcheck,
                 autocomplete);
         }
 
@@ -379,6 +381,7 @@ namespace GovUkDesignSystem
             string classes = null,
             TextInputAppendixViewModel textInputAppendix = null,
             string type = "text",
+            bool? spellcheck = null,
             string autocomplete = null)
             where TModel : GovUkViewModel
         {
@@ -391,6 +394,7 @@ namespace GovUkDesignSystem
                 classes,
                 textInputAppendix,
                 type,
+                spellcheck,
                 autocomplete);
         }
 
@@ -403,6 +407,7 @@ namespace GovUkDesignSystem
             string classes = null,
             TextInputAppendixViewModel textInputAppendix = null,
             string type = "text",
+            bool? spellcheck = null,
             string autocomplete = null)
             where TModel : GovUkViewModel
         {
@@ -415,6 +420,7 @@ namespace GovUkDesignSystem
                 classes,
                 textInputAppendix,
                 type,
+                spellcheck,
                 autocomplete);
         }
 

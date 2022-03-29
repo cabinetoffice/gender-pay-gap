@@ -24,6 +24,7 @@
            id="@(Model.Id)"
            name="@(Model.Name)"
            type="@(Model.Type ?? "text")"
+           spellcheck="@(Model.Spellcheck?.ToString())"
            value="@(Model.Value)"
            aria-describedby="@(describedBy)"
            autocomplete="@(Model.Autocomplete)"

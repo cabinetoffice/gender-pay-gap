@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using GovUkDesignSystem.GovUkDesignSystemComponents;
@@ -21,6 +22,7 @@ namespace GovUkDesignSystem.HtmlGenerators
             string classes = null,
             TextInputAppendixViewModel textInputAppendix = null,
             string type = "text",
+            bool? spellcheck = null,
             string autocomplete = null
         )
             where TModel : GovUkViewModel
@@ -50,6 +52,7 @@ namespace GovUkDesignSystem.HtmlGenerators
                 Classes = classes,
                 TextInputAppendix = textInputAppendix,
                 Type = type,
+                Spellcheck = spellcheck?.ToString().ToLowerInvariant(),
                 Attributes = new Dictionary<string, string> {{"autocomplete", autocomplete}}
             };
 
