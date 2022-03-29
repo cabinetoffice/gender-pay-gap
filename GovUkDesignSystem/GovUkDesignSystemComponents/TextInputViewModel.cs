@@ -23,6 +23,12 @@ namespace GovUkDesignSystem.GovUkDesignSystemComponents
         public string Type { get; set; } = "text";
 
         /// <summary>
+        ///     Optional value for spellcheck, defines whether the element may be checked for spelling errors.
+        /// </summary>
+        public string Spellcheck { get; set; }
+
+
+        /// <summary>
         ///     Optional value for input mode.
         /// </summary>
         public string InputMode { get; set; }
