@@ -73,12 +73,14 @@
                         m => m.EmailAddress,
                         new LabelViewModel {Text = "Enter an email address that you can access"},
                         new HintViewModel {Text = "The service will send you an email to verify your identity"},
+                        type: "email",
                         classes: "govuk-input--width-20",
                         autocomplete: "email"
                         ))
                     @(Html.GovUkTextInputFor(
                         m => m.ConfirmEmailAddress,
                         new LabelViewModel {Text = "Confirm your email address"},
+                        type: "email",
                         classes: "govuk-input--width-20",
                         autocomplete: "email"
                         ))
