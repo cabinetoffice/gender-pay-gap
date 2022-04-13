@@ -31,21 +31,17 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         {
             List<User> users = dataRepository.GetAll<User>().ToList();
 
-            List<string> emailsWithMultipleAccounts = users
+            var usersWithMultipleAccounts = users
                 .Where(u => u.HasBeenAnonymised == false)
                 .GroupBy(u => u.EmailAddress).Where(e => e.Count() > 1)
-                .Select(u => u.Key)
+                .SelectMany(g => g)
                 .ToList();
 
-            foreach (string email in emailsWithMultipleAccounts)
+            foreach (var user in usersWithMultipleAccounts.Where(u => u.Status == UserStatuses.Retired))
             {
-                var matchingUsers = users.Where(u => u.EmailAddress == email);
-
-                foreach (User user in matchingUsers.Where(u => u.Status == UserStatuses.Retired))
-                {
-                    AnonymiseRetiredDuplicateUser(user);
-                }
+                AnonymiseRetiredDuplicateUser(user);
             }
+
             dataRepository.SaveChanges();
         }
 
