@@ -122,16 +122,27 @@ namespace GenderPayGap.WebUI.Controllers.Account
                         + " address");
                 }
             }
+            User user = null;
 
             if (viewModel.HasAnyErrors())
             {
                 return View("CreateUserAccount", viewModel);
             }
 
-            User newUser = CreateNewUser(viewModel);
-            dataRepository.Insert(newUser);
+            // Check for retired account with matching email address
+            User retiredUser = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Retired);
 
-            GenerateAndSendAccountVerificationEmail(newUser);
+            if (retiredUser != null)
+            {
+                user = UpdateRetiredUser(viewModel, retiredUser);
+            }
+            else
+            {
+                user = CreateNewUser(viewModel);
+                dataRepository.Insert(user);
+            }
+
+            GenerateAndSendAccountVerificationEmail(user);
 
             dataRepository.SaveChanges();
 
@@ -188,6 +199,32 @@ namespace GenderPayGap.WebUI.Controllers.Account
             user.EmailVerifiedDate = null;
             user.EmailVerifyHash = null;
             user.SetStatus(UserStatuses.New, user);
+            user.Status = UserStatuses.New;
+
+            return user;
+        }
+
+        private User UpdateRetiredUser(CreateUserAccountViewModel viewModel, User retiredUser)
+        {
+            // If user creates a new account with same email address as retired account,
+            // reuse the old account to avoid duplicates, update all details except created date and email
+            var user = retiredUser;
+            user.Modified = VirtualDateTime.Now;
+            user.Firstname = viewModel.FirstName;
+            user.Lastname = viewModel.LastName;
+            user.JobTitle = viewModel.JobTitle;
+            user.AllowContact = viewModel.AllowContact;
+            user.SendUpdates = viewModel.SendUpdates;
+
+            byte[] salt = Crypto.GetSalt();
+            user.Salt = Convert.ToBase64String(salt);
+            user.PasswordHash = Crypto.GetPBKDF2(viewModel.Password, salt);
+            user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
+
+            user.EmailVerifySendDate = null;
+            user.EmailVerifiedDate = null;
+            user.EmailVerifyHash = null;
+            user.SetStatus(UserStatuses.New, user,  "Retired user account has been reactivated");
             user.Status = UserStatuses.New;
 
             return user;
