@@ -122,7 +122,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
                         + " address");
                 }
             }
-            User user = null;
 
             if (viewModel.HasAnyErrors())
             {
@@ -132,13 +131,10 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Check for retired account with matching email address
             User retiredUser = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Retired);
 
-            if (retiredUser != null)
+            var user = CreateNewOrUpdateRetiredUser(viewModel, retiredUser);
+                
+            if (retiredUser.IsNull())
             {
-                user = UpdateRetiredUser(viewModel, retiredUser);
-            }
-            else
-            {
-                user = CreateNewUser(viewModel);
                 dataRepository.Insert(user);
             }
 
@@ -178,11 +174,18 @@ namespace GenderPayGap.WebUI.Controllers.Account
             return View("ConfirmationPage");
         }
 
-        private User CreateNewUser(CreateUserAccountViewModel viewModel)
+        private User CreateNewOrUpdateRetiredUser(CreateUserAccountViewModel viewModel, User retiredUser = null)
         {
-            var user = new User();
-            user.Created = VirtualDateTime.Now;
-            user.Modified = user.Created;
+            var currentTime = VirtualDateTime.Now;
+
+            // If user creates a new account with same email address as retired account, reuse the old
+            // account to avoid duplicates, add status change details and update all info except created date.
+            var user = retiredUser ?? new User();
+            var createdDate = retiredUser.IsNull() ? currentTime : retiredUser.Created;
+            var statusDetails = retiredUser.IsNull() ? null : "Retired user account has been reactivated";
+
+            user.Created = createdDate;
+            user.Modified = currentTime;
             user.Firstname = viewModel.FirstName;
             user.Lastname = viewModel.LastName;
             user.JobTitle = viewModel.JobTitle;
@@ -198,33 +201,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             user.EmailVerifySendDate = null;
             user.EmailVerifiedDate = null;
             user.EmailVerifyHash = null;
-            user.SetStatus(UserStatuses.New, user);
-            user.Status = UserStatuses.New;
-
-            return user;
-        }
-
-        private User UpdateRetiredUser(CreateUserAccountViewModel viewModel, User retiredUser)
-        {
-            // If user creates a new account with same email address as retired account,
-            // reuse the old account to avoid duplicates, update all details except created date and email
-            var user = retiredUser;
-            user.Modified = VirtualDateTime.Now;
-            user.Firstname = viewModel.FirstName;
-            user.Lastname = viewModel.LastName;
-            user.JobTitle = viewModel.JobTitle;
-            user.AllowContact = viewModel.AllowContact;
-            user.SendUpdates = viewModel.SendUpdates;
-
-            byte[] salt = Crypto.GetSalt();
-            user.Salt = Convert.ToBase64String(salt);
-            user.PasswordHash = Crypto.GetPBKDF2(viewModel.Password, salt);
-            user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
-
-            user.EmailVerifySendDate = null;
-            user.EmailVerifiedDate = null;
-            user.EmailVerifyHash = null;
-            user.SetStatus(UserStatuses.New, user,  "Retired user account has been reactivated");
+            user.SetStatus(UserStatuses.New, user, statusDetails);
             user.Status = UserStatuses.New;
 
             return user;
