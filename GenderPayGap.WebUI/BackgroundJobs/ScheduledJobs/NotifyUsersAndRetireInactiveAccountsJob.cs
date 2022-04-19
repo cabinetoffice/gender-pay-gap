@@ -69,7 +69,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             foreach (User user in usersToRetire)
             {
                 List<AuditLog> userAuditLogs = dataRepository.GetAll<AuditLog>()
-                .Where(al => al.OriginalUserId == user.UserId || al.ImpersonatedUserId == user.UserId).ToList();
+                    .Where(al => al.OriginalUserId == user.UserId || al.ImpersonatedUserId == user.UserId).ToList();
 
                 UserAnonymisationHelper.AnonymiseAndRetireUser(user, "User retired by RetireInactiveAccountsJob");
                 UserAnonymisationHelper.AnonymiseAuditLogsForUser(userAuditLogs);
