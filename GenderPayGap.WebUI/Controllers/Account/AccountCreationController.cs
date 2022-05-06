@@ -103,6 +103,11 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     m => m.ConfirmPassword,
                     "The password and confirmation do not match.");
             }
+            
+            if (viewModel.HasAnyErrors())
+            {
+                return View("CreateUserAccount", viewModel);
+            }
 
             User existingUser = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Active, UserStatuses.New);
             if (existingUser?.EmailVerifySendDate != null)
