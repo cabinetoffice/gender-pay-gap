@@ -44,9 +44,10 @@ namespace GovUkDesignSystem.GovUkDesignSystemComponents
         public string Href { get; set; }
 
         /// <summary>
-        ///     Prevent accidental double clicks on submit buttons from submitting forms multiple times
+        ///     Prevent accidental double clicks on submit buttons from submitting forms multiple times.
+        ///     <br/>Defaults to true.
         /// </summary>
-        public bool PreventDoubleClick { get; set; }
+        public bool PreventDoubleClick { get; set; } = true;
 
         /// <summary>
         ///     Use for the main call to action on your service's start page.
