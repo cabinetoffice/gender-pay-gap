@@ -1460,6 +1460,9 @@
 			return false
 		}
 
+		if (target.getAttribute('data-prevent-double-click-timeout')) {
+			DEBOUNCE_TIMEOUT_IN_SECONDS = parseInt(target.getAttribute('data-prevent-double-click-timeout'));
+		}
 		this.debounceFormSubmitTimer = setTimeout(function () {
 			this.debounceFormSubmitTimer = null;
 		}.bind(this), DEBOUNCE_TIMEOUT_IN_SECONDS * 1000);

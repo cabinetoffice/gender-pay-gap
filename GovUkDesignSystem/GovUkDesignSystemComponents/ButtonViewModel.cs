@@ -50,6 +50,12 @@ namespace GovUkDesignSystem.GovUkDesignSystemComponents
         public bool PreventDoubleClick { get; set; } = true;
 
         /// <summary>
+        ///     Overwrite the default value for the PreventDoubleClickTimeout (default value: 1s).
+        ///     Note that supporting this requires some changes to gov_uk_front_end.js
+        /// </summary>
+        public int? PreventDoubleClickTimeout { get; set; }
+
+        /// <summary>
         ///     Use for the main call to action on your service's start page.
         /// </summary>
         public bool IsStartButton { get; set; }
