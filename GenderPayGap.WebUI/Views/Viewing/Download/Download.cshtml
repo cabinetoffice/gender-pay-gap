@@ -1,9 +1,14 @@
 ﻿@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Models.Shared
+@using System.IO
 
 @{
     ViewBag.Title = "Download gender pay gap figures - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@{
+    Dictionary<int, int> YearAndSize = new Dictionary<int, int>();
 }
 
 <div class="govuk-grid-row">
@@ -30,15 +35,18 @@
         <hr/>
 
         <ul class="govuk-list">
-            @foreach (int year in ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y))
-            {
-                <li>
-                    <a href="@Url.Action("DownloadData", "Viewing", new {year})"
-                       class="govuk-link">
-                        <span class="govuk-visually-hidden">Download gender pay gap data for</span>
-                        Reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(year)) (CSV file)
-                    </a>
-                </li>
+            @{
+                List <(int,string)> reportingYearsWithFileSizes = ReportingYearsHelper.GetReportingYearWithCSVFileSize();
+                foreach (var item in reportingYearsWithFileSizes)
+                {
+                    <li>
+                        <a href="@Url.Action("DownloadData", "Viewing", item.Item1)"
+                           class="govuk-link">
+                            <span class="govuk-visually-hidden">Download gender pay gap data for</span>
+                            Reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(item.Item1)) (@item.Item2 .CSV file)
+                        </a>
+                    </li>
+                }
             }
         </ul>
     </div>
