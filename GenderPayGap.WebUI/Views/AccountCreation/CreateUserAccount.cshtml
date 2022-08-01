@@ -5,7 +5,9 @@
 @using GenderPayGap.WebUI.Models.AccountCreation
 @model GenderPayGap.WebUI.Models.AccountCreation.CreateUserAccountViewModel
 @{
-    ViewBag.Title = "Create my account - Gender pay gap reporting service";
+    string title = "Create my account - Gender pay gap reporting service";
+    bool errorHasOccured = Model.HasAnyErrors();
+    ViewBag.Title = errorHasOccured ? "Error: " + title : title;
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
