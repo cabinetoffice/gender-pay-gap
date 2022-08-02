@@ -10,7 +10,6 @@ using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Models.AdminReferenceData;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -106,7 +105,7 @@ namespace GenderPayGap.WebUI.Controllers
                 out List<SicSection> sicSectionsFromUploadFile,
                 out string errorMessage))
             {
-                viewModel.AddErrorFor(m => m.File, errorMessage);
+                ModelState.AddModelError(nameof(viewModel.File), errorMessage);
                 return View("SicSectionUpload", viewModel);
             }
 
@@ -136,7 +135,7 @@ namespace GenderPayGap.WebUI.Controllers
                 out List<SicCode> sicCodesFromUploadFile,
                 out string errorMessage))
             {
-                viewModel.AddErrorFor(m => m.File, errorMessage);
+                ModelState.AddModelError(nameof(viewModel.File), errorMessage);
                 return View("SicCodeUpload", viewModel);
             }
 
@@ -174,8 +173,7 @@ namespace GenderPayGap.WebUI.Controllers
                     (s1, s2) => s1.Description == s2.Description
                 );
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("SicSectionUploadCheck", viewModel);
             }
@@ -238,8 +236,7 @@ namespace GenderPayGap.WebUI.Controllers
                                 && s1.Synonyms == s2.Synonyms,
                     s => s.OrganisationSicCodes.Count > 0);
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("SicCodeUploadCheck", viewModel);
             }

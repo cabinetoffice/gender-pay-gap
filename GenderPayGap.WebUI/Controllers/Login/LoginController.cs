@@ -5,7 +5,6 @@ using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Login;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Login
@@ -36,10 +35,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
         [ValidateAntiForgeryToken]
         public IActionResult LoginPost(LoginViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
-            viewModel.ParseAndValidateParameters(Request, m => m.Password);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("Login", viewModel);
             }
@@ -48,22 +44,20 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
             if (user == null)
             {
-                viewModel.AddErrorFor(m => m.Password, "Incorrect email address or password. Please double-check and try again");
+                ModelState.AddModelError(nameof(viewModel.Password), "Incorrect email address or password. Please double-check and try again");
                 return View("Login", viewModel);
             }
 
             if (LoginHelper.UserIsLockedOutBecauseOfTooManyRecentFailedLoginAttempts(user))
             {
-                viewModel.AddErrorFor(
-                    m => m.Password,
-                    "You have entered the email address or password wrong too many times. "
-                    + $"Please try again in {LoginHelper.GetMinutesUntilAccountIsUnlocked(user)} minutes");
+                ModelState.AddModelError(nameof(viewModel.Password), "You have entered the email address or password wrong too many times. "
+                                                                     + $"Please try again in {LoginHelper.GetMinutesUntilAccountIsUnlocked(user)} minutes");
                 return View("Login", viewModel);
             }
 
             if (!userRepository.CheckPassword(user, viewModel.Password))
             {
-                viewModel.AddErrorFor(m => m.Password, "Incorrect email address or password. Please double-check and try again");
+                ModelState.AddModelError(nameof(viewModel.Password), "Incorrect email address or password. Please double-check and try again");
                 return View("Login", viewModel);
             }
 

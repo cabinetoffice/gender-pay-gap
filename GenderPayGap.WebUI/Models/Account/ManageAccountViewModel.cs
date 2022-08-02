@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ManageAccountViewModel : GovUkViewModel
+    public class ManageAccountViewModel 
     {
 
         [BindNever]

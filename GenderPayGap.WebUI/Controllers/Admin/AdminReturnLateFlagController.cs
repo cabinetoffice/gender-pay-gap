@@ -6,7 +6,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,9 +42,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             var specifiedReturn = dataRepository.Get<Return>(id);
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Return = specifiedReturn;
 

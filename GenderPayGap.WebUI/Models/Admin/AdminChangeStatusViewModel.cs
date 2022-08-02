@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminChangeStatusViewModel : GovUkViewModel
+    public class AdminChangeStatusViewModel 
     {
 
         public ChangeOrganisationStatusViewModelActions Action { get; set; }

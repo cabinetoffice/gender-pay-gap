@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
-    public class ReportSizeOfOrganisationViewModel : GovUkViewModel
+    public class ReportSizeOfOrganisationViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

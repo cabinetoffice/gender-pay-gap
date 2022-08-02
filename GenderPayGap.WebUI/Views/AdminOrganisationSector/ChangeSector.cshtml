@@ -35,7 +35,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -58,7 +58,7 @@
             @(Html.Hidden(nameof(AdminChangeSectorViewModel.Action),
                 ChangeOrganisationSectorViewModelActions.OfferNewSectorAndReason))
 
-            @(Html.GovUkErrorSummary(new[]
+            @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
             {
                 nameof(AdminChangeSectorViewModel.NewSector),
                 nameof(AdminChangeSectorViewModel.Reason)
@@ -84,9 +84,9 @@
                     </h1>
                 </legend>
                 
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.NewSector,
-                    itemLabelOptions: new Dictionary<NewSectorTypes?, LabelViewModel>
+                    labelOptions: new Dictionary<NewSectorTypes, LabelViewModel>
                     {
                         {
                             NewSectorTypes.Public,
@@ -103,7 +103,7 @@
                             }
                         },
                     },
-                    itemHintOptions: new Dictionary<NewSectorTypes?, HintViewModel>
+                    radioHints: new Dictionary<NewSectorTypes, HintViewModel>
                     {
                         {
                             NewSectorTypes.Public,
@@ -140,7 +140,7 @@
                     })
                     )
 
-                @Html.GovUkTextAreaFor(
+                @await Html.GovUkTextAreaFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -152,7 +152,7 @@
                         Classes = "govuk-!-margin-top-6"
                     })
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Continue",
                     Classes = "govuk-!-margin-bottom-4"

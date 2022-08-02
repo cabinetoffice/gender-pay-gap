@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminFileUploadViewModel : GovUkViewModel
+    public class AdminFileUploadViewModel 
     {
 
         public IFormFile File { get; set; }

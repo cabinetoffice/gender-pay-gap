@@ -2,7 +2,6 @@
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,9 +27,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (viewModel.Validate == true)
             {
-                viewModel.ParseAndValidateParameters(Request, m => m.Sector);
-
-                if (viewModel.HasAnyErrors())
+                if (!ModelState.IsValid)
                 {
                     return View("ChooseSector", viewModel);
                 }
@@ -42,5 +39,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             return View("ChooseSector", viewModel);
         }
 
+        
     }
 }

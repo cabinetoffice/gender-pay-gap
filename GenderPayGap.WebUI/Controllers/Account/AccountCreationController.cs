@@ -8,7 +8,6 @@ using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
@@ -51,9 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     return RedirectToAction("CreateUserAccountGet", new { isPartOfGovUkReportingJourney = true });
 
                 case HaveYouAlreadyCreatedYourUserAccount.Unspecified:
-                    viewModel.AddErrorFor(
-                        m => m.HaveYouAlreadyCreatedYourUserAccount,
-                        "You must select whether you have already created your user account");
+                    ModelState.AddModelError(nameof(viewModel.HaveYouAlreadyCreatedYourUserAccount), "You must select whether you have already created your user account");
                     return View("AlreadyCreatedAnAccountQuestion", viewModel);
 
                 default:
@@ -78,33 +75,21 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserAccountPost(CreateUserAccountViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
-            viewModel.ParseAndValidateParameters(Request, m => m.ConfirmEmailAddress);
-            viewModel.ParseAndValidateParameters(Request, m => m.FirstName);
-            viewModel.ParseAndValidateParameters(Request, m => m.LastName);
-            viewModel.ParseAndValidateParameters(Request, m => m.JobTitle);
-            viewModel.ParseAndValidateParameters(Request, m => m.Password);
-            viewModel.ParseAndValidateParameters(Request, m => m.ConfirmPassword);
-
-            if (viewModel.HasSuccessfullyParsedValueFor(m => m.EmailAddress)
-                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmEmailAddress)
-                && viewModel.EmailAddress != viewModel.ConfirmEmailAddress)
+            if (viewModel.EmailAddress != null && 
+                viewModel.ConfirmEmailAddress != null && 
+                viewModel.EmailAddress != viewModel.ConfirmEmailAddress)
             {
-                viewModel.AddErrorFor(
-                    m => m.ConfirmEmailAddress,
-                    "The email address and confirmation do not match.");
+                ModelState.AddModelError(nameof(viewModel.ConfirmEmailAddress), "The email address and confirmation do not match.");
             }
 
-            if (viewModel.HasSuccessfullyParsedValueFor(m => m.Password)
-                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmPassword)
-                && viewModel.Password != viewModel.ConfirmPassword)
+            if (viewModel.Password != null && 
+                viewModel.ConfirmPassword != null && 
+                viewModel.Password != viewModel.ConfirmPassword)
             {
-                viewModel.AddErrorFor(
-                    m => m.ConfirmPassword,
-                    "The password and confirmation do not match.");
+                ModelState.AddModelError(nameof(viewModel.ConfirmPassword), "The password and confirmation do not match.");
             }
             
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("CreateUserAccount", viewModel);
             }
@@ -114,21 +99,17 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 if (existingUser.EmailVerifiedDate != null)
                 {
-                    viewModel.AddErrorFor(
-                        m => m.EmailAddress,
-                        "This email address has already been registered. Please sign in or enter a different email "
-                        + "address.");
+                    ModelState.AddModelError(nameof(viewModel.EmailAddress), "This email address has already been registered. Please sign in or enter a different email "
+                                                                             + "address.");
                 }
                 else
                 {
-                    viewModel.AddErrorFor(
-                        m => m.EmailAddress,
-                        "This email address is awaiting confirmation. Please check your email inbox or enter a different email"
-                        + " address");
+                    ModelState.AddModelError(nameof(viewModel.EmailAddress), "This email address is awaiting confirmation. Please check your email inbox or enter a different email"
+                                                                             + " address");
                 }
             }
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("CreateUserAccount", viewModel);
             }

@@ -4,7 +4,7 @@ using GovUkDesignSystem.Attributes;
 namespace GenderPayGap.WebUI.Models.AccountCreation
 {
 
-    public class AlreadyCreatedAnAccountViewModel : GovUkViewModel
+    public class AlreadyCreatedAnAccountViewModel 
     {
 
         public HaveYouAlreadyCreatedYourUserAccount? HaveYouAlreadyCreatedYourUserAccount { get; set; }

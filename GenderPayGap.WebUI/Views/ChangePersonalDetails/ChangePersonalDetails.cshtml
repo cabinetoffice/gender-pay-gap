@@ -23,7 +23,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -31,7 +31,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
         
         <h1 class="govuk-heading-xl">
             Change your personal details
@@ -40,35 +40,35 @@
         <form method="POST" action="@Url.Action("ChangePersonalDetailsPost", "ChangePersonalDetails")">
             @(Html.AntiForgeryToken())
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.FirstName,
                 labelOptions: new LabelViewModel {Text = "First name"},
                 autocomplete: "given-name",
                 classes: "govuk-input--width-20"
                 ))
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.LastName,
                 labelOptions: new LabelViewModel {Text = "Last name"},
                 autocomplete: "family-name",
                 classes: "govuk-input--width-20"
                 ))
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.JobTitle,
                 labelOptions: new LabelViewModel {Text = "Job title"},
                 autocomplete: "organization-title",
                 classes: "govuk-input--width-20"
                 ))
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.ContactPhoneNumber,
                 labelOptions: new LabelViewModel {Text = "Contact phone number"},
                 autocomplete: "tel",
                 classes: "govuk-input--width-20"
                 ))
 
-            @(Html.GovUkButton(
+            @(await Html.GovUkButton(
                 new ButtonViewModel
                 {
                     Text = "Confirm",

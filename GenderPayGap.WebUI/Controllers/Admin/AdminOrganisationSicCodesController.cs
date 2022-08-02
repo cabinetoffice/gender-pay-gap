@@ -11,7 +11,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -164,7 +163,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             // We might need to change the value of Action before we go to the view
             // Apparently this is necessary
             // https://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
-            ModelState.Clear();
+            ModelState.Remove(nameof(viewModel.Action));
 
             Organisation organisation = dataRepository.Get<Organisation>(id);
             viewModel.Organisation = organisation;
@@ -210,9 +209,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult OfferCompaniesHouseAnswerAction(ChangeOrganisationSicCodesViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.AcceptCompaniesHouseSicCodes);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModelFromCompaniesHouseSicCodes(viewModel, viewModel.SicCodeIdsFromCoHo, organisation);
                 return View("OfferNewCompaniesHouseSicCodes", viewModel);
@@ -230,9 +227,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult AddNewSicCode(ChangeOrganisationSicCodesViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.SicCodeIdToChange);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModelWithSicCodeData(viewModel, organisation);
                 return View("ManuallyChangeOrganisationSicCodes", viewModel);
@@ -241,12 +236,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             SicCode newSicCode = dataRepository.Get<SicCode>(viewModel.SicCodeIdToChange.Value);
             if (newSicCode == null)
             {
-                viewModel.AddErrorFor(
-                    m => m.SicCodeIdToChange,
-                    "This SIC code is not valid (it is not in our database of SIC codes)");
+                ModelState.AddModelError(nameof(viewModel.SicCodeIdToChange), "This SIC code is not valid (it is not in our database of SIC codes)");
             }
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModelWithSicCodeData(viewModel, organisation);
                 return View("ManuallyChangeOrganisationSicCodes", viewModel);
@@ -316,9 +309,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult ConfirmChangesAction(ChangeOrganisationSicCodesViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModelWithSicCodeData(viewModel, organisation);
                 viewModel.ConfirmationType = ChangeOrganisationSicCodesConfirmationType.Manual;

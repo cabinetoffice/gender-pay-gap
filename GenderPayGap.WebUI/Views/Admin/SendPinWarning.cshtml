@@ -52,7 +52,7 @@
             Text = "Send PIN"
         });
 
-        @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+        @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
         {
             Crumbs = crumbs
         }))

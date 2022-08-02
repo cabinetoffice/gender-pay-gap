@@ -11,7 +11,7 @@
     @{
         Model.Validate = null; // Required to make the "Back" link work correctly
     }
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = Url.Action("ManualConfirmGet", "AddOrganisationManualConfirm", Model),
@@ -28,7 +28,7 @@
         <form method="get"
               action="@Url.Action("ManualChooseSector", "AddOrganisationManualChooseSector")">
 
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.OrganisationName))
@@ -60,9 +60,9 @@
                     </h1>
                 </legend>
 
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.Sector,
-                    itemLabelOptions: new Dictionary<AddOrganisationSector?, LabelViewModel>
+                    labelOptions: new Dictionary<AddOrganisationSector, LabelViewModel>
                     {
                         {
                             AddOrganisationSector.Public,
@@ -79,7 +79,7 @@
                             }
                         },
                     },
-                    itemHintOptions: new Dictionary<AddOrganisationSector?, HintViewModel>
+                    radioHints: new Dictionary<AddOrganisationSector, HintViewModel>
                     {
                         {
                             AddOrganisationSector.Public,
@@ -128,7 +128,7 @@
                 </a>
             </div>
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

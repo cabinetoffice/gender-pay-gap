@@ -54,7 +54,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             ValidateManuallyEnteredOrganisationDetails(viewModel);
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return RedirectToAction("ManualConfirmGet", "AddOrganisationManualConfirm", viewModel);
             }
@@ -82,26 +82,26 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             return RedirectToConfirmationPage(userOrganisation);
         }
 
-        private static void ValidateManuallyEnteredOrganisationDetails(AddOrganisationManualViewModel viewModel)
+        private void ValidateManuallyEnteredOrganisationDetails(AddOrganisationManualViewModel viewModel)
         {
             if (string.IsNullOrWhiteSpace(viewModel.OrganisationName))
             {
-                viewModel.AddErrorFor(m => m.OrganisationName, "Enter the name of the organisation");
+                ModelState.AddModelError(nameof(viewModel.OrganisationName), "Enter the name of the organisation");
             }
 
             if (string.IsNullOrWhiteSpace(viewModel.Address1))
             {
-                viewModel.AddErrorFor(m => m.Address1, "Enter the registered address of the organisation");
+                ModelState.AddModelError(nameof(viewModel.Address1), "Enter the registered address of the organisation");
             }
 
             if (!viewModel.IsUkAddress.HasValue)
             {
-                viewModel.AddErrorFor(m => m.IsUkAddress, "Select if this organisation's address is a UK address");
+                ModelState.AddModelError(nameof(viewModel.IsUkAddress), "Select if this organisation's address is a UK address");
             }
 
             if (!viewModel.Sector.HasValue)
             {
-                viewModel.AddErrorFor(m => m.Sector, "Choose which type of organisation you would like to add");
+                ModelState.AddModelError(nameof(viewModel.Sector), "Choose which type of organisation you would like to add");
             }
         }
 

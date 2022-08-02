@@ -9,7 +9,6 @@ using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -106,7 +105,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             // We might need to change the value of Action before we go to the view
             // Apparently this is necessary
             // https://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
-            ModelState.Clear();
+            ModelState.Remove(nameof(viewModel.Action));
 
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
@@ -128,23 +127,12 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult OfferNewCompaniesHouseAction(ChangeOrganisationNameViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.AcceptCompaniesHouseName);
-
-            if (viewModel.HasAnyErrors())
-            {
-                viewModel.Organisation = organisation;
-                viewModel.Action = ManuallyChangeOrganisationNameViewModelActions.OfferNewCompaniesHouseName;
-                return View("OfferNewCompaniesHouseName", viewModel);
-            }
-
             if (viewModel.AcceptCompaniesHouseName == AcceptCompaniesHouseName.Reject)
             {
                 return SendToManualChangePage(organisation);
             }
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 viewModel.Action = ManuallyChangeOrganisationNameViewModelActions.OfferNewCompaniesHouseName;
@@ -158,10 +146,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult ManualChangeAction(ChangeOrganisationNameViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.Name);
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 viewModel.Action = ManuallyChangeOrganisationNameViewModelActions.ManualChange;
@@ -264,9 +249,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 throw new Exception($"Name ID {nameId} is not a valid name for this Organisation");
             }
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 viewModel.OrganisationNameToBeDeleted = name;

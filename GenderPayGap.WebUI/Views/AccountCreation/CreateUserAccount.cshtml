@@ -53,7 +53,7 @@
             @Html.AntiForgeryToken()
             <div class="govuk-form-group">
 
-                @(Html.GovUkErrorSummary(new[]
+                @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
                 {
                     nameof(CreateUserAccountViewModel.EmailAddress),
                     nameof(CreateUserAccountViewModel.ConfirmEmailAddress),
@@ -69,7 +69,7 @@
                         <h2 class="govuk-heading-m">Email address</h2>
                     </legend>
 
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.EmailAddress,
                         new LabelViewModel {Text = "Enter an email address that you can access"},
                         new HintViewModel {Text = "The service will send you an email to verify your identity"},
@@ -78,7 +78,7 @@
                         autocomplete: "email",
                         spellcheck: false
                         ))
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.ConfirmEmailAddress,
                         new LabelViewModel {Text = "Confirm your email address"},
                         type: "email",
@@ -94,19 +94,19 @@
                         <h2 class="govuk-heading-m">Your details</h2>
                     </legend>
 
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.FirstName,
                         new LabelViewModel {Text = "First name"},
                         classes: "govuk-input--width-20",
                         autocomplete: "given-name"
                         ))
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.LastName,
                         new LabelViewModel {Text = "Last name"},
                         classes: "govuk-input--width-20",
                         autocomplete: "family-name"
                         ))
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.JobTitle,
                         new LabelViewModel {Text = "Job title"},
                         classes: "govuk-input--width-20",
@@ -138,14 +138,14 @@
                         </ul>
                     </p>
 
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.Password,
                         new LabelViewModel {Text = "Password"},
                         type: "password",
                         classes: "govuk-input--width-20",
                         autocomplete: "new-password"
                         ))
-                    @(Html.GovUkTextInputFor(
+                    @(await Html.GovUkTextInputFor(
                         m => m.ConfirmPassword,
                         new LabelViewModel {Text = "Confirm your password"},
                         type: "password",
@@ -159,11 +159,11 @@
                     to gender pay gap reporting and, with your consent, for the following purpose:
                 </p>
 
-                @(Html.GovUkCheckboxItemFor(m => m.SendUpdates,
+                @(await Html.GovUkCheckboxItemFor(m => m.SendUpdates,
                     new LabelViewModel {Text = "I would like to receive information about webinars, events, and new guidance"}))
-                @(Html.GovUkCheckboxItemFor(m => m.AllowContact,
+                @(await Html.GovUkCheckboxItemFor(m => m.AllowContact,
                     new LabelViewModel {Text = "I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys"}))
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Save and Continue",
                     Classes = "govuk-!-margin-top-9",

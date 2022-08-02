@@ -35,7 +35,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -71,7 +71,7 @@
             </span>
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h2 class="govuk-heading-l">
             Check the new SIC codes
@@ -199,7 +199,7 @@
                 ))
             @(CurrentState())
 
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkTextAreaFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -208,7 +208,7 @@
                 }
                 ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm and save",
                 Classes = "govuk-!-margin-right-2 govuk-!-margin-bottom-4"
@@ -223,7 +223,7 @@
                     ManuallyChangeOrganisationSicCodesActions.MakeMoreManualChanges))
                 @(CurrentState())
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Classes = "govuk-button--secondary govuk-!-margin-bottom-4",
                     Text = "Make more changes"

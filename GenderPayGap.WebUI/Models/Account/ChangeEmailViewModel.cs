@@ -3,7 +3,7 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ChangeEmailViewModel : GovUkViewModel
+    public class ChangeEmailViewModel 
     {
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a new email address")]

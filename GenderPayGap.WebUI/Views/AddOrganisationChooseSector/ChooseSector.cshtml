@@ -8,7 +8,7 @@
 }
 
 @section BeforeMain {
-    @Html.GovUkBackLink(new BackLinkViewModel
+    @await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations"),
@@ -25,7 +25,7 @@
         <form method="get"
               action="@Url.Action("ChooseSector", "AddOrganisationChooseSector")">
             
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -34,9 +34,9 @@
                     </h1>
                 </legend>
 
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.Sector,
-                    itemLabelOptions: new Dictionary<AddOrganisationSector?, LabelViewModel>
+                    labelOptions: new Dictionary<AddOrganisationSector, LabelViewModel>
                     {
                         {
                             AddOrganisationSector.Public,
@@ -53,7 +53,7 @@
                             }
                         },
                     },
-                    itemHintOptions: new Dictionary<AddOrganisationSector?, HintViewModel>
+                    radioHints: new Dictionary<AddOrganisationSector, HintViewModel>
                     {
                         {
                             AddOrganisationSector.Public,
@@ -107,7 +107,7 @@
                 @(Html.HiddenFor(m => m.Validate))
             }
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

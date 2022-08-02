@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models
 {
-    public class AdminChangeUserContactPreferencesViewModel : GovUkViewModel
+    public class AdminChangeUserContactPreferencesViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

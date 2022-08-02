@@ -9,7 +9,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -83,9 +82,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             viewModel.Organisation = organisation;
 
-            viewModel.ParseAndValidateParameters(Request, m => m.ChangeOrRemove);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("OfferChangeOrRemoveOrganisationCompanyNumber", viewModel);
             }
@@ -102,9 +99,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult Remove(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 return View("RemoveOrganisationCompanyNumber", viewModel);
@@ -131,10 +126,9 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult Change(Organisation organisation, AdminOrganisationCompanyNumberViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.NewCompanyNumber);
             viewModel.Organisation = organisation;
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
@@ -143,8 +137,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (formattedCompanyNumber == organisation.CompanyNumber?.Trim().ToUpper())
             {
-                viewModel.AddErrorFor(m => m.NewCompanyNumber,
-                    "Company number must be different to the current company number");
+                ModelState.AddModelError(nameof(viewModel.NewCompanyNumber), "Company number must be different to the current company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
 
@@ -155,9 +148,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (organisationWithSameNewCompanyNumber != null)
             {
-                viewModel.AddErrorFor(
-                    m => m.NewCompanyNumber,
-                    $"Another organisation ({organisationWithSameNewCompanyNumber.OrganisationName}) has this company number");
+                ModelState.AddModelError(nameof(viewModel.NewCompanyNumber), $"Another organisation ({organisationWithSameNewCompanyNumber.OrganisationName}) has this company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
 
@@ -168,17 +159,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             }
             catch (Exception)
             {
-                viewModel.AddErrorFor(
-                    m => m.NewCompanyNumber,
-                    "Companies House API gave an error (maybe the API is down, or maybe the company number is invalid)");
+                ModelState.AddModelError(nameof(viewModel.NewCompanyNumber), "Companies House API gave an error (maybe the API is down, or maybe the company number is invalid)");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
 
             if (companiesHouseCompany == null)
             {
-                viewModel.AddErrorFor(
-                    m => m.NewCompanyNumber,
-                    "Companies House didn't recognise this company number");
+                ModelState.AddModelError(nameof(viewModel.NewCompanyNumber), "Companies House didn't recognise this company number");
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }
 
@@ -197,9 +184,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             viewModel.Organisation = organisation;
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangeOrganisationCompanyNumber", viewModel);
             }

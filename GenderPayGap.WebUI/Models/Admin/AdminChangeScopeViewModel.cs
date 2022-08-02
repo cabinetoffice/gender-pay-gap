@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminChangeScopeViewModel : GovUkViewModel
+    public class AdminChangeScopeViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -18,8 +18,14 @@ namespace GenderPayGap.WebUI.Models.Admin
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
         public string Reason { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Please select a new scope.")]
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(NewScopeStatusRequired), 
+            ErrorMessageIfMissing = "Please select a new scope.")]
         public NewScopeStatus? NewScopeStatus { get; set; }
+
+        public bool NewScopeStatusRequired => 
+            CurrentScopeStatus != ScopeStatuses.InScope && 
+            CurrentScopeStatus != ScopeStatuses.OutOfScope;
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public int ReportingYear { get; set; }

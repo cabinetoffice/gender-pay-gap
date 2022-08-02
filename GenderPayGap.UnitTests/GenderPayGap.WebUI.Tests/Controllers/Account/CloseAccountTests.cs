@@ -31,18 +31,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_Password", "password");
-            
+
             var controller = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountViewModel());
+            controller.CloseAccountPost(new CloseAccountViewModel
+            {
+                Password = "password"
+            });
             
             // Assert
             Assert.AreEqual(user.Status, UserStatuses.Retired);
@@ -54,18 +53,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_Password", "wrongpassword");
-            
+
             var controller = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountViewModel());
+            controller.CloseAccountPost(new CloseAccountViewModel
+            {
+                Password = "wrongpassword"
+            });
             
             // Assert
             Assert.AreEqual(user.Status, UserStatuses.Active);
@@ -91,18 +89,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .WithOrganisation(organisation2)
                 .Build();
 
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_Password", "password");
-
             var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(userToDelete)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(organisation1, organisation2, standardUser, userToDelete)
                 .Build();
             
             // Act
-            controller.CloseAccountPost(new CloseAccountViewModel());
+            controller.CloseAccountPost(new CloseAccountViewModel
+            {
+                Password = "password"
+            });
             
             // Assert
             // Assert that organisation1 doesn't have userToDelete associated with it, but is not an orphan

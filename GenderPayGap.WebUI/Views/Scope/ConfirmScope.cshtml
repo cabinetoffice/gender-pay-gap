@@ -109,7 +109,7 @@
 
             <form method="POST" action="@Url.Action(Model.IsToSetInScope? "ConfirmInScopeAnswers":"ConfirmOutOfScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
                 @(Html.AntiForgeryToken())
-                @(Html.GovUkButton(
+                @(await Html.GovUkButton(
                 new ButtonViewModel
                 {
                     Text = "Confirm"

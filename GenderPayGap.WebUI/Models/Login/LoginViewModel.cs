@@ -3,7 +3,7 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Login
 {
-    public class LoginViewModel : GovUkViewModel
+    public class LoginViewModel 
     {
 
         public string ReturnUrl { get; set; }

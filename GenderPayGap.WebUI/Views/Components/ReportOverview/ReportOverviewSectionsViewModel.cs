@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Html;
 
 namespace GenderPayGap.WebUI.Views.Components.ReportOverview
 {
-    public class ReportOverviewSectionsViewModel : GovUkViewModel
+    public class ReportOverviewSectionsViewModel
     {
         public string Title { get; set; }
         

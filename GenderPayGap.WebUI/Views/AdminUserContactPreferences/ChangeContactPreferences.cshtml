@@ -28,7 +28,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -49,7 +49,7 @@
         <form method="post" action="@Url.Action("ChangeContactPreferencesPost", "AdminUserContactPreferences", new { id = Model.UserId })">
             @(Html.AntiForgeryToken())
             
-            @(Html.GovUkCheckboxItemFor(
+            @(await Html.GovUkCheckboxItemFor(
                 m => m.AllowContact,
                 labelOptions: new LabelViewModel
                 {
@@ -57,7 +57,7 @@
                 }
             ))
             
-            @(Html.GovUkCheckboxItemFor(
+            @(await Html.GovUkCheckboxItemFor(
                 m => m.SendUpdates,
                 labelOptions: new LabelViewModel
                 {
@@ -65,7 +65,7 @@
                 }
             ))
             
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkTextAreaFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -78,7 +78,7 @@
                 }
             ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm and save",
                 Classes = "govuk-!-margin-bottom-4"

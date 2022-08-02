@@ -7,7 +7,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,13 +51,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             
-            // Check all values are provided and NewPassword is at least 8 characters long
-            viewModel.ParseAndValidateParameters(Request, m => m.CurrentPassword);
-            viewModel.ParseAndValidateParameters(Request, m => m.NewPassword);
-            viewModel.ParseAndValidateParameters(Request, m => m.ConfirmNewPassword);
-            
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            
+            if (!ModelState.IsValid)
+            {
+                return View("ChangePassword", viewModel);
+            }
             
             // Check that passwords are valid
             ValidatePasswords(viewModel, currentUser);
@@ -70,7 +69,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return LoginHelper.Logout(HttpContext, RedirectToAction("LoggedOut", "Login"));
             }
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangePassword", viewModel);
             }
@@ -85,7 +84,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             StatusMessageHelper.SetStatusMessage(Response, "Your password has been changed successfully", nextPageUrl);
 
             return LoginHelper.Logout(HttpContext, RedirectToAction("LoggedOut", "Login"));
-    }
+        }
 
         public void ValidatePasswords(ChangePasswordViewModel viewModel, User currentUser)
         {
@@ -93,27 +92,19 @@ namespace GenderPayGap.WebUI.Controllers.Account
             bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.CurrentPassword, true);
             if (!isValidPassword)
             {
-                viewModel.AddErrorFor(m => m.CurrentPassword, "Could not verify your current password.");
+                ModelState.AddModelError(nameof(viewModel.CurrentPassword), "Could not verify your current password.");
             }
 
             // Check if new password is the same as old password
-            if (viewModel.HasSuccessfullyParsedValueFor(m => m.NewPassword)
-                && viewModel.HasSuccessfullyParsedValueFor(m => m.CurrentPassword)
-                && viewModel.NewPassword == viewModel.CurrentPassword)
+            if (viewModel.NewPassword == viewModel.CurrentPassword)
             {
-                viewModel.AddErrorFor(
-                    m => m.NewPassword,
-                    "Your new password cannot be the same as your old password.");
+                ModelState.AddModelError(nameof(viewModel.NewPassword), "Your new password cannot be the same as your old password.");
             }
 
             // Check if new password and confirmation password match
-            if (viewModel.HasSuccessfullyParsedValueFor(m => m.NewPassword)
-                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmNewPassword)
-                && viewModel.NewPassword != viewModel.ConfirmNewPassword)
+            if (viewModel.NewPassword != viewModel.ConfirmNewPassword)
             {
-                viewModel.AddErrorFor(
-                    m => m.ConfirmNewPassword,
-                    "The password and confirmation do not match.");
+                ModelState.AddModelError(nameof(viewModel.ConfirmNewPassword), "The password and confirmation do not match.");
             }
         }
 

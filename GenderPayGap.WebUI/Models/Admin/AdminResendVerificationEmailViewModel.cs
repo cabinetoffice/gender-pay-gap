@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminResendVerificationEmailViewModel : GovUkViewModel
+    public class AdminResendVerificationEmailViewModel 
     {
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public User User { get; set; }

@@ -5,7 +5,6 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -108,9 +107,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 return LocalRedirect(nextPagePublicSectorUrl);
             }
 
-            ValidateUserInput(viewModel);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear, viewModel.IsEditingForTheFirstTime);
                 return View("ReportResponsiblePerson", viewModel);
@@ -124,13 +121,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
-        }
-        
-        private void ValidateUserInput(ReportResponsiblePersonViewModel viewModel)
-        {
-            viewModel.ParseAndValidateParameters(Request, m => m.ResponsiblePersonFirstName);
-            viewModel.ParseAndValidateParameters(Request, m => m.ResponsiblePersonLastName);
-            viewModel.ParseAndValidateParameters(Request, m => m.ResponsiblePersonJobTitle);
         }
 
         private void SaveChangesToDraftReturn(ReportResponsiblePersonViewModel viewModel, long organisationId, int reportingYear)

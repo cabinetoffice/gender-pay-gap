@@ -5,7 +5,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -90,7 +89,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             ValidateUserInput(viewModel);
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear);
                 return View("ReportLinkToWebsite", viewModel);
@@ -105,13 +104,11 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
         private void ValidateUserInput(ReportLinkToWebsiteViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.LinkToOrganisationWebsite);
-
             if (!string.IsNullOrEmpty(viewModel.LinkToOrganisationWebsite))
             {
                 if (!UriSanitiser.IsValidHttpOrHttpsLink(viewModel.LinkToOrganisationWebsite))
                 {
-                    viewModel.AddErrorFor(m => m.LinkToOrganisationWebsite, "Please enter a valid web address");
+                    ModelState.AddModelError(nameof(viewModel.LinkToOrganisationWebsite), "Please enter a valid web address");
                 }
             }
         }

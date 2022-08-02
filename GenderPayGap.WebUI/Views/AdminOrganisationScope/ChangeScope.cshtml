@@ -36,7 +36,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -56,7 +56,7 @@
         <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.OrganisationId, year = Model.ReportingYear })">
             @(Html.AntiForgeryToken())
 
-            @(Html.GovUkErrorSummary(new[]
+            @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
             {
                 nameof(AdminChangeScopeViewModel.NewScopeStatus),
                 nameof(AdminChangeScopeViewModel.Reason)
@@ -97,7 +97,7 @@
 
                 @if (Model.CurrentScopeStatus != ScopeStatuses.InScope && Model.CurrentScopeStatus != ScopeStatuses.OutOfScope)
                 {
-                    @Html.GovUkRadiosFor(
+                    @await Html.GovUkRadiosFor(
                         m => m.NewScopeStatus,
                         new FieldsetViewModel
                         {
@@ -114,7 +114,7 @@
                     @(Html.HiddenFor(m => m.NewScopeStatus))
                 }
 
-                @Html.GovUkTextAreaFor(
+                @await Html.GovUkTextAreaFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -126,7 +126,7 @@
                         Classes = "govuk-!-margin-top-6"
                     })
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Confirm",
                     Classes = "govuk-!-margin-bottom-4"

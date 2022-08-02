@@ -23,7 +23,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -42,27 +42,27 @@
         <form method="post" enctype="multipart/form-data" action="@Url.Action("ImportAllDataFromRemoteServer", "AdminDataMigration")">
             @(Html.AntiForgeryToken())
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.Hostname,
                 labelOptions: new LabelViewModel { Text = "Hostname of remote server" },
                 classes: "govuk-input--width-20"
             ))
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.BasicAuthUsername,
                 labelOptions: new LabelViewModel { Text = "HTTP Basic Auth username for remote server" },
                 formGroupOptions: new FormGroupViewModel{ Classes = "govuk-!-margin-bottom-2" },
                 classes: "govuk-input--width-10"
             ))
             
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.BasicAuthPassword,
                 type: "password",
                 labelOptions: new LabelViewModel { Text = "HTTP Basic Auth password for remote server" },
                 classes: "govuk-input--width-10"
             ))
             
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.Password,
                 type: "password",
                 labelOptions: new LabelViewModel { Text = "Data Migration Password" }
@@ -82,7 +82,7 @@
                 }
             </script>
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "REPLACE ALL DATA IN THE DATABASE WITH DATA FROM THE REMOTE SERVER",
                 Classes = "govuk-!-margin-bottom-4 govuk-button--warning"

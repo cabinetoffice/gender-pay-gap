@@ -35,7 +35,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -73,7 +73,7 @@
             </span>
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
 
         <h2 class="govuk-heading-m">SIC codes to add</h2>
@@ -127,7 +127,7 @@
                 ManuallyChangeOrganisationSicCodesActions.ManualChangeAddSicCode))
             @(CurrentState())
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.SicCodeIdToChange,
                 labelOptions: new LabelViewModel
                 {
@@ -262,7 +262,7 @@
             @(Html.Hidden(nameof(ChangeOrganisationSicCodesViewModel.Action),
                 ManuallyChangeOrganisationSicCodesActions.ManualChangeContinue))
             @(CurrentState())
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

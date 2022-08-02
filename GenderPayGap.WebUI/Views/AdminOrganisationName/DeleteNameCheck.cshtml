@@ -34,7 +34,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -69,7 +69,7 @@
                                         new { organisationId = Model.Organisation.OrganisationId, nameId = Model.OrganisationNameToBeDeleted.OrganisationNameId })">
             @(Html.AntiForgeryToken())
 
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkTextAreaFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -78,7 +78,7 @@
                 }
             ))
             
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm and save",
                 Classes = "govuk-!-margin-bottom-4"

@@ -1,4 +1,5 @@
 @using GenderPayGap.Core
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -35,7 +36,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -105,7 +106,7 @@
             @(Html.Hidden(nameof(AdminChangeStatusViewModel.Action),
                 ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason))
 
-            @Html.GovUkErrorSummary()
+            @await Html.GovUkErrorSummary(ViewData.ModelState)
 
 
             <table class="govuk-table">
@@ -123,10 +124,10 @@
 
             <div class="govuk-form-group">
                 @{
-                    string error = Model.GetErrorFor(m => m.NewStatus);
+                    string error = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.NewStatus));
                     ErrorMessageViewModel radiosErrorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
                 }
-                @Html.GovUkRadios(new RadiosViewModel
+                @await Html.GovUkRadios(new RadiosViewModel
                 {
                     Name = nameof(AdminChangeStatusViewModel.NewStatus),
                     Fieldset = new FieldsetViewModel
@@ -142,7 +143,7 @@
                     ErrorMessage = radiosErrorMessageViewModel
                 })
 
-                @Html.GovUkTextAreaFor(
+                @await Html.GovUkTextAreaFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -154,7 +155,7 @@
                         Classes = "govuk-!-margin-top-6"
                     })
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Continue",
                     Classes = "govuk-!-margin-bottom-4"

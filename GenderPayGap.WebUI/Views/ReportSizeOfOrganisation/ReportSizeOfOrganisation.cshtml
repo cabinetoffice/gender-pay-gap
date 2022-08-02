@@ -17,7 +17,7 @@
 }
 
 @section BeforeMain {
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
     }))
@@ -28,7 +28,7 @@
         <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
             @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
             @Html.HiddenFor(m => m.IsEditingForTheFirstTime)
             
             <fieldset class="govuk-fieldset">
@@ -46,7 +46,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <fieldset class="govuk-fieldset">
-                @(Html.GovUkRadiosFor(m => m.SizeOfOrganisation))
+                @(await Html.GovUkRadiosFor(m => m.SizeOfOrganisation))
 
                 <div class="govuk-inset-text">
                     <p>
@@ -59,7 +59,7 @@
                 </div>
             </fieldset>
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
                 Classes = "govuk-!-margin-bottom-6"

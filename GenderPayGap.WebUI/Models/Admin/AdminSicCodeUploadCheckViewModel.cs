@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminSicCodeUploadCheckViewModel : GovUkViewModel
+    public class AdminSicCodeUploadCheckViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

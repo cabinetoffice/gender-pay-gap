@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -11,7 +12,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -134,17 +134,10 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
 
-            // IsUkAddress can be set by a hidden input (in which case it will be bound automatically)
-            // Or it can be set by a GovUk_Radio button (in which case we need to use ParseAndValidate to get the value)
-            // So, if the value hasn't already been bound, ParseAndValidate it
-            if (!viewModel.IsUkAddress.HasValue)
+            // If IsUkAddress doesn't has a value on, then show an error
+            if (viewModel.IsUkAddress is null)
             {
-                viewModel.ParseAndValidateParameters(Request, m => m.IsUkAddress);
-            }
-
-            // If IsUkAddress still doesn't has a value on, then show an error
-            if (!viewModel.IsUkAddress.HasValue)
-            {
+                ModelState.AddModelError(nameof(viewModel.IsUkAddress), "Select if this employer's registered address is a UK address");
                 PopulateViewModelBasedOnOrganisation(viewModel, organisation);
                 return View("Found", viewModel);
             }
@@ -171,17 +164,10 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private IActionResult FoundPostWithCompanyNumber(AddOrganisationFoundViewModel viewModel)
         {
-            // IsUkAddress can be set by a hidden input (in which case it will be bound automatically)
-            // Or it can be set by a GovUk_Radio button (in which case we need to use ParseAndValidate to get the value)
-            // So, if the value hasn't already been bound, ParseAndValidate it
-            if (!viewModel.IsUkAddress.HasValue)
+            // If IsUkAddress doesn't has a value on, then show an error
+            if (viewModel.IsUkAddress is null)
             {
-                viewModel.ParseAndValidateParameters(Request, m => m.IsUkAddress);
-            }
-
-            // If IsUkAddress still doesn't has a value on, then show an error
-            if (!viewModel.IsUkAddress.HasValue)
-            {
+                ModelState.AddModelError(nameof(viewModel.IsUkAddress), "Select if this employer's registered address is a UK address");
                 PopulateViewModelBasedOnCompanyNumber(viewModel);
                 return View("Found", viewModel);
             }

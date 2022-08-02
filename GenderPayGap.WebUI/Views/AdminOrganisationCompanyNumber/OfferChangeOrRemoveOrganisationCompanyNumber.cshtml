@@ -29,7 +29,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -66,7 +66,7 @@
                 </tbody>
             </table>
 
-            @(Html.GovUkRadiosFor(
+            @(await Html.GovUkRadiosFor(
                 m => m.ChangeOrRemove,
                 new FieldsetViewModel
                 {
@@ -79,7 +79,7 @@
             ))
 
             <div class="govuk-form-group">
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Continue",
                     Classes = "govuk-!-margin-bottom-4"

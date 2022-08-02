@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.AddOrganisation
 {
-    public class AddOrganisationFoundViewModel : GovUkViewModel
+    public class AddOrganisationFoundViewModel 
     {
 
         public string Id { get; set; }
@@ -29,7 +29,6 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<string> AddressLines { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Select if this employer's registered address is a UK address")]
         public AddOrganisationIsUkAddress? IsUkAddress { get; set; }
 
         public bool? GetIsUkAddressAsBoolean()

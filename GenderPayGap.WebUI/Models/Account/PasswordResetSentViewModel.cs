@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class PasswordResetSentViewModel : GovUkViewModel
+    public class PasswordResetSentViewModel 
     {
 
         [BindNever]

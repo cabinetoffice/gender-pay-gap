@@ -24,7 +24,7 @@
             backLinkHref = Url.Action("ManualAddress", "AddOrganisationManualAddress", Model);
         }
     }
-    @Html.GovUkBackLink(new BackLinkViewModel
+    @await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = backLinkHref,
@@ -41,7 +41,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h1 class="govuk-heading-xl">
             Add a sector code to your employer
@@ -175,7 +175,7 @@
                 }
             </div>
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

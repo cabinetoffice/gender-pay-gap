@@ -1,8 +1,8 @@
-﻿using GenderPayGap.Core;
+﻿using Castle.Core.Internal;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,17 +28,19 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (viewModel.Validate == true)
             {
-                viewModel.ParseAndValidateParameters(Request, m => m.PoBox);
-                viewModel.ParseAndValidateParameters(Request, m => m.Address1);
-                viewModel.ParseAndValidateParameters(Request, m => m.Address2);
-                viewModel.ParseAndValidateParameters(Request, m => m.Address3);
-                viewModel.ParseAndValidateParameters(Request, m => m.TownCity);
-                viewModel.ParseAndValidateParameters(Request, m => m.County);
-                viewModel.ParseAndValidateParameters(Request, m => m.Country);
-                viewModel.ParseAndValidateParameters(Request, m => m.PostCode);
-                viewModel.ParseAndValidateParameters(Request, m => m.IsUkAddress);
+                if (viewModel.Address1.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError(nameof(viewModel.Address1), 
+                        "Enter the registered address of the employer");
+                }
 
-                if (viewModel.HasAnyErrors())
+                if (viewModel.IsUkAddress is null)
+                {
+                    ModelState.AddModelError(nameof(viewModel.IsUkAddress), 
+                        "Select if this employer's registered address is a UK address");
+                }
+
+                if (!ModelState.IsValid)
                 {
                     return View("ManualAddress", viewModel);
                 }

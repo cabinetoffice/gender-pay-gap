@@ -1,44 +1,36 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
 namespace GovUkDesignSystem.Attributes.ValidationAttributes
 {
-    public class GpgPasswordValidationAttribute : GovUkValidationAttribute
+    public class GpgPasswordValidationAttribute : ValidationAttribute
     {
 
-        public override bool CheckForValidationErrors<TProperty>(
-            GovUkViewModel model,
-            PropertyInfo property,
-            TProperty parameterValue)
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (typeof(TProperty) != typeof(string))
+            var password = value as string;
+            if (password is null)
             {
-                throw new Exception("Parameter value has the wrong type");
+                return ValidationResult.Success;
+            }
+            if (password.Length < 8)
+            {
+                return new ValidationResult("Password must be at least 8 characters long");
             }
 
-            var value = parameterValue as string;
-            
-            if (value.Length < 8)
+            if (!password.Any(char.IsLower) || !password.Any(char.IsUpper) || !password.Any(char.IsNumber))
             {
-                model.AddErrorFor(property, "Password must be at least 8 characters long");
-                return false;
+                return new ValidationResult("Password must have at least one lower case letter, one capital letter and one number");
             }
 
-            if (!value.Any(char.IsLower) || !value.Any(char.IsUpper) || !value.Any(char.IsNumber))
+            if (password.Contains("password"))
             {
-                model.AddErrorFor(property, "Password must have at least one lower case letter, one capital letter and one number");
-                return false;
+                return new ValidationResult("Enter a password that doesn't contain 'password'");
             }
 
-            if (value.Contains("password"))
-            {
-                model.AddErrorFor(property, "Enter a password that doesn't contain 'password'");
-                return false;
-            }
-
-            return true;
+            return ValidationResult.Success;
         }
-
     }
 }

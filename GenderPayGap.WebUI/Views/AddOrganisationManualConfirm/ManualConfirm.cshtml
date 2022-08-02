@@ -1,4 +1,5 @@
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -28,7 +29,7 @@
             backLinkHref = Url.Action("ManualAddress", "AddOrganisationManualAddress", Model);
         }
     }
-    @Html.GovUkBackLink(new BackLinkViewModel
+    @await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = backLinkHref,
@@ -42,7 +43,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h1 class="govuk-heading-xl">
             Confirm your employer's details
@@ -51,19 +52,20 @@
         <table class="govuk-table">
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
+                    @{
+                        var errorMessageForOrganisationName = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.OrganisationName));
+                    }
                     <th scope="row"
                         class="govuk-table__header 
-                        @(Model.HasErrorFor(m => m.OrganisationName)
-                            ? "add-organisation-manual-confirm-error"
-                            : "")">
+                        @(errorMessageForOrganisationName != null ? "add-organisation-manual-confirm-error" : "")">
                         Employer name
                     </th>
                     <td class="govuk-table__cell">
-                        @if (Model.HasErrorFor(m => m.OrganisationName))
+                        @if (errorMessageForOrganisationName != null)
                         {
                             <p class="govuk-error-message" id="GovUk_@(nameof(Model.OrganisationName))-error">
                                 <span class="govuk-visually-hidden">Error</span>
-                                @(Model.GetErrorFor(m => m.OrganisationName))
+                                @errorMessageForOrganisationName
                             </p>
                         }
                         @if (!string.IsNullOrWhiteSpace(Model.OrganisationName))
@@ -89,31 +91,33 @@
                 </tr>
 
                 <tr class="govuk-table__row">
+                    @{
+                        var errorMessageForAddress1 = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.Address1));
+                        var errorMessageForIsUkAddress = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.IsUkAddress));
+                    }
                     <th scope="row"
                         class="govuk-table__header
-                        @((Model.HasErrorFor(m => m.Address1) || Model.HasErrorFor(m => m.IsUkAddress))
-                            ? "add-organisation-manual-confirm-error"
-                            : "")">
+                        @(errorMessageForAddress1 != null || errorMessageForIsUkAddress != null ? "add-organisation-manual-confirm-error" : "")">
                         Registered address
                     </th>
                     <td class="govuk-table__cell">
-                        @if (Model.HasErrorFor(m => m.Address1))
+                        @if (errorMessageForAddress1 != null)
                         {
                             <p class="govuk-error-message" id="GovUk_@(nameof(Model.Address1))-error">
                                 <span class="govuk-visually-hidden">Error</span>
-                                @(Model.GetErrorFor(m => m.Address1))
+                                @errorMessageForAddress1
                             </p>
                         }
-                        @if (Model.HasErrorFor(m => m.IsUkAddress))
+                        @if (errorMessageForIsUkAddress != null)
                         {
                             <p class="govuk-error-message" id="GovUk_@(nameof(Model.IsUkAddress))-error">
                                 <span class="govuk-visually-hidden">Error</span>
-                                @(Model.GetErrorFor(m => m.IsUkAddress))
+                                @errorMessageForIsUkAddress
                             </p>
                         }
                         @{
                             var addressParts = new List<string>
-                                                                            {
+                            {
                                 Model.PoBox,
                                 Model.Address1,
                                 Model.Address2,
@@ -129,14 +133,14 @@
                         {
                             @foreach (string addressPart in addressParts)
                             {
-                                @(addressPart)<br />
+                                @(addressPart)<br/>
                             }
                         }
                         else
                         {
                             <span class="govuk-caption-m">Address missing</span>
                         }
-                        <br />
+                        <br/>
                         <span class="govuk-!-font-weight-bold">
                             Is this a UK address:
                         </span>
@@ -163,19 +167,20 @@
                 </tr>
                 
                 <tr class="govuk-table__row">
+                    @{
+                        var errorMessageForSector = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.Sector));
+                    }
                     <th scope="row"
                         class="govuk-table__header
-                        @(Model.HasErrorFor(m => m.Sector)
-                            ? "add-organisation-manual-confirm-error"
-                            : "")">
+                        @(errorMessageForSector != null ? "add-organisation-manual-confirm-error" : "")">
                         Employer type
                     </th>
                     <td class="govuk-table__cell">
-                        @if (Model.HasErrorFor(m => m.Sector))
+                        @if (errorMessageForSector != null)
                         {
                             <p class="govuk-error-message" id="GovUk_@(nameof(Model.Sector))-error">
                                 <span class="govuk-visually-hidden">Error</span>
-                                @(Model.GetErrorFor(m => m.Sector))
+                                @errorMessageForSector
                             </p>
                         }
                         @if (Model.Sector.HasValue)
@@ -265,11 +270,11 @@
             }
         }
 
-        @(Html.GovUkButton(new ButtonViewModel
+        @(await Html.GovUkButton(new ButtonViewModel
         {
             Text = "Confirm",
             Classes = "govuk-!-margin-bottom-4",
-            Disabled = Model.HasAnyErrors()
+            Disabled = !ViewData.ModelState.IsValid
         }))
 
         <p class="govuk-body">

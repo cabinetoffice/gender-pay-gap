@@ -11,7 +11,6 @@ using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -73,9 +72,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return RedirectToAction("ManageAccountGet", "ManageAccount");
             }
             
-            viewModel.ParseAndValidateParameters(Request, m => m.Password);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("CloseAccount", viewModel);
             }
@@ -87,7 +84,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             bool isValidPassword = userRepository.CheckPassword(currentUser, viewModel.Password);
             if (!isValidPassword)
             {
-                viewModel.AddErrorFor(m => m.Password, "Could not verify your password");
+                ModelState.AddModelError(nameof(viewModel.Password), "Could not verify your password");
                 return View("CloseAccount", viewModel);
             }
 

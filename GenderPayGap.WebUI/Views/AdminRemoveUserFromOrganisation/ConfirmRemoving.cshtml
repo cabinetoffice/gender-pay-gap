@@ -37,7 +37,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -55,7 +55,7 @@
                           Url.Action("RemoveOrganisationFromUserPost", "AdminRemoveUserFromOrganisation", new {userId = Model.UserId, organisationId = Model.OrganisationId}) :
                           Url.Action("RemoveUserFromOrganisationPost", "AdminRemoveUserFromOrganisation", new {userId = Model.UserId, organisationId = Model.OrganisationId}))">
             @(Html.AntiForgeryToken())
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -71,7 +71,7 @@
             </table>
 
             <div class="govuk-form-group">
-                @Html.GovUkTextAreaFor(
+                @await Html.GovUkTextAreaFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -83,7 +83,7 @@
                         Classes = "govuk-!-margin-top-6"
                     })
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Remove user from organisation",
                     Classes = "govuk-!-margin-bottom-4 govuk-button--warning"

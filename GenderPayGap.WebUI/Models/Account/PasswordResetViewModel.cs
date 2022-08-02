@@ -3,7 +3,7 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class PasswordResetViewModel : GovUkViewModel
+    public class PasswordResetViewModel 
     {
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter your email address")]

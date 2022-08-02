@@ -3,6 +3,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.AccountCreation
 @model GenderPayGap.WebUI.Models.AccountCreation.AlreadyCreatedAnAccountViewModel
 @{
@@ -29,12 +30,13 @@
 
             <div class="govuk-form-group">
 
-                @(Html.GovUkErrorSummary())
+                @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
                 @{
-                    string error = Model.GetErrorFor(m => m.HaveYouAlreadyCreatedYourUserAccount);
-                    ErrorMessageViewModel errorMessageViewModel = error != null
-                        ? new ErrorMessageViewModel { Text = error } : null;
+                    var errorMessage = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.HaveYouAlreadyCreatedYourUserAccount));
+                    ErrorMessageViewModel errorMessageViewModel = errorMessage != null
+                        ? new ErrorMessageViewModel {Text = errorMessage}
+                        : null;
                 }
 
                 @if (Model.HaveYouAlreadyCreatedYourUserAccount == null
@@ -47,7 +49,7 @@
                            style="display: none" />
                 }
 
-                @Html.GovUkRadios(new RadiosViewModel
+                @await Html.GovUkRadios(new RadiosViewModel
                 {
                     Name = nameof(AlreadyCreatedAnAccountViewModel.HaveYouAlreadyCreatedYourUserAccount),
                     Items = Enum.GetValues(typeof(HaveYouAlreadyCreatedYourUserAccount))
@@ -66,8 +68,7 @@
                                 Id = fieldId,
                                 Label = new LabelViewModel
                                 {
-                                    Text = GovUkRadioCheckboxLabelTextAttribute
-                                        .GetValueForEnum(typeof(HaveYouAlreadyCreatedYourUserAccount), fieldValue),
+                                    Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(answer),
                                     For = fieldId
                                 }
                             };
@@ -81,7 +82,7 @@
                     previously reported your employer's gender pay gap.
                 </div>
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Continue"
                 }))
