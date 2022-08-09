@@ -577,3 +577,16 @@ LoadTests/target
 
 /Sandbox/GPGIdentity/GpgApi/App_Data/GpgApi.XML
 GPG IP Denylist.txt
+
+# Local terraform directories
+**/.terraform/*
+
+# State files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+*.log
+
+# Sensitive data
+*.tfvars
