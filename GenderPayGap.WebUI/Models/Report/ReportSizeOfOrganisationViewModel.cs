@@ -16,8 +16,6 @@ namespace GenderPayGap.WebUI.Models.Report
         public bool IsEditingSubmittedReturn { get; set; }
         public bool IsEditingForTheFirstTime { get; set; }
 
-        public ReportPagesAction Action { get; set; }
-
         public ReportSizeOfOrganisation? SizeOfOrganisation { get; set; }
 
         public OrganisationSizes? GetSizeOfOrganisation()
