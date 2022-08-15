@@ -2647,30 +2647,22 @@
 	Tabs.prototype.setAttributes = function ($tab) {
 		// set tab attributes
 		var panelId = this.getHref($tab).slice(1);
-		$tab.setAttribute('id', 'tab_' + panelId);
-		$tab.setAttribute('role', 'tab');
 		$tab.setAttribute('aria-controls', panelId);
 		$tab.setAttribute('aria-selected', 'false');
-		$tab.setAttribute('tabindex', '-1');
 
 		// set panel attributes
 		var $panel = this.getPanel($tab);
-		$panel.setAttribute('role', 'tabpanel');
 		$panel.setAttribute('aria-labelledby', $tab.id);
 		$panel.classList.add(this.jsHiddenClass);
 	};
 
 	Tabs.prototype.unsetAttributes = function ($tab) {
 		// unset tab attributes
-		$tab.removeAttribute('id');
-		$tab.removeAttribute('role');
 		$tab.removeAttribute('aria-controls');
 		$tab.removeAttribute('aria-selected');
-		$tab.removeAttribute('tabindex');
 
 		// unset panel attributes
 		var $panel = this.getPanel($tab);
-		$panel.removeAttribute('role');
 		$panel.removeAttribute('aria-labelledby');
 		$panel.classList.remove(this.jsHiddenClass);
 	};
