@@ -53,12 +53,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
             
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            
-            if (!ModelState.IsValid)
-            {
-                return View("ChangePassword", viewModel);
-            }
-            
+
             // Check that passwords are valid
             ValidatePasswords(viewModel, currentUser);
             if (currentUser.ResetAttempts == Global.MaxAuthAttempts)
