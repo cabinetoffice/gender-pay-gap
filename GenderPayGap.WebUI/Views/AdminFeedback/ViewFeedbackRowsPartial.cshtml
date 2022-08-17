@@ -43,10 +43,10 @@
                                 </span>
                             </td>
                             <th scope="row" class="govuk-table__header">
-                                Difficulty
+                                Details
                             </th>
                             <td class="govuk-table__cell">
-                                @(feedback.Difficulty)
+                                @(feedback.Details)
                             </td>
                             <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
                                 <form method="post"
@@ -74,6 +74,14 @@
                                         </button>
                                     }
                                 </form>
+                            </td>
+                        </tr>
+                            <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                Difficulty
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(feedback.Difficulty)
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
@@ -211,19 +219,11 @@
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">
+                            <th scope="row" class="govuk-table__header" style="border-bottom-width: 2px;">
                                 Phone number
                             </th>
-                            <td class="govuk-table__cell">
+                            <td class="govuk-table__cell"  style="border-bottom-width: 2px; width: 53%;">
                                 @(feedback.PhoneNumber)
-                            </td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header" style="border-bottom-width: 2px;">
-                                Details
-                            </th>
-                            <td class="govuk-table__cell" style="border-bottom-width: 2px; width: 53%;">
-                                @(feedback.Details)
                             </td>
                         </tr>
                     }
