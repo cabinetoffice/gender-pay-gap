@@ -1,4 +1,4 @@
-﻿// all declared input variables
+// all declared input variables
 
 variable "aws_region" {
   description = "The AWS region used for the provider and resources."

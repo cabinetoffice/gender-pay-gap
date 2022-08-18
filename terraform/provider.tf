@@ -1,4 +1,4 @@
-﻿// declarations for the providers being used
+// declarations for the providers being used
 
 terraform {
   required_providers {
@@ -8,21 +8,21 @@ terraform {
     }
 
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "3.3.2"
     }
-    
+
   }
-  
+
   backend "s3" {
-    bucket = "gender-pay-gap-terraform-state-bucket"
-    key = "terraform.tfstate"
-    dynamodb_table = "gender-pay-gap-tf-locks"
-    region = "eu-west-2"
-    encrypt = true
+    bucket               = "gender-pay-gap-terraform-state-bucket"
+    key                  = "terraform.tfstate"
+    dynamodb_table       = "gender-pay-gap-tf-locks"
+    region               = "eu-west-2"
+    encrypt              = true
     workspace_key_prefix = "gpg"
   }
-  
+
 }
 
 provider "aws" {
