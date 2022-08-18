@@ -99,13 +99,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
             {
                 if (existingUser.EmailVerifiedDate != null)
                 {
-                    ModelState.AddModelError(nameof(viewModel.EmailAddress), "This email address has already been registered. Please sign in or enter a different email "
-                                                                             + "address.");
+                    ModelState.AddModelError(nameof(viewModel.EmailAddress), "This email address has already been registered. "
+                                                                             + "Please sign in or enter a different email address.");
                 }
                 else
                 {
-                    ModelState.AddModelError(nameof(viewModel.EmailAddress), "This email address is awaiting confirmation. Please check your email inbox or enter a different email"
-                                                                             + " address");
+                    ModelState.AddModelError(nameof(viewModel.EmailAddress), "This email address is awaiting confirmation. "
+                                                                             + "Please check your email inbox or enter a different email address");
                 }
             }
 

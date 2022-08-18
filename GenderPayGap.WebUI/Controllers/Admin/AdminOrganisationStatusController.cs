@@ -57,7 +57,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 case ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason:
                     UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
-                    ValidateAdminChangeStatusViewModel(viewModel);
                     if (!ModelState.IsValid)
                     {
                         return View("ChangeStatus", viewModel);
@@ -79,14 +78,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             viewModel.InactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
                 .Where(m => m.OrganisationId == organisationId).ToList();
-        }
-
-        private void ValidateAdminChangeStatusViewModel(AdminChangeStatusViewModel viewModel)
-        {
-            if (!viewModel.NewStatus.HasValue)
-            {
-                ModelState.AddModelError(nameof(viewModel.NewStatus), "Please select a new status");
-            }
         }
 
         private void ChangeStatus(AdminChangeStatusViewModel viewModel, long organisationId)

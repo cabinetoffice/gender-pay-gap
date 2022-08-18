@@ -56,7 +56,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             if (user.EmailVerifiedDate != null)
             {
                 ModelState.AddModelError(nameof(viewModel.OtherErrorMessagePlaceholder), "This user's email address has already been verified");
-                return View("ResendVerificationEmail", viewModel);
             }
 
             if (!ModelState.IsValid)

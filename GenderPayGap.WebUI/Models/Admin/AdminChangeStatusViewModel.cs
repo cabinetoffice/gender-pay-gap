@@ -12,7 +12,12 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         public ChangeOrganisationStatusViewModelActions Action { get; set; }
 
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(NewStatusRequired), 
+            ErrorMessageIfMissing = "Please select a new status")]
         public OrganisationStatuses? NewStatus { get; set; }
+
+        public bool NewStatusRequired => Action is ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason;
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
         public string Reason { get; set; }

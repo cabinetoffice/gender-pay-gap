@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
@@ -11,7 +10,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account

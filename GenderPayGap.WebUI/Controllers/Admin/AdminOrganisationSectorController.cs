@@ -127,11 +127,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             viewModel.OrganisationName = organisation.OrganisationName;
             viewModel.PublicSectorTypes = dataRepository.GetAll<PublicSectorType>().ToList();
 
-            if (!viewModel.SelectedPublicSectorTypeId.HasValue)
-            {
-                ModelState.AddModelError(nameof(viewModel.SelectedPublicSectorTypeId), "Please select a public sector classification");
-            }
-
             if (!ModelState.IsValid)
             {
                 return View("ChangePublicSectorClassification", viewModel);

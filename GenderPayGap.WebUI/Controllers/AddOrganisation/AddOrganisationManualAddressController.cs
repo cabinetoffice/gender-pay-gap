@@ -1,5 +1,4 @@
 ﻿using Castle.Core.Internal;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;

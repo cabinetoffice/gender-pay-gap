@@ -85,7 +85,7 @@
                 </tbody>
             </table>
 
-            @(await Html.GovUkRadiosFor(
+            @await Html.GovUkRadiosFor(
                 m => m.AcceptCompaniesHouseName,
                 fieldsetOptions: new FieldsetViewModel
                 {
@@ -95,40 +95,27 @@
                         Classes = "govuk-fieldset__legend--m"
                     },
                     Classes = "govuk-!-margin-top-6"
-                }
-            ))
-
-            <div id="reason-for-change-container">
-                @(await Html.GovUkTextAreaFor(
-                    m => m.Reason,
-                    labelOptions: new LabelViewModel
+                },
+                conditionalOptions: new Dictionary<AcceptCompaniesHouseName, Conditional>
+                {
+                    { AcceptCompaniesHouseName.Accept , new Conditional
                     {
-                        Text = "What is the reason for this change?",
-                        Classes = "govuk-label--m"
-                    },
-                    hintOptions: new HintViewModel
-                    {
-                        Text = "(Only required if you are using the name from Companies House)"
-                    }
-                ))
-            </div>
-            <script>
-                (function () {
-                    var acceptCoHoRadio = document.getElementById('@($"GovUk_Radio_{nameof(ChangeOrganisationNameViewModel.AcceptCompaniesHouseName)}_{nameof(AcceptCompaniesHouseName.Accept)}")');
-                    var radios = document.querySelectorAll('input[type=radio][name="@($"GovUk_Radio_{nameof(ChangeOrganisationNameViewModel.AcceptCompaniesHouseName)}")"]');
-
-                    function changeReasonVisibilityBasedOnCoHoNameAcceptRadio() {
-                        var reasonElement = document.getElementById('reason-for-change-container');
-                        reasonElement.style.display = (acceptCoHoRadio.checked ? null : 'none');
-                    }
-
-                    changeReasonVisibilityBasedOnCoHoNameAcceptRadio();
-
-                    radios.forEach(function(radio) {
-                        radio.addEventListener('change', changeReasonVisibilityBasedOnCoHoNameAcceptRadio);
-                    });
-                })();
-            </script>
+                        Html = @<div id="reason-for-change-container">
+                                   @(await Html.GovUkTextAreaFor(
+                                       m => m.Reason,
+                                       labelOptions: new LabelViewModel
+                                       {
+                                           Text = "What is the reason for this change?",
+                                           Classes = "govuk-label--m"
+                                       },
+                                       hintOptions: new HintViewModel
+                                       {
+                                           Text = "(Only required if you are using the address from Companies House)"
+                                       }
+                                       ))
+                               </div>
+                    }}
+                })
 
             @(await Html.GovUkButton(new ButtonViewModel
             {

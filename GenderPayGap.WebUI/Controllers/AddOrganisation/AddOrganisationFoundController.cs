@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -133,13 +132,10 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         private IActionResult FoundPostWithId(AddOrganisationFoundViewModel viewModel)
         {
             Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
-
-            // If IsUkAddress doesn't has a value on, then show an error
+            
             if (viewModel.IsUkAddress is null)
             {
-                ModelState.AddModelError(nameof(viewModel.IsUkAddress), "Select if this employer's registered address is a UK address");
-                PopulateViewModelBasedOnOrganisation(viewModel, organisation);
-                return View("Found", viewModel);
+                return RedirectToFoundPageWithUkAddressError(viewModel);
             }
 
             organisationService.UpdateIsUkAddressIfItIsNotAlreadySet(organisation.OrganisationId, viewModel.GetIsUkAddressAsBoolean());
@@ -164,12 +160,9 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private IActionResult FoundPostWithCompanyNumber(AddOrganisationFoundViewModel viewModel)
         {
-            // If IsUkAddress doesn't has a value on, then show an error
             if (viewModel.IsUkAddress is null)
             {
-                ModelState.AddModelError(nameof(viewModel.IsUkAddress), "Select if this employer's registered address is a UK address");
-                PopulateViewModelBasedOnCompanyNumber(viewModel);
-                return View("Found", viewModel);
+                return RedirectToFoundPageWithUkAddressError(viewModel);
             }
 
             Organisation existingOrganisation = dataRepository.GetAll<Organisation>()
@@ -210,6 +203,13 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             string confirmationId = $"{userOrganisation.UserId}:{userOrganisation.OrganisationId}";
             string encryptedConfirmationId = Encryption.EncryptQuerystring(confirmationId);
             return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { confirmationId = encryptedConfirmationId });
+        }
+
+        private IActionResult RedirectToFoundPageWithUkAddressError(AddOrganisationFoundViewModel viewModel)
+        {
+            ModelState.AddModelError(nameof(viewModel.IsUkAddress), "Select if this employer's registered address is a UK address");
+            PopulateViewModelBasedOnCompanyNumber(viewModel);
+            return View("Found", viewModel);
         }
         #endregion POST
 

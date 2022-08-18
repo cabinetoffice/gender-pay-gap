@@ -33,8 +33,9 @@ namespace GenderPayGap.WebUI.Models.Admin
         public string Reason { get; set; }
 
         public bool ReasonRequired =>
-            Action is ManuallyChangeOrganisationNameViewModelActions.OfferNewCompaniesHouseName
-            || Action is ManuallyChangeOrganisationNameViewModelActions.ManualChange;
+            (Action is ManuallyChangeOrganisationNameViewModelActions.OfferNewCompaniesHouseName && 
+             AcceptCompaniesHouseName is Admin.AcceptCompaniesHouseName.Accept) || 
+            Action is ManuallyChangeOrganisationNameViewModelActions.ManualChange;
 
     }
 

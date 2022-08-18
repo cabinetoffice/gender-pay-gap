@@ -1,5 +1,6 @@
 ﻿@using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
+@using GovUkDesignSystem.Attributes
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationChooseSectorViewModel
 @{
@@ -42,6 +43,7 @@
                             AddOrganisationSector.Public,
                             new LabelViewModel
                             {
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(AddOrganisationSector.Public),
                                 Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
@@ -49,6 +51,7 @@
                             AddOrganisationSector.Private,
                             new LabelViewModel
                             {
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(AddOrganisationSector.Private),
                                 Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },

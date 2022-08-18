@@ -25,20 +25,14 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
 
-            if (viewModel.Validate == true)
+            if (viewModel.Validate != true || !ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return View("ChooseSector", viewModel);
-                }
-
-                return RedirectToAction("Search", "AddOrganisationSearch",
-                    new { Sector = viewModel.Sector.ToString().ToLower() });
+                return View("ChooseSector", viewModel);
             }
-
-            return View("ChooseSector", viewModel);
+            
+            return RedirectToAction("Search", "AddOrganisationSearch", 
+                new { Sector = viewModel.Sector.ToString().ToLower() });
         }
-
         
     }
 }

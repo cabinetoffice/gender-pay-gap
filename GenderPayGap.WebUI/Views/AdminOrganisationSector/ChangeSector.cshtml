@@ -1,6 +1,7 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
+@using GovUkDesignSystem.Attributes
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Admin.AdminChangeSectorViewModel
 
@@ -83,8 +84,8 @@
                         Please select a new sector
                     </h1>
                 </legend>
-                
-                @(await Html.GovUkRadiosFor(
+
+                @await Html.GovUkRadiosFor(
                     m => m.NewSector,
                     labelOptions: new Dictionary<NewSectorTypes, LabelViewModel>
                     {
@@ -92,13 +93,15 @@
                             NewSectorTypes.Public,
                             new LabelViewModel
                             {
-                                Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(NewSectorTypes.Public),
+                            Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
                         {
                             NewSectorTypes.Private,
                             new LabelViewModel
                             {
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(NewSectorTypes.Private),
                                 Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
@@ -138,7 +141,6 @@
                             }
                         }
                     })
-                    )
 
                 @await Html.GovUkTextAreaFor(
                     m => m.Reason,
