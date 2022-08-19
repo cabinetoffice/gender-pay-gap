@@ -30,19 +30,19 @@ resource "aws_security_group_rule" "postgres_out" {
 }
 
 resource "aws_db_instance" "gpg-dev-db" {
-  allocated_storage           = 100
-  engine                      = "postgres"
-  engine_version              = "14"
-  instance_class              = "db.t3.small"
-  identifier                  = "gpg-dev-db"
-  db_name                     = "gpgDevDb"
-  username                    = "postgres"
-  password                    = "postgres"
-  port                        = 5432
-  backup_retention_period     = 5
-  backup_window               = "04:00-05:00"
+  allocated_storage           = var.postgres_config.allocated_storage
+  engine                      = var.postgres_config.engine
+  engine_version              = var.postgres_config.engine_version
+  instance_class              = var.postgres_config.instance_class
+  identifier                  = var.postgres_config.identifier
+  db_name                     = var.postgres_config.db_name
+  username                    = var.postgres_config.username
+  password                    = var.postgres_config.password
+  port                        = var.postgres_config.port
+  backup_retention_period     = var.postgres_config.backup_retention_period
+  backup_window               = var.postgres_config.backup_window
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]
-  storage_encrypted           = true
-  publicly_accessible         = true
-  allow_major_version_upgrade = true
+  storage_encrypted           = var.postgres_config.storage_encrypted
+  publicly_accessible         = var.postgres_config.publicly_accessible
+  allow_major_version_upgrade = var.postgres_config.allow_major_version_upgrade
 }
