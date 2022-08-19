@@ -17,8 +17,7 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public CompaniesHouseCompany CompaniesHouseCompany { get; set; }
-
-
+        
         [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ChangeOrRemoveRequired), 
             ErrorMessageIfMissing = "Please select whether you want to change or remove the company number")]
         public AdminOrganisationCompanyNumberChangeOrRemove? ChangeOrRemove { get; set; }
@@ -26,6 +25,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public bool ChangeOrRemoveRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.OfferChangeOrRemove;
         [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ReasonRequired), 
             ErrorMessageIfMissing = "Please enter a reason for this change")]
+        
         public string Reason { get; set; }
 
         public bool ReasonRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.Remove ||

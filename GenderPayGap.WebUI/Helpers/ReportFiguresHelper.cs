@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.Helpers
            SavePayQuartileFiguresToDraftReturn(viewModel, draftReturn);
         }
         
-        public static void ValidateUserInput(ModelStateDictionary modelState, ReportFiguresViewModel viewModel, HttpRequest request, int reportingYear)
+        public static void ValidateUserInput(ModelStateDictionary modelState, ReportFiguresViewModel viewModel, int reportingYear)
         {
             ValidateBonusPayIntegrity(modelState, viewModel);
             ValidatePayQuartersAddUpToOneHundred(modelState, viewModel);
