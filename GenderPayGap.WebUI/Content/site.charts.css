@@ -150,8 +150,7 @@ govuk-chart-vert__head {
 
 .govuk-chart-horz__bar {
     height: 2em;
-    outline: 2px solid;
-    outline-color: transparent;
+    outline: 2px solid transparent;
 }
 
 .govuk-chart-horz__bar--men {
