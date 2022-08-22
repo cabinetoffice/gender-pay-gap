@@ -11,7 +11,6 @@ terraform {
       source  = "hashicorp/random"
       version = "3.3.2"
     }
-
   }
 
   backend "s3" {
@@ -23,6 +22,7 @@ terraform {
     workspace_key_prefix = "gpg"
   }
 
+  experiments = [module_variable_optional_attrs]
 }
 
 provider "aws" {
