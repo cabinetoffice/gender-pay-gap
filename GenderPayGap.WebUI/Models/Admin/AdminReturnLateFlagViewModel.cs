@@ -14,6 +14,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public bool? NewLateFlag { set; get; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
 
     }

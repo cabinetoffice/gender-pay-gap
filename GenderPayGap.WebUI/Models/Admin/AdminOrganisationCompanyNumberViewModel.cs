@@ -22,6 +22,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public AdminOrganisationCompanyNumberChangeOrRemove? ChangeOrRemove { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a company number")]
