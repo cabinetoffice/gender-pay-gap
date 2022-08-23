@@ -1,5 +1,8 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using System;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +26,15 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             // Get the current user
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            // Remove the email change request if it is expired
+            if (currentUser.NewEmailAddressRequestDate.HasValue
+                && currentUser.NewEmailAddressRequestDate.Value.AddDays(Global.EmailVerificationExpiryDays) < VirtualDateTime.Now)
+            {
+                currentUser.NewEmailAddress = null;
+                currentUser.NewEmailAddressRequestDate = null;
+                dataRepository.SaveChanges();
+            }
 
             // Set properties on view model
             var viewModel = new ManageAccountViewModel
