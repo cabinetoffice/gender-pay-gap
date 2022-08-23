@@ -44,7 +44,17 @@
                     Email address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.User.EmailAddress)
+                    @{
+                        var user = Model.User;
+                        if (user.NewEmailAddressRequestDate != null && VirtualDateTime.Now.Subtract(user.NewEmailAddressRequestDate.Value).TotalSeconds < 120)
+                        {
+                            <text>@Model.User.NewEmailAddress (pending)</text>
+                        }
+                        else
+                        {
+                            <text>@Model.User.EmailAddress</text>
+                        }
+                    }
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     @if (!Model.IsUserBeingImpersonated)

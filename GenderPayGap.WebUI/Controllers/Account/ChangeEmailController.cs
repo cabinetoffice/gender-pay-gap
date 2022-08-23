@@ -69,6 +69,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             }
 
             SendVerificationEmail(viewModel.NewEmailAddress, user);
+            user.NewEmailAddress = viewModel.NewEmailAddress;
+            user.NewEmailAddressRequestDate = VirtualDateTime.Now;
+            dataRepository.SaveChanges();
 
             return View("PleaseVerifyNewEmailAddress", viewModel.NewEmailAddress);
         }

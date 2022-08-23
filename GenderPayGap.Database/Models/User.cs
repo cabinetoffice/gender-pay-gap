@@ -29,6 +29,10 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public string EmailAddressDB { get; set; }
         [JsonProperty]
+        public string NewEmailAddressDB { get; set; }
+        [JsonProperty]
+        public DateTime? NewEmailAddressRequestDate { get; set; }
+        [JsonProperty]
         public string ContactJobTitle { get; set; }
         [JsonProperty]
         public string ContactFirstName { get; set; }
