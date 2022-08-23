@@ -44,7 +44,7 @@
                             WhyOutOfScope.Other,
                             @<text>
                                 @(Html.GovUkLabel(new LabelViewModel {For = nameof(FeedbackViewModel.OtherSourceText), Text = "Please provide some details"}))
-                                @(Html.GovUkTextAreaFor(m => m.WhyOutOfScopeDetails))
+                                @(Html.GovUkCharacterCountFor(m => m.WhyOutOfScopeDetails))
                              </text>
                         }
                     };

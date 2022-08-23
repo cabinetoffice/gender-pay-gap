@@ -120,7 +120,7 @@
         <form method="POST" action="@Url.Action("OptIn", "AdminOrganisationCompaniesHouseOptInOut", new { id = Model.Organisation.OrganisationId })">
             @(Html.AntiForgeryToken())
 
-            @(Html.GovUkTextAreaFor(
+            @(Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
