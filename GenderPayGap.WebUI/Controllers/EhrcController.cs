@@ -70,12 +70,10 @@ namespace GenderPayGap.WebUI.Controllers
                     && (year4digits + 1) % 100 == year2digits
                     && year4digits >= minYear)
                 {
-                    return callback(dataRepository, year4digits);
+                    return year4digits;
                 }
             }
-
             return null;
         }
-
     }
 }

@@ -464,7 +464,13 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads/organisations-without-submitted-returns")]
         public FileContentResult DownloadOrganisationsWithNoSubmittedReturns(int year)
         {
-            return GenerateOrganisationsWithNoSubmittedReturnsForYear(dataRepository, year);
+            return GenerateOrganisationsWithNoSubmittedReturnsForYear(dataRepository, year, false);
+        }
+
+        [HttpGet("downloads/organisations-without-submitted-returns-with-login-data")]
+        public FileContentResult DownloadOrganisationsWithNoSubmittedReturnsAndRecentLoginData(int year)
+        {
+            return GenerateOrganisationsWithNoSubmittedReturnsForYear(dataRepository, year, true);
         }
 
         public static FileContentResult GenerateEhrcAllOrganisationsForYearFile(IDataRepository dataRepository, int year)
@@ -526,13 +532,16 @@ namespace GenderPayGap.WebUI.Controllers
             return fileContentResult;
         }
 
-        public static FileContentResult GenerateOrganisationsWithNoSubmittedReturnsForYear(IDataRepository dataRepository, int year)
+        public static FileContentResult GenerateOrganisationsWithNoSubmittedReturnsForYear(IDataRepository dataRepository, int year, bool includeMostRecentLoginData)
         {
             IEnumerable<Organisation> organisationsWithNoSubmittedReturns = GetOrganisationsWithNoSubmittedReturns(dataRepository, year);
 
-            IEnumerable<dynamic> records = BuildOrganisationsWithNoSubmittedReturnsRecords(organisationsWithNoSubmittedReturns);
+            IEnumerable<dynamic> records = BuildOrganisationsWithNoSubmittedReturnsRecords(organisationsWithNoSubmittedReturns, includeMostRecentLoginData);
 
-            string fileDownloadName = $"Gpg-NoSubmissionsFor{year}-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
+            string filenameWithoutRecentLoginDetails = $"Gpg-NoSubmissionsFor{year}-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}.csv";
+            string filenameWithRecentLoginDetails = $"Gpg-NoSubmissionsFor{year}-{new GDSDateFormatter(VirtualDateTime.Now).FullStartDateTime}-(recentLogins).csv";
+            string fileDownloadName = includeMostRecentLoginData ? filenameWithRecentLoginDetails : filenameWithoutRecentLoginDetails;
+
             FileContentResult fileContentResult = DownloadHelper.CreateCsvDownload(records, fileDownloadName);
 
             return fileContentResult;
@@ -554,7 +563,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .Include(o => o.Returns);
         }
 
-        private static IEnumerable<dynamic> BuildOrganisationsWithNoSubmittedReturnsRecords(IEnumerable<Organisation> organisationsWithNoSubmittedReturns)
+        private static IEnumerable<dynamic> BuildOrganisationsWithNoSubmittedReturnsRecords(IEnumerable<Organisation> organisationsWithNoSubmittedReturns, bool includeMostRecentLoginData)
         {
             return organisationsWithNoSubmittedReturns.Select(
                     org =>
@@ -572,6 +581,7 @@ namespace GenderPayGap.WebUI.Controllers
                             .FirstOrDefault(
                                 uo => uo.HasBeenActivated()
                                       && uo.User.Status == UserStatuses.Active);
+
                         Return latestReturn = org.Returns
                             .OrderByDescending(r => r.StatusDate)
                             .FirstOrDefault(r => r.Status == ReturnStatuses.Submitted);
@@ -588,6 +598,20 @@ namespace GenderPayGap.WebUI.Controllers
                             ((IDictionary<string, object>) record)["ReportDateTimeFor" + repYear] = org.GetReturn(repYear)?.StatusDate;
                         }
 
+                        if (includeMostRecentLoginData)
+                        {
+                            UserOrganisation lastUserLogin = org.UserOrganisations
+                                .OrderByDescending(uo => uo.User.LoginDate)
+                                .FirstOrDefault(
+                                    uo => uo.HasBeenActivated()
+                                        && uo.User.Status == UserStatuses.Active);
+
+                            record.LastLoginFirstName = lastUserLogin?.User.Firstname;
+                            record.LastLoginLastname = lastUserLogin?.User.Lastname;
+                            record.LastLoginEmail = lastUserLogin?.User.EmailAddress;
+                            record.LastLoginTime = lastUserLogin?.User.LoginDate;
+                        }
+                        
                         return record;
                     })
                 .ToList();
