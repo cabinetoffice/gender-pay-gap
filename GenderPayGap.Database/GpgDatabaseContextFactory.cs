@@ -1,4 +1,6 @@
-﻿using GenderPayGap.Core;
+﻿using System;
+using GenderPayGap.Core;
+using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -14,7 +16,12 @@ namespace GenderPayGap.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<GpgDatabaseContext>();
 
-            optionsBuilder.UseNpgsql(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
+            // Environment variable used to specify to which DB the migration should be applied.
+            // This can either be set locally, to manually specify which DB to update
+            // Or in azure devops, depending on the environment.
+            var connectionStringFromEnv = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            
+            optionsBuilder.UseNpgsql(connectionStringFromEnv ?? GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
 
             return new GpgDatabaseContext(optionsBuilder.Options);
         }
