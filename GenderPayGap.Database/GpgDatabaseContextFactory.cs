@@ -16,12 +16,7 @@ namespace GenderPayGap.Database
         {
             var optionsBuilder = new DbContextOptionsBuilder<GpgDatabaseContext>();
 
-            // Environment variable used to specify to which DB the migration should be applied.
-            // This can either be set locally, to manually specify which DB to update
-            // Or in azure devops, depending on the environment.
-            var connectionStringFromEnv = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-            
-            optionsBuilder.UseNpgsql(connectionStringFromEnv ?? GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
+            optionsBuilder.UseNpgsql(GpgDatabaseContext.ConnectionString, options => options.EnableRetryOnFailure());
 
             return new GpgDatabaseContext(optionsBuilder.Options);
         }
