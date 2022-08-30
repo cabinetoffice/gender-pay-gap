@@ -175,6 +175,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             string oldEmailAddress = user.EmailAddress;
 
             userRepository.UpdateEmail(user, changeEmailToken.NewEmailAddress);
+            user.NewEmailAddress = null;
+            user.NewEmailAddressRequestDate = null;
+            dataRepository.SaveChanges();
 
             NotifyBothOldAndNewEmailAddressesThatEmailAddressHasBeenChanged(oldEmailAddress, changeEmailToken.NewEmailAddress);
 
