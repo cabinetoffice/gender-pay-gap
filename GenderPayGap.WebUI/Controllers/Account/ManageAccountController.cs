@@ -30,12 +30,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // Remove the email change request if it is expired
             var showNewEmail = currentUser.NewEmailAddressRequestDate.HasValue && 
                                currentUser.NewEmailAddressRequestDate.Value.AddDays(Global.EmailVerificationExpiryDays) >= VirtualDateTime.Now;
-            if (!showNewEmail)
-            {
-                currentUser.NewEmailAddress = null;
-                currentUser.NewEmailAddressRequestDate = null;
-                dataRepository.SaveChanges();
-            }
 
             // Set properties on view model
             var viewModel = new ManageAccountViewModel
