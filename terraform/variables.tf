@@ -39,12 +39,12 @@ variable "postgres_config" {
   description = "Contains configuration options for postgres databases"
 }
 
-variable "postgres_config_username" {
+variable "POSTGRES_CONFIG_USERNAME" {
   type = string
   description = "Postgres database username. Initialized as an environment variable."
 }
 
-variable "postgres_config_password" {
+variable "POSTGRES_CONFIG_PASSWORD" {
   type = string
   description = "Postgres database password. Initialized as an environment variable."
 }

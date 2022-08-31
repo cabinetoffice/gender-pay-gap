@@ -6,8 +6,8 @@ locals {
     allocated_storage           = 100
     engine                      = "postgres"
     engine_version              = "14"
-    username                    = var.postgres_config_username
-    password                    = var.postgres_config_password
+    username                    = var.POSTGRES_CONFIG_USERNAME
+    password                    = var.POSTGRES_CONFIG_USERNAME
     port                        = 5432
     backup_retention_period     = 30
     backup_window               = "04:00-05:00"
