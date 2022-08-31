@@ -15,7 +15,7 @@ terraform {
 
   backend "s3" {
     bucket               = "gender-pay-gap-terraform-state-bucket"
-    key                  = "terraform.tfstate"
+    key                  = "preprod/terraform.tfstate"
     dynamodb_table       = "gender-pay-gap-tf-locks"
     region               = "eu-west-2"
     encrypt              = true
