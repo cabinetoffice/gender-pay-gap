@@ -6,14 +6,17 @@ locals {
     allocated_storage           = 100
     engine                      = "postgres"
     engine_version              = "14"
+    username                    = var.postgres_config_username
+    password                    = var.postgres_config_password
     port                        = 5432
-    backup_retention_period     = 5
+    backup_retention_period     = 30
     backup_window               = "04:00-05:00"
     storage_encrypted           = true
     publicly_accessible         = true
     allow_major_version_upgrade = true
     multi_az                    = false
-    skip_final_snapshot         = true
+    skip_final_snapshot         = false
+    final_snapshot_identifier   = join("-", [var.postgres_config.identifier, "final-snapshot"])
   })
 }
 
@@ -59,4 +62,5 @@ resource "aws_db_instance" "gpg-dev-db" {
   allow_major_version_upgrade = local.postgres_config.allow_major_version_upgrade
   multi_az                    = local.postgres_config.multi_az
   skip_final_snapshot         = local.postgres_config.skip_final_snapshot
+  final_snapshot_identifier   = local.postgres_config.final_snapshot_identifier
 }

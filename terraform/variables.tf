@@ -24,8 +24,8 @@ variable "postgres_config" {
     instance_class              = string
     identifier                  = string
     db_name                     = string
-    username                    = string
-    password                    = string
+    username                    = optional(string)
+    password                    = optional(string)
     port                        = optional(number)
     backup_retention_period     = optional(number)
     backup_window               = optional(string)
@@ -34,6 +34,17 @@ variable "postgres_config" {
     allow_major_version_upgrade = optional(bool)
     multi_az                    = optional(bool)
     skip_final_snapshot         = optional(bool)
+    final_snapshot_identifier   = optional(string)
   })
   description = "Contains configuration options for postgres databases"
+}
+
+variable "postgres_config_username" {
+  type = string
+  description = "Postgres database username. Initialized as an environment variable."
+}
+
+variable "postgres_config_password" {
+  type = string
+  description = "Postgres database password. Initialized as an environment variable."
 }
