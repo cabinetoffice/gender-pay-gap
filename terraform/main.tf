@@ -20,10 +20,37 @@ locals {
   })
 }
 
+resource "aws_vpc_ipam" "postgres" {
+  operating_regions {
+    region_name = var.aws_region
+  }
+}
+
+resource "aws_vpc_ipam_pool" "postgres" {
+  address_family = "ipv4"
+  ipam_scope_id  = aws_vpc_ipam.postgres.private_default_scope_id
+  locale         = var.aws_region
+}
+
+resource "aws_vpc_ipam_pool_cidr" "postgres" {
+  ipam_pool_id = aws_vpc_ipam_pool.postgres.id
+}
+
+resource "aws_vpc" "postgres" {
+  ipv4_ipam_pool_id   = aws_vpc_ipam_pool.postgres.id
+  ipv4_netmask_length = 28
+  depends_on = [
+    aws_vpc_ipam_pool_cidr.postgres
+  ]
+}
+
+
+
+
 resource "aws_security_group" "allow_postgres_connection" {
   name        = join("_", ["allow_postgres_connection", var.env])
   description = "Allow Postgres DB traffic"
-  vpc_id      = "vpc-0e9491851e4208470"
+  vpc_id      = aws_vpc.postgres.id
 }
 
 resource "aws_security_group_rule" "postgres_in" {
