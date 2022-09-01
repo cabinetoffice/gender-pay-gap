@@ -1,25 +1,31 @@
-﻿resource "aws_vpc_ipam" "postgres" {
-  operating_regions {
-    region_name = var.aws_region
-  }
-}
-
-resource "aws_vpc_ipam_pool" "postgres" {
-  address_family = "ipv4"
-  ipam_scope_id  = aws_vpc_ipam.postgres.private_default_scope_id
-  locale         = var.aws_region
-}
-
-resource "aws_vpc_ipam_pool_cidr" "postgres" {
-  ipam_pool_id = aws_vpc_ipam_pool.postgres.id
+﻿data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 resource "aws_vpc" "postgres" {
-  ipv4_ipam_pool_id   = aws_vpc_ipam_pool.postgres.id
-  ipv4_netmask_length = 28
-  depends_on = [
-    aws_vpc_ipam_pool_cidr.postgres
-  ]
+  cidr_block = "172.30.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.postgres.id
+}
+
+resource "aws_subnet" "postgres_primary" {
+  vpc_id     = aws_vpc.postgres.id
+  cidr_block = "172.30.0.0/24"
+  availability_zone = data.aws_availability_zones.available.names[0]
+}
+
+resource "aws_subnet" "postgres_secondary" {
+  vpc_id     = aws_vpc.postgres.id
+  cidr_block = "172.30.1.0/24"
+  availability_zone = data.aws_availability_zones.available.names[1]
+}
+
+resource "aws_db_subnet_group" "postgres" {
+  subnet_ids = [aws_subnet.postgres_primary.id, aws_subnet.postgres_secondary.id]
 }
 
 resource "aws_security_group" "allow_postgres_connection" {
@@ -59,6 +65,7 @@ resource "aws_db_instance" "gpg-dev-db" {
   backup_retention_period     = local.postgres_config.backup_retention_period
   backup_window               = local.postgres_config.backup_window
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]
+  db_subnet_group_name        = aws_db_subnet_group.postgres.name
   storage_encrypted           = local.postgres_config.storage_encrypted
   publicly_accessible         = local.postgres_config.publicly_accessible
   allow_major_version_upgrade = local.postgres_config.allow_major_version_upgrade
