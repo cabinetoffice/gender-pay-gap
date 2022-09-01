@@ -580,6 +580,7 @@ GPG IP Denylist.txt
 
 # Local terraform directories
 **/.terraform/*
+**/.terraform*
 
 # State files
 *.tfstate
@@ -587,6 +588,3 @@ GPG IP Denylist.txt
 
 # Crash log files
 *.log
-
-# Sensitive data
-*.tfvars
