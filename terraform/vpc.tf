@@ -1,4 +1,5 @@
 module "vpc" {
+  // Keeping the 'registry.terraform.io/' prefix so Rider can find the module for autocompletion purposes
   source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 

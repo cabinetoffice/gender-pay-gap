@@ -1,9 +1,11 @@
+// The security group the database will belong to
 resource "aws_security_group" "allow_postgres_connection" {
   name        = join("_", ["allow_postgres_connection", var.env])
   description = "Allow Postgres DB traffic"
   vpc_id      = module.vpc.vpc_id
 }
 
+// Incoming rules
 resource "aws_security_group_rule" "postgres_in" {
   security_group_id = aws_security_group.allow_postgres_connection.id
   type              = "ingress"
@@ -13,6 +15,7 @@ resource "aws_security_group_rule" "postgres_in" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+// Outgoing rules
 resource "aws_security_group_rule" "postgres_out" {
   security_group_id = aws_security_group.allow_postgres_connection.id
   type              = "egress"
@@ -22,6 +25,7 @@ resource "aws_security_group_rule" "postgres_out" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+// The database resource
 resource "aws_db_instance" "gpg-dev-db" {
   allocated_storage           = var.rds_config_allocated_storage
   engine                      = var.rds_config_engine
@@ -44,7 +48,8 @@ resource "aws_db_instance" "gpg-dev-db" {
   final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
   lifecycle {
     ignore_changes = [
-      final_snapshot_identifier
+      // This will always be different because of the timestamp function, so we ignore it
+      final_snapshot_identifier 
     ]
   }
 }
