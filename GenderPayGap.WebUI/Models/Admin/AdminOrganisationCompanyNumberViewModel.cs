@@ -23,7 +23,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public bool ChangeOrRemoveRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.OfferChangeOrRemove;
         [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ReasonRequired), 
             ErrorMessageIfMissing = "Please enter a reason for this change")]
-        [GovUkValidateCharacterCount(MaxCharacters = 250)]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string Reason { get; set; }
 
         public bool ReasonRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.Remove ||
