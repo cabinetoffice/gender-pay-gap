@@ -1,4 +1,4 @@
-﻿resource "aws_security_group" "allow_postgres_connection" {
+resource "aws_security_group" "allow_postgres_connection" {
   name        = join("_", ["allow_postgres_connection", var.env])
   description = "Allow Postgres DB traffic"
   vpc_id      = module.vpc.vpc_id

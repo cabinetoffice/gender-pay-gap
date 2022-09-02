@@ -1,4 +1,4 @@
-﻿// declarations for the providers being used
+// declarations for the providers being used
 
 terraform {
   required_providers {
