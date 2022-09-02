@@ -1,5 +1,6 @@
 /* Sets up user groups and policies (permissions) for each group */
 
+/*
 // full access for developers
 resource "aws_iam_group" "developers" {
   name = "developers"
@@ -82,3 +83,4 @@ data "aws_iam_policy_document" "manage_group_access" {
     resources = ["*"]
   }
 }
+*/

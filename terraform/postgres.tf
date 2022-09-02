@@ -1,31 +1,7 @@
-resource "aws_vpc_ipam" "postgres" {
-  operating_regions {
-    region_name = var.aws_region
-  }
-}
-
-resource "aws_vpc_ipam_pool" "postgres" {
-  address_family = "ipv4"
-  ipam_scope_id  = aws_vpc_ipam.postgres.private_default_scope_id
-  locale         = var.aws_region
-}
-
-resource "aws_vpc_ipam_pool_cidr" "postgres" {
-  ipam_pool_id = aws_vpc_ipam_pool.postgres.id
-}
-
-resource "aws_vpc" "postgres" {
-  ipv4_ipam_pool_id   = aws_vpc_ipam_pool.postgres.id
-  ipv4_netmask_length = 28
-  depends_on = [
-    aws_vpc_ipam_pool_cidr.postgres
-  ]
-}
-
 resource "aws_security_group" "allow_postgres_connection" {
   name        = join("_", ["allow_postgres_connection", var.env])
   description = "Allow Postgres DB traffic"
-  vpc_id      = aws_vpc.postgres.id
+  vpc_id      = module.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "postgres_in" {
@@ -59,6 +35,7 @@ resource "aws_db_instance" "gpg-dev-db" {
   backup_retention_period     = local.postgres_config.backup_retention_period
   backup_window               = local.postgres_config.backup_window
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]
+  db_subnet_group_name        = module.vpc.database_subnet_group_name
   storage_encrypted           = local.postgres_config.storage_encrypted
   publicly_accessible         = local.postgres_config.publicly_accessible
   allow_major_version_upgrade = local.postgres_config.allow_major_version_upgrade

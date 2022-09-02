@@ -1,16 +1,14 @@
 
 //an s3 bucket to keep application versions in
-resource "aws_s3_bucket" "gpg-application-version-storage" {
+data "aws_s3_bucket" "gpg-application-version-storage" {
   bucket = "gpg-application-version-storage"
-
   //add some dates?
 }
 
 //the archive file from the bucket zip
-resource "aws_s3_object" "gpg-archive-zip" {
-  bucket = aws_s3_bucket.gpg-application-version-storage.id
-  key    = "application-version.zip"
-  source = "{}.zip"
+data "aws_s3_object" "gpg-archive-zip" {
+  bucket = data.aws_s3_bucket.gpg-application-version-storage.id
+  key    = "publish.zip"
 }
 
 //an application
@@ -22,10 +20,10 @@ resource "aws_elastic_beanstalk_application" "gpg-application" {
 // and the application version
 resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
   name        = "gpg-version-label"
-  application = "gpg-application-version-name"
+  application = "gpg-application"
   description = "application version created by terraform"
-  bucket      = aws_s3_bucket.gpg-application-version-storage.id
-  key         = aws_s3_object.gpg-archive-zip.id
+  bucket      = data.aws_s3_bucket.gpg-application-version-storage.bucket
+  key         = data.aws_s3_object.gpg-archive-zip.key
 }
 
 //and the environment which is being dynamically configured with all the auto scaling etc settings
