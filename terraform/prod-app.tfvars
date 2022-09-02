@@ -1,8 +1,10 @@
-postgres_config = {
-  instance_class = "db.t3.small"
-  identifier     = "gpg-prod-db"
-  db_name        = "gpgProdDb"
-  multi_az       = true
-}
+#region Relational database configuration 
+
+rds_config_instance_class = "db.t3.small"
+rds_config_identifier = "gpg-prod-db"
+rds_config_db_name = "gpgProdDb"
+rds_config_multi_az = true
+
+#endregion
 
 env = "prod"

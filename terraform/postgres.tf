@@ -1,44 +1,14 @@
-﻿data "aws_availability_zones" "available" {
-  state = "available"
-}
-
-resource "aws_vpc" "postgres" {
-  cidr_block = "172.30.0.0/16"
-  enable_dns_support = true
-  enable_dns_hostnames = true
-}
-
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.postgres.id
-}
-
-resource "aws_subnet" "postgres_primary" {
-  vpc_id     = aws_vpc.postgres.id
-  cidr_block = "172.30.0.0/24"
-  availability_zone = data.aws_availability_zones.available.names[0]
-}
-
-resource "aws_subnet" "postgres_secondary" {
-  vpc_id     = aws_vpc.postgres.id
-  cidr_block = "172.30.1.0/24"
-  availability_zone = data.aws_availability_zones.available.names[1]
-}
-
-resource "aws_db_subnet_group" "postgres" {
-  subnet_ids = [aws_subnet.postgres_primary.id, aws_subnet.postgres_secondary.id]
-}
-
-resource "aws_security_group" "allow_postgres_connection" {
+﻿resource "aws_security_group" "allow_postgres_connection" {
   name        = join("_", ["allow_postgres_connection", var.env])
   description = "Allow Postgres DB traffic"
-  vpc_id      = aws_vpc.postgres.id
+  vpc_id      = module.vpc.vpc_id
 }
 
 resource "aws_security_group_rule" "postgres_in" {
   security_group_id = aws_security_group.allow_postgres_connection.id
   type              = "ingress"
-  from_port         = local.postgres_config.port
-  to_port           = local.postgres_config.port
+  from_port         = var.rds_config_port
+  to_port           = var.rds_config_port
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
 }
@@ -53,25 +23,25 @@ resource "aws_security_group_rule" "postgres_out" {
 }
 
 resource "aws_db_instance" "gpg-dev-db" {
-  allocated_storage           = local.postgres_config.allocated_storage
-  engine                      = local.postgres_config.engine
-  engine_version              = local.postgres_config.engine_version
-  instance_class              = local.postgres_config.instance_class
-  identifier                  = local.postgres_config.identifier
-  db_name                     = local.postgres_config.db_name
-  username                    = local.postgres_config.username
-  password                    = local.postgres_config.password
-  port                        = local.postgres_config.port
-  backup_retention_period     = local.postgres_config.backup_retention_period
-  backup_window               = local.postgres_config.backup_window
+  allocated_storage           = var.rds_config_allocated_storage
+  engine                      = var.rds_config_engine
+  engine_version              = var.rds_config_engine_version
+  instance_class              = var.rds_config_instance_class
+  identifier                  = var.rds_config_identifier
+  db_name                     = var.rds_config_db_name
+  username                    = var.POSTGRES_CONFIG_USERNAME
+  password                    = var.POSTGRES_CONFIG_PASSWORD
+  port                        = var.rds_config_port
+  backup_retention_period     = var.rds_config_backup_retention_period
+  backup_window               = var.rds_config_backup_window
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]
-  db_subnet_group_name        = aws_db_subnet_group.postgres.name
-  storage_encrypted           = local.postgres_config.storage_encrypted
-  publicly_accessible         = local.postgres_config.publicly_accessible
-  allow_major_version_upgrade = local.postgres_config.allow_major_version_upgrade
-  multi_az                    = local.postgres_config.multi_az
-  skip_final_snapshot         = local.postgres_config.skip_final_snapshot
-  final_snapshot_identifier   = local.postgres_config.final_snapshot_identifier
+  db_subnet_group_name        = module.vpc.database_subnet_group_name
+  storage_encrypted           = var.rds_config_storage_encrypted
+  publicly_accessible         = var.rds_config_publicly_accessible
+  allow_major_version_upgrade = var.rds_config_allow_major_version_upgrade
+  multi_az                    = var.rds_config_multi_az
+  skip_final_snapshot         = var.rds_config_skip_final_snapshot
+  final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
   lifecycle {
     ignore_changes = [
       final_snapshot_identifier
