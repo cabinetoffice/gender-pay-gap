@@ -16,7 +16,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public ScopeStatuses? CurrentScopeStatus { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
-        [GovUkValidateCharacterCount(MaxCharacters = 250)]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string Reason { get; set; }
 
         [GovUkValidateRequiredIf(

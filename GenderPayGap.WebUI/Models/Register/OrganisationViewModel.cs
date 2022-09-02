@@ -33,7 +33,7 @@ namespace GenderPayGap.WebUI.Models.Register
 
         public string ReviewCode { get; set; }
         
-        [GovUkValidateCharacterCount(MaxCharacters = 250)]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string CancellationReason { get; set; }
 
         #region Search details
