@@ -27,7 +27,8 @@ namespace GenderPayGap.WebUI.Models.Admin
         public string Reason { get; set; }
 
         public bool ReasonRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.Remove ||
-                                      CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.ConfirmNew;
+                                      CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.ConfirmNew ||
+                                      CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.Change;
 
         [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(NewCompanyNumberRequired), 
             ErrorMessageIfMissing = "Please enter a company number")]
