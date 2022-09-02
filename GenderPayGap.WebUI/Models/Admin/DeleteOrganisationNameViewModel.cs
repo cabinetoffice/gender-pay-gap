@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class DeleteOrganisationNameViewModel : GovUkViewModel
+    public class DeleteOrganisationNameViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

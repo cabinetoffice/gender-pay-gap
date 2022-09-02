@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
@@ -11,8 +10,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
@@ -59,9 +56,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
             
-            viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("PasswordReset", viewModel); 
             }
@@ -71,7 +66,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             if (userForPasswordReset == null)
             {
-                viewModel.AddErrorFor(m => m.EmailAddress, "An account associated with this email address does not exist.");
+                ModelState.AddModelError(nameof(viewModel.EmailAddress), "An account associated with this email address does not exist.");
                 
                 return View("PasswordReset", viewModel); 
             }
@@ -161,17 +156,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
                 return RedirectToAction("ManageOrganisationsGet", "ManageOrganisations");
             }
             
-            viewModel.ParseAndValidateParameters(Request, m => m.NewPassword); 
-            viewModel.ParseAndValidateParameters(Request, m => m.ConfirmNewPassword);
-            
-            if (viewModel.HasSuccessfullyParsedValueFor(m => m.NewPassword)
-                && viewModel.HasSuccessfullyParsedValueFor(m => m.ConfirmNewPassword)
-                && viewModel.NewPassword != viewModel.ConfirmNewPassword)
+            if (viewModel.NewPassword != viewModel.ConfirmNewPassword)
             {
-                viewModel.AddErrorFor(m => m.ConfirmNewPassword, "Password and confirmation password do not match");
+                ModelState.AddModelError(nameof(viewModel.ConfirmNewPassword), "Password and confirmation password do not match");
             }
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChooseNewPassword", viewModel);
             }

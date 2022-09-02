@@ -13,7 +13,7 @@
         
         <h1 class="govuk-heading-xl">Sign in</h1>
         
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
         
         <p class="govuk-body">
             If you have a user account, enter your email address and password. After
@@ -33,7 +33,7 @@
             @(Html.AntiForgeryToken())
             @(Html.HiddenFor(m => m.ReturnUrl))
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.EmailAddress,
                 type: "email",
                 labelOptions: new LabelViewModel { Text = "Email address" },
@@ -43,7 +43,7 @@
                 spellcheck: false
                 ))
             
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.Password,
                 type: "password",
                 labelOptions: new LabelViewModel { Text = "Password" },
@@ -51,7 +51,7 @@
                 autocomplete: "current-password"
                 ))
             
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Sign in",
                 Classes = "govuk-!-margin-bottom-4"

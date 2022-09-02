@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminChangeCompaniesHouseOptInOutViewModel : GovUkViewModel
+    public class AdminChangeCompaniesHouseOptInOutViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

@@ -28,7 +28,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -46,7 +46,7 @@
             </span>
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <table class="govuk-table">
             <tbody class="govuk-table__body">
@@ -70,7 +70,7 @@
             @(Html.HiddenFor(m => m.NewLateFlag))
             <div class="govuk-form-group">
 
-                @Html.GovUkCharacterCountFor(
+                @await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -82,7 +82,7 @@
                         Classes = "govuk-!-margin-top-6"
                     })
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Confirm",
                     Classes = "govuk-!-margin-bottom-4"

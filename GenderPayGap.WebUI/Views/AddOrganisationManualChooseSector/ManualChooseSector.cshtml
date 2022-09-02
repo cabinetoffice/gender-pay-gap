@@ -1,5 +1,6 @@
 @using GenderPayGap.WebUI.Models.AddOrganisation
 @using GovUkDesignSystem
+@using GovUkDesignSystem.Attributes
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationManualViewModel
 @{
@@ -11,7 +12,7 @@
     @{
         Model.Validate = null; // Required to make the "Back" link work correctly
     }
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = Url.Action("ManualConfirmGet", "AddOrganisationManualConfirm", Model),
@@ -28,7 +29,7 @@
         <form method="get"
               action="@Url.Action("ManualChooseSector", "AddOrganisationManualChooseSector")">
 
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
             @(Html.HiddenFor(m => m.Query))
             @(Html.HiddenFor(m => m.OrganisationName))
@@ -60,14 +61,15 @@
                     </h1>
                 </legend>
 
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.Sector,
-                    itemLabelOptions: new Dictionary<AddOrganisationSector?, LabelViewModel>
+                    labelOptions: new Dictionary<AddOrganisationSector, LabelViewModel>
                     {
                         {
                             AddOrganisationSector.Public,
                             new LabelViewModel
                             {
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(AddOrganisationSector.Public),
                                 Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
@@ -75,11 +77,12 @@
                             AddOrganisationSector.Private,
                             new LabelViewModel
                             {
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(AddOrganisationSector.Private),
                                 Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
                     },
-                    itemHintOptions: new Dictionary<AddOrganisationSector?, HintViewModel>
+                    radioHints: new Dictionary<AddOrganisationSector, HintViewModel>
                     {
                         {
                             AddOrganisationSector.Public,
@@ -128,7 +131,7 @@
                 </a>
             </div>
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

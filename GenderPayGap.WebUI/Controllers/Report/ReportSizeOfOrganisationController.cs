@@ -4,7 +4,6 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,9 +87,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-            ValidateUserInput(viewModel);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear, viewModel.IsEditingForTheFirstTime);
                 return View("ReportSizeOfOrganisation", viewModel);
@@ -105,11 +102,6 @@ namespace GenderPayGap.WebUI.Controllers.Report
 
             StatusMessageHelper.SetStatusMessage(Response, "Saved changes to draft", nextPageUrl);
             return LocalRedirect(nextPageUrl);
-        }
-        
-        private void ValidateUserInput(ReportSizeOfOrganisationViewModel viewModel)
-        {
-            viewModel.ParseAndValidateParameters(Request, m => m.SizeOfOrganisation);
         }
 
         private void SaveChangesToDraftReturn(ReportSizeOfOrganisationViewModel viewModel, long organisationId, int reportingYear)

@@ -6,7 +6,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,12 +60,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);
 
-            viewModel.ParseAndValidateParameters(Request, m => m.FirstName);
-            viewModel.ParseAndValidateParameters(Request, m => m.LastName);
-            viewModel.ParseAndValidateParameters(Request, m => m.JobTitle);
-            viewModel.ParseAndValidateParameters(Request, m => m.ContactPhoneNumber);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangePersonalDetails", viewModel);
             }

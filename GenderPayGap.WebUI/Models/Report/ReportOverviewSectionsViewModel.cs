@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Html;
 
-namespace GenderPayGap.WebUI.Views.Components.ReportOverview
+namespace GenderPayGap.WebUI.Models.Report
 {
-    public class ReportOverviewSectionsViewModel : GovUkViewModel
+    public class ReportOverviewSectionsViewModel
     {
         public string Title { get; set; }
         

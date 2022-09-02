@@ -13,7 +13,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Register;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -620,9 +619,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return checkResult;
             }
             
-            // Validate cancellation reason
-            model.ParseAndValidateParameters(Request, m => m.CancellationReason);
-            if (model.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 View("ConfirmCancellation", model);
             }

@@ -3,7 +3,7 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ChangePersonalDetailsViewModel : GovUkViewModel
+    public class ChangePersonalDetailsViewModel 
     {
         [GovUkValidateRequired(ErrorMessageIfMissing = "Enter your first name")]
         public string FirstName { get; set; }

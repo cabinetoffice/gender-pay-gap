@@ -102,14 +102,19 @@
     </ol>
 </div>
 
-@(Html.GovUkAccordion(new AccordionViewModel()
+@(await Html.GovUkAccordion(new AccordionViewModel()
 {
     Sections = new List<AccordionSectionViewModel>
     {
         new AccordionSectionViewModel
         {
-            Heading = "References",
-            Html = @<text>
+            Heading = new AccordionSectionItemViewModel
+            {
+                Text = "References"
+            },
+            Content = new AccordionSectionItemViewModel
+            {
+                Html = @<text>
                        <div class="reference-list">
                            <ol class="govuk-list govuk-list--number">
                                <li>
@@ -154,6 +159,7 @@
                            </ol>
                        </div>
                     </text>
+            }
         }
     }
 }))

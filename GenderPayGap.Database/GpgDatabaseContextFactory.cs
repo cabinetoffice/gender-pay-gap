@@ -1,5 +1,4 @@
-﻿using GenderPayGap.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace GenderPayGap.Database

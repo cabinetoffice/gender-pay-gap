@@ -26,25 +26,23 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void POST_Verification_Email_Is_Sent_After_Creating_User_Account()
         {
             // Arrange
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_EmailAddress", "test@example.com");
-            requestFormValues.Add("GovUk_Text_ConfirmEmailAddress", "test@example.com");
-            requestFormValues.Add("GovUk_Text_FirstName", "Test");
-            requestFormValues.Add("GovUk_Text_LastName", "Example");
-            requestFormValues.Add("GovUk_Text_JobTitle", "Tester");
-            requestFormValues.Add("GovUk_Text_Password", "Pa55word");
-            requestFormValues.Add("GovUk_Text_ConfirmPassword", "Pa55word");
-            requestFormValues.Add("GovUk_Checkbox_SendUpdates", "true");
-            requestFormValues.Add("GovUk_Checkbox_AllowContact", "false");
-
             var controllerBuilder = new ControllerBuilder<AccountCreationController>();
             var controller = controllerBuilder
-                .WithRequestFormValues(requestFormValues)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            var response = (ViewResult) controller.CreateUserAccountPost(new CreateUserAccountViewModel());
+            var response = (ViewResult) controller.CreateUserAccountPost(new CreateUserAccountViewModel
+            {
+                EmailAddress = "test@example.com",
+                ConfirmEmailAddress = "test@example.com",
+                FirstName = "Test",
+                LastName = "Example",
+                Password = "Pa55word",
+                ConfirmPassword = "Pa55word",
+                SendUpdates = true,
+                AllowContact = false
+            });
 
             // Assert
             Assert.AreEqual("ConfirmEmailAddress", response.ViewName);

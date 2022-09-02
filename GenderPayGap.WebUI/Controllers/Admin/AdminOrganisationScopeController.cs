@@ -9,7 +9,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,16 +61,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             var organisation = dataRepository.Get<Organisation>(id);
             var currentOrganisationScope = organisation.GetScopeForYear(year);
-
-            if (currentOrganisationScope.ScopeStatus != ScopeStatuses.InScope
-                && currentOrganisationScope.ScopeStatus != ScopeStatuses.OutOfScope)
-            {
-                viewModel.ParseAndValidateParameters(Request, m => m.NewScopeStatus);
-            }
-
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 // If there are any errors, return the user back to the same page to correct the mistakes
                 var currentScopeStatus = organisation.GetScopeStatus(year);

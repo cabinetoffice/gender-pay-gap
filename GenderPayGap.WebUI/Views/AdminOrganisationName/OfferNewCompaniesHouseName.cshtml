@@ -35,7 +35,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -53,7 +53,7 @@
             </span>
         </h1>
         
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h2 class="govuk-heading-l">
             This organisation has a different name registered with Companies House
@@ -85,7 +85,7 @@
                 </tbody>
             </table>
 
-            @(Html.GovUkRadiosFor(
+            @await Html.GovUkRadiosFor(
                 m => m.AcceptCompaniesHouseName,
                 fieldsetOptions: new FieldsetViewModel
                 {
@@ -95,42 +95,29 @@
                         Classes = "govuk-fieldset__legend--m"
                     },
                     Classes = "govuk-!-margin-top-6"
-                }
-            ))
-
-            <div id="reason-for-change-container">
-                @(Html.GovUkCharacterCountFor(
-                    m => m.Reason,
-                    labelOptions: new LabelViewModel
+                },
+                conditionalOptions: new Dictionary<AcceptCompaniesHouseName, Conditional>
+                {
+                    { AcceptCompaniesHouseName.Accept , new Conditional
                     {
-                        Text = "What is the reason for this change?",
-                        Classes = "govuk-label--m"
-                    },
-                    hintOptions: new HintViewModel
-                    {
-                        Text = "(Only required if you are using the name from Companies House)"
-                    }
-                ))
-            </div>
-            <script>
-                (function () {
-                    var acceptCoHoRadio = document.getElementById('@($"GovUk_Radio_{nameof(ChangeOrganisationNameViewModel.AcceptCompaniesHouseName)}_{nameof(AcceptCompaniesHouseName.Accept)}")');
-                    var radios = document.querySelectorAll('input[type=radio][name="@($"GovUk_Radio_{nameof(ChangeOrganisationNameViewModel.AcceptCompaniesHouseName)}")"]');
+                        Html = @<div id="reason-for-change-container">
+                                   @(await Html.GovUkCharacterCountFor(
+                                       m => m.Reason,
+                                       labelOptions: new LabelViewModel
+                                       {
+                                           Text = "What is the reason for this change?",
+                                           Classes = "govuk-label--m"
+                                       },
+                                       hintOptions: new HintViewModel
+                                       {
+                                           Text = "(Only required if you are using the address from Companies House)"
+                                       }
+                                       ))
+                               </div>
+                    }}
+                })
 
-                    function changeReasonVisibilityBasedOnCoHoNameAcceptRadio() {
-                        var reasonElement = document.getElementById('reason-for-change-container');
-                        reasonElement.style.display = (acceptCoHoRadio.checked ? null : 'none');
-                    }
-
-                    changeReasonVisibilityBasedOnCoHoNameAcceptRadio();
-
-                    radios.forEach(function(radio) {
-                        radio.addEventListener('change', changeReasonVisibilityBasedOnCoHoNameAcceptRadio);
-                    });
-                })();
-            </script>
-
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

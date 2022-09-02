@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.AddOrganisation
 {
-    public class AddOrganisationManualViewModel : GovUkViewModel
+    public class AddOrganisationManualViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -29,50 +29,37 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         //   but we only want to pass the Sector back to the previous page (we haven't specified a value for Validate)
         public bool? Editing { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Choose which type of employer you would like to add")]
         public AddOrganisationSector? Sector { get; set; }
 
         public string Query { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Employer name", NameWithinSentence = "employer name")]
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Enter the name of the employer")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "Employer name", NameWithinSentence = "employer name")]
         public string OrganisationName { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "PO Box", NameWithinSentence = "PO Box")]
-        [GovUkValidateCharacterCount(MaxCharacters = 30)]
+        [GovUkValidateCharacterCount(MaxCharacters = 30, NameAtStartOfSentence = "PO Box", NameWithinSentence = "PO Box")]
         public string PoBox { get; set; }
-
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Address line", NameWithinSentence = "address line")]
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Enter the registered address of the employer")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "Address line", NameWithinSentence = "address line")]
         public string Address1 { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Address line", NameWithinSentence = "address line")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "Address line", NameWithinSentence = "address line")]
         public string Address2 { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Address line", NameWithinSentence = "address line")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "Address line", NameWithinSentence = "address line")]
         public string Address3 { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Town or city", NameWithinSentence = "town or city")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "Town or city", NameWithinSentence = "town or city")]
         public string TownCity { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "County", NameWithinSentence = "county")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "County", NameWithinSentence = "county")]
         public string County { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Country", NameWithinSentence = "country")]
-        [GovUkValidateCharacterCount(MaxCharacters = 100)]
+        [GovUkValidateCharacterCount(MaxCharacters = 100, NameAtStartOfSentence = "Country", NameWithinSentence = "country")]
         public string Country { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Postcode", NameWithinSentence = "postcode")]
-        [GovUkValidateCharacterCount(MaxCharacters = 20)]
+        [GovUkValidateCharacterCount(MaxCharacters = 20, NameAtStartOfSentence = "Postcode", NameWithinSentence = "postcode")]
         public string PostCode { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Select if this employer's registered address is a UK address")]
         public AddOrganisationIsUkAddress? IsUkAddress { get; set; }
 
         public List<int> SicCodes { get; set; }

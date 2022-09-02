@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class ChangeOrganisationSicCodesViewModel : GovUkViewModel
+    public class ChangeOrganisationSicCodesViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -33,17 +33,29 @@ namespace GenderPayGap.WebUI.Models.Admin
         // It should be mapped from a hidden input and is used to tell the controller what action we want to take
         public ManuallyChangeOrganisationSicCodesActions Action { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "SIC code", NameWithinSentence = "SIC code")]
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Enter a SIC code")]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(SicCodeIdToChangeRequired), ErrorMessageIfMissing = "Enter a SIC code")]
         public int? SicCodeIdToChange { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing =
-            "Select whether you want to use this name from Companies House or to enter a name manually")]
+        public bool SicCodeIdToChangeRequired => Action is ManuallyChangeOrganisationSicCodesActions.ManualChangeAddSicCode;
+
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(AcceptCompaniesHouseSicCodesRequired),
+            ErrorMessageIfMissing =
+                "Select whether you want to use this name from Companies House or to enter a name manually")]
         public AcceptCompaniesHouseSicCodes? AcceptCompaniesHouseSicCodes { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change")]
+        public bool AcceptCompaniesHouseSicCodesRequired =>
+            Action is ManuallyChangeOrganisationSicCodesActions.OfferCompaniesHouseSicCodesAnswer; 
+
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(ReasonRequired),
+            ErrorMessageIfMissing = "Please enter a reason for this change")]
         [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
+
+        public bool ReasonRequired => 
+            Action is ManuallyChangeOrganisationSicCodesActions.ConfirmManual || 
+            Action is ManuallyChangeOrganisationSicCodesActions.ConfirmCoho;
 
     }
 

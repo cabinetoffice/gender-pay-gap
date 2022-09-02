@@ -29,7 +29,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -47,7 +47,7 @@
             </span>
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h2 class="govuk-heading-l">
             Opting out of synchronisation
@@ -88,7 +88,7 @@
         <form method="POST" action="@Url.Action("OptOut", "AdminOrganisationCompaniesHouseOptInOut", new { id = Model.Organisation.OrganisationId })">
             @(Html.AntiForgeryToken())
 
-            @Html.GovUkCharacterCountFor(
+            @await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -100,7 +100,7 @@
                     Classes = "govuk-!-margin-top-8"
                 })
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm",
                 Classes = "govuk-!-margin-bottom-4"

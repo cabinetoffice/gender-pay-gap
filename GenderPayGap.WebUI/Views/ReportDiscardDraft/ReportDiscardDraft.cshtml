@@ -43,7 +43,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -52,7 +52,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
         
         <form method="post" action="@Url.Action("ReportDiscardDraftPost", "ReportDiscardDraft", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})">
             @(Html.AntiForgeryToken())
@@ -69,7 +69,7 @@
                     Are you sure you want to discard your draft report?
                 </p>
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = Model.IsEditingSubmittedReturn ? "Discard your changes" : "Discard your draft report",
                     Classes = "govuk-!-margin-bottom-6"

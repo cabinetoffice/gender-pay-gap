@@ -112,7 +112,7 @@
             }
         }
 
-        @(Html.GovUkHeader(new HeaderViewModel
+        @(await Html.GovUkHeader(new HeaderViewModel
         {
             ServiceName = "Gender pay gap service",
             AssetsPath = assetsPath,
@@ -127,7 +127,7 @@
         
         @if (ViewBag.ServiceUnavailable != true)
         {
-            @(Html.GovUkPhaseBanner(new PhaseBannerViewModel
+            @(await Html.GovUkPhaseBanner(new PhaseBannerViewModel
             {
                 Phase = "Beta",
                 Html = @<text>This is a new service – your <a class="govuk-link" href="@Url.Action("SendFeedbackGet", "Feedback")">feedback</a> will help us to improve it.</text>
@@ -141,7 +141,7 @@
         </main>
     </div>
 
-    @(Html.GovUkFooter(new FooterViewModel
+    @(await Html.GovUkFooter(new FooterViewModel
     {
         MetaNavigation = new FooterMetaNavigationViewModel
         {

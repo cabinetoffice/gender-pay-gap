@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ChooseNewPasswordViewModel : GovUkViewModel
+    public class ChooseNewPasswordViewModel 
     {
         public string ResetCode { get; set; }
 

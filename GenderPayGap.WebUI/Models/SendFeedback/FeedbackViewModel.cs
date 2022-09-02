@@ -7,37 +7,27 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 namespace GenderPayGap.WebUI.Controllers.SendFeedback
 {
 
-    public class FeedbackViewModel : GovUkViewModel
+    public class FeedbackViewModel 
     {
-
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "How easy is this service to use",
-            NameWithinSentence = "how easy this service is to use")]
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select how easy this service is to use.")]
         public HowEasyIsThisServiceToUse? HowEasyIsThisServiceToUse { get; set; }
 
         public List<HowDidYouHearAboutGpg> HowDidYouHearAboutGpg { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Other source", NameWithinSentence = "other source")]
-        [GovUkValidateCharacterCount(MaxCharacters = 2000)]
+        [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other source", NameWithinSentence = "other source")]
         public string OtherSourceText { get; set; }
 
         public List<WhyVisitGpgSite> WhyVisitGpgSite { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Other reason", NameWithinSentence = "other reason")]
-        [GovUkValidateCharacterCount(MaxCharacters = 2000)]
+        [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other reason", NameWithinSentence = "other reason")]
         public string OtherReasonText { get; set; }
 
         public List<WhoAreYou> WhoAreYou { get; set; }
 
-        [GovUkDisplayNameForErrors(NameAtStartOfSentence = "Other person", NameWithinSentence = "other person")]
-        [GovUkValidateCharacterCount(MaxCharacters = 2000)]
+        [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other person", NameWithinSentence = "other person")]
         public string OtherPersonText { get; set; }
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Details",
-            NameWithinSentence = "details")]
-        [GovUkValidateCharacterCount(MaxCharacters = 2000)]
+        [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Details", NameWithinSentence = "details")]
         public string Details { get; set; }
 
         public string EmailAddress { get; set; }

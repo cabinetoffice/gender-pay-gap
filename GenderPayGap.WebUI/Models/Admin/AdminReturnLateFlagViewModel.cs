@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminReturnLateFlagViewModel : GovUkViewModel
+    public class AdminReturnLateFlagViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

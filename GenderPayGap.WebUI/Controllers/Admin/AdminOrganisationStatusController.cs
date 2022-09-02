@@ -8,7 +8,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,8 +57,7 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 case ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason:
                     UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
-                    ValidateAdminChangeStatusViewModel(viewModel);
-                    if (viewModel.HasAnyErrors())
+                    if (!ModelState.IsValid)
                     {
                         return View("ChangeStatus", viewModel);
                     }
@@ -80,16 +78,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             viewModel.InactiveUserOrganisations = dataRepository.GetAll<InactiveUserOrganisation>()
                 .Where(m => m.OrganisationId == organisationId).ToList();
-        }
-
-        private void ValidateAdminChangeStatusViewModel(AdminChangeStatusViewModel viewModel)
-        {
-            if (!viewModel.NewStatus.HasValue)
-            {
-                viewModel.AddErrorFor(m => m.NewStatus, "Please select a new status");
-            }
-
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
         }
 
         private void ChangeStatus(AdminChangeStatusViewModel viewModel, long organisationId)

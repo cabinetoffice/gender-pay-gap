@@ -10,7 +10,6 @@ using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -114,7 +113,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             // We might need to change the value of Action before we go to the view
             // Apparently this is necessary
             // https://stackoverflow.com/questions/4837744/hiddenfor-not-getting-correct-value-from-view-model
-            ModelState.Clear();
+            ModelState.Remove(nameof(viewModel.Action));
 
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
@@ -136,9 +135,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult OfferNewCompaniesHouseAction(ChangeOrganisationAddressViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.AcceptCompaniesHouseAddress);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 viewModel.Action = ManuallyChangeOrganisationAddressViewModelActions.OfferNewCompaniesHouseAddress;
@@ -150,15 +147,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return SendToManualChangePage(organisation);
             }
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
-            {
-                viewModel.Organisation = organisation;
-                viewModel.Action = ManuallyChangeOrganisationAddressViewModelActions.OfferNewCompaniesHouseAddress;
-                return View("OfferNewCompaniesHouseAddress", viewModel);
-            }
-
             viewModel.Organisation = organisation;
             viewModel.Action = ManuallyChangeOrganisationAddressViewModelActions.CheckChangesCoHo;
             return View("ConfirmAddressChange", viewModel);
@@ -166,18 +154,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         private IActionResult ManualChangeAction(ChangeOrganisationAddressViewModel viewModel, Organisation organisation)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.PoBox);
-            viewModel.ParseAndValidateParameters(Request, m => m.Address1);
-            viewModel.ParseAndValidateParameters(Request, m => m.Address2);
-            viewModel.ParseAndValidateParameters(Request, m => m.Address3);
-            viewModel.ParseAndValidateParameters(Request, m => m.TownCity);
-            viewModel.ParseAndValidateParameters(Request, m => m.County);
-            viewModel.ParseAndValidateParameters(Request, m => m.Country);
-            viewModel.ParseAndValidateParameters(Request, m => m.PostCode);
-            viewModel.ParseAndValidateParameters(Request, m => m.IsUkAddress);
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 viewModel.Action = ManuallyChangeOrganisationAddressViewModelActions.ManualChange;

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.AddOrganisation
 {
-    public class AddOrganisationSearchViewModel : GovUkViewModel
+    public class AddOrganisationSearchViewModel 
     {
 
         public AddOrganisationSector Sector { get; set; }

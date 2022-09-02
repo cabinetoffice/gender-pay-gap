@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq.Expressions;
-using GenderPayGap.Core.Helpers;
+﻿using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Models.Report;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Http;
-using GovUkDesignSystem;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Helpers
 {
@@ -32,25 +29,24 @@ namespace GenderPayGap.WebUI.Helpers
            SavePayQuartileFiguresToDraftReturn(viewModel, draftReturn);
         }
         
-        public static void ValidateUserInput(ReportFiguresViewModel viewModel, HttpRequest request, int reportingYear)
+        public static void ValidateUserInput(ModelStateDictionary modelState, ReportFiguresViewModel viewModel, int reportingYear)
         {
-            ValidateBonusPayFigures(viewModel, request);
-            ValidateHourlyPayFigures(viewModel, request);
-            ValidatePayQuartileFigures(viewModel, request);
+            ValidateBonusPayIntegrity(modelState, viewModel);
+            ValidatePayQuartersAddUpToOneHundred(modelState, viewModel);
 
             if (viewModel.OptedOutOfReportingPayQuarters)
             {
                 if (!ReportingYearsHelper.IsReportingYearWithFurloughScheme(reportingYear))
                 {
                     const string errorMessage = "You cannot opt out of reporting your pay quarter figures for this reporting year";
-                    viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
+                    modelState.AddModelError(nameof(viewModel.OptedOutOfReportingPayQuarters), errorMessage);
                 }
 
                 if (HasPayQuarterFigures(viewModel))
                 {
                     const string errorMessage = "Do not enter the data for the percentage of men and women in each hourly pay quarter "
                                                 + "if you have opted out of reporting your pay quarter figures";
-                    viewModel.AddErrorFor(m => m.OptedOutOfReportingPayQuarters, errorMessage);
+                    modelState.AddModelError(nameof(viewModel.OptedOutOfReportingPayQuarters), errorMessage);
                 }
             }
         }
@@ -175,18 +171,8 @@ namespace GenderPayGap.WebUI.Helpers
         {
             draftReturn.OptedOutOfReportingPayQuarters = viewModel.OptedOutOfReportingPayQuarters;
         }
-        
-        private static void ValidateBonusPayFigures(ReportFiguresViewModel viewModel, HttpRequest request)
-        {
-            ParseAndValidateParameters(viewModel, request, m => m.FemaleBonusPayPercent);
-            ParseAndValidateParameters(viewModel, request, m => m.MaleBonusPayPercent);
-            ParseAndValidateParameters(viewModel, request, m => m.DiffMeanBonusPercent);
-            ParseAndValidateParameters(viewModel, request, m => m.DiffMedianBonusPercent);
-            
-            ValidateBonusPayIntegrity(viewModel);
-        }
 
-        private static void ValidateBonusPayIntegrity(ReportFiguresViewModel viewModel)
+        private static void ValidateBonusPayIntegrity(ModelStateDictionary modelState, ReportFiguresViewModel viewModel)
         {
             const string errorMessageFemaleBonusGreaterThanZero = "Where the % of women receiving a bonus is > 0 AND men also received a bonus greater than 0, "
                                         + "then the mean or median bonus difference must be less than 100%";
@@ -196,12 +182,12 @@ namespace GenderPayGap.WebUI.Helpers
             { 
                 if (viewModel.DiffMeanBonusPercent > 100) 
                 {
-                    AddErrorFor(viewModel, m => m.DiffMeanBonusPercent, errorMessageFemaleBonusGreaterThanZero);
+                    modelState.AddModelError(nameof(viewModel.DiffMeanBonusPercent), errorMessageFemaleBonusGreaterThanZero);
                 } 
  
                 if (viewModel.DiffMedianBonusPercent > 100)
                 {
-                    AddErrorFor(viewModel, m => m.DiffMedianBonusPercent, errorMessageFemaleBonusGreaterThanZero);
+                    modelState.AddModelError(nameof(viewModel.DiffMedianBonusPercent), errorMessageFemaleBonusGreaterThanZero);
                 } 
             }
 
@@ -212,12 +198,12 @@ namespace GenderPayGap.WebUI.Helpers
             { 
                 if (viewModel.DiffMeanBonusPercent.HasValue) 
                 {
-                    AddErrorFor(viewModel, m => m.DiffMeanBonusPercent, errorMessageMaleBonusIsZero);
+                    modelState.AddModelError(nameof(viewModel.DiffMeanBonusPercent), errorMessageMaleBonusIsZero);
                 } 
  
                 if (viewModel.DiffMedianBonusPercent.HasValue) 
                 {
-                    AddErrorFor(viewModel, m => m.DiffMedianBonusPercent, errorMessageMaleBonusIsZero);
+                    modelState.AddModelError(nameof(viewModel.DiffMedianBonusPercent), errorMessageMaleBonusIsZero);
                 } 
             }
 
@@ -227,31 +213,17 @@ namespace GenderPayGap.WebUI.Helpers
             { 
                 if (!viewModel.DiffMeanBonusPercent.HasValue) 
                 {
-                    AddErrorFor(viewModel, m => m.DiffMeanBonusPercent, errorMessageMaleBonusGreaterThanZero);
+                    modelState.AddModelError(nameof(viewModel.DiffMeanBonusPercent), errorMessageMaleBonusGreaterThanZero);
                 } 
  
                 if (!viewModel.DiffMedianBonusPercent.HasValue) 
                 {
-                    AddErrorFor(viewModel, m => m.DiffMedianBonusPercent, errorMessageMaleBonusGreaterThanZero);
+                    modelState.AddModelError(nameof(viewModel.DiffMedianBonusPercent), errorMessageMaleBonusGreaterThanZero);
                 } 
             }
         }
 
-        private static void ValidatePayQuartileFigures(ReportFiguresViewModel viewModel, HttpRequest request)
-        {
-            ParseAndValidateParameters(viewModel, request, m => m.MaleUpperPayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.FemaleUpperPayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.MaleUpperMiddlePayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.FemaleUpperMiddlePayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.MaleLowerMiddlePayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.FemaleLowerMiddlePayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.MaleLowerPayBand);
-            ParseAndValidateParameters(viewModel, request, m => m.FemaleLowerPayBand);
-
-            ValidatePayQuartersAddUpToOneHundred(viewModel);
-        }
-
-        private static void ValidatePayQuartersAddUpToOneHundred(ReportFiguresViewModel viewModel)
+        private static void ValidatePayQuartersAddUpToOneHundred(ModelStateDictionary modelState, ReportFiguresViewModel viewModel)
         {
             // Validate percents add up to 100
             string errorMessage = "Figures for each quarter must add up to 100%";
@@ -260,60 +232,32 @@ namespace GenderPayGap.WebUI.Helpers
                 && viewModel.MaleUpperPayBand.HasValue
                 && viewModel.FemaleUpperPayBand.Value + viewModel.MaleUpperPayBand.Value != 100)
             {
-                AddErrorFor(viewModel, m => m.FemaleUpperPayBand, errorMessage);
-                AddErrorFor(viewModel, m => m.MaleUpperPayBand, errorMessage);
+                modelState.AddModelError(nameof(viewModel.FemaleUpperPayBand), errorMessage);
+                modelState.AddModelError(nameof(viewModel.MaleUpperPayBand), errorMessage);
             }
 
             if (viewModel.FemaleUpperMiddlePayBand.HasValue
                 && viewModel.MaleUpperMiddlePayBand.HasValue
                 && viewModel.FemaleUpperMiddlePayBand.Value + viewModel.MaleUpperMiddlePayBand.Value != 100)
             {
-                AddErrorFor(viewModel, m => m.FemaleUpperMiddlePayBand, errorMessage);
-                AddErrorFor(viewModel, m => m.MaleUpperMiddlePayBand, errorMessage);
+                modelState.AddModelError(nameof(viewModel.FemaleUpperMiddlePayBand), errorMessage);
+                modelState.AddModelError(nameof(viewModel.MaleUpperMiddlePayBand), errorMessage);
             }
 
             if (viewModel.FemaleLowerMiddlePayBand.HasValue
                 && viewModel.MaleLowerMiddlePayBand.HasValue
                 && viewModel.FemaleLowerMiddlePayBand.Value + viewModel.MaleLowerMiddlePayBand.Value != 100)
             {
-                AddErrorFor(viewModel, m => m.FemaleLowerMiddlePayBand, errorMessage);
-                AddErrorFor(viewModel, m => m.MaleLowerMiddlePayBand, errorMessage);
+                modelState.AddModelError(nameof(viewModel.FemaleLowerMiddlePayBand), errorMessage);
+                modelState.AddModelError(nameof(viewModel.MaleLowerMiddlePayBand), errorMessage);
             }
 
             if (viewModel.FemaleLowerPayBand.HasValue
                 && viewModel.MaleLowerPayBand.HasValue
                 && viewModel.FemaleLowerPayBand.Value + viewModel.MaleLowerPayBand.Value != 100)
             {
-                AddErrorFor(viewModel, m => m.FemaleLowerPayBand, errorMessage);
-                AddErrorFor(viewModel, m => m.MaleLowerPayBand, errorMessage);
-            }
-        }
-
-        private static void ValidateHourlyPayFigures(ReportFiguresViewModel viewModel, HttpRequest request)
-        {
-            ParseAndValidateParameters(viewModel, request, m => m.DiffMeanHourlyPayPercent);
-            ParseAndValidateParameters(viewModel, request, m => m.DiffMedianHourlyPercent);
-        }
-
-        private static void ParseAndValidateParameters(
-            ReportFiguresViewModel viewModel, 
-            HttpRequest request, 
-            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression)
-        {
-            if (!viewModel.HasErrorFor(propertyLambdaExpression))
-            {
-                viewModel.ParseAndValidateParameters(request, propertyLambdaExpression);
-            }
-        }
-
-        private static void AddErrorFor(
-            ReportFiguresViewModel viewModel, 
-            Expression<Func<ReportFiguresViewModel, decimal?>> propertyLambdaExpression,
-            string errorMessage)
-        {
-            if (!viewModel.HasErrorFor(propertyLambdaExpression))
-            {
-                viewModel.AddErrorFor(propertyLambdaExpression, errorMessage);
+                modelState.AddModelError(nameof(viewModel.FemaleLowerPayBand), errorMessage);
+                modelState.AddModelError(nameof(viewModel.MaleLowerPayBand), errorMessage);
             }
         }
     }

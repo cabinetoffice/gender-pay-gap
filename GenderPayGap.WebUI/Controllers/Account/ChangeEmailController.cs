@@ -9,7 +9,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,9 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         [HttpPost("change-email")]
         public IActionResult ChangeEmailPost(ChangeEmailViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.NewEmailAddress);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangeEmail", viewModel);
             }
@@ -61,13 +58,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
             if (viewModel.NewEmailAddress == user.EmailAddress)
             {
-                viewModel.AddErrorFor(m => m.NewEmailAddress, "The new email address must be different to your current email address");
+                ModelState.AddModelError(nameof(viewModel.NewEmailAddress), "The new email address must be different to your current email address");
                 return View("ChangeEmail", viewModel);
             }
 
             if (OtherUserWithThisEmailAddressAlreadyExists(viewModel.NewEmailAddress))
             {
-                viewModel.AddErrorFor(m => m.NewEmailAddress, "This email address is already taken by another user");
+                ModelState.AddModelError(nameof(viewModel.NewEmailAddress), "This email address is already taken by another user");
                 return View("ChangeEmail", viewModel);
             }
 
@@ -151,15 +148,14 @@ namespace GenderPayGap.WebUI.Controllers.Account
             viewModel.NewEmailAddress = changeEmailToken.NewEmailAddress;
 
             // Check if the user has entered a password (they might have left this field blank)
-            viewModel.ParseAndValidateParameters(Request, m => m.Password);
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("VerifyEmail", viewModel);
             }
 
             if (!userRepository.CheckPassword(user, viewModel.Password))
             {
-                viewModel.AddErrorFor(m => m.Password, "Incorrect password");
+                ModelState.AddModelError(nameof(viewModel.Password), "Incorrect password");
                 return View("VerifyEmail", viewModel);
             }
 

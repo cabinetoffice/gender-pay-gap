@@ -29,7 +29,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -75,7 +75,7 @@
                 </strong>
             </div>
 
-            @(Html.GovUkCharacterCountFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -85,7 +85,7 @@
             ))
 
             <div class="govuk-form-group">
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Confirm",
                     Classes = "govuk-!-margin-bottom-4"

@@ -1,6 +1,7 @@
 ﻿@using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminChangePublicSectorClassificationViewModel
 
 @{
@@ -29,7 +30,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -47,17 +48,17 @@
             </span>
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         
         <form method="post" action="@Url.Action("ChangePublicSectorClassificationPost", "AdminOrganisationSector", new {id = Model.OrganisationId})">
             @(Html.AntiForgeryToken())
 
             @{
-                string error = Model.GetErrorFor(m => m.SelectedPublicSectorTypeId);
+                var error = ModelErrorHelper.GetErrorMessage(ViewData.ModelState, nameof(Model.SelectedPublicSectorTypeId));
                 ErrorMessageViewModel errorMessageViewModel = error != null ? new ErrorMessageViewModel {Text = error} : null;
             }
-            @(Html.GovUkRadios(new RadiosViewModel
+            @(await Html.GovUkRadios(new RadiosViewModel
             {
                 Name = nameof(AdminChangePublicSectorClassificationViewModel.SelectedPublicSectorTypeId),
                 Fieldset = new FieldsetViewModel
@@ -94,7 +95,7 @@
                 ErrorMessage = errorMessageViewModel
             }))
             
-            @(Html.GovUkCharacterCountFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -103,7 +104,7 @@
                 }
                 ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm and save",
                 Classes = "govuk-!-margin-right-2 govuk-!-margin-bottom-4"

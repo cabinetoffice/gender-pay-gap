@@ -14,7 +14,7 @@
             Change email address
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <p class="govuk-body">
             You are changing your email address
@@ -32,7 +32,7 @@
             @(Html.AntiForgeryToken())
             @(Html.HiddenFor(m => m.Code))
 
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.Password,
                 type: "password",
                 labelOptions: new LabelViewModel { Text = "Password" },
@@ -41,7 +41,7 @@
                 autocomplete: "current-password"
                 ))
         
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm",
                 Classes = "govuk-!-margin-bottom-4"

@@ -23,7 +23,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -31,7 +31,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
         
         <h1 class="govuk-heading-xl">
             Close your account
@@ -67,14 +67,14 @@
 
             <h2 class="govuk-heading-s">Are you sure you want to close your account?</h2>
             
-            @(Html.GovUkTextInputFor(
+            @(await Html.GovUkTextInputFor(
                 m => m.Password,
                 labelOptions: new LabelViewModel {Text = "Enter your password to confirm"},
                 autocomplete: "password",
                 classes: "govuk-input--width-20"
             ))
 
-            @(Html.GovUkButton(
+            @(await Html.GovUkButton(
                 new ButtonViewModel
                 {
                     Text = "Close account",

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
-    public class LateSubmissionReasonViewModel : GovUkViewModel
+    public class LateSubmissionReasonViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -24,7 +24,7 @@ namespace GenderPayGap.WebUI.Models.Report
         public ReportLateSubmissionReceivedLetterFromEhrc? ReceivedLetterFromEhrc { get; set; }
         
         [GovUkValidateRequired(ErrorMessageIfMissing = "Explain why your organisation is reporting or changing your gender pay gap figures after the deadline.")]
-        [GovUkValidateCharacterCount(MaxCharacters = 250)]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "reason")]
         public string Reason { get; set; }
 
     }

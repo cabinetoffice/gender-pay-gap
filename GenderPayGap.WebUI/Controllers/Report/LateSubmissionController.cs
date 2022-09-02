@@ -8,7 +8,6 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -98,10 +97,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 return  RedirectToReportOverviewPage(encryptedOrganisationId, reportingYear);
             }
 
-            viewModel.ParseAndValidateParameters(Request, m => m.ReceivedLetterFromEhrc);
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateLateSubmissionViewModel(viewModel, organisationId, reportingYear);
                 return View("LateSubmissionReason", viewModel);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
-    public class ReportFiguresViewModel : GovUkViewModel
+    public class ReportFiguresViewModel 
     {
 
         private const string PositiveOneDecimalPlaceRegex = @"^\d+(\.?\d)?$";
@@ -24,43 +24,29 @@ namespace GenderPayGap.WebUI.Models.Report
         
         public DateTime SnapshotDate { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Employer opted out of reporting pay quarter",
-            NameWithinSentence = "employer opted out of reporting pay quarter")]
         public bool OptedOutOfReportingPayQuarters { get; set; }
+        public bool PayQuartilesRequired => !OptedOutOfReportingPayQuarters;
 
         #region Bonus Pay
 
-        [GovUkValidateRequired]
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Females who received bonus pay",
-            NameWithinSentence = "females who received bonus pay")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Females who received bonus pay is required")]
+        [GovUkValidateDecimalRange("Females who received bonus pay", 0, 100)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleBonusPayPercent { get; set; }
 
-        [GovUkValidateRequired]
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Males who received bonus pay",
-            NameWithinSentence = "males who received bonus pay")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Males who received bonus pay is required")]
+        [GovUkValidateDecimalRange("Males who received bonus pay", 0, 100)]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleBonusPayPercent { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in bonus pay (mean)",
-            NameWithinSentence = "difference in bonus pay (mean)")]
-        [GovUkValidateDecimalRange(Minimum = (double) decimal.MinValue, Maximum = 100, CustomErrorMessage = "Enter a percentage lower than or equal to 100")]
+        [GovUkValidateDecimalRange("Difference in bonus pay (mean)", -499.9, 100, customErrorMessage: "Enter a percentage lower than or equal to 100")]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in bonus pay (median)",
-            NameWithinSentence = "difference in bonus pay (median)")]
-        [GovUkValidateDecimalRange(Minimum = (double) decimal.MinValue, Maximum = 100, CustomErrorMessage = "Enter a percentage lower than or equal to 100")]
+        [GovUkValidateDecimalRange("Difference in bonus pay (median)",-499.9, 100, customErrorMessage: "Enter a percentage lower than or equal to 100")]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianBonusPercent { get; set; }
@@ -69,74 +55,50 @@ namespace GenderPayGap.WebUI.Models.Report
 
         #region Pay Quartile
 
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in upper quarter",
-            NameWithinSentence = "male employees in upper quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Male employees in upper quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Male employees in upper quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperPayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in upper quarter",
-            NameWithinSentence = "female employees in upper quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Female employees in upper quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Female employees in upper quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperPayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in upper-middle quarter",
-            NameWithinSentence = "male employees in upper-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Male employees in upper-middle quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Male employees in upper-middle quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleUpperMiddlePayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in upper-middle quarter",
-            NameWithinSentence = "female employees in upper-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Female employees in upper-middle quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Female employees in upper-middle quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleUpperMiddlePayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in lower-middle quarter",
-            NameWithinSentence = "male employees in lower-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Male employees in lower-middle quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Male employees in lower-middle quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerMiddlePayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in lower-middle quarter",
-            NameWithinSentence = "female employees in lower-middle quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Female employees in lower-middle quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Female employees in lower-middle quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerMiddlePayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Male employees in lower quarter",
-            NameWithinSentence = "male employees in lower quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Male employees in lower quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Male employees in lower quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleLowerPayBand { get; set; }
         
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Female employees in lower quarter",
-            NameWithinSentence = "female employees in lower quarter")]
-        [GovUkValidateDecimalRange(Minimum = 0, Maximum = 100)]
-        [GovUkValidationRequiredIf("OptedOutOfReportingPayQuarters", false)]
+        [GovUkValidateDecimalRange("Female employees in lower quarter", 0, 100)]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(PayQuartilesRequired), ErrorMessageIfMissing = "Female employees in lower quarter is required")]
         [GovUkValidationRegularExpression(PositiveOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? FemaleLowerPayBand { get; set; }
@@ -145,20 +107,14 @@ namespace GenderPayGap.WebUI.Models.Report
 
         #region Hourly Pay
 
-        [GovUkValidateRequired]
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in hourly pay (mean)",
-            NameWithinSentence = "difference in hourly pay (mean)")]
-        [GovUkValidateDecimalRange(Minimum = -499.9, Maximum = 100)]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Difference in hourly pay (mean) is required")]
+        [GovUkValidateDecimalRange("Difference in hourly pay (mean)", -499.9, 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
         
-        [GovUkValidateRequired]
-        [GovUkDisplayNameForErrors(
-            NameAtStartOfSentence = "Difference in hourly pay (median)",
-            NameWithinSentence = "difference in hourly pay (median)")]
-        [GovUkValidateDecimalRange(Minimum = -499.9, Maximum = 100)]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Difference in hourly pay (median) is required")]
+        [GovUkValidateDecimalRange("Difference in hourly pay (median)", -499.9, 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianHourlyPercent { get; set; }

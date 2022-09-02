@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminChangePublicSectorClassificationViewModel : GovUkViewModel
+    public class AdminChangePublicSectorClassificationViewModel 
     {
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public long OrganisationId { get; set; }
@@ -16,6 +16,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<PublicSectorType> PublicSectorTypes { get; set; }
 
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Please select a public sector classification")]
         public int? SelectedPublicSectorTypeId { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change")]

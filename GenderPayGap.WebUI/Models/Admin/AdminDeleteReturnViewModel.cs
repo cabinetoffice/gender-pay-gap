@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminDeleteReturnViewModel : GovUkViewModel
+    public class AdminDeleteReturnViewModel 
     {
         public List<long> ReturnIds { get; set; }
 

@@ -15,7 +15,7 @@ using GovUkDesignSystem.Attributes.ValidationAttributes;
 namespace GenderPayGap.WebUI.Models.Register
 {
     [Serializable]
-    public class OrganisationViewModel : GovUkViewModel
+    public class OrganisationViewModel 
     {
 
         public bool PINExpired;

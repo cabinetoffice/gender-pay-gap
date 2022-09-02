@@ -28,7 +28,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -42,7 +42,7 @@
             Update SIC codes
         </h1>
 
-        @(Html.GovUkErrorSummary(new[]
+        @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
         {
             nameof(AdminFileUploadViewModel.File),
         }))
@@ -90,7 +90,7 @@
                 }
                 ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Upload file and review changes",
                 Classes = "govuk-!-margin-bottom-4"

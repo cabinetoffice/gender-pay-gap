@@ -11,7 +11,6 @@ using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,14 +60,6 @@ namespace GenderPayGap.WebUI.Controllers
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
 
-            viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScope);
-            viewModel.ParseAndValidateParameters(Request, m => m.HaveReadGuidance);
-
-            if (viewModel.WhyOutOfScope == WhyOutOfScope.Other )
-            {
-                viewModel.ParseAndValidateParameters(Request, m => m.WhyOutOfScopeDetails);
-            }
-
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
@@ -77,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers
             viewModel.ReportingYear = organisationScope.SnapshotDate;
             viewModel.IsToSetInScope = false;
             
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("OutOfScopeQuestions", viewModel);
             }

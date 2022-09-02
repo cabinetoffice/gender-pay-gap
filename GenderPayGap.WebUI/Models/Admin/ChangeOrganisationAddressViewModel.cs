@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class ChangeOrganisationAddressViewModel : GovUkViewModel
+    public class ChangeOrganisationAddressViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -24,7 +24,8 @@ namespace GenderPayGap.WebUI.Models.Admin
         public string Country { get; set; }
         public string PostCode { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Select whether or not this is a UK address")]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ActionIsManualChange),
+            ErrorMessageIfMissing = "Select whether or not this is a UK address")]
         public ManuallyChangeOrganisationAddressIsUkAddress? IsUkAddress { get; set; }
 
         public void PopulateFromOrganisationAddress(OrganisationAddress address)
@@ -47,13 +48,20 @@ namespace GenderPayGap.WebUI.Models.Admin
         }
         #endregion
 
-        [GovUkValidateRequired(ErrorMessageIfMissing =
-            "Select whether you want to use this address from Companies House or to enter an address manually")]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ActionIsOfferNewCompaniesHouse), 
+            ErrorMessageIfMissing = "Select whether you want to use this address from Companies House or to enter an address manually")]
         public AcceptCompaniesHouseAddress? AcceptCompaniesHouseAddress { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
+        [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ReasonRequired), ErrorMessageIfMissing = "Please enter a reason for this change.")]
         [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
+
+        public bool ReasonRequired => AcceptCompaniesHouseAddress is Admin.AcceptCompaniesHouseAddress.Accept;
+
+        public bool ActionIsOfferNewCompaniesHouse =>
+            Action is ManuallyChangeOrganisationAddressViewModelActions.OfferNewCompaniesHouseAddress;
+
+        public bool ActionIsManualChange => Action is ManuallyChangeOrganisationAddressViewModelActions.ManualChange;
 
     }
 

@@ -2,7 +2,6 @@
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,9 +27,13 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (viewModel.Validate == true)
             {
-                viewModel.ParseAndValidateParameters(Request, m => m.Sector);
+                if (viewModel.Sector is null)
+                {
+                    ModelState.AddModelError(nameof(viewModel.Sector), 
+                        "Choose which type of employer you would like to add");
+                }
 
-                if (viewModel.HasAnyErrors())
+                if (!ModelState.IsValid)
                 {
                     return View("ManualChooseSector", viewModel);
                 }
