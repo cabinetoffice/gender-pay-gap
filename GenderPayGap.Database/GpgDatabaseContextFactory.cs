@@ -1,7 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
-using GenderPayGap.Extensions.AspNetCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace GenderPayGap.Database

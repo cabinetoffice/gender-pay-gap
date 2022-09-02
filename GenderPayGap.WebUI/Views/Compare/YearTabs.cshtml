@@ -17,8 +17,8 @@
     <ul class="govuk-tabs__list">
         @for (int year = startYear; year <= endYear; year++)
         {
-            <li class="govuk-tabs__list-item @(Model.Year == year ? "govuk-tabs__list-item--selected" : "")">
-                <a class="govuk-tabs__tab" href="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})">
+            <li role="tablist" class="govuk-tabs__list-item @(Model.Year == year ? "govuk-tabs__list-item--selected" : "")">
+                <a aria-selected=@(Model.Year == year ? "true" : "false") role="tab" class="govuk-tabs__tab" href="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})">
                     @(ReportingYearsHelper.FormatYearAsReportingPeriod(year, "/"))
                 </a>
             </li>

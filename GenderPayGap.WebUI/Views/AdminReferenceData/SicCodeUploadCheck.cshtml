@@ -225,7 +225,7 @@
                 @(Html.AntiForgeryToken())
                 <input type="hidden" name="SerializedNewRecords" value="@(Model.SerializedNewRecords)" />
 
-                @(await Html.GovUkTextAreaFor(
+                @(await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {

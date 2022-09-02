@@ -53,6 +53,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public AcceptCompaniesHouseAddress? AcceptCompaniesHouseAddress { get; set; }
 
         [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ReasonRequired), ErrorMessageIfMissing = "Please enter a reason for this change.")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
 
         public bool ReasonRequired => AcceptCompaniesHouseAddress is Admin.AcceptCompaniesHouseAddress.Accept;

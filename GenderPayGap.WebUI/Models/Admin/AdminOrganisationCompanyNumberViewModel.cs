@@ -1,6 +1,4 @@
-﻿using System;
-using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
-using GovUkDesignSystem;
+﻿using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -25,7 +23,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public bool ChangeOrRemoveRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.OfferChangeOrRemove;
         [GovUkValidateRequiredIf(IsRequiredPropertyName = nameof(ReasonRequired), 
             ErrorMessageIfMissing = "Please enter a reason for this change")]
-        
+        [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
 
         public bool ReasonRequired => CurrentPage is AdminOrganisationCompanyNumberViewModelCurrentPage.Remove ||

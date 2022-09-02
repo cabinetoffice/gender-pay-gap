@@ -18,10 +18,12 @@
 
 .govuk-legend__caption--women:before {
 	background-color: #F46A25;
+    outline: 2px solid transparent;
 }
 
 .govuk-legend__caption--men:before {
-	background-color: #919397;
+    background-color: #919397;
+    outline: 2px solid transparent;
 }
 
 .govuk-chart-vert {
@@ -101,6 +103,7 @@ govuk-chart-vert__head {
     width: 4em;
     height: 100%;
     bottom: 0;
+    outline: 2px solid transparent;
 }
 
 .govuk-chart-vert__bar--women, .govuk-chart-vert__caption--women {
@@ -147,6 +150,7 @@ govuk-chart-vert__head {
 
 .govuk-chart-horz__bar {
     height: 2em;
+    outline: 2px solid transparent;
 }
 
 .govuk-chart-horz__bar--men {

@@ -171,7 +171,7 @@
                     { AcceptCompaniesHouseAddress.Accept , new Conditional
                     {
                         Html = @<div id="reason-for-change-container">
-                                   @(await Html.GovUkTextAreaFor(
+                                   @(await Html.GovUkCharacterCountFor(
                                        m => m.Reason,
                                        labelOptions: new LabelViewModel
                                        {

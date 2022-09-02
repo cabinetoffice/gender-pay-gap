@@ -46,7 +46,7 @@
                             {
                                 Html = @<text>
                                            @(await Html.GovUkLabel(new LabelViewModel {For = nameof(FeedbackViewModel.OtherSourceText), Text = "Please provide some details"}))
-                                           @(await Html.GovUkTextAreaFor(m => m.WhyOutOfScopeDetails))
+                                           @(await Html.GovUkCharacterCountFor(m => m.WhyOutOfScopeDetails))
                                         </text>
                             }
                         }

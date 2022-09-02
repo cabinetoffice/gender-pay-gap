@@ -24,7 +24,7 @@ namespace GenderPayGap.WebUI.Models.Report
         public ReportLateSubmissionReceivedLetterFromEhrc? ReceivedLetterFromEhrc { get; set; }
         
         [GovUkValidateRequired(ErrorMessageIfMissing = "Explain why your organisation is reporting or changing your gender pay gap figures after the deadline.")]
-        [GovUkValidateCharacterCount(MaxCharacters = 200, NameAtStartOfSentence = "Reason", NameWithinSentence = "reason")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "reason")]
         public string Reason { get; set; }
 
     }

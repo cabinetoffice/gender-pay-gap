@@ -114,7 +114,7 @@
                     @(Html.HiddenFor(m => m.NewScopeStatus))
                 }
 
-                @await Html.GovUkTextAreaFor(
+                @await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {

@@ -69,7 +69,7 @@
                                         new { organisationId = Model.Organisation.OrganisationId, nameId = Model.OrganisationNameToBeDeleted.OrganisationNameId })">
             @(Html.AntiForgeryToken())
 
-            @(await Html.GovUkTextAreaFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {

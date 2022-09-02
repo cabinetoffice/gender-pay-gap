@@ -16,10 +16,22 @@
                         @compareReport.OrganisationName
                     </button>
                 </div>
-
+                
                 <div class="RemoveLink no-print">
-                    <a href="@Url.Action("RemoveEmployer", "Compare", new {employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl})">Remove <span class="visually-hidden">@compareReport.OrganisationName from comparison</span></a>
+                    @{
+                        string removeRowLink = Url.Action("RemoveEmployer", "Compare", new { employerIdentifier = compareReport.EncOrganisationId, returnUrl = ViewBag.ReturnUrl });
+                        string id = compareReport.EncOrganisationId;
+                    }
+                    <a id="remove-row-{@id}" href="@removeRowLink">Remove <span class="visually-hidden">@compareReport.OrganisationName from comparison</span></a>
+                    <script>
+                        document.getElementById("remove-row-{@id}").addEventListener("click", (e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            window.location.replace("@removeRowLink");
+                        })
+                    </script>
                 </div>
+                
             </td>
 
             <td class="cell cell--text">

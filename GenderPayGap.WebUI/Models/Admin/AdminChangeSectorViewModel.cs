@@ -16,6 +16,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public NewSectorTypes? NewSector { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Give a reason for this change.")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string Reason { get; set; }
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

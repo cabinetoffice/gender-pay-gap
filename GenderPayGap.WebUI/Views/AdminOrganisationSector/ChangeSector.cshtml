@@ -1,5 +1,4 @@
-﻿@using GenderPayGap.Core
-@using GenderPayGap.WebUI.Models.Admin
+﻿@using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.Attributes
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -142,7 +141,7 @@
                         }
                     })
 
-                @await Html.GovUkTextAreaFor(
+                @await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {

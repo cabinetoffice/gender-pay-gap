@@ -25,6 +25,7 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
             IsRequiredPropertyName = nameof(WhyOutOfScopeDetailsRequired),
             ErrorMessageIfMissing = "Provide a reason that this employer is out of scope."
         )]
+        [GovUkValidateCharacterCount(MaxCharacters = 250)]
         public string WhyOutOfScopeDetails { get; set; }
         public bool WhyOutOfScopeDetailsRequired => WhyOutOfScope is ScopeNew.WhyOutOfScope.Other;
 
