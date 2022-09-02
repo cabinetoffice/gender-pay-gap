@@ -23,12 +23,6 @@ variable "tier" {
   type = string
 }
 
-/*variable "vpc_id" {}*/
-
-/*variable "public_subnets" {}
-
-variable "elb_public_subnets" {}*/
-
 variable env {
   description = "The environment name"
   type        = string
@@ -66,17 +60,6 @@ variable "elb_matcher_http_code" {}
 variable "elb_ec2_ssh_key_name" {
   default = "key-071b0fa6b5945b814"
 }
-
-/*variable "vpc_cidr" {
-}*/
-/*
-variable "public_subnets_cidr" {
-}*/
-/*
-
-variable "private_subnets_cidr" {
-}
-*/
 
 variable "postgres_config" {
   type = object({
