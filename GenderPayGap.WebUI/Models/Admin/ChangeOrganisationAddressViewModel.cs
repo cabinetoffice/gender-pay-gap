@@ -56,7 +56,8 @@ namespace GenderPayGap.WebUI.Models.Admin
         [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string Reason { get; set; }
 
-        public bool ReasonRequired => AcceptCompaniesHouseAddress is Admin.AcceptCompaniesHouseAddress.Accept;
+        public bool ReasonRequired => AcceptCompaniesHouseAddress is Admin.AcceptCompaniesHouseAddress.Accept ||
+                                      ActionIsManualChange;
 
         public bool ActionIsOfferNewCompaniesHouse =>
             Action is ManuallyChangeOrganisationAddressViewModelActions.OfferNewCompaniesHouseAddress;
