@@ -45,8 +45,11 @@
                             new Conditional
                             {
                                 Html = @<text>
-                                           @(await Html.GovUkLabel(new LabelViewModel {For = nameof(FeedbackViewModel.OtherSourceText), Text = "Please provide some details"}))
-                                           @(await Html.GovUkCharacterCountFor(m => m.WhyOutOfScopeDetails))
+                                           @(await Html.GovUkCharacterCountFor(m => m.WhyOutOfScopeDetails,
+                                               labelOptions: new LabelViewModel
+                                               {
+                                                   Text = "Please provide some details"
+                                               }))
                                         </text>
                             }
                         }
