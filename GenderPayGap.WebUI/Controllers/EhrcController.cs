@@ -30,34 +30,30 @@ namespace GenderPayGap.WebUI.Controllers
             */
         )
         {
-            var organisationsForYearFile = ValidatePathAndGenerateFile(
+            var organisationsYear = ValidatePath(
                 p,
                 "GPG-Organisations",
-                AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile,
                 Global.FirstReportingYear);
 
-            if (organisationsForYearFile != null)
+            if (organisationsYear != null)
             {
-                return organisationsForYearFile;
+                AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile(dataRepository, (int)organisationsYear);
             }
 
-            var organisationsWithoutReportsForYearFile = ValidatePathAndGenerateFile(
+            var OrganisationsWithoutReportsYear = ValidatePath(
                 p,
-                "GPG-Organisations-Without-Reports",
-                AdminDownloadsController.GenerateOrganisationsWithNoSubmittedReturnsForYear,
-                2020);
+                "GPG-Organisations",
+                Global.FirstReportingYear);
 
-            if (organisationsWithoutReportsForYearFile != null)
+            if (OrganisationsWithoutReportsYear != null)
             {
-                return organisationsWithoutReportsForYearFile;
+                return AdminDownloadsController.GenerateOrganisationsWithNoSubmittedReturnsForYear(dataRepository ,(int)OrganisationsWithoutReportsYear, true);
             }
 
             return NotFound();
         }
 
-        private IActionResult ValidatePathAndGenerateFile(string p,
-            string fileName,
-            Func<IDataRepository, int, IActionResult> callback, int minYear)
+        private int? ValidatePath(string p, string fileName, int minYear)
         {
             Match match = Regex.Match(p, $@"^App_Data\\Downloads\\{fileName}_(?<year4digits>\d\d\d\d)-(?<year2digits>\d\d)\.csv$");
             if (match.Success)
