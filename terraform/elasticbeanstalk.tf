@@ -11,7 +11,7 @@ data "aws_s3_object" "gpg-archive-zip" {
 
 // Application
 resource "aws_elastic_beanstalk_application" "gpg-application" {
-  name        = join("-",["gpg-application", var-env])
+  name        = join("-",["gpg-application", var.env])
   description = "The GPG application in ${var.env}"
 }
 
