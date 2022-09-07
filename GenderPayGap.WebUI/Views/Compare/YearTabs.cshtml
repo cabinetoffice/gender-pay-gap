@@ -10,14 +10,30 @@
         startYear = Global.FirstReportingYear;
     }
 }
-<div class="govuk-tabs" data-module="govuk-tabs">
+<div class="gpg-govuk-hideOnDesktop">
+  <label class="govuk-label" for="sort">
+    Select reporting year to view
+  </label>
+  <select class="govuk-select" id="sort" name="sort">
+      @for(int year = startYear; year <= endYear; year++)
+        {
+            <option 
+                value="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})"
+                selected=@(Model.Year == year ? "true" : "false")>
+                @(ReportingYearsHelper.FormatYearAsReportingPeriod(year, "/"))
+            </option>
+        }
+        
+  </select>
+</div>
+<div class="govuk-tabs gpg-govuk-hideOnMobile" data-module="govuk-tabs">
     <h2 class="govuk-tabs__title">
         Reporting years
     </h2>
     <ul class="govuk-tabs__list">
         @for (int year = startYear; year <= endYear; year++)
         {
-            <li role="tablist" class="govuk-tabs__list-item @(Model.Year == year ? "govuk-tabs__list-item--selected" : "")">
+            <li role="tablist" class="govuk-tabs__list-item  @(Model.Year == year ? "govuk-tabs__list-item--selected" : "")">
                 <a aria-selected=@(Model.Year == year ? "true" : "false") role="tab" class="govuk-tabs__tab" href="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})">
                     @(ReportingYearsHelper.FormatYearAsReportingPeriod(year, "/"))
                 </a>

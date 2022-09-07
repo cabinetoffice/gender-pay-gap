@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+    <Content Remove="wwwroot\styles\_utility.scss" />
   </ItemGroup>
   
   <ItemGroup>
