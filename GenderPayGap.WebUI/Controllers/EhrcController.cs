@@ -37,7 +37,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (organisationsYear != null)
             {
-                AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile(dataRepository, (int)organisationsYear);
+                return AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile(dataRepository, (int)organisationsYear);
             }
 
             var OrganisationsWithoutReportsYear = ValidatePath(
