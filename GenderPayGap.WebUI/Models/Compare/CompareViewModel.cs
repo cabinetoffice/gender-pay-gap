@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GenderPayGap.WebUI.Models
 {
@@ -13,6 +16,32 @@ namespace GenderPayGap.WebUI.Models
         public string YearFormatted => ReportingYearsHelper.FormatYearAsReportingPeriod(Year);
 
         public IEnumerable<CompareReportModel> CompareReports { get; set; }
+
+        public IEnumerable<SelectListItem> GetSelectList
+        {
+            get
+            {
+                int endYear = SectorTypes.Private.GetAccountingStartDate().Year;
+                int startYear = endYear - (Global.ShowReportYearCount - 1);
+                if (startYear < Global.FirstReportingYear)
+                {
+                    startYear = Global.FirstReportingYear;
+                }
+
+                var list = new List<SelectListItem>();
+                for (int year = startYear; year <=endYear; year++)
+                {
+                    SelectListItem item = new SelectListItem(
+                        (ReportingYearsHelper.FormatYearAsReportingPeriod(year, "/")),
+                        year.ToString(),
+                        Year == year
+                        );
+                    list.Add(item);
+                }
+
+                return list;
+            }
+        }
 
         public string LastSearchUrl { get; set; }
 

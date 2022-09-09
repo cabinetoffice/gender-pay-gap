@@ -14,16 +14,7 @@
   <label class="govuk-label" for="sort">
     Select reporting year to view
   </label>
-  <select class="govuk-select" id="sort" name="sort">
-      @for(int year = startYear; year <= endYear; year++)
-        {
-            <option 
-                value="@Url.Action(nameof(CompareController.CompareEmployers), "Compare", new {year})"
-                selected=@(Model.Year == year ? "true" : "false")>
-                @(ReportingYearsHelper.FormatYearAsReportingPeriod(year, "/"))
-            </option>
-        }
-        
+  <select class="govuk-select" asp-items="Model.GetSelectList">
   </select>
 </div>
 <div class="govuk-tabs gpg-govuk-hideOnMobile" data-module="govuk-tabs">
