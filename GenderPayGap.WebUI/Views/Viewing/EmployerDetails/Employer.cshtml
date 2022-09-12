@@ -2,6 +2,8 @@
 @using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model EmployerDetailsViewModel
 @{
     Organisation organisation = Model.Organisation;
@@ -89,6 +91,71 @@
 
                     </div>
                 </div>
+                @await Html.GovUkTable(new TableGovUkViewModel
+                    {
+                        Head = new List<TableCellViewModel>
+                        {
+                            new TableCellViewModel
+                            {
+                                Text = " Reporting year", 
+                            }, 
+                            new TableCellViewModel
+                            {
+                                Text = " Report Status", 
+                            }
+                        },
+                        Rows = organisation.GetRecentReports(Global.ShowReportYearCount).Select(
+                            report => new TableRowViewModel
+                            {
+                                Row = new List<TableCellViewModel>
+                                {
+                                    new TableCellViewModel
+                                    {
+                                        Text = report.GetReportingPeriod() + " Reporting year"
+                                    },
+                                    new TableCellViewModel
+                                    {
+                                        Text = report.GetReportingPeriod() + "Reporting year"
+                                    }
+                                }
+                            }
+                        ).ToList(),
+                        FirstCellIsHeader = true,
+                        Classes = "gpg-govuk-hideOnMobile"
+                    })
+                @await Html.GovUkTable(new TableGovUkViewModel
+                    {
+                        Head = new List<TableCellViewModel>
+                        {
+                            new TableCellViewModel
+                            {
+                                Text = " Reporting year", 
+                            }, 
+                            new TableCellViewModel
+                            {
+                                Text = " Report Status", 
+                            }
+                        },
+                        Rows = organisation.GetRecentReports(Global.ShowReportYearCount).Select(
+                            report => new TableRowViewModel
+                            {
+                                Row = new List<TableCellViewModel>
+                                {
+                                    new TableCellViewModel
+                                    {
+                                        Text = report.GetReportingPeriod() + " Reporting year"
+                                    },
+                                    new TableCellViewModel
+                                    {
+                                        Text = report.GetReportingPeriod() + "Reporting year"
+                                    }
+                                }
+                            }
+                        ).ToList(),
+                        FirstCellIsHeader = true,
+                        Classes = "gpg-govuk-hideOnDesktop"
+                    })
+
                 @foreach (Return report in organisation.GetRecentReports(Global.ShowReportYearCount))
                 {
                     <div class="grid-row">
