@@ -1,10 +1,23 @@
 ﻿@model ReportStatusBadgeViewModel
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+
 
 @if (Model.IsVoluntarySubmission)
 {
-    <div class="govuk-tag-voluntary">Voluntary report</div>
+        @await Html.GovUkTag(new TagViewModel
+    {
+        Text = "Voluntary report",
+        Classes = "govuk-tag--red"
+    });
+
 }
 else if (Model.IsLateSubmission)
 {
-    <div class="govuk-tag-late">Late report</div>
+    @await Html.GovUkTag(new TagViewModel
+    {
+        Text = "Report overdue",
+        Classes = "govuk-tag--red"
+    });
+
 }
