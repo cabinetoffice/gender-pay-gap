@@ -77,13 +77,13 @@ variable "rds_config_storage_encrypted" {
 
 variable "rds_config_publicly_accessible" {
   type        = bool
-  default     = true
+  default     = false
   description = "Specifies if the database is publicly accessible"
 }
 
 variable "rds_config_allow_major_version_upgrade" {
   type        = bool
-  default     = true
+  default     = false
   description = "Specifies if the database can update major versions e.g. 11 -> 12"
 }
 

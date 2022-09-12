@@ -12,7 +12,8 @@ resource "aws_security_group_rule" "postgres_in" {
   from_port         = var.rds_config_port
   to_port           = var.rds_config_port
   protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = [module.vpc.vpc_cidr_block]
+  ipv6_cidr_blocks  = [module.vpc.vpc_ipv6_cidr_block]
 }
 
 // Outgoing rules
