@@ -64,7 +64,7 @@
                 <div class="grid-row">
                     <div class="column-full">
                         <hr style="margin-top: 0"/>
-                        <div class="body" style="margin-top: 3em">
+                        <div class="body" style="margin-top: 2em">
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
                                 <div class="govuk-warning-text">
@@ -75,10 +75,6 @@
                                     </strong>
                                 </div>
                             }
-                            <p>
-                                Below are all reports submitted, or expected from this employer. <br/>
-                                Employers with a headcount of less than 250 can voluntarily report their gender pay gap information.
-                            </p>
                         </div>
 
                         @await Html.PartialModelAsync(new Details
@@ -87,6 +83,9 @@
                             LinkText = "Who is required to report, and the deadlines",
                             SummaryPartial = "EmployerDetails/WhoNeedsToReport"
                         })
+                        <p>
+                            For example, if the snapshot date is 5 April 2017 but the deadline is 4 Aprisl 2018 then the reporting period is 2017 - 2018.
+                        </p>
 
                     </div>
                 </div>
