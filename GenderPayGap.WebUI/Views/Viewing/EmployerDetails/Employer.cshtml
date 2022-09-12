@@ -159,22 +159,6 @@
                                             </td>
                                         </tr>
                                     }
-                                    @if (report.ReturnId > 0 && organisation.SectorType == SectorTypes.Private)
-                                    {
-                                        <tr>
-                                            <td colspan="2" style="border-bottom: none;">
-
-                                                <div class="heading-xsmall" style="font-weight: bold">Person responsible</div>
-                                                <div>
-                                                    <span>@report.FirstName @report.LastName</span>
-                                                </div>
-                                                <div>
-                                                    <span>(@report.JobTitle)</span>
-                                                </div>
-
-                                            </td>
-                                        </tr>
-                                    }
                                     <hr/>
                                 </tbody>
                             </table>
