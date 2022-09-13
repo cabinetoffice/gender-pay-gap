@@ -1,5 +1,5 @@
 ﻿module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
+  source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 
   name = join("-",["gpg-application-vpc",var.env])
@@ -43,4 +43,73 @@
   vpc_tags = {
     Name = join("-",["vpc-gpg-application",var.env])
   }
+}
+
+resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
+  name        = "ehrc-rotected-request-address"
+  description = "Regex of the endpoint used by ehrc"
+  scope       = "REGIONAL"
+
+  regular_expression {
+    regex_string = "^/download(/)?[?]p=(.*)$"
+  }
+}
+
+resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
+  name               = "ehrc-whitelisted-ips"
+  description        = "EHRC whitelisted IPs"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = ["0.0.0.0/0, 10.0.0.0/16"]
+}
+
+resource "aws_wafv2_web_acl" "ehrc" {
+  name  = "ehrc-access-control-list"
+  scope = "REGIONAL"
+  
+  default_action {
+    allow {}
+  }
+  
+  rule {
+    name     = "ehrc whitelist"
+    priority = 0
+    
+    action {
+      block {}
+    }
+    
+    statement {
+      and_statement {
+        statement {
+          regex_pattern_set_reference_statement {
+            arn = aws_wafv2_regex_pattern_set.ehrc_protected_request_address.arn
+            text_transformation {
+              priority = 0
+              type     = "NONE"
+            }
+          }
+        }
+
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.ehrc_whitelisted_ips.arn
+          }
+        }
+      }
+    }
+    
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "ehrc-whitelist-metric"
+      sampled_requests_enabled   = false
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = false
+    metric_name                = "ehrc-metric"
+    sampled_requests_enabled   = false
+  }
+
 }
