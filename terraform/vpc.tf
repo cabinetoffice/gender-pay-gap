@@ -47,7 +47,7 @@
 
 resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
   name        = "ehrc-rotected-request-address"
-  description = "Regex of the endpoint used by ehrc"
+  description = "Regex of the endpoint used by ehrc. Of the form .../download?p=filename"
   scope       = "REGIONAL"
 
   regular_expression {
@@ -55,12 +55,22 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
   }
 }
 
+// TODO: Addresses as variable
 resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
   name               = "ehrc-whitelisted-ips"
   description        = "EHRC whitelisted IPs"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = ["0.0.0.0/0, 10.0.0.0/16"]
+}
+
+// TODO: Addresses as variable
+resource "aws_wafv2_ip_set" "blacklisted_ips" {
+  name               = "ehrc-blacklisted-ips"
+  description        = "EHRC blacklisted IPs"
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = ["1.2.3.4/0, 5.6.7.8/16"]
 }
 
 resource "aws_wafv2_web_acl" "ehrc" {
@@ -72,8 +82,50 @@ resource "aws_wafv2_web_acl" "ehrc" {
   }
   
   rule {
-    name     = "ehrc whitelist"
+    name     = "blacklist"
     priority = 0
+    
+    action {
+      block {}
+    }
+    
+    statement {
+      ip_set_reference_statement {
+        arn = aws_wafv2_ip_set.blacklisted_ips
+      }
+    }
+    
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "blacklist-metric"
+      sampled_requests_enabled   = false
+    }
+  }
+
+  rule {
+    name     = "rate limit"
+    priority = 1
+
+    action {
+      block {}
+    }
+
+    statement {
+      rate_based_statement {
+        limit = 100
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = false
+      metric_name                = "rate-limit-metric"
+      sampled_requests_enabled   = false
+    }
+  }
+  
+  rule {
+    name     = "ehrc whitelist"
+    priority = 2
     
     action {
       block {}
@@ -90,10 +142,14 @@ resource "aws_wafv2_web_acl" "ehrc" {
             }
           }
         }
-
+        
         statement {
-          ip_set_reference_statement {
-            arn = aws_wafv2_ip_set.ehrc_whitelisted_ips.arn
+          not_statement {
+            statement {
+              ip_set_reference_statement {
+                arn = aws_wafv2_ip_set.ehrc_whitelisted_ips.arn
+              }
+            }
           }
         }
       }
