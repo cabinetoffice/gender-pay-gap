@@ -23,7 +23,8 @@ resource "aws_security_group_rule" "postgres_out" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = [module.vpc.vpc_cidr_block]
+  ipv6_cidr_blocks  = [module.vpc.vpc_ipv6_cidr_block]
 }
 
 // The database resource
