@@ -16,8 +16,13 @@
             html = @<text>REPORT OVERDUE <br> @Model.DateText.ToUpper()</text>;
             htmlClass = "govuk-tag--red";
             break;
+        case ReportStatusBadgeType.SubmittedLate:
+            html = @<text>SUBMITTED LATE ON <br> @Model.DateText.ToUpper()</text>;
+            htmlClass = "govuk-tag--green";
+            break;
         case ReportStatusBadgeType.Reported:
-            html = @<text>REPORTED</text>;
+            html = 
+            @<text>REPORTED</text>;
             htmlClass = "govuk-tag--green";
             break;
         case ReportStatusBadgeType.NotRequired:
@@ -32,6 +37,7 @@
             html = @<text>REPORTED VOLUNTARILY</text>;
             htmlClass = "govuk-tag--green";
             break;
+
     }
 }
 
