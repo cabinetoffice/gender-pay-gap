@@ -2,22 +2,41 @@
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 
+@{
+    Func<object, object> html = null;
+    string htmlClass = "";
 
-@if (Model.IsVoluntarySubmission)
-{
-        @await Html.GovUkTag(new TagViewModel
+    switch(Model.ReportStatus)
     {
-        Text = "Voluntary report",
-        Classes = "govuk-tag--red"
-    });
-
+        case ReportStatusBadgeType.Due:
+            html = @<text>REPORT DUE <br> @Model.DateText.ToUpper()</text>;
+            htmlClass = "govuk-tag--blue";
+            break;
+        case ReportStatusBadgeType.OverDue:
+            html = @<text>REPORT OVERDUE <br> @Model.DateText.ToUpper()</text>;
+            htmlClass = "govuk-tag--red";
+            break;
+        case ReportStatusBadgeType.Reported:
+            html = @<text>REPORTED</text>;
+            htmlClass = "govuk-tag--green";
+            break;
+        case ReportStatusBadgeType.NotRequired:
+            html = @<text>REPORT NOT REQUIRED</text>;
+            htmlClass = "govuk-tag--grey";
+            break;
+        case ReportStatusBadgeType.NotRequiredDueToCovid:
+            html = @<text>REPORT NOT REQUIRED</text>;
+            htmlClass = "govuk-tag--grey";
+            break;
+        case ReportStatusBadgeType.VoluntarilyReported:
+            html = @<text>REPORTED VOLUNTARILY</text>;
+            htmlClass = "govuk-tag--green";
+            break;
+    }
 }
-else if (Model.IsLateSubmission)
+
+@await Html.GovUkTag(new TagViewModel
 {
-    @await Html.GovUkTag(new TagViewModel
-    {
-        Text = "Report overdue",
-        Classes = "govuk-tag--red"
-    });
-
-}
+    Html = html,
+    Classes = htmlClass + " govuk-!-margin-bottom-4 govuk-!-margin-top-4"
+})

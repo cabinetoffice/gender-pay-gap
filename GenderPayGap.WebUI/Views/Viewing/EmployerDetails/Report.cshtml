@@ -30,9 +30,6 @@
         </h1>
 
         <div class="govuk-grid-row">
-            <span>
-                <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel {IsLateSubmission = Model.IsLateSubmission, IsVoluntarySubmission = Model.IsVoluntarySubmission}"/>
-            </span>
             <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
         </div>
 
