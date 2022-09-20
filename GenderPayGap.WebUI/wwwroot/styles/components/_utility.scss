@@ -1,0 +1,13 @@
+﻿$breakpoint-mobile: 640px;
+
+@media (min-width: $breakpoint-mobile) {
+    .gpg-govuk-hideOnDesktop {
+        display: none;
+    }
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .gpg-govuk-hideOnMobile {
+        display: none;
+    }
+}

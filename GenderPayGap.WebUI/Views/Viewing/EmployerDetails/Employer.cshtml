@@ -86,7 +86,7 @@
                             SummaryPartial = "EmployerDetails/WhoNeedsToReport"
                         })
                         <p>
-                            For example, if the snapshot date is 5 April 2017 but the deadline is 4 Aprisl 2018 then the reporting period is 2017 - 2018.
+                            For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.
                         </p>
 
                     </div>
@@ -125,16 +125,9 @@
                     })
                 @await Html.GovUkTable(new TableGovUkViewModel
                     {
+                        FirstCellIsHeader = false,
                         Head = new List<TableCellViewModel>
                         {
-                            new TableCellViewModel
-                            {
-                                Text = " Reporting year", 
-                            }, 
-                            new TableCellViewModel
-                            {
-                                Text = " Report Status", 
-                            }
                         },
                         Rows = organisation.GetRecentReports(Global.ShowReportYearCount).Select(
                             report => new TableRowViewModel
@@ -143,96 +136,73 @@
                                 {
                                     new TableCellViewModel
                                     {
-                                        Text = report.GetReportingPeriod() + " Reporting year"
-                                    },
-                                    new TableCellViewModel
-                                    {
-                                        Text = report.GetReportingPeriod() + "Reporting year"
+                                        Html = 
+                                            @<text>
+                                                <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
+                                                @{
+                                                    ReportStatusBadgeType reportStatus = ReportStatusBadgeType.NotRequired;
+                                                    if(report.IsVoluntarySubmission())
+                                                    {
+                                                        reportStatus = ReportStatusBadgeType.VoluntarilyReported;
+                                                    }
+                                                    else if(report.IsLateSubmission)
+                                                    {
+                                                        reportStatus = ReportStatusBadgeType.OverDue;
+                                                    }
+                                                    else if(report.ReturnId != 0)
+                                                    {
+                                                        reportStatus = ReportStatusBadgeType.Reported;
+                                                    }
+                                                    else if(Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
+                                                        .Contains(report.AccountingDate.Year)
+                                                         && report.AccountingDate.Year == 2019)
+                                                    {
+                                                        reportStatus = ReportStatusBadgeType.NotRequiredDueToCovid;
+                                                    }
+                                                    else if(organisation.GetIsInscope(report.AccountingDate.Year))
+                                                    {
+                                                        reportStatus = ReportStatusBadgeType.Due;
+                                                    }
+                                                }
+                                                
+                                                @{Html.RenderPartial("EmployerDetails/Parts/_ReportStatusBadge", 
+                                                new ReportStatusBadgeViewModel 
+                                                {
+                                                    DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
+                                                    ReportStatus = reportStatus                                                                                 
+                                                    
+                                                });}
+                                                <br>
+                                                @switch(reportStatus)
+                                                {
+                                                    case ReportStatusBadgeType.NotRequiredDueToCovid:
+                                                        <p>
+                                                            The deadline for 2019/20
+                                                            @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
+                                                            @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
+                                                            Coronavirus (COVID-19), enforcement of reporting deadlines does not
+                                                            apply to employers in the 2019/20 reporting year.
+                                                        </p>
+                                                        break;
+                                                    case ReportStatusBadgeType.Reported:
+                                                        <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
+                                                            View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
+                                                        </a>
+                                                        <p>
+                                                            This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/mm/yyyy")
+                                                        </p>
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            </text>,
+                                        Classes = "govuk-!-margin-bottom-4"
                                     }
                                 }
                             }
                         ).ToList(),
-                        FirstCellIsHeader = true,
                         Classes = "gpg-govuk-hideOnDesktop"
                     })
-
-                @foreach (Return report in organisation.GetRecentReports(Global.ShowReportYearCount))
-                {
-                    <div class="grid-row">
-                        <div class="column-full">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td style="border-bottom: none; width: 300px;">
-                                            <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
-                                        </td>
-                                    </tr>
-                                    @if (report.IsLateSubmission || report.IsVoluntarySubmission())
-                                    {
-                                        <tr>
-                                            <td style="border-bottom: none;">
-                                                <partial name="EmployerDetails/Parts/_ReportStatusBadge" model="new ReportStatusBadgeViewModel {IsLateSubmission = report.IsLateSubmission, IsVoluntarySubmission = report.IsVoluntarySubmission()}"/>
-                                            </td>
-                                        </tr>
-                                    }
-                                    @if (report.ReturnId == 0)
-                                    {
-                                        <tr>
-                                            <td colspan="2" style="border-bottom: none;">
-                                                @if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
-                                                    .Contains(report.AccountingDate.Year)
-                                                     && report.AccountingDate.Year == 2019)
-                                                {
-                                                    <span>
-                                                        The deadline for 2019/20
-                                                        @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
-                                                        @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
-                                                        Coronavirus (COVID-19), enforcement of reporting deadlines does not
-                                                        apply to employers in the 2019/20 reporting year.
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    if (organisation.GetIsInscope(report.AccountingDate.Year))
-                                                    {
-                                                        DateTime deadline = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate);
-                                                        <span>
-                                                            This employer
-                                                            @(deadline.AddDays(1) > VirtualDateTime.Now ? "is" : "was")
-                                                            required to report by @(deadline.ToString("d MMMM yyyy"))
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span>Not required to report</span>
-                                                    }
-                                                }
-
-                                            </td>
-                                        </tr>
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="2" style="border-bottom: none;">
-                                                <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
-                                                    View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" style="border-bottom: none;">
-                                                The data in this report used a snapshot date of @(report.AccountingDate.ToString("dd MMMM yyyy"))
-                                            </td>
-                                        </tr>
-                                    }
-                                    <hr/>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                }
-
             </div>
 
             @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")

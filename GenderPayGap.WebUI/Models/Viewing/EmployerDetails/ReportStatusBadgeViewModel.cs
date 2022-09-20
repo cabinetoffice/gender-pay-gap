@@ -3,11 +3,20 @@
 
     public class ReportStatusBadgeViewModel
     {
+        public ReportStatusBadgeType ReportStatus { get; set; }
 
-        public bool IsVoluntarySubmission { get; set; }
+        public string DateText { get; set; }
 
-        public bool IsLateSubmission { get; set; }
+    }
 
+    public enum ReportStatusBadgeType
+    {
+        Due,
+        OverDue,
+        Reported,
+        NotRequired,
+        NotRequiredDueToCovid,
+        VoluntarilyReported,
     }
 
 }
