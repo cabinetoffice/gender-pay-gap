@@ -121,11 +121,6 @@ variable "tier" {
   type = string
 }
 
-variable env {
-  description = "The environment name"
-  type        = string
-}
-
 variable Instance_type {}
 
 variable "elb_instance_min_size" {}
