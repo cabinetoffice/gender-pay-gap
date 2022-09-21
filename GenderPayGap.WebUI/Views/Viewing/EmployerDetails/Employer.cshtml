@@ -107,42 +107,19 @@
                                                 <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
 
                                                 @{
-                                                    ReportStatusBadgeType reportStatus = ReportStatusBadgeType.NotRequired;
-
-                                                    if(report.IsVoluntarySubmission())
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.VoluntarilyReported;
-                                                    }
-                                                    else if (report.IsLateSubmission && report.ReturnId != 0)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.SubmittedLate;
-                                                    }
-                                                    else if(report.IsLateSubmission)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.OverDue;
-                                                    }
-                                                    else if(report.ReturnId != 0)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.Reported;
-                                                    }
-                                                    else if(Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
-                                                        .Contains(report.AccountingDate.Year)
-                                                         && report.AccountingDate.Year == 2019)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.NotRequiredDueToCovid;
-                                                    }
-                                                    else if(organisation.GetIsInscope(report.AccountingDate.Year))
+                                                    ReportStatusBadgeType reportStatus = report.GetBadgeType;
+                                                    
+                                                    if(report.GetBadgeType == ReportStatusBadgeType.NotRequired && organisation.GetIsInscope(report.AccountingDate.Year))
                                                     {
                                                         reportStatus = ReportStatusBadgeType.Due;
                                                     }
-
+                                                }
                                                     Html.RenderPartial("EmployerDetails/Parts/_ReportStatusBadge",
                                                         new ReportStatusBadgeViewModel
                                                         {
                                                             DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
                                                             ReportStatus = reportStatus
                                                         });
-                                                }
                                                 <br>
                                                 @switch(reportStatus)
                                                 {
@@ -162,8 +139,6 @@
                                                             <p>
                                                                 This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/MM/yyyy")
                                                             </p>
-                                                        break;
-                                                    default:
                                                         break;
                                                 }
                                             </text>
@@ -186,35 +161,13 @@
                                                 <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
 
                                                 @{
-                                                    ReportStatusBadgeType reportStatus = ReportStatusBadgeType.NotRequired;
-
-                                                    if(report.IsVoluntarySubmission())
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.VoluntarilyReported;
-                                                    }
-                                                    else if (report.IsLateSubmission && report.ReturnId != 0)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.SubmittedLate;
-                                                    }
-                                                    else if(report.IsLateSubmission)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.OverDue;
-                                                    }
-                                                    else if(report.ReturnId != 0)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.Reported;
-                                                    }
-                                                    else if(Global.ReportingStartYearsToExcludeFromLateFlagEnforcement
-                                                        .Contains(report.AccountingDate.Year)
-                                                         && report.AccountingDate.Year == 2019)
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.NotRequiredDueToCovid;
-                                                    }
-                                                    else if(organisation.GetIsInscope(report.AccountingDate.Year))
+                                                    ReportStatusBadgeType reportStatus = report.GetBadgeType;
+                                                    
+                                                    if(report.GetBadgeType == ReportStatusBadgeType.NotRequired && organisation.GetIsInscope(report.AccountingDate.Year))
                                                     {
                                                         reportStatus = ReportStatusBadgeType.Due;
                                                     }
-
+                                                }
                                                     Html.RenderPartial("EmployerDetails/Parts/_ReportStatusBadge",
                                                         new ReportStatusBadgeViewModel
                                                         {
@@ -222,7 +175,6 @@
                                                             ReportStatus = reportStatus,
                                                             Desktop = true
                                                         });
-                                                }
                                                 <br>
                                                 @switch(reportStatus)
                                                 {
@@ -242,8 +194,6 @@
                                                             <p>
                                                                 This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/MM/yyyy")
                                                             </p>
-                                                        break;
-                                                    default:
                                                         break;
                                                 }
                                             </text>
