@@ -1,4 +1,4 @@
-﻿// declarations for the providers being used
+// declarations for the providers being used
 
 terraform {
   required_providers {
@@ -8,7 +8,7 @@ terraform {
     }
 
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "3.3.2"
     }
 
@@ -16,9 +16,9 @@ terraform {
       source  = "hashicorp/null"
       version = "3.1.1"
     }
-    
+
   }
-  
+
   backend "s3" {}
 }
 
