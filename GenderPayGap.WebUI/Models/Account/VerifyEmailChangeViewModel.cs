@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class VerifyEmailChangeViewModel : GovUkViewModel
+    public class VerifyEmailChangeViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

@@ -8,6 +8,7 @@ using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using GovUkDesignSystem.GovUkDesignSystemComponents;
+using GovUkDesignSystem.GovUkDesignSystemComponents.SubComponents;
 using GovUkDesignSystem.Helpers;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -16,7 +17,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
-    public class ReportOverviewViewModel: GovUkViewModel
+    public class ReportOverviewViewModel
     {
 
         public Database.Organisation Organisation { get; set; }
@@ -115,7 +116,7 @@ namespace GenderPayGap.WebUI.Models.Report
             IHtmlHelper<ReportOverviewViewModel> htmlHelper,
             Expression<Func<ReportOverviewViewModel, decimal?>> propertyLambdaExpression)
         {
-            IHtmlContent notApplicableContent = htmlHelper.GovUkHtmlText(new HtmlTextViewModel { Text = "Not Applicable" });
+            IHtmlContent notApplicableContent = htmlHelper.GovUkHtmlText(new HtmlText(null, "Not applicable")).Result;
 
             return OptedOutOfReportingPayQuarters
                 ? notApplicableContent
@@ -126,7 +127,7 @@ namespace GenderPayGap.WebUI.Models.Report
             IHtmlHelper<ReportOverviewViewModel> htmlHelper,
             Expression<Func<ReportOverviewViewModel, decimal?>> propertyLambdaExpression)
         {
-            IHtmlContent notApplicableContent = htmlHelper.GovUkHtmlText(new HtmlTextViewModel { Text = "Not Applicable" });
+            IHtmlContent notApplicableContent = htmlHelper.GovUkHtmlText(new HtmlText(null, "Not applicable")).Result;
             
             return MaleBonusPayPercent == 0
                 ? notApplicableContent
@@ -137,8 +138,8 @@ namespace GenderPayGap.WebUI.Models.Report
             IHtmlHelper<ReportOverviewViewModel> htmlHelper,
             Expression<Func<ReportOverviewViewModel, decimal?>> propertyLambdaExpression)
         {
-            IHtmlContent notProvidedContent = htmlHelper.GovUkHtmlText(new HtmlTextViewModel { Text = "Not Provided" });
-            IHtmlContent defaultHtmlContent = htmlHelper.GovUkHtmlTextFor(propertyLambdaExpression, "%");
+            IHtmlContent notProvidedContent = htmlHelper.GovUkHtmlText(new HtmlText(null, "Not Provided")).Result;
+            IHtmlContent defaultHtmlContent = htmlHelper.GovUkHtmlTextFor(propertyLambdaExpression, "%").Result;
             
             Func<ReportOverviewViewModel, decimal?> compiledExpression = propertyLambdaExpression.Compile();
             decimal? value = compiledExpression(this);

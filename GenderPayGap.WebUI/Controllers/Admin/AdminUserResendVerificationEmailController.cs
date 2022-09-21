@@ -7,7 +7,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,9 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (user.EmailVerifiedDate != null)
             {
-                viewModel.AddErrorFor(
-                    m => m.OtherErrorMessagePlaceholder,
-                    "This user's email address has already been verified");
+                ModelState.AddModelError(nameof(viewModel.OtherErrorMessagePlaceholder), "This user's email address has already been verified");
             }
 
             return View("ResendVerificationEmail", viewModel);
@@ -58,14 +55,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (user.EmailVerifiedDate != null)
             {
-                viewModel.AddErrorFor(
-                    m => m.OtherErrorMessagePlaceholder, 
-                    "This user's email address has already been verified");
-                return View("ResendVerificationEmail", viewModel);
+                ModelState.AddModelError(nameof(viewModel.OtherErrorMessagePlaceholder), "This user's email address has already been verified");
             }
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ResendVerificationEmail", viewModel);
             }

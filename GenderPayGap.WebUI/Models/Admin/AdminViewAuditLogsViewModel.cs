@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminViewAuditLogsViewModel : GovUkViewModel
+    public class AdminViewAuditLogsViewModel 
     {
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public IEnumerable<AuditLog> AuditLogs { get; set; }

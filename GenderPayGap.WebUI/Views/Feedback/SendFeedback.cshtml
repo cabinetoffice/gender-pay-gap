@@ -8,7 +8,7 @@
 }
 
 @section BeforeMain {
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         OverrideWithJavascript = true
@@ -22,7 +22,7 @@
             <h1 class="govuk-heading-xl">Send us feedback</h1>
             <div class="govuk-form-group">
 
-                @(Html.GovUkErrorSummary(new[]
+                @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
                 {
                     nameof(FeedbackViewModel.HowEasyIsThisServiceToUse),
                     nameof(FeedbackViewModel.HowDidYouHearAboutGpg),
@@ -30,7 +30,7 @@
                     nameof(FeedbackViewModel.WhoAreYou)
                 }))
 
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.HowEasyIsThisServiceToUse,
                     new FieldsetViewModel
                     {
@@ -45,19 +45,22 @@
 
                 @{
                     var howDidYouHearAboutGpgConditionalOptions =
-                        new Dictionary<HowDidYouHearAboutGpg, Func<object, object>>
+                        new Dictionary<HowDidYouHearAboutGpg, Conditional>
                         {
                             {
                                 HowDidYouHearAboutGpg.Other,
-                                @<text>
-                                    @(Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherSourceText), Text = "Other source description"}))
-                                    @(Html.GovUkTextInputFor(m => m.OtherSourceText))
-                                 </text>
+                                new Conditional
+                                {
+                                    Html = @<text>
+                                               @(await Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherSourceText), Text = "Other source description"}))
+                                               @(await Html.GovUkTextInputFor(m => m.OtherSourceText))
+                                            </text>
+                                }
                             }
                         };
                 }
 
-                @(Html.GovUkCheckboxesFor(
+                @(await Html.GovUkCheckboxesFor(
                     m => m.HowDidYouHearAboutGpg,
                     new FieldsetViewModel
                     {
@@ -72,24 +75,27 @@
                     {
                         Text = "Select all that apply."
                     },
-                    howDidYouHearAboutGpgConditionalOptions
+                    conditionalOptions: howDidYouHearAboutGpgConditionalOptions
                     ))
 
                 @{
                     var whyVisitGpgSiteConditionalOptions =
-                        new Dictionary<WhyVisitGpgSite, Func<object, object>>
+                        new Dictionary<WhyVisitGpgSite, Conditional>
                         {
                             {
                                 WhyVisitGpgSite.Other,
-                                @<text>
-                                    @(Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherReasonText), Text = "Other reason description"}))
-                                    @(Html.GovUkTextInputFor(m => m.OtherReasonText))
-                                 </text>
+                                new Conditional
+                                {
+                                    Html = @<text>
+                                               @(await Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherReasonText), Text = "Other reason description"}))
+                                               @(await Html.GovUkTextInputFor(m => m.OtherReasonText))
+                                            </text>
+                                }
                             }
                         };
                 }
 
-                @(Html.GovUkCheckboxesFor(
+                @(await Html.GovUkCheckboxesFor(
                     m => m.WhyVisitGpgSite,
                     new FieldsetViewModel
                     {
@@ -104,24 +110,27 @@
                     {
                         Text = "Select all that apply."
                     },
-                    whyVisitGpgSiteConditionalOptions
+                    conditionalOptions: whyVisitGpgSiteConditionalOptions
                     ))
 
                 @{
                     var whoAreYouConditionalOptions =
-                        new Dictionary<WhoAreYou, Func<object, object>>
+                        new Dictionary<WhoAreYou, Conditional>
                         {
                             {
                                 WhoAreYou.Other,
-                                @<text>
-                                    @(Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherReasonText), Text = "Other person description"}))
-                                    @(Html.GovUkTextInputFor(m => m.OtherPersonText))
-                                 </text>
+                                new Conditional
+                                {
+                                    Html = @<text>
+                                               @(await Html.GovUkLabel(new LabelViewModel {Classes = "govuk-visually-hidden", For = nameof(FeedbackViewModel.OtherReasonText), Text = "Other person description"}))
+                                               @(await Html.GovUkTextInputFor(m => m.OtherPersonText))
+                                            </text>
+                                }
                             }
                         };
                 }
 
-                @(Html.GovUkCheckboxesFor(
+                @(await Html.GovUkCheckboxesFor(
                     m => m.WhoAreYou,
                     new FieldsetViewModel
                     {
@@ -136,10 +145,10 @@
                     {
                         Text = "Select all that apply."
                     },
-                    whoAreYouConditionalOptions
+                    conditionalOptions: whoAreYouConditionalOptions
                     ))
 
-                @(Html.GovUkCharacterCountFor(
+                @(await Html.GovUkCharacterCountFor(
                     m => m.Details,
                     labelOptions: new LabelViewModel
                     {
@@ -160,7 +169,7 @@
                         <a href="@(Url.Action("PrivacyPolicyGet", "PrivacyPolicy"))" class="govuk-link">Privacy Policy</a>
                     </legend>
 
-                    @(Html.GovUkTextInput(new TextInputViewModel
+                    @(await Html.GovUkTextInput(new TextInputViewModel
                     {
                         Label = new LabelViewModel
                         {
@@ -170,7 +179,7 @@
                         InputMode = "email"
                     }))
 
-                    @(Html.GovUkTextInput(new TextInputViewModel
+                    @(await Html.GovUkTextInput(new TextInputViewModel
                     {
                         Label = new LabelViewModel
                         {
@@ -187,7 +196,7 @@
                     so that we can get back to you quickly.
                 </div>
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Submit"
                 }))

@@ -1,4 +1,4 @@
-﻿@using GovUkDesignSystem
+@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminDownloadsViewModel
@@ -23,7 +23,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -242,6 +242,22 @@
                 </a>
                 <br/>
                 Organisations who did not submit a report for @reportingYear
+            </p>
+        }
+
+        <h2 class="govuk-heading-m">
+            Organisations with no submitted reports including most recent login data.
+        </h2>
+
+        @foreach (var year in Model.ReportingYears.Where(year => year >= 2020))
+        {
+            var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(year);
+            <p class="govuk-body">
+                <a href="@Url.Action("DownloadOrganisationsWithNoSubmittedReturnsAndRecentLoginData", "AdminDownloads", new {year})"
+                   class="govuk-link govuk-!-font-weight-bold">Organisations with no submissions for @reportingYear with last login data.
+                </a>
+                <br/>
+                Organisations who did not submit a report for @reportingYear including information about the last user to login associated with each organisation.
             </p>
         }
 

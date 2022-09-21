@@ -1,8 +1,7 @@
-﻿using GenderPayGap.Core;
+﻿using Castle.Core.Internal;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,9 +27,13 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (viewModel.Validate == true)
             {
-                viewModel.ParseAndValidateParameters(Request, m => m.OrganisationName);
-
-                if (viewModel.HasAnyErrors())
+                if (viewModel.OrganisationName.IsNullOrEmpty())
+                {
+                    ModelState.AddModelError(nameof(viewModel.OrganisationName),
+                        "Enter the name of the employer");
+                }
+                
+                if (!ModelState.IsValid)
                 {
                     return View("ManualName", viewModel);
                 }

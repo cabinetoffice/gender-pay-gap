@@ -44,7 +44,7 @@
                     Email address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.User.EmailAddress)
+                    @(Model.ShowNewEmail ? Model.User.NewEmailAddress + " (pending)" : Model.User.EmailAddress)
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     @if (!Model.IsUserBeingImpersonated)

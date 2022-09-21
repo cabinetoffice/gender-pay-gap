@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,10 +15,8 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -137,11 +134,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 return Unauthorized();
             }
-
-            viewModel.ParseAndValidateParameters(Request, m => m.Hostname);
-            viewModel.ParseAndValidateParameters(Request, m => m.Password);
-            viewModel.ParseAndValidateParameters(Request, m => m.BasicAuthUsername);
-            viewModel.ParseAndValidateParameters(Request, m => m.BasicAuthPassword);
 
             if (string.IsNullOrWhiteSpace(Global.DataMigrationPassword))
             {
@@ -448,7 +440,7 @@ namespace GenderPayGap.WebUI.Controllers
 Beta</strong>
         <span class=""govuk-phase-banner__text"">
 
-This is a new service – your <a class=""govuk-link"" href=""/send-feedback"">feedback</a> will help us to improve it.        </span>
+This is a new service ï¿½ your <a class=""govuk-link"" href=""/send-feedback"">feedback</a> will help us to improve it.        </span>
     </p>
 </div>
 
@@ -546,7 +538,7 @@ Data Migration                </li>
             <div class=""govuk-footer__meta-item"">
                 <a class=""govuk-footer__link govuk-footer__copyright-logo""
                    href=""https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"">
-                    © Crown copyright
+                    ï¿½ Crown copyright
                 </a>
             </div>
         </div>

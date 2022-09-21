@@ -17,7 +17,7 @@
 }
 
 @section BeforeMain {
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
     }))
@@ -31,7 +31,7 @@
         <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
             @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
             @Html.HiddenFor(m => m.IsEditingForTheFirstTime)
 
             <fieldset class="govuk-fieldset">
@@ -61,19 +61,19 @@
             </p>
             
             <fieldset class="govuk-fieldset">
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.ResponsiblePersonFirstName,
                     labelOptions: new LabelViewModel {Text = "First name"},
                     formGroupOptions: new FormGroupViewModel {Classes = "govuk-!-margin-bottom-2"},
                     classes: "govuk-input--width-20"
                     ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.ResponsiblePersonLastName,
                     labelOptions: new LabelViewModel {Text = "Last name"},
                     formGroupOptions: new FormGroupViewModel {Classes = "govuk-!-margin-bottom-2"},
                     classes: "govuk-input--width-20"
                     ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.ResponsiblePersonJobTitle,
                     labelOptions: new LabelViewModel {Text = "Job title"},
                     classes: "govuk-input--width-20"
@@ -81,7 +81,7 @@
 
             </fieldset>
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
                 Classes = "govuk-!-margin-bottom-6"

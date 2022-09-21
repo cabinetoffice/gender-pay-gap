@@ -1162,6 +1162,12 @@ namespace GenderPayGap.Database.Migrations
                     b.Property<DateTime>("Modified")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("NewEmailAddressDB")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("NewEmailAddressRequestDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("character varying(250)")

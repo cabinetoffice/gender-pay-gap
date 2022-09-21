@@ -85,7 +85,7 @@
         <form method="post"
               action="@Url.Action("ReportCompleteFinishAndSignOut", "ReportConfirmation")">
             @(Html.AntiForgeryToken())
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Sign out"
             }))

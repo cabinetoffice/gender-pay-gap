@@ -30,7 +30,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -47,7 +47,7 @@
 
 @if (Model.Status == OrganisationStatuses.Retired || Model.Status == OrganisationStatuses.Active || Model.Status == OrganisationStatuses.Deleted)
 {
-    @Html.GovUkButton(new ButtonViewModel
+    @await Html.GovUkButton(new ButtonViewModel
     {
         Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
         Text = "Change status"

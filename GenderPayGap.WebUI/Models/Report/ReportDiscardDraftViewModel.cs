@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
-    public class ReportDiscardDraftViewModel : GovUkViewModel
+    public class ReportDiscardDraftViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

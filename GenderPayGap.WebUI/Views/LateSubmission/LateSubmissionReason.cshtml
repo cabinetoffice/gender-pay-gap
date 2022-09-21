@@ -16,7 +16,7 @@
 }
 
 @section BeforeMain {
-    @(Html.GovUkBackLink(
+    @(await Html.GovUkBackLink(
         new BackLinkViewModel
         {
             Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
@@ -26,7 +26,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        @(Html.GovUkErrorSummary(new []
+        @(await Html.GovUkErrorSummary(ViewData.ModelState, new []
         {
             nameof(Model.ReceivedLetterFromEhrc),
             nameof(Model.Reason)
@@ -43,7 +43,7 @@
                     <h2 class="govuk-fieldset__heading">We need more information</h2>
                 </legend>
 
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.ReceivedLetterFromEhrc,
                     fieldsetOptions: new FieldsetViewModel
                     {
@@ -56,7 +56,7 @@
                     }
                     ))
 
-                @(Html.GovUkTextAreaFor(
+                @(await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -64,7 +64,7 @@
                     }
                     ))
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Confirm and submit",
                     Classes = "govuk-!-margin-bottom-4"

@@ -8,7 +8,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -106,9 +105,7 @@ namespace GenderPayGap.WebUI.Controllers
             UpdateAdminRemoveUserViewModelFromUserOrganisation(viewModel, organisationId, userId);
             viewModel.FromViewUserPage = fromViewUserPage;
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 // If there are any errors, return the user back to the same page to correct the mistakes
                 return View("ConfirmRemoving", viewModel);

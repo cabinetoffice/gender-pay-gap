@@ -14,7 +14,7 @@
             ? $"search-result-id-{Model.Id}"
             : $"search-result-coho-{Model.CompanyNumber}";
     }
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
         Href = Url.Action("Search", "AddOrganisationSearch",
@@ -33,7 +33,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h1 class="govuk-heading-xl">
             Confirm your employer's details
@@ -95,7 +95,7 @@
             }
             else
             {
-                @(Html.GovUkRadiosFor(
+                @(await Html.GovUkRadiosFor(
                     m => m.IsUkAddress,
                     fieldsetOptions: new FieldsetViewModel
                     {
@@ -110,7 +110,7 @@
                     ))
             }
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm",
                 Classes = "govuk-!-margin-bottom-4"

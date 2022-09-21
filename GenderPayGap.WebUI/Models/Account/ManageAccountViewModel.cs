@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ManageAccountViewModel : GovUkViewModel
+    public class ManageAccountViewModel 
     {
 
         [BindNever]
@@ -12,6 +12,9 @@ namespace GenderPayGap.WebUI.Models.Account
         
         [BindNever]
         public bool IsUserBeingImpersonated { get; set; }
+        
+        [BindNever]
+        public bool ShowNewEmail { get; set; }
 
     }
 }

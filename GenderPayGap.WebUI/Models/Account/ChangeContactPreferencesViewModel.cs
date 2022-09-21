@@ -2,7 +2,7 @@
 
 namespace GenderPayGap.WebUI.Models.Account
 {
-    public class ChangeContactPreferencesViewModel : GovUkViewModel
+    public class ChangeContactPreferencesViewModel 
     {
         
         public bool SendUpdates { get; set; }

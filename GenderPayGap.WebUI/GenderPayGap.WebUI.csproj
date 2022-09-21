@@ -117,7 +117,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
-    <ProjectReference Include="..\GovUkDesignSystem\GovUkDesignSystem.csproj" />
+    <PackageReference Include="CabinetOffice.GovUkDesignSystem" Version="1.0.0-41eb56c" />
   </ItemGroup>
   <ItemGroup>
     <None Update="AzureAttachAutoscalingPolicy.sh">

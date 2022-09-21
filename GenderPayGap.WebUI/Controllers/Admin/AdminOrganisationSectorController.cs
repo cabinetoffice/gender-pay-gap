@@ -11,7 +11,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -81,19 +80,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private IActionResult OfferNewSectorAndReason(long id, AdminChangeSectorViewModel viewModel)
         {
             UpdateAdminChangeSectorViewModelFromOrganisation(viewModel, id);
-            ValidateAdminChangeSectorViewModel(viewModel);
                     
             // Check if new sector is same as original organisation sector
             var newSector = viewModel.NewSector == NewSectorTypes.Private ? SectorTypes.Private : SectorTypes.Public;
             if (newSector == viewModel.Organisation.SectorType)
             {
-                viewModel.AddErrorFor(
-                    m => m.NewSector,
-                    "The organisation is already assigned to this sector."
-                );
+                ModelState.AddModelError(nameof(viewModel.NewSector), "The organisation is already assigned to this sector.");
             }
                     
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangeSector", viewModel);
             }
@@ -132,16 +127,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             viewModel.OrganisationName = organisation.OrganisationName;
             viewModel.PublicSectorTypes = dataRepository.GetAll<PublicSectorType>().ToList();
 
-            viewModel.ParseAndValidateParameters(Request, m=> m.Reason);
-
-            if (!viewModel.SelectedPublicSectorTypeId.HasValue)
-            {
-                viewModel.AddErrorFor(
-                    m => m.SelectedPublicSectorTypeId,
-                    "Please select a public sector classification");
-            }
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ChangePublicSectorClassification", viewModel);
             }
@@ -210,12 +196,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         private void UpdateAdminChangeSectorViewModelFromOrganisation(AdminChangeSectorViewModel viewModel, long organisationId)
         {
             viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
-        }
-        
-        private void ValidateAdminChangeSectorViewModel(AdminChangeSectorViewModel viewModel)
-        {
-            viewModel.ParseAndValidateParameters(Request, m => m.NewSector);
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
         }
         
         private void ChangeSector(AdminChangeSectorViewModel viewModel, long organisationId)

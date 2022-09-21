@@ -7,7 +7,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.SendFeedback
@@ -52,16 +51,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
         [ValidateAntiForgeryToken]
         public IActionResult SendFeedbackPost(FeedbackViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.HowEasyIsThisServiceToUse);
-            viewModel.ParseAndValidateParameters(Request, m => m.HowDidYouHearAboutGpg);
-            viewModel.ParseAndValidateParameters(Request, m => m.OtherSourceText);
-            viewModel.ParseAndValidateParameters(Request, m => m.WhyVisitGpgSite);
-            viewModel.ParseAndValidateParameters(Request, m => m.OtherReasonText);
-            viewModel.ParseAndValidateParameters(Request, m => m.WhoAreYou);
-            viewModel.ParseAndValidateParameters(Request, m => m.OtherPersonText);
-            viewModel.ParseAndValidateParameters(Request, m => m.Details);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 // If there are any errors, return the user back to the same page to correct the mistakes
                 return View("SendFeedback", viewModel);

@@ -34,12 +34,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
                 .WithReportingYear(2017)
                 .Build();
 
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Radio_NewScopeStatus", "OutOfScope");
-            requestFormValues.Add("GovUk_Text_Reason", "A reason");
-
             var controller = new ControllerBuilder<ScopeController>().WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user, organisation, organisationScope2017, organisationScope2018)
                 .Build();
 

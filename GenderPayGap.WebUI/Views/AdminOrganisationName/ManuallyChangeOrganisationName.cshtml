@@ -35,7 +35,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -57,14 +57,14 @@
             @(Html.AntiForgeryToken())
             @(Html.HiddenFor(m => m.Action))
 
-            @(Html.GovUkErrorSummary(new[]
+            @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
             {
                 nameof(ChangeOrganisationNameViewModel.Reason),
             }))
 
             <fieldset class="govuk-fieldset">
 
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.Name,
                     labelOptions: new LabelViewModel { Text = "What is their name?" },
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
@@ -72,7 +72,7 @@
                 ))
             </fieldset>
 
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -84,7 +84,7 @@
                 }
             ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

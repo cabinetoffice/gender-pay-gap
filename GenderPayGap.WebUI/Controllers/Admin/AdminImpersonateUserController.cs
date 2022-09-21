@@ -7,7 +7,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,9 +40,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [ValidateAntiForgeryToken]
         public IActionResult ImpersonatePost(AdminImpersonateUserViewModel viewModel)
         {
-            viewModel.ParseAndValidateParameters(Request, m => m.EmailAddress);
-            
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 return View("ImpersonateUser", viewModel);
             }
@@ -52,13 +49,13 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             User impersonatedUser = userRepository.FindByEmail(viewModel.EmailAddress, UserStatuses.Active);
             if (impersonatedUser == null)
             {
-                viewModel.AddErrorFor(m => m.EmailAddress, "This user does not exist");
+                ModelState.AddModelError(nameof(viewModel.EmailAddress), "This user does not exist");
                 return View("ImpersonateUser");
             }
 
             if (impersonatedUser.IsAdministrator())
             {
-                viewModel.AddErrorFor(m => m.EmailAddress, "Impersonating other administrators is not permitted");
+                ModelState.AddModelError(nameof(viewModel.EmailAddress), "Impersonating other administrators is not permitted");
                 return View("ImpersonateUser");
             }
 

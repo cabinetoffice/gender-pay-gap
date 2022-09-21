@@ -4,7 +4,6 @@ using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,9 +45,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             User user = dataRepository.Get<User>(id);
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.UserId = user.UserId;
                 viewModel.FullName = user.Fullname;

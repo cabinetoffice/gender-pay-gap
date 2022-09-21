@@ -18,40 +18,52 @@
     Employers who use high quality data to understand the drivers of their gender pay gap will be able to target their actions and therefore deliver the most effective results.
 </p>
 
-@(Html.GovUkAccordion(new AccordionViewModel()
+@(await Html.GovUkAccordion(new AccordionViewModel()
 {
     Sections = new List<AccordionSectionViewModel>
     {
         new AccordionSectionViewModel
         {
-            Heading = "What evidence we have used",
-            Html = @<text>
-                       <p class="govuk-body">
-                           This guidance is based on the best available evidence currently.
-                           It will be regularly updated as the evidence base develops.
-                       </p>
+            Heading = new AccordionSectionItemViewModel
+            {
+                Text = "What evidence we have used"
+            },
+            Content = new AccordionSectionItemViewModel
+            {
+                Html = @<text>
+                           <p class="govuk-body">
+                               This guidance is based on the best available evidence currently.
+                               It will be regularly updated as the evidence base develops.
+                           </p>
 
-                       <p class="govuk-body">
-                           Where possible, we have used evidence based on randomised controlled trials that were conducted in the field and that measure objective outcomes related to recruitment, progression and promotion.
-                           High quality evidence is currently scarce in the field of gender equality in the workplace.
-                       </p>
-                    </text>
+                           <p class="govuk-body">
+                               Where possible, we have used evidence based on randomised controlled trials that were conducted in the field and that measure objective outcomes related to recruitment, progression and promotion.
+                               High quality evidence is currently scarce in the field of gender equality in the workplace.
+                           </p>
+                        </text>
+            }
         },
         new AccordionSectionViewModel
         {
-            Heading = "How you can help",
-            Html = @<text>
-                       <p class="govuk-body">
-                           To build better evidence, we encourage researchers and employers to evaluate the actions they take to improve gender equality in the workplace.
-                       </p>
+            Heading = new AccordionSectionItemViewModel
+            {
+                Text = "How you can help"
+            },
+            Content = new AccordionSectionItemViewModel
+            {
+                Html = @<text>
+                           <p class="govuk-body">
+                               To build better evidence, we encourage researchers and employers to evaluate the actions they take to improve gender equality in the workplace.
+                           </p>
 
-                       <p class="govuk-body">
-                           The Government Equalities Office will be working with employers to build more evidence on what works.
-                           If you represent an organisation with 4000 or more employees in the UK and would like to partner with us, please contact the Gender and Behavioural Insights programme <a class="govuk-link" href="mailto:gabiprogramme@bi.team">gabiprogramme@bi.team</a>
-                           <br/>
-                           This is a programme run by the Behavioural Insights Team for the Government Equalities Office.
-                       </p>
-                    </text>
+                           <p class="govuk-body">
+                               The Government Equalities Office will be working with employers to build more evidence on what works.
+                               If you represent an organisation with 4000 or more employees in the UK and would like to partner with us, please contact the Gender and Behavioural Insights programme <a class="govuk-link" href="mailto:gabiprogramme@bi.team">gabiprogramme@bi.team</a>
+                               <br/>
+                               This is a programme run by the Behavioural Insights Team for the Government Equalities Office.
+                           </p>
+                        </text>
+            }
         }
     }
 }))

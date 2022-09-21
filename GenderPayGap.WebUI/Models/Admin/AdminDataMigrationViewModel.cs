@@ -2,7 +2,7 @@
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminDataMigrationViewModel : GovUkViewModel
+    public class AdminDataMigrationViewModel 
     {
 
         public string Hostname { get; set; }

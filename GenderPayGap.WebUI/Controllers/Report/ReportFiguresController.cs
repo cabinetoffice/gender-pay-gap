@@ -75,9 +75,9 @@ namespace GenderPayGap.WebUI.Controllers.Report
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
-            ReportFiguresHelper.ValidateUserInput(viewModel, Request, reportingYear);
+            ReportFiguresHelper.ValidateUserInput(ModelState, viewModel, reportingYear);
 
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 PopulateViewModel(viewModel, organisationId, reportingYear, !viewModel.IsEditingForTheFirstTime);
                 return View("ReportFigures", viewModel);

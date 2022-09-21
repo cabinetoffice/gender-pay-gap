@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models
 {
-    public class AdminChangeUserContactPreferencesViewModel : GovUkViewModel
+    public class AdminChangeUserContactPreferencesViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -16,6 +16,7 @@ namespace GenderPayGap.WebUI.Models
         public bool SendUpdates { get; set; }
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string Reason { get; set; }
 
     }

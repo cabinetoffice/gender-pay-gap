@@ -28,7 +28,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -49,7 +49,7 @@
         <form method="post" action="@Url.Action("ResendVerificationEmailPost", "AdminUserResendVerificationEmail", new { id = Model.User.UserId })">
             @(Html.AntiForgeryToken())
             
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -64,7 +64,7 @@
                 </tbody>
             </table>
 
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -77,7 +77,7 @@
                 }
             ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Re-send verification email",
                 Classes = "govuk-!-margin-bottom-4"

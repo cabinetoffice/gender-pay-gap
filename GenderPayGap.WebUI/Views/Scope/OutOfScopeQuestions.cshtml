@@ -34,23 +34,29 @@
             @(Html.AntiForgeryToken())
             <h1 class="govuk-heading-xl">Tell us why your employer doesn't need to report</h1>
 
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
             @{
                 var whyOutOfScopeConditionalOptions =
-                    new Dictionary<WhyOutOfScope?, Func<object, object>>
+                    new Dictionary<WhyOutOfScope, Conditional>
                     {
                         {
                             WhyOutOfScope.Other,
-                            @<text>
-                                @(Html.GovUkLabel(new LabelViewModel {For = nameof(FeedbackViewModel.OtherSourceText), Text = "Please provide some details"}))
-                                @(Html.GovUkTextAreaFor(m => m.WhyOutOfScopeDetails))
-                             </text>
+                            new Conditional
+                            {
+                                Html = @<text>
+                                           @(await Html.GovUkCharacterCountFor(m => m.WhyOutOfScopeDetails,
+                                               labelOptions: new LabelViewModel
+                                               {
+                                                   Text = "Please provide some details"
+                                               }))
+                                        </text>
+                            }
                         }
                     };
             }
             
-            @(Html.GovUkRadiosFor(
+            @(await Html.GovUkRadiosFor(
                 m => m.WhyOutOfScope,
                 new FieldsetViewModel
                 {
@@ -61,7 +67,7 @@
                     },
                     Classes = "govuk-!-margin-top-6"
                 },
-                itemLabelOptions: new Dictionary<WhyOutOfScope?, LabelViewModel>
+                labelOptions: new Dictionary<WhyOutOfScope, LabelViewModel>
                 {
                     {
                         WhyOutOfScope.Under250,
@@ -74,7 +80,7 @@
                 conditionalOptions: whyOutOfScopeConditionalOptions
                 ))
             
-            @(Html.GovUkRadiosFor(
+            @(await Html.GovUkRadiosFor(
                 m => m.HaveReadGuidance,
                 new FieldsetViewModel
                 {
@@ -90,7 +96,7 @@
                 Read  more about <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap.<span class="govuk-visually-hidden">(opens in a new window)</span></a>
             </p>
             
-            @(Html.GovUkButton(
+            @(await Html.GovUkButton(
                 new ButtonViewModel
                 {
                     Text = "Continue"

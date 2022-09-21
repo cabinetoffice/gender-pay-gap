@@ -1,6 +1,6 @@
-﻿@using GenderPayGap.Core
-@using GenderPayGap.WebUI.Models.Admin
+﻿@using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
+@using GovUkDesignSystem.Attributes
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Admin.AdminChangeSectorViewModel
 
@@ -35,7 +35,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -58,7 +58,7 @@
             @(Html.Hidden(nameof(AdminChangeSectorViewModel.Action),
                 ChangeOrganisationSectorViewModelActions.OfferNewSectorAndReason))
 
-            @(Html.GovUkErrorSummary(new[]
+            @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
             {
                 nameof(AdminChangeSectorViewModel.NewSector),
                 nameof(AdminChangeSectorViewModel.Reason)
@@ -83,27 +83,29 @@
                         Please select a new sector
                     </h1>
                 </legend>
-                
-                @(Html.GovUkRadiosFor(
+
+                @await Html.GovUkRadiosFor(
                     m => m.NewSector,
-                    itemLabelOptions: new Dictionary<NewSectorTypes?, LabelViewModel>
+                    labelOptions: new Dictionary<NewSectorTypes, LabelViewModel>
                     {
                         {
                             NewSectorTypes.Public,
                             new LabelViewModel
                             {
-                                Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(NewSectorTypes.Public),
+                            Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
                         {
                             NewSectorTypes.Private,
                             new LabelViewModel
                             {
+                                Text = GovUkRadioCheckboxLabelTextAttribute.GetLabelText(NewSectorTypes.Private),
                                 Classes = "govuk-!-font-size-24 govuk-!-font-weight-bold"
                             }
                         },
                     },
-                    itemHintOptions: new Dictionary<NewSectorTypes?, HintViewModel>
+                    radioHints: new Dictionary<NewSectorTypes, HintViewModel>
                     {
                         {
                             NewSectorTypes.Public,
@@ -138,9 +140,8 @@
                             }
                         }
                     })
-                    )
 
-                @Html.GovUkTextAreaFor(
+                @await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -152,7 +153,7 @@
                         Classes = "govuk-!-margin-top-6"
                     })
 
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Continue",
                     Classes = "govuk-!-margin-bottom-4"

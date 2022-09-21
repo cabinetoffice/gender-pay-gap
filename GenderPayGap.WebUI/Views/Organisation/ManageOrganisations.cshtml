@@ -89,7 +89,7 @@
 
     <div class="column-two-thirds">
         
-        @Html.GovUkButton(new ButtonViewModel
+        @await Html.GovUkButton(new ButtonViewModel
         {
             Href = Url.Action("ChooseSector", "AddOrganisationChooseSector"),
             Text = "Add organisation",

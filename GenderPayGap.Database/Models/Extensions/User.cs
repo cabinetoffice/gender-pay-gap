@@ -42,6 +42,35 @@ namespace GenderPayGap.Database
                 }
             }
         }
+        
+        [NotMapped]
+        public string NewEmailAddress
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(NewEmailAddressDB))
+                {
+                    try
+                    {
+                        return Encryption.DecryptData(NewEmailAddressDB);
+                    }
+                    catch (CryptographicException) { }
+                }
+
+                return NewEmailAddressDB;
+            }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    NewEmailAddressDB = Encryption.EncryptData(value.ToLower());
+                }
+                else
+                {
+                    NewEmailAddressDB = value;
+                }
+            }
+        }
 
         [NotMapped]
         public string ContactEmailAddress

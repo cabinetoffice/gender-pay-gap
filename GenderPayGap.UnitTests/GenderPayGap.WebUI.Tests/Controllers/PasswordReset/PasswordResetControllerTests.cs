@@ -27,18 +27,17 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
             // Arrange
             User user = new UserBuilder().WithEmailAddress("user@test.com").Build();
 
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_EmailAddress", "user@test.com");
-
             var controllerBuilder = new ControllerBuilder<PasswordResetController>();
             var controller = controllerBuilder
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
             
             // Act
-            controller.PasswordResetPost(new PasswordResetViewModel());
+            controller.PasswordResetPost(new PasswordResetViewModel
+            {
+                EmailAddress = "user@test.com"
+            });
             
             // Assert
             Assert.AreEqual(1, controllerBuilder.EmailsSent.Count);
@@ -55,19 +54,18 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
         {
             // Arrange
             User user = new UserBuilder().WithEmailAddress("user@test.com").WithPasswordResetCode("code", VirtualDateTime.Now.AddMinutes(-2)).Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_EmailAddress", "user@test.com");
 
             var controllerBuilder = new ControllerBuilder<PasswordResetController>();
             var controller = controllerBuilder
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            Assert.Throws<UserRecentlySentPasswordResetEmailWithoutChangingPasswordException>(() => controller.PasswordResetPost(new PasswordResetViewModel()));
+            Assert.Throws<UserRecentlySentPasswordResetEmailWithoutChangingPasswordException>(() => controller.PasswordResetPost(new PasswordResetViewModel
+            {
+                EmailAddress = "user@test.com"
+            }));
         }
         
         [Test]
@@ -76,19 +74,18 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
         {
             // Arrange
             User user = new UserBuilder().WithEmailAddress("user@test.com").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_EmailAddress", "anotheruser@test.com");
 
             var controllerBuilder = new ControllerBuilder<PasswordResetController>();
             var controller = controllerBuilder
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
             
             // Act
-            controller.PasswordResetPost(new PasswordResetViewModel());
+            controller.PasswordResetPost(new PasswordResetViewModel
+            {
+                EmailAddress = "anotheruser@test.com"
+            });
             
             // Assert
             Assert.IsEmpty(controllerBuilder.EmailsSent);
@@ -100,20 +97,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
         {
             // Arrange
             User user = new UserBuilder().WithPasswordResetCode("code").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
 
             var controllerBuilder = new ControllerBuilder<PasswordResetController>();
             var controller = controllerBuilder
                 .WithDatabaseObjects(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithMockUriHelper()
                 .Build();
             
             // Act
-            controller.ChooseNewPasswordPost(new ChooseNewPasswordViewModel { ResetCode = "code" });
+            controller.ChooseNewPasswordPost(new ChooseNewPasswordViewModel { ResetCode = "code", NewPassword = "NewPassword1", ConfirmNewPassword = "NewPassword1"});
             
             // Assert
             Assert.AreEqual(Crypto.GetPBKDF2("NewPassword1", Convert.FromBase64String(user.Salt)), user.PasswordHash);
@@ -139,20 +131,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
         {
             // Arrange
             User user = new UserBuilder().WithPasswordResetCode("code").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
 
             var controllerBuilder = new ControllerBuilder<PasswordResetController>();
             var controller = controllerBuilder
                 .WithDatabaseObjects(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            var requestViewModel = new ChooseNewPasswordViewModel { ResetCode = null /* reset code not provided */ };
+            var requestViewModel = new ChooseNewPasswordViewModel { ResetCode = null /* reset code not provided */, NewPassword = "NewPassword1", ConfirmNewPassword = "NewPassword1"};
             TestDelegate action = () => controller.ChooseNewPasswordPost(requestViewModel);
 
             // Assert
@@ -165,20 +152,15 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
         {
             // Arrange
             User user = new UserBuilder().WithPasswordResetCode("code", VirtualDateTime.Now.AddDays(-10)).Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
 
             var controllerBuilder = new ControllerBuilder<PasswordResetController>();
             var controller = controllerBuilder
                 .WithDatabaseObjects(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithMockUriHelper()
                 .Build();
 
             // Assert
-            Assert.Throws<PasswordResetCodeExpiredException>(() => controller.ChooseNewPasswordPost(new ChooseNewPasswordViewModel { ResetCode = "code" }));
+            Assert.Throws<PasswordResetCodeExpiredException>(() => controller.ChooseNewPasswordPost(new ChooseNewPasswordViewModel { ResetCode = "code", NewPassword = "NewPassword1", ConfirmNewPassword = "NewPassword1"}));
         }
 
     }

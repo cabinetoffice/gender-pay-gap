@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class ChangeOrganisationNameViewModel : GovUkViewModel
+    public class ChangeOrganisationNameViewModel 
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
@@ -13,15 +13,30 @@ namespace GenderPayGap.WebUI.Models.Admin
 
         public ManuallyChangeOrganisationNameViewModelActions Action { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a name")]
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(NameRequired),
+            ErrorMessageIfMissing = "Please enter a name")]
         public string Name { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing =
+        public bool NameRequired => Action is ManuallyChangeOrganisationNameViewModelActions.ManualChange;
+
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(AcceptCompaniesHouseNameRequired),
+            ErrorMessageIfMissing =
             "Select whether you want to use this name from Companies House or to enter a name manually")]
         public AcceptCompaniesHouseName? AcceptCompaniesHouseName { get; set; }
 
-        [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change")]
+        public bool AcceptCompaniesHouseNameRequired => Action is ManuallyChangeOrganisationNameViewModelActions.OfferNewCompaniesHouseName;
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(ReasonRequired),
+            ErrorMessageIfMissing = "Please enter a reason for this change")]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string Reason { get; set; }
+
+        public bool ReasonRequired =>
+            (Action is ManuallyChangeOrganisationNameViewModelActions.OfferNewCompaniesHouseName && 
+             AcceptCompaniesHouseName is Admin.AcceptCompaniesHouseName.Accept) || 
+            Action is ManuallyChangeOrganisationNameViewModelActions.ManualChange;
 
     }
 

@@ -110,3 +110,38 @@ variable "POSTGRES_CONFIG_PASSWORD" {
 }
 
 #endregion
+
+variable "gpg_application" {}
+
+variable "solution_stack_name" {
+  type = string
+}
+
+variable "tier" {
+  type = string
+}
+
+variable env {
+  description = "The environment name"
+  type        = string
+}
+
+variable Instance_type {}
+
+variable "elb_instance_min_size" {}
+
+variable "elb_instance_max_size" {}
+
+variable "elb_instance_profile" {}
+
+variable "elb_instance_type" {}
+
+variable "elb_load_balancer_type" {}
+
+variable "elb_scheme" {}
+
+variable "elb_matcher_http_code" {}
+
+variable "elb_health_reporting_system_type" {
+  default = "enhanced"
+}

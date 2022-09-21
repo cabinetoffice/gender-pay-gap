@@ -45,12 +45,12 @@
         {
             @if (@Model.Description.Html != null)
             {
-                @Html.GovUkHtmlText(Model.Description)
+                @await Html.GovUkHtmlText(Model.Description)
             }
             else
             {
                 <p class="app-step-nav__paragraph">
-                    @(Html.GovUkHtmlText(Model.Description))
+                    @(await Html.GovUkHtmlText(Model.Description))
                 </p>
             }
         }

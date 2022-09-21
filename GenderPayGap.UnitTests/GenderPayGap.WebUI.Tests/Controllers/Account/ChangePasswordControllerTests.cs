@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -10,6 +12,7 @@ using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
+using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Moq;
@@ -46,21 +49,20 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
 
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel
+            {
+                CurrentPassword = "password",
+                NewPassword = "NewPassword1",
+                ConfirmNewPassword = "NewPassword1"
+            });
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "NewPassword1");
@@ -73,22 +75,21 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
-            
+
             var controllerBuilder = new ControllerBuilder<ChangePasswordController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel
+            {
+                CurrentPassword = "password",
+                NewPassword = "NewPassword1",
+                ConfirmNewPassword = "NewPassword1"
+            });
             
             // Assert
             // Assert that exactly one email is sent
@@ -107,22 +108,21 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "NewPassword1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "NewPassword1");
-            
+
             var controllerBuilder = new ControllerBuilder<ChangePasswordController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel
+            {
+                CurrentPassword = "password",
+                NewPassword = "NewPassword1",
+                ConfirmNewPassword = "NewPassword1"
+            });
             
             // Assert
             // Assert that exactly one audit log entry is added
@@ -139,21 +139,30 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "Abc1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Abc1");
 
+            var viewModel = new ChangePasswordViewModel { CurrentPassword = "password", NewPassword = "Abc1", ConfirmNewPassword = "Abc1" };
+            
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
+            
+            if (!viewModel.GetType()
+                    .GetProperty(nameof(viewModel.NewPassword))
+                    .GetCustomAttribute<GpgPasswordValidationAttribute>()
+                    .IsValid(viewModel.NewPassword))
+            {
+                controller.ModelState.AddModelError(nameof(viewModel.NewPassword), "error");
+            }
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel
+            {
+                CurrentPassword = "password",
+                NewPassword = "Abc1",
+                ConfirmNewPassword = "Abc1"
+            });
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -167,20 +176,27 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
             
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "abcdefg1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "abcdefg1");
+            var viewModel = new ChangePasswordViewModel
+            {
+                CurrentPassword = "password", NewPassword = "abcdefg1", ConfirmNewPassword = "abcdefg1"
+            };
 
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
+            
+            if (!viewModel.GetType()
+                    .GetProperty(nameof(viewModel.NewPassword))
+                    .GetCustomAttribute<GpgPasswordValidationAttribute>()
+                    .IsValid(viewModel.NewPassword))
+            {
+                controller.ModelState.AddModelError(nameof(viewModel.NewPassword), "error");
+            }
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(viewModel);
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -193,21 +209,28 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "ABCDEFG1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "ABCDEFG1");
+
+            var viewModel = new ChangePasswordViewModel
+            {
+                CurrentPassword = "password", NewPassword = "ABCDEFG1", ConfirmNewPassword = "ABCDEFG1"
+            };
 
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
+            if (!viewModel.GetType()
+                    .GetProperty(nameof(viewModel.NewPassword))
+                    .GetCustomAttribute<GpgPasswordValidationAttribute>()
+                    .IsValid(viewModel.NewPassword))
+            {
+                controller.ModelState.AddModelError(nameof(viewModel.NewPassword), "error");
+            }
+
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(viewModel);
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -220,21 +243,20 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "Password1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "AnotherPassword1");
 
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel
+            {
+                CurrentPassword = "password",
+                NewPassword = "Password1",
+                ConfirmNewPassword = "AnotherPassword1"
+            });
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -247,21 +269,20 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "incorrect_password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "Password1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Password1");
 
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
+            controller.ChangePasswordPost(new ChangePasswordViewModel
+            {
+                CurrentPassword = "incorrect_password",
+                NewPassword = "Password1",
+                ConfirmNewPassword = "Password1"
+            });
             
             // Assert
             bool isExpectedPassword = mockUserRepo.CheckPassword(user, "password");
@@ -274,25 +295,24 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_CurrentPassword", "incorrect_password");
-            requestFormValues.Add("GovUk_Text_NewPassword", "Password1");
-            requestFormValues.Add("GovUk_Text_ConfirmNewPassword", "Password1");
+
+            var viewModel = new ChangePasswordViewModel
+            {
+                CurrentPassword = "incorrect_password", NewPassword = "Password1", ConfirmNewPassword = "Password1"
+            };
 
             var controller = new ControllerBuilder<ChangePasswordController>()
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
 
             // Act
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
-            controller.ChangePasswordPost(new ChangePasswordViewModel());
-            var result = controller.ChangePasswordPost(new ChangePasswordViewModel()) as RedirectToActionResult;
+            controller.ChangePasswordPost(viewModel);
+            controller.ChangePasswordPost(viewModel);
+            controller.ChangePasswordPost(viewModel);
+            controller.ChangePasswordPost(viewModel);
+            var result = controller.ChangePasswordPost(viewModel) as RedirectToActionResult;
             
             // Assert
             Assert.That(result != null, "Expected RedirectToActionResult");

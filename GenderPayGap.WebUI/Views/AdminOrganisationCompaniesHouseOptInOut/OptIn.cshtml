@@ -30,7 +30,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -48,7 +48,7 @@
             </span>
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <h2 class="govuk-heading-l govuk-!-margin-bottom-8">
             Opting in to synchronisation
@@ -120,7 +120,7 @@
         <form method="POST" action="@Url.Action("OptIn", "AdminOrganisationCompaniesHouseOptInOut", new { id = Model.Organisation.OrganisationId })">
             @(Html.AntiForgeryToken())
 
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -133,7 +133,7 @@
                 }
             ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Confirm",
                 Classes = "govuk-!-margin-bottom-4"

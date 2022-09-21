@@ -1,0 +1,14 @@
+﻿{
+  "manifestVersion": 1,
+  "deployments": {
+    "aspNetCoreWeb": [
+      {
+        "name": "gpg-application",
+        "parameters": {
+          "appBundle": "publish.zip",
+          "iisPath": "/"
+        }
+      }
+    ]
+  }
+}

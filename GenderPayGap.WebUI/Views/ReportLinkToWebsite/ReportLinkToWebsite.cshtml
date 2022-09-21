@@ -17,7 +17,7 @@
 }
 
 @section BeforeMain {
-    @(Html.GovUkBackLink(new BackLinkViewModel
+    @(await Html.GovUkBackLink(new BackLinkViewModel
     {
         Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
     }))
@@ -30,7 +30,7 @@
         <div class="govuk-grid-column-two-thirds">
             @(Html.AntiForgeryToken())
             @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-            @(Html.GovUkErrorSummary())
+            @(await Html.GovUkErrorSummary(ViewData.ModelState))
             
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -47,7 +47,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <fieldset class="govuk-fieldset">
-                @(Html.GovUkTextAreaFor(
+                @(await Html.GovUkTextAreaFor(
                     m => m.LinkToOrganisationWebsite,
                     rows: 1,
                     labelOptions: new LabelViewModel {Text = "Enter the web address of your supporting narrative (URL)."},
@@ -75,7 +75,7 @@
                 </p>
             </fieldset>
             
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
                 Classes = "govuk-!-margin-bottom-6"

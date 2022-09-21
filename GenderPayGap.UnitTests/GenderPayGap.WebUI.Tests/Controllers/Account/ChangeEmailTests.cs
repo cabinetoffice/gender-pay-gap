@@ -26,20 +26,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithEmailAddress("old@example.com").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewEmailAddress", "new@example.com");
 
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
             
             // Act
-            controller.ChangeEmailPost(new ChangeEmailViewModel());
+            controller.ChangeEmailPost(new ChangeEmailViewModel
+            {
+                NewEmailAddress = "new@example.com"
+            });
             
             // Assert
             Assert.AreEqual(1, controllerBuilder.EmailsSent.Count);
@@ -56,20 +55,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithEmailAddress("old@example.com").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewEmailAddress", "old@example.com");
 
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
             
             // Act
-            controller.ChangeEmailPost(new ChangeEmailViewModel());
+            controller.ChangeEmailPost(new ChangeEmailViewModel
+            {
+                NewEmailAddress = "old@example.com"
+            });
             
             // Assert
             Assert.AreEqual(0, controllerBuilder.EmailsSent.Count);
@@ -82,20 +80,19 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             // Arrange
             User user = new UserBuilder().WithEmailAddress("user@example.com").Build();
             User user2 = new UserBuilder().WithEmailAddress("user2@example.com").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_NewEmailAddress", "user2@example.com");
 
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user, user2)
                 .WithMockUriHelper()
                 .Build();
             
             // Act
-            controller.ChangeEmailPost(new ChangeEmailViewModel());
+            controller.ChangeEmailPost(new ChangeEmailViewModel
+            {
+                NewEmailAddress = "user2@example.com"
+            });
             
             // Assert
             Assert.AreEqual(0, controllerBuilder.EmailsSent.Count);
@@ -107,14 +104,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().WithEmailAddress("old@example.com").WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_Password", "password");
-            
+
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
@@ -127,7 +120,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                     TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user};
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user, Password = "password"};
             
             // Act
             controller.VerifyEmailPost(viewModel);
@@ -163,14 +156,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         {
             // Arrange
             User user = new UserBuilder().DefaultRetiredUser().WithEmailAddress("old@example.com").WithPassword("password").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_Password", "password");
-            
+
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user)
                 .WithMockUriHelper()
                 .Build();
@@ -183,7 +172,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                     TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user};
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user, Password = "password"};
 
             // Act & Assert
             Assert.Throws<ArgumentException>(() => controller.VerifyEmailPost(viewModel));
@@ -196,14 +185,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             // Arrange
             User user = new UserBuilder().WithEmailAddress("old@example.com").WithPassword("password").Build();
             User user2 = new UserBuilder().WithEmailAddress("new@example.com").Build();
-            
-            var requestFormValues = new Dictionary<string, StringValues>();
-            requestFormValues.Add("GovUk_Text_Password", "password");
-            
+
             var controllerBuilder = new ControllerBuilder<ChangeEmailController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(user)
-                .WithRequestFormValues(requestFormValues)
                 .WithDatabaseObjects(user, user2)
                 .WithMockUriHelper()
                 .Build();
@@ -216,7 +201,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                     TokenTimestamp = VirtualDateTime.Now
                 });
 
-            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user};
+            var viewModel = new VerifyEmailChangeViewModel {NewEmailAddress = "new@example.com", Code = emailVerificationCode, User = user, Password = "password"};
             
             // Act
             controller.VerifyEmailPost(viewModel);

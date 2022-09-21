@@ -33,7 +33,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
     {
 
         private User user;
-        private Dictionary<string, StringValues> requestFormValues;
         private bool mockUriHelper;
 
         public List<NotifyEmail> EmailsSent { get; } = new List<NotifyEmail>();
@@ -48,12 +47,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
         public ControllerBuilder<T> WithLoggedInUser(User user)
         {
             this.user = user;
-            return this;
-        }
-
-        public ControllerBuilder<T> WithRequestFormValues(Dictionary<string, StringValues> requestFormValues)
-        {
-            this.requestFormValues = requestFormValues;
             return this;
         }
 
@@ -144,16 +137,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
             httpContextMock.SetupGet(ctx => ctx.Request).Returns(requestMock.Object);
             httpContextMock.SetupGet(ctx => ctx.Request.Headers).Returns(requestHeaders);
             httpContextMock.SetupGet(ctx => ctx.Request.Cookies).Returns(requestCookies);
-
-            if (requestFormValues != null)
-            {
-                var requestForm = new FormCollection(requestFormValues);
-
-                requestMock.SetupGet(req => req.Form).Returns(requestForm);
-
-                httpContextMock.SetupGet(ctx => ctx.Request.HasFormContentType).Returns(true);
-                httpContextMock.SetupGet(ctx => ctx.Request.Form).Returns(requestForm);
-            }
 
             httpContextMock.SetupGet(ctx => ctx.Request.HttpContext).Returns(httpContextMock.Object);
         }

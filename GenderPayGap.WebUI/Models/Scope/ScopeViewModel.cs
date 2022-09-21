@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace GenderPayGap.WebUI.Models.ScopeNew
 {
     [Serializable]
-    public class ScopeViewModel : GovUkViewModel
+    public class ScopeViewModel 
     {
         [BindNever]
         public Database.Organisation Organisation { get; set; }
@@ -21,14 +21,15 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
         )]
         public WhyOutOfScope? WhyOutOfScope { get; set; }
         
-        [GovUkValidateRequired(
+        [GovUkValidateRequiredIf(
+            IsRequiredPropertyName = nameof(WhyOutOfScopeDetailsRequired),
             ErrorMessageIfMissing = "Provide a reason that this employer is out of scope."
         )]
+        [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
         public string WhyOutOfScopeDetails { get; set; }
-        
-        [GovUkValidateRequired(
-            ErrorMessageIfMissing = "Select yes if you have read the guidance."
-        )]
+        public bool WhyOutOfScopeDetailsRequired => WhyOutOfScope is ScopeNew.WhyOutOfScope.Other;
+
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Select yes if you have read the guidance.")]
         public HaveReadGuidance? HaveReadGuidance { get; set; }
 
         // Reverse of whether an organisation is in scope to set view version

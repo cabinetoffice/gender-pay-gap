@@ -35,7 +35,7 @@
         });
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -57,7 +57,7 @@
             @(Html.AntiForgeryToken())
             @(Html.HiddenFor(m => m.Action))
 
-            @(Html.GovUkErrorSummary(new[]
+            @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
             {
                 nameof(ChangeOrganisationAddressViewModel.IsUkAddress),
                 nameof(ChangeOrganisationAddressViewModel.Reason),
@@ -71,52 +71,52 @@
                     </h2>
                 </legend>
 
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.PoBox,
                     labelOptions: new LabelViewModel { Text = "PO Box" },
                     classes: "govuk-input--width-10",
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" }
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.Address1,
                     labelOptions: new LabelViewModel { Text = "Address line 1" },
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                     autocomplete: "address-line1"
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.Address2,
                     labelOptions: new LabelViewModel { Text = "Address line 2" },
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                     autocomplete: "address-line2"
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.Address3,
                     labelOptions: new LabelViewModel { Text = "Address line 3" },
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                     autocomplete: "address-line3"
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.TownCity,
                     labelOptions: new LabelViewModel { Text = "Town / city" },
                     classes: "govuk-input--width-20",
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                     autocomplete: "address-level2"
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.County,
                     labelOptions: new LabelViewModel { Text = "County" },
                     classes: "govuk-input--width-20",
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                     autocomplete: "address-level1"
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.Country,
                     labelOptions: new LabelViewModel { Text = "Country" },
                     classes: "govuk-input--width-20",
                     formGroupOptions: new FormGroupViewModel { Classes = "govuk-!-margin-bottom-3" },
                     autocomplete: "country-name"
                 ))
-                @(Html.GovUkTextInputFor(
+                @(await Html.GovUkTextInputFor(
                     m => m.PostCode,
                     labelOptions: new LabelViewModel { Text = "Post code" },
                     classes: "govuk-input--width-10",
@@ -125,7 +125,7 @@
                 ))
             </fieldset>
 
-            @(Html.GovUkRadiosFor(
+            @(await Html.GovUkRadiosFor(
                 m => m.IsUkAddress,
                 fieldsetOptions: new FieldsetViewModel
                 {
@@ -138,7 +138,7 @@
                 }
             ))
 
-            @(Html.GovUkTextAreaFor(
+            @(await Html.GovUkCharacterCountFor(
                 m => m.Reason,
                 labelOptions: new LabelViewModel
                 {
@@ -147,7 +147,7 @@
                 }
             ))
 
-            @(Html.GovUkButton(new ButtonViewModel
+            @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Continue",
                 Classes = "govuk-!-margin-bottom-4"

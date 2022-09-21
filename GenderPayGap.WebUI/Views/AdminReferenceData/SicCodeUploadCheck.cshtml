@@ -29,7 +29,7 @@
         };
     }
 
-    @(Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
         Crumbs = crumbs
     }))
@@ -43,7 +43,7 @@
             Update SIC codes
         </h1>
 
-        @(Html.GovUkErrorSummary())
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
         <p class="govuk-body">Please review the changes you are about to make</p>
 
@@ -207,7 +207,7 @@
         @if (!Model.AddsEditsDeletesSet.AnyChanges)
         {
             <p class="govuk-body govuk-!-margin-top-4">
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Confirm and continue",
                     Classes = "govuk-!-margin-bottom-1",
@@ -225,7 +225,7 @@
                 @(Html.AntiForgeryToken())
                 <input type="hidden" name="SerializedNewRecords" value="@(Model.SerializedNewRecords)" />
 
-                @(Html.GovUkTextAreaFor(
+                @(await Html.GovUkCharacterCountFor(
                     m => m.Reason,
                     labelOptions: new LabelViewModel
                     {
@@ -233,7 +233,7 @@
                         Classes = "govuk-label--m"
                     }
                     ))
-                @(Html.GovUkButton(new ButtonViewModel
+                @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Confirm and continue",
                     Classes = "govuk-!-margin-bottom-4"

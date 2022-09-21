@@ -12,7 +12,6 @@ using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -155,8 +154,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             var organisation = dataRepository.Get<Organisation>(id);
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
-            viewModel.ParseAndValidateParameters(Request, m => m.Reason);
-            if (viewModel.HasAnyErrors())
+            if (!ModelState.IsValid)
             {
                 viewModel.Organisation = organisation;
                 viewModel.Year = year;
