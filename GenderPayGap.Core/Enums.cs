@@ -341,4 +341,14 @@ namespace GenderPayGap.Core
         public const string LastCompareQuery = "compare";
     }
 
+    public enum ReportStatusBadgeType
+    {
+        Due,
+        OverDue,
+        Reported,
+        NotRequired,
+        NotRequiredDueToCovid,
+        VoluntarilyReported,
+        SubmittedLate,
+    }
 }

@@ -62,6 +62,39 @@ namespace GenderPayGap.Database
             }
         }
 
+        public ReportStatusBadgeType GetBadgeType
+        {
+            get
+            {
+                ReportStatusBadgeType reportStatus = ReportStatusBadgeType.NotRequired;
+
+                if (IsVoluntarySubmission())
+                {
+                    reportStatus = ReportStatusBadgeType.VoluntarilyReported;
+                }
+                else if (IsLateSubmission && ReturnId != 0)
+                {
+                    reportStatus = ReportStatusBadgeType.SubmittedLate;
+                }
+                else if (IsLateSubmission)
+                {
+                    reportStatus = ReportStatusBadgeType.OverDue;
+                }
+                else if (ReturnId != 0)
+                {
+                    reportStatus = ReportStatusBadgeType.Reported;
+                }
+                else if (Global
+                    .ReportingStartYearsToExcludeFromLateFlagEnforcement
+                    .Contains(AccountingDate.Year)
+                    && AccountingDate.Year == 2019)
+                {
+                    reportStatus = ReportStatusBadgeType.NotRequiredDueToCovid;
+                }
+                return reportStatus;
+            }
+        }
+
         public override bool Equals(object obj)
         {
             // Check for null values and compare run-time types.
