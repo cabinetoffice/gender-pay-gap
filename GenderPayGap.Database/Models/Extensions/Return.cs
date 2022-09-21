@@ -61,7 +61,8 @@ namespace GenderPayGap.Database
                 return orgSize;
             }
         }
-
+        
+        [NotMapped]
         public ReportStatusBadgeType GetBadgeType
         {
             get
