@@ -6,6 +6,7 @@
     Func<object, object> html = null;
     string htmlClass = "";
 
+
     switch(Model.ReportStatus)
     {
         case ReportStatusBadgeType.Due:
@@ -34,15 +35,26 @@
             htmlClass = "govuk-tag--grey";
             break;
         case ReportStatusBadgeType.VoluntarilyReported:
-            html = @<text>REPORTED VOLUNTARILY</text>;
+            html = @<text>REPORTED VOLUNTARILY</text>
+    ;
             htmlClass = "govuk-tag--green";
             break;
 
     }
+
+    if(Model.Desktop)
+    {
+        htmlClass = htmlClass + " " + "govuk-employer-table-right";
+    }
+    else
+    {
+        htmlClass = htmlClass + " " + "govuk-!-margin-bottom-4 govuk-!-margin-top-4";
+    }
+
 }
 
 @await Html.GovUkTag(new TagViewModel
 {
     Html = html,
-    Classes = htmlClass + " govuk-!-margin-bottom-4 govuk-!-margin-top-4"
+    Classes = htmlClass
 })
