@@ -91,7 +91,7 @@
 
                     </div>
                 </div>
-                @{
+                @{ 
                     var mobileRows = organisation
                         .GetRecentReports(Global.ShowReportYearCount)
                         .Select
@@ -149,6 +149,26 @@
                             }
                         )
                         .ToList();
+                    var desktopHeader = new TableRowViewModel
+                    {
+                        Row = new List<TableCellViewModel>
+                        {
+                            new TableCellViewModel
+                            {
+                                Html = @<text>
+                                           <div>
+                                               <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
+                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0">Reporting Year</h3>
+                                               </div>
+                                               <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
+                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Report Status</h3>
+                                               </div>
+
+                                           </div>
+                                        </text>
+                            }
+                        }
+                    };
                     var desktopRows = organisation
                             .GetRecentReports(Global.ShowReportYearCount)
                             .Select(
@@ -219,6 +239,7 @@
                                 }
                             }
                         ).ToList();
+                    
                     int indexOfCompanyJoined = organisation.GetRecentReports(Global.ShowReportYearCount).ToList().FindIndex(report => Model.Organisation.Created > ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate));
                     var dateJoinedRow = new TableRowViewModel
                     {
@@ -226,13 +247,15 @@
                         {
                             new TableCellViewModel
                             {
-                                Html = @<text> @await Html.GovUkHint(
-                                    new HintViewModel
-                                    { 
-                                        Text="Employer joined Gender Pay Gap service on " + @Model.Organisation.Created.ToString("dd/MM/yyyy"),
-                                        Classes="govuk-!-margin-top-4 govuk-!-text-align-centre"
-                                    }) </text>
-                    }
+                                Html = @<text>
+                                            @await Html.GovUkHint(
+                                                     new HintViewModel
+                                                     {
+                                                         Text = "Employer joined Gender Pay Gap service on " + @Model.Organisation.Created.ToString("dd/MM/yyyy"),
+                                                         Classes = "govuk-!-margin-top-4 govuk-!-text-align-centre"
+                                                     })
+                                        </text>
+                            }
                         }
                     };
 
@@ -245,6 +268,10 @@
                     {
                         mobileRows.Add(dateJoinedRow);
                         desktopRows.Add(dateJoinedRow);
+                    }
+                    if (desktopRows.Count > 0)
+                    {
+                        desktopRows.Insert(0,desktopHeader);
                     }
 
                 }
