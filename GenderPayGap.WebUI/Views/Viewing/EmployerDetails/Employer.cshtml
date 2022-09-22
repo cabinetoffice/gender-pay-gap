@@ -4,6 +4,7 @@
 @using GenderPayGap.Core.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Newtonsoft.Json
 @model EmployerDetailsViewModel
 @{
     Organisation organisation = Model.Organisation;
@@ -66,7 +67,14 @@
                 <div class="grid-row">
                     <div class="column-full">
                         <hr style="margin-top: 0"/>
-                        <div class="body" style="margin-top: 2em">
+                        <div class="body" style="margin-top: 2em" id="filteringArea">
+                            @{
+                                <input type="hidden" id="selectOptionsFromReports" 
+                                       value=@JsonConvert.SerializeObject(organisation
+                                                                               .GetRecentReports(Global.ShowReportYearCount)
+                                                                               .Select(report => 
+                                                                                   report.GetReportingPeriod()).ToArray())>
+                            }
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
                                 <div class="govuk-warning-text">
@@ -240,6 +248,7 @@
                             }
                         ).ToList();
                     
+                    
                     int indexOfCompanyJoined = organisation.GetRecentReports(Global.ShowReportYearCount).ToList().FindIndex(report => Model.Organisation.Created > ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate));
                     var dateJoinedRow = new TableRowViewModel
                     {
@@ -307,6 +316,27 @@
                 }
             });
         }());
+        var parent = document.getElementById("filteringArea");
+        var selectlist = document.createElement("select");
+        selectlist.id = "filterYearSelect";
+        selectlist.onchange = function (){
+            //TODO: hide and unhide based on year selected.   
+        }
+            
+        parent.appendChild(selectlist);
 
+        var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
+        
+        var showAll = document.createElement("option");
+        showAll.value = "Show All";
+        showAll.text = "Show All";
+        selectlist.appendChild(showAll);
+        
+        for (var i = 1; i < arrayOfYears.length; i++){
+             var option = document.createElement("option");
+             option.value = arrayOfYears[i];
+             option.text = arrayOfYears[i];
+             selectlist.appendChild(option);
+        }
     </script>
 }
