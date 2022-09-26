@@ -1,6 +1,6 @@
 resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
   name        = "ehrc-rotected-request-address"
-  description = "Regex of the endpoint used by ehrc. Of the form .../download?p=filename"
+  description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
   scope       = "REGIONAL"
 
   regular_expression {
@@ -10,7 +10,7 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
 
 resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
   name               = "ehrc-whitelisted-ips"
-  description        = "EHRC whitelisted IPs. Only these IPs can access the protected endpoint of the form .../download?p=filename"
+  description        = "EHRC whitelisted IPs. Only these IPs can access the protected endpoint." // Of the form .../download?p=filename
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
   addresses          = [for ip in split("\n", file("EHRCDownload-IP-Whitelist.txt")) : trimspace(ip)]
@@ -55,7 +55,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
   }
 
   rule {
-    name     = "rate limit"
+    name     = "rate-limit"
     priority = 1
 
     action {
@@ -76,7 +76,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
   }
 
   rule {
-    name     = "ehrc whitelist"
+    name     = "ehrc-whitelist"
     priority = 2
 
     action {
@@ -87,6 +87,9 @@ resource "aws_wafv2_web_acl" "ehrc" {
       and_statement {
         statement {
           regex_pattern_set_reference_statement {
+            field_to_match {
+              uri_path {}
+            }
             arn = aws_wafv2_regex_pattern_set.ehrc_protected_request_address.arn
             text_transformation {
               priority = 0
