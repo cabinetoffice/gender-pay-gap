@@ -1,4 +1,4 @@
-﻿// all declared input variables
+// all declared input variables
 
 variable "aws_region" {
   description = "The AWS region used for the provider and resources."
@@ -21,20 +21,18 @@ variable "tier" {
   type = string
 }
 
-variable env {
+variable "env" {
   description = "The environment name"
   type        = string
 }
 
-variable Instance_type {}
+variable "instance_type" {}
 
 variable "elb_instance_min_size" {}
 
 variable "elb_instance_max_size" {}
 
 variable "elb_instance_profile" {}
-
-variable "elb_instance_type" {}
 
 variable "elb_load_balancer_type" {}
 
@@ -44,4 +42,7 @@ variable "elb_matcher_http_code" {}
 
 variable "elb_health_reporting_system_type" {
   default = "enhanced"
+}
+
+variable "cache_port" {
 }
