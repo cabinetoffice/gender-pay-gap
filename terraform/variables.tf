@@ -111,8 +111,6 @@ variable "POSTGRES_CONFIG_PASSWORD" {
 
 #endregion
 
-variable "gpg_application" {}
-
 variable "solution_stack_name" {
   type = string
 }
@@ -120,8 +118,6 @@ variable "solution_stack_name" {
 variable "tier" {
   type = string
 }
-
-variable Instance_type {}
 
 variable "elb_instance_min_size" {}
 
