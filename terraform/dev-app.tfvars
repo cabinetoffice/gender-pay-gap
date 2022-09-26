@@ -1,4 +1,3 @@
-instance_type          = "t2.small"
 #region Relational database configuration 
 
 rds_config_instance_class = "db.t3.small"
@@ -11,7 +10,6 @@ env                    = "dev"
 
 #region ElasticBeanstalk configuration
 
-Instance_type          = "t2.small"
 instance_type          = "t2.small"
 elb_instance_profile   = "aws-elasticbeanstalk-ec2-role"
 elb_instance_min_size  = 1
