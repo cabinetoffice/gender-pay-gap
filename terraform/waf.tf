@@ -1,4 +1,4 @@
-﻿resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
+resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
   name        = "ehrc-rotected-request-address"
   description = "Regex of the endpoint used by ehrc. Of the form .../download?p=filename"
   scope       = "REGIONAL"
@@ -13,7 +13,7 @@ resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
   description        = "EHRC whitelisted IPs. Only these IPs can access the protected endpoint of the form .../download?p=filename"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
-  addresses          = [for ip in split("\n", file("EHRCDownload-IP-Whitelist.txt")): trimspace(ip)]
+  addresses          = [for ip in split("\n", file("EHRCDownload-IP-Whitelist.txt")) : trimspace(ip)]
 }
 
 resource "aws_wafv2_ip_set" "blacklisted_ips" {
@@ -25,10 +25,10 @@ resource "aws_wafv2_ip_set" "blacklisted_ips" {
 }
 
 resource "aws_wafv2_web_acl" "ehrc" {
-  name  = "gpg-acl"
-  scope = "REGIONAL"
+  name        = "gpg-acl"
+  scope       = "REGIONAL"
   description = "Access control list for the gpg website. Used for securing the EHRC endpoint and limiting bot traffic."
-  
+
   default_action {
     allow {}
   }

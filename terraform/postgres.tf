@@ -51,7 +51,7 @@ resource "aws_db_instance" "gpg-dev-db" {
   lifecycle {
     ignore_changes = [
       // This will always be different because of the timestamp function, so we ignore it
-      final_snapshot_identifier 
+      final_snapshot_identifier
     ]
   }
 }
