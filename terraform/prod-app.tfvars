@@ -13,6 +13,7 @@ env = "prod"
 
 Instance_type          = "t2.medium"
 instance_type          = "t2.medium"
+instance_type          = "t2.medium"
 elb_instance_profile   = "aws-elasticbeanstalk-ec2-role"
 elb_instance_min_size  = 1
 elb_instance_max_size  = 4

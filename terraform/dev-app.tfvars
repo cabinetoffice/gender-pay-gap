@@ -7,11 +7,12 @@ rds_config_db_name        = "gpgDevDb"
 
 #endregion
 
-env = "dev"
+env                    = "dev"
 
 #region ElasticBeanstalk configuration
 
 Instance_type          = "t2.small"
+instance_type          = "t2.small"
 elb_instance_profile   = "aws-elasticbeanstalk-ec2-role"
 elb_instance_min_size  = 1
 elb_instance_max_size  = 2

@@ -11,10 +11,6 @@ module "vpc" {
   database_subnets    = [cidrsubnet("10.0.0.0/16", 4, 2), cidrsubnet("10.0.0.0/16", 4, 3)]
   elasticache_subnets = [cidrsubnet("10.0.0.0/16", 4, 4), cidrsubnet("10.0.0.0/16", 4, 5)]
 
-  azs              = slice(data.aws_availability_zones.available.zone_ids, 0, 2)
-  public_subnets   = [cidrsubnet("10.0.0.0/16", 4, 0), cidrsubnet("10.0.0.0/16", 4, 1)]
-  database_subnets = [cidrsubnet("10.0.0.0/16", 4, 2), cidrsubnet("10.0.0.0/16", 4, 3)]
-  
   enable_ipv6                     = true
   assign_ipv6_address_on_creation = true
 
@@ -28,10 +24,6 @@ module "vpc" {
   
   enable_nat_gateway                     = true
   single_nat_gateway                     = true
-  enable_dns_support   = true
-
-  enable_nat_gateway                     = true
-  single_nat_gateway                     = false
 
   create_database_subnet_group           = true
   create_database_subnet_route_table     = true
