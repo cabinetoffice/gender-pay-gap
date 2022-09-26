@@ -1,3 +1,4 @@
+instance_type          = "t2.small"
 #region Relational database configuration 
 
 rds_config_instance_class = "db.t3.small"
@@ -19,5 +20,7 @@ elb_scheme             = "internet facing"
 elb_load_balancer_type = "application"
 solution_stack_name    = "64bit Amazon Linux 2 v2.3.4 running .NET Core"
 elb_matcher_http_code  = "200"
+env                    = "dev"
+cache_port =  7110
 
 #endregion
