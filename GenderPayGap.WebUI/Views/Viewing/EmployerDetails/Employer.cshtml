@@ -68,7 +68,13 @@
                 <div class="grid-row">
                     <div class="column-full">
                         <hr style="margin-top: 0"/>
-                        <div class="body" style="margin-top: 2em" id="filteringArea">
+                        <div class="body" style="margin-top: 2em">
+                            @await Html.PartialModelAsync(new Details
+                            {
+                                Id = "WhoNeedsToReport",
+                                LinkText = "Who is required to report, and the deadlines",
+                                SummaryPartial = "EmployerDetails/WhoNeedsToReport"
+                            })
                             @{
                                 var years = organisation.GetRecentReports(Global.ShowReportYearCount).Select(report => report.GetReportingPeriod()).ToArray();
                                 var options = new List<SelectItemViewModel>();
@@ -81,22 +87,25 @@
                                     };
                                     options.Add(option);
                                 }
-                                
+
                                 Html.GovUkSelect(new SelectViewModel()
                                 {
                                     Classes = "govuk-select",
                                     Items = options
                                 });
-                            }
-                           
-                            
-                            @{
-                                <input type="hidden" id="selectOptionsFromReports"
-                                       value=@JsonConvert.SerializeObject(organisation .GetRecentReports(Global.ShowReportYearCount).Select(report => report.GetReportingPeriod()).ToArray())>
+                                <div id="filteringArea">
+                                    <input type="hidden" id="selectOptionsFromReports"
+                                           value=@JsonConvert.SerializeObject(
+                                                     organisation.GetRecentReports(
+                                                         Global.ShowReportYearCount)
+                                                         .Select(
+                                                             report => report.GetReportingPeriod())
+                                                         .ToArray())>
+                                </div>
                             }
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
-                                <div class="govuk-warning-text">
+                                <div class="govuk-warning-text" id="warningText">
                                     <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
                                     <strong class="govuk-warning-text__text">
                                         <span class="govuk-warning-text__assistive">Notice</span>
@@ -106,15 +115,6 @@
                             }
                         </div>
 
-                        @await Html.PartialModelAsync(new Details
-                        {
-                            Id = "WhoNeedsToReport",
-                            LinkText = "Who is required to report, and the deadlines",
-                            SummaryPartial = "EmployerDetails/WhoNeedsToReport"
-                        })
-                        <p>
-                            For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.
-                        </p>
 
                     </div>
                 </div>
@@ -325,7 +325,6 @@
 
 @section Scripts {
     <script>
-
         (function() {
             "use strict";
 
@@ -336,20 +335,19 @@
             });
         }());
         
+        var parentForSelect = document.getElementById("filteringArea");
         
-        var parent = document.getElementById("filteringArea");
-        
-        var label = document.createElement("label");
-        label.className = "govuk-label";
-        label.for = "yearFilter";
-        label.textContent = "Filter for a reporting period";
+        var selectLabel = document.createElement("label");
+        selectLabel.className = "govuk-label";
+        selectLabel.for = "yearFilter";
+        selectLabel.textContent = "Filter for a reporting period";
         
         var elements = document.getElementsByClassName("yearTextForFiltering");
         
-        var selectlist = document.createElement("select");
-        selectlist.className = "govuk-select govuk-!-margin-bottom-3";
-        selectlist.id = "filterYearSelect";
-        selectlist.addEventListener("change",function (e){
+        var selectList = document.createElement("select");
+        selectList.className = "govuk-select govuk-!-margin-bottom-3";
+        selectList.id = "filterYearSelect";
+        selectList.addEventListener("change",function (e){
             for (var i = 0; i < elements.length; i++){
                 var tableRow = elements[i];
                 while (tableRow.tagName.toLowerCase() !== "tr"){
@@ -362,25 +360,29 @@
                 }
             }
         }) 
-       
-        parent.appendChild(label);
-        parent.appendChild(selectlist);
-
-        var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
         
+        var selectHint = document.createElement("div");
+        selectHint.className = "govuk-hint";
+        selectHint.textContent = "For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.";
+       
+        parentForSelect.appendChild(selectLabel);
+        parentForSelect.appendChild(selectList);
+        parentForSelect.appendChild(selectHint);
+
         var showAll = document.createElement("option");
         showAll.value = "Show All";
         showAll.text = "Show All";
         showAll.selected = true;
-        selectlist.appendChild(showAll);
+        selectList.appendChild(showAll);
         
+        var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
         for (var i = 1; i < arrayOfYears.length; i++){
              var option = document.createElement("option");
              option.value = arrayOfYears[i];
              option.text = arrayOfYears[i];
-             selectlist.appendChild(option);
+             selectList.appendChild(option);
         }
         
-        selectlist.selectedIndex = 0;
+        selectList.selectedIndex = 0;
     </script>
 }
