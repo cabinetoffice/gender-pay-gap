@@ -2,6 +2,7 @@
 @using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Models.Search
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Newtonsoft.Json
@@ -63,17 +64,35 @@
         </div>
 
         <div class="grid-row">
-            <div class="column-two-thirds">
+            <div class="column-two-thirds ">
                 <div class="grid-row">
                     <div class="column-full">
                         <hr style="margin-top: 0"/>
                         <div class="body" style="margin-top: 2em" id="filteringArea">
                             @{
-                                <input type="hidden" id="selectOptionsFromReports" 
-                                       value=@JsonConvert.SerializeObject(organisation
-                                                                               .GetRecentReports(Global.ShowReportYearCount)
-                                                                               .Select(report => 
-                                                                                   report.GetReportingPeriod()).ToArray())>
+                                var years = organisation.GetRecentReports(Global.ShowReportYearCount).Select(report => report.GetReportingPeriod()).ToArray();
+                                var options = new List<SelectItemViewModel>();
+                                foreach (string year in years)
+                                {
+                                    SelectItemViewModel option = new SelectItemViewModel()
+                                    {
+                                        Value = year,
+                                        Text = year,
+                                    };
+                                    options.Add(option);
+                                }
+                                
+                                Html.GovUkSelect(new SelectViewModel()
+                                {
+                                    Classes = "govuk-select",
+                                    Items = options
+                                });
+                            }
+                           
+                            
+                            @{
+                                <input type="hidden" id="selectOptionsFromReports"
+                                       value=@JsonConvert.SerializeObject(organisation .GetRecentReports(Global.ShowReportYearCount).Select(report => report.GetReportingPeriod()).ToArray())>
                             }
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
@@ -112,7 +131,7 @@
                                     {
                                         Html = 
                                             @<text>
-                                                <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
+                                                <h3 class="heading-small govuk-!-margin-top-0 yearTextForFiltering">@report.GetReportingPeriod() Reporting year</h3>
 
                                                 @{
                                                     ReportStatusBadgeType reportStatus = report.GetBadgeType;
@@ -166,7 +185,7 @@
                                 Html = @<text>
                                            <div>
                                                <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0">Reporting Year</h3>
+                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 ">Reporting Year</h3>
                                                </div>
                                                <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
                                                    <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Report Status</h3>
@@ -190,7 +209,7 @@
                                             @<text>
                                                 <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-margin-bottom-2">
                                                     <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                        <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod()</h3>
+                                                        <h3 class="heading-small govuk-!-margin-top-0 yearTextForFiltering">@report.GetReportingPeriod()</h3>
                                                     </div>
                                                     
                                                     @{
@@ -317,23 +336,34 @@
             });
         }());
         
-
         
         var parent = document.getElementById("filteringArea");
+        
+        var label = document.createElement("label");
+        label.className = "govuk-label";
+        label.for = "yearFilter";
+        label.textContent = "Filter for a reporting period";
+        
+        var elements = document.getElementsByClassName("yearTextForFiltering");
+        
         var selectlist = document.createElement("select");
+        selectlist.className = "govuk-select govuk-!-margin-bottom-3";
         selectlist.id = "filterYearSelect";
         selectlist.addEventListener("change",function (e){
-            if (e.target.value === "2021/22")
-                {
-                    console.log("if reached");
-                    var x = document.getElementsByClassName("govuk-table__body");
-                    console.log(x.length);
-                    x[0].style.display = "none";
-                    x[1].style.display = "none";
+            for (var i = 0; i < elements.length; i++){
+                var tableRow = elements[i];
+                while (tableRow.tagName.toLowerCase() !== "tr"){
+                    tableRow = tableRow.parentElement;    
                 }
-            })
-
-        
+                tableRow.hidden = true;
+                
+                if (elements[i].innerHTML.includes(e.target.value) || e.target.value === "Show All"){
+                    tableRow.hidden = false;
+                }
+            }
+        }) 
+       
+        parent.appendChild(label);
         parent.appendChild(selectlist);
 
         var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
