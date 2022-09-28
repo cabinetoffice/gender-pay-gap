@@ -25,7 +25,7 @@ resource "aws_wafv2_ip_set" "blacklisted_ips" {
 }
 
 resource "aws_wafv2_web_acl" "ehrc" {
-  name        = "gpg-acl"
+  name        = "gpg-acl-${var.env}"
   scope       = "REGIONAL"
   description = "Access control list for the gpg website. Used for securing the EHRC endpoint and limiting bot traffic."
 
