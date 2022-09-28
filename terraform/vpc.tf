@@ -3,7 +3,7 @@ module "vpc" {
   source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 
-  name = join("-", ["gpg-application-vpc", var.env])
+  name = "gpg-application-vpc-${var.env}"
   cidr = "10.0.0.0/16"
 
   azs              = slice(data.aws_availability_zones.available.zone_ids, 0, 2)
@@ -29,20 +29,20 @@ module "vpc" {
   create_database_nat_gateway_route      = true
   create_database_internet_gateway_route = false
 
-  database_subnet_group_name = join("-", ["gpg-db-subnet-group", var.env])
+  database_subnet_group_name = "gpg-db-subnet-group-${var.env}"
   database_subnet_group_tags = {
-    Name = join("-", ["gpg-db-subnet-group", var.env])
+    Name = "gpg-db-subnet-group-${var.env}"
   }
 
   public_subnet_tags = {
-    Name = join("-", ["gpg-public", var.env])
+    Name = "gpg-public-${var.env}"
   }
 
   private_subnet_tags = {
-    Name = join("-", ["gpg-private", var.env])
+    Name = "gpg-private-${var.env}"
   }
 
   vpc_tags = {
-    Name = join("-", ["vpc-gpg-application", var.env])
+    Name = "vpc-gpg-application-${var.env}"
   }
 }
