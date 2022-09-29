@@ -3,7 +3,7 @@
 resource "aws_elasticache_cluster" "redis-cluster" {
   cluster_id           = "gpg-redis-cluster-${var.env}"
   engine               = "redis"
-  node_type            = "cache.t4.small"
+  node_type            = "cache.t4g.small"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis3.2"
   engine_version       = "3.2.10"
