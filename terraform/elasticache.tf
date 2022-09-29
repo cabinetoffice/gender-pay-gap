@@ -8,5 +8,5 @@ resource "aws_elasticache_cluster" "redis-cluster" {
   parameter_group_name = "default.redis3.2"
   engine_version       = "3.2.10"
   port                 = var.cache_port
-  security_group_ids = module.vpc.default_security_group_id
+  security_group_ids   = [module.vpc.default_security_group_id]
 }
