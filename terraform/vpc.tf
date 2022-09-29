@@ -19,6 +19,7 @@ module "vpc" {
 
   public_subnet_ipv6_prefixes   = [0, 1]
   database_subnet_ipv6_prefixes = [2, 3]
+  elasticache_subnet_ipv6_prefixes = [4, 5]
 
   enable_dns_hostnames = true
   enable_dns_support   = true
