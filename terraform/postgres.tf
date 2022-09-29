@@ -1,6 +1,6 @@
 // The security group the database will belong to
 resource "aws_security_group" "allow_postgres_connection" {
-  name        = join("_", ["allow_postgres_connection", var.env])
+  name        = "allow_postgres_connection-${var.env}"
   description = "Allow Postgres DB traffic"
   vpc_id      = module.vpc.vpc_id
 }
@@ -51,7 +51,7 @@ resource "aws_db_instance" "gpg-dev-db" {
   lifecycle {
     ignore_changes = [
       // This will always be different because of the timestamp function, so we ignore it
-      final_snapshot_identifier 
+      final_snapshot_identifier
     ]
   }
 }

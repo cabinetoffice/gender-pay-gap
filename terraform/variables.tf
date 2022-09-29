@@ -106,8 +106,6 @@ variable "POSTGRES_CONFIG_PASSWORD" {
 
 #endregion
 
-variable "gpg_application" {}
-
 variable "solution_stack_name" {
   type = string
 }

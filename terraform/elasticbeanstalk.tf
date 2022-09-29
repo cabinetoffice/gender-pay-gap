@@ -1,4 +1,4 @@
-﻿//S3 bucket containing application version
+//S3 bucket containing application version
 data "aws_s3_bucket" "gpg-application-version-storage" {
   bucket = "gpg-application-version-storage"
 }
@@ -6,18 +6,18 @@ data "aws_s3_bucket" "gpg-application-version-storage" {
 // Archive file 
 data "aws_s3_object" "gpg-archive-zip" {
   bucket = data.aws_s3_bucket.gpg-application-version-storage.id
-  key    = "publish.zip"
+  key    = "publish-${var.env}.zip"
 }
 
 // Application
 resource "aws_elastic_beanstalk_application" "gpg-application" {
-  name        = join("-",["gpg-application", var.env])
+  name        = "gpg-application-${var.env}"
   description = "The GPG application in ${var.env}"
 }
 
 // Application version
 resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
-  name        = join("-",["gpg-version-label", var.env])
+  name        = "gpg-version-label-${var.env}"
   application = aws_elastic_beanstalk_application.gpg-application.name
   description = "application version created by terraform"
   bucket      = data.aws_s3_bucket.gpg-application-version-storage.bucket
@@ -26,7 +26,7 @@ resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
 
 // Beanstalk environment
 resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
-  name                = join("-",["gpg-elb-environment", var.env])
+  name                = "gpg-elb-environment-${var.env}"
   application         = aws_elastic_beanstalk_application.gpg-application.name
   solution_stack_name = var.solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
