@@ -94,6 +94,7 @@ variable "rds_config_skip_final_snapshot" {
   description = "Specifies if on deletion a final snapshot should be created"
 }
 
+// RDS environment variables
 variable "POSTGRES_CONFIG_USERNAME" {
   type        = string
   description = "Database username. Initialized as an environment variable."
@@ -119,6 +120,8 @@ variable "env" {
   type        = string
 }
 
+#region Elastic beanstalk configuration
+
 variable "instance_type" {}
 
 variable "elb_instance_min_size" {}
@@ -139,3 +142,74 @@ variable "elb_health_reporting_system_type" {
 
 variable "cache_port" {
 }
+
+// EB environment variables
+variable "ELB_VCAP_SERVICES" {
+  type = string
+}
+
+variable "ELB_ADMIN_EMAILS" {
+  type = string
+}
+
+variable "ELB_ASPNETCORE_ENVIRONMENT" {
+  type = string
+}
+
+variable "ELB_COMPANIES_HOUSE_API_KEY" {
+  type = string
+}
+
+variable "ELB_DEFAULT_ENCRYPTION_KEY" {
+  type = string
+}
+
+variable "ELB_EHRC_IP_RANGE" {
+  type = string
+}
+
+variable "ELB_GEO_DISTRIBUTION_LIST" {
+  type = string
+}
+
+variable "ELB_GOVUK_NOTIFY_API_KEY" {
+  type = string
+}
+
+variable "ELB_GPG_ANALYSIS_APP_API_PASSWORD" {
+  type = string
+}
+
+variable "ELB_OBFUSCATION_SEED" {
+  type = string
+}
+
+variable "ELB_WEBJOBS_STOPPED" {
+  type = string
+}
+
+variable "ELB_DATA_MIGRATION_PASSWORD" {
+  type = string
+}
+
+variable "ELB_DISABLE_SEARCH_CACHE" {
+  type = string
+}
+
+variable "ELB_BASIC_AUTH_USERNAME" {
+  type = string
+}
+
+variable "ELB_BASIC_AUTH_PASSWORD" {
+  type = string
+}
+
+variable "ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY" {
+  type = string
+}
+
+variable "ELB_REPORTING_START_YEARS_TO_EXCLUDE_FROM_LATE_FLAG_ENFORCEMENT" {
+  type = string
+}
+
+#endregion
