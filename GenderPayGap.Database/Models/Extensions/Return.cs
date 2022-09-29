@@ -79,7 +79,7 @@ namespace GenderPayGap.Database
                 }
                 else if (IsLateSubmission)
                 {
-                    reportStatus = ReportStatusBadgeType.OverDue;
+                    reportStatus = ReportStatusBadgeType.Overdue;
                 }
                 else if (ReturnId != 0)
                 {

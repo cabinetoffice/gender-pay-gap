@@ -344,7 +344,7 @@ namespace GenderPayGap.Core
     public enum ReportStatusBadgeType
     {
         Due,
-        OverDue,
+        Overdue,
         Reported,
         NotRequired,
         NotRequiredDueToCovid,
