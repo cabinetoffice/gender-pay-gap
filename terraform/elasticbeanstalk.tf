@@ -40,7 +40,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "InstanceType"
-    value     = var.elb_instance_type
+    value     = var.instance_type
   }
   setting {
     namespace = "aws:autoscaling:asg"
