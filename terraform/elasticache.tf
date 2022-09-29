@@ -5,8 +5,8 @@ resource "aws_elasticache_cluster" "redis-cluster" {
   engine               = "redis"
   node_type            = "cache.t4g.small"
   num_cache_nodes      = 1
-  parameter_group_name = "default.redis3.2"
-  engine_version       = "3.2.10"
+  parameter_group_name = "default.redis6.x"
   port                 = var.cache_port
   security_group_ids   = [module.vpc.default_security_group_id]
+  subnet_group_name    = module.vpc.elasticache_subnet_group_name
 }
