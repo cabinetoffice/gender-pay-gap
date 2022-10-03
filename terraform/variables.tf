@@ -144,10 +144,6 @@ variable "cache_port" {
 }
 
 // EB environment variables
-variable "ELB_VCAP_SERVICES" {
-  type = string
-}
-
 variable "ELB_ADMIN_EMAILS" {
   type = string
 }
@@ -210,6 +206,20 @@ variable "ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY" {
 
 variable "ELB_REPORTING_START_YEARS_TO_EXCLUDE_FROM_LATE_FLAG_ENFORCEMENT" {
   type = string
+}
+
+#endregion
+#region credidentials
+
+// RDS environment variables
+variable "AWS_ACCESS_KEY_ID" {
+  type        = string
+  description = "AWS access key id. Set as an environment variable."
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type        = string
+  description = "AWS secret access key. Set as an environment variable."
 }
 
 #endregion
