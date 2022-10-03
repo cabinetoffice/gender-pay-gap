@@ -96,7 +96,36 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "VCAP_SERVICES"
-    value     = "{\"postgres\":[{\"credentials\":{\"password\":\"${aws_db_instance.gpg-dev-db.password}\",\"port\":${aws_db_instance.gpg-dev-db.port},\"name\":\"${aws_db_instance.gpg-dev-db.name}\",\"host\":\"${aws_db_instance.gpg-dev-db.endpoint}\",\"username\":\"${aws_db_instance.gpg-dev-db.username}\"},\"name\":\"${aws_db_instance.gpg-dev-db.name}\"}],\"redis\":[{\"credentials\":{\"password\":\"\",\"tls_enabled\":true,\"port\":${aws_elasticache_cluster.redis-cluster.port},\"host\"\"${aws_elasticache_cluster.redis-cluster.cache_nodes[0].address}\"},\"name\":\"gpg-${var.env}-cache\"}],\"aws-s3-bucket\":[{\"name\":\"${aws_s3_bucket.gpg-filestorage.bucket}\",\"credidentials\":{\"aws_region\":\"${var.aws_region}\",\"bucket_name\":\"${aws_s3_bucket.gpg-filestorage.bucket}\", \"aws_access_key_id\":\"${var.AWS_ACCESS_KEY_ID}\",\"aws_secret_access_key\":\"${var.AWS_SECRET_ACCESS_KEY}\"}}]}"
+    value = jsonencode({
+      postgres = [{
+        credentials = {
+          password = aws_db_instance.gpg-dev-db.password,
+          port = aws_db_instance.gpg-dev-db.port,
+          name = aws_db_instance.gpg-dev-db.name,
+          host = aws_db_instance.gpg-dev-db.endpoint
+          username = aws_db_instance.gpg-dev-db.username
+        },
+        name = aws_db_instance.gpg-dev-db.name
+      }],
+      redis = [{
+        credentials = {
+          password = "",
+          tls_enabled = true,
+          port = aws_elasticache_cluster.redis-cluster.port,
+          host = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
+        }
+        name = "gpg-${var.env}-cache"
+      }],
+      aws-s3-bucket = [{
+        name = aws_s3_bucket.gpg-filestorage.bucket,
+        credentials = {
+          aws_region = var.aws_region,
+          bucket_name = aws_s3_bucket.gpg-filestorage.bucket,
+          aws_access_key_id = var.AWS_ACCESS_KEY_ID,
+          aws_secret_access_key = var.AWS_SECRET_ACCESS_KEY
+        }
+      }]
+    })
   }
   
   setting {
