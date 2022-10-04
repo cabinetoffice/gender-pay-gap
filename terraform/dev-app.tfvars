@@ -6,7 +6,7 @@ rds_config_db_name        = "gpg-dev-db"
 
 #endregion
 
-env                    = "dev"
+env = "dev"
 
 #region ElasticBeanstalk configuration
 
@@ -19,6 +19,6 @@ elb_scheme             = "internet facing"
 elb_load_balancer_type = "application"
 solution_stack_name    = "64bit Amazon Linux 2 v2.3.4 running .NET Core"
 elb_matcher_http_code  = "200"
-cache_port =  7110
+cache_port             = 7110
 
 #endregion
