@@ -102,7 +102,7 @@ namespace GenderPayGap.WebUI
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
         {
-            if (Config.IsLocal())
+            if (Config.IsLocal() || Global.EnableConsoleLogging)
             {
                 // Log to Console
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();

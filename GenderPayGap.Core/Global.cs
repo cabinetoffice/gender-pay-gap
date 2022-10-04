@@ -152,6 +152,11 @@ namespace GenderPayGap.Core
 
         #endregion
 
+        #region Settings that help migration to AWS
+
+        public static bool EnableConsoleLogging => Config.GetAppSetting("EnableConsoleLogging").ToBoolean(false);
+        #endregion
+        
         #region Private
 
         private static List<int> LoadListOfIntegers(string setting)
