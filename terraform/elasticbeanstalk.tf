@@ -102,7 +102,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
           password = aws_db_instance.gpg-dev-db.password,
           port     = aws_db_instance.gpg-dev-db.port,
           name     = aws_db_instance.gpg-dev-db.name,
-          host     = aws_db_instance.gpg-dev-db.endpoint
+          host     = aws_db_instance.gpg-dev-db.address,
           username = aws_db_instance.gpg-dev-db.username
         },
         // Identifier ends in -db, which is used by Global.cs to fetch the configuration
