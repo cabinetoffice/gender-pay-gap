@@ -105,7 +105,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
           host     = aws_db_instance.gpg-dev-db.endpoint
           username = aws_db_instance.gpg-dev-db.username
         },
-        name = aws_db_instance.gpg-dev-db.name
+        // Identifier ends in -db, which is used by Global.cs to fetch the configuration
+        name = aws_db_instance.gpg-dev-db.identifier
       }],
       redis = [{
         credentials = {
