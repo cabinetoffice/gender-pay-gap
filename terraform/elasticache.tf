@@ -29,3 +29,25 @@ resource "aws_elasticache_cluster" "redis-cluster" {
 resource "aws_cloudwatch_log_group" "redis" {
   name = "redis"
 } 
+
+resource "aws_security_group" "elasticache_security_group" {
+  name = "elasticache"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 6379
+    to_port          = 6379
+    protocol         = "tcp"
+    cidr_blocks      = [module.vpc.vpc_cidr_block]
+    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
