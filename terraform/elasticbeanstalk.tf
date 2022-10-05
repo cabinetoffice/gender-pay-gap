@@ -70,124 +70,124 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = "/docs"
   }
 
-  
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
     value     = module.vpc.vpc_id
   }
-  
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = join(",", module.vpc.public_subnets)
   }
-  
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "DBSubnets"
     value     = join(",", module.vpc.database_subnets)
   }
-  
+
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "VCAP_SERVICES"
     value     = var.ELB_VCAP_SERVICES
   }
-  
+
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "AdminEmails"
     value     = var.ELB_ADMIN_EMAILS
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "ASPNETCORE_ENVIRONMENT"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "ASPNETCORE_ENVIRONMENT"
     value     = var.ELB_ASPNETCORE_ENVIRONMENT
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "CompaniesHouseApiKey"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "CompaniesHouseApiKey"
     value     = var.ELB_COMPANIES_HOUSE_API_KEY
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "DefaultEncryptionKey"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DefaultEncryptionKey"
     value     = var.ELB_DEFAULT_ENCRYPTION_KEY
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "EhrcIPRange"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "EhrcIPRange"
     value     = var.ELB_EHRC_IP_RANGE
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "GEODistributionList"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "GEODistributionList"
     value     = var.ELB_GEO_DISTRIBUTION_LIST
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "GovUkNotifyApiKey"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "GovUkNotifyApiKey"
     value     = var.ELB_GOVUK_NOTIFY_API_KEY
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "GpgAnalysisAppApiPassword"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "GpgAnalysisAppApiPassword"
     value     = var.ELB_GPG_ANALYSIS_APP_API_PASSWORD
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "ObfuscationSeed"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "ObfuscationSeed"
     value     = var.ELB_OBFUSCATION_SEED
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "WEBJOBS_STOPPED"
-    value     =var.ELB_WEBJOBS_STOPPED
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "WEBJOBS_STOPPED"
+    value     = var.ELB_WEBJOBS_STOPPED
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "DataMigrationPassword"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DataMigrationPassword"
     value     = var.ELB_DATA_MIGRATION_PASSWORD
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "DisableSearchCache"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DisableSearchCache"
     value     = var.ELB_DISABLE_SEARCH_CACHE
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "BasicAuthUsername"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "BasicAuthUsername"
     value     = var.ELB_BASIC_AUTH_USERNAME
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "BasicAuthPassword"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "BasicAuthPassword"
     value     = var.ELB_BASIC_AUTH_PASSWORD
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "FeatureFlagNewReportingJourney"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "FeatureFlagNewReportingJourney"
     value     = var.ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY
   }
-  
+
   setting {
-    namespace      = "aws:elasticbeanstalk:application:environment"
-    name = "ReportingStartYearsToExcludeFromLateFlagEnforcement"
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "ReportingStartYearsToExcludeFromLateFlagEnforcement"
     value     = var.ELB_REPORTING_START_YEARS_TO_EXCLUDE_FROM_LATE_FLAG_ENFORCEMENT
   }
 

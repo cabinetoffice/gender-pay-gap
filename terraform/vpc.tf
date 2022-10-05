@@ -17,8 +17,8 @@ module "vpc" {
 
   database_subnet_assign_ipv6_address_on_creation = false
 
-  public_subnet_ipv6_prefixes   = [0, 1]
-  database_subnet_ipv6_prefixes = [2, 3]
+  public_subnet_ipv6_prefixes      = [0, 1]
+  database_subnet_ipv6_prefixes    = [2, 3]
   elasticache_subnet_ipv6_prefixes = [4, 5]
 
   enable_dns_hostnames = true
@@ -31,7 +31,7 @@ module "vpc" {
   create_database_subnet_route_table     = true
   create_database_nat_gateway_route      = true
   create_database_internet_gateway_route = false
-  create_elasticache_subnet_group = true
+  create_elasticache_subnet_group        = true
 
   database_subnet_group_name = "gpg-db-subnet-group-${var.env}"
   database_subnet_group_tags = {
