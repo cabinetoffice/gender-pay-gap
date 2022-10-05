@@ -3,6 +3,10 @@ data "aws_s3_bucket" "gpg-application-version-storage" {
   bucket = "gpg-application-version-storage"
 }
 
+resource "aws_s3_bucket" "gpg-filestorage" {
+  bucket = "gpg-${var.env}-filestorage"
+}
+
 // Archive file 
 data "aws_s3_object" "gpg-archive-zip" {
   bucket = data.aws_s3_bucket.gpg-application-version-storage.id
@@ -92,7 +96,37 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "VCAP_SERVICES"
-    value     = var.ELB_VCAP_SERVICES
+    value = jsonencode({
+      postgres = [{
+        credentials = {
+          password = aws_db_instance.gpg-dev-db.password,
+          port     = aws_db_instance.gpg-dev-db.port,
+          name     = aws_db_instance.gpg-dev-db.name,
+          host     = aws_db_instance.gpg-dev-db.address,
+          username = aws_db_instance.gpg-dev-db.username
+        },
+        // Identifier ends in -db, which is used by Global.cs to fetch the configuration
+        name = aws_db_instance.gpg-dev-db.identifier
+      }],
+      redis = [{
+        credentials = {
+          password    = "",
+          tls_enabled = true,
+          port        = aws_elasticache_cluster.redis-cluster.port,
+          host        = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
+        }
+        name = "gpg-${var.env}-cache"
+      }],
+      aws-s3-bucket = [{
+        name = aws_s3_bucket.gpg-filestorage.bucket,
+        credentials = {
+          aws_region            = var.aws_region,
+          bucket_name           = aws_s3_bucket.gpg-filestorage.bucket,
+          aws_access_key_id     = var.AWS_ACCESS_KEY_ID,
+          aws_secret_access_key = var.AWS_SECRET_ACCESS_KEY
+        }
+      }]
+    })
   }
 
   setting {
@@ -109,8 +143,26 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "BasicAuthPassword"
+    value     = var.ELB_BASIC_AUTH_PASSWORD
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "BasicAuthUsername"
+    value     = var.ELB_BASIC_AUTH_USERNAME
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "CompaniesHouseApiKey"
     value     = var.ELB_COMPANIES_HOUSE_API_KEY
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DataMigrationPassword"
+    value     = var.ELB_DATA_MIGRATION_PASSWORD
   }
 
   setting {
@@ -121,8 +173,38 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DisableSearchCache"
+    value     = var.ELB_DISABLE_SEARCH_CACHE
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "EhrcIPRange"
     value     = var.ELB_EHRC_IP_RANGE
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "EnableConsoleLogging"
+    value     = var.ELB_ENABLE_CONSOLE_LOGGING
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "FeatureFlagNewReportingJourney"
+    value     = var.ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "FeatureFlagPrivateManualRegistration"
+    value     = var.ELB_FEATURE_FLAG_PRIVATE_MANUAL_REGISTRATION
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "FeatureFlagSendRegistrationReviewEmails"
+    value     = var.ELB_FEATURE_FLAG_SEND_REGISTRATION_REVIEW_EMAILS
   }
 
   setting {
@@ -151,44 +233,32 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "WEBJOBS_STOPPED"
-    value     = var.ELB_WEBJOBS_STOPPED
+    name      = "OffsetCurrentDateTimeForSite"
+    value     = var.ELB_OFFSET_CURRENT_DATE_TIME_FOR_SITE
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "DataMigrationPassword"
-    value     = var.ELB_DATA_MIGRATION_PASSWORD
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "DisableSearchCache"
-    value     = var.ELB_DISABLE_SEARCH_CACHE
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "BasicAuthUsername"
-    value     = var.ELB_BASIC_AUTH_USERNAME
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "BasicAuthPassword"
-    value     = var.ELB_BASIC_AUTH_PASSWORD
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "FeatureFlagNewReportingJourney"
-    value     = var.ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY
+    name      = "ReminderEmailDays"
+    value     = var.ELB_REMINDER_EMAIL_DAYS
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "ReportingStartYearsToExcludeFromLateFlagEnforcement"
     value     = var.ELB_REPORTING_START_YEARS_TO_EXCLUDE_FROM_LATE_FLAG_ENFORCEMENT
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "ReportingStartYearsWithFurloughScheme"
+    value     = var.ELB_REPORTING_START_YEARS_WITH_FURLOUGH_SCHEME
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "WEBJOBS_STOPPED"
+    value     = var.ELB_WEBJOBS_STOPPED
   }
 
 }

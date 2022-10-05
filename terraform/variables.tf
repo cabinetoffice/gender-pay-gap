@@ -144,10 +144,6 @@ variable "cache_port" {
 }
 
 // EB environment variables
-variable "ELB_VCAP_SERVICES" {
-  type = string
-}
-
 variable "ELB_ADMIN_EMAILS" {
   type = string
 }
@@ -156,7 +152,19 @@ variable "ELB_ASPNETCORE_ENVIRONMENT" {
   type = string
 }
 
+variable "ELB_BASIC_AUTH_PASSWORD" {
+  type = string
+}
+
+variable "ELB_BASIC_AUTH_USERNAME" {
+  type = string
+}
+
 variable "ELB_COMPANIES_HOUSE_API_KEY" {
+  type = string
+}
+
+variable "ELB_DATA_MIGRATION_PASSWORD" {
   type = string
 }
 
@@ -164,7 +172,27 @@ variable "ELB_DEFAULT_ENCRYPTION_KEY" {
   type = string
 }
 
+variable "ELB_DISABLE_SEARCH_CACHE" {
+  type = string
+}
+
 variable "ELB_EHRC_IP_RANGE" {
+  type = string
+}
+
+variable "ELB_ENABLE_CONSOLE_LOGGING" {
+  type = string
+}
+
+variable "ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY" {
+  type = string
+}
+
+variable "ELB_FEATURE_FLAG_PRIVATE_MANUAL_REGISTRATION" {
+  type = string
+}
+
+variable "ELB_FEATURE_FLAG_SEND_REGISTRATION_REVIEW_EMAILS" {
   type = string
 }
 
@@ -184,32 +212,38 @@ variable "ELB_OBFUSCATION_SEED" {
   type = string
 }
 
-variable "ELB_WEBJOBS_STOPPED" {
+variable "ELB_OFFSET_CURRENT_DATE_TIME_FOR_SITE" {
   type = string
 }
 
-variable "ELB_DATA_MIGRATION_PASSWORD" {
-  type = string
-}
-
-variable "ELB_DISABLE_SEARCH_CACHE" {
-  type = string
-}
-
-variable "ELB_BASIC_AUTH_USERNAME" {
-  type = string
-}
-
-variable "ELB_BASIC_AUTH_PASSWORD" {
-  type = string
-}
-
-variable "ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY" {
+variable "ELB_REMINDER_EMAIL_DAYS" {
   type = string
 }
 
 variable "ELB_REPORTING_START_YEARS_TO_EXCLUDE_FROM_LATE_FLAG_ENFORCEMENT" {
   type = string
+}
+
+variable "ELB_REPORTING_START_YEARS_WITH_FURLOUGH_SCHEME" {
+  type = string
+}
+
+variable "ELB_WEBJOBS_STOPPED" {
+  type = string
+}
+
+#endregion
+#region credidentials
+
+// RDS environment variables
+variable "AWS_ACCESS_KEY_ID" {
+  type        = string
+  description = "AWS access key id. Set as an environment variable."
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type        = string
+  description = "AWS secret access key. Set as an environment variable."
 }
 
 #endregion
