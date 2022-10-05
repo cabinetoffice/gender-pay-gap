@@ -5,8 +5,27 @@ resource "aws_elasticache_cluster" "redis-cluster" {
   engine               = "redis"
   node_type            = "cache.t4g.small"
   num_cache_nodes      = 1
-  parameter_group_name = "default.redis6.x"
+  parameter_group_name = "default.redis5.0"
   port                 = var.cache_port
   security_group_ids   = [module.vpc.default_security_group_id]
   subnet_group_name    = module.vpc.elasticache_subnet_group_name
+  
+  log_delivery_configuration {
+    destination      = aws_cloudwatch_log_group.redis
+    destination_type = "cloudwatch-logs"
+    log_format       = "text"
+    log_type         = "slow-log"
+  }
+  log_delivery_configuration {
+    destination      = aws_cloudwatch_log_group.redis
+    destination_type = "cloudwatch-logs"
+    log_format       = "text"
+    log_type         = "engine-log"
+  }
+  apply_immediately = true
+  // turn this off after testing
 }
+
+resource "aws_cloudwatch_log_group" "redis" {
+  name = "redis"
+} 
