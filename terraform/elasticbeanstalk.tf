@@ -67,13 +67,48 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "MatcherHTTPCode"
     value     = var.elb_matcher_http_code
   }
+  
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = true
+  }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "DeleteOnTerminate"
+    value     = false
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "RetentionInDays"
+    value     = 7
+  }
+  
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "HealthStreamingEnabled"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "RetentionInDays"
+    value     = 7
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "DeleteOnTerminate"
+    value     = false
+  }
+  
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckPath"
     value     = "/docs"
   }
-
 
   setting {
     namespace = "aws:ec2:vpc"
@@ -91,6 +126,12 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     namespace = "aws:ec2:vpc"
     name      = "DBSubnets"
     value     = join(",", module.vpc.database_subnets)
+  }
+  
+  setting {
+    namespace = "aws:elb:loadbalancer"
+    name      = "ManagedSecurityGroup"
+    value     = module.vpc.default_security_group_id
   }
 
   setting {
@@ -110,8 +151,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
       }],
       redis = [{
         credentials = {
-          password    = "",
-          tls_enabled = true,
           port        = aws_elasticache_cluster.redis-cluster.port,
           host        = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
         }
@@ -261,4 +300,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.ELB_WEBJOBS_STOPPED
   }
 
+}
+
+resource "aws_cloudwatch_log_group" "elb-log-group" {
+  name = "elb_log_group-${var.env}"
 }
