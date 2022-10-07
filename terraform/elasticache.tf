@@ -27,7 +27,7 @@ resource "aws_elasticache_cluster" "redis-cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "redis" {
-  name = "redis-${var.env}"
+  name = "redis-logs-${var.env}"
 } 
 
 resource "aws_security_group" "elasticache_security_group" {
