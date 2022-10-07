@@ -17,7 +17,7 @@ elb_instance_max_size  = 2
 tier                   = "WebServer"
 elb_scheme             = "internet facing"
 elb_load_balancer_type = "application"
-solution_stack_name    = "64bit Amazon Linux 2 v2.3.4 running .NET Core"
+solution_stack_name    = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
 elb_matcher_http_code  = "200"
 cache_port             = 6379
 
