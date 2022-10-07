@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI
             services.Configure<ForwardedHeadersOptions>(
                 options =>
                 {
-                    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor;
                 });
 
             //Add a dedicated httpclient for Google Analytics tracking with exponential retry policy
