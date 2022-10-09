@@ -34,8 +34,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   application         = aws_elastic_beanstalk_application.gpg-application.name
   solution_stack_name = var.solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
+  cname_prefix        = var.cname_prefix    
 
-  //Instance profile for ec2 instance
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"

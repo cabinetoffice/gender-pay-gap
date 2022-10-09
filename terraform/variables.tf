@@ -122,6 +122,9 @@ variable "env" {
 
 #region Elastic beanstalk configuration
 
+variable "cname_prefix" {
+  description = "Optional prefix that sets DNS name of the eb env. Must confirm prefix availability on AWS console."
+}
 variable "instance_type" {}
 
 variable "elb_instance_min_size" {}
@@ -233,7 +236,7 @@ variable "ELB_WEBJOBS_STOPPED" {
 }
 
 #endregion
-#region credidentials
+#region credentials
 
 // RDS environment variables
 variable "AWS_ACCESS_KEY_ID" {
