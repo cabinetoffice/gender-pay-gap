@@ -129,9 +129,15 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   }
   
   setting {
-    namespace = "aws:elb:loadbalancer"
+    namespace = "aws:elbv2:loadbalancer"
     name      = "ManagedSecurityGroup"
-    value     = aws_security_group.load-balancer
+    value     = aws_security_group.load-balancer.id
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "SecurityGroups"
+    value     = aws_security_group.load-balancer.id
   }
 
   setting {
