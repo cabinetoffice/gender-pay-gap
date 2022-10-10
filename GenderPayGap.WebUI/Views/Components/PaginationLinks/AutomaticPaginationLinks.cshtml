@@ -5,11 +5,11 @@
 
     if (Model.GetCurrentPageIndex() != -1)
     {
-        PaginationLinkViewModel leftLink = null;
+        GpgPaginationLinkViewModel leftLink = null;
         if (Model.GetCurrentPageIndex() - 1 >= 0)
         {
             PaginationPage leftPage = Model.Pages[Model.GetCurrentPageIndex() - 1];
-            leftLink = new PaginationLinkViewModel
+            leftLink = new GpgPaginationLinkViewModel
             {
                 Title = "Previous",
                 Text = leftPage.Title,
@@ -17,11 +17,11 @@
             };
         }
 
-        PaginationLinkViewModel rightLink = null;
+        GpgPaginationLinkViewModel rightLink = null;
         if (Model.GetCurrentPageIndex() + 1 < Model.Pages.Count)
         {
             PaginationPage rightPage = Model.Pages[Model.GetCurrentPageIndex() + 1];
-            rightLink = new PaginationLinkViewModel
+            rightLink = new GpgPaginationLinkViewModel
             {
                 Title = "Next",
                 Text = rightPage.Title,
@@ -29,7 +29,7 @@
             };
         }
 
-        await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
+        await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new GpgPaginationLinksViewModel
         {
             LeftLink = leftLink,
             RightLink = rightLink
