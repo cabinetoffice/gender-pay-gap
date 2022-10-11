@@ -301,7 +301,3 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   }
 
 }
-
-resource "aws_cloudwatch_log_group" "elb-log-group" {
-  name = "elb_log_group-${var.env}"
-}
