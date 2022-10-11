@@ -87,13 +87,8 @@
                                     };
                                     options.Add(option);
                                 }
-
-                                Html.GovUkSelect(new SelectViewModel()
-                                {
-                                    Classes = "govuk-select",
-                                    Items = options
-                                });
-                                <div id="filteringArea">
+                            }
+                            <div id="filteringArea">
                                     <input type="hidden" id="selectOptionsFromReports"
                                            value=@JsonConvert.SerializeObject(
                                                      organisation.GetRecentReports(
@@ -101,8 +96,7 @@
                                                          .Select(
                                                              report => report.GetReportingPeriod())
                                                          .ToArray())>
-                                </div>
-                            }
+                            </div>
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
                                 <div class="govuk-warning-text" id="warningText">
