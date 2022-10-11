@@ -349,10 +349,7 @@
         selectList.id = "filterYearSelect";
         selectList.addEventListener("change",function (e){
             for (var i = 0; i < elements.length; i++){
-                var tableRow = elements[i];
-                while (tableRow.tagName.toLowerCase() !== "tr"){
-                    tableRow = tableRow.parentElement;    
-                }
+                var tableRow = elements[i].closest("tr");
                 tableRow.hidden = true;
                 
                 if (elements[i].innerHTML.includes(e.target.value) || e.target.value === "Show All"){
@@ -376,13 +373,12 @@
         selectList.appendChild(showAll);
         
         var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
-        for (var i = 1; i < arrayOfYears.length; i++){
+        for (var i = 0; i < arrayOfYears.length; i++){
              var option = document.createElement("option");
              option.value = arrayOfYears[i];
              option.text = arrayOfYears[i];
              selectList.appendChild(option);
         }
         
-        selectList.selectedIndex = 0;
     </script>
 }
