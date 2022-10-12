@@ -266,7 +266,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 string organisationIdEncrypted = organisation.GetEncryptedId();
-                return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = organisationIdEncrypted});
+                return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = organisationIdEncrypted, page = 0});
             }
 
             if (string.IsNullOrWhiteSpace(e))
@@ -274,7 +274,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return new HttpBadRequestResult("EmployerDetails: \'e\' query parameter was null or white space");
             }
 
-            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = e});
+            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = e, page = 0});
         }
 
         [HttpGet("employer-{employerIdentifier}")]
@@ -291,11 +291,11 @@ namespace GenderPayGap.WebUI.Controllers
             int employerIdentifierId = employerIdentifier.ToInt32();
             string shortUrlObfuscatedEmployerIdentifier = Obfuscator.Obfuscate(employerIdentifierId);
 
-            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier});
+            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier, page = 0});
         }
 
         [HttpGet("~/Employer/{employerIdentifier}")]
-        public IActionResult Employer(string employerIdentifier)
+        public IActionResult Employer(string employerIdentifier, int? page = 0)
         {
             if (string.IsNullOrWhiteSpace(employerIdentifier))
             {
@@ -330,7 +330,8 @@ namespace GenderPayGap.WebUI.Controllers
                     Organisation = organisationLoadingOutcome.Result,
                     LastSearchUrl = SearchViewService.GetLastSearchUrl(),
                     EmployerBackUrl = EmployerBackUrl,
-                    ComparedEmployers = CompareViewService.ComparedEmployers.Value
+                    ComparedEmployers = CompareViewService.ComparedEmployers.Value,
+                    Page = page
                 });
         }
 
@@ -361,7 +362,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
 
-        [HttpGet("~/Employer/{employerIdentifier}/{year}")]
+        [HttpGet("~/EmployerReport/{employerIdentifier}/{year}")]
         public IActionResult Report(string employerIdentifier, int year)
         {
             if (string.IsNullOrWhiteSpace(employerIdentifier))

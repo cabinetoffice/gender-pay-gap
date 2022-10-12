@@ -62,235 +62,250 @@
         </div>
 
         <div class="grid-row">
-            <div class="column-two-thirds">
-                <div class="grid-row">
-                    <div class="column-full">
-                        <hr style="margin-top: 0"/>
-                        <div class="body" style="margin-top: 2em">
-                            @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
-                            {
-                                <div class="govuk-warning-text">
-                                    <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
-                                    <strong class="govuk-warning-text__text">
-                                        <span class="govuk-warning-text__assistive">Notice</span>
-                                        This page is no longer updated. The organisation may no longer be in operation or operating under a different name
-                                    </strong>
-                                </div>
-                            }
+        <div class="column-two-thirds">
+        <div class="grid-row">
+            <div class="column-full">
+                <hr style="margin-top: 0"/>
+                <div class="body" style="margin-top: 2em">
+                    @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
+                    {
+                        <div class="govuk-warning-text">
+                            <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
+                            <strong class="govuk-warning-text__text">
+                                <span class="govuk-warning-text__assistive">Notice</span>
+                                This page is no longer updated. The organisation may no longer be in operation or operating under a different name
+                            </strong>
                         </div>
-
-                        @await Html.PartialModelAsync(new Details
-                        {
-                            Id = "WhoNeedsToReport",
-                            LinkText = "Who is required to report, and the deadlines",
-                            SummaryPartial = "EmployerDetails/WhoNeedsToReport"
-                        })
-                        <p>
-                            For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.
-                        </p>
-
-                    </div>
+                    }
                 </div>
-                @{ 
-                    var mobileRows = organisation
-                        .GetRecentReports(Global.ShowReportYearCount)
-                        .Select
-                        (
-                            report => new TableRowViewModel
-                            {
-                                Row = new List<TableCellViewModel>
-                                {
-                                    new TableCellViewModel
-                                    {
-                                        Html = 
-                                            @<text>
-                                                <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
 
-                                                @{
-                                                    ReportStatusBadgeType reportStatus = report.GetBadgeType;
-                                                    
-                                                    if(report.GetBadgeType == ReportStatusBadgeType.NotRequired && organisation.GetIsInscope(report.AccountingDate.Year))
-                                                    {
-                                                        reportStatus = ReportStatusBadgeType.Due;
-                                                    }
-                                                    
-                                                    await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
-                                                        new ReportStatusBadgeViewModel
-                                                        {
-                                                            DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
-                                                            ReportStatus = reportStatus
-                                                        });
-                                                }
-                                                    
-                                                <br>
-                                                @switch(reportStatus)
-                                                {
-                                                    case ReportStatusBadgeType.NotRequiredDueToCovid:
-                                                            <p>
-                                                                The deadline for 2019/20
-                                                                @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
-                                                                @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
-                                                                Coronavirus (COVID-19), enforcement of reporting deadlines does not
-                                                                apply to employers in the 2019/20 reporting year.
-                                                            </p>
-                                                        break;
-                                                    case ReportStatusBadgeType.Reported:
-                                                            <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
-                                                                View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
-                                                            </a>
-                                                            <p>
-                                                                This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/MM/yyyy")
-                                                            </p>
-                                                        break;
-                                                }
-                                            </text>
-                                    }
-                                }
-                            }
-                        )
-                        .ToList();
-                    var desktopHeader = new TableRowViewModel
-                    {
-                        Row = new List<TableCellViewModel>
-                        {
-                            new TableCellViewModel
-                            {
-                                Html = @<text>
-                                           <div>
-                                               <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0">Reporting Year</h3>
-                                               </div>
-                                               <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Report Status</h3>
-                                               </div>
+                @await Html.PartialModelAsync(new Details
+                {
+                    Id = "WhoNeedsToReport",
+                    LinkText = "Who is required to report, and the deadlines",
+                    SummaryPartial = "EmployerDetails/WhoNeedsToReport"
+                })
+                <p>
+                    For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.
+                </p>
 
-                                           </div>
-                                        </text>
-                            }
-                        }
-                    };
-                    var desktopRows = organisation
-                            .GetRecentReports(Global.ShowReportYearCount)
-                            .Select(
-                            report => new TableRowViewModel
-                            {
-                                Row = new List<TableCellViewModel>
-                                {
-                                    new TableCellViewModel
-                                    {
-                                        Html = 
-                                            @<text>
-                                                <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-margin-bottom-2">
-                                                    <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                        <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod()</h3>
-                                                    </div>
-                                                    
-                                                    @{
-                                                        ReportStatusBadgeType reportStatus = report.GetBadgeType;
-    
-                                                        if (report.GetBadgeType == ReportStatusBadgeType.NotRequired && organisation.GetIsInscope(report.AccountingDate.Year))
-                                                        {
-                                                            reportStatus = ReportStatusBadgeType.Due;
-                                                        }
-    
-                                                        <div class="govuk-grid-column-one-half govuk-!-padding-right-0">
-                                                            @{ await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
-                                                                   new ReportStatusBadgeViewModel
-                                                                   {
-                                                                       DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
-                                                                       ReportStatus = reportStatus,
-                                                                       Desktop = true
-                                                                   }); }
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <br>
-                                                
-                                                @switch (reportStatus)
-                                                {
-                                                    case ReportStatusBadgeType.NotRequiredDueToCovid:
-                                                        <p class="govuk-body">
-                                                            The deadline for 2019/20
-                                                            @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
-                                                            @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
-                                                            Coronavirus (COVID-19), enforcement of reporting deadlines does not
-                                                            apply to employers in the 2019/20 reporting year.
-                                                        </p>
-                                                        break;
-                                                    case ReportStatusBadgeType.Reported:
-                                                        <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0">
-                                                            <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
-                                                                <p class="govuk-body">
-                                                                    This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/MM/yyyy")
-                                                                </p>
-                                                            </div>
-                                                            
-                                                            <div class="govuk-grid-column-one-third govuk-!-padding-right-0">
-                                                                <a class="govuk-link govuk-employer-table-right" href="@(Url.Action("Report", new { employerIdentifier, year = report.AccountingDate.Year }))">
-                                                                    View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
-                                                                </a>
-                                                            </div>
-
-                                                        </div>
-                                                        break;
-                                                }
-                                             </text>
-                                    }
-                                }
-                            }
-                        ).ToList();
-                    
-                    int indexOfCompanyJoined = organisation.GetRecentReports(Global.ShowReportYearCount).ToList().FindIndex(report => Model.Organisation.Created > ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate));
-                    var dateJoinedRow = new TableRowViewModel
-                    {
-                        Row = new List<TableCellViewModel>
-                        {
-                            new TableCellViewModel
-                            {
-                                Html = @<text>
-                                            @await Html.GovUkHint(
-                                                     new HintViewModel
-                                                     {
-                                                         Text = "Employer joined Gender Pay Gap service on " + @Model.Organisation.Created.ToString("dd/MM/yyyy"),
-                                                         Classes = "govuk-!-margin-top-4 govuk-!-text-align-centre"
-                                                     })
-                                        </text>
-                            }
-                        }
-                    };
-
-                    if(indexOfCompanyJoined >= 0)
-                    {
-                        mobileRows.Insert(indexOfCompanyJoined, dateJoinedRow);
-                        desktopRows.Insert(indexOfCompanyJoined, dateJoinedRow);
-                    }
-                    else
-                    {
-                        mobileRows.Add(dateJoinedRow);
-                        desktopRows.Add(dateJoinedRow);
-                    }
-                    if (desktopRows.Count > 0)
-                    {
-                        desktopRows.Insert(0,desktopHeader);
-                    }
-
-                }
-                @await Html.GovUkTable(new TableGovUkViewModel
-                    {
-                        Head = new List<TableCellViewModel>(),
-                        Rows = desktopRows,
-                        Classes = "gpg-govuk-hideOnMobile"
-                    })
-                @await Html.GovUkTable(new TableGovUkViewModel
-                    {
-                        FirstCellIsHeader = false,
-                        Head = new List<TableCellViewModel>(),
-                        Rows = mobileRows,
-                        Classes = "gpg-govuk-hideOnDesktop"
-                    })
             </div>
+        </div>
+        @{ 
+            var mobileRows = organisation
+                .GetRecentReports(Global.ShowReportYearCount)
+                .Select
+                (
+                    report => new TableRowViewModel
+                    {
+                        Row = new List<TableCellViewModel>
+                        {
+                            new TableCellViewModel
+                            {
+                                Html = 
+                                    @<text>
+                                        <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
 
-            @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
+                                        @{
+                                            ReportStatusBadgeType reportStatus = report.GetBadgeType;
+                                                    
+                                            if(report.GetBadgeType == ReportStatusBadgeType.NotRequired && organisation.GetIsInscope(report.AccountingDate.Year))
+                                            {
+                                                reportStatus = ReportStatusBadgeType.Due;
+                                            }
+                                                    
+                                            await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
+                                                new ReportStatusBadgeViewModel
+                                                {
+                                                    DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
+                                                    ReportStatus = reportStatus
+                                                });
+                                        }
+                                                    
+                                        <br>
+                                        @switch(reportStatus)
+                                        {
+                                            case ReportStatusBadgeType.NotRequiredDueToCovid:
+                                                <p>
+                                                    The deadline for 2019/20
+                                                    @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
+                                                    @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
+                                                    Coronavirus (COVID-19), enforcement of reporting deadlines does not
+                                                    apply to employers in the 2019/20 reporting year.
+                                                </p>
+                                                break;
+                                            case ReportStatusBadgeType.Reported:
+                                                <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
+                                                    View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
+                                                </a>
+                                                <p>
+                                                    This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/MM/yyyy")
+                                                </p>
+                                                break;
+                                        }
+                                     </text>
+                            }
+                        }
+                    }
+                )
+                .ToList();
+            var desktopHeader = new TableRowViewModel
+            {
+                Row = new List<TableCellViewModel>
+                {
+                    new TableCellViewModel
+                    {
+                        Html = @<text>
+                                   <div>
+                                       <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
+                                           <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0">Reporting Year</h3>
+                                       </div>
+                                       <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
+                                           <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Report Status</h3>
+                                       </div>
+
+                                   </div>
+                                </text>
+                    }
+                }
+            };
+            var desktopRows = organisation
+                .GetRecentReports(Global.ShowReportYearCount)
+                .Select(
+                    report => new TableRowViewModel
+                    {
+                        Row = new List<TableCellViewModel>
+                        {
+                            new TableCellViewModel
+                            {
+                                Html = 
+                                    @<text>
+                                        <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-margin-bottom-2">
+                                            <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
+                                                <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod()</h3>
+                                            </div>
+                                                    
+                                            @{
+                                                ReportStatusBadgeType reportStatus = report.GetBadgeType;
+    
+                                                if (report.GetBadgeType == ReportStatusBadgeType.NotRequired && organisation.GetIsInscope(report.AccountingDate.Year))
+                                                {
+                                                    reportStatus = ReportStatusBadgeType.Due;
+                                                }
+    
+                                                <div class="govuk-grid-column-one-half govuk-!-padding-right-0">
+                                                    @{ await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
+                                                           new ReportStatusBadgeViewModel
+                                                           {
+                                                               DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
+                                                               ReportStatus = reportStatus,
+                                                               Desktop = true
+                                                           }); }
+                                                </div>
+                                            }
+                                        </div>
+                                        <br>
+                                                
+                                        @switch (reportStatus)
+                                        {
+                                            case ReportStatusBadgeType.NotRequiredDueToCovid:
+                                                <p class="govuk-body">
+                                                    The deadline for 2019/20
+                                                    @(report.AccountingDate.AddYears(1) > VirtualDateTime.Now ? "is" : "was")
+                                                    @(report.AccountingDate.AddYears(1).AddDays(-1).ToString("d MMMM yyyy")). Due to
+                                                    Coronavirus (COVID-19), enforcement of reporting deadlines does not
+                                                    apply to employers in the 2019/20 reporting year.
+                                                </p>
+                                                break;
+                                            case ReportStatusBadgeType.Reported:
+                                                <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0">
+                                                    <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
+                                                        <p class="govuk-body">
+                                                            This report was due for @ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("dd/MM/yyyy")
+                                                        </p>
+                                                    </div>
+                                                            
+                                                    <div class="govuk-grid-column-one-third govuk-!-padding-right-0">
+                                                        <a class="govuk-link govuk-employer-table-right" href="@(Url.Action("Report", new { employerIdentifier, year = report.AccountingDate.Year }))">
+                                                            View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
+                                                        </a>
+                                                    </div>
+
+                                                </div>
+                                                break;
+                                        }
+                                     </text>
+                            }
+                        }
+                    }
+                ).ToList();
+                    
+            int indexOfCompanyJoined = organisation.GetRecentReports(Global.ShowReportYearCount).ToList().FindIndex(report => Model.Organisation.Created > ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate));
+            var dateJoinedRow = new TableRowViewModel
+            {
+                Row = new List<TableCellViewModel>
+                {
+                    new TableCellViewModel
+                    {
+                        Html = @<text>
+                                   @await Html.GovUkHint(
+                                       new HintViewModel
+                                       {
+                                           Text = "Employer joined Gender Pay Gap service on " + @Model.Organisation.Created.ToString("dd/MM/yyyy"),
+                                           Classes = "govuk-!-margin-top-4 govuk-!-text-align-centre"
+                                       })
+                                </text>
+                    }
+                }
+            };
+
+            if(indexOfCompanyJoined >= 0)
+            {
+                mobileRows.Insert(indexOfCompanyJoined, dateJoinedRow);
+                desktopRows.Insert(indexOfCompanyJoined, dateJoinedRow);
+            }
+            else
+            {
+                mobileRows.Add(dateJoinedRow);
+                desktopRows.Add(dateJoinedRow);
+            }
+            if (desktopRows.Count > 0)
+            {
+                desktopRows.Insert(0,desktopHeader);
+            }
+
+        }
+        @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = new List<TableCellViewModel>(),
+            Rows = desktopRows,
+            Classes = "gpg-govuk-hideOnMobile"
+        })
+        @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            FirstCellIsHeader = false,
+            Head = new List<TableCellViewModel>(),
+            Rows = mobileRows,
+            Classes = "gpg-govuk-hideOnDesktop"
+        })
+            @await Html.GovUkPagination(new PaginationViewModel()
+                {
+                    Next = new PaginationLinkViewModel()
+                    {
+                        Text = "Next page",
+                        LabelText = "2 of 2",
+                        Href = Url.Action("Employer", new {employerIdentifier, })
+                    },
+                    Previous = new PaginationLinkViewModel()
+                    {
+                        Text = "Previous page",
+                        LabelText = "1 of 2",
+                        Href = "http://www.google.com/"
+                    },
+
+                })
+            </div>
+        @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
         </div>
     </div>
 </div>

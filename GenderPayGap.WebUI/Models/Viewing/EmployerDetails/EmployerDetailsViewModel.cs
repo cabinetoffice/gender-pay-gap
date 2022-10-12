@@ -12,6 +12,7 @@ namespace GenderPayGap.WebUI.Models
         public string EmployerBackUrl { get; set; }
 
         public SessionList<string> ComparedEmployers { get; set; }
+        public int? Page { get; set; }
 
     }
 }
