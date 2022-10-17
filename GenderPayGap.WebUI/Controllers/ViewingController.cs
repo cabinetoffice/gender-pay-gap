@@ -295,7 +295,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("~/Employer/{employerIdentifier}")]
-        public IActionResult Employer(string employerIdentifier, int? page = 0)
+        public IActionResult Employer(string employerIdentifier, int? page = 1)
         {
             if (string.IsNullOrWhiteSpace(employerIdentifier))
             {
@@ -323,6 +323,25 @@ namespace GenderPayGap.WebUI.Controllers
             ReportBackUrl = null;
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
+            
+            int totalEntries = organisationLoadingOutcome.Result.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
+            int maxEntriesPerPage = 10;
+            int remainder = totalEntries % maxEntriesPerPage;
+            int totalPages = (int)MathF.Floor(totalEntries / maxEntriesPerPage);
+            if (remainder > 0)
+            {
+                totalPages++;
+            }
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
 
             return View(
                 "EmployerDetails/Employer",
@@ -331,7 +350,9 @@ namespace GenderPayGap.WebUI.Controllers
                     LastSearchUrl = SearchViewService.GetLastSearchUrl(),
                     EmployerBackUrl = EmployerBackUrl,
                     ComparedEmployers = CompareViewService.ComparedEmployers.Value,
-                    Page = page
+                    CurrentPage = page,
+                    TotalPages = totalPages,
+                    EntriesPerPage = maxEntriesPerPage
                 });
         }
 

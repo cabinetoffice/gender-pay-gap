@@ -92,7 +92,7 @@
             </div>
         </div>
         @{ 
-            var mobileRows = organisation
+            var allMobileRows = organisation
                 .GetRecentReports(Global.ShowReportYearCount)
                 .Select
                 (
@@ -169,7 +169,7 @@
                     }
                 }
             };
-            var desktopRows = organisation
+            var allDesktopRows = organisation
                 .GetRecentReports(Global.ShowReportYearCount)
                 .Select(
                     report => new TableRowViewModel
@@ -261,48 +261,72 @@
 
             if(indexOfCompanyJoined >= 0)
             {
-                mobileRows.Insert(indexOfCompanyJoined, dateJoinedRow);
-                desktopRows.Insert(indexOfCompanyJoined, dateJoinedRow);
+                allMobileRows.Insert(indexOfCompanyJoined, dateJoinedRow);
+                allDesktopRows.Insert(indexOfCompanyJoined, dateJoinedRow);
             }
             else
             {
-                mobileRows.Add(dateJoinedRow);
-                desktopRows.Add(dateJoinedRow);
+                allMobileRows.Add(dateJoinedRow);
+                allDesktopRows.Add(dateJoinedRow);
             }
-            if (desktopRows.Count > 0)
+
+            int currentPage = Model.CurrentPage ?? 1;
+            int entriesPerPage = Model.EntriesPerPage ?? 10;
+            int startIndex = (currentPage - 1) * entriesPerPage;
+            int endIndex = startIndex + entriesPerPage > allDesktopRows.Count ? allDesktopRows.Count : startIndex + entriesPerPage;
+            
+            List<TableRowViewModel> desktopDisplayRows = new List<TableRowViewModel>();
+            List<TableRowViewModel> mobileDisplayRows = new List<TableRowViewModel>();
+            
+            for (int i = startIndex; i < endIndex; i++)
             {
-                desktopRows.Insert(0,desktopHeader);
+                mobileDisplayRows.Add(allMobileRows[i]);
+                desktopDisplayRows.Add(allDesktopRows[i]);
+            }
+
+            if (desktopDisplayRows.Count > 0)
+            {
+                desktopDisplayRows.Insert(0,desktopHeader);
             }
 
         }
         @await Html.GovUkTable(new TableGovUkViewModel
         {
             Head = new List<TableCellViewModel>(),
-            Rows = desktopRows,
+            Rows = desktopDisplayRows,
             Classes = "gpg-govuk-hideOnMobile"
         })
         @await Html.GovUkTable(new TableGovUkViewModel
         {
             FirstCellIsHeader = false,
             Head = new List<TableCellViewModel>(),
-            Rows = mobileRows,
+            Rows = mobileDisplayRows,
             Classes = "gpg-govuk-hideOnDesktop"
         })
+        @{
+            var nextLink = new PaginationLinkViewModel()
+            {
+                Text = "Next page",
+                LabelText = $"{Model.CurrentPage + 1} of {Model.TotalPages}",
+                Href = Url.Action("Employer", new {employerIdentifier, page = Model.CurrentPage + 1})
+            };
+
+            var previousLink = new PaginationLinkViewModel()
+            {
+                Text = "Previous page",
+                LabelText = $"{Model.CurrentPage - 1} of {Model.TotalPages}",
+                Href = Url.Action("Employer", new {employerIdentifier, page = Model.CurrentPage - 1})
+            };
+
+            if (Model.TotalPages < 2 || Model.CurrentPage == Model.TotalPages)
+                nextLink = null;
+            if (Model.CurrentPage < 2)
+                previousLink = null;
+        }
             @await Html.GovUkPagination(new PaginationViewModel()
                 {
-                    Next = new PaginationLinkViewModel()
-                    {
-                        Text = "Next page",
-                        LabelText = "2 of 2",
-                        Href = Url.Action("Employer", new {employerIdentifier, })
-                    },
-                    Previous = new PaginationLinkViewModel()
-                    {
-                        Text = "Previous page",
-                        LabelText = "1 of 2",
-                        Href = "http://www.google.com/"
-                    },
-
+                    Next = nextLink,
+                    Previous = previousLink,
                 })
             </div>
         @await Html.PartialAsync("/Views/Submit/RelatedContent.cshtml")
