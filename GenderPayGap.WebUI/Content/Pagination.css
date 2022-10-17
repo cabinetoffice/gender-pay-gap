@@ -155,3 +155,16 @@
         margin-left: 30px;
     }
 }
+
+.govuk-pagination__link-title{
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    display: inline-block;
+    color: #1D70B8;
+}
+
+.govuk-pagination__link-label{
+    display: inline-block;
+    color: #1D70B8;
+}

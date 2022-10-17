@@ -325,7 +325,7 @@ namespace GenderPayGap.WebUI.Controllers
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
             
             int totalEntries = organisationLoadingOutcome.Result.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
-            int maxEntriesPerPage = 10;
+            int maxEntriesPerPage = 3;
             int remainder = totalEntries % maxEntriesPerPage;
             int totalPages = (int)MathF.Floor(totalEntries / maxEntriesPerPage);
             if (remainder > 0)
