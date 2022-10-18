@@ -131,13 +131,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elbv2:loadbalancer"
     name      = "ManagedSecurityGroup"
-    value     = aws_security_group.load-balancer.id
-  }
-
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "SecurityGroups"
-    value     = aws_security_group.load-balancer.id
+    value     = module.vpc.default_security_group_id
   }
   
   setting {
@@ -312,43 +306,4 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.ELB_WEBJOBS_STOPPED
   }
 
-}
-
-resource "aws_security_group" "load-balancer" {
-  name = "load-balancer-${var.env}"
-  vpc_id = module.vpc.vpc_id
-
-  ingress {
-    description      = "TLS from VPC"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = [module.vpc.vpc_cidr_block]
-    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
-  }
-
-  ingress {
-    description      = "TLS from VPC"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = [module.vpc.vpc_cidr_block]
-    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
-  }
-  
-  egress {
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = [module.vpc.vpc_cidr_block]
-    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
-  }
-
-  egress {
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = [module.vpc.vpc_cidr_block]
-    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
-  }
 }
