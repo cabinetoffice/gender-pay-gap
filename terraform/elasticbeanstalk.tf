@@ -419,8 +419,8 @@ resource "aws_lb" "elb-load-balancer" {
   name               = "elb-load-balancer-${var.env}"
   internal           = false
   load_balancer_type = var.elb_load_balancer_type
-  security_groups    = [aws_security_group.load-balancer]
-  subnets            = module.vpc.public_subnets
+  security_groups    = [aws_security_group.load-balancer.id]
+  subnets            = [for id in module.vpc.public_subnets : id]
 
   enable_deletion_protection = false // turn to true on prod
 }
