@@ -129,7 +129,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   }
   
   setting {
-    namespace = "aws:elbv2:loadbalancer"
+    namespace = "aws:elb:loadbalancer"
     name      = "ManagedSecurityGroup"
     value     = module.vpc.default_security_group_id
   }
