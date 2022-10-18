@@ -70,7 +70,13 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elbv2:loadbalancer"
     name      = "ManagedSecurityGroup"
-    value     = module.vpc.default_security_group_id
+    value     = aws_security_group.load-balancer.id
+  }
+  
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "SecurityGroups"
+    value     = aws_security_group.load-balancer.id
   }
   
   // HTTPS secure listener
@@ -407,4 +413,55 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.ELB_WEBJOBS_STOPPED
   }
 
+}
+
+resource "aws_lb" "elb-load-balancer" {
+  name               = "elb-load-balancer-${var.env}"
+  internal           = false
+  load_balancer_type = var.elb_load_balancer_type
+  security_groups    = [aws_security_group.load-balancer]
+  subnets            = module.vpc.public_subnets
+
+  enable_deletion_protection = false // turn to true on prod
+}
+
+resource "aws_security_group" "load-balancer" {
+  name = "load-balancer-${var.env}"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    description      = "HTTPS INGRESS"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "HTTPS"
+    cidr_blocks      = [module.vpc.vpc_cidr_block]
+    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
+  }
+
+  ingress {
+    description      = "HTTP INGRESS"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "HTTP"
+    cidr_blocks      = [module.vpc.vpc_cidr_block]
+    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
+  }
+
+  egress {
+    description      = "HTTPS EGRESS"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "HTTPS"
+    cidr_blocks      = [module.vpc.vpc_cidr_block]
+    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
+  }
+
+  egress {
+    description      = "HTTP EGRESS"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "HTTP"
+    cidr_blocks      = [module.vpc.vpc_cidr_block]
+    ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
+  }
 }
