@@ -28,14 +28,82 @@ resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
   key         = data.aws_s3_object.gpg-archive-zip.key
 }
 
-// Beanstalk environment
+// Elastic beanstalk environment
 resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   name                = "gpg-elb-environment-${var.env}"
   application         = aws_elastic_beanstalk_application.gpg-application.name
   solution_stack_name = var.solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
-  cname_prefix        = var.cname_prefix    
+  cname_prefix        = var.cname_prefix
+  
+  // Elastic beanstalk VPC config
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = module.vpc.vpc_id
+  }
 
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     = join(",", module.vpc.public_subnets)
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "DBSubnets"
+    value     = join(",", module.vpc.database_subnets)
+  }
+
+  // Elastic beanstalk load balancer config
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = var.elb_load_balancer_type
+  }
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = var.elb_scheme
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "ManagedSecurityGroup"
+    value     = module.vpc.default_security_group_id
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "ListenerEnabled"
+    value     = "true"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "DefaultProcess"
+    value     = "default"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLPolicy"
+    value     = var.elb_ssl_policy
+  }
+  
+  // Elastic beanstalk autoscaling config
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
@@ -51,23 +119,15 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "MaxSize"
     value     = var.elb_instance_max_size
   }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "LoadBalancerType"
-    value     = var.elb_load_balancer_type
-  }
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = var.elb_scheme
-  }
 
+  // Elastic beanstalk static assets config
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "MatcherHTTPCode"
-    value     = var.elb_matcher_http_code
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/images"
+    value     = "wwwroot/assets/images"
   }
   
+  // Elastic beanstalk log config
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "StreamLogs"
@@ -86,6 +146,19 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = 7
   }
   
+  // Elastic beanstalk health check config
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "MatcherHTTPCode"
+    value     = var.elb_matcher_http_code
+  }
+  
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
+    value     = "/"
+  }
+
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
     name      = "HealthStreamingEnabled"
@@ -103,43 +176,9 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "DeleteOnTerminate"
     value     = false
   }
-  
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "HealthCheckPath"
-    value     = "/docs"
-  }
 
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = module.vpc.vpc_id
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "Subnets"
-    value     = join(",", module.vpc.public_subnets)
-  }
-
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "DBSubnets"
-    value     = join(",", module.vpc.database_subnets)
-  }
-  
-  setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = module.vpc.default_security_group_id
-  }
-  
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
-    name      = "png"
-    value     = "/wwwroot/assets/images"
-  }
-
+  // Elastic beanstalk environment variables
+  // VCAP services is a legacy object from PaaS
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "VCAP_SERVICES"

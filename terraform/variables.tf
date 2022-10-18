@@ -143,8 +143,13 @@ variable "elb_health_reporting_system_type" {
   default = "enhanced"
 }
 
-variable "cache_port" {
+variable "elb_ssl_policy" {}
+
+variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS" {
+  type = string
+  description = "Passed in as environment variable"
 }
+variable "cache_port" {}
 
 // EB environment variables
 variable "ELB_ADMIN_EMAILS" {
