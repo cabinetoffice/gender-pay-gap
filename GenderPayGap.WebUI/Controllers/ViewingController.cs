@@ -266,7 +266,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
 
                 string organisationIdEncrypted = organisation.GetEncryptedId();
-                return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = organisationIdEncrypted, page = 0});
+                return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = organisationIdEncrypted});
             }
 
             if (string.IsNullOrWhiteSpace(e))
@@ -274,7 +274,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return new HttpBadRequestResult("EmployerDetails: \'e\' query parameter was null or white space");
             }
 
-            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = e, page = 0});
+            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = e});
         }
 
         [HttpGet("employer-{employerIdentifier}")]
@@ -291,7 +291,7 @@ namespace GenderPayGap.WebUI.Controllers
             int employerIdentifierId = employerIdentifier.ToInt32();
             string shortUrlObfuscatedEmployerIdentifier = Obfuscator.Obfuscate(employerIdentifierId);
 
-            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier, page = 0});
+            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier});
         }
 
         [HttpGet("~/Employer/{employerIdentifier}")]
@@ -326,12 +326,7 @@ namespace GenderPayGap.WebUI.Controllers
             
             int totalEntries = organisationLoadingOutcome.Result.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
             int maxEntriesPerPage = 10;
-            int remainder = totalEntries % maxEntriesPerPage;
-            int totalPages = (int)MathF.Floor(totalEntries / maxEntriesPerPage);
-            if (remainder > 0)
-            {
-                totalPages++;
-            }
+            int totalPages = (int)MathF.Ceiling(totalEntries / maxEntriesPerPage);
 
             if (page < 1)
             {
