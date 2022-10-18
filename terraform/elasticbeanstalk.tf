@@ -433,7 +433,7 @@ resource "aws_security_group" "load-balancer" {
     description      = "HTTPS INGRESS"
     from_port        = 443
     to_port          = 443
-    protocol         = "HTTPS"
+    protocol         = "tcp"
     cidr_blocks      = [module.vpc.vpc_cidr_block]
     ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
   }
@@ -442,7 +442,7 @@ resource "aws_security_group" "load-balancer" {
     description      = "HTTP INGRESS"
     from_port        = 80
     to_port          = 80
-    protocol         = "HTTP"
+    protocol         = "tcp"
     cidr_blocks      = [module.vpc.vpc_cidr_block]
     ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
   }
@@ -451,7 +451,7 @@ resource "aws_security_group" "load-balancer" {
     description      = "HTTPS EGRESS"
     from_port        = 443
     to_port          = 443
-    protocol         = "HTTPS"
+    protocol         = "tcp"
     cidr_blocks      = [module.vpc.vpc_cidr_block]
     ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
   }
@@ -460,7 +460,7 @@ resource "aws_security_group" "load-balancer" {
     description      = "HTTP EGRESS"
     from_port        = 80
     to_port          = 80
-    protocol         = "HTTP"
+    protocol         = "tcp"
     cidr_blocks      = [module.vpc.vpc_cidr_block]
     ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
   }
