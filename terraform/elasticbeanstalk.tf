@@ -72,7 +72,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "ManagedSecurityGroup"
     value     = module.vpc.default_security_group_id
   }
-
+  
+  // HTTPS secure listener
   setting {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
@@ -102,7 +103,20 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "SSLPolicy"
     value     = var.elb_ssl_policy
   }
+
+  // HTTPS secure listener matching process
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "Port"
+    value     = "443"
+  }
   
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "Protocol"
+    value     = "HTTPS"
+  }
+
   // Elastic beanstalk autoscaling config
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
@@ -159,6 +173,54 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = "/"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "DeregistrationDelay"
+    value     = 20
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckInterval"
+    value     = 15
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckTimeout"
+    value     = 5
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthyThresholdCount"
+    value     = 3
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "UnhealthyThresholdCount"
+    value     = 5
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "Port"
+    value     = 80
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "Protocol"
+    value     = "HTTP"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "StickinessEnabled"
+    value     = false
+  }
+  
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
     name      = "HealthStreamingEnabled"
