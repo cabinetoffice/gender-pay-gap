@@ -182,7 +182,7 @@
                                     @<text>
                                         <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-margin-bottom-2">
                                             <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod()</h3>
+                                                <h3 class="heading-small govuk-!-margin-top-3">@report.GetReportingPeriod()</h3>
                                             </div>
                                                     
                                             @{
@@ -193,7 +193,7 @@
                                                     reportStatus = ReportStatusBadgeType.Due;
                                                 }
     
-                                                <div class="govuk-grid-column-one-half govuk-!-padding-right-0">
+                                                <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-margin-top-3">
                                                     @{ await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
                                                            new ReportStatusBadgeViewModel
                                                            {
@@ -294,14 +294,14 @@
         {
             Head = new List<TableCellViewModel>(),
             Rows = desktopDisplayRows,
-            Classes = "gpg-govuk-hideOnMobile"
+            Classes = "gpg-govuk-hideOnMobile govuk-!-margin-bottom-0"
         })
         @await Html.GovUkTable(new TableGovUkViewModel
         {
             FirstCellIsHeader = false,
             Head = new List<TableCellViewModel>(),
             Rows = mobileDisplayRows,
-            Classes = "gpg-govuk-hideOnDesktop"
+            Classes = "gpg-govuk-hideOnDesktop govuk-!-margin-bottom-0"
         })
         @{
             var nextLink = new PaginationLinkViewModel()
