@@ -139,6 +139,12 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "SecurityGroups"
     value     = aws_security_group.load-balancer.id
   }
+  
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "png"
+    value     = "/wwwroot/assets/images"
+  }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
