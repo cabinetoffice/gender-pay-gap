@@ -255,3 +255,11 @@ variable "AWS_SECRET_ACCESS_KEY" {
 }
 
 #endregion
+
+#region cloudfront config
+
+variable "cloudfront_origin_id" {}
+
+variable "CLOUDFRONT_ACM_CERT_ARN" {}
+
+#endregion

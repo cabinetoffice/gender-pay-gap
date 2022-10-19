@@ -21,6 +21,7 @@ solution_stack_name    = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
 elb_matcher_http_code  = "200"
 cache_port             = 6379
 cname_prefix           = "gpg-dev"
-elb_ssl_policy         = "ELBSecurityPolicy-2016-08" 
+elb_ssl_policy         = "ELBSecurityPolicy-2016-08"
+cloudfront_origin_id   = "gpg-load-balancer-dev"
 
 #endregion
