@@ -174,7 +174,7 @@ publish/
 *.nupkg
 # The packages folder can be ignored because of Package Restore
 **/packages/*
-# The Lib folder can be ignored because of design library changes.
+# We allow .nupkg files in the lib folder for design library changes.
 !Lib/*.nupkg
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
