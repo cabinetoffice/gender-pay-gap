@@ -2,7 +2,7 @@
   provider            = aws.us-east-1   
   
   origin {
-    domain_name = data.aws_lb.load-balancer.name
+    domain_name = data.aws_lb.load-balancer.dns_name
     origin_id   = var.cloudfront_origin_id
     custom_origin_config {
       http_port              = "80"
@@ -59,4 +59,7 @@
     ssl_support_method = "sni-only"
   }
   
+  depends_on = [
+    aws_elastic_beanstalk_environment.gpg-elb-environment
+  ]
 }
