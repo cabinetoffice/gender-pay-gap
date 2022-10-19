@@ -2,7 +2,7 @@
   provider            = aws.us-east-1   
   
   origin {
-    domain_name = aws_elastic_beanstalk_environment.gpg-elb-environment.endpoint_url
+    domain_name = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
     origin_id   = var.cloudfront_origin_id
     
     origin_shield {
@@ -23,10 +23,10 @@
     target_origin_id = var.cloudfront_origin_id
 
     forwarded_values { // deprecated fields. resolved instead through cache policy 
-      query_string = false
+      query_string = true
 
       cookies {
-        forward = "none"
+        forward = "all"
       }
     }
 
