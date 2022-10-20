@@ -23,5 +23,6 @@ cache_port             = 6379
 cname_prefix           = "gpg-dev"
 elb_ssl_policy         = "ELBSecurityPolicy-2016-08"
 cloudfront_origin_id   = "gpg-load-balancer-dev"
+route_53_domain        = "gender-pay-gap-test.codatt.net"
 
 #endregion

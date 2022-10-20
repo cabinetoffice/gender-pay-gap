@@ -35,7 +35,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   solution_stack_name = var.solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
   cname_prefix        = var.cname_prefix
-  
+
   // Elastic beanstalk VPC config
   setting {
     namespace = "aws:ec2:vpc"
@@ -66,7 +66,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "ELBScheme"
     value     = var.elb_scheme
   }
-  
+
   // HTTPS secure listener
   setting {
     namespace = "aws:elbv2:listener:443"
@@ -104,7 +104,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "Port"
     value     = "443"
   }
-  
+
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Protocol"
@@ -134,7 +134,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "/images"
     value     = "wwwroot/assets/images"
   }
-  
+
   // Elastic beanstalk log config
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
@@ -153,14 +153,14 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "RetentionInDays"
     value     = 7
   }
-  
+
   // Elastic beanstalk health check config
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "MatcherHTTPCode"
     value     = var.elb_matcher_http_code
   }
-  
+
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckPath"
@@ -214,7 +214,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "StickinessEnabled"
     value     = false
   }
-  
+
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
     name      = "HealthStreamingEnabled"
@@ -252,8 +252,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
       }],
       redis = [{
         credentials = {
-          port        = aws_elasticache_cluster.redis-cluster.port,
-          host        = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
+          port = aws_elasticache_cluster.redis-cluster.port,
+          host = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
         }
         name = "gpg-${var.env}-cache"
       }],

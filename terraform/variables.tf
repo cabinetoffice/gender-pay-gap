@@ -146,7 +146,7 @@ variable "elb_health_reporting_system_type" {
 variable "elb_ssl_policy" {}
 
 variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS" {
-  type = string
+  type        = string
   description = "Passed in as environment variable"
 }
 variable "cache_port" {}
@@ -261,5 +261,11 @@ variable "AWS_SECRET_ACCESS_KEY" {
 variable "cloudfront_origin_id" {}
 
 variable "CLOUDFRONT_ACM_CERT_ARN" {}
+
+#endregion
+
+#region route 53 config
+
+variable "route_53_domain" {}
 
 #endregion

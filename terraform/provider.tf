@@ -23,7 +23,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region  // no alias is provided so will be used as default
+  region = var.aws_region // no alias is provided so will be used as default
 }
 
 provider "aws" {

@@ -1,5 +1,5 @@
 resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
-  provider = aws.us-east-1
+  provider    = aws.us-east-1
   name        = "ehrc-rotected-request-address"
   description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
   scope       = "CLOUDFRONT"
@@ -10,7 +10,7 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
 }
 
 resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
-  provider = aws.us-east-1
+  provider           = aws.us-east-1
   name               = "ehrc-whitelisted-ips"
   description        = "EHRC whitelisted IPs. Only these IPs can access the protected endpoint." // Of the form .../download?p=filename
   scope              = "CLOUDFRONT"
@@ -19,7 +19,7 @@ resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
 }
 
 resource "aws_wafv2_ip_set" "blacklisted_ips" {
-  provider = aws.us-east-1
+  provider           = aws.us-east-1
   name               = "blacklisted-ips"
   description        = "Blacklisted IPs. These IPs cannot connect to the website."
   scope              = "CLOUDFRONT"
@@ -28,7 +28,7 @@ resource "aws_wafv2_ip_set" "blacklisted_ips" {
 }
 
 resource "aws_wafv2_web_acl" "ehrc" {
-  provider = aws.us-east-1
+  provider    = aws.us-east-1
   name        = "gpg-acl-${var.env}"
   scope       = "CLOUDFRONT"
   description = "Access control list for the gpg website. Used for securing the EHRC endpoint and limiting bot traffic."
