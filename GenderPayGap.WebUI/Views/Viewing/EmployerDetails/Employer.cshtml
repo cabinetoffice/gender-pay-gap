@@ -62,22 +62,22 @@
         </div>
 
         <div class="grid-row">
-        <div class="column-two-thirds">
-        <div class="grid-row">
-            <div class="column-full">
-                <hr style="margin-top: 0"/>
-                <div class="body" style="margin-top: 2em">
-                    @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
-                    {
-                        <div class="govuk-warning-text">
-                            <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
-                            <strong class="govuk-warning-text__text">
-                                <span class="govuk-warning-text__assistive">Notice</span>
-                                This page is no longer updated. The organisation may no longer be in operation or operating under a different name
-                            </strong>
+            <div class="column-two-thirds">
+                <div class="grid-row">
+                    <div class="column-full">
+                        <hr style="margin-top: 0"/>
+                        <div class="body" style="margin-top: 2em">
+                        @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
+                        {
+                            <div class="govuk-warning-text">
+                                <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
+                                <strong class="govuk-warning-text__text">
+                                    <span class="govuk-warning-text__assistive">Notice</span>
+                                    This page is no longer updated. The organisation may no longer be in operation or operating under a different name
+                                </strong>
+                            </div>
+                        }
                         </div>
-                    }
-                </div>
 
                 @await Html.PartialModelAsync(new Details
                 {
