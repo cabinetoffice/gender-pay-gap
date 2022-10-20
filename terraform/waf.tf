@@ -1,6 +1,17 @@
-resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
+resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address-gpg" {
   provider    = aws.us-east-1
   name        = "ehrc-protected-request-address-${var.env}"
+  description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
+  scope       = "CLOUDFRONT"
+
+  regular_expression {
+    regex_string = "^/download(/)?[?]p=(.*)$"
+  }
+}
+
+resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
+  provider    = aws.us-east-1
+  name        = "ehrc-protected-request-address"
   description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
   scope       = "CLOUDFRONT"
 
