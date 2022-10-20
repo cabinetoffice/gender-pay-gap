@@ -21,7 +21,7 @@
   is_ipv6_enabled     = true
   web_acl_id = aws_wafv2_web_acl.ehrc.arn
 
-  aliases = []  // cnames string comma sep list
+  aliases = ["gender-pay-gap-test.codatt.net"]
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
