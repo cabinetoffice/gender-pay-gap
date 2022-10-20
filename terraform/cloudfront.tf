@@ -1,6 +1,6 @@
-﻿resource "aws_cloudfront_distribution" "gpg-distribution" {
-  provider            = aws.us-east-1   
-  
+resource "aws_cloudfront_distribution" "gpg-distribution" {
+  provider = aws.us-east-1
+
   origin {
     domain_name = data.aws_lb.load-balancer.dns_name
     origin_id   = var.cloudfront_origin_id
@@ -10,16 +10,16 @@
       origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
     }
-    
+
     origin_shield {
       enabled              = true
       origin_shield_region = "us-east-2"
     }
   }
 
-  enabled             = true
-  is_ipv6_enabled     = true
-  web_acl_id = aws_wafv2_web_acl.ehrc.arn
+  enabled         = true
+  is_ipv6_enabled = true
+  web_acl_id      = aws_wafv2_web_acl.ehrc.arn
 
   aliases = ["gender-pay-gap-test.codatt.net"]
 
@@ -43,7 +43,7 @@
   }
 
   price_class = "PriceClass_200"
-  
+
   restrictions {
     geo_restriction {
       restriction_type = "none"
@@ -56,9 +56,9 @@
 
   viewer_certificate {
     acm_certificate_arn = var.CLOUDFRONT_ACM_CERT_ARN
-    ssl_support_method = "sni-only"
+    ssl_support_method  = "sni-only"
   }
-  
+
   depends_on = [
     aws_elastic_beanstalk_environment.gpg-elb-environment
   ]
