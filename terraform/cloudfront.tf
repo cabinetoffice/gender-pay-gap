@@ -48,10 +48,6 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     acm_certificate_arn = var.CLOUDFRONT_ACM_CERT_ARN
     ssl_support_method  = "sni-only"
   }
-
-  depends_on = [
-    aws_elastic_beanstalk_environment.gpg-elb-environment
-  ]
 }
 
 resource "aws_cloudfront_cache_policy" "authorisation" {
