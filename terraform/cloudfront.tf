@@ -30,14 +30,6 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     target_origin_id = var.cloudfront_origin_id
     cache_policy_id = aws_cloudfront_cache_policy.authorisation.id
 
-    forwarded_values {
-      query_string = true
-
-      cookies {
-        forward = "all"
-      }
-    }
-
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
     default_ttl            = 3600
