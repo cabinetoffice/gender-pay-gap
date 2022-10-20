@@ -18,10 +18,28 @@ resource "aws_wafv2_ip_set" "ehrc_allowlisted_ips" {
   addresses          = [for ip in split("\n", file("EHRCDownload-IP-Whitelist.txt")) : trimspace(ip)]
 }
 
+resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
+  provider           = aws.us-east-1
+  name               = "ehrc-whitelisted-ips"
+  description        = "EHRC whitelisted IPs. Only these IPs can access the protected endpoint." // Of the form .../download?p=filename
+  scope              = "CLOUDFRONT"
+  ip_address_version = "IPV4"
+  addresses          = [for ip in split("\n", file("EHRCDownload-IP-Whitelist.txt")) : trimspace(ip)]
+}
+
 resource "aws_wafv2_ip_set" "denylisted_ips" {
   provider           = aws.us-east-1
   name               = "denylisted-ips-${var.env}"
   description        = "Denylisted IPs. These IPs cannot connect to the website."
+  scope              = "CLOUDFRONT"
+  ip_address_version = "IPV4"
+  addresses          = [for ip in split("\n", file("GPG-IP-Denylist.txt")) : trimspace(ip)]
+}
+
+resource "aws_wafv2_ip_set" "blacklisted_ips" {
+  provider           = aws.us-east-1
+  name               = "blacklisted-ips"
+  description        = "Blacklisted IPs. These IPs cannot connect to the website."
   scope              = "CLOUDFRONT"
   ip_address_version = "IPV4"
   addresses          = [for ip in split("\n", file("GPG-IP-Denylist.txt")) : trimspace(ip)]
