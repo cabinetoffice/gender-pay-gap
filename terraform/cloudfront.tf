@@ -28,7 +28,7 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = var.cloudfront_origin_id
-    cache_policy_id = aws_cloudfront_cache_policy.authorisation.id
+    cache_policy_id  = aws_cloudfront_cache_policy.authorisation.id
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
@@ -76,5 +76,9 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
     query_strings_config {
       query_string_behavior = "all"
     }
+    
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
   }
+
 }
