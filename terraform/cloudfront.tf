@@ -44,10 +44,6 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     }
   }
 
-  tags = {
-    env = "dev"
-  }
-
   viewer_certificate {
     acm_certificate_arn = var.CLOUDFRONT_ACM_CERT_ARN
     ssl_support_method  = "sni-only"
@@ -59,7 +55,7 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
 }
 
 resource "aws_cloudfront_cache_policy" "authorisation" {
-  name        = "authorisation-policy"
+  name        = "authorisation-policy-${var.env}"
   default_ttl = 84600
   max_ttl     = 3156000
   min_ttl     = 1
