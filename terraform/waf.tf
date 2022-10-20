@@ -9,19 +9,19 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
   }
 }
 
-resource "aws_wafv2_ip_set" "ehrc_whitelisted_ips" {
+resource "aws_wafv2_ip_set" "ehrc_allowlisted_ips" {
   provider           = aws.us-east-1
-  name               = "ehrc-whitelisted-ips-${var.env}"
-  description        = "EHRC whitelisted IPs. Only these IPs can access the protected endpoint." // Of the form .../download?p=filename
+  name               = "ehrc-allowlisted-ips-${var.env}"
+  description        = "EHRC allowlisted IPs. Only these IPs can access the protected endpoint." // Of the form .../download?p=filename
   scope              = "CLOUDFRONT"
   ip_address_version = "IPV4"
   addresses          = [for ip in split("\n", file("EHRCDownload-IP-Whitelist.txt")) : trimspace(ip)]
 }
 
-resource "aws_wafv2_ip_set" "blacklisted_ips" {
+resource "aws_wafv2_ip_set" "denylisted_ips" {
   provider           = aws.us-east-1
-  name               = "blacklisted-ips-${var.env}"
-  description        = "Blacklisted IPs. These IPs cannot connect to the website."
+  name               = "denylisted-ips-${var.env}"
+  description        = "Denylisted IPs. These IPs cannot connect to the website."
   scope              = "CLOUDFRONT"
   ip_address_version = "IPV4"
   addresses          = [for ip in split("\n", file("GPG-IP-Denylist.txt")) : trimspace(ip)]
@@ -38,7 +38,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
   }
 
   rule {
-    name     = "blacklist"
+    name     = "denylist"
     priority = 0
 
     action {
@@ -47,13 +47,13 @@ resource "aws_wafv2_web_acl" "ehrc" {
 
     statement {
       ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.blacklisted_ips.arn
+        arn = aws_wafv2_ip_set.denylisted_ips.arn
       }
     }
 
     visibility_config {
       cloudwatch_metrics_enabled = false
-      metric_name                = "blacklist-metric"
+      metric_name                = "denylist-metric"
       sampled_requests_enabled   = false
     }
   }
@@ -80,7 +80,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
   }
 
   rule {
-    name     = "ehrc-whitelist"
+    name     = "ehrc-allowlist"
     priority = 2
 
     action {
@@ -106,7 +106,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
           not_statement {
             statement {
               ip_set_reference_statement {
-                arn = aws_wafv2_ip_set.ehrc_whitelisted_ips.arn
+                arn = aws_wafv2_ip_set.ehrc_allowlisted_ips.arn
               }
             }
           }
@@ -116,7 +116,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
 
     visibility_config {
       cloudwatch_metrics_enabled = false
-      metric_name                = "ehrc-whitelist-metric"
+      metric_name                = "ehrc-allowlist-metric"
       sampled_requests_enabled   = false
     }
   }
