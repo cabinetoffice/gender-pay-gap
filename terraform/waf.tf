@@ -7,16 +7,9 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address-gpg" {
   regular_expression {
     regex_string = "^/download(/)?[?]p=(.*)$"
   }
-}
 
-resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
-  provider    = aws.us-east-1
-  name        = "ehrc-rotected-request-address"
-  description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
-  scope       = "CLOUDFRONT"
-
-  regular_expression {
-    regex_string = "^/download(/)?[?]p=(.*)$"
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -44,6 +37,10 @@ resource "aws_wafv2_web_acl" "ehrc" {
   scope       = "CLOUDFRONT"
   description = "Access control list for the gpg website. Used for securing the EHRC endpoint and limiting bot traffic."
 
+  lifecycle {
+    create_before_destroy = true
+  }
+  
   default_action {
     allow {}
   }
