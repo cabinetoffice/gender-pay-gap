@@ -9,17 +9,6 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address-gpg" {
   }
 }
 
-resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address" {
-  provider    = aws.us-east-1
-  name        = "ehrc-rotected-request-address"
-  description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
-  scope       = "CLOUDFRONT"
-
-  regular_expression {
-    regex_string = "^/download(/)?[?]p=(.*)$"
-  }
-}
-
 resource "aws_wafv2_ip_set" "ehrc_allowlisted_ips" {
   provider           = aws.us-east-1
   name               = "ehrc-allowlisted-ips-${var.env}"
@@ -105,7 +94,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
             field_to_match {
               uri_path {}
             }
-            arn = aws_wafv2_regex_pattern_set.ehrc_protected_request_address.arn
+            arn = aws_wafv2_regex_pattern_set.ehrc_protected_request_address-gpg.arn
             text_transformation {
               priority = 0
               type     = "NONE"
