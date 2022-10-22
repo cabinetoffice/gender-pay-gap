@@ -59,7 +59,7 @@ module "vpc" {
   flow_log_cloudwatch_iam_role_arn                = aws_iam_role.cloudwatch-flow-log.arn
   flow_log_cloudwatch_log_group_retention_in_days = 180
   flow_log_destination_arn                        = aws_cloudwatch_log_group.gpg-flow-log.arn
-  flow_log_destination_type                       = "cloud-watch-log"
+  flow_log_destination_type                       = "cloud-watch-logs"
   flow_log_per_hour_partition                     = true
   flow_log_cloudwatch_log_group_kms_key_id        = null
 }

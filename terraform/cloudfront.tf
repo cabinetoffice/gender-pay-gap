@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = aws_s3_bucket.resource-log-bucket
+    bucket          = aws_s3_bucket.resource-log-bucket.arn
     prefix          = var.cloudfront_logging_prefix
   }
 }
