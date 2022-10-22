@@ -54,6 +54,7 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     bucket          = aws_s3_bucket.resource-log-bucket.arn
     prefix          = var.cloudfront_logging_prefix
   }
+  depends_on = [aws_s3_bucket.resource-log-bucket]
 }
 
 resource "aws_cloudfront_cache_policy" "authorisation" {
