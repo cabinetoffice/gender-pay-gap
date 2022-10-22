@@ -82,5 +82,5 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
 }
 
 resource "aws_s3_bucket" "resource-log-bucket" {
-  bucket = "resource-log-bucket"
+  bucket = "resource-log-bucket-${var.env}"
 }
