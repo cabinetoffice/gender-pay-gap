@@ -54,4 +54,59 @@ module "vpc" {
   vpc_tags = {
     Name = "vpc-gpg-application-${var.env}"
   }
+
+  enable_flow_log                                 = true
+  flow_log_cloudwatch_iam_role_arn                = aws_iam_role.cloudwatch-flow-log.arn
+  flow_log_cloudwatch_log_group_retention_in_days = 180
+  flow_log_destination_arn                        = aws_cloudwatch_log_group.gpg-flow-log.arn
+  flow_log_destination_type                       = "cloud-watch-log"
+  flow_log_per_hour_partition                     = true
+  flow_log_cloudwatch_log_group_kms_key_id        = null
+}
+
+resource "aws_cloudwatch_log_group" "gpg-flow-log" {
+  name = "gpg-flow-logs-${var.env}"
+}
+resource "aws_iam_role" "cloudwatch-flow-log" {
+  name = "cloudwatch-assume-role-${var.env}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "cloudwatch-flow-log" {
+  name = "cloudwatch-iam-role-policy-${var.env}"
+  role = aws_iam_role.cloudwatch-flow-log.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
 }

@@ -48,10 +48,20 @@ resource "aws_db_instance" "gpg-dev-db" {
   multi_az                    = var.rds_config_multi_az
   skip_final_snapshot         = var.rds_config_skip_final_snapshot
   final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
+
+  // Backups and deletion 
+  deletion_protection      = false // should be true when application goes live
+  delete_automated_backups = true  // should be false when in production
+
   lifecycle {
     ignore_changes = [
       // This will always be different because of the timestamp function, so we ignore it
       final_snapshot_identifier
     ]
   }
+
+  // Logging and monitoring
+  enabled_cloudwatch_logs_exports = ["postgresql"]
+  monitoring_interval             = var.rds_config_monitoring_interval
+  monitoring_role_arn             = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }

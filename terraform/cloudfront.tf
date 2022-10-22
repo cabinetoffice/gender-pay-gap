@@ -48,6 +48,12 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     acm_certificate_arn = var.CLOUDFRONT_ACM_CERT_ARN
     ssl_support_method  = "sni-only"
   }
+
+  logging_config {
+    include_cookies = false
+    bucket          = aws_s3_bucket.resource-log-bucket
+    prefix          = var.cloudfront_logging_prefix
+  }
 }
 
 resource "aws_cloudfront_cache_policy" "authorisation" {
@@ -60,16 +66,20 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
       cookie_behavior = "all"
     }
     headers_config {
-      header_behavior = "all"
+      header_behavior = "whitelist"
       headers {
+        items = ["Authorization"]
       }
     }
     query_strings_config {
       query_string_behavior = "all"
     }
-    
+
     enable_accept_encoding_brotli = true
     enable_accept_encoding_gzip   = true
   }
+}
 
+resource "aws_s3_bucket" "resource-log-bucket" {
+  bucket = "resource-log-bucket"
 }

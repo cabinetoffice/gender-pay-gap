@@ -13,6 +13,12 @@ variable "example_s3_versioning_enabled" {
 
 #region Relational database configuration 
 
+variable "rds_config_monitoring_interval" {
+  type        = number
+  default     = 60
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance"
+}
+
 variable "rds_config_allocated_storage" {
   type        = number
   default     = 100
@@ -261,6 +267,8 @@ variable "AWS_SECRET_ACCESS_KEY" {
 variable "cloudfront_origin_id" {}
 
 variable "CLOUDFRONT_ACM_CERT_ARN" {}
+
+variable "cloudfront_logging_prefix" {}
 
 #endregion
 

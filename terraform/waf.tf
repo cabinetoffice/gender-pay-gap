@@ -40,7 +40,7 @@ resource "aws_wafv2_web_acl" "ehrc" {
   lifecycle {
     create_before_destroy = true
   }
-  
+
   default_action {
     allow {}
   }
@@ -134,4 +134,18 @@ resource "aws_wafv2_web_acl" "ehrc" {
     metric_name                = "alc-metric"
     sampled_requests_enabled   = false
   }
+}
+
+resource "aws_wafv2_web_acl_logging_configuration" "waf-logging-config" {
+  log_destination_configs = [aws_cloudwatch_log_group.waf-log-group.arn]
+  resource_arn            = aws_wafv2_web_acl.ehrc.arn
+  redacted_fields {
+    single_header {
+      name = "user-agent"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "waf-log-group" {
+  name = "waf-${var.env}"
 }
