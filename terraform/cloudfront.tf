@@ -60,9 +60,8 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
       cookie_behavior = "all"
     }
     headers_config {
-      header_behavior = "whitelist"
+      header_behavior = "all"
       headers {
-        items = ["Authorization"]
       }
     }
     query_strings_config {
