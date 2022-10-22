@@ -69,7 +69,7 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
     headers_config {
       header_behavior = "whitelist"
       headers {
-        items = ["Authorization"]
+        items = ["Authorization", "Host"]
       }
     }
     query_strings_config {
