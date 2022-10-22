@@ -51,10 +51,10 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = aws_s3_bucket.resource-log-bucket.bucket_domain_name
+    bucket          = aws_s3_bucket.resource-logs-bucket.bucket_domain_name
     prefix          = var.cloudfront_logging_prefix
   }
-  depends_on = [aws_s3_bucket.resource-log-bucket]
+  depends_on = [aws_s3_bucket.resource-logs-bucket]
 }
 
 resource "aws_cloudfront_cache_policy" "authorisation" {
@@ -81,6 +81,10 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
   }
 }
 
-resource "aws_s3_bucket" "resource-log-bucket" {
+resource "aws_s3_bucket" "resource-logs-bucket" {
   bucket = "resource-log-bucket-${var.env}"
+}
+
+resource "aws_s3_bucket" "resource-log-bucket" {
+  bucket = "resource-log-bucket"
 }
