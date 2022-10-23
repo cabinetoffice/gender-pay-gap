@@ -97,6 +97,12 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "SSLPolicy"
     value     = var.elb_ssl_policy
   }
+  
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name = "Rules"
+    value = "default"
+  }
 
   // HTTPS secure listener matching process
   setting {
@@ -409,3 +415,18 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
 }
 
+resource "aws_lb_listener" "redirect-to-https" {
+  load_balancer_arn = data.aws_lb.load-balancer
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
