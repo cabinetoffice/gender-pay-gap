@@ -416,7 +416,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 }
 
 resource "aws_lb_listener" "redirect-to-https" {
-  load_balancer_arn = data.aws_lb.load-balancer
+  load_balancer_arn = data.aws_lb.load-balancer.arn
   port              = "80"
   protocol          = "HTTP"
 
