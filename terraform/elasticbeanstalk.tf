@@ -162,6 +162,12 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   }
 
   setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "MatcherHTTPCode"
+    value     = var.elb_matcher_http_code
+  }
+  
+  setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckPath"
     value     = "/"
