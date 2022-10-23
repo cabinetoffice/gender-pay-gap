@@ -113,7 +113,7 @@ namespace GenderPayGap.WebUI
             services.AddAntiforgery(
                 options =>
                 {
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
 
             //Add services needed for sessions
@@ -121,7 +121,7 @@ namespace GenderPayGap.WebUI
                 o =>
                 {
                     o.Cookie.IsEssential = true; //This is required otherwise session will not load
-                    o.Cookie.SecurePolicy = CookieSecurePolicy.None; //Equivalent to <httpCookies requireSSL="true" /> from Web.Config
+                    o.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Equivalent to <httpCookies requireSSL="true" /> from Web.Config
                     o.Cookie.HttpOnly = true; //Session cookie should not be accessible by client-side scripts
                     o.IdleTimeout = TimeSpan.FromDays(30); // This is how long the session DATA is kept, not how long the cookie lasts
                 });
