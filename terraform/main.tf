@@ -8,4 +8,3 @@ data "aws_availability_zones" "available" {
 data "aws_lb" "load-balancer" {
   arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
 }
-

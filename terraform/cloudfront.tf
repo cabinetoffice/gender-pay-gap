@@ -5,11 +5,15 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
     domain_name = data.aws_lb.load-balancer.dns_name
     origin_id   = var.cloudfront_origin_id
 
+    custom_header {
+      name  = "X-Custom-Header"
+      value = random_integer.load-balancer-custom-header.id
+    }
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
       origin_protocol_policy = "https-only"
-      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+      origin_ssl_protocols   = ["TLSv1.2"]
     }
 
     origin_shield {
@@ -84,4 +88,13 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
 
 resource "aws_s3_bucket" "resource-logs-bucket" {
   bucket = "resource-log-bucket-${var.env}"
+}
+
+resource "random_integer" "load-balancer-custom-header" {
+  min = 1
+  max = 50000
+  keepers = {
+    # Generate a new integer each time we switch to a new load balancer ARN
+    load_balancer_arn = data.aws_lb.load-balancer.arn
+  }
 }
