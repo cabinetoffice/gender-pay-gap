@@ -66,7 +66,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "ELBScheme"
     value     = var.elb_scheme
   }
-  
+
   // HTTPS secure listener config
 
   setting {
@@ -111,12 +111,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Protocol"
     value     = "HTTPS"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:https"
-    name      = "Rules"
-    value     = "default"
   }
 
   // Elastic beanstalk autoscaling config
@@ -168,7 +162,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "MatcherHTTPCode"
     value     = var.elb_matcher_http_code
   }
-  
+
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckPath"
@@ -405,19 +399,19 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
 data "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
-  port = 80
+  port              = 80
 }
 
 resource "aws_lb_listener_rule" "redirect_http_to_https" {
   listener_arn = data.aws_lb_listener.http_listener.arn
-  priority = 1
+  priority     = 1
 
   action {
     type = "redirect"
 
     redirect {
-      port = "443"
-      protocol = "HTTPS"
+      port        = "443"
+      protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
   }

@@ -45,9 +45,9 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = var.CLOUDFRONT_ACM_CERT_ARN
+    acm_certificate_arn            = var.CLOUDFRONT_ACM_CERT_ARN
     cloudfront_default_certificate = false
-    ssl_support_method  = "sni-only"
+    ssl_support_method             = "sni-only"
   }
 
   logging_config {
