@@ -504,7 +504,7 @@ data "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
   port              = 80
   
-  depends_on = [aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]]
+  depends_on = [aws_elastic_beanstalk_environment.gpg-elb-environment]
 }
 
 resource "aws_lb_listener_rule" "redirect_http_to_https" {
