@@ -275,8 +275,8 @@
                     var startIndex = (currentPage - 1) * entriesPerPage;
                     var endIndex = startIndex + entriesPerPage > allDesktopRows.Count ? allDesktopRows.Count : startIndex + entriesPerPage;
                 
-                    List<TableRowViewModel> desktopDisplayRows = new List<TableRowViewModel>();
-                    List<TableRowViewModel> mobileDisplayRows = new List<TableRowViewModel>();
+                    var desktopDisplayRows = new List<TableRowViewModel>();
+                    var mobileDisplayRows = new List<TableRowViewModel>();
                     
                     for (int i = startIndex; i < endIndex; i++)
                     {
@@ -296,7 +296,7 @@
                         Rows = desktopDisplayRows,
                         Classes = "gpg-govuk-hideOnMobile govuk-!-margin-bottom-0"
                     })
-                    @await Html.GovUkTable(new TableGovUkViewModel
+                @await Html.GovUkTable(new TableGovUkViewModel
                     {
                         FirstCellIsHeader = false,
                         Head = new List<TableCellViewModel>(),
