@@ -159,7 +159,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "RetentionInDays"
-    value     = 7
+    value     = var.elb_cloudwatch_log_retention
   }
 
   // Elastic beanstalk health check config

@@ -25,5 +25,6 @@ elb_ssl_policy            = "ELBSecurityPolicy-2016-08"
 cloudfront_origin_id      = "gpg-load-balancer-dev"
 route_53_domain           = "gender-pay-gap-test.codatt.net"
 cloudfront_logging_prefix = "cloudfront-dev"
+elb_cloudwatch_log_retention = 7
 
 #endregion

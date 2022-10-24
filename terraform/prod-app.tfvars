@@ -26,5 +26,6 @@ cname_prefix              = "gpg-prod"
 elb_ssl_policy            = "ELBSecurityPolicy-2016-08"
 cloudfront_origin_id      = "gpg-load-balancer-prod"
 cloudfront_logging_prefix = "cloudfront-prod"
+elb_cloudwatch_log_retention = 7
 
 #endregion

@@ -149,6 +149,9 @@ variable "elb_health_reporting_system_type" {
   default = "enhanced"
 }
 
+variable "elb_cloudwatch_log_retention" {
+  description = "Log retention policy in days"
+}
 variable "elb_ssl_policy" {}
 
 variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS" {

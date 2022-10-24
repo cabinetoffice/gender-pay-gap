@@ -25,5 +25,6 @@ elb_ssl_policy            = "ELBSecurityPolicy-2016-08"
 cloudfront_origin_id      = "gpg-load-balancer-preprod"
 route_53_domain           = "test.gender-pay-gap.service.gov.uk"
 cloudfront_logging_prefix = "cloudfront-preprod"
+elb_cloudwatch_log_retention = 7
 
 #endregion
