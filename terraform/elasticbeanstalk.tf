@@ -67,17 +67,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.elb_scheme
   }
 
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "SecurityGroups"
-    value     = aws_security_group.load-balancer.id
-  }
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = aws_security_group.load-balancer.id
-  }
-
   // HTTPS secure listener config
 
   setting {
@@ -151,12 +140,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     namespace = "aws:autoscaling:asg"
     name      = "MinSize"
     value     = var.elb_instance_min_size
-  }
-
-  setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "SecurityGroups"
-    value     = aws_security_group.ec2-instances.id
   }
 
   // Elastic beanstalk static assets config
@@ -424,106 +407,4 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     create_before_destroy = true
   }
 
-}
-
-resource "aws_security_group" "ec2-instances" {
-  name        = "ec2-instances-security-group-${var.env}"
-  description = "Manage traffic to instances"
-  vpc_id      = module.vpc.vpc_id
-}
-
-resource "aws_security_group_rule" "httpsFromLoadBalancerSG" {
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.load-balancer.id
-  security_group_id        = aws_security_group.ec2-instances.id
-}
-
-
-resource "aws_security_group_rule" "ingress_from_VPC" {
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = aws_security_group.load-balancer.id
-}
-
-resource "aws_security_group_rule" "access_self" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  self              = true
-  security_group_id = aws_security_group.load-balancer.id
-}
-
-resource "aws_security_group_rule" "lb_secure_to_vpc" {
-  type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = aws_security_group.load-balancer.id
-}
-
-resource "aws_security_group_rule" "secure_to_instance" {
-  type                     = "egress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.ec2-instances.id
-  security_group_id        = aws_security_group.load-balancer.id
-}
-
-resource "aws_security_group_rule" "insecure" {
-  type              = "egress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = aws_security_group.load-balancer.id
-}
-
-resource "aws_security_group" "load-balancer" {
-  name        = "load-balancer-security-group-${var.env}"
-  description = "Manage load balancer traffic"
-  vpc_id      = module.vpc.vpc_id
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-data "aws_lb_listener" "http_listener" {
-  load_balancer_arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
-  port              = 80
-  
-  depends_on = [aws_elastic_beanstalk_environment.gpg-elb-environment]
-}
-
-resource "aws_lb_listener_rule" "redirect_http_to_https" {
-  listener_arn = data.aws_lb_listener.http_listener.arn
-  priority     = 1
-
-  action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
-
-  condition {
-    path_pattern {
-      values = ["/*"]
-    }
-  }
 }
