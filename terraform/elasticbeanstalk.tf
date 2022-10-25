@@ -104,7 +104,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "MatcherHTTPCode"
-    value     = var.elb_matcher_http_code
+    value     = 200
   }
 
   setting {
@@ -165,14 +165,14 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "RetentionInDays"
-    value     = var.elb_cloudwatch_log_retention
+    value     = 7
   }
 
   // Elastic beanstalk health check config
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "MatcherHTTPCode"
-    value     = var.elb_matcher_http_code
+    value     = 200
   }
 
   setting {
