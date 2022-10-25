@@ -1,31 +1,31 @@
-﻿@using GenderPayGap.WebUI.Models.ManageOrganisations
+﻿@using GenderPayGap.Core.Classes
 @using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Models.ManageOrganisations
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GenderPayGap.Core
-@using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
 @{
     var organisation = Model.Organisation;
     
     var desktopHeadings = new List<TableCellViewModel>();
-    desktopHeadings.Add(new TableCellViewModel()
+    desktopHeadings.Add(new TableCellViewModel
     {
         Text = "Snapshot date",
         Colspan = 1
     });
-    desktopHeadings.Add(new TableCellViewModel()
+    desktopHeadings.Add(new TableCellViewModel
     {
         Text = "Reporting requirements",
         Colspan = 1
     });
-    desktopHeadings.Add(new TableCellViewModel()
+    desktopHeadings.Add(new TableCellViewModel
     {
         Text = "Report status",
         Colspan = 1
     });
-    desktopHeadings.Add(new TableCellViewModel()
+    desktopHeadings.Add(new TableCellViewModel
     {
         Text = " ",
         Colspan = 1
@@ -38,42 +38,45 @@
     foreach (var organisationReturn in allReturns)
     {
         var reportTag = organisationReturn.GetReportTag();
+        var currentReportingYear = ReportingYearsHelper.GetCurrentReportingYear();
         switch (reportTag)
         {
             case ReportTag.Submitted:
-                CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
+                if(organisationReturn.ReportingYear == currentReportingYear)
+                    CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
                 break;
             case ReportTag.SubmittedLate:
-                CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
+                if(organisationReturn.ReportingYear == currentReportingYear)
+                    CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
                 break;
             case ReportTag.Due:
-                CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
+                if(organisationReturn.ReportingYear == currentReportingYear)
+                    CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
                 break;
             case ReportTag.Overdue:
+                CreateAndAddCurrentReportingRow(desktopMissingReportingPeriodRows, organisationReturn);
                 break;
             case ReportTag.NotRequired:
+                if(organisationReturn.ReportingYear == currentReportingYear)
+                    CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
                 break;
-            default:
-                throw new ArgumentOutOfRangeException();
         }
-
-
-
     }
 
     void CreateAndAddCurrentReportingRow(List<TableRowViewModel> rowList, ManageOrganisationDetailsForYearViewModel viewModel)
     {
-        var newRow = new TableRowViewModel()
+        var newRow = new TableRowViewModel
         {
-            Row = new List<TableCellViewModel>()
+            Row = new List<TableCellViewModel>
             {
-                new TableCellViewModel()
+                new TableCellViewModel
                 {
                     Html = @<text>
-                               @viewModel.GetFormattedYearText()
-                            </text>
+                               @organisation.SectorType.GetAccountingStartDate(viewModel.ReportingYear).ToString("dd/MM/yyyy")
+                            </text>,
+                    Classes = "govuk-!-font-weight-bold"
                 },
-                new TableCellViewModel()
+                new TableCellViewModel
                 {
                     Html = @<text>
                                 <div>
@@ -82,14 +85,14 @@
                                 @if (viewModel.CanChangeScope()) 
                                 {
                                     <div>
-                                        <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = organisationReturn.ReportingYear })">
+                                        <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear })">
                                             Change<span class="govuk-visually-hidden"> scope for year @viewModel.GetFormattedYearText()</span>
                                         </a>
                                     </div>
                                 }
                             </text>
                 },
-                new TableCellViewModel()
+                new TableCellViewModel
                 {
                     Html = @<text>
                                 <strong class="govuk-tag @viewModel.GetReportTagClassName()">
@@ -112,7 +115,7 @@
                                 }
                             </text>
                 },
-                new TableCellViewModel()
+                new TableCellViewModel
                 {
                     Html = @<text>
                                 <a loadtest-id="create-report-@viewModel.ReportingYear"
@@ -125,12 +128,6 @@
         };
         rowList.Add(newRow);
     }
-    
-    
-    
-    
-
-    
 }
 
 <h2 class="govuk-heading-l">Manage reports</h2>
@@ -140,14 +137,19 @@
             Rows = desktopCurrentReportingPeriodRows,
             Classes = "gpg-govuk-hideOnMobile"
         })
+@{
+    if (desktopMissingReportingPeriodRows.Count > 0)
+    {
+        <h2 class="govuk-heading-l">Missing reports</h2>
+            @await Html.GovUkTable(new TableGovUkViewModel
+            {
+                Head = desktopHeadings,
+                Rows = desktopMissingReportingPeriodRows,
+                Classes = "gpg-govuk-hideOnMobile"
+            })
+    }
+}
 
-<h2 class="govuk-heading-l">Missing reports</h2>
-    @await Html.GovUkTable(new TableGovUkViewModel
-        {
-            Head = desktopHeadings,
-            Rows = new List<TableRowViewModel>(),
-            Classes = "gpg-govuk-hideOnMobile"
-        })
 
 <h2 class="govuk-heading-l">Old Manage reports</h2>
 <div class="overflowx">
@@ -178,7 +180,7 @@
                         {
                             <div>
                                 <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear })">
-                                    Change<span class="govuk-visually-hidden"> scope for year @detailsForYear.GetFormattedYearText()</span>
+                                    Think this is wrong?<span class="govuk-visually-hidden"> scope for year @detailsForYear.GetFormattedYearText()</span>
                                 </a>
                             </div>
                         }

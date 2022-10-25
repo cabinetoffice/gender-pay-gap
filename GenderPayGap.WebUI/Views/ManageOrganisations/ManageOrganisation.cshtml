@@ -41,19 +41,7 @@
                 for @(Model.Organisation.OrganisationName)
             </span>
         </h1>
-        
-        <dl>
-            <dt class="govuk-body govuk-!-font-weight-bold">
-                Registered Address
-            </dt>
-            <dd class="govuk-caption-m govuk-!-font-size-16 govuk-!-margin-left-0">
-                @foreach (string addressLine in Model.Organisation.GetLatestAddress().GetAddressLines())
-                {
-                    @(addressLine)<br/>
-                }
-            </dd>
-        </dl>
-        
+
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
@@ -70,7 +58,6 @@
             </div>
         </details>
         
-
         @{
             await Html.RenderPartialAsync("OrganisationReportsTable", Model);
         }
@@ -101,6 +88,17 @@
 
             await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", Model);
         }
+        
+        <h2 class="govuk-heading-l">
+            Registered Address
+        </h2>
+        <p class="govuk-body">
+            @foreach (string addressLine in Model.Organisation.GetLatestAddress().GetAddressLines())
+            {
+                @(addressLine)<br/>
+            }
+        </p>
+
 
     </div>
 </div>

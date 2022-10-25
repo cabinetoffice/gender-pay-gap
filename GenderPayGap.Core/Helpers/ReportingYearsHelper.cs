@@ -11,11 +11,16 @@ namespace GenderPayGap.Core.Helpers
         public static List<int> GetReportingYears()
         {
             int firstReportingYear = Global.FirstReportingYear;
-            int currentReportingYear = SectorTypes.Public.GetAccountingStartDate().Year;
+            int currentReportingYear = GetCurrentReportingYear();
             int numberOfYears = currentReportingYear - firstReportingYear + 1;
 
             List<int> reportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList();
             return reportingYears;
+        }
+
+        public static int GetCurrentReportingYear()
+        {
+            return SectorTypes.Public.GetAccountingStartDate().Year;
         }
 
         public static List<(int,string)> GetReportingYearWithCSVFileSize()
