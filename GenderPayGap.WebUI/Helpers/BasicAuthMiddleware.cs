@@ -2,7 +2,9 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using Microsoft.AspNetCore.Http;
 
 namespace GenderPayGap.WebUI.Helpers
@@ -19,11 +21,13 @@ namespace GenderPayGap.WebUI.Helpers
 
         public async Task Invoke(HttpContext httpContext)
         {
-            Console.WriteLine(System.Web.HttpContext.GetUri(httpContext).PathAndQuery);
+            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).PathAndQuery);
+            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).Host);
+            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).AbsoluteUri);
             if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
             {
                 await _next.Invoke(httpContext);
-                Console.WriteLine("can you see the health check exception?");
+                CustomLogger.Information("can you see the health check exception?");
                 return;
             }
 
