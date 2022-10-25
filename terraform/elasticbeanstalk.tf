@@ -110,13 +110,13 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Port"
-    value     = "443"
+    value     = "80"
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Protocol"
-    value     = "HTTPS"
+    value     = "HTTP"
   }
 
   // Elastic beanstalk autoscaling config
