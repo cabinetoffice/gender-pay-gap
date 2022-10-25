@@ -132,7 +132,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                    && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(GetAccountingDate().Year);
         }
 
-        private ReportTag GetReportTag()
+        public ReportTag GetReportTag()
         {
             Return returnForYear = organisation.GetReturn(ReportingYear);
             bool reportIsSubmitted = returnForYear != null;

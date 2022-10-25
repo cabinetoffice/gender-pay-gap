@@ -1,7 +1,155 @@
 ﻿@using GenderPayGap.WebUI.Models.ManageOrganisations
 @using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core
+@using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
+@{
+    var organisation = Model.Organisation;
+    
+    var desktopHeadings = new List<TableCellViewModel>();
+    desktopHeadings.Add(new TableCellViewModel()
+    {
+        Text = "Snapshot date",
+        Colspan = 1
+    });
+    desktopHeadings.Add(new TableCellViewModel()
+    {
+        Text = "Reporting requirements",
+        Colspan = 1
+    });
+    desktopHeadings.Add(new TableCellViewModel()
+    {
+        Text = "Report status",
+        Colspan = 1
+    });
+    desktopHeadings.Add(new TableCellViewModel()
+    {
+        Text = " ",
+        Colspan = 1
+    });
+    
+    var allReturns = Model.GetOrganisationDetailsForYears();
+    var desktopCurrentReportingPeriodRows = new List<TableRowViewModel>();
+    var desktopMissingReportingPeriodRows = new List<TableRowViewModel>();
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    foreach (var organisationReturn in allReturns)
+    {
+        var reportTag = organisationReturn.GetReportTag();
+        switch (reportTag)
+        {
+            case ReportTag.Submitted:
+                CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
+                break;
+            case ReportTag.SubmittedLate:
+                CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
+                break;
+            case ReportTag.Due:
+                CreateAndAddCurrentReportingRow(desktopCurrentReportingPeriodRows, organisationReturn);
+                break;
+            case ReportTag.Overdue:
+                break;
+            case ReportTag.NotRequired:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+
+
+    }
+
+    void CreateAndAddCurrentReportingRow(List<TableRowViewModel> rowList, ManageOrganisationDetailsForYearViewModel viewModel)
+    {
+        var newRow = new TableRowViewModel()
+        {
+            Row = new List<TableCellViewModel>()
+            {
+                new TableCellViewModel()
+                {
+                    Html = @<text>
+                               @viewModel.GetFormattedYearText()
+                            </text>
+                },
+                new TableCellViewModel()
+                {
+                    Html = @<text>
+                                <div>
+                                    @viewModel.GetRequiredToReportOrNotText()
+                                </div>
+                                @if (viewModel.CanChangeScope()) 
+                                {
+                                    <div>
+                                        <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = organisationReturn.ReportingYear })">
+                                            Change<span class="govuk-visually-hidden"> scope for year @viewModel.GetFormattedYearText()</span>
+                                        </a>
+                                    </div>
+                                }
+                            </text>
+                },
+                new TableCellViewModel()
+                {
+                    Html = @<text>
+                                <strong class="govuk-tag @viewModel.GetReportTagClassName()">
+                                    @viewModel.GetReportTagText().ToUpper()
+                                </strong>
+                                @{
+                                    string description = viewModel.GetReportTagDescription();
+                                    string modifiedDateText = viewModel.GetModifiedDateText();
+                                    string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
+                                    
+                                    if (description != null)
+                                    {
+                                        <div class="govuk-!-margin-top-3">@description</div>
+                                    }
+        
+                                    if (modifiedDateText != null)
+                                    {
+                                        <div class="@modifiedDateTextClass">@modifiedDateText</div>
+                                    }
+                                }
+                            </text>
+                },
+                new TableCellViewModel()
+                {
+                    Html = @<text>
+                                <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                    href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true})">
+                                    @viewModel.GetReportLinkText()
+                                </a>
+                            </text>
+                },
+            }
+        };
+        rowList.Add(newRow);
+    }
+    
+    
+    
+    
+
+    
+}
+
+<h2 class="govuk-heading-l">Manage reports</h2>
+    @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = desktopHeadings,
+            Rows = desktopCurrentReportingPeriodRows,
+            Classes = "gpg-govuk-hideOnMobile"
+        })
+
+<h2 class="govuk-heading-l">Missing reports</h2>
+    @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = desktopHeadings,
+            Rows = new List<TableRowViewModel>(),
+            Classes = "gpg-govuk-hideOnMobile"
+        })
+
+<h2 class="govuk-heading-l">Old Manage reports</h2>
 <div class="overflowx">
     <table class="govuk-table">
     <thead class="govuk-table__head">
@@ -16,8 +164,7 @@
         @{
             foreach (ManageOrganisationDetailsForYearViewModel detailsForYear in Model.GetOrganisationDetailsForYears())
             {
-                string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-                
+
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell govuk-!-font-weight-bold">
                         @detailsForYear.GetFormattedYearText()
