@@ -28,88 +28,15 @@ resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
   key         = data.aws_s3_object.gpg-archive-zip.key
 }
 
-// Beanstalk environment
+// Elastic beanstalk environment
 resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   name                = "gpg-elb-environment-${var.env}"
   application         = aws_elastic_beanstalk_application.gpg-application.name
   solution_stack_name = var.solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
-  cname_prefix        = var.cname_prefix    
+  cname_prefix        = var.cname_prefix
 
-  setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "IamInstanceProfile"
-    value     = var.elb_instance_profile
-  }
-  setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "InstanceType"
-    value     = var.instance_type
-  }
-  setting {
-    namespace = "aws:autoscaling:asg"
-    name      = "MaxSize"
-    value     = var.elb_instance_max_size
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "LoadBalancerType"
-    value     = var.elb_load_balancer_type
-  }
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = var.elb_scheme
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "MatcherHTTPCode"
-    value     = var.elb_matcher_http_code
-  }
-  
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
-    name      = "StreamLogs"
-    value     = true
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
-    name      = "DeleteOnTerminate"
-    value     = false
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
-    name      = "RetentionInDays"
-    value     = 7
-  }
-  
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "HealthStreamingEnabled"
-    value     = true
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "RetentionInDays"
-    value     = 7
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "DeleteOnTerminate"
-    value     = false
-  }
-  
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "HealthCheckPath"
-    value     = "/docs"
-  }
-
+  // Elastic beanstalk VPC config
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
@@ -127,13 +54,189 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "DBSubnets"
     value     = join(",", module.vpc.database_subnets)
   }
-  
+
+  // Elastic beanstalk load balancer config
   setting {
-    namespace = "aws:elb:loadbalancer"
-    name      = "ManagedSecurityGroup"
-    value     = module.vpc.default_security_group_id
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = var.elb_load_balancer_type
+  }
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = var.elb_scheme
   }
 
+  // HTTPS secure listener config
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLPolicy"
+    value     = var.elb_ssl_policy
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "ListenerEnabled"
+    value     = "true"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "DefaultProcess"
+    value     = "https"
+  }
+
+  // HTTPS secure listener rules
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "MatcherHTTPCode"
+    value     = 200
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "Port"
+    value     = "80"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "Protocol"
+    value     = "HTTP"
+  }
+
+  // Elastic beanstalk autoscaling config
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
+    value     = var.elb_instance_profile
+  }
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "InstanceType"
+    value     = var.instance_type
+  }
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MaxSize"
+    value     = var.elb_instance_max_size
+  }
+
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = var.elb_instance_min_size
+  }
+
+  // Elastic beanstalk static assets config
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/images"
+    value     = "wwwroot/assets/images"
+  }
+
+  // Elastic beanstalk log config
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "DeleteOnTerminate"
+    value     = false
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "RetentionInDays"
+    value     = 7
+  }
+
+  // Elastic beanstalk health check config
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "MatcherHTTPCode"
+    value     = 200
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
+    value     = "/health-check"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "DeregistrationDelay"
+    value     = 20
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckInterval"
+    value     = 15
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckTimeout"
+    value     = 5
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthyThresholdCount"
+    value     = 3
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "UnhealthyThresholdCount"
+    value     = 5
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "StickinessEnabled"
+    value     = false
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "HealthStreamingEnabled"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "RetentionInDays"
+    value     = 7
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "DeleteOnTerminate"
+    value     = false
+  }
+
+  // Elastic beanstalk environment variables
+  // VCAP services is a legacy object from PaaS
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "VCAP_SERVICES"
@@ -151,8 +254,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
       }],
       redis = [{
         credentials = {
-          port        = aws_elasticache_cluster.redis-cluster.port,
-          host        = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
+          port = aws_elasticache_cluster.redis-cluster.port,
+          host = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
         }
         name = "gpg-${var.env}-cache"
       }],
@@ -298,6 +401,10 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "WEBJOBS_STOPPED"
     value     = var.ELB_WEBJOBS_STOPPED
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
 }

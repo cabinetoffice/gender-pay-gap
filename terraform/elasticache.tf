@@ -7,9 +7,9 @@ resource "aws_elasticache_cluster" "redis-cluster" {
   num_cache_nodes      = 1
   parameter_group_name = "default.redis6.x"
   port                 = var.cache_port
-  security_group_ids = [aws_security_group.elasticache_security_group.id]
+  security_group_ids   = [aws_security_group.elasticache_security_group.id]
   subnet_group_name    = module.vpc.elasticache_subnet_group_name
-  
+
   log_delivery_configuration {
     destination      = aws_cloudwatch_log_group.redis.name
     destination_type = "cloudwatch-logs"
@@ -28,10 +28,10 @@ resource "aws_elasticache_cluster" "redis-cluster" {
 
 resource "aws_cloudwatch_log_group" "redis" {
   name = "redis-logs-${var.env}"
-} 
+}
 
 resource "aws_security_group" "elasticache_security_group" {
-  name = "elasticache-${var.env}"
+  name   = "elasticache-${var.env}"
   vpc_id = module.vpc.vpc_id
 
   ingress {

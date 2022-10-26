@@ -48,10 +48,45 @@ resource "aws_db_instance" "gpg-dev-db" {
   multi_az                    = var.rds_config_multi_az
   skip_final_snapshot         = var.rds_config_skip_final_snapshot
   final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
+
+  // Backups and deletion 
+  deletion_protection      = false // should be true when application goes live
+  delete_automated_backups = true  // should be false when in production
+
   lifecycle {
     ignore_changes = [
       // This will always be different because of the timestamp function, so we ignore it
       final_snapshot_identifier
     ]
+  }
+
+  // Logging and monitoring
+  enabled_cloudwatch_logs_exports = ["postgresql"]
+  monitoring_interval             = var.rds_config_monitoring_interval
+  monitoring_role_arn             = aws_iam_role.rds_enhanced_monitoring.arn
+}
+
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  name_prefix        = "rds-enhanced-monitoring-"
+  assume_role_policy = data.aws_iam_policy_document.rds_enhanced_monitoring.json
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
+  role       = aws_iam_role.rds_enhanced_monitoring.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
+data "aws_iam_policy_document" "rds_enhanced_monitoring" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
   }
 }

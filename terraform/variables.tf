@@ -13,6 +13,12 @@ variable "example_s3_versioning_enabled" {
 
 #region Relational database configuration 
 
+variable "rds_config_monitoring_interval" {
+  type        = number
+  default     = 60
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance"
+}
+
 variable "rds_config_allocated_storage" {
   type        = number
   default     = 100
@@ -137,14 +143,17 @@ variable "elb_load_balancer_type" {}
 
 variable "elb_scheme" {}
 
-variable "elb_matcher_http_code" {}
-
 variable "elb_health_reporting_system_type" {
   default = "enhanced"
 }
 
-variable "cache_port" {
+variable "elb_ssl_policy" {}
+
+variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS" {
+  type        = string
+  description = "Passed in as environment variable"
 }
+variable "cache_port" {}
 
 // EB environment variables
 variable "ELB_ADMIN_EMAILS" {
@@ -248,5 +257,21 @@ variable "AWS_SECRET_ACCESS_KEY" {
   type        = string
   description = "AWS secret access key. Set as an environment variable."
 }
+
+#endregion
+
+#region cloudfront config
+
+variable "cloudfront_origin_id" {}
+
+variable "CLOUDFRONT_ACM_CERT_ARN" {}
+
+variable "cloudfront_logging_prefix" {}
+
+#endregion
+
+#region route 53 config
+
+variable "route_53_domain" {}
 
 #endregion
