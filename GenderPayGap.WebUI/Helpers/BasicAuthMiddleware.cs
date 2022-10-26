@@ -21,13 +21,9 @@ namespace GenderPayGap.WebUI.Helpers
 
         public async Task Invoke(HttpContext httpContext)
         {
-            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).PathAndQuery);
-            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).Host);
-            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).AbsoluteUri);
             if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
             {
                 await _next.Invoke(httpContext);
-                CustomLogger.Information("can you see the health check exception?");
                 return;
             }
 
@@ -47,6 +43,18 @@ namespace GenderPayGap.WebUI.Helpers
         {
             try
             {
+                CustomLogger.Information("trace");
+                CustomLogger.Information(httpContext.TraceIdentifier);
+                CustomLogger.Information("headers");
+                CustomLogger.Information(httpContext.Request.Headers.ToString());
+                CustomLogger.Information("ishttps");
+                CustomLogger.Information(httpContext.Request.IsHttps.ToString());
+                CustomLogger.Information("protocol");
+                CustomLogger.Information(httpContext.Request.Protocol);
+                CustomLogger.Information("cookies");
+                CustomLogger.Information(httpContext.Request.Cookies.ToString());
+                CustomLogger.Information("bodyreader");
+                CustomLogger.Information(httpContext.Request.BodyReader.ToString());
                 var authHeader = AuthenticationHeaderValue.Parse(httpContext.Request.Headers["Authorization"]);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
