@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI
                 .ConfigureServices(
                     services => services
                         .AddAutofac()); /// This call allows for ConfigureContainer to be supported in Startup with a strongly-typed ContainerBuilder
-
+            CustomLogger.Information("ladun");
             CustomLogger.Information(Environment.GetEnvironmentVariable("PORT"));
             CustomLogger.Information(Environment.GetEnvironmentVariable("ASPNETCORE_HTTPS_PORT"));
             if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PORT")))
