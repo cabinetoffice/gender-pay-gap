@@ -45,8 +45,11 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 CustomLogger.Information("trace");
                 CustomLogger.Information(httpContext.TraceIdentifier);
+                CustomLogger.Information(httpContext.Request.Host.Port.ToString());
+                CustomLogger.Information(httpContext.Request.Host.Value);
                 CustomLogger.Information("headers");
-                CustomLogger.Information(httpContext.Request.Headers.ToString());
+                CustomLogger.Information(httpContext.Request.Headers.Count.ToString());
+                CustomLogger.Information(httpContext.Request.Headers.Count.ToString());
                 CustomLogger.Information("ishttps");
                 CustomLogger.Information(httpContext.Request.IsHttps.ToString());
                 CustomLogger.Information("protocol");
