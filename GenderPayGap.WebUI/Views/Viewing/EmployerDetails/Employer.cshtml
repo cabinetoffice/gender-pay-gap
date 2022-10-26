@@ -2,8 +2,10 @@
 @using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Models.Search
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Newtonsoft.Json
 @model EmployerDetailsViewModel
 @{
     Organisation organisation = Model.Organisation;
@@ -67,9 +69,37 @@
                     <div class="column-full">
                         <hr style="margin-top: 0"/>
                         <div class="body" style="margin-top: 2em">
+                            @await Html.PartialModelAsync(new Details
+                            {
+                                Id = "WhoNeedsToReport",
+                                LinkText = "Who is required to report, and the deadlines",
+                                SummaryPartial = "EmployerDetails/WhoNeedsToReport"
+                            })
+                            @{
+                                var years = organisation.GetRecentReports(Global.ShowReportYearCount).Select(report => report.GetReportingPeriod()).ToArray();
+                                var options = new List<SelectItemViewModel>();
+                                foreach (string year in years)
+                                {
+                                    SelectItemViewModel option = new SelectItemViewModel()
+                                    {
+                                        Value = year,
+                                        Text = year,
+                                    };
+                                    options.Add(option);
+                                }
+                            }
+                            <div id="filteringArea">
+                                    <input type="hidden" id="selectOptionsFromReports"
+                                           value=@JsonConvert.SerializeObject(
+                                                     organisation.GetRecentReports(
+                                                         Global.ShowReportYearCount)
+                                                         .Select(
+                                                             report => report.GetReportingPeriod())
+                                                         .ToArray())>
+                            </div>
                             @if (organisation.GetSubmittedReports().Any() && organisation.Status == OrganisationStatuses.Retired)
                             {
-                                <div class="govuk-warning-text">
+                                <div class="govuk-warning-text" id="warningText">
                                     <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
                                     <strong class="govuk-warning-text__text">
                                         <span class="govuk-warning-text__assistive">Notice</span>
@@ -79,15 +109,6 @@
                             }
                         </div>
 
-                        @await Html.PartialModelAsync(new Details
-                        {
-                            Id = "WhoNeedsToReport",
-                            LinkText = "Who is required to report, and the deadlines",
-                            SummaryPartial = "EmployerDetails/WhoNeedsToReport"
-                        })
-                        <p>
-                            For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.
-                        </p>
 
                     </div>
                 </div>
@@ -104,8 +125,7 @@
                                     {
                                         Html = 
                                             @<text>
-                                                <h3 class="heading-small govuk-!-margin-top-0">@report.GetReportingPeriod() Reporting year</h3>
-        
+                                                <h3 class="heading-small govuk-!-margin-top-0 yearTextForFiltering">@report.GetReportingPeriod() Reporting year</h3>
                                                 @{
                                                     ReportStatusBadgeType reportStatus = report.GetBadgeType;
                                                             
@@ -158,7 +178,7 @@
                                 Html = @<text>
                                            <div>
                                                <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0">Reporting Year</h3>
+                                                   <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 ">Reporting Year</h3>
                                                </div>
                                                <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
                                                    <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Report Status</h3>
@@ -182,7 +202,7 @@
                                             @<text>
                                                 <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0 govuk-!-margin-bottom-2">
                                                     <div class="govuk-grid-column-one-half govuk-!-padding-left-0">
-                                                        <h3 class="heading-small govuk-!-margin-top-3">@report.GetReportingPeriod()</h3>
+                                                        <h3 class="heading-small govuk-!-margin-top-0 yearTextForFiltering">@report.GetReportingPeriod()</h3>
                                                     </div>
                                                     
                                                     @{
@@ -240,7 +260,7 @@
                             }
                         ).ToList();
                         
-                    int indexOfCompanyJoined = organisation.GetRecentReports(Global.ShowReportYearCount).ToList().FindIndex(report => Model.Organisation.Created > ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate));
+                    var indexOfCompanyJoined = organisation.GetRecentReports(Global.ShowReportYearCount).ToList().FindIndex(report => Model.Organisation.Created > ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate));
                     var dateJoinedRow = new TableRowViewModel
                     {
                         Row = new List<TableCellViewModel>
@@ -336,7 +356,6 @@
 
 @section Scripts {
     <script>
-
         (function() {
             "use strict";
 
@@ -346,6 +365,51 @@
                 }
             });
         }());
+        
+        var parentForSelect = document.getElementById("filteringArea");
+        
+        var selectLabel = document.createElement("label");
+        selectLabel.className = "govuk-label";
+        selectLabel.for = "yearFilter";
+        selectLabel.textContent = "Filter for a reporting period";
+        
+        var elements = document.getElementsByClassName("yearTextForFiltering");
+        
+        var selectList = document.createElement("select");
+        selectList.className = "govuk-select govuk-!-margin-bottom-3";
+        selectList.id = "filterYearSelect";
+        selectList.addEventListener("change",function (e){
+            for (var i = 0; i < elements.length; i++){
+                var tableRow = elements[i].closest("tr");
+                tableRow.hidden = true;
+                
+                if (elements[i].innerHTML.includes(e.target.value) || e.target.value === "Show All"){
+                    tableRow.hidden = false;
+                }
+            }
+        }) 
+        
+        var selectHint = document.createElement("div");
+        selectHint.className = "govuk-hint";
+        selectHint.textContent = "For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.";
+       
+        parentForSelect.appendChild(selectLabel);
+        parentForSelect.appendChild(selectList);
+        parentForSelect.appendChild(selectHint);
 
+        var showAll = document.createElement("option");
+        showAll.value = "Show All";
+        showAll.text = "Show All";
+        showAll.selected = true;
+        selectList.appendChild(showAll);
+        
+        var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
+        for (var i = 0; i < arrayOfYears.length; i++){
+             var option = document.createElement("option");
+             option.value = arrayOfYears[i];
+             option.text = arrayOfYears[i];
+             selectList.appendChild(option);
+        }
+        
     </script>
 }
