@@ -457,7 +457,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         public void ViewingController_Employer_Active_Organisation_returns_CorrectViewAndModel()
         {
             // Arrange
-            var org = new Organisation {OrganisationId = 6548, Status = OrganisationStatuses.Active};
+            var org = new Organisation {OrganisationId = 6548, Status = OrganisationStatuses.Active, SectorType = SectorTypes.Private};
 
             var controller = UiTestHelper.GetController<ViewingController>(default, null, org);
 

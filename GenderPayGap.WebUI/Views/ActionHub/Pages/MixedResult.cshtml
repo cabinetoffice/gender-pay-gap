@@ -137,14 +137,14 @@
 }))
 
 @{
-    var leftLink = new PaginationLinkViewModel
+    var leftLink = new GpgPaginationLinkViewModel
     {
         Title = "Previous",
         Text = "Promising actions",
         Url = Url.Action("Promising", "ActionHub")
     };
 
-    await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new PaginationLinksViewModel
+    await Html.RenderPartialAsync("/Views/Components/PaginationLinks/PaginationLinks.cshtml", new GpgPaginationLinksViewModel
     {
         LeftLink = leftLink,
         RightLink = null

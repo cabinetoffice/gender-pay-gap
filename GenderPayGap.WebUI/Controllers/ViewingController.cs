@@ -295,7 +295,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("~/Employer/{employerIdentifier}")]
-        public IActionResult Employer(string employerIdentifier)
+        public IActionResult Employer(string employerIdentifier, int? page = 1)
         {
             if (string.IsNullOrWhiteSpace(employerIdentifier))
             {
@@ -323,6 +323,20 @@ namespace GenderPayGap.WebUI.Controllers
             ReportBackUrl = null;
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
+            
+            var totalEntries = organisationLoadingOutcome.Result.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
+            var maxEntriesPerPage = 10;
+            var totalPages = (int)Math.Ceiling((double)totalEntries / maxEntriesPerPage);
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
 
             return View(
                 "EmployerDetails/Employer",
@@ -330,7 +344,10 @@ namespace GenderPayGap.WebUI.Controllers
                     Organisation = organisationLoadingOutcome.Result,
                     LastSearchUrl = SearchViewService.GetLastSearchUrl(),
                     EmployerBackUrl = EmployerBackUrl,
-                    ComparedEmployers = CompareViewService.ComparedEmployers.Value
+                    ComparedEmployers = CompareViewService.ComparedEmployers.Value,
+                    CurrentPage = page,
+                    TotalPages = totalPages,
+                    EntriesPerPage = maxEntriesPerPage
                 });
         }
 
@@ -361,7 +378,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
 
-        [HttpGet("~/Employer/{employerIdentifier}/{year}")]
+        [HttpGet("~/EmployerReport/{employerIdentifier}/{year}")]
         public IActionResult Report(string employerIdentifier, int year)
         {
             if (string.IsNullOrWhiteSpace(employerIdentifier))
