@@ -406,5 +406,4 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   lifecycle {
     create_before_destroy = true
   }
-
 }

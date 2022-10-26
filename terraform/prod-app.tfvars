@@ -13,17 +13,17 @@ env = "prod"
 
 instance_type = "t2.medium"
 
-elb_instance_profile         = "aws-elasticbeanstalk-ec2-role"
-elb_instance_min_size        = 1
-elb_instance_max_size        = 4
-tier                         = "WebServer"
-elb_scheme                   = "internet facing"
-elb_load_balancer_type       = "application"
-solution_stack_name          = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
-cache_port                   = 6379
-cname_prefix                 = "gpg-prod"
-elb_ssl_policy               = "ELBSecurityPolicy-2016-08"
-cloudfront_origin_id         = "gpg-load-balancer-prod"
-cloudfront_logging_prefix    = "cloudfront-prod"
+elb_instance_profile      = "aws-elasticbeanstalk-ec2-role"
+elb_instance_min_size     = 1
+elb_instance_max_size     = 4
+tier                      = "WebServer"
+elb_scheme                = "internet facing"
+elb_load_balancer_type    = "application"
+solution_stack_name       = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
+cache_port                = 6379
+cname_prefix              = "gpg-prod"
+elb_ssl_policy            = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+cloudfront_origin_id      = "gpg-load-balancer-prod"
+cloudfront_logging_prefix = "cloudfront-prod"
 
 #endregion

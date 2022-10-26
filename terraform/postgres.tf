@@ -37,15 +37,15 @@ resource "aws_db_instance" "gpg-dev-db" {
   db_name                     = var.rds_config_db_name
   username                    = var.POSTGRES_CONFIG_USERNAME
   password                    = var.POSTGRES_CONFIG_PASSWORD
-  port                        = var.rds_config_port
-  backup_retention_period     = var.rds_config_backup_retention_period
-  backup_window               = var.rds_config_backup_window
+  port                        = 5432
+  backup_retention_period     = 30
+  backup_window               = "04:00-05:00"
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]
   db_subnet_group_name        = module.vpc.database_subnet_group_name
-  storage_encrypted           = var.rds_config_storage_encrypted
-  publicly_accessible         = var.rds_config_publicly_accessible
-  allow_major_version_upgrade = var.rds_config_allow_major_version_upgrade
-  multi_az                    = var.rds_config_multi_az
+  storage_encrypted           = true
+  publicly_accessible         = false
+  allow_major_version_upgrade = false
+  multi_az                    = true
   skip_final_snapshot         = var.rds_config_skip_final_snapshot
   final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
 

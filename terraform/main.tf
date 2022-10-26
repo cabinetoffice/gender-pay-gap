@@ -8,3 +8,7 @@ data "aws_availability_zones" "available" {
 data "aws_lb" "load-balancer" {
   arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
 }
+
+data "aws_autoscaling_group" "elb_autoscaling" {
+  name = aws_elastic_beanstalk_environment.gpg-elb-environment.autoscaling_groups[0]
+}

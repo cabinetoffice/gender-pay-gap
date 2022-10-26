@@ -98,3 +98,64 @@ resource "random_integer" "load-balancer-custom-header" {
     load_balancer_arn = data.aws_lb.load-balancer.arn
   }
 }
+
+// Alarms
+
+resource "aws_cloudwatch_metric_alarm" "no_healthy_hosts" {
+  alarm_name          = "healthy-host-alarm-${var.env}"
+  metric_name         = "HealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  statistic           = "Minimum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  alarm_description   = "[${var.env} - The Performance Platform has no healthy hosts. Refer to the runbook."
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarm.arn]
+  dimensions = {
+    AutoScalingGroupName = data.aws_autoscaling_group.elb_autoscaling.name
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "http_errors" {
+  alarm_name          = "${var.env}-http-errors"
+  metric_name         = "HTTPCode_Target_5XX_Count"
+  namespace           = "AWS/ApplicationELB"
+  comparison_operator = "GreaterThanThreshold"
+  statistic           = "Maximum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  alarm_description   = "[${var.env} - The Performance Platform has HTTP 5xx errors. Refer to the runbook."
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarm.arn]
+  treat_missing_data  = "notBreaching"
+  dimensions = {
+    LoadBalancer = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
+  }
+}
+
+# No instances should fail the health checks unless they failed to boot.
+# This usually means a release failed and will need manual intervention.
+resource "aws_cloudwatch_metric_alarm" "unhealthy_hosts" {
+  alarm_name          = "-unhealthy-hosts-${var.env}"
+  metric_name         = "UnHealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  comparison_operator = "GreaterThanThreshold"
+  statistic           = "Maximum"
+  period              = 300
+  evaluation_periods  = 1
+  threshold           = 0
+  alarm_description   = "[${var.env} - The Performance Platform has unhealthy hosts. Refer to the runbook."
+  alarm_actions       = [aws_sns_topic.cloudwatch_alarm.arn]
+  ok_actions          = [aws_sns_topic.cloudwatch_alarm.arn]
+  treat_missing_data  = "notBreaching"
+  dimensions = {
+    AutoScalingGroupName = data.aws_autoscaling_group.elb_autoscaling.name
+  }
+}
+
+resource "aws_sns_topic" "cloudwatch_alarm" {
+  name = "cloudwatch-${var.env}"
+}
