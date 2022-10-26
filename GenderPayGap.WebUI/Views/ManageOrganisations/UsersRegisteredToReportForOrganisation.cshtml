@@ -1,35 +1,130 @@
 ﻿@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
 @{
     var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+
+    var desktopHeadings = new List<TableCellViewModel>
+    {
+        new TableCellViewModel
+        {
+            Text = "User",
+            Colspan = 1
+        },
+        new TableCellViewModel
+        {
+            Text = "Action",
+            Colspan = 1
+        }
+    };
+    var mobileRows = new List<TableRowViewModel>();
+    @foreach (User userRegisteredToReport in Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst())
+    {
+        var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
+        var newRow = new TableRowViewModel
+        {
+            Row = new List<TableCellViewModel>
+            {
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                               <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
+                                   @userRegisteredToReport.Fullname
+                                   @if (userRegisteredToReport.UserId == Model.User.UserId)
+                                   {
+                                       <span>(You)</span>
+                                   }
+                                </p>
+                               <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
+                                   <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
+                                       Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
+                                   </a>
+                               </p>
+                            </text>
+                },
+                new TableCellViewModel
+                {
+                    Text = " "
+                }
+            },
+        };
+        mobileRows.Add(newRow);
+    }
+    
+    var desktopRows = new List<TableRowViewModel>();
+    @foreach (User userRegisteredToReport in Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst())
+    {
+        var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
+        var newRow = new TableRowViewModel
+        {
+            Row = new List<TableCellViewModel>
+            {
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                               @userRegisteredToReport.Fullname
+                               @if (userRegisteredToReport.UserId == Model.User.UserId)
+                               {
+                                   <span>(You)</span>
+                               }
+                               <br/>
+                            </text>
+                },
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                               <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
+                                  Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
+                              </a>
+                            </text>
+                }
+            },
+        };
+        desktopRows.Add(newRow);
+    }
+    
 }
 
-<table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">User</th>
-            <th scope="col" class="govuk-table__header">Action</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        @foreach (User userRegisteredToReport in Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst())
+<h2 class="govuk-heading-l">Registered users</h2>
+    @{
+        var usersRegisteredToReportForOrganisation = Model.Organisation.UserOrganisations.Where(uo => uo.PINConfirmedDate.HasValue).Select(uo => uo.User).Distinct().ToList();
+    }
+
+    @if (usersRegisteredToReportForOrganisation.Count == 0)
+    {
+        <p class="govuk-body govuk-!-margin-bottom-0">
+            You are the only person registered to report for this employer.
+        </p>
+        <p class="govuk-body govuk-!-margin-bottom-0">
+            If you remove yourself:
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+            <li>You will not be able to report for this employer</li>
+            <li>Someone else must register this employer to report - this can take up to a week</li>
+            <li>Your account will remain open</li>
+        </ul>
+    }
+    else
+    {
+        <p class="govuk-body govuk-!-margin-bottom-0">
+            The following people are registered to report gender pay gap information for this employer.
+        </p>
+    }
+        
+    @await Html.GovUkTable(new TableGovUkViewModel
         {
-            var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">
-                    @userRegisteredToReport.Fullname
-                    @if (userRegisteredToReport.UserId == Model.User.UserId)
-                    {
-                        <span>(You)</span>
-                    }
-                </td>
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
-                        Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            Head = desktopHeadings,
+            Rows = desktopRows,
+            Classes = "gpg-govuk-hideOnMobile"
+        })
+    @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = new List<TableCellViewModel>(),
+            Rows = mobileRows,
+            Classes = "gpg-govuk-hideOnDesktop"
+        })
+
+
+

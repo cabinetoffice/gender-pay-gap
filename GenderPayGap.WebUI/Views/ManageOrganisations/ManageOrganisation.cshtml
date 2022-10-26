@@ -60,32 +60,12 @@
         
         @{
             await Html.RenderPartialAsync("OrganisationReportsTable", Model);
-        }
-        
-        <h2 class="govuk-heading-l">Registered users</h2>
 
-        @{
-            var usersRegisteredToReportForOrganisation = Model.Organisation.UserOrganisations.Where(uo => uo.PINConfirmedDate.HasValue).Select(uo => uo.User).Distinct().ToList();
-        }
-        @if (usersRegisteredToReportForOrganisation.Count == 0)
-        {
-            <p class="govuk-body">
-                You are the only person registered to report for this employer.
-            </p>
-            <p class="govuk-body">
-                If you remove yourself:
-            </p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>You will not be able to report for this employer</li>
-                <li>Someone else must register this employer to report - this can take up to a week</li>
-                <li>Your account will remain open</li>
-            </ul>
-        } else
-        {
-            <p class="govuk-body">
-                The following people are registered to report gender pay gap information for this employer. 
-            </p>
-
+            <div class="govuk-!-margin-bottom-6">
+                <p>
+                    <a href="" class="govuk-!-font-size-19 govuk-link govuk-!-font-weight-bold">See all reports</a> <!--TODO: Point this link to the manage all reports page when that is created-->
+                </p>
+            </div>
             await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", Model);
         }
         
