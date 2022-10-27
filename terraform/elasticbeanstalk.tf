@@ -468,7 +468,7 @@ resource "aws_lb_listener_rule" "redirect_cloudfront_only_to_443" {
   condition {
     http_header {
       http_header_name = "X-Custom-Header"
-      values           = random_integer.load-balancer-custom-header.id
+      values           = [random_integer.load-balancer-custom-header.id]
     }
   }
 }
