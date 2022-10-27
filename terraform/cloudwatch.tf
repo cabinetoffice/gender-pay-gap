@@ -57,8 +57,8 @@ resource "aws_cloudwatch_metric_alarm" "no_healthy_hosts" {
   evaluation_periods  = 1
   threshold           = 0
   alarm_description   = "gpg-${var.env} has no healthy hosts."
-  alarm_actions       = aws_sns_topic.EC2_topic
-  ok_actions          = aws_sns_topic.EC2_topic
+  alarm_actions       = [aws_sns_topic.EC2_topic.arn]
+  ok_actions          = [aws_sns_topic.EC2_topic.arn]
   dimensions = {
     LoadBalancer = data.aws_lb.load-balancer.arn
   }
@@ -74,8 +74,8 @@ resource "aws_cloudwatch_metric_alarm" "http_errors" {
   evaluation_periods  = 1
   threshold           = 0
   alarm_description   = "gpg-${var.env} has HTTP 5xx errors."
-  alarm_actions       = aws_sns_topic.EC2_topic
-  ok_actions          = aws_sns_topic.EC2_topic
+  alarm_actions       = [aws_sns_topic.EC2_topic.arn]
+  ok_actions          = [aws_sns_topic.EC2_topic.arn]
   treat_missing_data  = "notBreaching"
   dimensions = {
     LoadBalancer = data.aws_lb.load-balancer.arn
@@ -94,8 +94,8 @@ resource "aws_cloudwatch_metric_alarm" "unhealthy_hosts" {
   evaluation_periods  = 1
   threshold           = 0
   alarm_description   = "gpg-${var.env} has unhealthy hosts."
-  alarm_actions       = aws_sns_topic.EC2_topic.arn
-  ok_actions          = aws_sns_topic.EC2_topic.arn
+  alarm_actions       = [aws_sns_topic.EC2_topic.arn]
+  ok_actions          = [aws_sns_topic.EC2_topic.arn]
   treat_missing_data  = "notBreaching"
   dimensions = {
     LoadBalancer = data.aws_lb.load-balancer.arn
@@ -111,8 +111,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilisation" {
   period    = "60"
   evaluation_periods  = "2"
   threshold         = "70"
-  alarm_actions       = aws_sns_topic.EC2_topic.arn
-  ok_actions          = aws_sns_topic.EC2_topic.arn
+  alarm_actions       = [aws_sns_topic.EC2_topic.arn]
+  ok_actions          = [aws_sns_topic.EC2_topic.arn]
   treat_missing_data  = "notBreaching"
   alarm_description = "This metric monitors ec2 cpu utilization exceeding 70%"
 }
@@ -124,7 +124,7 @@ resource "aws_sns_topic" "EC2_topic" {
 resource "aws_cloudwatch_composite_alarm" "EC2" {
   alarm_description = "Composite alarm"
   alarm_name        = "EC2_Composite_Alarm"
-  alarm_actions     = aws_sns_topic.EC2_topic.arn
+  alarm_actions     = [aws_sns_topic.EC2_topic.arn]
 
   alarm_rule = "ALARM(${aws_cloudwatch_metric_alarm.cpu_utilisation}) OR ALARM(${aws_cloudwatch_metric_alarm.http_errors}) OR ALARM(${aws_cloudwatch_metric_alarm.no_healthy_hosts}) OR ALARM(${aws_cloudwatch_metric_alarm.unhealthy_hosts}) "
 
