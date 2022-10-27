@@ -139,8 +139,7 @@ resource "aws_cloudwatch_composite_alarm" "EC2" {
 }
 
 resource "aws_sns_topic_subscription" "EC2_Subscription" {
-  for_each  = toset(var.cloudwatch_notification_emails)
   topic_arn = aws_sns_topic.EC2_topic.arn
   protocol  = "email"
-  endpoint  = each.value
+  endpoint  = var.cloudwatch_notification_emails
 }

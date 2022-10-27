@@ -255,8 +255,8 @@ variable "cloudfront_origin_id" {
 #region cloudwatch config
 
 variable "cloudwatch_notification_emails" {
-  type = list
-  description = "A list of Softwire emails that will be notified of alarm breaches"
+  type = string
+  description = "A softwire email distribution list that will be notified of alarm breaches"
   default = "Team-GenderPayGap@softwire.com"
 }
 
