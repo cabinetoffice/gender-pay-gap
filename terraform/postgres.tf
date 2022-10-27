@@ -29,24 +29,24 @@ resource "aws_security_group_rule" "postgres_out" {
 
 // The database resource
 resource "aws_db_instance" "gpg-dev-db" {
-  allocated_storage           = var.rds_config_allocated_storage
-  engine                      = var.rds_config_engine
-  engine_version              = var.rds_config_engine_version
+  allocated_storage           = 100
+  engine                      = "postgres"
+  engine_version              = 14
   instance_class              = var.rds_config_instance_class
   identifier                  = var.rds_config_identifier
   db_name                     = var.rds_config_db_name
   username                    = var.POSTGRES_CONFIG_USERNAME
   password                    = var.POSTGRES_CONFIG_PASSWORD
   port                        = var.rds_config_port
-  backup_retention_period     = var.rds_config_backup_retention_period
-  backup_window               = var.rds_config_backup_window
+  backup_retention_period     = 30
+  backup_window               = "04:00-05:00"
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]
   db_subnet_group_name        = module.vpc.database_subnet_group_name
-  storage_encrypted           = var.rds_config_storage_encrypted
-  publicly_accessible         = var.rds_config_publicly_accessible
-  allow_major_version_upgrade = var.rds_config_allow_major_version_upgrade
+  storage_encrypted           = true
+  publicly_accessible         = false
+  allow_major_version_upgrade = false
   multi_az                    = var.rds_config_multi_az
-  skip_final_snapshot         = var.rds_config_skip_final_snapshot
+  skip_final_snapshot         = false
   final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
 
   // Backups and deletion 
@@ -62,7 +62,7 @@ resource "aws_db_instance" "gpg-dev-db" {
 
   // Logging and monitoring
   enabled_cloudwatch_logs_exports = ["postgresql"]
-  monitoring_interval             = var.rds_config_monitoring_interval
+  monitoring_interval             = 60
   monitoring_role_arn             = aws_iam_role.rds_enhanced_monitoring.arn
 }
 

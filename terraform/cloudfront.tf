@@ -26,7 +26,7 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
   is_ipv6_enabled = true
   web_acl_id      = aws_wafv2_web_acl.ehrc.arn
 
-  aliases = [var.route_53_domain]
+  aliases = [var.cloudfront_alternate_domain_name]
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
@@ -74,7 +74,7 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
     headers_config {
       header_behavior = "whitelist"
       headers {
-        items = ["Authorization", "Host"]
+        items = ["Authorization", "Host", "Origin", "Referer", "User-Agent"]
       }
     }
     query_strings_config {
@@ -83,6 +83,18 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
 
     enable_accept_encoding_brotli = true
     enable_accept_encoding_gzip   = true
+  }
+}
+
+resource "aws_cloudfront_response_headers_policy" "default" {
+  name = "default-policy-${var.env}"
+
+  custom_headers_config {
+    items {
+      header   = "Set-Cookie"
+      override = false
+      value    = ""
+    }
   }
 }
 

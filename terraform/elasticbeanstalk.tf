@@ -32,15 +32,22 @@ resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
 resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   name                = "gpg-elb-environment-${var.env}"
   application         = aws_elastic_beanstalk_application.gpg-application.name
-  solution_stack_name = var.solution_stack_name
+  solution_stack_name = var.elb_solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
-  cname_prefix        = var.cname_prefix
+  cname_prefix        = var.elb_cname_prefix
+
+  // Deployment strategy
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name      = "DeploymentPolicy"
+    value     = var.elb_deployment_policy
+  }
 
   // Elastic beanstalk VPC config
   setting {
     namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = module.vpc.vpc_id
+    name      = "DBSubnets"
+    value     = join(",", module.vpc.database_subnets)
   }
 
   setting {
@@ -51,23 +58,37 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:ec2:vpc"
-    name      = "DBSubnets"
-    value     = join(",", module.vpc.database_subnets)
+    name      = "VPCId"
+    value     = module.vpc.vpc_id
   }
 
   // Elastic beanstalk load balancer config
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBScheme"
+    value     = var.elb_lb_scheme
+  }
+
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerType"
     value     = var.elb_load_balancer_type
   }
+
+  // HTTP listener config
+
   setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBScheme"
-    value     = var.elb_scheme
+    namespace = "aws:elbv2:listener:default"
+    name      = "ListenerEnabled"
+    value     = "false"
   }
 
   // HTTPS secure listener config
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "ListenerEnabled"
+    value     = "true"
+  }
 
   setting {
     namespace = "aws:elbv2:listener:443"
@@ -81,25 +102,12 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.elb_ssl_policy
   }
 
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "Protocol"
-    value     = "HTTPS"
-  }
-
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "ListenerEnabled"
-    value     = "true"
-  }
-
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "DefaultProcess"
-    value     = "https"
-  }
-
   // HTTPS secure listener rules
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "HealthCheckPath"
+    value     = "/health-check"
+  }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
@@ -125,15 +133,23 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     name      = "IamInstanceProfile"
     value     = var.elb_instance_profile
   }
+
   setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "InstanceType"
-    value     = var.instance_type
+    namespace = "aws:ec2:instances"
+    name      = "InstanceTypes"
+    value     = var.elb_instance_type
   }
+
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
     value     = var.elb_instance_max_size
+  }
+
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = var.elb_instance_min_size
   }
 
   setting {
@@ -149,13 +165,13 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = "wwwroot/assets/images"
   }
 
-  // Elastic beanstalk log config
   setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
-    name      = "StreamLogs"
-    value     = true
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/javascripts"
+    value     = "wwwroot/assets/javascripts"
   }
 
+  // Elastic beanstalk log config
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "DeleteOnTerminate"
@@ -168,17 +184,23 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = 7
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = true
+  }
+
   // Elastic beanstalk health check config
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "MatcherHTTPCode"
-    value     = 200
+    namespace = "aws:elasticbeanstalk:application"
+    name      = "ApplicationHealthcheckURL"
+    value     = "/health-check"
   }
 
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "HealthCheckPath"
-    value     = "/health-check"
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "DeleteOnTerminate"
+    value     = false
   }
 
   setting {
@@ -195,8 +217,20 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
+    value     = "/health-check"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckTimeout"
     value     = 5
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "HealthStreamingEnabled"
+    value     = true
   }
 
   setting {
@@ -207,20 +241,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "UnhealthyThresholdCount"
-    value     = 5
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "StickinessEnabled"
-    value     = false
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "HealthStreamingEnabled"
-    value     = true
+    name      = "MatcherHTTPCode"
+    value     = 200
   }
 
   setting {
@@ -230,9 +252,15 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   }
 
   setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "DeleteOnTerminate"
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "StickinessEnabled"
     value     = false
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "UnhealthyThresholdCount"
+    value     = 5
   }
 
   // Elastic beanstalk environment variables
@@ -407,4 +435,41 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     create_before_destroy = true
   }
 
+}
+
+resource "aws_lb_listener_rule" "restrict_lb_port_80_to_cloudfront" {
+  listener_arn = data.aws_lb_listener.lb_listener.arn
+
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    http_header {
+      http_header_name = "X-Forwarded-For"
+      values           = ["192.168.1.*"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_http_to_https" {
+  listener_arn = data.aws_lb_listener.lb_listener.arn
+
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {}
 }

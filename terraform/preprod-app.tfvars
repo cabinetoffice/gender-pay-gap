@@ -1,28 +1,40 @@
+env = "preprod"
+
 #region Relational database configuration 
 
-rds_config_instance_class = "db.t3.small"
-rds_config_identifier     = "gpg-preprod-db"
 rds_config_db_name        = "gpgPreprodDb"
+rds_config_identifier     = "gpg-preprod-db"
+rds_config_instance_class = "db.t3.small"
+rds_config_multi_az       = false
 
 #endregion
 
-env = "preprod"
+#region Elastic Beanstalk configuration
 
-#region ElasticBeanstalk configuration
+elb_cname_prefix        = "gpg-preprod"
+elb_deployment_policy   = "TrafficSplitting"
+elb_instance_max_size   = 2
+elb_instance_min_size   = 1
+elb_instance_profile    = "aws-elasticbeanstalk-ec2-role"
+elb_instance_type       = "t2.small"
+elb_lb_scheme           = "public"
+elb_load_balancer_type  = "application"
+elb_solution_stack_name = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
+elb_ssl_policy          = "ELBSecurityPolicy-2016-08"
+elb_tier                = "WebServer"
 
-instance_type                = "t2.small"
-elb_instance_profile         = "aws-elasticbeanstalk-ec2-role"
-elb_instance_min_size        = 1
-elb_instance_max_size        = 2
-tier                         = "WebServer"
-elb_scheme                   = "internet facing"
-elb_load_balancer_type       = "application"
-solution_stack_name          = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
-cache_port                   = 6379
-cname_prefix                 = "gpg-preprod"
-elb_ssl_policy               = "ELBSecurityPolicy-2016-08"
-cloudfront_origin_id         = "gpg-load-balancer-preprod"
-route_53_domain              = "test.gender-pay-gap.service.gov.uk"
-cloudfront_logging_prefix    = "cloudfront-preprod"
+#endregion
+
+#region Elasticache configuration
+
+elasticache_cache_port = 6379
+
+#endregion
+
+#region Cloudfront configuration
+
+cloudfront_alternate_domain_name = "test.gender-pay-gap.service.gov.uk"
+cloudfront_logging_prefix        = "cloudfront-preprod"
+cloudfront_origin_id             = "gpg-load-balancer-preprod"
 
 #endregion

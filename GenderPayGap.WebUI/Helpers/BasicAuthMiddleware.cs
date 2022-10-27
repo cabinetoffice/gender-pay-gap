@@ -43,21 +43,6 @@ namespace GenderPayGap.WebUI.Helpers
         {
             try
             {
-                CustomLogger.Information("trace");
-                CustomLogger.Information(httpContext.TraceIdentifier);
-                CustomLogger.Information(httpContext.Request.Host.Port.ToString());
-                CustomLogger.Information(httpContext.Request.Host.Value);
-                CustomLogger.Information("headers");
-                CustomLogger.Information(httpContext.Request.Headers.Count.ToString());
-                CustomLogger.Information(httpContext.Request.Headers.Count.ToString());
-                CustomLogger.Information("ishttps");
-                CustomLogger.Information(httpContext.Request.IsHttps.ToString());
-                CustomLogger.Information("protocol");
-                CustomLogger.Information(httpContext.Request.Protocol);
-                CustomLogger.Information("cookies");
-                CustomLogger.Information(httpContext.Request.Cookies.ToString());
-                CustomLogger.Information("bodyreader");
-                CustomLogger.Information(httpContext.Request.BodyReader.ToString());
                 var authHeader = AuthenticationHeaderValue.Parse(httpContext.Request.Headers["Authorization"]);
                 var credentialBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialBytes).Split(new[] { ':' }, 2);
