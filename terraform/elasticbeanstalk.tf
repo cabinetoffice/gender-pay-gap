@@ -80,7 +80,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "true"
+    value     = "false"
   }
 
   // HTTPS secure listener config
@@ -437,8 +437,23 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
 }
 
-resource "aws_lb_listener_rule" "restrict_lb_port_80_to_cloudfront" {
-  listener_arn = data.aws_lb_listener.lb_listener.arn
+resource "aws_lb_listener" "port_80_listener" {
+  load_balancer_arn = data.aws_lb.load-balancer.arn
+  port              = "80"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Not Authorised"
+      status_code  = "401"
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_cloudfront_only_to_443" {
+  listener_arn = aws_lb_listener.port_80_listener.arn
 
   action {
     type = "redirect"
@@ -452,24 +467,8 @@ resource "aws_lb_listener_rule" "restrict_lb_port_80_to_cloudfront" {
 
   condition {
     http_header {
-      http_header_name = "X-Forwarded-For"
-      values           = ["192.168.1.*"]
+      http_header_name = "X-Custom-Header"
+      values           = random_integer.load-balancer-custom-header.id
     }
   }
-}
-
-resource "aws_lb_listener_rule" "redirect_http_to_https" {
-  listener_arn = data.aws_lb_listener.lb_listener.arn
-
-  action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
-
-  condition {}
 }
