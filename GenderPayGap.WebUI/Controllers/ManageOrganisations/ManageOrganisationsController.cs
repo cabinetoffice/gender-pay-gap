@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.ErrorMessages;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Core.Models;
+using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
+using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.ManageOrganisations;
 using Microsoft.AspNetCore.Authorization;
@@ -68,6 +74,50 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             var viewModel = new ManageOrganisationViewModel(organisation, user, allDraftReturns);
 
             return View("ManageOrganisation", viewModel);
+        }
+
+        [HttpGet("{encryptedOrganisationId}/AllReports")]
+        [Authorize(Roles = LoginRoles.GpgEmployer)]
+        public IActionResult AllOrganisationReportsGet(string encryptedOrganisationId, int? page = 1)
+        {
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            if (OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
+            {
+                return RedirectToAction("DeclareScope", "Organisation", new { id = encryptedOrganisationId });
+            }
+            
+            // build the view model
+            List<DraftReturn> allDraftReturns =
+                dataRepository.GetAll<DraftReturn>()
+                    .Where(d => d.OrganisationId == organisationId)
+                    .ToList();
+            
+            if (string.IsNullOrWhiteSpace(encryptedOrganisationId))
+            {
+                return new HttpBadRequestResult("Missing employer identifier");
+            }
+            
+            var totalEntries = organisation.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
+            var maxEntriesPerPage = 10;
+            var totalPages = (int)Math.Ceiling((double)totalEntries / maxEntriesPerPage);
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
+            
+            var viewModel = new AllOrganisationReportsViewModel(organisation, user, allDraftReturns, page, totalEntries, maxEntriesPerPage);
+            return View("AllOrganisationReports", viewModel);
         }
 
         private static bool OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(Organisation organisation)
