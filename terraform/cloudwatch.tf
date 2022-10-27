@@ -118,7 +118,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilisation" {
 }
 
 resource "aws_sns_topic" "EC2_topic" {
-  name = "elb-${var.env}-cloudwatch-alarms "
+  name = "elb-${var.env}-cloudwatch-alarms"
 }
 
 resource "aws_cloudwatch_composite_alarm" "EC2" {
