@@ -64,9 +64,15 @@ module "vpc" {
   flow_log_cloudwatch_log_group_kms_key_id        = null
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+// Logging and monitoring
 resource "aws_cloudwatch_log_group" "gpg-flow-log" {
   name = "gpg-flow-logs-${var.env}"
 }
+
 resource "aws_iam_role" "cloudwatch-flow-log" {
   name = "cloudwatch-assume-role-${var.env}"
 

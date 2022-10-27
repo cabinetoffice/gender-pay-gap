@@ -47,6 +47,8 @@ EOF
 
 // Alarms
 
+
+
 resource "aws_cloudwatch_metric_alarm" "no_healthy_hosts" {
   alarm_name          = "${var.env}-no-healthy-hosts"
   metric_name         = "HealthyHostCount"
@@ -93,7 +95,7 @@ resource "aws_cloudwatch_metric_alarm" "unhealthy_hosts" {
   period              = 300
   evaluation_periods  = 1
   threshold           = 0
-  alarm_description   = "gpg-${var.env} has unhealthy hosts."
+  alarm_description   = "gpg-${var.env} has unhealthy hosts. A release likely failed and will need manual intervention."
   alarm_actions       = [aws_sns_topic.EC2_topic.arn]
   ok_actions          = [aws_sns_topic.EC2_topic.arn]
   treat_missing_data  = "notBreaching"
@@ -122,29 +124,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilisation" {
 
 resource "aws_sns_topic" "EC2_topic" {
   name = "elb-${var.env}-cloudwatch-alarms"
-}
-
-resource "aws_cloudwatch_composite_alarm" "EC2" {
-  alarm_description = "Composite alarm"
-  alarm_name        = "EC2_Composite_Alarm"
-  alarm_actions     = [aws_sns_topic.EC2_topic.arn]
-  ok_actions     = [aws_sns_topic.EC2_topic.arn]
-
-  depends_on = [
-    aws_cloudwatch_metric_alarm.cpu_utilisation,
-    aws_cloudwatch_metric_alarm.http_errors,
-    aws_cloudwatch_metric_alarm.no_healthy_hosts,
-    aws_cloudwatch_metric_alarm.unhealthy_hosts,
-    aws_sns_topic.EC2_topic,
-    aws_sns_topic_subscription.EC2_Subscription
-  ]
-  
-  alarm_rule = <<EOF
-ALARM(${aws_cloudwatch_metric_alarm.cpu_utilisation.alarm_name}) OR
-ALARM(${aws_cloudwatch_metric_alarm.http_errors.alarm_name}) OR 
-ALARM(${aws_cloudwatch_metric_alarm.no_healthy_hosts.alarm_name}) OR
-ALARM(${aws_cloudwatch_metric_alarm.unhealthy_hosts.alarm_name})
-EOF
 }
 
 resource "aws_sns_topic_subscription" "EC2_Subscription" {

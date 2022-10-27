@@ -1,5 +1,3 @@
-// no failover, single node, daily backups, 1.34gb (step down from 1.5gb)
-
 resource "aws_elasticache_cluster" "redis-cluster" {
   cluster_id           = "gpg-redis-cluster-${var.env}"
   engine               = "redis"
