@@ -192,12 +192,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   // Elastic beanstalk health check config
   setting {
-    namespace = "aws:elasticbeanstalk:application"
-    name      = "ApplicationHealthcheckURL"
-    value     = "/health-check"
-  }
-
-  setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
     name      = "DeleteOnTerminate"
     value     = false

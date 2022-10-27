@@ -251,3 +251,11 @@ variable "cloudfront_origin_id" {
 }
 
 #endregion
+
+#region cloudwatch config
+
+variable "cloudwatch_notification_emails" {
+  type = list
+  description = "A list of Softwire emails that will be notified of alarm breaches"
+}
+#endregion
