@@ -115,6 +115,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilisation" {
   ok_actions          = [aws_sns_topic.EC2_topic.arn]
   treat_missing_data  = "notBreaching"
   alarm_description = "This metric monitors ec2 cpu utilization exceeding 70%"
+  dimensions = {
+    InstanceId = data.aws_instance.elb_primary_instance.id
+  }
 }
 
 resource "aws_sns_topic" "EC2_topic" {
@@ -126,7 +129,7 @@ resource "aws_cloudwatch_composite_alarm" "EC2" {
   alarm_name        = "EC2_Composite_Alarm"
   alarm_actions     = [aws_sns_topic.EC2_topic.arn]
 
-  alarm_rule = "ALARM(${aws_cloudwatch_metric_alarm.cpu_utilisation}) OR ALARM(${aws_cloudwatch_metric_alarm.http_errors}) OR ALARM(${aws_cloudwatch_metric_alarm.no_healthy_hosts}) OR ALARM(${aws_cloudwatch_metric_alarm.unhealthy_hosts}) "
+  alarm_rule = "ALARM(${aws_cloudwatch_metric_alarm.cpu_utilisation.alarm_name}) OR ALARM(${aws_cloudwatch_metric_alarm.http_errors.alarm_name}) OR ALARM(${aws_cloudwatch_metric_alarm.no_healthy_hosts.alarm_name}) OR ALARM(${aws_cloudwatch_metric_alarm.unhealthy_hosts.alarm_name}) "
 
   depends_on = [
     aws_cloudwatch_metric_alarm.cpu_utilisation,

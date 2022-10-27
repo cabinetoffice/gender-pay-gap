@@ -9,3 +9,6 @@ data "aws_lb" "load-balancer" {
   arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
 }
 
+data "aws_instance" "elb_primary_instance" {
+  instance_id = aws_elastic_beanstalk_environment.gpg-elb-environment.instances[0]
+}
