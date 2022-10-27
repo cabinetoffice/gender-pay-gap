@@ -128,8 +128,7 @@ resource "aws_cloudwatch_composite_alarm" "EC2" {
   alarm_description = "Composite alarm"
   alarm_name        = "EC2_Composite_Alarm"
   alarm_actions     = [aws_sns_topic.EC2_topic.arn]
-
-  alarm_rule = "ALARM(${aws_cloudwatch_metric_alarm.cpu_utilisation.alarm_name}) OR ALARM(${aws_cloudwatch_metric_alarm.http_errors.alarm_name}) OR ALARM(${aws_cloudwatch_metric_alarm.no_healthy_hosts.alarm_name}) OR ALARM(${aws_cloudwatch_metric_alarm.unhealthy_hosts.alarm_name}) "
+  ok_actions     = [aws_sns_topic.EC2_topic.arn]
 
   depends_on = [
     aws_cloudwatch_metric_alarm.cpu_utilisation,
@@ -139,6 +138,13 @@ resource "aws_cloudwatch_composite_alarm" "EC2" {
     aws_sns_topic.EC2_topic,
     aws_sns_topic_subscription.EC2_Subscription
   ]
+  
+  alarm_rule = <<EOF
+ALARM(${aws_cloudwatch_metric_alarm.cpu_utilisation.alarm_name}) OR
+ALARM(${aws_cloudwatch_metric_alarm.http_errors.alarm_name}) OR 
+ALARM(${aws_cloudwatch_metric_alarm.no_healthy_hosts.alarm_name}) OR
+ALARM(${aws_cloudwatch_metric_alarm.unhealthy_hosts.alarm_name})
+EOF
 }
 
 resource "aws_sns_topic_subscription" "EC2_Subscription" {
