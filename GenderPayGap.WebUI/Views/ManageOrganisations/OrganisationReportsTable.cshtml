@@ -194,11 +194,11 @@
                                     @{
                                         string description = viewModel.GetReportTagDescription();
                                         string modifiedDateText = viewModel.GetModifiedDateText();
-                                        string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
+                                        string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-4";
         
                                         if (description != null)
                                         {
-                                            <div class="govuk-!-margin-top-3">@description</div>
+                                            <div class="govuk-!-margin-top-1">@description</div>
                                         }
         
                                         if (modifiedDateText != null)
