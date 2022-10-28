@@ -80,7 +80,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "true"
+    value     = "false"
   }
 
   // HTTPS secure listener config

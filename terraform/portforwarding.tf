@@ -1,6 +1,5 @@
 ﻿//  Additional listener rules set on elastic beanstalk load balancer. Other rules set within ELB settings.
 
-/*
 data "aws_lb" "load-balancer" {
   arn = aws_elastic_beanstalk_environment.gpg-elb-environment.load_balancers[0]
 }
@@ -40,4 +39,4 @@ resource "aws_lb_listener_rule" "redirect_cloudfront_only_to_443" {
       values           = [random_integer.load-balancer-custom-header.id]
     }
   }
-}*/
+}
