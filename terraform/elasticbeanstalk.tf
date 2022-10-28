@@ -15,13 +15,13 @@ data "aws_s3_object" "gpg-archive-zip" {
 
 // Application
 resource "aws_elastic_beanstalk_application" "gpg-application" {
-  name        = "gpg-application-${var.env}"
+  name        = "gender-pay-gap-application-${var.env}"
   description = "The GPG application in ${var.env}"
 }
 
 // Application version
 resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
-  name        = "gpg-version-label-${var.env}"
+  name        = "gender-pay-gap-version-label-${var.env}"
   application = aws_elastic_beanstalk_application.gpg-application.name
   description = "application version created by terraform"
   bucket      = data.aws_s3_bucket.gpg-application-version-storage.bucket
@@ -30,7 +30,7 @@ resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
 
 // Elastic beanstalk environment
 resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
-  name                = "gpg-elb-environment-${var.env}"
+  name                = "gpg-elastic-beanstalk-environment-${var.env}"
   application         = aws_elastic_beanstalk_application.gpg-application.name
   solution_stack_name = var.elb_solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
