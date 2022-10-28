@@ -1,4 +1,4 @@
-﻿bucket               = "gender-pay-gap-terraform-state-bucket"
+﻿bucket               = "gender-pay-gap-preproduction-tfstate"
 key                  = "prod/terraform.tfstate"
 dynamodb_table       = "gender-pay-gap-tf-locks"
 region               = "eu-west-2"
