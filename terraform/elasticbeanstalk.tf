@@ -124,7 +124,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Protocol"
-    value     = "HTTP"
+    value     = "HTTPS"
   }
 
   // Elastic beanstalk autoscaling config
