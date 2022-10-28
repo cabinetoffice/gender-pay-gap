@@ -87,7 +87,7 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
 }
 
 resource "aws_s3_bucket" "resource-logs-bucket" {
-  bucket = "resource-log-bucket-${var.env}"
+  bucket = "gpg-resource-log-bucket-${var.env}"
 }
 
 resource "random_integer" "load-balancer-custom-header" {

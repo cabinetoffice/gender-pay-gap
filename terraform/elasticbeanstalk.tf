@@ -4,7 +4,7 @@ data "aws_s3_bucket" "gpg-application-version-storage" {
 }
 
 resource "aws_s3_bucket" "gpg-filestorage" {
-  bucket = "gpg-${var.env}-filestorage"
+  bucket = "gender-pay-gap-${var.env}-filestorage"
 }
 
 // Archive file 
