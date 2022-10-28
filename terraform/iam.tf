@@ -15,3 +15,4 @@
   })  
   managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier","arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker","arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier", "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
 }
+
