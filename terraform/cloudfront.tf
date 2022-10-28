@@ -18,7 +18,7 @@ resource "aws_cloudfront_distribution" "gpg-distribution" {
 
     origin_shield {
       enabled              = true
-      origin_shield_region = "us-east-2"
+      origin_shield_region = "eu-west-2"
     }
   }
 
