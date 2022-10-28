@@ -86,18 +86,6 @@ resource "aws_cloudfront_cache_policy" "authorisation" {
   }
 }
 
-resource "aws_cloudfront_response_headers_policy" "default" {
-  name = "default-policy-${var.env}"
-
-  custom_headers_config {
-    items {
-      header   = "Set-Cookie"
-      override = false
-      value    = ""
-    }
-  }
-}
-
 resource "aws_s3_bucket" "resource-logs-bucket" {
   bucket = "resource-log-bucket-${var.env}"
 }
