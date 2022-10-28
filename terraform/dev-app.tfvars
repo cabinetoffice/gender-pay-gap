@@ -34,7 +34,7 @@ elasticache_cache_port = 6379
 
 #region Cloudfront configuration
 
-cloudfront_alternate_domain_name = "gender-pay-gap-test.codatt.net"
+cloudfront_alternate_domain_name = "dev.gender-pay-gap.service.gov.uk"
 cloudfront_logging_prefix        = "cloudfront-dev"
 cloudfront_origin_id             = "gpg-load-balancer-dev"
 
