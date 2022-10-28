@@ -1,4 +1,5 @@
 env = "prod"
+application_version_s3_bucket = "gpg-production-application-version-storage"
 
 #region Relational database configuration 
 

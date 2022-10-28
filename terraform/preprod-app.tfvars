@@ -1,4 +1,5 @@
 env = "preprod"
+application_version_s3_bucket = "gpg-preproduction-application-version-storage"
 
 #region Relational database configuration 
 

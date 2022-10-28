@@ -6,8 +6,13 @@ variable "aws_region" {
 }
 
 variable "env" {
-  description = "The environment name"
+  description = "The environment name."
   type        = string
+}
+
+variable "application_version_s3_bucket" {
+  type = string
+  description = "The S3 bucket name containing the application version for each environment."
 }
 
 #region credentials 

@@ -1,6 +1,6 @@
 //S3 bucket containing application version
 data "aws_s3_bucket" "gpg-application-version-storage" {
-  bucket = "gpg-application-version-storage"
+  bucket = var.application_version_s3_bucket
 }
 
 resource "aws_s3_bucket" "gpg-filestorage" {
