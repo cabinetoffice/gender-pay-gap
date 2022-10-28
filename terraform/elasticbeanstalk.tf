@@ -96,12 +96,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS
   }
 
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLPolicy"
-    value     = var.elb_ssl_policy
-  }
-
   // HTTPS secure listener rules
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
