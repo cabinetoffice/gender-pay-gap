@@ -12,7 +12,7 @@ rds_config_multi_az       = false
 
 #region Elastic Beanstalk configuration
 
-elb_cname_prefix        = "gpg-dev"
+elb_cname_prefix        = "dev-gpg"
 elb_deployment_policy   = "Rolling"
 elb_instance_max_size   = 2
 elb_instance_min_size   = 1
