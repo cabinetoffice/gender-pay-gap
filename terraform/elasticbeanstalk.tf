@@ -80,7 +80,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "false"
+    value     = "true"
   }
 
   // HTTPS secure listener config
@@ -88,12 +88,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     namespace = "aws:elbv2:listener:443"
     name      = "ListenerEnabled"
     value     = "true"
-  }
-
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS
   }
 
   // HTTPS secure listener rules
@@ -112,7 +106,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Port"
-    value     = "80"
+    value     = "443"
   }
 
   setting {
