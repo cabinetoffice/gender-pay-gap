@@ -419,10 +419,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.ELB_WEBJOBS_STOPPED
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
 }
 
 data "aws_instance" "elb_primary_instance" {
