@@ -15,8 +15,9 @@ rds_config_multi_az       = false
 elb_deployment_policy = "Rolling"
 elb_instance_max_size = 2
 elb_instance_min_size = 1
+elb_instance_type     = "t2.small"
 
-#endregionterra
+#endregion
 
 #region Cloudfront configuration
 
