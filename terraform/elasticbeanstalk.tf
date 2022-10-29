@@ -1,6 +1,6 @@
 locals {
   env_prefix     = "gpg-${var.env}" // prefix env specific resources
-  account_prefix = var.account      // prefix account specific resources
+  account_prefix = "gpg-${var.account}"      // prefix account specific resources
 
   elb_environment_tier         = "WebServer"
   elb_instance_profile         = "aws-elasticbeanstalk-ec2-role"
