@@ -1,40 +1,61 @@
-//S3 bucket containing application version
-data "aws_s3_bucket" "gpg-application-version-storage" {
-  bucket = var.application_version_s3_bucket
+locals {
+  env_prefix     = "gpg-${var.env}" // prefix env specific resources
+  account_prefix = var.account      // prefix account specific resources
+
+  elb_environment_tier         = "WebServer"
+  elb_instance_profile         = "aws-elasticbeanstalk-ec2-role"
+  elb_lb_scheme                = "public"
+  elb_load_balancer_ssl_policy = "ELBSecurityPolicy-2016-08"
+  elb_load_balancer_type       = "application"
+  elb_solution_stack_name      = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
+  elb_health_check_path        = "/health-check"
+  elb_matcher_http_code        = 200
 }
 
-resource "aws_s3_bucket" "gpg-filestorage" {
-  bucket = "gender-pay-gap-${var.env}-filestorage"
+// Load balancer id
+data "aws_instance" "elb_primary_instance" {
+  instance_id = aws_elastic_beanstalk_environment.gpg_elb_environment.instances[0]
+}
+
+//S3 bucket containing application versions for all env in account
+data "aws_s3_bucket" "gpg_application_version_storage" {
+  bucket = "${local.account_prefix}-application-version-storage"
+}
+
+// File storage bucket for each env
+resource "aws_s3_bucket" "gpg_filestorage" {
+  bucket = "${local.env_prefix}-filestorage"
 }
 
 // Archive file 
-data "aws_s3_object" "gpg-archive-zip" {
-  bucket = data.aws_s3_bucket.gpg-application-version-storage.id
+data "aws_s3_object" "gpg_archive_zip" {
+  bucket = data.aws_s3_bucket.gpg_application_version_storage.id
+  prefix = local.env_prefix
   key    = "publish-${var.env}.zip"
 }
 
 // Application
-resource "aws_elastic_beanstalk_application" "gpg-application" {
-  name        = "gender-pay-gap-application-${var.env}"
-  description = "The GPG application in ${var.env}"
+resource "aws_elastic_beanstalk_application" "gpg_application" {
+  name        = "${local.env_prefix}-application"
+  description = "The GPG application in ${var.env}."
 }
 
 // Application version
-resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
-  name        = "gender-pay-gap-version-label-${var.env}"
-  application = aws_elastic_beanstalk_application.gpg-application.name
-  description = "application version created by terraform"
-  bucket      = data.aws_s3_bucket.gpg-application-version-storage.bucket
-  key         = data.aws_s3_object.gpg-archive-zip.key
+resource "aws_elastic_beanstalk_application_version" "gpg_application_version" {
+  name        = "${local.env_prefix}-version"
+  application = aws_elastic_beanstalk_application.gpg_application.name
+  description = "The application version used to create the elastic beanstalk resource."
+  bucket      = data.aws_s3_bucket.gpg_application_version_storage.bucket
+  key         = data.aws_s3_object.gpg_archive_zip.key
 }
 
 // Elastic beanstalk environment
-resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
-  name                = "elastic-beanstalk-environment-gpg-${var.env}"
-  application         = aws_elastic_beanstalk_application.gpg-application.name
-  solution_stack_name = var.elb_solution_stack_name
-  version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
-  cname_prefix        = var.elb_cname_prefix
+resource "aws_elastic_beanstalk_environment" "gpg_elb_environment" {
+  name                = "${local.env_prefix}-elastic-beanstalk-environment"
+  application         = aws_elastic_beanstalk_application.gpg_application.name
+  solution_stack_name = local.elb_solution_stack_name
+  version_label       = aws_elastic_beanstalk_application_version.gpg_application_version.name
+  cname_prefix        = local.env_prefix //must check availability in console before changing
 
   // Deployment strategy
   setting {
@@ -66,13 +87,32 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBScheme"
-    value     = var.elb_lb_scheme
+    value     = local.elb_lb_scheme
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerType"
-    value     = var.elb_load_balancer_type
+    value     = local.elb_load_balancer_type
+  }
+
+  //Elastic beanstalk load balancer logs config
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "AccessLogsS3Bucket"
+    value     = data.aws_s3_bucket.resource_logs_bucket.bucket
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "AccessLogsS3Enabled"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "AccessLogsS3Prefix"
+    value     = local.env_prefix
   }
 
   // HTTP listener config
@@ -94,13 +134,13 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "HealthCheckPath"
-    value     = "/health-check"
+    value     = local.elb_health_check_path
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "MatcherHTTPCode"
-    value     = 200
+    value     = local.elb_matcher_http_code
   }
 
   setting {
@@ -119,7 +159,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = var.elb_instance_profile
+    value     = local.elb_instance_profile
   }
 
   setting {
@@ -132,12 +172,6 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
     value     = var.elb_instance_max_size
-  }
-
-  setting {
-    namespace = "aws:autoscaling:asg"
-    name      = "MinSize"
-    value     = var.elb_instance_min_size
   }
 
   setting {
@@ -200,7 +234,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckPath"
-    value     = "/health-check"
+    value     = local.elb_health_check_path
   }
 
   setting {
@@ -224,7 +258,7 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "MatcherHTTPCode"
-    value     = 200
+    value     = local.elb_matcher_http_code
   }
 
   setting {
@@ -270,10 +304,10 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
         name = "gpg-${var.env}-cache"
       }],
       aws-s3-bucket = [{
-        name = aws_s3_bucket.gpg-filestorage.bucket,
+        name = aws_s3_bucket.gpg_filestorage.bucket,
         credentials = {
           aws_region            = var.aws_region,
-          bucket_name           = aws_s3_bucket.gpg-filestorage.bucket,
+          bucket_name           = aws_s3_bucket.gpg_filestorage.bucket,
           aws_access_key_id     = var.AWS_ACCESS_KEY_ID,
           aws_secret_access_key = var.AWS_SECRET_ACCESS_KEY
         }
@@ -415,6 +449,3 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
 }
 
-data "aws_instance" "elb_primary_instance" {
-  instance_id = aws_elastic_beanstalk_environment.gpg-elb-environment.instances[0]
-}

@@ -1,6 +1,10 @@
+locals {
+  rds_config_port = 5432
+}
+
 // The security group the database will belong to
 resource "aws_security_group" "allow_postgres_connection" {
-  name        = "allow_postgres_connection-${var.env}"
+  name        = "${local.env_prefix}-allow_postgres_connection"
   description = "Allow Postgres DB traffic"
   vpc_id      = module.vpc.vpc_id
 }
@@ -9,8 +13,8 @@ resource "aws_security_group" "allow_postgres_connection" {
 resource "aws_security_group_rule" "postgres_in" {
   security_group_id = aws_security_group.allow_postgres_connection.id
   type              = "ingress"
-  from_port         = var.rds_config_port
-  to_port           = var.rds_config_port
+  from_port         = local.rds_config_port
+  to_port           = local.rds_config_port
   protocol          = "tcp"
   cidr_blocks       = [module.vpc.vpc_cidr_block]
   ipv6_cidr_blocks  = [module.vpc.vpc_ipv6_cidr_block]
@@ -35,9 +39,9 @@ resource "aws_db_instance" "gpg-dev-db" {
   instance_class              = var.rds_config_instance_class
   identifier                  = var.rds_config_identifier
   db_name                     = var.rds_config_db_name
+  port                        = local.rds_config_port
   username                    = var.POSTGRES_CONFIG_USERNAME
   password                    = var.POSTGRES_CONFIG_PASSWORD
-  port                        = var.rds_config_port
   backup_retention_period     = 30
   backup_window               = "04:00-05:00"
   vpc_security_group_ids      = [aws_security_group.allow_postgres_connection.id]

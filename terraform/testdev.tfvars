@@ -1,10 +1,10 @@
-env     = "preprod"
-account = "preproduction"
+env     = "testdev"
+account = "test"
 
 #region Relational database configuration 
 
-rds_config_db_name        = "gpgPreprodDb"
-rds_config_identifier     = "gpg-preprod-db"
+rds_config_db_name        = "gpgtestedevDb"
+rds_config_identifier     = "gpg-testdev-db"
 rds_config_instance_class = "db.t3.small"
 rds_config_multi_az       = false
 
@@ -21,6 +21,6 @@ elb_instance_type     = "t2.small"
 
 #region Cloudfront configuration
 
-cloudfront_alternate_domain_name = "preprod.gender-pay-gap.service.gov.uk"
+cloudfront_alternate_domain_name = "ladun.me"
 
-#endregion
+#end region

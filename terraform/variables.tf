@@ -1,30 +1,31 @@
 // all declared input variables
 
 variable "aws_region" {
+  type        = string
   description = "The AWS region used for the provider and resources."
   default     = "eu-west-2"
 }
 
 variable "env" {
-  description = "The environment name."
   type        = string
+  description = "The environment name."
 }
 
-variable "application_version_s3_bucket" {
-  type = string
-  description = "The S3 bucket name containing the application version for each environment."
+variable "account" {
+  type        = string
+  description = "The AWS Cabinet Office account the environment is created in."
 }
 
 #region credentials 
 
 variable "AWS_ACCESS_KEY_ID" {
   type        = string
-  description = "AWS access key id. Set as an environment variable."
+  description = "AWS access key id for terraform programmatic access. Set as an environment variable."
 }
 
 variable "AWS_SECRET_ACCESS_KEY" {
   type        = string
-  description = "AWS secret access key. Set as an environment variable."
+  description = "AWS secret access key id for terraform programmatic access. Set as an environment variable."
 }
 #endregion
 
@@ -43,12 +44,6 @@ variable "rds_config_identifier" {
 variable "rds_config_db_name" {
   type        = string
   description = "Database name"
-}
-
-variable "rds_config_port" {
-  type        = number
-  default     = 5432
-  description = "The port the database accepts connections to"
 }
 
 variable "rds_config_multi_az" {
@@ -72,11 +67,6 @@ variable "POSTGRES_CONFIG_PASSWORD" {
 
 #region Elastic beanstalk configuration
 
-variable "elb_cname_prefix" {
-  type        = string
-  description = "Optional prefix that sets DNS name of the eb env. Must check prefix availability on AWS console."
-}
-
 variable "elb_deployment_policy" {
   type        = string
   description = "The deployment policy for Elastic Beanstalk application version deployments."
@@ -92,44 +82,14 @@ variable "elb_instance_min_size" {
   description = "The minimum number of instances in Elastic Beanstalk Auto Scaling group."
 }
 
-variable "elb_instance_profile" {
-  type        = string
-  description = "An instance profile name or arn that enables ELB to access temporary security credentials to make AWS API calls."
-}
-
 variable "elb_instance_type" {
   type        = string
   description = "The instance type that's used to run the application in the Elastic Beanstalk environment."
 }
 
-variable "elb_lb_scheme" {
-  type        = string
-  description = "Specifies whether the Elastic Beanstalk load balancer is public or internal"
-}
-
-variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS" {
+variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARN" {
   type        = string
   description = "The certificate arn for Load Balancer. Passed in as secret in azure devops"
-}
-
-variable "elb_load_balancer_type" {
-  type        = string
-  description = "The type of load balancer for the Elastic Beanstalk environment."
-}
-
-variable "elb_solution_stack_name" {
-  type        = string
-  description = "A solution stack to base Elastic Beanstalk environment off of."
-}
-
-variable "elb_ssl_policy" {
-  type        = string
-  description = "The name of the Elastic Beanstalk's load balancer security policy."
-}
-
-variable "elb_tier" {
-  type        = string
-  description = "Elastic Beanstalk Environment tier. Valid values are Worker or WebServer."
 }
 
 // Elastic Beanstalk environment variables
@@ -224,15 +184,6 @@ variable "ELB_WEBJOBS_STOPPED" {
 
 #endregion
 
-#region elasticache config
-
-variable "elasticache_cache_port" {
-  type        = number
-  description = "The port number on which each of the cache nodes will accept connections. The default port is 6379."
-}
-
-#endregion
-
 #region cloudfront config
 
 variable "CLOUDFRONT_ACM_CERT_ARN" {
@@ -245,24 +196,14 @@ variable "cloudfront_alternate_domain_name" {
   description = "Any additional CNAMEs or Alias records, if any, for this distribution."
 }
 
-variable "cloudfront_logging_prefix" {
-  type        = string
-  description = "An optional string that prefixes to the access log filenames for this distribution"
-}
-
-variable "cloudfront_origin_id" {
-  type        = string
-  description = "A unique identifier for the origin."
-}
-
 #endregion
 
 #region cloudwatch config
 
-variable "cloudwatch_notification_emails" {
-  type = string
-  description = "A softwire email distribution list that will be notified of alarm breaches"
-  default = "Team-GenderPayGap@softwire.com"
+variable "CLOUDWATCH_NOTIFICATION_EMAILS" {
+  type        = string
+  description = "An email distribution list to be notified of alarm breaches. Pass in as environment variable."
+  default     = "ladun.omideyi@softwire.com"
 }
 
 #endregion

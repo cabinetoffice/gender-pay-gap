@@ -1,10 +1,14 @@
+locals {
+  elasticache_cache_port = 6379
+}
+
 resource "aws_elasticache_cluster" "redis-cluster" {
   cluster_id           = "gpg-redis-cluster-${var.env}"
   engine               = "redis"
   node_type            = "cache.t4g.small"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis6.x"
-  port                 = var.elasticache_cache_port
+  port                 = local.elasticache_cache_port
   security_group_ids   = [aws_security_group.elasticache_security_group.id]
   subnet_group_name    = module.vpc.elasticache_subnet_group_name
 
@@ -25,11 +29,11 @@ resource "aws_elasticache_cluster" "redis-cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "redis" {
-  name = "redis-logs-${var.env}"
+  name = "${local.env_prefix}-redis-logs"
 }
 
 resource "aws_security_group" "elasticache_security_group" {
-  name   = "elasticache-${var.env}"
+  name   = "${local.env_prefix}elasticache"
   vpc_id = module.vpc.vpc_id
 
   ingress {

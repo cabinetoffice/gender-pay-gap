@@ -1,0 +1,6 @@
+﻿bucket               = "gender-pay-gap-preproduction-tfstate"
+key                  = "loadtest/terraform.tfstate"
+dynamodb_table       = "gender-pay-gap-tf-locks-loadtest"
+region               = "eu-west-2"
+encrypt              = true
+workspace_key_prefix = "gpg"
