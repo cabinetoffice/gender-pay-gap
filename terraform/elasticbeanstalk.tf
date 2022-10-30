@@ -1,6 +1,6 @@
 locals {
-  env_prefix     = "gpg-${var.env}" // prefix env specific resources
-  account_prefix = "gpg-${var.account}"      // prefix account specific resources
+  env_prefix     = "gpg-${var.env}"     // prefix env specific resources
+  account_prefix = "gpg-${var.account}" // prefix account specific resources
 
   elb_environment_tier         = "WebServer"
   elb_instance_profile         = "AWSServiceRoleForElasticBeanstalk"
@@ -10,15 +10,32 @@ locals {
   elb_solution_stack_name      = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
   elb_health_check_path        = "/health-check"
   elb_matcher_http_code        = 200
+
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier,arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
 }
+
 // Instance profile 
 resource "aws_iam_instance_profile" "elastic_beanstalk" {
   name = "${local.env_prefix}-elastic-beanstalk"
-  role = data.aws_iam_role.elastic-beanstalk_instance_profile.name
+  role = aws_iam_role.elastic-beanstalk_instance_profile.name
 }
 
-data "aws_iam_role" "elastic-beanstalk_instance_profile" {
-  name = "AWSServiceRoleForElasticBeanstalk"
+// IAM Role that enables ELB to manage other resources
+resource "aws_iam_role" "elastic-beanstalk_instance_profile" {
+  name = "aws-elasticbeanstalk-ec2-role"
+  assume_role_policy = jsonencode({
+    "Version" : "2008-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "ec2.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+  managed_policy_arns = local.managed_policy_arns
 }
 
 // Load balancer id
