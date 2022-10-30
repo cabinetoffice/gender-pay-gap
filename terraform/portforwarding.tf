@@ -1,7 +1,7 @@
 //  Additional listener rules set on elastic beanstalk load balancer. Other rules set within ELB settings.
 
 data "aws_lb" "load_balancer" {
-  arn = aws_elastic_beanstalk_environment.gpg_elb_environment.load_balancers[0]
+  arn = aws_elastic_beanstalk_environment.gpg_elastic_beanstalk_environment.load_balancers[0]
 }
 
 resource "aws_lb_listener" "port_80_listener" {

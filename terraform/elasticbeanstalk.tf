@@ -14,24 +14,17 @@ locals {
 }
 
 // Instance profile 
-resource "aws_iam_instance_profile" "elastic_beanstalk" {
+/*resource "aws_iam_instance_profile" "elastic_beanstalk" {
   name = "${local.env_prefix}-elastic-beanstalk"
   role = data.aws_iam_role.elastic-beanstalk_instance_profile.name
 }
 
 data "aws_iam_role" "elastic-beanstalk_instance_profile" {
   name = "AWSServiceRoleForElasticBeanstalk"
-}
-
-
-// Instance profile 
-resource "aws_iam_instance_profile" "elb_service_role" {
-  name = "${local.env_prefix}-ec2-role"
-  role = aws_iam_role.elastic-beanstalk_iam.name
-}
+}*/
 
 // IAM Role that enables ELB to manage other resources
-resource "aws_iam_role" "elastic-beanstalk_iam" {
+resource "aws_iam_role" "elastic-beanstalk_role" {
   name = "aws-elasticbeanstalk-ec2-role"
   assume_role_policy = jsonencode({
     "Version" : "2008-10-17",
@@ -50,7 +43,7 @@ resource "aws_iam_role" "elastic-beanstalk_iam" {
 
 // Load balancer id
 data "aws_instance" "elb_primary_instance" {
-  instance_id = aws_elastic_beanstalk_environment.gpg_elb_environment.instances[0]
+  instance_id = aws_elastic_beanstalk_environment.gpg_elastic_beanstalk_environment.instances[0]
 }
 
 //S3 bucket containing application versions for all env in account
@@ -85,7 +78,7 @@ resource "aws_elastic_beanstalk_application_version" "gpg_application_version" {
 }
 
 // Elastic beanstalk environment
-resource "aws_elastic_beanstalk_environment" "gpg_elb_environment" {
+resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment" {
   name                = "${local.env_prefix}-elastic-beanstalk-environment"
   application         = aws_elastic_beanstalk_application.gpg_application.name
   solution_stack_name = local.elb_solution_stack_name
@@ -194,7 +187,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elb_environment" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = aws_iam_instance_profile.elb_service_role.name
+    value     = "aws-elasticbeanstalk-ec2-role"
   }
 
   setting {
