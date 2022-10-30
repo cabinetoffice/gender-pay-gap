@@ -310,7 +310,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "StickinessEnabled"
-    value     = false
+    value     = true
   }
 
   setting {

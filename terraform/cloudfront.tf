@@ -59,7 +59,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
   }
 
   logging_config {
-    include_cookies = false
+    include_cookies = true
     bucket          = data.aws_s3_bucket.resource_logs_bucket.bucket_domain_name
     prefix          = local.env_prefix
   }
@@ -80,7 +80,7 @@ resource "aws_cloudfront_cache_policy" "gpg_default" {
     headers_config {
       header_behavior = "whitelist"
       headers {
-        items = ["Authorization", "Host", "Origin", "Referer", "User-Agent"]
+        items = ["Authorization", "Host", "Origin", "Referer", "User-Agent", "X-Forwarded-For", "X-Forwarded-Proto"]
       }
     }
     query_strings_config {
