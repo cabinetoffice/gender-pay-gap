@@ -75,7 +75,7 @@ resource "aws_elastic_beanstalk_application_version" "gpg_application_version" {
 
 // Elastic beanstalk environment
 resource "aws_elastic_beanstalk_environment" "gpg_elb_environment" {
-  name                = "${local.env_prefix}-elb-environment"
+  name                = "${local.env_prefix}-elastic-beanstalk-environment"
   application         = aws_elastic_beanstalk_application.gpg_application.name
   solution_stack_name = local.elb_solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg_application_version.name
