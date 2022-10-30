@@ -149,5 +149,5 @@ resource "aws_wafv2_web_acl_logging_configuration" "waf-logging-config" {
 
 resource "aws_cloudwatch_log_group" "waf-log-group" {
   provider = aws.us-east-1
-  name     = "${local.env_prefix}-aws-waf-logs"
+  name     = "aws-waf-logs-${local.env_prefix}" //the prefix "aws-waf-logs-" is required
 }
