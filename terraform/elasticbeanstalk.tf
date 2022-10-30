@@ -158,6 +158,18 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     value     = "HTTPS"
   }
 
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = aws_lb_listener_certificate.elb_ssl_cert.certificate_arn
+  }
+  
+  setting {
+    namespace = "aws:elbv2:listener:default"
+    name = "SSLPolicy"
+    value = "ELBSecurityPolicy-2016-08"
+  }
+
   // HTTPS secure listener rules
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
