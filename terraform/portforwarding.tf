@@ -19,6 +19,12 @@ resource "aws_lb_listener" "port_80_listener" {
   }
 }
 
+// Because default listener is disabled, cert has to be set here
+resource "aws_lb_listener_certificate" "elb_ssl_cert" {
+  listener_arn = aws_lb_listener.port_80_listener.arn
+  certificate_arn = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARN
+}
+
 resource "aws_lb_listener_rule" "redirect_cloudfront_only_to_443" {
   listener_arn = aws_lb_listener.port_80_listener.arn
 
