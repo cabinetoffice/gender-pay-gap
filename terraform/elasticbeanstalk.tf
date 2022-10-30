@@ -30,7 +30,6 @@ resource "aws_s3_bucket" "gpg_filestorage" {
 // Archive file 
 data "aws_s3_object" "gpg_archive_zip" {
   bucket = data.aws_s3_bucket.gpg_application_version_storage.id
-  prefix = local.env_prefix
   key    = "publish-${var.env}.zip"
 }
 
