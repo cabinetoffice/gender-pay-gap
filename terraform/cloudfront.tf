@@ -80,7 +80,7 @@ resource "aws_cloudfront_cache_policy" "gpg_default" {
     headers_config {
       header_behavior = "whitelist"
       headers {
-        items = ["Authorization", "Host", "Origin", "Referer", "User-Agent", "X-Forwarded-For", "X-Forwarded-Proto"]
+        items = ["Authorization", "Host", "Origin", "Referer", "User-Agent", "X-Forwarded-For"]
       }
     }
     query_strings_config {
