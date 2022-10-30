@@ -154,6 +154,12 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "HTTPS"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:443"
     name      = "SSLCertificateArns"
     value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARN
   }
