@@ -10,14 +10,19 @@ locals {
   elb_health_check_path        = "/health-check"
   elb_matcher_http_code        = 200
 
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier,arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier","arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
 }
 
 // Instance profile 
 resource "aws_iam_instance_profile" "elastic_beanstalk" {
   name = "${local.env_prefix}-elastic-beanstalk"
-  role = "AWSServiceRoleForElasticBeanstalk"
+  role = data.aws_iam_role.elastic-beanstalk_instance_profile
 }
+
+data "aws_iam_role" "elastic-beanstalk_instance_profile" {
+  name = "AWSServiceRoleForElasticBeanstalk"
+}
+
 
 // Instance profile 
 resource "aws_iam_instance_profile" "elb_service_role" {
