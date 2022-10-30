@@ -11,6 +11,15 @@ locals {
   elb_health_check_path        = "/health-check"
   elb_matcher_http_code        = 200
 }
+// Instance profile 
+resource "aws_iam_instance_profile" "elastic_beanstalk" {
+  name = "${local.env_prefix}-elastic-beanstalk"
+  role = data.aws_iam_role.elastic-beanstalk_instance_profile
+}
+
+data "aws_iam_role" "elastic-beanstalk_instance_profile" {
+  name = "AWSServiceRoleForElasticBeanstalk"
+}
 
 // Load balancer id
 data "aws_instance" "elb_primary_instance" {
