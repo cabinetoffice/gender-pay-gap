@@ -13,15 +13,9 @@ locals {
   managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier","arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
 }
 
-// Instance profile 
-/*resource "aws_iam_instance_profile" "elastic_beanstalk" {
-  name = "${local.env_prefix}-elastic-beanstalk"
-  role = data.aws_iam_role.elastic-beanstalk_instance_profile.name
+data "aws_iam_instance_profile" "elastic_beanstalk" {
+  name = "aws-elasticbeanstalk-ec2-role"
 }
-
-data "aws_iam_role" "elastic-beanstalk_instance_profile" {
-  name = "AWSServiceRoleForElasticBeanstalk"
-}*/
 
 // IAM Role that enables ELB to manage other resources
 resource "aws_iam_role" "elastic-beanstalk_role" {
@@ -187,7 +181,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = "aws-elasticbeanstalk-ec2-role"
+    value     = data.aws_iam_instance_profile.elastic_beanstalk.name
   }
 
   setting {
