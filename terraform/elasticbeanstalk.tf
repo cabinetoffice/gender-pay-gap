@@ -3,7 +3,7 @@ locals {
   account_prefix = "gpg-${var.account}"      // prefix account specific resources
 
   elb_environment_tier         = "WebServer"
-  elb_instance_profile         = "aws-elasticbeanstalk-ec2-role"
+  elb_instance_profile         = "AWSServiceRoleForElasticBeanstalk"
   elb_lb_scheme                = "public"
   elb_load_balancer_ssl_policy = "ELBSecurityPolicy-2016-08"
   elb_load_balancer_type       = "application"
