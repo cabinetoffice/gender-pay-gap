@@ -16,7 +16,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
     custom_origin_config {
       http_port              = "80"
       https_port             = "443"
-      origin_protocol_policy = "https-only"
+      origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
 
@@ -38,7 +38,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
     target_origin_id = local.cloudfront_origin_id
     cache_policy_id  = aws_cloudfront_cache_policy.gpg_default.id
 
-    viewer_protocol_policy = "redirect-to-https"
+    viewer_protocol_policy = "allow-all"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
@@ -53,9 +53,11 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
   }
 
   viewer_certificate {
+/*
     acm_certificate_arn            = var.CLOUDFRONT_ACM_CERT_ARN
-    cloudfront_default_certificate = false
-    ssl_support_method             = "sni-only"
+*/
+    cloudfront_default_certificate = true
+/*    ssl_support_method             = "sni-only"*/
   }
 
   logging_config {
