@@ -16,11 +16,17 @@ locals {
 // Instance profile 
 resource "aws_iam_instance_profile" "elastic_beanstalk" {
   name = "${local.env_prefix}-elastic-beanstalk"
-  role = aws_iam_role.elastic-beanstalk_instance_profile.name
+  role = "AWSServiceRoleForElasticBeanstalk"
+}
+
+// Instance profile 
+resource "aws_iam_instance_profile" "elb_service_role" {
+  name = "${local.env_prefix}-ec2-role"
+  role = aws_iam_role.elastic-beanstalk_iam.name
 }
 
 // IAM Role that enables ELB to manage other resources
-resource "aws_iam_role" "elastic-beanstalk_instance_profile" {
+resource "aws_iam_role" "elastic-beanstalk_iam" {
   name = "aws-elasticbeanstalk-ec2-role"
   assume_role_policy = jsonencode({
     "Version" : "2008-10-17",
@@ -183,7 +189,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elb_environment" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = aws_iam_instance_profile.elastic_beanstalk.name
+    value     = aws_iam_instance_profile.elb_service_role.name
   }
 
   setting {
