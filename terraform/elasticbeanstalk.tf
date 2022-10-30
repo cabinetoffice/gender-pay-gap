@@ -19,7 +19,7 @@ data "aws_iam_instance_profile" "elastic_beanstalk" {
 
 // IAM Role that enables ELB to manage other resources
 resource "aws_iam_role" "elastic-beanstalk_role" {
-  name = "aws-elasticbeanstalk-ec2-role"
+  name = "aws-elasticbeanstalk-ec2-role-non-managed"
   assume_role_policy = jsonencode({
     "Version" : "2008-10-17",
     "Statement" : [
