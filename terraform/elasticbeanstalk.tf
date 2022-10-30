@@ -3,7 +3,6 @@ locals {
   account_prefix = "gpg-${var.account}" // prefix account specific resources
 
   elb_environment_tier         = "WebServer"
-  elb_instance_profile         = "AWSServiceRoleForElasticBeanstalk"
   elb_lb_scheme                = "public"
   elb_load_balancer_ssl_policy = "ELBSecurityPolicy-2016-08"
   elb_load_balancer_type       = "application"
@@ -184,7 +183,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elb_environment" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = local.elb_instance_profile
+    value     = aws_iam_instance_profile.elastic_beanstalk.name
   }
 
   setting {
