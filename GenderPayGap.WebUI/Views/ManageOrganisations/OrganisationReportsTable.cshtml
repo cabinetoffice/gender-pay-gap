@@ -43,19 +43,20 @@
     {
         var reportTag = organisationReturn.GetReportTag();
         var currentReportingYear = ReportingYearsHelper.GetCurrentReportingYear();
-        if (reportTag == ReportTag.Overdue || reportTag == ReportTag.NotRequired)
+ 
+        if (reportTag == ReportTag.Overdue)
         {
-            AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
-            AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
+            desktopMissingReportingPeriodRows.Add(GenerateDesktopRow(organisationReturn));
+            mobileMissingReportingPeriodRows.Add(GenerateMobileRow(organisationReturn));
         }
         else if (organisationReturn.ReportingYear == currentReportingYear)
         {
-            AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
-            AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
+            desktopCurrentReportingPeriodRows.Add(GenerateDesktopRow(organisationReturn));
+            mobileCurrentReportingPeriodRows.Add(GenerateMobileRow(organisationReturn));
         }
     }
 
-    void AddRowDesktop(List<TableRowViewModel> rowList, ManageOrganisationDetailsForYearViewModel viewModel)
+    TableRowViewModel GenerateDesktopRow(ManageOrganisationDetailsForYearViewModel viewModel)
     {
         var newRow = new TableRowViewModel
         {
@@ -118,10 +119,10 @@
                 },
             }
         };
-        rowList.Add(newRow);
+        return newRow;
     }
 
-    void AddRowMobile(List<TableRowViewModel> rowList, ManageOrganisationDetailsForYearViewModel viewModel)
+    TableRowViewModel GenerateMobileRow(ManageOrganisationDetailsForYearViewModel viewModel)
     {
         var newRow = new TableRowViewModel
         {
@@ -186,7 +187,7 @@
                 },
             }
         };
-        rowList.Add(newRow);
+        return newRow;
     }
 }
 
