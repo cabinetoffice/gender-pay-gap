@@ -17,24 +17,6 @@ data "aws_iam_instance_profile" "elastic_beanstalk" {
   name = "aws-elasticbeanstalk-ec2-role"
 }
 
-// IAM Role that enables ELB to manage other resources
-resource "aws_iam_role" "elastic-beanstalk_role" {
-  name = "aws-elasticbeanstalk-ec2-role-non-managed"
-  assume_role_policy = jsonencode({
-    "Version" : "2008-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "ec2.amazonaws.com"
-        },
-        "Action" : "sts:AssumeRole"
-      }
-    ]
-  })
-  managed_policy_arns = local.managed_policy_arns
-}
-
 // Load balancer id
 data "aws_instance" "elb_primary_instance" {
   instance_id = aws_elastic_beanstalk_environment.gpg_elastic_beanstalk_environment.instances[0]

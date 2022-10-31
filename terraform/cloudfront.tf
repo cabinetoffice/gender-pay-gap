@@ -117,7 +117,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
   logging_config {
     include_cookies = true
     bucket          = data.aws_s3_bucket.resource_logs_bucket.bucket_domain_name
-    prefix          = "${local.env_prefix}/cloudfront"
+    prefix          = local.env_prefix
   }
   
   depends_on = [data.aws_s3_bucket.resource_logs_bucket]
