@@ -33,7 +33,7 @@ resource "aws_cloudwatch_log_group" "redis" {
 }
 
 resource "aws_security_group" "elasticache_security_group" {
-  name   = "${local.env_prefix}elasticache"
+  name   = "${local.env_prefix}-elasticache"
   vpc_id = module.vpc.vpc_id
 
   ingress {

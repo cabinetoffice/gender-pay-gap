@@ -229,8 +229,20 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
-    name      = "/javascripts"
-    value     = "wwwroot/assets/javascripts"
+    name      = "/public"
+    value     = "wwwroot/public"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/compiled"
+    value     = "wwwroot/compiled"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/assets"
+    value     = "wwwroot/assets"
   }
 
   // Elastic beanstalk log config
