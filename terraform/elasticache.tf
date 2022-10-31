@@ -25,7 +25,7 @@ resource "aws_elasticache_cluster" "redis-cluster" {
     log_type         = "engine-log"
   }
   apply_immediately = true
-  // turn this off after testing
+  // QQ turn this off after testing
 }
 
 resource "aws_cloudwatch_log_group" "redis" {

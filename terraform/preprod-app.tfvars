@@ -21,6 +21,6 @@ elb_instance_type     = "t2.small"
 
 #region Cloudfront configuration
 
-cloudfront_alternate_domain_name = "ladun.me" // will need to change to preprod url
+cloudfront_alternate_domain_name = "ladun.me" // QQ will need to change to preprod url
 
 #endregion

@@ -54,8 +54,8 @@ resource "aws_db_instance" "gpg-dev-db" {
   final_snapshot_identifier   = join("-", [var.rds_config_identifier, "final-snapshot", replace(timestamp(), ":", "-")])
 
   // Backups and deletion 
-  deletion_protection      = false // should be true when application goes live
-  delete_automated_backups = true  // should be false when in production
+  deletion_protection      = false // QQ should be true when application goes live
+  delete_automated_backups = true  //  QQ should be false when in production
 
   lifecycle {
     ignore_changes = [
