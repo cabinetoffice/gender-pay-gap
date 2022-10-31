@@ -179,9 +179,5 @@
     <_ContentIncludedByDefault Remove="site\package.json" />
     <_ContentIncludedByDefault Remove="site\runtimeConfig.template.json" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include=".platform\nginx" />
-    <Folder Include=".platform\nginx\conf.d\elasticbeanstalk" />
-  </ItemGroup>
 
 </Project>

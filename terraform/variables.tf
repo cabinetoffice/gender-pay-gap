@@ -199,7 +199,7 @@ variable "cloudfront_alternate_domain_name" {
 variable "CLOUDWATCH_NOTIFICATION_EMAILS" {
   type        = string
   description = "An email distribution list to be notified of alarm breaches. Pass in as environment variable."
-  default     = "Team-GenderPayGap@softwire.com"
+  default     = "ladun.omideyi@softwire.com" //QQ
 }
 
 #endregion
