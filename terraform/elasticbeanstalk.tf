@@ -158,7 +158,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "false"
+    value     = "false"  // disabled. we create out own port 80 listener which redirects to https
   }
 
   // HTTPS secure listener config
