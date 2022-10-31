@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+    <Content Include=".ebextensions\nginx\conf.d\elasticbeanstalk\00_application.conf" />
   </ItemGroup>
   
   <ItemGroup>
@@ -160,6 +161,27 @@
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+    <_ContentIncludedByDefault Remove="site\App_Data\CustomErrorMessages.config" />
+    <_ContentIncludedByDefault Remove="site\Web.config" />
+    <_ContentIncludedByDefault Remove="site\Web.Debug.config" />
+    <_ContentIncludedByDefault Remove="site\Web.loadtest.config" />
+    <_ContentIncludedByDefault Remove="site\Web.Release.config" />
+    <_ContentIncludedByDefault Remove="site\appsettings.DEV.json" />
+    <_ContentIncludedByDefault Remove="site\appsettings.json" />
+    <_ContentIncludedByDefault Remove="site\appsettings.LOCAL.json" />
+    <_ContentIncludedByDefault Remove="site\appsettings.PREPROD.json" />
+    <_ContentIncludedByDefault Remove="site\appsettings.PROD.json" />
+    <_ContentIncludedByDefault Remove="site\appsettings.TEST.json" />
+    <_ContentIncludedByDefault Remove="site\build-number.json" />
+    <_ContentIncludedByDefault Remove="site\bundleconfig.json" />
+    <_ContentIncludedByDefault Remove="site\GenderPayGap.WebUI.deps.json" />
+    <_ContentIncludedByDefault Remove="site\GenderPayGap.WebUI.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="site\package-lock.json" />
+    <_ContentIncludedByDefault Remove="site\package.json" />
+    <_ContentIncludedByDefault Remove="site\runtimeConfig.template.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".platform\nginx" />
   </ItemGroup>
 
 </Project>
