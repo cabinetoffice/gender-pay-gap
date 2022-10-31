@@ -48,6 +48,17 @@ data "aws_s3_bucket" "gpg_application_version_storage" {
 // File storage bucket for each env
 resource "aws_s3_bucket" "gpg_filestorage" {
   bucket = "${local.env_prefix}-filestorage"
+  
+  lifecycle {
+    prevent_destroy = false // turn to true when live
+  }
+}
+
+resource "aws_s3_bucket_versioning" "gpg-filestorage" {
+  bucket = aws_s3_bucket.gpg_filestorage.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 // Archive file 
@@ -78,7 +89,12 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   solution_stack_name = local.elb_solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg_application_version.name
   cname_prefix        = local.env_prefix //must check availability in console before changing
-
+  
+  // Life cycle methods
+  lifecycle {
+    prevent_destroy = false // turn to true when live
+  }
+  
   // Deployment strategy
   setting {
     namespace = "aws:elasticbeanstalk:command"
