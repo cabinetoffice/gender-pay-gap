@@ -102,25 +102,10 @@ namespace GenderPayGap.WebUI
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
         {
-            if (Config.IsLocal() || Global.EnableConsoleLogging)
-            {
-                // Log to Console
-                Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-            }
-            else
-            {
-                // Log to Logit.io
-                webHostBuilder.UseSerilog(
-                    (ctx, config) =>
-                    {
-                        config.ReadFrom.Configuration(ctx.Configuration);
-
-                        // Add a property called "cf.app" with the environment name (e.g. DEV)
-                        // This allows us to filter the logs per-environment in logit.io
-                        config.Enrich.WithProperty("cf.app", Config.EnvironmentName);
-                    });
-            }
-
+           
+            // Log to Console
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+           
             Log.Information("Serilog logger setup complete");
         }
 
