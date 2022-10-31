@@ -312,6 +312,7 @@ namespace GenderPayGap.WebUI
         // here if you need to resolve things from the container.
         public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
+            app.UseForwardedHeaders();
             app.UseMiddleware<ExceptionMiddleware>();
             if (Config.IsLocal())
             {
@@ -323,8 +324,7 @@ namespace GenderPayGap.WebUI
                 app.UseExceptionHandler("/error/500");
                 app.UseStatusCodePagesWithReExecute("/error/{0}");
             }
-
-            app.UseForwardedHeaders();
+            
             /*app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.All
