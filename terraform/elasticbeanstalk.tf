@@ -421,12 +421,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "EnableConsoleLogging"
-    value     = var.ELB_ENABLE_CONSOLE_LOGGING
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "FeatureFlagNewReportingJourney"
     value     = var.ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY
   }

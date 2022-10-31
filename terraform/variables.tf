@@ -130,10 +130,6 @@ variable "ELB_EHRC_IP_RANGE" {
   type = string
 }
 
-variable "ELB_ENABLE_CONSOLE_LOGGING" {
-  type = string
-}
-
 variable "ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY" {
   type = string
 }
