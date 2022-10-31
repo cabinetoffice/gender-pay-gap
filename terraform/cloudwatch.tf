@@ -66,7 +66,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilisation" {
   alarm_actions       = [aws_sns_topic.EC2_topic.arn]
   ok_actions          = [aws_sns_topic.EC2_topic.arn]
   treat_missing_data  = "notBreaching"
-  alarm_description   = "This metric monitors ec2 cpu utilization exceeding 70%"
+  alarm_description   = "${local.env_prefix}'s EC2 CPU utilisation is exceeding 70%"
   dimensions = {
     InstanceId = data.aws_instance.elb_primary_instance.id
   }

@@ -122,7 +122,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
   
   depends_on = [data.aws_s3_bucket.resource_logs_bucket]
 
-  retain_on_delete = true // remove when application is live
+  retain_on_delete = true // QQ remove when application is live
 }
 
 resource "aws_cloudfront_cache_policy" "gpg_default" {

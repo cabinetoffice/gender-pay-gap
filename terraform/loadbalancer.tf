@@ -32,7 +32,7 @@ resource "aws_lb_listener_rule" "redirect_cloudfront_only_to_443" {
     }
   }
 
-  // this header restricts access to load balancer to requests that include our custom header
+  // This header restricts access to load balancer to requests that include our custom header
   condition {
     http_header {
       http_header_name = "X-Custom-Header"

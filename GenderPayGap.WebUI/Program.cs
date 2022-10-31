@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Threading;
 using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore;

@@ -2,9 +2,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Castle.Core.Logging;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes.Logger;
 using Microsoft.AspNetCore.Http;
 
 namespace GenderPayGap.WebUI.Helpers

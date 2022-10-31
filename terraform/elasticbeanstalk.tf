@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "gpg_filestorage" {
   bucket = "${local.env_prefix}-filestorage"
   
   lifecycle {
-    prevent_destroy = false // turn to true when live
+    prevent_destroy = false // QQ turn to true when live
   }
 }
 
@@ -70,11 +70,11 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   application         = aws_elastic_beanstalk_application.gpg_application.name
   solution_stack_name = local.elb_solution_stack_name
   version_label       = aws_elastic_beanstalk_application_version.gpg_application_version.name
-  cname_prefix        = local.env_prefix //must check availability in console before changing
+  cname_prefix        = local.env_prefix // must check availability in console before changing
   
   // Life cycle methods
   lifecycle {
-    prevent_destroy = false // turn to true when live
+    prevent_destroy = false // QQ turn to true when live
   }
   
   // Deployment strategy
@@ -140,7 +140,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   setting {
     namespace = "aws:elbv2:listener:default"
     name      = "ListenerEnabled"
-    value     = "false"  // disabled. we create out own port 80 listener which redirects to https
+    value     = "false"  // disabled. we create our own port 80 listener which redirects to https
   }
 
   // HTTPS secure listener config
