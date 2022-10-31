@@ -1,3 +1,6 @@
+env     = "prod"
+account = "production"
+
 #region Relational database configuration 
 
 rds_config_instance_class = "db.t3.small"
@@ -7,23 +10,17 @@ rds_config_multi_az       = true
 
 #endregion
 
-env = "prod"
+#region Elastic Beanstalk configuration
 
-#region ElasticBeanstalk configuration
+elb_deployment_policy = "TrafficSplitting"
+elb_instance_max_size = 4
+elb_instance_min_size = 1
+elb_instance_type     = "t2.medium"
 
-instance_type = "t2.medium"
+#endregion
 
-elb_instance_profile         = "aws-elasticbeanstalk-ec2-role"
-elb_instance_min_size        = 1
-elb_instance_max_size        = 4
-tier                         = "WebServer"
-elb_scheme                   = "internet facing"
-elb_load_balancer_type       = "application"
-solution_stack_name          = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
-cache_port                   = 6379
-cname_prefix                 = "gpg-prod"
-elb_ssl_policy               = "ELBSecurityPolicy-2016-08"
-cloudfront_origin_id         = "gpg-load-balancer-prod"
-cloudfront_logging_prefix    = "cloudfront-prod"
+#region Cloudfront configuration
+
+cloudfront_alternate_domain_name = "gender-pay-gap.service.gov.uk"
 
 #endregion

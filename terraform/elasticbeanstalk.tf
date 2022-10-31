@@ -1,46 +1,112 @@
-//S3 bucket containing application version
-data "aws_s3_bucket" "gpg-application-version-storage" {
-  bucket = "gpg-application-version-storage"
+locals {
+  env_prefix     = "gpg-${var.env}"     // prefix env specific resources
+  account_prefix = "gpg-${var.account}" // prefix account specific resources
+
+  elb_environment_tier         = "WebServer"
+  elb_lb_scheme                = "public"
+  elb_load_balancer_ssl_policy = "ELBSecurityPolicy-2016-08"
+  elb_load_balancer_type       = "application"
+  elb_solution_stack_name      = "64bit Amazon Linux 2 v2.4.0 running .NET Core"
+  elb_health_check_path        = "/health-check"
+  elb_matcher_http_code        = 200
+
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier","arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
 }
 
-resource "aws_s3_bucket" "gpg-filestorage" {
-  bucket = "gpg-${var.env}-filestorage"
+data "aws_iam_instance_profile" "elastic_beanstalk" {
+  name = "aws-elasticbeanstalk-ec2-role"
+}
+
+// IAM Role that enables ELB to manage other resources
+resource "aws_iam_role" "elastic-beanstalk_role" {
+  name = "aws-elasticbeanstalk-ec2-role-non-managed"
+  assume_role_policy = jsonencode({
+    "Version" : "2008-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "ec2.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+  managed_policy_arns = local.managed_policy_arns
+}
+
+// Load balancer id
+data "aws_instance" "elb_primary_instance" {
+  instance_id = aws_elastic_beanstalk_environment.gpg_elastic_beanstalk_environment.instances[0]
+}
+
+//S3 bucket containing application versions for all env in account
+data "aws_s3_bucket" "gpg_application_version_storage" {
+  bucket = "${local.account_prefix}-application-version-storage"
+}
+
+// File storage bucket for each env
+resource "aws_s3_bucket" "gpg_filestorage" {
+  bucket = "${local.env_prefix}-filestorage"
+  
+  lifecycle {
+    prevent_destroy = false // turn to true when live
+  }
+}
+
+resource "aws_s3_bucket_versioning" "gpg-filestorage" {
+  bucket = aws_s3_bucket.gpg_filestorage.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 // Archive file 
-data "aws_s3_object" "gpg-archive-zip" {
-  bucket = data.aws_s3_bucket.gpg-application-version-storage.id
+data "aws_s3_object" "gpg_archive_zip" {
+  bucket = data.aws_s3_bucket.gpg_application_version_storage.id
   key    = "publish-${var.env}.zip"
 }
 
 // Application
-resource "aws_elastic_beanstalk_application" "gpg-application" {
-  name        = "gpg-application-${var.env}"
-  description = "The GPG application in ${var.env}"
+resource "aws_elastic_beanstalk_application" "gpg_application" {
+  name        = "${local.env_prefix}-application"
+  description = "The GPG application in ${var.env}."
 }
 
 // Application version
-resource "aws_elastic_beanstalk_application_version" "gpg-application-version" {
-  name        = "gpg-version-label-${var.env}"
-  application = aws_elastic_beanstalk_application.gpg-application.name
-  description = "application version created by terraform"
-  bucket      = data.aws_s3_bucket.gpg-application-version-storage.bucket
-  key         = data.aws_s3_object.gpg-archive-zip.key
+resource "aws_elastic_beanstalk_application_version" "gpg_application_version" {
+  name        = "${local.env_prefix}-version"
+  application = aws_elastic_beanstalk_application.gpg_application.name
+  description = "The application version used to create the elastic beanstalk resource."
+  bucket      = data.aws_s3_bucket.gpg_application_version_storage.bucket
+  key         = data.aws_s3_object.gpg_archive_zip.key
 }
 
 // Elastic beanstalk environment
-resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
-  name                = "gpg-elb-environment-${var.env}"
-  application         = aws_elastic_beanstalk_application.gpg-application.name
-  solution_stack_name = var.solution_stack_name
-  version_label       = aws_elastic_beanstalk_application_version.gpg-application-version.name
-  cname_prefix        = var.cname_prefix
+resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment" {
+  name                = "${local.env_prefix}-elb-environment"
+  application         = aws_elastic_beanstalk_application.gpg_application.name
+  solution_stack_name = local.elb_solution_stack_name
+  version_label       = aws_elastic_beanstalk_application_version.gpg_application_version.name
+  cname_prefix        = local.env_prefix //must check availability in console before changing
+  
+  // Life cycle methods
+  lifecycle {
+    prevent_destroy = false // turn to true when live
+  }
+  
+  // Deployment strategy
+  setting {
+    namespace = "aws:elasticbeanstalk:command"
+    name      = "DeploymentPolicy"
+    value     = var.elb_deployment_policy
+  }
 
   // Elastic beanstalk VPC config
   setting {
     namespace = "aws:ec2:vpc"
-    name      = "VPCId"
-    value     = module.vpc.vpc_id
+    name      = "DBSubnets"
+    value     = join(",", module.vpc.database_subnets)
   }
 
   setting {
@@ -51,34 +117,55 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:ec2:vpc"
-    name      = "DBSubnets"
-    value     = join(",", module.vpc.database_subnets)
+    name      = "VPCId"
+    value     = module.vpc.vpc_id
   }
 
   // Elastic beanstalk load balancer config
   setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "LoadBalancerType"
-    value     = var.elb_load_balancer_type
-  }
-  setting {
     namespace = "aws:ec2:vpc"
     name      = "ELBScheme"
-    value     = var.elb_scheme
+    value     = local.elb_lb_scheme
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = local.elb_load_balancer_type
+  }
+
+  //Elastic beanstalk load balancer logs config
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "AccessLogsS3Bucket"
+    value     = data.aws_s3_bucket.resource_logs_bucket.bucket
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "AccessLogsS3Enabled"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "AccessLogsS3Prefix"
+    value     = local.env_prefix
+  }
+
+  // HTTP listener config
+
+  setting {
+    namespace = "aws:elbv2:listener:default"
+    name      = "ListenerEnabled"
+    value     = "false"  // disabled. we create out own port 80 listener which redirects to https
   }
 
   // HTTPS secure listener config
-
   setting {
     namespace = "aws:elbv2:listener:443"
-    name      = "SSLCertificateArns"
-    value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARNS
-  }
-
-  setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "SSLPolicy"
-    value     = var.elb_ssl_policy
+    name      = "ListenerEnabled"
+    value     = "true"
   }
 
   setting {
@@ -89,47 +176,54 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elbv2:listener:443"
-    name      = "ListenerEnabled"
-    value     = "true"
+    name      = "SSLCertificateArns"
+    value     = var.ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARN
   }
-
+  
   setting {
-    namespace = "aws:elbv2:listener:443"
-    name      = "DefaultProcess"
-    value     = "https"
+    namespace = "aws:elbv2:listener:default"
+    name = "SSLPolicy"
+    value = "ELBSecurityPolicy-2016-08"
   }
 
   // HTTPS secure listener rules
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:https"
+    name      = "HealthCheckPath"
+    value     = local.elb_health_check_path
+  }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "MatcherHTTPCode"
-    value     = 200
+    value     = local.elb_matcher_http_code
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Port"
-    value     = "80"
+    value     = "443"
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:https"
     name      = "Protocol"
-    value     = "HTTP"
+    value     = "HTTPS"
   }
 
   // Elastic beanstalk autoscaling config
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "IamInstanceProfile"
-    value     = var.elb_instance_profile
+    value     = data.aws_iam_instance_profile.elastic_beanstalk.name
   }
+
   setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "InstanceType"
-    value     = var.instance_type
+    namespace = "aws:ec2:instances"
+    name      = "InstanceTypes"
+    value     = var.elb_instance_type
   }
+
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
@@ -149,13 +243,25 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = "wwwroot/assets/images"
   }
 
-  // Elastic beanstalk log config
   setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
-    name      = "StreamLogs"
-    value     = true
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/public"
+    value     = "wwwroot/public"
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/compiled"
+    value     = "wwwroot/compiled"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
+    name      = "/assets"
+    value     = "wwwroot/assets"
+  }
+
+  // Elastic beanstalk log config
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
     name      = "DeleteOnTerminate"
@@ -168,17 +274,17 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = 7
   }
 
-  // Elastic beanstalk health check config
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "MatcherHTTPCode"
-    value     = 200
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = true
   }
 
+  // Elastic beanstalk health check config
   setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "HealthCheckPath"
-    value     = "/health-check"
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "DeleteOnTerminate"
+    value     = false
   }
 
   setting {
@@ -195,8 +301,20 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
+    value     = local.elb_health_check_path
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckTimeout"
     value     = 5
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
+    name      = "HealthStreamingEnabled"
+    value     = true
   }
 
   setting {
@@ -207,20 +325,8 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "UnhealthyThresholdCount"
-    value     = 5
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "StickinessEnabled"
-    value     = false
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "HealthStreamingEnabled"
-    value     = true
+    name      = "MatcherHTTPCode"
+    value     = local.elb_matcher_http_code
   }
 
   setting {
@@ -230,9 +336,15 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
   }
 
   setting {
-    namespace = "aws:elasticbeanstalk:cloudwatch:logs:health"
-    name      = "DeleteOnTerminate"
-    value     = false
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "StickinessEnabled"
+    value     = true
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "UnhealthyThresholdCount"
+    value     = 5
   }
 
   // Elastic beanstalk environment variables
@@ -260,10 +372,10 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
         name = "gpg-${var.env}-cache"
       }],
       aws-s3-bucket = [{
-        name = aws_s3_bucket.gpg-filestorage.bucket,
+        name = aws_s3_bucket.gpg_filestorage.bucket,
         credentials = {
           aws_region            = var.aws_region,
-          bucket_name           = aws_s3_bucket.gpg-filestorage.bucket,
+          bucket_name           = aws_s3_bucket.gpg_filestorage.bucket,
           aws_access_key_id     = var.AWS_ACCESS_KEY_ID,
           aws_secret_access_key = var.AWS_SECRET_ACCESS_KEY
         }
@@ -403,8 +515,5 @@ resource "aws_elastic_beanstalk_environment" "gpg-elb-environment" {
     value     = var.ELB_WEBJOBS_STOPPED
   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
-
 }
+

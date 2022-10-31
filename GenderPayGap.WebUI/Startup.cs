@@ -325,6 +325,10 @@ namespace GenderPayGap.WebUI
             }
 
             app.UseForwardedHeaders();
+            /*app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.All
+            });*/
             //app.UseHttpsRedirection();
             //app.UseResponseCompression(); //Disabled to use IIS compression which has better performance (see https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.1)
             app.UseStaticFiles(

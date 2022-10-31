@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading;
 using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Microsoft.AspNetCore;
@@ -72,7 +73,6 @@ namespace GenderPayGap.WebUI
                 .ConfigureServices(
                     services => services
                         .AddAutofac()); /// This call allows for ConfigureContainer to be supported in Startup with a strongly-typed ContainerBuilder
-
             if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PORT")))
             {
                 webHostBuilder.UseUrls($"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT")}/");

@@ -21,13 +21,9 @@ namespace GenderPayGap.WebUI.Helpers
 
         public async Task Invoke(HttpContext httpContext)
         {
-            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).PathAndQuery);
-            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).Host);
-            CustomLogger.Information(System.Web.HttpContext.GetUri(httpContext).AbsoluteUri);
             if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
             {
                 await _next.Invoke(httpContext);
-                CustomLogger.Information("can you see the health check exception?");
                 return;
             }
 

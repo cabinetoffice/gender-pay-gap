@@ -1,6 +1,6 @@
 resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address-gpg" {
   provider    = aws.us-east-1
-  name        = "ehrc-protected-request-address-${var.env}"
+  name        = "${local.env_prefix}-ehrc-protected-request-address"
   description = "Regex of the endpoint used by ehrc." // Of the form .../download?p=filename
   scope       = "CLOUDFRONT"
 
@@ -15,7 +15,7 @@ resource "aws_wafv2_regex_pattern_set" "ehrc_protected_request_address-gpg" {
 
 resource "aws_wafv2_ip_set" "ehrc_allowlisted_ips" {
   provider           = aws.us-east-1
-  name               = "ehrc-allowlisted-ips-${var.env}"
+  name               = "${local.env_prefix}-ehrc-allowlisted-ips"
   description        = "EHRC allowlisted IPs. Only these IPs can access the protected endpoint." // Of the form .../download?p=filename
   scope              = "CLOUDFRONT"
   ip_address_version = "IPV4"
@@ -24,7 +24,7 @@ resource "aws_wafv2_ip_set" "ehrc_allowlisted_ips" {
 
 resource "aws_wafv2_ip_set" "denylisted_ips" {
   provider           = aws.us-east-1
-  name               = "denylisted-ips-${var.env}"
+  name               = "${local.env_prefix}-denylisted-ips"
   description        = "Denylisted IPs. These IPs cannot connect to the website."
   scope              = "CLOUDFRONT"
   ip_address_version = "IPV4"
@@ -33,7 +33,7 @@ resource "aws_wafv2_ip_set" "denylisted_ips" {
 
 resource "aws_wafv2_web_acl" "ehrc" {
   provider    = aws.us-east-1
-  name        = "gpg-acl-${var.env}"
+  name        = "${local.env_prefix}gpg-acl"
   scope       = "CLOUDFRONT"
   description = "Access control list for the gpg website. Used for securing the EHRC endpoint and limiting bot traffic."
 
@@ -149,5 +149,5 @@ resource "aws_wafv2_web_acl_logging_configuration" "waf-logging-config" {
 
 resource "aws_cloudwatch_log_group" "waf-log-group" {
   provider = aws.us-east-1
-  name     = "aws-waf-logs-${var.env}"
+  name     = "aws-waf-logs-${local.env_prefix}" //the prefix "aws-waf-logs-" is required
 }

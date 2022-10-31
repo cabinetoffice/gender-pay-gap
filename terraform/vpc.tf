@@ -1,16 +1,20 @@
+// Available availability zones
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 module "vpc" {
   // Keeping the 'registry.terraform.io/' prefix so Rider can find the module for autocompletion purposes
   source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 
-  name = "gpg-application-vpc-${var.env}"
+  name = "${local.env_prefix}-application-vpc"
   cidr = "10.0.0.0/16"
 
   azs                 = slice(data.aws_availability_zones.available.zone_ids, 0, 2)
   public_subnets      = [cidrsubnet("10.0.0.0/16", 4, 0), cidrsubnet("10.0.0.0/16", 4, 1)]
   database_subnets    = [cidrsubnet("10.0.0.0/16", 4, 2), cidrsubnet("10.0.0.0/16", 4, 3)]
   elasticache_subnets = [cidrsubnet("10.0.0.0/16", 4, 4), cidrsubnet("10.0.0.0/16", 4, 5)]
-
 
   enable_ipv6                     = true
   assign_ipv6_address_on_creation = true
@@ -30,45 +34,46 @@ module "vpc" {
   create_database_subnet_group           = true
   create_database_subnet_route_table     = true
   create_database_nat_gateway_route      = true
-  create_database_internet_gateway_route = false
+  create_database_internet_gateway_route = true
   create_elasticache_subnet_group        = true
 
-  database_subnet_group_name = "gpg-db-subnet-group-${var.env}"
+  database_subnet_group_name = "${local.env_prefix}-db-subnet-group"
   database_subnet_group_tags = {
-    Name = "gpg-db-subnet-group-${var.env}"
+    Name = "${local.env_prefix}-db-subnet-group"
   }
 
-  elasticache_subnet_group_name = join("-", ["gpg-db-elasticache-group", var.env])
+  elasticache_subnet_group_name = "${local.env_prefix}-gpg-db-elasticache-group"
   elasticache_subnet_group_tags = {
-    Name = join("-", ["gpg-elasticache-subnet-group", var.env])
+    Name = "${local.env_prefix}-gpg-db-elasticache-group"
   }
 
   public_subnet_tags = {
-    Name = "gpg-public-${var.env}"
+    Name = "${local.env_prefix}-public"
   }
 
   private_subnet_tags = {
-    Name = "gpg-private-${var.env}"
+    Name = "${local.env_prefix}-private"
   }
 
   vpc_tags = {
-    Name = "vpc-gpg-application-${var.env}"
+    Name = "${local.env_prefix}-vpc"
   }
 
+  // Logging and monitoring
   enable_flow_log                                 = true
   flow_log_cloudwatch_iam_role_arn                = aws_iam_role.cloudwatch-flow-log.arn
-  flow_log_cloudwatch_log_group_retention_in_days = 180
+  flow_log_cloudwatch_log_group_retention_in_days = 60
   flow_log_destination_arn                        = aws_cloudwatch_log_group.gpg-flow-log.arn
   flow_log_destination_type                       = "cloud-watch-logs"
   flow_log_per_hour_partition                     = true
-  flow_log_cloudwatch_log_group_kms_key_id        = null
 }
 
 resource "aws_cloudwatch_log_group" "gpg-flow-log" {
-  name = "gpg-flow-logs-${var.env}"
+  name = "${local.env_prefix}-flow-logs"
 }
+
 resource "aws_iam_role" "cloudwatch-flow-log" {
-  name = "cloudwatch-assume-role-${var.env}"
+  name = "${local.env_prefix}-cloudwatch-flow-logs"
 
   assume_role_policy = <<EOF
 {
@@ -88,7 +93,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "cloudwatch-flow-log" {
-  name = "cloudwatch-iam-role-policy-${var.env}"
+  name = "${local.env_prefix}-cloudwatch-iam-role-policy"
   role = aws_iam_role.cloudwatch-flow-log.id
 
   policy = <<EOF

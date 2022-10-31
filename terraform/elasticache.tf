@@ -1,12 +1,14 @@
-// no failover, single node, daily backups, 1.34gb (step down from 1.5gb)
+locals {
+  elasticache_cache_port = 6379
+}
 
 resource "aws_elasticache_cluster" "redis-cluster" {
-  cluster_id           = "gpg-redis-cluster-${var.env}"
+  cluster_id           = "${local.env_prefix}-redis-cluster"
   engine               = "redis"
   node_type            = "cache.t4g.small"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis6.x"
-  port                 = var.cache_port
+  port                 = local.elasticache_cache_port
   security_group_ids   = [aws_security_group.elasticache_security_group.id]
   subnet_group_name    = module.vpc.elasticache_subnet_group_name
 
@@ -27,17 +29,17 @@ resource "aws_elasticache_cluster" "redis-cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "redis" {
-  name = "redis-logs-${var.env}"
+  name = "${local.env_prefix}-redis-logs"
 }
 
 resource "aws_security_group" "elasticache_security_group" {
-  name   = "elasticache-${var.env}"
+  name   = "${local.env_prefix}-elasticache"
   vpc_id = module.vpc.vpc_id
 
   ingress {
     description      = "TLS from VPC"
-    from_port        = 6379
-    to_port          = 6379
+    from_port        = local.elasticache_cache_port
+    to_port          = local.elasticache_cache_port
     protocol         = "tcp"
     cidr_blocks      = [module.vpc.vpc_cidr_block]
     ipv6_cidr_blocks = [module.vpc.vpc_ipv6_cidr_block]
