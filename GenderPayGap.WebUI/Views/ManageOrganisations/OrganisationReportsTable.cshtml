@@ -8,38 +8,31 @@
 
 @{
     var organisation = Model.Organisation;
-    
-    var desktopHeadings = new List<TableCellViewModel>();
-    desktopHeadings.Add(new TableCellViewModel
-    {
-        Text = "Snapshot date",
-        Colspan = 1
-    });
-    desktopHeadings.Add(new TableCellViewModel
-    {
-        Text = "Reporting requirements",
-        Colspan = 1
-    });
-    desktopHeadings.Add(new TableCellViewModel
-    {
-        Text = "Report status",
-        Colspan = 1
-    });
-    desktopHeadings.Add(new TableCellViewModel
-    {
-        Text = " ",
-        Colspan = 1
-    });
 
-    var mobileHeadings = new List<TableCellViewModel>()
+    var desktopHeadings = new List<TableCellViewModel>
     {
+        new TableCellViewModel
+        {
+            Text = "Snapshot date",
+            Colspan = 1
+        },
+        new TableCellViewModel
+        {
+            Text = "Reporting requirements",
+            Colspan = 1
+        },
+        new TableCellViewModel
+        {
+            Text = "Report status",
+            Colspan = 1
+        },
         new TableCellViewModel
         {
             Text = " ",
             Colspan = 1
         }
     };
-    
+
     var allReturns = Model.GetOrganisationDetailsForYears();
     var desktopCurrentReportingPeriodRows = new List<TableRowViewModel>();
     var desktopMissingReportingPeriodRows = new List<TableRowViewModel>();
@@ -50,41 +43,15 @@
     {
         var reportTag = organisationReturn.GetReportTag();
         var currentReportingYear = ReportingYearsHelper.GetCurrentReportingYear();
-        switch (reportTag)
+        if (reportTag == ReportTag.Overdue || reportTag == ReportTag.NotRequired)
         {
-            case ReportTag.Submitted:
-                if (organisationReturn.ReportingYear == currentReportingYear)
-                {
-                    AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
-                    AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
-                }
-
-                break;
-            case ReportTag.SubmittedLate:
-                if (organisationReturn.ReportingYear == currentReportingYear)
-                {
-                    AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
-                    AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
-                }
-                break;
-            case ReportTag.Due:
-                if (organisationReturn.ReportingYear == currentReportingYear)
-                {
-                    AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
-                    AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
-                }
-                break;
-            case ReportTag.Overdue:
-                AddRowDesktop(desktopMissingReportingPeriodRows, organisationReturn);
-                AddRowMobile(mobileMissingReportingPeriodRows, organisationReturn);
-                break;
-            case ReportTag.NotRequired:
-                if (organisationReturn.ReportingYear == currentReportingYear)
-                {
-                    AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
-                    AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
-                }
-                break;
+            AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
+            AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
+        }
+        else if (organisationReturn.ReportingYear == currentReportingYear)
+        {
+            AddRowDesktop(desktopCurrentReportingPeriodRows, organisationReturn);
+            AddRowMobile(mobileCurrentReportingPeriodRows, organisationReturn);
         }
     }
 
@@ -111,7 +78,7 @@
                                 {
                                     <div>
                                         <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear })">
-                                            Change<span class="govuk-visually-hidden"> scope for year @viewModel.GetFormattedYearText()</span>
+                                            Think this is wrong?<span class="govuk-visually-hidden"> scope for year @viewModel.GetFormattedYearText()</span>
                                         </a>
                                     </div>
                                 }

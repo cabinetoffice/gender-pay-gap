@@ -19,11 +19,14 @@
             Colspan = 1
         }
     };
+
     var mobileRows = new List<TableRowViewModel>();
+    var desktopRows = new List<TableRowViewModel>();
     @foreach (User userRegisteredToReport in Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst())
     {
         var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
-        var newRow = new TableRowViewModel
+
+        var mobileRow = new TableRowViewModel
         {
             Row = new List<TableCellViewModel>
             {
@@ -36,55 +39,47 @@
                                    {
                                        <span>(You)</span>
                                    }
-                                </p>
+                               </p>
                                <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
                                    <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
                                        Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
                                    </a>
                                </p>
                             </text>
-                },
-                new TableCellViewModel
-                {
-                    Text = " "
                 }
-            },
+            }
         };
-        mobileRows.Add(newRow);
-    }
-    
-    var desktopRows = new List<TableRowViewModel>();
-    @foreach (User userRegisteredToReport in Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst())
-    {
-        var encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
-        var newRow = new TableRowViewModel
+        var desktopRow = new TableRowViewModel
         {
             Row = new List<TableCellViewModel>
             {
                 new TableCellViewModel
                 {
                     Html = @<text>
-                               @userRegisteredToReport.Fullname
-                               @if (userRegisteredToReport.UserId == Model.User.UserId)
-                               {
-                                   <span>(You)</span>
-                               }
-                               <br/>
+                               <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
+                                   @userRegisteredToReport.Fullname
+                                   @if (userRegisteredToReport.UserId == Model.User.UserId)
+                                   {
+                                       <span>(You)</span>
+                                   }
+                               </p>
                             </text>
                 },
                 new TableCellViewModel
                 {
                     Html = @<text>
-                               <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
-                                  Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
-                              </a>
+                              <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
+                                  <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
+                                      Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
+                                  </a>
+                              </p>
                             </text>
                 }
-            },
+            }
         };
-        desktopRows.Add(newRow);
+        desktopRows.Add(desktopRow);
+        mobileRows.Add(mobileRow);
     }
-    
 }
 
 <h2 class="govuk-heading-l">Registered users</h2>
@@ -125,6 +120,4 @@
             Rows = mobileRows,
             Classes = "gpg-govuk-hideOnDesktop"
         })
-
-
-
+        
