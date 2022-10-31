@@ -150,7 +150,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   setting {
     namespace = "aws:elbv2:loadbalancer"
     name      = "AccessLogsS3Prefix"
-    value     = local.env_prefix
+    value     = "${local.env_prefix}/load-balancer"
   }
 
   // HTTP listener config
