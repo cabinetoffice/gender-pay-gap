@@ -24,6 +24,9 @@
 
   <ItemGroup>
     <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+    <Content> Include=".platform\nginx\nginx.conf"
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
   
   <ItemGroup>
@@ -178,10 +181,6 @@
     <_ContentIncludedByDefault Remove="site\package-lock.json" />
     <_ContentIncludedByDefault Remove="site\package.json" />
     <_ContentIncludedByDefault Remove="site\runtimeConfig.template.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include=".platform\nginx" />
-    <Folder Include=".platform\nginx\conf.d\elasticbeanstalk" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>
