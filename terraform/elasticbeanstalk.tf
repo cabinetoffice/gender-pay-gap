@@ -116,25 +116,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     value     = local.elb_load_balancer_type
   }
 
-  //Elastic beanstalk load balancer logs config
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Bucket"
-    value     = data.aws_s3_bucket.resource_logs_bucket.bucket
-  }
-
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Enabled"
-    value     = true
-  }
-
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Prefix"
-    value     = local.env_prefix
-  }
-
   // HTTP listener config
 
   setting {
