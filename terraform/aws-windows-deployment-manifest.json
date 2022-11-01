@@ -6,8 +6,7 @@
         "name": "gpg-application",
         "parameters": {
           "appBundle": "publish.zip",
-          "iisPath": "/",
-          "iisWebSite": "Default Web Site"
+          "iisPath": "/"
         }
       }
     ]
