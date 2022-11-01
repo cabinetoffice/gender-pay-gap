@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
+    <Content Include=".platform\nginx\conf.d\elasticbeanstalk\00_application.conf" CopyToOutputDirectory="Always" />
   </ItemGroup>
   
   <ItemGroup>
