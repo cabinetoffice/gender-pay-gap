@@ -116,7 +116,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
                 page = totalPages;
             }
             
-            var viewModel = new AllOrganisationReportsViewModel(organisation, user, allDraftReturns, page, totalEntries, maxEntriesPerPage);
+            var viewModel = new AllOrganisationReportsViewModel(organisation, user, allDraftReturns, page, totalPages, maxEntriesPerPage);
             return View("AllOrganisationReports", viewModel);
         }
 

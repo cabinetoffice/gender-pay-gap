@@ -1,6 +1,8 @@
 ﻿@using Newtonsoft.Json
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Classes
 @using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Models.ManageOrganisations
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.ManageOrganisations.AllOrganisationReportsViewModel
@@ -10,8 +12,8 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     var organisation = Model.Organisation;
     // Breadkcrumbs for going back
-    // All reports header
-    // for [Organisation name]
+    // All reports header **
+    // for [Organisation name] **
     // filter (requires main table to exist with class name that matches)
     // main table
     // Pagination
@@ -28,7 +30,7 @@
             </span>
         </h1>
     </div>
-    <div class="filteringArea">
+    <div id="filteringArea">
         <input type="hidden" id="selectOptionsFromReports"
                value=@JsonConvert.SerializeObject(
                          organisation.GetRecentReports(
@@ -38,51 +40,126 @@
                              .ToArray())>
     </div>
     @{
-        var desktopHeader = new TableRowViewModel
+        var desktopHeader = new List<TableCellViewModel>
         {
-            Row = new List<TableCellViewModel>
+            new TableCellViewModel
             {
-                new TableCellViewModel
-                {
-                    Html = @<text>
-                               <div>
-                                   <div class="govuk-grid-column-one-quarter govuk-!-padding-left-0">
-                                       <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 ">Snapshot date</h3>
-                                   </div>
-                                   <div class="govuk-grid-column-one-quarter govuk-!-padding-left-0">
-                                       <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Reporting requirements</h3>
-                                   </div>
-                                   <div class="govuk-grid-column-one-quarter govuk-!-padding-left-0">
-                                       <h3 class="heading-medium govuk-!-margin-top-0 govuk-!-margin-bottom-0 govuk-employer-table-right">Report Status</h3>
-                                   </div>
-                                   <div class="govuk-grid-column-one-quarter govuk-!-padding-left-0">
-                                   </div>
-                               </div>
-                            </text>
-                }
+                Text = "Snapshot date",
+                Colspan = 1
+            },
+            new TableCellViewModel
+            {
+                Text = "Reporting requirement",
+                Colspan = 1
+            },
+            new TableCellViewModel
+            {
+                Text = "Report status",
+                Colspan = 1
+            },
+            new TableCellViewModel
+            {
+                Text = " ",
+                Colspan = 1
             }
         };
-        var allDesktopRows = organisation
-            .GetRecentReports(Global.ShowReportYearCount)
-            .Select
-            (
-                report => new TableRowViewModel
+        
+        string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+        var allDesktopRows = new List<TableRowViewModel>();
+        var allMobileRows = new List<TableRowViewModel>();
+        var allReports = Model.GetOrganisationDetailsForYears();
+        foreach (var report in allReports)
+        {
+            var reportTag = report.GetReportTag();
+            var currentReportingYear = ReportingYearsHelper.GetCurrentReportingYear();
+ 
+            allDesktopRows.Add(GenerateDesktopRow(report));
+            allMobileRows.Add(GenerateMobileRow(report));
+        }
+
+        TableRowViewModel GenerateDesktopRow(AllOrganisationReportsForYearViewModel report)
+        {
+            var newRow = new TableRowViewModel
+            {
+                Row = new List<TableCellViewModel>
                 {
-                    Row = new List<TableCellViewModel>
+                    new TableCellViewModel
                     {
-                        new TableCellViewModel
-                        {
-                            Html = @<text>
-                                       <p>
-                                           @report.GetReportingPeriod()
-                                       </p>
-                                    </text>
-                        }
+                        Html = @<text>
+                                   <span class="yearTextForFiltering">@organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy")</span>
+                                </text>,
+                        Classes = "govuk-!-font-weight-bold"
+                    },
+                    new TableCellViewModel
+                    {
+                        Html = @<text>
+                                   <div>
+                                       @report.GetRequiredToReportOrNotText()
+                                   </div>
+                                   @if (report.CanChangeScope())
+                                   {
+                                       <div>
+                                           <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = report.ReportingYear})">
+                                               Think this is wrong?<span class="govuk-visually-hidden"> scope for year @report.GetFormattedYearText()</span>
+                                           </a>
+                                       </div>
+                                   }
+                                </text>
+                    },
+                    new TableCellViewModel
+                    {
+                        Html = @<text>
+                                   <strong class="govuk-tag @report.GetReportTagClassName()">
+                                       @report.GetReportTagText().ToUpper()
+                                   </strong>
+                                   @{
+                                       string description = report.GetReportTagDescription();
+                                       string modifiedDateText = report.GetModifiedDateText();
+                                       string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
+
+                                       if (description != null)
+                                       {
+                                           <div class="govuk-!-margin-top-3">@description</div>
+                                       }
+
+                                       if (modifiedDateText != null)
+                                       {
+                                           <div class="@modifiedDateTextClass">@modifiedDateText</div>
+                                       }
+                                   }
+                                </text>
+                    },
+                    new TableCellViewModel
+                    {
+                        Html = @<text>
+                                   <a loadtest-id="create-report-@report.ReportingYear"
+                                      href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId, reportingYear = report.ReportingYear, canTriggerLateSubmissionWarning = true})">
+                                       @report.GetReportLinkText()
+                                   </a>
+                                </text>
+                    },
+                }
+            };
+            return newRow;
+        }
+        TableRowViewModel GenerateMobileRow(AllOrganisationReportsForYearViewModel report)
+        {
+            var newRow = new TableRowViewModel
+            {
+                Row = new List<TableCellViewModel>
+                {
+                    new TableCellViewModel
+                    {
+                        Html = @<text>
+                                   @organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy")
+                                </text>,
+                        Classes = "govuk-!-font-weight-bold"
                     }
                 }
-            )
-            .ToList();
-        var allMobileRows = new List<TableRowViewModel>();
+            };
+            return newRow;
+        }
+        
         var dateJoinedRow = new TableRowViewModel
         {
             Row = new List<TableCellViewModel>
@@ -96,7 +173,8 @@
                                        Text = "Employer joined Gender Pay Gap service on " + @Model.Organisation.Created.ToString("dd/MM/yyyy"),
                                        Classes = "govuk-!-margin-top-4 govuk-!-text-align-centre"
                                    })
-                            </text>
+                            </text>,
+                    Colspan = 4
                 }
             }
         };
@@ -123,21 +201,23 @@
                     
         for (int i = startIndex; i < endIndex; i++)
         {
-            //mobileDisplayRows.Add(allMobileRows[i]);
+            mobileDisplayRows.Add(allMobileRows[i]);
             desktopDisplayRows.Add(allDesktopRows[i]);
-        }
-        
-        if (desktopDisplayRows.Count > 0)
-        {
-            desktopDisplayRows.Insert(0,desktopHeader);
         }
     }
     
     @await Html.GovUkTable(new TableGovUkViewModel
         {
-            Head = new List<TableCellViewModel>(),
+            Head = desktopHeader,
             Rows = desktopDisplayRows,
             Classes = "gpg-govuk-hideOnMobile"
+        })
+
+    @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = new List<TableCellViewModel>(),
+            Rows = mobileDisplayRows,
+            Classes = "gpg-govuk-hideOnDesktop"
         })
     
     @{
@@ -145,14 +225,14 @@
         {
             Text = "Next page",
             LabelText = $"{Model.CurrentPage + 1} of {Model.TotalPages}",
-            // Href = Url.Action("Employer", new {employerIdentifier, page = Model.CurrentPage + 1})
+            Href = Url.Action("AllOrganisationReportsGet", new {encryptedOrganisationId, page = Model.CurrentPage + 1})
         };
     
         var previousLink = new PaginationLinkViewModel()
         {
             Text = "Previous page",
             LabelText = $"{Model.CurrentPage - 1} of {Model.TotalPages}",
-            // Href = Url.Action("Employer", new {employerIdentifier, page = Model.CurrentPage - 1})
+            Href = Url.Action("AllOrganisationReportsGet", new {encryptedOrganisationId, page = Model.CurrentPage - 1})
         };
     
         // if (Model.TotalPages < 2 || Model.CurrentPage == Model.TotalPages)
@@ -168,50 +248,50 @@
 </div>
 
 <script>
-    //var parentForSelect = document.getElementById("filteringArea");
-    //    
-    //    var selectLabel = document.createElement("label");
-    //    selectLabel.className = "govuk-label";
-    //    selectLabel.for = "yearFilter";
-    //    selectLabel.textContent = "Filter for a reporting period";
-    //    
-    //    var elements = document.getElementsByClassName("yearTextForFiltering");
-    //    
-    //    var selectList = document.createElement("select");
-    //    selectList.className = "govuk-select govuk-!-margin-bottom-3";
-    //    selectList.id = "filterYearSelect";
-    //    selectList.addEventListener("change",function (e){
-    //        for (var i = 0; i < elements.length; i++){
-    //            var tableRow = elements[i].closest("tr");
-    //            tableRow.hidden = true;
-    //            
-    //            if (elements[i].innerHTML.includes(e.target.value) || e.target.value === "Show All"){
-    //                tableRow.hidden = false;
-    //            }
-    //        }
-    //    }) 
-    //    
-    //    var selectHint = document.createElement("div");
-    //    selectHint.className = "govuk-hint";
-    //    selectHint.textContent = "For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.";
-    //   
-    //    parentForSelect.appendChild(selectLabel);
-    //    parentForSelect.appendChild(selectList);
-    //    parentForSelect.appendChild(selectHint);
-    //
-    //    var showAll = document.createElement("option");
-    //    showAll.value = "Show All";
-    //    showAll.text = "Show All";
-    //    showAll.selected = true;
-    //    selectList.appendChild(showAll);
-    //    
-    //    var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
-    //    for (var i = 0; i < arrayOfYears.length; i++){
-    //         var option = document.createElement("option");
-    //         option.value = arrayOfYears[i];
-    //         option.text = arrayOfYears[i];
-    //         selectList.appendChild(option);
-    //    }
+    var parentForSelect = document.getElementById("filteringArea");
+    
+    var selectLabel = document.createElement("label");
+    selectLabel.className = "govuk-label";
+    selectLabel.for = "yearFilter";
+    selectLabel.textContent = "Filter for a reporting period";
+    
+    var elements = document.getElementsByClassName("yearTextForFiltering");
+    
+    var selectList = document.createElement("select");
+    selectList.className = "govuk-select govuk-!-margin-bottom-3";
+    selectList.id = "filterYearSelect";
+    selectList.addEventListener("change",function (e){
+        for (var i = 0; i < elements.length; i++){
+            var tableRow = elements[i].closest("tr");
+            tableRow.hidden = true;
+            
+            if (elements[i].innerHTML.includes(e.target.value) || e.target.value === "Show All"){
+                tableRow.hidden = false;
+            }
+        }
+    }) 
+    
+    var selectHint = document.createElement("div");
+    selectHint.className = "govuk-hint";
+    selectHint.textContent = "For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.";
+   
+    parentForSelect.appendChild(selectLabel);
+    parentForSelect.appendChild(selectList);
+    parentForSelect.appendChild(selectHint);
+
+    var showAll = document.createElement("option");
+    showAll.value = "Show All";
+    showAll.text = "Show All";
+    showAll.selected = true;
+    selectList.appendChild(showAll);
+    
+    var arrayOfYears = JSON.parse(document.getElementById("selectOptionsFromReports").value);
+    for (var i = 0; i < arrayOfYears.length; i++){
+         var option = document.createElement("option");
+         option.value = arrayOfYears[i];
+         option.text = arrayOfYears[i];
+         selectList.appendChild(option);
+    }
 </script>
 
 
