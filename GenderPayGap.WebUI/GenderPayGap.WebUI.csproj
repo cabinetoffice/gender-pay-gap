@@ -24,9 +24,6 @@
 
   <ItemGroup>
     <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
-    <Content Include=".platform\nginx\nginx.conf">
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
   
   <ItemGroup>
