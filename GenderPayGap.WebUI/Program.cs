@@ -56,7 +56,6 @@ namespace GenderPayGap.WebUI
         public static IWebHost BuildWebHost(string[] args)
         {
             IWebHostBuilder webHostBuilder = WebHost.CreateDefaultBuilder(args);
-
             webHostBuilder.ConfigureKestrel(
                     options =>
                     {
