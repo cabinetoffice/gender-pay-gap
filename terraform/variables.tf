@@ -1,35 +1,35 @@
 // all declared input variables
 
 variable "aws_region" {
+  type        = string
   description = "The AWS region used for the provider and resources."
   default     = "eu-west-2"
 }
 
-variable "example_s3_versioning_enabled" {
-  type        = bool
-  description = "A bool to enable versioning on the test S3 bucket"
-  default     = true
-}
-
-#region Relational database configuration 
-
-variable "rds_config_allocated_storage" {
-  type        = number
-  default     = 100
-  description = "Number of GB available to store in the database"
-}
-
-variable "rds_config_engine" {
+variable "env" {
   type        = string
-  default     = "postgres"
-  description = "The database engine e.g. postgres"
+  description = "The environment name."
 }
 
-variable "rds_config_engine_version" {
+variable "account" {
   type        = string
-  default     = "14"
-  description = "The version of the database engine"
+  description = "The AWS Cabinet Office account the environment is created in."
 }
+
+#region credentials 
+
+variable "AWS_ACCESS_KEY_ID" {
+  type        = string
+  description = "AWS access key id for terraform programmatic access. Set as an environment variable."
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type        = string
+  description = "AWS secret access key id for terraform programmatic access. Set as an environment variable."
+}
+#endregion
+
+#region Relational database configuration
 
 variable "rds_config_instance_class" {
   type        = string
@@ -46,52 +46,10 @@ variable "rds_config_db_name" {
   description = "Database name"
 }
 
-variable "rds_config_port" {
-  type        = number
-  default     = 5432
-  description = "The port the database accepts connections to"
-}
-
-variable "rds_config_backup_retention_period" {
-  type        = number
-  default     = 30
-  description = "Number of days backups are kept"
-}
-
-variable "rds_config_backup_window" {
-  type        = string
-  default     = "04:00-05:00"
-  description = "Timespan when database backups are performed"
-}
-
-variable "rds_config_storage_encrypted" {
-  type        = bool
-  default     = true
-  description = "Specifies if the database is encrypted"
-}
-
-variable "rds_config_publicly_accessible" {
-  type        = bool
-  default     = false
-  description = "Specifies if the database is publicly accessible"
-}
-
-variable "rds_config_allow_major_version_upgrade" {
-  type        = bool
-  default     = false
-  description = "Specifies if the database can update major versions e.g. 11 -> 12"
-}
-
 variable "rds_config_multi_az" {
   type        = bool
   default     = false
   description = "Specifies if the database has multiple availability zones"
-}
-
-variable "rds_config_skip_final_snapshot" {
-  type        = bool
-  default     = false
-  description = "Specifies if on deletion a final snapshot should be created"
 }
 
 // RDS environment variables
@@ -107,43 +65,35 @@ variable "POSTGRES_CONFIG_PASSWORD" {
 
 #endregion
 
-variable "solution_stack_name" {
-  type = string
-}
-
-variable "tier" {
-  type = string
-}
-
-variable "env" {
-  description = "The environment name"
-  type        = string
-}
-
 #region Elastic beanstalk configuration
 
-variable "instance_type" {}
-
-variable "elb_instance_min_size" {}
-
-variable "elb_instance_max_size" {}
-
-variable "elb_instance_profile" {}
-
-variable "elb_load_balancer_type" {}
-
-variable "elb_scheme" {}
-
-variable "elb_matcher_http_code" {}
-
-variable "elb_health_reporting_system_type" {
-  default = "enhanced"
+variable "elb_deployment_policy" {
+  type        = string
+  description = "The deployment policy for Elastic Beanstalk application version deployments."
 }
 
-variable "cache_port" {
+variable "elb_instance_max_size" {
+  type        = number
+  description = "The maximum number of instances in Elastic Beanstalk Auto Scaling group."
 }
 
-// EB environment variables
+variable "elb_instance_min_size" {
+  type        = number
+  description = "The minimum number of instances in Elastic Beanstalk Auto Scaling group."
+}
+
+variable "elb_instance_type" {
+  type        = string
+  description = "The instance type that's used to run the application in the Elastic Beanstalk environment."
+}
+
+variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARN" {
+  type        = string
+  description = "The certificate arn for Load Balancer. Passed in as secret in azure devops"
+}
+
+// Elastic Beanstalk environment variables
+// These are set in azure devops
 variable "ELB_ADMIN_EMAILS" {
   type = string
 }
@@ -177,10 +127,6 @@ variable "ELB_DISABLE_SEARCH_CACHE" {
 }
 
 variable "ELB_EHRC_IP_RANGE" {
-  type = string
-}
-
-variable "ELB_ENABLE_CONSOLE_LOGGING" {
   type = string
 }
 
@@ -233,17 +179,27 @@ variable "ELB_WEBJOBS_STOPPED" {
 }
 
 #endregion
-#region credidentials
 
-// RDS environment variables
-variable "AWS_ACCESS_KEY_ID" {
+#region cloudfront config
+
+variable "CLOUDFRONT_ACM_CERT_ARN" {
   type        = string
-  description = "AWS access key id. Set as an environment variable."
+  description = "The ARN of the ACM certificate used with this distribution. It must be in the us-east-1 region."
 }
 
-variable "AWS_SECRET_ACCESS_KEY" {
+variable "cloudfront_alternate_domain_name" {
   type        = string
-  description = "AWS secret access key. Set as an environment variable."
+  description = "Any additional CNAMEs or Alias records, if any, for this distribution."
+}
+
+#endregion
+
+#region cloudwatch config
+
+variable "CLOUDWATCH_NOTIFICATION_EMAILS" {
+  type        = string
+  description = "An email distribution list to be notified of alarm breaches. Pass in as environment variable."
+  default     = "Team-GenderPayGap@softwire.com"
 }
 
 #endregion

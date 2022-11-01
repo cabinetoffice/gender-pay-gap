@@ -1,10 +1,10 @@
-env     = "preprod"
+env     = "loadtest"
 account = "preproduction"
 
 #region Relational database configuration 
 
-rds_config_db_name        = "gpgPreprodDb"
-rds_config_identifier     = "gpg-preprod-db"
+rds_config_db_name        = "gpgLoadTestDb"
+rds_config_identifier     = "gpg-loadtest-db"
 rds_config_instance_class = "db.t3.small"
 rds_config_multi_az       = false
 
@@ -21,6 +21,6 @@ elb_instance_type     = "t2.small"
 
 #region Cloudfront configuration
 
-cloudfront_alternate_domain_name = "preprod.gender-pay-gap.service.gov.uk"
+cloudfront_alternate_domain_name = "loadtest.gender-pay-gap.service.gov.uk"
 
-#endregion
+#end region

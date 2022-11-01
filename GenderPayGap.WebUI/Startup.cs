@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI
             services.Configure<ForwardedHeadersOptions>(
                 options =>
                 {
-                    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor;
                 });
 
             //Add a dedicated httpclient for Google Analytics tracking with exponential retry policy
@@ -173,8 +173,6 @@ namespace GenderPayGap.WebUI
                             options.ConfigurationOptions = new ConfigurationOptions
                             {
                                 EndPoints = { { redisConfiguration.Credentials.Host, redisConfiguration.Credentials.Port } },
-                                Password = redisConfiguration.Credentials.Password,
-                                Ssl = redisConfiguration.Credentials.TlsEnabled,
                                 AbortOnConnectFail = false
                             };
                         });
@@ -314,6 +312,7 @@ namespace GenderPayGap.WebUI
         // here if you need to resolve things from the container.
         public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
+            app.UseForwardedHeaders();
             app.UseMiddleware<ExceptionMiddleware>();
             if (Config.IsLocal())
             {
@@ -325,8 +324,7 @@ namespace GenderPayGap.WebUI
                 app.UseExceptionHandler("/error/500");
                 app.UseStatusCodePagesWithReExecute("/error/{0}");
             }
-
-            app.UseForwardedHeaders();
+            
             //app.UseHttpsRedirection();
             //app.UseResponseCompression(); //Disabled to use IIS compression which has better performance (see https://docs.microsoft.com/en-us/aspnet/core/performance/response-compression?view=aspnetcore-2.1)
             app.UseStaticFiles(

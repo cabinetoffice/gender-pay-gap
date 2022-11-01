@@ -1,25 +1,2 @@
 User-agent: *
-Disallow: /register/
-Disallow: /Viewing/search-results?*
-Disallow: /search-results-js?*
-Disallow: /viewing/employer-details?*
-Disallow: /viewing/add-employer/*
-Disallow: /viewing/add-employer-js/*
-Disallow: /viewing/remove-employer/*
-Disallow: /viewing/remove-employer-js/*
-Disallow: /viewing/clear-employers/*
-Disallow: /viewing/sort-employers/*
-Disallow: /viewing/compare-employers/*
-Disallow: /viewing/suggest-employer-name-js?*
-Disallow: /viewing/search-results-js?*
-Disallow: /viewing/employer-*
-Disallow: /viewing/download-data?*
-Disallow: /viewing/download-compare-data?*
-Disallow: /viewing/azure-uptime-pinger
-Disallow: /viewing/add-search-results-to-compare
-
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: SemrushBot/2
-Disallow: /
+Disallow: /*

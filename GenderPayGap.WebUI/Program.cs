@@ -56,7 +56,6 @@ namespace GenderPayGap.WebUI
         public static IWebHost BuildWebHost(string[] args)
         {
             IWebHostBuilder webHostBuilder = WebHost.CreateDefaultBuilder(args);
-
             webHostBuilder.ConfigureKestrel(
                     options =>
                     {
@@ -72,7 +71,6 @@ namespace GenderPayGap.WebUI
                 .ConfigureServices(
                     services => services
                         .AddAutofac()); /// This call allows for ConfigureContainer to be supported in Startup with a strongly-typed ContainerBuilder
-
             if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PORT")))
             {
                 webHostBuilder.UseUrls($"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT")}/");
@@ -102,25 +100,10 @@ namespace GenderPayGap.WebUI
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
         {
-            if (Config.IsLocal() || Global.EnableConsoleLogging)
-            {
-                // Log to Console
-                Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-            }
-            else
-            {
-                // Log to Logit.io
-                webHostBuilder.UseSerilog(
-                    (ctx, config) =>
-                    {
-                        config.ReadFrom.Configuration(ctx.Configuration);
-
-                        // Add a property called "cf.app" with the environment name (e.g. DEV)
-                        // This allows us to filter the logs per-environment in logit.io
-                        config.Enrich.WithProperty("cf.app", Config.EnvironmentName);
-                    });
-            }
-
+           
+            // Log to Console
+            Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+           
             Log.Information("Serilog logger setup complete");
         }
 

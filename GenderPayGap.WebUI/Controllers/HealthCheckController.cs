@@ -26,7 +26,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpGet("health-check")]
         public IActionResult HealthCheck()
-        {
+        {       
             CheckDatabaseConnection();
             CheckFileConnection();
             CheckSearchRepositoryIsLoaded();

@@ -1,24 +1,26 @@
+env     = "dev"
+account = "preproduction"
+
 #region Relational database configuration 
 
-rds_config_instance_class = "db.t3.small"
-rds_config_identifier     = "gpg-dev-db"
 rds_config_db_name        = "gpgDevDb"
+rds_config_identifier     = "gpg-dev-db"
+rds_config_instance_class = "db.t3.small"
+rds_config_multi_az       = false
 
 #endregion
 
-env = "dev"
+#region Elastic Beanstalk configuration
 
-#region ElasticBeanstalk configuration
-
-instance_type          = "t2.small"
-elb_instance_profile   = "aws-elasticbeanstalk-ec2-role"
-elb_instance_min_size  = 1
-elb_instance_max_size  = 2
-tier                   = "WebServer"
-elb_scheme             = "internet facing"
-elb_load_balancer_type = "application"
-solution_stack_name    = "64bit Amazon Linux 2 v2.3.4 running .NET Core"
-elb_matcher_http_code  = "200"
-cache_port             = 6379
+elb_deployment_policy = "Rolling"
+elb_instance_max_size = 2
+elb_instance_min_size = 1
+elb_instance_type     = "t2.small"
 
 #endregion
+
+#region Cloudfront configuration
+
+cloudfront_alternate_domain_name = "dev.gender-pay-gap.service.gov.uk"
+
+#end region
