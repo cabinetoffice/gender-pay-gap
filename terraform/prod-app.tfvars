@@ -12,7 +12,7 @@ rds_config_multi_az       = true
 
 #region Elastic Beanstalk configuration
 
-elb_deployment_policy = "Rolling"
+elb_deployment_policy = "RollingWithAdditionalBatch"
 elb_instance_max_size = 4
 elb_instance_min_size = 1
 elb_instance_type     = "t2.medium"
@@ -21,6 +21,6 @@ elb_instance_type     = "t2.medium"
 
 #region Cloudfront configuration
 
-cloudfront_alternate_domain_name = "gender-pay-gap.service.gov.uk"
+cloudfront_alternate_domain_name = "ladun.me"
 
 #endregion
