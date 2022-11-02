@@ -156,7 +156,7 @@ resource "aws_cloudfront_cache_policy" "static_assets_caching" {
   min_ttl     = 1
   parameters_in_cache_key_and_forwarded_to_origin {
     cookies_config {
-      cookie_behavior = "all"
+      cookie_behavior = "none"
     }
     headers_config {
       header_behavior = "whitelist"
@@ -165,7 +165,7 @@ resource "aws_cloudfront_cache_policy" "static_assets_caching" {
       }
     }
     query_strings_config {
-      query_string_behavior = "all"
+      query_string_behavior = "none"
     }
 
     enable_accept_encoding_brotli = true
