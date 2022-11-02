@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 
@@ -12,17 +10,17 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select how easy this service is to use.")]
         public HowEasyIsThisServiceToUse? HowEasyIsThisServiceToUse { get; set; }
 
-        public List<HowDidYouHearAboutGpg> HowDidYouHearAboutGpg { get; set; }
+        public List<HowDidYouHearAboutGpg> HowDidYouHearAboutGpg { get; set; } = new List<HowDidYouHearAboutGpg>();
 
         [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other source", NameWithinSentence = "other source")]
         public string OtherSourceText { get; set; }
 
-        public List<WhyVisitGpgSite> WhyVisitGpgSite { get; set; }
+        public List<WhyVisitGpgSite> WhyVisitGpgSite { get; set; } = new List<WhyVisitGpgSite>();
 
         [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other reason", NameWithinSentence = "other reason")]
         public string OtherReasonText { get; set; }
 
-        public List<WhoAreYou> WhoAreYou { get; set; }
+        public List<WhoAreYou> WhoAreYou { get; set; } = new List<WhoAreYou>();
 
         [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other person", NameWithinSentence = "other person")]
         public string OtherPersonText { get; set; }
