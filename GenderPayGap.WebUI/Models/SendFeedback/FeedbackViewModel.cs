@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
+using GovUkDesignSystem.ModelBinders;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.SendFeedback
 {
@@ -10,16 +12,19 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
         [GovUkValidateRequired(ErrorMessageIfMissing = "Select how easy this service is to use.")]
         public HowEasyIsThisServiceToUse? HowEasyIsThisServiceToUse { get; set; }
 
+        [ModelBinder(typeof(GovUkCheckboxEnumSetBinder<HowDidYouHearAboutGpg>))]
         public List<HowDidYouHearAboutGpg> HowDidYouHearAboutGpg { get; set; } = new List<HowDidYouHearAboutGpg>();
 
         [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other source", NameWithinSentence = "other source")]
         public string OtherSourceText { get; set; }
 
+        [ModelBinder(typeof(GovUkCheckboxEnumSetBinder<WhyVisitGpgSite>))]
         public List<WhyVisitGpgSite> WhyVisitGpgSite { get; set; } = new List<WhyVisitGpgSite>();
 
         [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other reason", NameWithinSentence = "other reason")]
         public string OtherReasonText { get; set; }
 
+        [ModelBinder(typeof(GovUkCheckboxEnumSetBinder<WhoAreYou>))]
         public List<WhoAreYou> WhoAreYou { get; set; } = new List<WhoAreYou>();
 
         [GovUkValidateCharacterCount(MaxCharacters = 2000, NameAtStartOfSentence = "Other person", NameWithinSentence = "other person")]
@@ -34,6 +39,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
 
     }
 
+    
     public enum HowEasyIsThisServiceToUse
     {
 
