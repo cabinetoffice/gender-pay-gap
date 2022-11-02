@@ -21,6 +21,6 @@ elb_instance_type     = "t2.medium"
 
 #region Cloudfront configuration
 
-cloudfront_alternate_domain_name = "ladun.me"
+cloudfront_alternate_domain_name = "gender-pay-gap.service.gov.uk"
 
 #endregion
