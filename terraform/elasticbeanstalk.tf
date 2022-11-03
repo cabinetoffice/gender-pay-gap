@@ -309,25 +309,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     name      = "UnhealthyThresholdCount"
     value     = 5
   }
-// loggging on load balancer
-  
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Bucket"
-    value     = data.aws_s3_bucket.resource_logs_bucket.bucket
-  }
-
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Enabled"
-    value     = true
-  }
-
-  setting {
-    namespace = "aws:elbv2:loadbalancer"
-    name      = "AccessLogsS3Prefix"
-    value     = local.env_prefix
-  }
 
   // Elastic beanstalk environment variables
   // VCAP services is a legacy object from PaaS

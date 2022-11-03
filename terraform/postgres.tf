@@ -56,7 +56,6 @@ resource "aws_db_instance" "gpg-dev-db" {
   // Backups and deletion 
   deletion_protection      = false // QQ should be true when application goes live
   delete_automated_backups = false
-  apply_immediately = true
   
   lifecycle {
     ignore_changes = [
