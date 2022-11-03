@@ -36,7 +36,7 @@
                 foreach (var item in reportingYearsWithFileSizes)
                 {
                     <li>
-                        <a href="@Url.Action("DownloadData", "Viewing", item.Item1)"
+                        <a href="@Url.Action("DownloadData", "Viewing", new { year = item.Item1})"
                            class="govuk-link">
                             <span class="govuk-visually-hidden">Download gender pay gap data for</span>
                             Reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(item.Item1)) (@item.Item2 CSV file)
