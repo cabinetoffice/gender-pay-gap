@@ -48,14 +48,23 @@ namespace GenderPayGap.WebUI.Controllers
         {
             string guid = Guid.NewGuid().ToString("N");
 
-            fileRepository.Write(HealthCheckFileName, guid);
+            fileRepository.Read(HealthCheckFileName);
+            
+            string fileContents = fileRepository.Read(HealthCheckFileName);
+            
+            if (fileContents != "100")
+            {
+                throw new Exception("Could not read health check file");
+            }
+                
+            /*fileRepository.Write(HealthCheckFileName, guid);
 
             string fileContents = fileRepository.Read(HealthCheckFileName);
 
             if (fileContents != guid)
             {
                 throw new Exception("Could not read or write a file");
-            }
+            }*/
         }
 
         private void CheckSearchRepositoryIsLoaded()
