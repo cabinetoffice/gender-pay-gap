@@ -27,12 +27,11 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
         }
         
-        //TODO: Remove stack trace and message
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "text/plain";
             context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-            return context.Response.WriteAsync($"ERROR {context.Response.StatusCode} Internal Server Error {exception.Message} {exception.StackTrace}");
+            return context.Response.WriteAsync($"ERROR {context.Response.StatusCode} Internal Server Error");
         }
 
     }
