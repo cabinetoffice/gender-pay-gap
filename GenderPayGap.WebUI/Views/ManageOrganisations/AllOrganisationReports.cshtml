@@ -3,6 +3,7 @@
 @using GenderPayGap.Core.Classes
 @using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Models.ManageOrganisations
+@using GenderPayGap.WebUI.Models.Shared
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.ManageOrganisations.AllOrganisationReportsViewModel
@@ -11,33 +12,45 @@
     ViewBag.Title = "View all your employers reports - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     var organisation = Model.Organisation;
-    // Breadkcrumbs for going back
-    // All reports header **
-    // for [Organisation name] **
-    // filter (requires main table to exist with class name that matches)
-    // main table
-    // Pagination
-    
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = "All reports"
+            },
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl">
-            Manage your employer's reporting
+            All reports
             <br>
             <span class="govuk-!-font-size-27">
                 for @(Model.Organisation.OrganisationName)
             </span>
         </h1>
-    </div>
-    <div id="filteringArea">
-        <input type="hidden" id="selectOptionsFromReports"
-               value=@JsonConvert.SerializeObject(
-                         organisation.GetRecentReports(
-                             Global.ShowReportYearCount)
-                             .Select(
-                                 report => report.GetReportingPeriod())
-                             .ToArray())>
     </div>
     @{
         var desktopHeader = new List<TableCellViewModel>
@@ -64,21 +77,20 @@
             }
         };
         
-        string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+
+        var yearsForSelectComponent = new List<string>();
         var allDesktopRows = new List<TableRowViewModel>();
         var allMobileRows = new List<TableRowViewModel>();
         var allReports = Model.GetOrganisationDetailsForYears();
         foreach (var report in allReports)
         {
-            var reportTag = report.GetReportTag();
-            var currentReportingYear = ReportingYearsHelper.GetCurrentReportingYear();
- 
             allDesktopRows.Add(GenerateDesktopRow(report));
             allMobileRows.Add(GenerateMobileRow(report));
         }
 
         TableRowViewModel GenerateDesktopRow(AllOrganisationReportsForYearViewModel report)
         {
+            yearsForSelectComponent.Add(@organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy"));
             var newRow = new TableRowViewModel
             {
                 Row = new List<TableCellViewModel>
@@ -109,23 +121,13 @@
                     new TableCellViewModel
                     {
                         Html = @<text>
-                                   <strong class="govuk-tag @report.GetReportTagClassName()">
-                                       @report.GetReportTagText().ToUpper()
-                                   </strong>
-                                   @{
-                                       string description = report.GetReportTagDescription();
-                                       string modifiedDateText = report.GetModifiedDateText();
-                                       string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
-
-                                       if (description != null)
-                                       {
-                                           <div class="govuk-!-margin-top-3">@description</div>
-                                       }
-
-                                       if (modifiedDateText != null)
-                                       {
-                                           <div class="@modifiedDateTextClass">@modifiedDateText</div>
-                                       }
+                                   @{ await Html.RenderPartialAsync("_ReportStatusBadge",
+                                          new ReportStatusBadgeViewModel
+                                          {
+                                              Desktop = true,
+                                              DateText = report.GetReportingDeadline().ToString("d MMMM yyyy"),
+                                              ReportStatus = report.GetReportBadge()
+                                          }); 
                                    }
                                 </text>
                     },
@@ -151,9 +153,36 @@
                     new TableCellViewModel
                     {
                         Html = @<text>
-                                   @organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy")
+                                   <span class="govuk-!-font-weight-bold ">
+                                       Snapshot date: @organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy")
+                                   <span class="yearTextForFiltering" style="visibility: hidden">@organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy")</span>
+                                   </span>
+                                    <div>
+                                        @report.GetRequiredToReportOrNotText()
+                                    </div>
+                                    @if (report.CanChangeScope())
+                                    {
+                                        <div class="govuk-!-margin-top-1">
+                                            <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = report.ReportingYear})">
+                                                Think this is wrong?<span class="govuk-visually-hidden"> scope for year @report.GetFormattedYearText()</span>
+                                            </a>
+                                        </div>
+                                    }
+                                    @{ await Html.RenderPartialAsync("_ReportStatusBadge",
+                                           new ReportStatusBadgeViewModel
+                                           {
+                                               Desktop = false,
+                                               DateText = report.GetReportingDeadline().ToString("d MMMM yyyy"),
+                                               ReportStatus = report.GetReportBadge(),
+                                               MobileClasses = "govuk-!-margin-top-5 govuk-!-margin-bottom-3"
+                                           }); 
+                                    }
+                                    <br/>
+                                    <a loadtest-id="create-report-@report.ReportingYear"
+                                       href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId, reportingYear = report.ReportingYear, canTriggerLateSubmissionWarning = true})">
+                                        @report.GetReportLinkText()
+                                    </a>
                                 </text>,
-                        Classes = "govuk-!-font-weight-bold"
                     }
                 }
             };
@@ -205,19 +234,24 @@
             desktopDisplayRows.Add(allDesktopRows[i]);
         }
     }
+    <div class="govuk-grid-column-full" id="filteringArea">
+        <input type="hidden" id="selectOptionsFromReports"
+               value=@JsonConvert.SerializeObject(yearsForSelectComponent)>
+    </div>
+    <div class="govuk-grid-column-full">
     
     @await Html.GovUkTable(new TableGovUkViewModel
         {
             Head = desktopHeader,
             Rows = desktopDisplayRows,
-            Classes = "gpg-govuk-hideOnMobile"
+            Classes = "gpg-govuk-hideOnMobile govuk-grid-column-full"
         })
 
     @await Html.GovUkTable(new TableGovUkViewModel
         {
             Head = new List<TableCellViewModel>(),
             Rows = mobileDisplayRows,
-            Classes = "gpg-govuk-hideOnDesktop"
+            Classes = "gpg-govuk-hideOnDesktop govuk-grid-column-full"
         })
     
     @{
@@ -235,16 +269,17 @@
             Href = Url.Action("AllOrganisationReportsGet", new {encryptedOrganisationId, page = Model.CurrentPage - 1})
         };
     
-        // if (Model.TotalPages < 2 || Model.CurrentPage == Model.TotalPages)
-        //     nextLink = null;
-        // if (Model.CurrentPage < 2)
-        //     previousLink = null;
+        if (Model.TotalPages < 2 || Model.CurrentPage == Model.TotalPages)
+            nextLink = null;
+        if (Model.CurrentPage < 2)
+            previousLink = null;
     }
     @await Html.GovUkPagination(new PaginationViewModel()
         {
             Next = nextLink,
             Previous = previousLink,
         })
+    </div>
 </div>
 
 <script>
@@ -253,7 +288,7 @@
     var selectLabel = document.createElement("label");
     selectLabel.className = "govuk-label";
     selectLabel.for = "yearFilter";
-    selectLabel.textContent = "Filter for a reporting period";
+    selectLabel.textContent = "Filter for a snapshot date";
     
     var elements = document.getElementsByClassName("yearTextForFiltering");
     
@@ -270,14 +305,9 @@
             }
         }
     }) 
-    
-    var selectHint = document.createElement("div");
-    selectHint.className = "govuk-hint";
-    selectHint.textContent = "For example, if the snapshot date is 5 April 2017 but the deadline is 4 April 2018 then the reporting period is 2017 - 2018.";
    
     parentForSelect.appendChild(selectLabel);
     parentForSelect.appendChild(selectList);
-    parentForSelect.appendChild(selectHint);
 
     var showAll = document.createElement("option");
     showAll.value = "Show All";

@@ -134,11 +134,12 @@
                                                         reportStatus = ReportStatusBadgeType.Due;
                                                     }
                                                             
-                                                    await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
+                                                    await Html.RenderPartialAsync("_ReportStatusBadge",
                                                         new ReportStatusBadgeViewModel
                                                         {
                                                             DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
-                                                            ReportStatus = reportStatus
+                                                            ReportStatus = reportStatus,
+                                                            MobileClasses = "govuk-!-margin-bottom-4 govuk-!-margin-top-4"
                                                         });
                                                 }
                                                             
@@ -213,12 +214,13 @@
                                                         }
         
                                                         <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-margin-top-3">
-                                                            @{ await Html.RenderPartialAsync("EmployerDetails/Parts/_ReportStatusBadge",
+                                                            @{ await Html.RenderPartialAsync("_ReportStatusBadge",
                                                                    new ReportStatusBadgeViewModel
                                                                    {
                                                                        DateText = ReportingYearsHelper.GetDeadlineForAccountingDate(report.AccountingDate).ToString("d MMMM yyyy"),
                                                                        ReportStatus = reportStatus,
-                                                                       Desktop = true
+                                                                       Desktop = true,
+                                                                       DesktopClasses = "govuk-employer-table-right"
                                                                    }); }
                                                         </div>
                                                     }

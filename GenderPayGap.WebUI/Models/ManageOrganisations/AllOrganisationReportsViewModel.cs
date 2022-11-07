@@ -121,7 +121,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             return organisation.SectorType.GetAccountingStartDate(ReportingYear);
         }
 
-        private DateTime GetReportingDeadline()
+        public DateTime GetReportingDeadline()
         {
             DateTime snapshotDate = GetAccountingDate();
             return ReportingYearsHelper.GetDeadlineForAccountingDate(snapshotDate);
@@ -144,6 +144,26 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             bool reportIsSubmitted = returnForYear != null;
             
             return reportIsSubmitted ? GetSubmittedReportTag(returnForYear) : GetNotSubmittedReportTag();
+        }
+
+        public ReportStatusBadgeType GetReportBadge()
+        {
+            var tag = GetReportTag();
+            switch (tag)
+            {
+                case ReportTag.Submitted:
+                    return ReportStatusBadgeType.Reported;
+                case ReportTag.SubmittedLate:
+                    return ReportStatusBadgeType.SubmittedLate;
+                case ReportTag.Due:
+                    return ReportStatusBadgeType.Due;
+                case ReportTag.Overdue:
+                    return ReportStatusBadgeType.Overdue;
+                case ReportTag.NotRequired:
+                    return ReportStatusBadgeType.NotRequired;
+                default:
+                    return ReportStatusBadgeType.Due;
+            }
         }
 
         private ReportTag GetSubmittedReportTag(Return returnForYear)
@@ -183,58 +203,6 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                 default:
                     return "Report not required";
             }
-        }
-        
-        public string GetReportTagClassName()
-        {
-            switch (GetReportTag())
-            {
-                case ReportTag.Due:
-                    return "govuk-tag--blue";
-                case ReportTag.Overdue:
-                    return "govuk-tag--red";
-                case ReportTag.Submitted:
-                case ReportTag.SubmittedLate:
-                    return "govuk-tag--green";
-                default:
-                    return "govuk-tag--grey";
-            }
-        }
-
-        public string GetReportTagDescription()
-        {
-            ReportTag tag = GetReportTag();
-            Return returnForYear = organisation.GetReturn(ReportingYear);
-
-            switch (tag)
-            {
-                case ReportTag.Overdue:
-                    return "This report was due on " + GetReportingDeadline().ToGDSDate().FullStartDate;
-                case ReportTag.Submitted:
-                case ReportTag.SubmittedLate:
-                    return "Reported on " + returnForYear.Modified.ToGDSDate().FullStartDate;
-                default:
-                    return null;
-            }
-        }
-
-        public string GetModifiedDateText()
-        {
-            if (hasDraftReturnForYear && draftReturnForYear.Modified != DateTime.MinValue)
-            {
-                return "Last edited on " + draftReturnForYear.Modified.ToGDSDate().FullStartDate;
-            }
-
-            return null;
-
-        }
-
-        public bool DoesReturnOrDraftReturnExistForYear()
-        {
-            Return returnForYear = organisation.GetReturn(ReportingYear);
-            bool hasReturnForYear = returnForYear != null;
-
-            return hasReturnForYear || hasDraftReturnForYear;
         }
 
         public string GetReportLinkText()
