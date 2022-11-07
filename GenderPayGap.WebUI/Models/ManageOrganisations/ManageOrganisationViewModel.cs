@@ -106,8 +106,8 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             OrganisationScope scopeForYear = organisation.GetScopeForYear(ReportingYear);
 
             return scopeForYear.IsInScopeVariant()
-                ? "REQUIRED TO REPORT"
-                : "NOT REQUIRED TO REPORT";
+                ? "You are required to report."
+                : "You are not required to report.";
         }
 
         private DateTime GetAccountingDate()
@@ -132,7 +132,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
                    && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(GetAccountingDate().Year);
         }
 
-        private ReportTag GetReportTag()
+        public ReportTag GetReportTag()
         {
             Return returnForYear = organisation.GetReturn(ReportingYear);
             bool reportIsSubmitted = returnForYear != null;

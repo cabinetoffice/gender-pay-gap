@@ -1,72 +1,235 @@
-﻿@using GenderPayGap.WebUI.Models.ManageOrganisations
+﻿@using GenderPayGap.Core.Classes
 @using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Models.ManageOrganisations
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
 
-<div class="overflowx">
-    <table class="govuk-table">
-    <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Year</th>
-            <th scope="col" class="govuk-table__header">Reporting requirement</th>
-            <th scope="col" class="govuk-table__header">Report status</th>
-            <th scope="col" class="govuk-table__header"></th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-        @{
-            foreach (ManageOrganisationDetailsForYearViewModel detailsForYear in Model.GetOrganisationDetailsForYears())
-            {
-                string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
-                
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-!-font-weight-bold">
-                        @detailsForYear.GetFormattedYearText()
-                    </td>
-                    
-                    <td class="govuk-table__cell">
-                        <div>
-                            @detailsForYear.GetRequiredToReportOrNotText()
-                        </div>
-                        @if (detailsForYear.CanChangeScope()) 
-                        {
-                            <div>
-                                <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear })">
-                                    Change<span class="govuk-visually-hidden"> scope for year @detailsForYear.GetFormattedYearText()</span>
-                                </a>
-                            </div>
-                        }
-                    </td>
-                    
-                    <td class="govuk-table__cell">
-                        <strong class="govuk-tag @detailsForYear.GetReportTagClassName()">
-                            @detailsForYear.GetReportTagText().ToUpper()
-                        </strong>
-                        @{
-                            string description = detailsForYear.GetReportTagDescription();
-                            string modifiedDateText = detailsForYear.GetModifiedDateText();
-                            string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
-                            
-                            if (description != null)
-                            {
-                                <div class="govuk-!-margin-top-3">@description</div>
-                            }
+@{
+    var organisation = Model.Organisation;
 
-                            if (modifiedDateText != null)
-                            {
-                                <div class="@modifiedDateTextClass">@modifiedDateText</div>
-                            }
-                        }
-                    </td>
-
-                    <td class="govuk-table__cell">
-                        <a loadtest-id="create-report-@detailsForYear.ReportingYear"
-                           href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = detailsForYear.ReportingYear, canTriggerLateSubmissionWarning = true})">
-                            @detailsForYear.GetReportLinkText()
-                        </a>
-                    </td>
-                </tr>
-            }
+    var desktopHeadings = new List<TableCellViewModel>
+    {
+        new TableCellViewModel
+        {
+            Text = "Snapshot date",
+            Colspan = 1
+        },
+        new TableCellViewModel
+        {
+            Text = "Reporting requirements",
+            Colspan = 1
+        },
+        new TableCellViewModel
+        {
+            Text = "Report status",
+            Colspan = 1
+        },
+        new TableCellViewModel
+        {
+            Text = " ",
+            Colspan = 1
         }
-    </tbody>
-</table>
-</div>
+    };
+
+    var allReturns = Model.GetOrganisationDetailsForYears();
+    var desktopCurrentReportingPeriodRows = new List<TableRowViewModel>();
+    var desktopMissingReportingPeriodRows = new List<TableRowViewModel>();
+    var mobileCurrentReportingPeriodRows = new List<TableRowViewModel>();
+    var mobileMissingReportingPeriodRows = new List<TableRowViewModel>();
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    foreach (var organisationReturn in allReturns)
+    {
+        var reportTag = organisationReturn.GetReportTag();
+        var currentReportingYear = ReportingYearsHelper.GetCurrentReportingYear();
+ 
+        if (reportTag == ReportTag.Overdue)
+        {
+            desktopMissingReportingPeriodRows.Add(GenerateDesktopRow(organisationReturn));
+            mobileMissingReportingPeriodRows.Add(GenerateMobileRow(organisationReturn));
+        }
+        else if (organisationReturn.ReportingYear == currentReportingYear)
+        {
+            desktopCurrentReportingPeriodRows.Add(GenerateDesktopRow(organisationReturn));
+            mobileCurrentReportingPeriodRows.Add(GenerateMobileRow(organisationReturn));
+        }
+    }
+
+    TableRowViewModel GenerateDesktopRow(ManageOrganisationDetailsForYearViewModel viewModel)
+    {
+        var newRow = new TableRowViewModel
+        {
+            Row = new List<TableCellViewModel>
+            {
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                               @organisation.SectorType.GetAccountingStartDate(viewModel.ReportingYear).ToString("dd/MM/yyyy")
+                            </text>,
+                    Classes = "govuk-!-font-weight-bold"
+                },
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                                <div>
+                                    @viewModel.GetRequiredToReportOrNotText()
+                                </div>
+                                @if (viewModel.CanChangeScope()) 
+                                {
+                                    <div>
+                                        <a href="@Url.Action("ChangeOrganisationScope", "Scope", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear })">
+                                            Think this is wrong?<span class="govuk-visually-hidden"> scope for year @viewModel.GetFormattedYearText()</span>
+                                        </a>
+                                    </div>
+                                }
+                            </text>
+                },
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                                <strong class="govuk-tag @viewModel.GetReportTagClassName()">
+                                    @viewModel.GetReportTagText().ToUpper()
+                                </strong>
+                                @{
+                                    string description = viewModel.GetReportTagDescription();
+                                    string modifiedDateText = viewModel.GetModifiedDateText();
+                                    string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-3";
+                                    
+                                    if (description != null)
+                                    {
+                                        <div class="govuk-!-margin-top-3">@description</div>
+                                    }
+        
+                                    if (modifiedDateText != null)
+                                    {
+                                        <div class="@modifiedDateTextClass">@modifiedDateText</div>
+                                    }
+                                }
+                            </text>
+                },
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                                <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                    href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true})">
+                                    @viewModel.GetReportLinkText()
+                                </a>
+                            </text>
+                },
+            }
+        };
+        return newRow;
+    }
+
+    TableRowViewModel GenerateMobileRow(ManageOrganisationDetailsForYearViewModel viewModel)
+    {
+        var newRow = new TableRowViewModel
+        {
+            Row = new List<TableCellViewModel>
+            {
+                new TableCellViewModel
+                {
+                    Html = @<text>
+                               <div>
+                                   <p class="govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                                       Snapshot date: @organisation.SectorType.GetAccountingStartDate(viewModel.ReportingYear).ToString("dd/MM/yyyy")
+                                   </p>
+                                   @if (viewModel.CanChangeScope())
+                                   {
+                                       <p class="govuk-!-margin-top-0 govuk-!-margin-bottom-0">
+                                           @viewModel.GetRequiredToReportOrNotText()
+                                       </p>
+                                       <div class="govuk-!-margin-top-0 govuk-!-margin-bottom-5">
+                                           <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = viewModel.ReportingYear})">
+                                               Think this is wrong?<span class="govuk-visually-hidden"> scope for year @viewModel.GetFormattedYearText()</span>
+                                           </a>
+                                       </div>
+                                   }
+                                   else
+                                   {
+                                       <p class="govuk-!-margin-top-0 govuk-!-margin-bottom-5">
+                                           @viewModel.GetRequiredToReportOrNotText()
+                                       </p>
+                                   }
+                               </div>
+                               
+                               <strong class="govuk-tag @viewModel.GetReportTagClassName()">
+                                   @viewModel.GetReportTagText().ToUpper()
+                               </strong>
+                               
+                               <div>
+                                    @{
+                                        string description = viewModel.GetReportTagDescription();
+                                        string modifiedDateText = viewModel.GetModifiedDateText();
+                                        string modifiedDateTextClass = description != null ? "" : "govuk-!-margin-top-4";
+        
+                                        if (description != null)
+                                        {
+                                            <div class="govuk-!-margin-top-1">@description</div>
+                                        }
+        
+                                        if (modifiedDateText != null)
+                                        {
+                                            <div class="@modifiedDateTextClass">@modifiedDateText</div>
+                                        }
+                                    }
+                               </div>
+                               <br/>
+                               
+                               <div class="govuk-!-margin-bottom-5">
+                                    <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                       href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true})">
+                                        @viewModel.GetReportLinkText()
+                                    </a>
+                               </div>
+                           </text>
+                },
+            }
+        };
+        return newRow;
+    }
+}
+
+<h2 class="govuk-heading-l gpg-govuk-hideOnMobile">Manage reports</h2>
+<h2 class="govuk-heading-l gpg-govuk-hideOnDesktop govuk-!-margin-bottom-0">Manage reports</h2>
+@{
+    var missingReports = desktopMissingReportingPeriodRows.Count > 0;
+    var mobileReportingPeriodsClasses = missingReports ? "gpg-govuk-hideOnDesktop govuk-!-margin-bottom-9" : "gpg-govuk-hideOnDesktop govuk-!-margin-bottom-1";
+}
+
+@await Html.GovUkTable(new TableGovUkViewModel
+    {
+        Head = desktopHeadings,
+        Rows = desktopCurrentReportingPeriodRows,
+        Classes = "gpg-govuk-hideOnMobile"
+    })
+@await Html.GovUkTable(new TableGovUkViewModel
+    {
+        Head = new List<TableCellViewModel>(),
+        Rows = mobileCurrentReportingPeriodRows,
+        Classes = mobileReportingPeriodsClasses
+    })
+
+@if (missingReports)
+{
+    <h2 class="govuk-heading-l gpg-govuk-hideOnMobile">Missing reports</h2>
+    <h2 class="govuk-heading-l gpg-govuk-hideOnDesktop govuk-!-margin-bottom-0">Missing reports</h2>
+        @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = desktopHeadings,
+            Rows = desktopMissingReportingPeriodRows,
+            Classes = "gpg-govuk-hideOnMobile govuk-!-margin-bottom-3"
+        })
+        @await Html.GovUkTable(new TableGovUkViewModel
+        {
+            Head = new List<TableCellViewModel>(),
+            Rows = mobileMissingReportingPeriodRows,
+            Classes = "gpg-govuk-hideOnDesktop govuk-!-margin-bottom-1"
+        })
+}
+
+
+    
+
+
