@@ -111,7 +111,7 @@
                                    @if (report.CanChangeScope())
                                    {
                                        <div>
-                                           <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = report.ReportingYear})">
+                                           <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = report.ReportingYear})" class="govuk-link">
                                                Think this is wrong?<span class="govuk-visually-hidden"> scope for year @report.GetFormattedYearText()</span>
                                            </a>
                                        </div>
@@ -134,7 +134,7 @@
                     new TableCellViewModel
                     {
                         Html = @<text>
-                                   <a loadtest-id="create-report-@report.ReportingYear"
+                                   <a loadtest-id="create-report-@report.ReportingYear" class="govuk-link"
                                       href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId, reportingYear = report.ReportingYear, canTriggerLateSubmissionWarning = true})">
                                        @report.GetReportLinkText()
                                    </a>
@@ -163,7 +163,7 @@
                                     @if (report.CanChangeScope())
                                     {
                                         <div class="govuk-!-margin-top-1">
-                                            <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = report.ReportingYear})">
+                                            <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = report.ReportingYear})" class="govuk-link">
                                                 Think this is wrong?<span class="govuk-visually-hidden"> scope for year @report.GetFormattedYearText()</span>
                                             </a>
                                         </div>
@@ -178,11 +178,12 @@
                                            }); 
                                     }
                                     <br/>
-                                    <a loadtest-id="create-report-@report.ReportingYear"
+                                    <a loadtest-id="create-report-@report.ReportingYear" class="govuk-link"
                                        href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId, reportingYear = report.ReportingYear, canTriggerLateSubmissionWarning = true})">
                                         @report.GetReportLinkText()
                                     </a>
                                 </text>,
+                        Classes = "govuk-!-padding-bottom-8"
                     }
                 }
             };
