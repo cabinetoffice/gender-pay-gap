@@ -65,18 +65,15 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
         public int ReportingYear { get; }
 
         private readonly Database.Organisation organisation;
-        private readonly DraftReturn draftReturnForYear;
         private readonly bool hasDraftReturnForYear;
 
         public AllOrganisationReportsForYearViewModel(Database.Organisation organisation, int reportingYear, DraftReturn draftReturnForYear)
         {
             this.organisation = organisation;
             ReportingYear = reportingYear;
-            this.draftReturnForYear = draftReturnForYear;
             hasDraftReturnForYear = draftReturnForYear != null;
         }
-
-
+        
         public object GetFormattedYearText()
         {
             return ReportingYearsHelper.FormatYearAsReportingPeriod(ReportingYear);
