@@ -1,4 +1,4 @@
-﻿@model ReportStatusBadgeViewModel
+﻿@model GenderPayGap.WebUI.Models.Shared.ReportStatusBadgeViewModel
 @using GenderPayGap.Core
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -61,20 +61,10 @@
             break;
 
     }
-
-    if(Model.Desktop)
-    {
-        htmlClass = htmlClass + " " + "govuk-employer-table-right";
-    }
-    else
-    {
-        htmlClass = htmlClass + " " + "govuk-!-margin-bottom-4 govuk-!-margin-top-4";
-    }
-
 }
 
 @await Html.GovUkTag(new TagViewModel
 {
     Html = html,
-    Classes = htmlClass
+    Classes = htmlClass + " " + Model.Classes
 })

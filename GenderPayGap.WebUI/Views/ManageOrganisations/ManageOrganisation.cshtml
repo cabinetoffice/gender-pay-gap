@@ -7,6 +7,7 @@
 @{
     ViewBag.Title = "Manage your employers - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
 }
 
 @section BeforeMain {
@@ -21,7 +22,7 @@
             new CrumbViewModel
             {
                 Text = Model.Organisation.OrganisationName
-            }
+            },
         };
     }
 
@@ -63,7 +64,7 @@
 
             <div class="govuk-!-margin-bottom-6">
                 <p>
-                    <a href="" class="govuk-!-font-size-19 govuk-link govuk-!-font-weight-bold">See all reports</a> <!--TODO: GPG-916: Point this link to the manage all reports page when that is created-->
+                    <a href="@Url.Action("AllOrganisationReportsGet", "ManageOrganisations", new{encryptedOrganisationId})" class="govuk-!-font-size-19 govuk-link govuk-!-font-weight-bold">See all reports</a> <!--TODO: GPG-916: Point this link to the manage all reports page when that is created-->
                 </p>
             </div>
             await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", Model);
