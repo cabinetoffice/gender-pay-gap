@@ -96,12 +96,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
                 dataRepository.GetAll<DraftReturn>()
                     .Where(d => d.OrganisationId == organisationId)
                     .ToList();
-            
-            if (string.IsNullOrWhiteSpace(encryptedOrganisationId))
-            {
-                return new HttpBadRequestResult("Missing employer identifier");
-            }
-            
+
             var totalEntries = organisation.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
             var maxEntriesPerPage = 10;
             var totalPages = (int)Math.Ceiling((double)totalEntries / maxEntriesPerPage);

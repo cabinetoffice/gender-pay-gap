@@ -61,20 +61,10 @@
             break;
 
     }
-
-    if(Model.Desktop)
-    {
-        htmlClass = htmlClass + " " + Model.DesktopClasses;
-    }
-    else
-    {
-        htmlClass = htmlClass + " " + Model.MobileClasses;
-    }
-
 }
 
 @await Html.GovUkTag(new TagViewModel
 {
     Html = html,
-    Classes = htmlClass
+    Classes = htmlClass + " " + Model.Classes
 })

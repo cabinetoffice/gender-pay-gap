@@ -144,6 +144,7 @@
             };
             return newRow;
         }
+        
         TableRowViewModel GenerateMobileRow(AllOrganisationReportsForYearViewModel report)
         {
             var newRow = new TableRowViewModel
@@ -174,7 +175,7 @@
                                                Desktop = false,
                                                DateText = report.GetReportingDeadline().ToString("d MMMM yyyy"),
                                                ReportStatus = report.GetReportBadge(),
-                                               MobileClasses = "govuk-!-margin-top-5 govuk-!-margin-bottom-3"
+                                               Classes = "govuk-!-margin-top-5 govuk-!-margin-bottom-3"
                                            }); 
                                     }
                                     <br/>
@@ -221,19 +222,13 @@
             allDesktopRows.Add(dateJoinedRow);
         }
         
-        var currentPage = Model.CurrentPage ?? 1;
+        var currentPage = Model.CurrentPage;
         var entriesPerPage = Model.EntriesPerPage ?? 10;
         var startIndex = (currentPage - 1) * entriesPerPage;
         var endIndex = startIndex + entriesPerPage > allDesktopRows.Count ? allDesktopRows.Count : startIndex + entriesPerPage;
-                
-        var desktopDisplayRows = new List<TableRowViewModel>();
-        var mobileDisplayRows = new List<TableRowViewModel>();
-                    
-        for (int i = startIndex; i < endIndex; i++)
-        {
-            mobileDisplayRows.Add(allMobileRows[i]);
-            desktopDisplayRows.Add(allDesktopRows[i]);
-        }
+
+        var desktopDisplayRows = allDesktopRows.Where((row, i) => i >= startIndex && i < endIndex).ToList();
+        var mobileDisplayRows = allMobileRows.Where((row, i) => i >= startIndex && i < endIndex).ToList();
     }
     <div class="govuk-grid-column-full" id="filteringArea">
         <input type="hidden" id="selectOptionsFromReports"
