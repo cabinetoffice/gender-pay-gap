@@ -12,7 +12,7 @@
     ViewBag.Title = "View all your employers reports - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     var organisation = Model.Organisation;
-    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(organisation.OrganisationId.ToString());
 }
 
 @section BeforeMain {
@@ -57,40 +57,29 @@
         {
             new TableCellViewModel
             {
-                Text = "Snapshot date",
-                Colspan = 1
+                Text = "Snapshot date"
             },
             new TableCellViewModel
             {
                 Text = "Reporting requirement",
-                Colspan = 1
             },
             new TableCellViewModel
             {
                 Text = "Report status",
-                Colspan = 1
             },
             new TableCellViewModel
             {
                 Text = " ",
-                Colspan = 1
             }
         };
         
-
-        var yearsForSelectComponent = new List<string>();
-        var allDesktopRows = new List<TableRowViewModel>();
-        var allMobileRows = new List<TableRowViewModel>();
         var allReports = Model.GetOrganisationDetailsForYears();
-        foreach (var report in allReports)
-        {
-            allDesktopRows.Add(GenerateDesktopRow(report));
-            allMobileRows.Add(GenerateMobileRow(report));
-        }
-
+        var yearsForSelectComponent = allReports.Select(report => organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy")).ToList();
+        var allDesktopRows = allReports.Select(report => GenerateDesktopRow(report)).ToList();
+        var allMobileRows = allReports.Select(report => GenerateMobileRow(report)).ToList();
+        
         TableRowViewModel GenerateDesktopRow(AllOrganisationReportsForYearViewModel report)
         {
-            yearsForSelectComponent.Add(@organisation.SectorType.GetAccountingStartDate(report.ReportingYear).ToString("dd/MM/yyyy"));
             var newRow = new TableRowViewModel
             {
                 Row = new List<TableCellViewModel>
