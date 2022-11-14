@@ -112,7 +112,7 @@
                 {
                     Html = @<text>
                                 <a loadtest-id="create-report-@viewModel.ReportingYear"
-                                    href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true})">
+                                    href="@Url.Action("ReportFiguresGet", "ReportStarting", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear})">
                                     @viewModel.GetReportLinkText()
                                 </a>
                             </text>
