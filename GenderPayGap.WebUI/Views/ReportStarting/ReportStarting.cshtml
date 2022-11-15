@@ -5,14 +5,16 @@
 @{
     ViewBag.Title = $"Report gender pay gap data - reporting year  - Gender pay gap service"; // TODO: insert snapshot date
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    
+    var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
 }
 
 @section BeforeMain {
-    @(await Html.GovUkBackLink(new BackLinkViewModel
+    @await Html.GovUkBackLink(new BackLinkViewModel
     {
         Text = "Back",
-        Href = Url.Action("Search", "AddOrganisationSearch",new {})
-    }))
+        Href = Url.Action("ManageOrganisationGet", "ManageOrganisations",new {encryptedOrganisationId})
+    })
 }
 
 <div class="govuk-grid-row" xmlns="http://www.w3.org/1999/html">
@@ -59,7 +61,10 @@
                 If you have bonus pay, calculate the percentage of men and women and what the difference in pay is.
             </li>
         </ul>
-        @(await Html.GovUkButton(new ButtonViewModel
+        @{
+            var actionValues = new {encryptedOrganisationId, Model.ReportingYear};
+        }
+        @await Html.GovUkButton(new ButtonViewModel
         {
             Html = @<text>
                        Start now
@@ -67,9 +72,10 @@
                            <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
                        </svg>
                     </text>,
-            Classes = "govuk-button--start",
-            Href = "http://www.google.com/"
-            }))
+            Classes = "govuk-button--start govuk-!-margin-top-6",
+            Href = @Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", actionValues)
+        });
+
     </div>
     @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
 </div>
