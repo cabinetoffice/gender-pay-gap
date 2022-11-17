@@ -111,10 +111,20 @@
                 new TableCellViewModel
                 {
                     Html = @<text>
-                                <a loadtest-id="create-report-@viewModel.ReportingYear"
-                                    href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true})">
-                                    @viewModel.GetReportLinkText()
-                                </a>
+                               @if (viewModel.DoesReturnOrDraftReturnExistForYear())
+                               {
+                                   <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                      href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true}) ">
+                                       @viewModel.GetReportLinkText()
+                                   </a>
+                               }
+                               else
+                               {
+                                   <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                      href="@Url.Action("ReportingStart", "ReportStarting", new {encryptedOrganisationId, reportingYear = viewModel.ReportingYear})">
+                                       @viewModel.GetReportLinkText()
+                                   </a>
+                               }
                             </text>
                 },
             }
@@ -178,10 +188,20 @@
                                <br/>
                                
                                <div class="govuk-!-margin-bottom-5">
-                                    <a loadtest-id="create-report-@viewModel.ReportingYear"
-                                       href="@Url.Action("ReportOverview", "ReportOverview", new {encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true})">
-                                        @viewModel.GetReportLinkText()
-                                    </a>
+                               @if (viewModel.DoesReturnOrDraftReturnExistForYear())
+                               {
+                                   <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                      href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = viewModel.ReportingYear, canTriggerLateSubmissionWarning = true}) ">
+                                       @viewModel.GetReportLinkText()
+                                   </a>
+                               }
+                               else
+                               {
+                                   <a loadtest-id="create-report-@viewModel.ReportingYear"
+                                      href="@Url.Action("ReportingStart", "ReportStarting", new {encryptedOrganisationId, reportingYear = viewModel.ReportingYear})">
+                                       @viewModel.GetReportLinkText()
+                                   </a>
+                               }
                                </div>
                            </text>
                 },
