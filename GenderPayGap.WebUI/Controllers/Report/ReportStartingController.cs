@@ -31,7 +31,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
         #region GET
         
         [HttpGet("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/start")]
-        public IActionResult ReportFiguresGet(string encryptedOrganisationId, int reportingYear)
+        public IActionResult ReportingStart(string encryptedOrganisationId, int reportingYear)
         {
              long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
              
@@ -40,24 +40,18 @@ namespace GenderPayGap.WebUI.Controllers.Report
              ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
              var viewModel = new ReportStartingViewModel();
-
-             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
-             PopulateViewModel(viewModel, organisationId, reportingYear, draftReturn != null);
-
-             //Return submittedReturn = viewModel.Organisation.GetReturn(reportingYear);
-             //ReportFiguresHelper.SetFigures(viewModel, draftReturn, submittedReturn);
+             
+             PopulateViewModel(viewModel, organisationId, reportingYear);
 
              return View("ReportStarting", viewModel);
         }
 
-        private void PopulateViewModel(ReportStartingViewModel viewModel, long organisationId, int reportingYear, bool hasDraftReturn)
+        private void PopulateViewModel(ReportStartingViewModel viewModel, long organisationId, int reportingYear)
          {
              Organisation organisation = dataRepository.Get<Organisation>(organisationId);
 
              viewModel.Organisation = organisation;
              viewModel.ReportingYear = reportingYear;
-             viewModel.IsEditingSubmittedReturn = organisation.HasSubmittedReturn(reportingYear);
-             viewModel.IsEditingForTheFirstTime = !viewModel.IsEditingSubmittedReturn && !hasDraftReturn;
              viewModel.SnapshotDate = organisation.SectorType.GetAccountingStartDate(reportingYear);
          }
 

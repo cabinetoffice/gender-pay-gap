@@ -3,7 +3,7 @@
 @model GenderPayGap.WebUI.Models.ReportStarting.ReportStartingViewModel
 
 @{
-    ViewBag.Title = $"Report gender pay gap data - reporting year  - Gender pay gap service"; // TODO: insert snapshot date
+    ViewBag.Title = $"Report gender pay gap data - reporting year {Model.ReportingYear}  - Gender pay gap service"; 
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     
     var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
@@ -74,8 +74,7 @@
                     </text>,
             Classes = "govuk-button--start govuk-!-margin-top-6",
             Href = @Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", actionValues)
-        });
-
+        })
     </div>
     @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
 </div>
