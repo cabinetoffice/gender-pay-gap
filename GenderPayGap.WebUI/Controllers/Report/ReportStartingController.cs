@@ -2,11 +2,8 @@
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;
-using GenderPayGap.WebUI.Models.Report;
 using GenderPayGap.WebUI.Models.ReportStarting;
-using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,16 +13,10 @@ namespace GenderPayGap.WebUI.Controllers.Report
     [Route("account/organisations")]
     public class ReportStartingController: Controller
     {
-        
         private readonly IDataRepository dataRepository;
-        private readonly DraftReturnService draftReturnService;
-
-        public ReportStartingController(
-            IDataRepository dataRepository,
-            DraftReturnService draftReturnService)
+        public ReportStartingController(IDataRepository dataRepository)
         {
             this.dataRepository = dataRepository;
-            this.draftReturnService = draftReturnService;
         }
         
         #region GET
