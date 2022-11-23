@@ -1,4 +1,4 @@
-﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GovUkDesignSystem
 @model GenderPayGap.WebUI.Models.ReportStarting.ReportStartingViewModel
 
@@ -23,7 +23,7 @@
             Report Gender pay gap data
         </h1>
         <h2 class="govuk-heading-m govuk-!-font-weight-regular">For @(Model.Organisation.OrganisationName)</h2>
-        <div class="govuk-inset-text">
+        <div class="govuk-inset-text gpg-govuk-inset-text">
             Reporting for Snapshot date <span class="govuk-!-font-weight-bold">@Model.SnapshotDate.ToString("dd MMMM yyyy")</span>
         </div>
     </div>
