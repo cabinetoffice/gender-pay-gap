@@ -17,35 +17,11 @@
 }
 
 @section BeforeMain {
-    @{
-        var crumbs = new List<CrumbViewModel>
-        {
-            new CrumbViewModel
-            {
-                Text = "Manage Employers",
-                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
-            },
-            new CrumbViewModel
-            {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
-            },
-            new CrumbViewModel
-            {
-                Text = $"{formattedReportingYears} reporting year",
-                Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
-            },
-            new CrumbViewModel
-            {
-                Text = "Report figures"
-            }
-        };
-    }
-
-    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    @await Html.GovUkBackLink(new BackLinkViewModel
     {
-        Crumbs = crumbs
-    }))
+        Text = "Back",
+        Href = @Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", new {encryptedOrganisationId, Model.ReportingYear})
+    })
 }
 
 <form method="post" action="@Url.Action("ReportFiguresPost", "ReportFigures", new { encryptedOrganisationId, reportingYear = Model.ReportingYear })">
@@ -59,11 +35,14 @@
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        Enter your gender pay gap data for snapshot date @(Model.SnapshotDate.ToString("dd MMMM yyyy"))
+                    <span class="govuk-caption-l">Step 2 of 5</span>
+                    <h1 class="govuk-heading-xl">
+                        Enter gender pay gap data
                     </h1>
-                    
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-4 govuk-!-font-weight-regular">Reporting as @(Model.Organisation.OrganisationName)</h2>
+                    <span class="govuk-heading-m govuk-!-font-weight-regular">For @(Model.Organisation.OrganisationName)</span>
+                    <div class="govuk-inset-text gpg-govuk-inset-text">
+                        Reporting for Snapshot date <span class="govuk-!-font-weight-bold">@Model.SnapshotDate.ToString("dd MMMM yyyy")</span>
+                    </div>
                 </legend>
             </fieldset>
         </div>
@@ -71,16 +50,11 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <p class="govuk-body">For differences in hourly pay and bonus pay, a positive <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid more than women in your organisation.</p>
-            <p class="govuk-body">A negative <span aria-hidden="true" aria-label="percentage">%</span> indicates that men in your organisation are paid less than women in your organisation.</p>
-
-            <p class="govuk-body govuk-!-font-weight-bold">
-                Please enter your data to 1 decimal point.
-            </p>
-                
-            <fieldset id="PayQuartersFieldset" class="govuk-fieldset govuk-!-margin-top-8">
+            <fieldset id="HourlyPayFieldset" class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h3 class="govuk-fieldset__heading">Percentage of men and women in each hourly pay quarter</h3>
+                    <h2 class="govuk-heading-l">Hourly pay</h2>
+                    <h3 class="govuk-heading-s">The difference</h3>
+                    <p class="govuk-caption-m">If women in your organisation are paid more than men, include a negative percentage figure – for example -12%.</p>
                 </legend>
                 
                 
@@ -105,13 +79,52 @@
                 @{
                     string payQuartersDisplay = Model.OptedOutOfReportingPayQuarters ? "none" : "block";
                     Func<object, object> percentageText = @<text>
-                                                              <span class="govuk-label govuk-!-margin-left-1" style="display: inline">%</span>
+                                                              <span class="govuk-label govuk-!-margin-left-1 govuk-!-display-inline">%</span>
                                                            </text>;
-                    
-                    
+
+                    @(await Html.GovUkTextInputFor(
+                        m => m.DiffMeanHourlyPayPercent,
+                        new LabelViewModel
+                        {
+                            Html = @<text>
+                                       Enter the difference in <span class="govuk-!-font-weight-bold">mean</span> hourly pay
+                                    </text>
+                        },
+                        classes: "govuk-input--width-10",
+                        textInputAppendix: new TextInputAppendixViewModel
+                        {
+                            Html = percentageText
+                        }
+                        ))
+
+                    @(await Html.GovUkTextInputFor(
+                        m => m.DiffMedianHourlyPercent,
+                        new LabelViewModel
+                        {
+                            Html = @<text>
+                                       Enter the difference in <span class="govuk-!-font-weight-bold">median </span>hourly pay
+                                    </text>
+                        },
+                        classes: "govuk-input--width-10",
+                        textInputAppendix: new TextInputAppendixViewModel
+                        {
+                            Html = percentageText
+                        }
+                        ))
+
                     <div id="PayQuarters" style="display: @payQuartersDisplay">
                         <h3 class="govuk-heading-s">Upper hourly pay quarter</h3>
-
+                        
+                        @(await Html.GovUkTextInputFor(
+                               m => m.FemaleUpperPayBand,
+                               new LabelViewModel {Text = "Women"},
+                               classes: "govuk-input--width-10",
+                            textInputAppendix: new TextInputAppendixViewModel
+                            {
+                                Html = percentageText
+                            }
+                            ))
+                        
                         @(await Html.GovUkTextInputFor(
                             m => m.MaleUpperPayBand,
                             new LabelViewModel {Text = "Men"},
@@ -121,29 +134,9 @@
                                 Html = percentageText
                             }
                             ))
-
-                        @(await Html.GovUkTextInputFor(
-                            m => m.FemaleUpperPayBand,
-                            new LabelViewModel {Text = "Women"},
-                            classes: "govuk-input--width-10",
-                            textInputAppendix: new TextInputAppendixViewModel
-                            {
-                                Html = percentageText
-                            }
-                            ))
-
+                        
                         <h3 class="govuk-heading-s">Upper middle hourly pay quarter</h3>
-
-                        @(await Html.GovUkTextInputFor(
-                            m => m.MaleUpperMiddlePayBand,
-                            new LabelViewModel {Text = "Men"},
-                            classes: "govuk-input--width-10",
-                            textInputAppendix: new TextInputAppendixViewModel
-                            {
-                                Html = percentageText
-                            }
-                            ))
-
+                        
                         @(await Html.GovUkTextInputFor(
                             m => m.FemaleUpperMiddlePayBand,
                             new LabelViewModel {Text = "Women"},
@@ -153,11 +146,9 @@
                                 Html = percentageText
                             }
                             ))
-
-                        <h3 class="govuk-heading-s">Lower middle hourly pay quarter</h3>
-
+                        
                         @(await Html.GovUkTextInputFor(
-                            m => m.MaleLowerMiddlePayBand,
+                            m => m.MaleUpperMiddlePayBand,
                             new LabelViewModel {Text = "Men"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
@@ -165,6 +156,8 @@
                                 Html = percentageText
                             }
                             ))
+                        
+                        <h3 class="govuk-heading-s">Lower middle hourly pay quarter</h3>
 
                         @(await Html.GovUkTextInputFor(
                             m => m.FemaleLowerMiddlePayBand,
@@ -175,11 +168,9 @@
                                 Html = percentageText
                             }
                             ))
-
-                        <h3 class="govuk-heading-s">Lower hourly pay quarter</h3>
-
+                        
                         @(await Html.GovUkTextInputFor(
-                            m => m.MaleLowerPayBand,
+                            m => m.MaleLowerMiddlePayBand,
                             new LabelViewModel {Text = "Men"},
                             classes: "govuk-input--width-10",
                             textInputAppendix: new TextInputAppendixViewModel
@@ -187,6 +178,8 @@
                                 Html = percentageText
                             }
                             ))
+                        
+                        <h3 class="govuk-heading-s">Lower hourly pay quarter</h3>
 
                         @(await Html.GovUkTextInputFor(
                             m => m.FemaleLowerPayBand,
@@ -197,88 +190,72 @@
                                 Html = percentageText
                             }
                             ))
+                        
+                        @(await Html.GovUkTextInputFor(
+                            m => m.MaleLowerPayBand,
+                            new LabelViewModel {Text = "Men"},
+                            classes: "govuk-input--width-10",
+                            textInputAppendix: new TextInputAppendixViewModel
+                            {
+                                Html = percentageText
+                            }
+                            ))
+                        
                     </div>
                 }
             </fieldset>
-
-            <fieldset id="HourlyPayFieldset" class="govuk-fieldset govuk-!-margin-top-8">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h3 class="govuk-fieldset__heading">Mean gender pay gap using hourly pay</h3>
-                </legend>
-
-                @(await Html.GovUkTextInputFor(
-                    m => m.DiffMeanHourlyPayPercent,
-                    new LabelViewModel {Text = "Enter the difference in mean hourly pay"},
-                    classes: "govuk-input--width-10",
-                    textInputAppendix: new TextInputAppendixViewModel
-                    {
-                        Html = percentageText
-                    }
-                    ))
-
-                @(await Html.GovUkTextInputFor(
-                    m => m.DiffMedianHourlyPercent,
-                    new LabelViewModel {Text = "Enter the difference in median hourly pay"},
-                    classes: "govuk-input--width-10",
-                    textInputAppendix: new TextInputAppendixViewModel
-                    {
-                        Html = percentageText
-                    }
-                    ))
-
-            </fieldset>
-
+        
             <fieldset id="BonusPayFieldset" class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h3 class="govuk-fieldset__heading">Percentage of men and women who received bonus pay</h3>
+                    <h2 class="govuk-heading-l">Bonus pay</h2>
+                    <h3 class="govuk-heading-s">The difference</h3>
+                    <p class="govuk-caption-m">If women in your organisation are paid more than men, include a negative percentage figure – for example -12%.</p>
                 </legend>
-
-                @(await Html.GovUkTextInputFor(
-                    m => m.MaleBonusPayPercent,
-                    new LabelViewModel {Text = "Percentage of men who received a bonus"},
-                    classes: "govuk-input--width-10",
-                    textInputAppendix: new TextInputAppendixViewModel
-                    {
-                        Html = percentageText
-                    }
-                    ))
-
-                @(await Html.GovUkTextInputFor(
-                    m => m.FemaleBonusPayPercent,
-                    new LabelViewModel {Text = "Percentage of women who received a bonus"},
-                    classes: "govuk-input--width-10",
-                    textInputAppendix: new TextInputAppendixViewModel
-                    {
-                        Html = percentageText
-                    }
-                    ))
-
-            </fieldset>
-
-            <fieldset id="MeanBonusFieldset" class="govuk-fieldset govuk-!-margin-top-8">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h3 class="govuk-fieldset__heading">Mean gender pay gap using bonus pay</h3>
-                </legend>
-
+                
                 @(await Html.GovUkTextInputFor(
                     m => m.DiffMeanBonusPercent,
-                    new LabelViewModel {Text = "Enter the difference in mean bonus pay"},
+                    new LabelViewModel
+                    {
+                        Html = @<text>
+                                   Enter the difference in <span class="govuk-!-font-weight-bold">mean</span> bonus pay
+                                </text>
+                    },
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
                         Html = percentageText
                     }
                     ))
-            </fieldset>
-
-            <fieldset id="MedianBonusFieldset" class="govuk-fieldset govuk-!-margin-top-8">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h3 class="govuk-fieldset__heading">Median gender pay gap using bonus pay</h3>
-                </legend>
-
                 @(await Html.GovUkTextInputFor(
                     m => m.DiffMedianBonusPercent,
-                    new LabelViewModel {Text = "Enter the difference in median bonus pay"},
+                    new LabelViewModel
+                    {
+                        Html = @<text>
+                                   Enter the difference in <span class="govuk-!-font-weight-bold">median</span> bonus pay
+                                </text>
+                    },
+                    classes: "govuk-input--width-10 govuk-!-margin-bottom-3",
+                    textInputAppendix: new TextInputAppendixViewModel
+                    {
+                        Html = percentageText
+                    }
+                    ))
+                
+                <h3 class="govuk-heading-s">Percentage who recieved bonus pay</h3>
+                
+                @(await Html.GovUkTextInputFor(
+                            m => m.FemaleBonusPayPercent,
+                            new LabelViewModel {Text = "Women"},
+                            classes: "govuk-input--width-10",
+                            textInputAppendix: new TextInputAppendixViewModel
+                            {
+                                Html = percentageText
+                            }
+                            ))
+                
+                @(await Html.GovUkTextInputFor(
+                    m => m.MaleBonusPayPercent,
+                    new LabelViewModel {Text = "Men"},
                     classes: "govuk-input--width-10",
                     textInputAppendix: new TextInputAppendixViewModel
                     {
@@ -286,7 +263,7 @@
                     }
                     ))
             </fieldset>
-            
+        
             <p class="govuk-body">
                 Selecting continue will save a draft of your gender pay gap figures. 
                 You will be able to review and edit before submitting your gender pay gap information.
@@ -295,7 +272,7 @@
             @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
-                Classes = "govuk-!-margin-bottom-6"
+                Classes = "govuk-!-margin-bottom-6 govuk-!-margin-top-4"
             }))
 
             <p class="govuk-body">
