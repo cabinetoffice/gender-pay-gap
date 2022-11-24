@@ -35,11 +35,11 @@
 
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h2 class="govuk-caption-l">Step 2 of 5</h2>
+                    <span class="govuk-caption-l">Step 2 of 5</span>
                     <h1 class="govuk-heading-xl">
-                        Enter your gender pay gap data
+                        Enter gender pay gap data
                     </h1>
-                    <h2 class="govuk-heading-m govuk-!-font-weight-regular">For @(Model.Organisation.OrganisationName)</h2>
+                    <span class="govuk-heading-m govuk-!-font-weight-regular">For @(Model.Organisation.OrganisationName)</span>
                     <div class="govuk-inset-text gpg-govuk-inset-text">
                         Reporting for Snapshot date <span class="govuk-!-font-weight-bold">@Model.SnapshotDate.ToString("dd MMMM yyyy")</span>
                     </div>
@@ -79,7 +79,7 @@
                 @{
                     string payQuartersDisplay = Model.OptedOutOfReportingPayQuarters ? "none" : "block";
                     Func<object, object> percentageText = @<text>
-                                                              <span class="govuk-label govuk-!-margin-left-1" style="display: inline">%</span>
+                                                              <span class="govuk-label govuk-!-margin-left-1 govuk-!-display-inline">%</span>
                                                            </text>;
 
                     @(await Html.GovUkTextInputFor(
