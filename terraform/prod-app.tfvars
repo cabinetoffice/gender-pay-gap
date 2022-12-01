@@ -14,8 +14,8 @@ rds_config_multi_az       = true
 
 elb_deployment_policy = "RollingWithAdditionalBatch"
 elb_instance_max_size = 4
-elb_instance_min_size = 1
-elb_instance_type     = "t2.medium"
+elb_instance_min_size = 2
+elb_instance_type     = "t2.large"
 
 #endregion
 
