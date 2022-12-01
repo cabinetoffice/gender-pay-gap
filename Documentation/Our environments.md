@@ -3,13 +3,13 @@
 The Gender Pay gap service currently has 3 environments:
 
 * **Development (Dev)**  
-  https://gender-pay-gap-dev.london.cloudapps.digital  
-  Each commit to the `master` branch deploys to Dev.  
+  https://dev.gender-pay-gap.service.gov.uk 
+  Each commit to the `main` branch deploys to Dev.  
   This is mainly used by developers - expect it to be broken some of the time.  
-  This is where the Delivery Manager and Product Owner do some initial testing.
+  This is where the Delivery Manager does some initial testing.
 
 * **Pre-Production (PreProd)**  
-  https://gender-pay-gap-preprod.london.cloudapps.digital  
+  https://preprod.gender-pay-gap.service.gov.uk  
   This is where we do our final set of testing before pushing changes to Live
 
 * **Production / Live (Prod)**  

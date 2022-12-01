@@ -36,4 +36,3 @@ Install the following software:
 * Node Package Manger (NPM) (comes with Node.js)  
   [Download Node.js & npm](https://nodejs.org/en/download/)  
   If you're using Windows, you probably want to download the LTS installer from that page
-

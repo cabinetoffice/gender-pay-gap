@@ -7,8 +7,10 @@ The code:
 * Write access to this GitHub repository  
   Normally granted by adding you to the
   [Gender Pay Gap GitHub team](https://github.com/orgs/cabinetoffice/teams/gender-pay-gap)
-* Zoho
-  All the secrets are stored in Zoho in the GPG chamber
+* Keeper
+  All the secrets are stored in Keeper in the GPG chamber
+* AWS
+  Ask the CM or another AWS administrator to give you access to the Preproduction and Production AWS accounts
 
 Services that the Gender Pay Gap service depends on:
 * [Gov.UK Notify](https://www.notifications.service.gov.uk/)  
@@ -28,8 +30,7 @@ Deploying / hosting the service:
   that you'll need to be added to
 
 Monitoring the service:
-* We use [Logit.io](https://logit.io/) for logging
-* We use [Grafana](https://gpg-grafana.london.cloudapps.digital/) for metrics / monitoring
+* We use AWS Cloudwatch for logging and monitoring.
 
 Project tools:
 * [Jira](https://technologyprogramme.atlassian.net/browse/GPG)  
