@@ -36,3 +36,10 @@ Install the following software:
 * Node Package Manger (NPM) (comes with Node.js)  
   [Download Node.js & npm](https://nodejs.org/en/download/)  
   If you're using Windows, you probably want to download the LTS installer from that page
+
+* Terraform v1.3+ - 
+  You can find installation instructions [here]('https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli')
+  If you are installing Terraform using the binary, make sure you have added Terraform to your path (as described above)
+
+* AWS CLI v2
+  You can find installation instructions [here]('https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html'). You will need to configure the AWS CLI with the credentials given to you by the your AWS administrator

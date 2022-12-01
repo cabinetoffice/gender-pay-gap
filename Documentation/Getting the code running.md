@@ -47,7 +47,7 @@ Run the code:
 
 Populate the database:
 * Create yourself 2 accounts (employer account & admin account) on the Dev environment  
-  ['Create an account' page on the Dev environment](https://gender-pay-gap-dev.london.cloudapps.digital/create-user-account)  
+  ['Create an account' page on the Dev environment](https://dev.gender-pay-gap.service.gov.uk/create-user-account)  
   **Note:** see ['Our environments' page](Our%20environments.md) for details about the username/password prompt
   * Sign up for an account
   * Ask an existing developer to send you the email verify link. Alternatively, if you're a Softwire developer, check the "Finding the email verify link" section [here](https://softwiretech.atlassian.net/wiki/spaces/LAX/pages/8989377266/GPG+Zero+to+Hero).
@@ -62,7 +62,7 @@ Populate the database:
     Note: this page is only visible to admins, or when the database is empty  
     Note: this page works better in Chrome than in Firefox
   * Fill in the form:
-    * Hostname of remote server: `gender-pay-gap-dev.london.cloudapps.digital` (without https://)
+    * Hostname of remote server: `dev.gender-pay-gap.service.gov.uk` (without https://)
     * Passwords: ask an existing developer for these. Alternatively, if you're a Softwire developer, check the "How to access the dev site" section [here](https://softwiretech.atlassian.net/wiki/spaces/LAX/pages/8989377266/GPG+Zero+to+Hero).
     * The database migration password is stored in `appsettings.secrets.json`
   * Click the scary red button
@@ -70,4 +70,3 @@ Populate the database:
   * The database should now be fully populated and ready to use
   * You can now login using the accounts you just created in the Dev environment  
     The credentials will be exactly the same as in Dev (because we just copied the whole Dev database to your local machine)
-
