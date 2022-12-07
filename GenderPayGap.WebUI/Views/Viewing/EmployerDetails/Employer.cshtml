@@ -155,6 +155,8 @@
                                                             </p>
                                                         break;
                                                     case ReportStatusBadgeType.Reported:
+                                                    case ReportStatusBadgeType.SubmittedLate:
+                                                    case ReportStatusBadgeType.VoluntarilyReported:
                                                             <a style="font-size: 19px !important;" href="@(Url.Action("Report", new {employerIdentifier, year = report.AccountingDate.Year}))">
                                                                 View report <span class="visually-hidden">for @report.GetReportingPeriod()</span>
                                                             </a>
@@ -238,6 +240,8 @@
                                                         </p>
                                                         break;
                                                     case ReportStatusBadgeType.Reported:
+                                                    case ReportStatusBadgeType.SubmittedLate:
+                                                    case ReportStatusBadgeType.VoluntarilyReported:
                                                         <div class="govuk-grid-column-full govuk-!-padding-left-0 govuk-!-padding-right-0">
                                                             <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
                                                                 <p class="govuk-body">
