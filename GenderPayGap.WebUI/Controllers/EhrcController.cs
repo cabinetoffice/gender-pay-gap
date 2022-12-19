@@ -20,6 +20,7 @@ namespace GenderPayGap.WebUI.Controllers
             string p
             /* The EHRC are given URLs of the form:
                https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations_2017-18.csv
+               https://gender-pay-gap.service.gov.uk/download?p=App_Data\Downloads\GPG-Organisations-Without-Reports_2017-18.csv
                So this query parameter 'p' is of the form
                App_Data\Downloads\GPG-Organisations_2017-18.csv
 
@@ -42,12 +43,12 @@ namespace GenderPayGap.WebUI.Controllers
 
             var OrganisationsWithoutReportsYear = ValidatePath(
                 p,
-                "GPG-Organisations",
+                "GPG-Organisations-Without-Reports",
                 Global.FirstReportingYear);
 
             if (OrganisationsWithoutReportsYear != null)
             {
-                return AdminDownloadsController.GenerateOrganisationsWithNoSubmittedReturnsForYear(dataRepository ,(int)OrganisationsWithoutReportsYear, true);
+                return AdminDownloadsController.GenerateOrganisationsWithNoSubmittedReturnsForYear(dataRepository, (int)OrganisationsWithoutReportsYear, true);
             }
 
             return NotFound();
