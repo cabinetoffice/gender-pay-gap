@@ -144,18 +144,6 @@
     </None>
   </ItemGroup>
 
-  <!-- *** THIS IS REQUIRED TO TRANSFORM Web.Config on publish *** -->
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.DotNet.Xdt.Tools" Version="2.0.0" />
-  </ItemGroup>
-  <Target Name="ApplyXdtConfigTransform" BeforeTargets="_TransformWebConfig">
-    <PropertyGroup>
-      <_SourceWebConfig>$(MSBuildThisFileDirectory)Web.config</_SourceWebConfig>
-      <_XdtTransform>$(MSBuildThisFileDirectory)Web.$(Configuration).config</_XdtTransform>
-      <_TargetWebConfig>$(PublishDir)Web.config</_TargetWebConfig>
-    </PropertyGroup>
-    <Exec Command="dotnet transform-xdt --xml &quot;$(_SourceWebConfig)&quot; --transform &quot;$(_XdtTransform)&quot; --output &quot;$(_TargetWebConfig)&quot;" Condition="Exists('$(_XdtTransform)')" />
-  </Target>
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
   </ItemGroup>
