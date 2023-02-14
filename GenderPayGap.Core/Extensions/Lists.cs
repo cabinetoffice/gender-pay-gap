@@ -5,8 +5,7 @@ using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
 using System.Net;
-using System.Xml.Serialization;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
 
@@ -113,7 +112,7 @@ namespace GenderPayGap.Extensions
 
         public static NameValueCollection FromQueryString(this string querystring)
         {
-            return string.IsNullOrWhiteSpace(querystring) ? null : QueryHelpers.ParseNullableQuery(querystring).ToNameValueCollection();
+            return string.IsNullOrWhiteSpace(querystring) ? null : HttpUtility.ParseQueryString(querystring);
         }
 
         public static NameValueCollection ToNameValueCollection(this Dictionary<string, StringValues> dictionary)

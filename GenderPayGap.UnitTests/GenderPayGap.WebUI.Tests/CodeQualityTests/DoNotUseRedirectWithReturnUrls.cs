@@ -16,16 +16,16 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
         {
             var excludedFilesAndFolders = new List<string>
             {
-                @"GenderPayGap.UnitTests\GenderPayGap.WebUI.Tests\CodeQualityTests\DoNotUseRedirectWithReturnUrls.cs", // This file!
-                @"GenderPayGap.WebUI\bin", // Output folder
-                @"GenderPayGap.WebUI\obj" // Output folder
+                Path.Combine("GenderPayGap.UnitTests", "GenderPayGap.WebUI.Tests", "CodeQualityTests", "DoNotUseRedirectWithReturnUrls.cs"), // This file!
+                Path.Combine("GenderPayGap.WebUI", "bin"), // Output folder
+                Path.Combine("GenderPayGap.WebUI", "obj") // Output folder
             };
 
             // Arrange
             string rootCodeFolder = CodeQualityTestHelpers.GetRootCodeFolder();
 
             // Pre-Act Assert (to check we're running the test on the right folder)
-            Assert.That(File.Exists($"{rootCodeFolder}\\GenderPayGap.sln"), $"We expect to find a file [GenderPayGap.sln] in the root folder [{rootCodeFolder}]");
+            Assert.That(File.Exists(Path.Combine(rootCodeFolder, "GenderPayGap.sln")), $"We expect to find a file [GenderPayGap.sln] in the root folder [{rootCodeFolder}]");
 
             // More Arrange
             string searchPattern = "*.cs*" /* We want to find .cs and .cshtml files */;

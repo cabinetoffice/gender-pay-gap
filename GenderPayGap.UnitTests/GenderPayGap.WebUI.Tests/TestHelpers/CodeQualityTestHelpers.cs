@@ -13,7 +13,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             Console.WriteLine($"compiledDllFilename is [{compiledDllFilename}]");
             string compiledDllDirectory = new FileInfo(compiledDllFilename).Directory.FullName;
 
-            string rootCodeFolder = new DirectoryInfo($"{compiledDllDirectory}\\..\\..\\..\\..\\..\\").FullName;
+            string rootCodeFolder = new DirectoryInfo(Path.Combine(compiledDllDirectory, "..", "..", "..", "..", "..")).FullName;
             return rootCodeFolder;
         }
 
@@ -21,7 +21,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
         {
             foreach (string excludedFilePath in excludedFilesAndFolders)
             {
-                if (filePathSuffix.StartsWith(excludedFilePath))
+                if (filePathSuffix.StartsWith(excludedFilePath) || filePathSuffix.StartsWith($"{Path.DirectorySeparatorChar}{excludedFilePath}"))
                 {
                     return true;
                 }

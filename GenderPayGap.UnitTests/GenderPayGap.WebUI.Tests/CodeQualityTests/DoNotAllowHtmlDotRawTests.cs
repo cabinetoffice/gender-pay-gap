@@ -15,21 +15,21 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
         {
             var excludedFilesAndFolders = new List<string>
             {
-                @"GenderPayGap.UnitTests\GenderPayGap.WebUI.Tests\CodeQualityTests\DoNotAllowHtmlDotRawTests.cs", // This file!
-                @"GenderPayGap.WebUI\bin", // Output folder
-                @"GenderPayGap.WebUI\obj", // Output folder
-                @"GenderPayGap.WebUI\Views\Shared\CustomError.cshtml", // We can change this once we have moved all the pages across to the new Design System
-                @"GenderPayGap.WebUI\Views\Shared\Error.cshtml", // We can change this once we have moved all the pages across to the new Design System
-                @"GenderPayGap.WebUI\Views\Shared\Patterns\CheckYourAnswers.cshtml", // This should disappear when we re-write the Submit journey
-                @"GenderPayGap.WebUI\Views\Shared\Patterns\ErrorSummary.cshtml", // This should disappear when we re-write the Submit journey
-                @"GovUkDesignSystem" // This uses Html.Raw for Attributes - TODO we should try to work out a better way of doing this
+                Path.Combine("GenderPayGap.UnitTests", "GenderPayGap.WebUI.Tests", "CodeQualityTests", "DoNotAllowHtmlDotRawTests.cs"), // This file!
+                Path.Combine("GenderPayGap.WebUI", "bin"), // Output folder
+                Path.Combine("GenderPayGap.WebUI", "obj"), // Output folder
+                Path.Combine("GenderPayGap.WebUI", "Views", "Shared", "CustomError.cshtml"), // We can change this once we have moved all the pages across to the new Design System
+                Path.Combine("GenderPayGap.WebUI", "Views", "Shared", "Error.cshtml"), // We can change this once we have moved all the pages across to the new Design System
+                Path.Combine("GenderPayGap.WebUI", "Views", "Shared", "Patterns", "CheckYourAnswers.cshtml"), // This should disappear when we re-write the Submit journey
+                Path.Combine("GenderPayGap.WebUI", "Views", "Shared", "Patterns", "ErrorSummary.cshtml"), // This should disappear when we re-write the Submit journey
+                Path.Combine("GovUkDesignSystem") // This uses Html.Raw for Attributes - TODO we should try to work out a better way of doing this
             };
 
             // Arrange
             string rootCodeFolder = CodeQualityTestHelpers.GetRootCodeFolder();
 
             // Pre-Act Assert (to check we're running the test on the right folder)
-            Assert.That(File.Exists($"{rootCodeFolder}\\GenderPayGap.sln"), $"We expect to find a file [GenderPayGap.sln] in the root folder [{rootCodeFolder}]");
+            Assert.That(File.Exists(Path.Combine(rootCodeFolder, "GenderPayGap.sln")), $"We expect to find a file [GenderPayGap.sln] in the root folder [{rootCodeFolder}]");
 
             // More Arrange
             string searchPattern = "*.cs*" /* We want to find .cs and .cshtml files */;

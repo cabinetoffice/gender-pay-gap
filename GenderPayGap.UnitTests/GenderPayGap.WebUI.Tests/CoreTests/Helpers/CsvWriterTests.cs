@@ -17,7 +17,7 @@ namespace GenderPayGap.Core.Tests.Helpers
         {
             // Arrange
             var value = character + "test";
-            var expectedCsvRow = "\t" + character + "test\r\n";
+            var expectedCsvRow = "\t" + character + $"test{System.Environment.NewLine}";
 
             // Act
             var actualCsvRow = CsvWriter.Write(WriteValue(value));
@@ -31,7 +31,7 @@ namespace GenderPayGap.Core.Tests.Helpers
         {
             // Arrange
             var value = -10.2;
-            var expectedCsvRow = "-10.2\r\n";
+            var expectedCsvRow = $"-10.2{System.Environment.NewLine}";
 
             // Act
             var actualCsvRow = CsvWriter.Write(WriteValue(value));
@@ -45,7 +45,7 @@ namespace GenderPayGap.Core.Tests.Helpers
         {
             // Arrange
             var value = "Test - string that doesn't start with an injection character";
-            var expectedCsvRow = "Test - string that doesn't start with an injection character\r\n";
+            var expectedCsvRow = $"Test - string that doesn't start with an injection character{System.Environment.NewLine}";
 
             // Act
             var actualCsvRow = CsvWriter.Write(WriteValue(value));
