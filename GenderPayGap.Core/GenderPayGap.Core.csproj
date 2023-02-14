@@ -44,6 +44,7 @@
 
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
 
+    <PackageReference Include="Sentry" Version="3.28.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,4 +69,7 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Sentry" />
+  </ItemGroup>
 </Project>

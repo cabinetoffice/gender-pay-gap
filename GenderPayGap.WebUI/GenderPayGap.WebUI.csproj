@@ -28,6 +28,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Remove="Sentry" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Views\Shared\Patterns\ManageOrganisationBreadcrumbs.cshtml" />
     <None Include="wwwroot\assets\javascripts\application.min.js" />
     <None Include="wwwroot\assets\stylesheets\application.min.css" />
@@ -113,6 +116,7 @@
     <PackageReference Include="StackExchange.Redis" Version="2.1.58" />
 
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.1.8" />
+    <PackageReference Include="Sentry" Version="3.28.1" />
   </ItemGroup>
   
   <ItemGroup>

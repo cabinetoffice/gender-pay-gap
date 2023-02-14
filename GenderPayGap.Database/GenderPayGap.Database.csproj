@@ -27,10 +27,14 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.Network" Version="2.0.2.68" />
+    <PackageReference Include="Sentry" Version="3.28.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Sentry" />
+  </ItemGroup>
 </Project>
