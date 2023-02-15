@@ -76,7 +76,10 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
   lifecycle {
     prevent_destroy = false // QQ turn to true when live
   }
-  
+
+  // See this documentation for all the available settings
+  // https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html
+
   // Deployment strategy
   setting {
     namespace = "aws:elasticbeanstalk:command"
@@ -198,6 +201,61 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     name      = "MinSize"
     value     = var.elb_instance_min_size
   }
+
+  // Auto-scaling Triggers
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "MeasureName"
+    value     = "CPUUtilization"
+  }
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "Statistic"
+    value     = "Average"
+  }
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "Unit"
+    value     = "Percent"
+  }
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "Period"
+    value     = 1  // Time (in minutes) between checks
+                   // Note: remember to update the other settings
+  }                // BreachDuration = Period * EvaluationPeriods
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "EvaluationPeriods"
+    value     = 3  // Number of consecutive checks that must be too high/low to trigger a scaling action
+                   // Note: remember to update the other settings
+  }                // BreachDuration = Period * EvaluationPeriods
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "BreachDuration"
+    value     = 3  // How long (in minutes) must the checks be toon high/low before scaling up/down
+                   // Note: remember to update the other settings
+  }                // BreachDuration = Period * EvaluationPeriods
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "UpperThreshold"
+    value     = 80  // If the CPU % stays above this level, we scale up
+  }
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "UpperBreachScaleIncrement"
+    value     = 1  // How many instances to add when we scale up
+  }
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "LowerThreshold"
+    value     = 50  // If the CPU % stays below this level, we scale down
+  }
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "LowerBreachScaleIncrement"
+    value     = -1  // How many instances to ADD when we scale down
+  }                 // (this needs to be a negative number so we scale down!)
 
   // Elastic beanstalk static assets config
   setting {
