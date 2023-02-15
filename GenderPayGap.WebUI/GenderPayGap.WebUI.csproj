@@ -117,6 +117,7 @@
 
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.1.8" />
     <PackageReference Include="Sentry" Version="3.28.1" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.28.1" />
   </ItemGroup>
   
   <ItemGroup>
