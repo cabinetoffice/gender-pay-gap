@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -13,7 +13,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly IDataRepository dataRepository;
         private readonly IFileRepository fileRepository;
-        private const string HealthCheckFileName = "HealthCheckFile.txt";
+        private readonly string healthCheckFileName = $"HealthCheckFile-{System.Environment.MachineName}.txt";
 
         public HealthCheckController(
             IDataRepository dataRepository,
@@ -48,9 +48,9 @@ namespace GenderPayGap.WebUI.Controllers
         {
             string guid = Guid.NewGuid().ToString("N");
 
-              fileRepository.Write(HealthCheckFileName, guid);
+              fileRepository.Write(healthCheckFileName, guid);
 
-              string fileContents = fileRepository.Read(HealthCheckFileName);
+              string fileContents = fileRepository.Read(healthCheckFileName);
 
               if (fileContents != guid)
               {
