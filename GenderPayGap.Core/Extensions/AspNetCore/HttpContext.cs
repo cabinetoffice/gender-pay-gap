@@ -90,11 +90,6 @@ namespace System.Web
             }
         }
 
-        public static string GetUserHostAddress(this Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            return context.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
-        }
-
         #region Cookies
 
         public static string GetRequestCookieValue(this Microsoft.AspNetCore.Http.HttpContext context, string key)

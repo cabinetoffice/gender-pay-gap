@@ -158,7 +158,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             httpContextMock.SetupGet(ctx => ctx.Request.Query).Returns(query);
             httpContextMock.SetupGet(ctx => ctx.Request.HttpContext).Returns(httpContextMock.Object);
             //contextMock.SetupGet(ctx => ctx.Request.GetUri()).Returns(Uri);
-            //contextMock.Setup(ctx => ctx.GetUserHostAddress()).Returns("127.0.0.1");
             httpContextMock.SetupGet(ctx => ctx.Request.Scheme).Returns(uri.Scheme);
             httpContextMock.SetupGet(ctx => ctx.Request.Host).Returns(new HostString(uri.Host, uri.Port));
             httpContextMock.SetupGet(ctx => ctx.Request.Path).Returns(uri.Path);
