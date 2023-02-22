@@ -267,9 +267,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             ViewBag.ReturnUrl = Url.Action("CompareEmployers", new {year});
 
-            //Clear the default back url of the employer hub pages
-            ReportBackUrl = null;
-
             //Get the compare basket organisations
             IEnumerable<CompareReportModel> compareReports = OrganisationBusinessLogic.GetCompareData(
                 CompareViewService.ComparedEmployers.Value.AsEnumerable(),
@@ -332,15 +329,11 @@ namespace GenderPayGap.WebUI.Controllers
             string args = command.AfterFirst(":");
             command = command.BeforeFirst(":");
 
-            //Clear the default back url of the employer hub pages
-            ReportBackUrl = null;
-
             switch (command.ToLower())
             {
                 case "employer":
                     return RedirectToAction(nameof(ViewingController.Employer), "Viewing", new {employerIdentifier = args});
                 case "report":
-                    ReportBackUrl = RequestUrl.PathAndQuery;
                     return RedirectToAction(nameof(ViewingController.Report), "Viewing", new {employerIdentifier = args, year});
             }
 

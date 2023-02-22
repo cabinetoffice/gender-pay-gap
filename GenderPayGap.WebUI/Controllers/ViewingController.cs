@@ -100,9 +100,6 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/")]
         public IActionResult Index()
         {
-            //Clear the default back url of the employer hub pages
-            ReportBackUrl = null;
-            
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
             {
                 return View("Launchpad/PrototypeIndex");
@@ -144,9 +141,6 @@ namespace GenderPayGap.WebUI.Controllers
                 }
             }
 
-            //Clear the default back url of the employer hub pages
-            ReportBackUrl = null;
-
             // ensure parameters are valid
             if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
             {
@@ -170,10 +164,6 @@ namespace GenderPayGap.WebUI.Controllers
         // used to generate suggestions for the search on the landing page 
         public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
         {
-            //Clear the default back url of the employer hub pages
-            ReportBackUrl = null;
-
-
             // ensure parameters are valid
             if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
             {
@@ -315,9 +305,6 @@ namespace GenderPayGap.WebUI.Controllers
                 CustomLogger.Error($"Cannot decrypt return employerIdentifier from '{employerIdentifier}'", ex);
                 return View("CustomError", new ErrorViewModel(400));
             }
-
-            //Clear the default back url of the report page
-            ReportBackUrl = null;
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
             

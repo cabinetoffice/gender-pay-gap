@@ -38,22 +38,6 @@ namespace GenderPayGap.WebUI.Classes
 
         #endregion
 
-        public string ReportBackUrl
-        {
-            get => Session["ReportBackUrl"] as string;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("ReportBackUrl");
-                }
-                else
-                {
-                    Session["ReportBackUrl"] = value;
-                }
-            }
-        }
-
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             # region logic before action goes here
