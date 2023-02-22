@@ -310,7 +310,6 @@ namespace GenderPayGap.WebUI.Controllers
             return View(
                 "CompareEmployers",
                 new CompareViewModel {
-                    LastSearchUrl = SearchViewService.GetLastSearchUrl(),
                     CompareReports = compareReports,
                     CompareBasketCount = CompareViewService.BasketItemCount,
                     ShareEmailUrl =

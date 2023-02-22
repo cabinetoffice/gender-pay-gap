@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GenderPayGap.Core.Helpers;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
 
 namespace GenderPayGap.WebUI.Models
@@ -13,8 +12,6 @@ namespace GenderPayGap.WebUI.Models
         public string YearFormatted => ReportingYearsHelper.FormatYearAsReportingPeriod(Year);
 
         public IEnumerable<CompareReportModel> CompareReports { get; set; }
-
-        public string LastSearchUrl { get; set; }
 
         public int CompareBasketCount { get; set; }
 

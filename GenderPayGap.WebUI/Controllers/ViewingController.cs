@@ -342,7 +342,6 @@ namespace GenderPayGap.WebUI.Controllers
                 "EmployerDetails/Employer",
                 new EmployerDetailsViewModel {
                     Organisation = organisationLoadingOutcome.Result,
-                    LastSearchUrl = SearchViewService.GetLastSearchUrl(),
                     EmployerBackUrl = EmployerBackUrl,
                     ComparedEmployers = CompareViewService.ComparedEmployers.Value,
                     CurrentPage = page,
