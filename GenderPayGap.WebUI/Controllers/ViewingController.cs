@@ -101,7 +101,6 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult Index()
         {
             //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
             ReportBackUrl = null;
             
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
@@ -146,7 +145,6 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
             ReportBackUrl = null;
 
             // ensure parameters are valid
@@ -173,7 +171,6 @@ namespace GenderPayGap.WebUI.Controllers
         public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
         {
             //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
             ReportBackUrl = null;
 
 
@@ -342,7 +339,6 @@ namespace GenderPayGap.WebUI.Controllers
                 "EmployerDetails/Employer",
                 new EmployerDetailsViewModel {
                     Organisation = organisationLoadingOutcome.Result,
-                    EmployerBackUrl = EmployerBackUrl,
                     ComparedEmployers = CompareViewService.ComparedEmployers.Value,
                     CurrentPage = page,
                     TotalPages = totalPages,

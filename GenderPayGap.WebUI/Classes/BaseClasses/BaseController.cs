@@ -38,22 +38,6 @@ namespace GenderPayGap.WebUI.Classes
 
         #endregion
 
-        public string EmployerBackUrl
-        {
-            get => Session["EmployerBackUrl"] as string;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("EmployerBackUrl");
-                }
-                else
-                {
-                    Session["EmployerBackUrl"] = value;
-                }
-            }
-        }
-
         public string ReportBackUrl
         {
             get => Session["ReportBackUrl"] as string;
