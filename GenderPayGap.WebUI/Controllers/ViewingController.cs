@@ -325,7 +325,6 @@ namespace GenderPayGap.WebUI.Controllers
                 "EmployerDetails/Employer",
                 new EmployerDetailsViewModel {
                     Organisation = organisationLoadingOutcome.Result,
-                    ComparedEmployers = CompareViewService.ComparedEmployers.Value,
                     CurrentPage = page,
                     TotalPages = totalPages,
                     EntriesPerPage = maxEntriesPerPage
