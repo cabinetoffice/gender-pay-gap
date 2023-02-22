@@ -174,22 +174,6 @@ namespace GenderPayGap.WebUI.Classes
             set => Session["ReportingOrganisationReportStartYear"] = value;
         }
 
-        public string PendingFasttrackCodes
-        {
-            get => (string) Session["PendingFasttrackCodes"];
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("PendingFasttrackCodes");
-                }
-                else
-                {
-                    Session["PendingFasttrackCodes"] = value;
-                }
-            }
-        }
-
         private Organisation _ReportingOrganisation;
 
         public Organisation ReportingOrganisation
