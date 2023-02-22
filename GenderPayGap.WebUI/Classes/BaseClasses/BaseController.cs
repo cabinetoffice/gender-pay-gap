@@ -163,15 +163,8 @@ namespace GenderPayGap.WebUI.Classes
             set
             {
                 _ReportingOrganisation = null;
-                ReportingOrganisationStartYear = null;
                 Session["ReportingOrganisationId"] = value;
             }
-        }
-
-        public int? ReportingOrganisationStartYear
-        {
-            get => Session["ReportingOrganisationReportStartYear"].ToInt32();
-            set => Session["ReportingOrganisationReportStartYear"] = value;
         }
 
         private Organisation _ReportingOrganisation;
