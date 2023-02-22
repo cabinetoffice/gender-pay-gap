@@ -38,7 +38,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ViewingController(
-            IHttpCache cache,
             IHttpSession session,
             IViewingService viewingService,
             ISearchViewService searchViewService,
@@ -49,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers
             IDataRepository dataRepository,
             IWebTracker webTracker,
             AutoCompleteSearchService autoCompleteSearchService,
-            IFileRepository fileRepository) : base(cache, session, dataRepository, webTracker)
+            IFileRepository fileRepository) : base(session, dataRepository, webTracker)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;

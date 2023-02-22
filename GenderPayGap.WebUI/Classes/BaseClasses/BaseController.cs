@@ -25,14 +25,12 @@ namespace GenderPayGap.WebUI.Classes
         #region Constructors
 
         public BaseController(
-            IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
             IWebTracker webTracker)
         {
             DataRepository = dataRepository;
             WebTracker = webTracker;
-            Cache = cache;
             Session = session;
         }
 
@@ -118,8 +116,6 @@ namespace GenderPayGap.WebUI.Classes
         public IDataRepository DataRepository { get; protected set; }
         public IWebTracker WebTracker { get; }
         
-        public readonly IHttpCache Cache;
-
         public readonly IHttpSession Session;
         #endregion
 

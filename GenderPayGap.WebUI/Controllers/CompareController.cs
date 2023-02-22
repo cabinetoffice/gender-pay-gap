@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Helpers;
@@ -27,13 +26,12 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         public CompareController(
-            IHttpCache cache,
             IHttpSession session,
             ISearchViewService searchViewService,
             ICompareViewService compareViewService,
             IDataRepository dataRepository,
             IOrganisationBusinessLogic organisationBusinessLogic,
-            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
+            IWebTracker webTracker) : base(session, dataRepository, webTracker)
         {
             OrganisationBusinessLogic = organisationBusinessLogic;
             SearchViewService = searchViewService;

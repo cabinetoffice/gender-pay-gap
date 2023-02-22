@@ -301,7 +301,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<CookieController>().InstancePerLifetimeScope();
 
             builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
-            builder.RegisterType<HttpCache>().As<IHttpCache>().SingleInstance();
             builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();
             builder.Register(c => Mock.Of<IHttpContextAccessor>()).As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
