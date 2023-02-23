@@ -67,27 +67,6 @@ resource "aws_wafv2_web_acl" "ehrc" {
   }
 
   rule {
-    name     = "rate-limit"
-    priority = 1
-
-    action {
-      block {}
-    }
-
-    statement {
-      rate_based_statement {
-        limit = 100
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = false
-      metric_name                = "rate-limit-metric"
-      sampled_requests_enabled   = false
-    }
-  }
-
-  rule {
     name     = "ehrc-allowlist"
     priority = 2
 
