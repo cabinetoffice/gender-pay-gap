@@ -2,6 +2,8 @@
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GenderPayGap.Core.Classes
 @model GenderPayGap.WebUI.Models.Report.ReportFiguresViewModel
 
 @{
@@ -17,46 +19,70 @@
 }
 
 @section BeforeMain {
-    @await Html.GovUkBackLink(new BackLinkViewModel
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{formattedReportingYears} Reporting year",
+                Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = "Figures"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
-        Text = "Back",
-        Href = @Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", new {encryptedOrganisationId, Model.ReportingYear})
-    })
+        Crumbs = crumbs
+    }))
 }
 
-<form method="post" action="@Url.Action("ReportFiguresPost", "ReportFigures", new { encryptedOrganisationId, reportingYear = Model.ReportingYear })">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Enter gender pay gap data
+            <br/>
+            <span class="govuk-!-font-size-27 govuk-!-margin-top-3" style="display: inline-block; line-height: 1.3 !important;">
+                Reporting as @(Model.Organisation.OrganisationName)
+                <br/>
+                for snapshot date
+                @(Model.Organisation.SectorType.GetAccountingStartDate(Model.ReportingYear).ToString("d MMMM yyyy"))
+            </span>
+        </h1>
+        
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    
+        <form method="post" action="@Url.Action("ReportFiguresPost", "ReportFigures", new { encryptedOrganisationId, reportingYear = Model.ReportingYear })">
             @(Html.AntiForgeryToken())
-            @{ await Html.RenderPartialAsync("../Components/StatusMessages/StatusMessages", new StatusMessagesViewModel()); }
-            @(await Html.GovUkErrorSummary(ViewData.ModelState))
             @Html.HiddenFor(m => m.IsEditingForTheFirstTime)
 
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <span class="govuk-caption-l">Step 2 of 5</span>
-                    <h1 class="govuk-heading-xl">
-                        Enter gender pay gap data
-                    </h1>
-                    <span class="govuk-heading-m govuk-!-font-weight-regular">For @(Model.Organisation.OrganisationName)</span>
-                    <div class="govuk-inset-text gpg-govuk-inset-text">
-                        Reporting for Snapshot date <span class="govuk-!-font-weight-bold">@Model.SnapshotDate.ToString("d MMMM yyyy")</span>
-                    </div>
-                </legend>
-            </fieldset>
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
             <fieldset id="HourlyPayFieldset" class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h2 class="govuk-heading-l">Hourly pay</h2>
                     <h3 class="govuk-heading-s">The difference</h3>
                     <p class="govuk-caption-m">If women in your organisation are paid more than men, include a negative percentage figure – for example -12%.</p>
                 </legend>
-                
                 
                 @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.ReportingYear))
                 {
@@ -280,11 +306,13 @@
                     Cancel and return to @(Model.Organisation.OrganisationName)
                 </a>
             </p>
-        </div>
-        @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
-    </div>
 
-</form>
+        </form>
+
+    </div>
+    @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
+</div>
+
 
 @section AfterLoadedCompiledScripts {
     <script>
