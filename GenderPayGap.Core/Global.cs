@@ -118,7 +118,7 @@ namespace GenderPayGap.Core
         public static string DownloadsLocation => "Downloads";
         public static string EmployerCodeChars => "123456789ABCDEFGHKLMNPQRSTUXYZ";
         public static string PINChars => "123456789ABCDEF";
-        public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/guidance/gender-pay-gap-who-needs-to-report";
+        public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/who-needs-to-report";
         public static int FirstReportingYear => 2017;
         public static int MinIOThreads => 300;
         public static int MinWorkerThreads => 300;
