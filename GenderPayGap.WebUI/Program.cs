@@ -80,7 +80,10 @@ namespace GenderPayGap.WebUI
 
             SetupSerilogLogger(webHostBuilder);
 
-            webHostBuilder.UseSentry();
+            if (Global.LogToSentry)
+            {
+                webHostBuilder.UseSentry();
+            }
 
             return webHostBuilder.Build();
         }
