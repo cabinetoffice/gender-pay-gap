@@ -1,5 +1,7 @@
 ﻿@using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
+@using GenderPayGap.Core.Classes
+@using GenderPayGap.Extensions
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Report.ReportSizeOfOrganisationViewModel
@@ -17,9 +19,34 @@
 }
 
 @section BeforeMain {
-    @(await Html.GovUkBackLink(new BackLinkViewModel
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{formattedReportingYears} Reporting year",
+                Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = "Number of employees"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
-        Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
+        Crumbs = crumbs
     }))
 }
 
@@ -31,15 +58,16 @@
             @(await Html.GovUkErrorSummary(ViewData.ModelState))
             @Html.HiddenFor(m => m.IsEditingForTheFirstTime)
             
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        What was your employee headcount on your snapshot date?
-                    </h1>
-
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
-                </legend>
-            </fieldset>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                How many employees did you have on your snapshot date?
+                <br/>
+                <span class="govuk-!-font-size-27 govuk-!-margin-top-3" style="display: inline-block; line-height: 1.3 !important;">
+                    Reporting as @(Model.Organisation.OrganisationName)
+                    <br/>
+                    for snapshot date
+                    @(Model.Organisation.SectorType.GetAccountingStartDate(Model.ReportingYear).ToString("d MMMM yyyy"))
+                </span>
+            </h1>
         </div>
     </div>
     
@@ -50,11 +78,10 @@
 
                 <div class="govuk-inset-text">
                     <p>
-                        If you are unsure what type of employees should be included in your headcount, or what your snapshot date is please read the
-                        <a href="https://www.gov.uk/guidance/who-needs-to-report-their-gender-pay-gap#headcount" target="_blank" rel="noopener">
-                            guidance on working out your headcount
-                            <span class="govuk-visually-hidden">(opens in a new window)</span>
-                        </a>.
+                        You can read more about
+                        <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/who-needs-to-report#how-to-work-out-if-you-have-250-or-more-employees"
+                           target="_blank" rel="noopener">
+                            how to work out if you have 250 or more employees (opens in a new tab)</a>.
                     </p>
                 </div>
             </fieldset>
@@ -66,8 +93,9 @@
             }))
 
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">
-                    Cancel and return to @(Model.Organisation.OrganisationName)
+                <a href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+                   class="govuk-link">
+                    Cancel and return to @(formattedReportingYears) report overview
                 </a>
             </p>
         </div>
