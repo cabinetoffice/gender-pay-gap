@@ -2,6 +2,8 @@
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GenderPayGap.Core.Classes
 @model GenderPayGap.WebUI.Models.Report.ReportLinkToWebsiteViewModel
 
 @{
@@ -17,9 +19,34 @@
 }
 
 @section BeforeMain {
-    @(await Html.GovUkBackLink(new BackLinkViewModel
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{formattedReportingYears} Reporting year",
+                Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
+            },
+            new CrumbViewModel
+            {
+                Text = "Supporting narrative"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
-        Href = Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})
+        Crumbs = crumbs
     }))
 }
 
@@ -33,12 +60,17 @@
             @(await Html.GovUkErrorSummary(ViewData.ModelState))
             
             <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading govuk-!-margin-bottom-3">
                         Provide a link to your supporting narrative
+                        <br/>
+                        <span class="govuk-!-font-size-27 govuk-!-margin-top-3" style="display: inline-block; line-height: 1.3 !important;">
+                            Reporting as @(Model.Organisation.OrganisationName)
+                            <br/>
+                            for snapshot date
+                            @(Model.Organisation.SectorType.GetAccountingStartDate(Model.ReportingYear).ToString("d MMMM yyyy"))
+                        </span>
                     </h1>
-
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-8 govuk-!-margin-top-4 govuk-!-font-weight-regular">Reporting as @(Model.Organisation.OrganisationName)</h2>
                 </legend>
             </fieldset>   
         </div>
@@ -46,44 +78,50 @@
     
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            
+            <p class="govuk-body">
+                All employers can choose to publish a supporting narrative.
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-2">
+                This helps anyone reading your gender pay gap report to understand:
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-7">
+                <li>why you think you have a gender pay gap</li>
+                <li>what action you have taken to analyse and close it</li>
+            </ul>
+            
             <fieldset class="govuk-fieldset">
                 @(await Html.GovUkTextAreaFor(
                     m => m.LinkToOrganisationWebsite,
                     rows: 1,
-                    labelOptions: new LabelViewModel {Text = "Enter the web address of your supporting narrative (URL)."},
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "Enter the web address of your supporting narrative",
+                        Classes = "govuk-label--m"
+                    },
                     hintOptions: new HintViewModel {Text = "This must start with http:// or https://"}
                     ))
 
                 <div class="govuk-inset-text">
-                    If you don’t have the URL you can return and add it later.
-                    <br/>
-                    You can also update your link for any reporting year, if needed.
+                    <p class="govuk-body">
+                        If you don’t have the web address now you can return and add it later.
+                    </p>
+                    <p class="govuk-body">
+                        You can also update your link for any reporting year, if you need to.
+                    </p>
                 </div>
-
-                <p class="govuk-body">
-                    Adding a supporting narrative helps anyone reading your gender pay gap report understand your employer’s
-                    view of why a gender pay gap is present and what your employer has already done to analyse and close it.
-                    Your supporting narrative can signal your commitment to closing your gender pay gap to your employees
-                    and anyone else accessing your report.
-                </p>
-
-                <p class="govuk-body">
-                    <a class="govuk-link" href="https://www.gov.uk/guidance/the-gender-pay-gap-information-employers-must-report#supporting-narrative" target="_blank" rel="noopener">
-                        Read more about supporting narratives
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>
-                </p>
             </fieldset>
-            
+
             @(await Html.GovUkButton(new ButtonViewModel
             {
                 Text = "Save and continue",
                 Classes = "govuk-!-margin-bottom-6"
             }))
-            
+
             <p class="govuk-body">
-                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">
-                    Cancel and return to @(Model.Organisation.OrganisationName)
+                <a href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = Model.ReportingYear})"
+                   class="govuk-link">
+                    Cancel and return to @(formattedReportingYears) report overview
                 </a>
             </p>
         </div>
