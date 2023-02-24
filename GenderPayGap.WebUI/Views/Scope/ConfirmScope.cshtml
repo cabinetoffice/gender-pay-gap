@@ -8,7 +8,7 @@
 @model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
 
 @{
-    ViewBag.Title = "Confirm that your employer is" + (Model.IsToSetInScope ? "" :  " not") + " in scope - Gender pay gap service";
+    ViewBag.Title = "Confirm that your employer " + (Model.IsToSetInScope ? "is" :  "is not") + " in scope - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -39,7 +39,7 @@
                 {
                     <tr class="govuk-table__row">
                         <th class="govuk-table__header" scope="row">
-                            Company Number
+                            Company number
                         </th>
                         <td class="govuk-table__cell">
                             @Model.Organisation.CompanyNumber
@@ -48,7 +48,7 @@
                 }
                 <tr class="govuk-table__row">
                     <th class="govuk-table__header" scope="row">
-                        Employer Name
+                        Employer name
                     </th>
                     <td class="govuk-table__cell">
                         @Model.Organisation.OrganisationName
@@ -86,42 +86,39 @@
 
         <p class="govuk-body">
             By confirming this change of reporting requirement, you are acknowledging
-            that your employer is@(Model.IsToSetInScope ? "" :  " not") subject the gender pay gap regulations for this
-            reporting year.
+            that your employer @(Model.IsToSetInScope ? "is" :  "is not") subject to the gender pay gap regulations for
+            this reporting year.
         </p>
 
         <p class="govuk-inset-text">
-            Before confirming this change, please ensure you have read the
-            guidance on <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap.<span class="govuk-visually-hidden">(opens in a new window)</span></a>
+            Before confirming this change, please read the guidance on
+            <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">
+                who needs to report their gender pay gap (opens in a new tab).
+            </a>
         </p>
 
         <p class="govuk-body">
-            From 2017, if you are an employer who has a headcount of 250 or more on
-            your ‘snapshot date’ you must comply with regulations on gender pay gap
-            reporting.
-        </p>
-
-        <p class="govuk-body">
-            The information your provide may be shared with the Equality and Human
+            The information you provide may be shared with the Equality and Human
             Rights Commission for the purposes of enforcing compliance with the
             gender pay gap regulations.
         </p>
 
-            <form method="POST" action="@Url.Action(Model.IsToSetInScope? "ConfirmInScopeAnswers":"ConfirmOutOfScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
-                @(Html.AntiForgeryToken())
-                @(await Html.GovUkButton(
+        <form method="POST" action="@Url.Action(Model.IsToSetInScope? "ConfirmInScopeAnswers":"ConfirmOutOfScopeAnswers", "Scope", new {encryptedOrganisationId, reportingYear = Model.ReportingYear.Year })">
+            @(Html.AntiForgeryToken())
+            
+            @(await Html.GovUkButton(
                 new ButtonViewModel
                 {
                     Text = "Confirm"
                 }
-                ))
+            ))
 
-                <p class="govuk-body">
-                    <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">
-                        Cancel and return to @Model.Organisation.OrganisationName
-                    </a>
-                </p>
-            </form>
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})">
+                    Cancel and return to @Model.Organisation.OrganisationName
+                </a>
+            </p>
+        </form>
     </div>
 </div>
 
