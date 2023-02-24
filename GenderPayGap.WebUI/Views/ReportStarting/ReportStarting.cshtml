@@ -1,5 +1,6 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GovUkDesignSystem
+@using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.ReportStarting.ReportStartingViewModel
 
 @{
@@ -7,77 +8,101 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     
     var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
 }
 
 @section BeforeMain {
-    @await Html.GovUkBackLink(new BackLinkViewModel
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"{formattedReportingYears} reporting year"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
     {
-        Text = "Back",
-        Href = Url.Action("ManageOrganisationGet", "ManageOrganisations",new {encryptedOrganisationId})
-    })
+        Crumbs = crumbs
+    }))
 }
 
 <div class="govuk-grid-row" xmlns="http://www.w3.org/1999/html">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">
-            Report Gender pay gap data
+        
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Report your gender pay gap data
+            <br/>
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
         </h1>
-        <h2 class="govuk-heading-m govuk-!-font-weight-regular">For @(Model.Organisation.OrganisationName)</h2>
+        
         <div class="govuk-inset-text gpg-govuk-inset-text">
-            Reporting for Snapshot date <span class="govuk-!-font-weight-bold">@Model.SnapshotDate.ToString("dd MMMM yyyy")</span>
+            Reporting for snapshot date
+            <span class="govuk-!-font-weight-bold">
+                @Model.SnapshotDate.ToString("d MMMM yyyy")
+            </span>
         </div>
+        
     </div>
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body">
-            For private and voluntary sector employers, the ‘snapshot date’ is 5 April each year and data should include those who are contractually employed on this date.
-            These employers must submit their data by 4 April the following year.
-        </p>
-        <p class="govuk-body">
-            For most public authority employers it is 31 March. These employers must submit their data by 30 March of the following year.
-        </p>
         
+        <p class="govuk-body">
+            You should base your gender pay gap calculations on payroll data taken on your snapshot date.
+        </p>
+        <p class="govuk-body">
+            You must report and publish your gender pay gap information within a year of your snapshot date.
+        </p>
+
         <h2 class="govuk-heading-l">
             Before you start
         </h2>
         <p class="govuk-body">
-            You must follow our guidance when collecting and reporting your gender paygap data. 
-        </p>
-        <p class="govuk-body">
-            The guidance will give you precise instructions, overall you need to:
+            Read the guidance for employers on:
         </p>
         <ul class="govuk-body govuk-list--bullet">
             <li>
-                Collect your data for the snapshot date for  those who identify as men and women.
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/what-to-report"
+                   target="_blank" rel="noopener">
+                    what to report (opens in a new tab)
+                </a>
             </li>
             <li>
-                Calculate the percentage of men and women for each hourly pay quarter. 
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/preparing-your-data"
+                   target="_blank" rel="noopener">
+                    preparing your data (opens in a new tab)
+                </a>
             </li>
             <li>
-                Calculate the mean and median difference for men and women in hourly pay.
-            </li>
-            <li>
-                If you have bonus pay, calculate the percentage of men and women and what the difference in pay is.
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/making-your-calculations"
+                   target="_blank" rel="noopener">
+                    making your calculations (opens in a new tab)
+                </a>
             </li>
         </ul>
-        @{
-            var actionValues = new {encryptedOrganisationId, Model.ReportingYear};
-        }
+        
         @await Html.GovUkButton(new ButtonViewModel
         {
-            Html = @<text>
-                       Start now
-                       <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
-                           <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
-                       </svg>
-                    </text>,
-            Classes = "govuk-button--start govuk-!-margin-top-6",
-            Href = @Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", actionValues)
+            Text = "Continue",
+            Classes = "govuk-!-margin-top-6",
+            Href = @Url.Action("ReportSizeOfOrganisationGet", "ReportSizeOfOrganisation", new {encryptedOrganisationId, Model.ReportingYear})
         })
+        
     </div>
+    
     @await Html.PartialAsync("~/Views/Submit/RelatedContent.cshtml")
 </div>
-
-
-
