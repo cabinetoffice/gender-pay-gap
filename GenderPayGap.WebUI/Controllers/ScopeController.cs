@@ -36,11 +36,10 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
         public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear)
         {
-            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
-
-            // Check user has permissions to access this page
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -55,11 +54,10 @@ namespace GenderPayGap.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SubmitOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, ScopeViewModel viewModel)
         {
-            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
-            
-            // Check user has permissions to access this page
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -80,11 +78,10 @@ namespace GenderPayGap.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmOutOfScopeAnswers(string encryptedOrganisationId, int reportingYear, ScopeViewModel viewModel)
         {
-            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
-            
-            // Check user has permissions to access this page
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             // Get Organisation
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -116,11 +113,10 @@ namespace GenderPayGap.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ConfirmInScopeAnswers(string encryptedOrganisationId, int reportingYear, ScopeViewModel viewModel)
         {
-            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
-            
-            // Check user has permissions to access this page
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -141,11 +137,10 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/scope-declared")]
         public IActionResult ScopeDeclared(string encryptedOrganisationId, int reportingYear)
         {
-            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
-
-            // Check user has permissions to access this page
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
 
             // Get Organisation and OrganisationScope for reporting year
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -166,8 +161,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult DeclareScopeGet(string encryptedOrganisationId)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
-            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             
             var organisation = dataRepository.Get<Organisation>(organisationId);
@@ -191,8 +185,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult DeclareScopePost(string encryptedOrganisationId, DeclareScopeViewModel viewModel)
         {
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
-            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
             
             var organisation = dataRepository.Get<Organisation>(organisationId);
@@ -297,17 +290,6 @@ namespace GenderPayGap.WebUI.Controllers
                     
                 }
             }
-        }
-        
-        public long DecryptOrganisationId(string encryptedOrganisationId)
-        {
-            // Decrypt organisation ID param
-            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
-            {
-                throw new PageNotFoundException();
-            }
-
-            return organisationId;
         }
     }
 }
