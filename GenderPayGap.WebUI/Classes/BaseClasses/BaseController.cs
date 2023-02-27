@@ -439,7 +439,6 @@ namespace GenderPayGap.WebUI.Classes
         #endregion
 
 
-        public Uri RequestUrl => HttpContext.GetUri();
         public Uri UrlReferrer => HttpContext.GetUrlReferrer();
 
     }
