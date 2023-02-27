@@ -5,7 +5,7 @@
 @using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.Organisation.DeclareScopeModel
 <div class="grid-row">
-    <div class="column-full">
+    <div class="column-two-thirds">
         <a class="link-back" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">Back</a>
 
         @await Html.CustomValidationSummaryAsync()
@@ -21,7 +21,9 @@
                 <span class="heading-secondary">@Model.OrganisationName</span>
             </h1>
 
-            <p>Was your employer required to report for the @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.SnapshotDate.Year) reporting year?</p>
+            <p>
+                Was your employer required to report for the @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.SnapshotDate.Year) reporting year?
+            </p>
             @Html.ValidationMessageFor(model => model.ScopeStatus, null, new {@class = "error-danger"})
             <div class="form-group @Html.SetErrorClass(model => model.ScopeStatus, "error")">
                 <fieldset>
@@ -36,7 +38,9 @@
                 </fieldset>
             </div>
             <p class="govuk-inset-text">
-                If you are unsure if your employer is required to report please read the guidance on <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">who needs to report their gender pay gap<span class="visually-hidden">(opens in a new window)</span></a>.
+                If you are not sure if you need to report your gender pay gap information, please read the guidance on
+                <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">
+                    who needs to report (opens in a new window)</a>.
             </p>
 
             <div class="form-group">

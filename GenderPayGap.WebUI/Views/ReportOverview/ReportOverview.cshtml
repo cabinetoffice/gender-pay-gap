@@ -65,9 +65,15 @@
                 
         @(await Html.GovUkErrorSummary(ViewData.ModelState))
 
-        <h1 class="govuk-heading-l"> Review your gender pay gap data for snapshot date @(Model.SnapshotDate.ToString("dd MMMM yyyy"))</h1>
-        
-        <h2 class="govuk-heading-m govuk-!-margin-bottom-8" style="font-weight: normal;">Reporting as @(Model.Organisation.OrganisationName)</h2>
+        <h1 class="govuk-heading-xl">
+            Review your gender pay gap data
+            <br/>
+            <span class="govuk-!-font-size-27 govuk-!-margin-top-3" style="display: inline-block; line-height: 1.3 !important;">
+                Reporting as @(Model.Organisation.OrganisationName)
+                <br/>
+                for snapshot date @(Model.SnapshotDate.ToString("d MMMM yyyy"))
+            </span>
+        </h1>
         
         @if (!Model.AllRequiredFieldsAreFilled() && !Model.IsEditingSubmittedReturn)
         {
@@ -119,7 +125,7 @@
 
             var hourlyPayMeanAndMedianSection = new ReportOverviewSectionViewModel
             {
-                Title = "Mean and Median gender pay gap using hourly pay",
+                Title = "Mean and median gender pay gap using hourly pay",
                 EditLink = GetEditLinkForReportFigures("HourlyPayFieldset"),
                 Rows = new List<ReportOverviewSectionRowViewModel>
                 {
@@ -155,7 +161,7 @@
             
             var bonusPayMeanAndMedianGenderPayGapSection = new ReportOverviewSectionViewModel
             {
-                Title = "Mean and Median gender pay gap using bonus pay",
+                Title = "Mean and median gender pay gap using bonus pay",
                 EditLink = GetEditLinkForReportFigures("MeanBonusFieldset"),
                 Rows = new List<ReportOverviewSectionRowViewModel>
                 {
@@ -214,7 +220,7 @@
             
             var linkToGenderPayGapInformationSection = new ReportOverviewSectionViewModel
             {
-                Title = "Link to your gender pay gap information",
+                Title = "Link to your supporting narrative",
                 EditLink = Url.Action("ReportLinkToWebsiteGet", "ReportLinkToWebsite", new 
                 {
                     encryptedOrganisationId,
@@ -234,7 +240,6 @@
 
             var reportOverviewSections = new ReportOverviewSectionsViewModel
             {
-                Title = $"{formattedReportingYears} Reporting year",
                 Sections = new List<ReportOverviewSectionViewModel>
                 {
                     hourlyPayQuarterPercentageSection,

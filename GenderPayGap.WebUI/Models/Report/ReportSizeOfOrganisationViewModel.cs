@@ -74,15 +74,15 @@ namespace GenderPayGap.WebUI.Models.Report
 
     public enum ReportSizeOfOrganisation
     {
-        [GovUkRadioCheckboxLabelText(Text = "Less than 250, I wish to report voluntarily")]
+        [GovUkRadioCheckboxLabelText(Text = "Less than 250 – I want to report voluntarily")]
         Employees0To249,
-        [GovUkRadioCheckboxLabelText(Text = "250 - 499")]
+        [GovUkRadioCheckboxLabelText(Text = "250 to 499")]
         Employees250To499,
-        [GovUkRadioCheckboxLabelText(Text = "500 - 999")]
+        [GovUkRadioCheckboxLabelText(Text = "500 to 999")]
         Employees500To999,
-        [GovUkRadioCheckboxLabelText(Text = "1000 - 4999")]
+        [GovUkRadioCheckboxLabelText(Text = "1000 to 4999")]
         Employees1000To4999,
-        [GovUkRadioCheckboxLabelText(Text = "5000 - 19,999")]
+        [GovUkRadioCheckboxLabelText(Text = "5000 to 19,999")]
         Employees5000To19999,
         [GovUkRadioCheckboxLabelText(Text = "20,000 or more")]
         Employees20000OrMore
