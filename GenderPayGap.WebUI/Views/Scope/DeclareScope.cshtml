@@ -1,0 +1,95 @@
+@using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GenderPayGap.Core
+@model GenderPayGap.WebUI.Models.ManageOrganisations.DeclareScopeViewModel
+
+@{
+    ViewBag.Title = "Declare scope - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.PreviousReportingYear);
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Declare scope for {formattedReportingYears} Reporting year"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
+
+        <h1 class="govuk-heading-xl">
+            We need more information
+            <br>
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+        
+        <form method="post"
+              action="@Url.Action("DeclareScopePost", "Scope", new {encryptedOrganisationId})">
+            @(Html.AntiForgeryToken())
+
+            @(await Html.GovUkRadiosFor(
+                m => m.DeclareScopeRequiredToReport,
+                new FieldsetViewModel
+                {
+                    Legend = new LegendViewModel
+                    {
+                        Text = "Was your employer required to report for the " + formattedReportingYears + " reporting year?",
+                        Classes = "govuk-fieldset__legend--m"
+                    },
+                    Classes = "govuk-!-margin-top-6"
+                }
+            ))
+            
+            <p class="govuk-inset-text govuk-!-margin-top-0">
+                If you are not sure if you need to report your gender pay gap information, please read the guidance on
+                <a href="@Global.WhoNeedsToReportGuidanceLink" target="_blank" rel="noopener">
+                    who needs to report (opens in a new window)
+                </a>.
+            </p>
+
+            @(await Html.GovUkButton(
+                new ButtonViewModel
+                {
+                    Text = "Continue",
+                    Classes = "govuk-!-margin-bottom-3"
+                }
+            ))
+            
+            <p class="govuk-body">
+                <a class="govuk-link" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">
+                    Return to Manage Employers
+                </a>
+            </p>
+            
+        </form>
+        
+    </div>
+</div>

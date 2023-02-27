@@ -9,6 +9,8 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.ManageOrganisations;
+using GenderPayGap.WebUI.Models.Scope;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +33,6 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
-        [Authorize]
         [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/change-scope")]
         public IActionResult ChangeOrganisationScope(string encryptedOrganisationId, int reportingYear)
         {
@@ -98,9 +99,9 @@ namespace GenderPayGap.WebUI.Controllers
             RetireOldScopes(organisation, reportingYear);
             
             UpdateScopes(organisation, ScopeStatuses.OutOfScope, reportingYear, reasonForChange, viewModel.HaveReadGuidance == HaveReadGuidance.Yes);
-
-            dataRepository.SaveChanges();
             
+            dataRepository.SaveChanges();
+
             SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.OutOfScope);
 
             OrganisationScope organisationScope = organisation.OrganisationScopes.FirstOrDefault(s => s.SnapshotDate.Year == reportingYear);
@@ -129,23 +130,132 @@ namespace GenderPayGap.WebUI.Controllers
             RetireOldScopes(organisation, reportingYear);
             
             UpdateScopes(organisation, ScopeStatuses.InScope, reportingYear, null, null);
-
-            dataRepository.SaveChanges();
             
+            dataRepository.SaveChanges();
+
             SendScopeChangeEmails(organisation, viewModel.ReportingYear, currentSnapshotDate, ScopeStatuses.InScope);
 
-            return RedirectToAction("ScopeDeclared", "Organisation", new {id = encryptedOrganisationId});
+            return RedirectToAction("ScopeDeclared", "Scope", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = reportingYear});
+        }
+
+        [HttpGet("{encryptedOrganisationId}/reporting-year/{reportingYear}/scope-declared")]
+        public IActionResult ScopeDeclared(string encryptedOrganisationId, int reportingYear)
+        {
+            long organisationId = DecryptOrganisationId(encryptedOrganisationId);
+
+            // Check user has permissions to access this page
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+
+            // Get Organisation and OrganisationScope for reporting year
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            OrganisationScope organisationScope = organisation.GetScopeForYear(reportingYear);
+
+            var viewModel = new ScopeDeclaredViewModel
+            {
+                Organisation = organisation,
+                ReportingYear = organisationScope.SnapshotDate.Year,
+                ScopeStatus = organisationScope.ScopeStatus
+            };
+            
+            return View("ScopeDeclared", viewModel);
+        }
+        
+        [HttpGet("{encryptedOrganisationId}/declare-scope")]
+        [Authorize(Roles = LoginRoles.GpgEmployer)]
+        public IActionResult DeclareScopeGet(string encryptedOrganisationId)
+        {
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            if (!OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
+            {
+                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new { encryptedOrganisationId = encryptedOrganisationId });
+            }
+            
+            var viewModel = new DeclareScopeViewModel
+            {
+                Organisation = organisation,
+                PreviousReportingYear = organisation.SectorType.GetAccountingStartDate().AddYears(-1).Year
+            };
+
+            return View("DeclareScope", viewModel);
+        }
+
+        [HttpPost("{encryptedOrganisationId}/declare-scope")]
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeclareScopePost(string encryptedOrganisationId, DeclareScopeViewModel viewModel)
+        {
+            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
+            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
+            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
+            
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+            if (!OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
+            {
+                return RedirectToAction("ManageOrganisationGet", "ManageOrganisations", new { encryptedOrganisationId = encryptedOrganisationId });
+            }
+
+            if (ModelState.IsValid)
+            {
+                DateTime currentYearSnapshotDate = organisation.SectorType.GetAccountingStartDate();
+                DateTime previousYearSnapshotDate = currentYearSnapshotDate.AddYears(-1);
+                int previousReportingYear = previousYearSnapshotDate.Year;
+
+                ScopeStatuses newStatus = viewModel.DeclareScopeRequiredToReport == DeclareScopeRequiredToReportOptions.Yes
+                    ? ScopeStatuses.InScope
+                    : ScopeStatuses.OutOfScope;
+                
+                RetireOldScopes(organisation, previousReportingYear);
+            
+                UpdateScopes(organisation, newStatus, previousReportingYear, null, null);
+            
+                dataRepository.SaveChanges();
+            
+                SendScopeChangeEmails(organisation, previousYearSnapshotDate, currentYearSnapshotDate, ScopeStatuses.InScope);
+
+                return RedirectToAction("ScopeDeclared", "Scope", new {encryptedOrganisationId = encryptedOrganisationId, reportingYear = previousReportingYear});
+            }
+
+            viewModel.Organisation = organisation;
+            viewModel.PreviousReportingYear = organisation.SectorType.GetAccountingStartDate().AddYears(-1).Year;
+
+            return View("DeclareScope", viewModel);
+        }
+
+        private static bool OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(Organisation organisation)
+        {
+            DateTime currentYearSnapshotDate = organisation.SectorType.GetAccountingStartDate();
+            bool organisationCreatedInCurrentReportingYear = organisation.Created >= currentYearSnapshotDate;
+
+            if (organisationCreatedInCurrentReportingYear)
+            {
+                int previousReportingYear = currentYearSnapshotDate.AddYears(-1).Year;
+                OrganisationScope scope = organisation.GetScopeForYear(previousReportingYear);
+
+                if (scope.IsScopePresumed())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public void RetireOldScopes(Organisation organisation, int reportingYear)
         {
             organisation.OrganisationScopes.Where(o => o.SnapshotDate.Year == reportingYear).ForEach(s => s.Status = ScopeRowStatuses.Retired);
         }
-        
+
         public void UpdateScopes(Organisation organisation, ScopeStatuses newStatus, int reportingYear, string reasonForChange, bool? haveReadGuidance)
         {
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-
+            
             organisation.OrganisationScopes.Add(
                 new OrganisationScope {
                     OrganisationId = organisation.OrganisationId,
@@ -188,7 +298,7 @@ namespace GenderPayGap.WebUI.Controllers
                 }
             }
         }
-
+        
         public long DecryptOrganisationId(string encryptedOrganisationId)
         {
             // Decrypt organisation ID param
