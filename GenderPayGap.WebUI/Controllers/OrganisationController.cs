@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -14,7 +12,6 @@ using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.ErrorHandling;
-using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Organisation;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
@@ -52,190 +49,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         #endregion
-
-        [Authorize]
-        [HttpGet("~/declare-scope/{id}")]
-        public IActionResult DeclareScope(string id)
-        {
-            //Ensure user has completed the registration process
-            IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            // Decrypt org id
-            if (!id.DecryptToId(out long organisationId))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt employer id {id}");
-            }
-
-            // Check the user has permission for this organisation
-            UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrg == null)
-            {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
-            }
-
-            // Ensure this user is registered fully for this organisation
-            if (userOrg.PINConfirmedDate == null)
-            {
-                return new HttpForbiddenResult(
-                    $"User {currentUser?.EmailAddress} has not completed registration for employer {userOrg.Organisation.EmployerReference}");
-            }
-
-            //Get the current snapshot date
-            DateTime snapshotDate = userOrg.Organisation.SectorType.GetAccountingStartDate().AddYears(-1);
-            if (snapshotDate.Year < Global.FirstReportingYear)
-            {
-                return new HttpBadRequestResult($"Snapshot year {snapshotDate.Year} is invalid");
-            }
-
-            ScopeStatuses scopeStatus =
-                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, snapshotDate.Year);
-            if (scopeStatus.IsAny(ScopeStatuses.InScope, ScopeStatuses.OutOfScope))
-            {
-                return new HttpBadRequestResult("Explicit scope is already set");
-            }
-
-            // build the view model
-            var model = new DeclareScopeModel { OrganisationId = userOrg.OrganisationId, OrganisationName = userOrg.Organisation.OrganisationName, SnapshotDate = snapshotDate };
-
-            return View(model);
-        }
-
-        [PreventDuplicatePost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        [HttpPost("~/declare-scope/{id}")]
-        public IActionResult DeclareScope(DeclareScopeModel model, string id)
-        {
-            // Ensure user has completed the registration process
-            IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            // Decrypt org id
-            if (!id.DecryptToId(out long organisationId))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt employer id {id}");
-            }
-
-
-            // Check the user has permission for this organisation
-            UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrg == null)
-            {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
-            }
-
-            // Ensure this user is registered fully for this organisation
-            if (userOrg.PINConfirmedDate == null)
-            {
-                return new HttpForbiddenResult(
-                    $"User {currentUser?.EmailAddress} has not completed registration for employer {userOrg.Organisation.EmployerReference}");
-            }
-
-            //Check the year parameters
-            if (model.SnapshotDate.Year < Global.FirstReportingYear || model.SnapshotDate.Year > VirtualDateTime.Now.Year)
-            {
-                return new HttpBadRequestResult($"Snapshot year {model.SnapshotDate.Year} is invalid");
-            }
-
-            //Check if we need the current years scope
-            ScopeStatuses scopeStatus =
-                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, model.SnapshotDate.Year);
-            if (scopeStatus.IsAny(ScopeStatuses.InScope, ScopeStatuses.OutOfScope))
-            {
-                return new HttpBadRequestResult("Explicit scope is already set");
-            }
-
-            //Validate the submitted fields
-            ModelState.Clear();
-
-            if (model.ScopeStatus == null || model.ScopeStatus == ScopeStatuses.Unknown)
-            {
-                AddModelError(3032, "ScopeStatus");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                this.CleanModelErrors<DeclareScopeModel>();
-                return View("DeclareScope", model);
-            }
-
-            //Create last years declared scope
-            var newScope = new OrganisationScope
-            {
-                OrganisationId = userOrg.OrganisationId,
-                Organisation = userOrg.Organisation,
-                ContactEmailAddress = currentUser.EmailAddress,
-                ContactFirstname = currentUser.Firstname,
-                ContactLastname = currentUser.Lastname,
-                ScopeStatus = model.ScopeStatus.Value,
-                Status = ScopeRowStatuses.Active,
-                ScopeStatusDate = VirtualDateTime.Now,
-                SnapshotDate = model.SnapshotDate
-            };
-
-            //Save the new declared scopes
-            ScopeBusinessLogic.SaveScope(userOrg.Organisation, true, newScope);
-            return View("ScopeDeclared", model);
-        }
-
-        [Authorize]
-        [HttpGet("~/scope-declared/{id}")]
-        public IActionResult ScopeDeclared(string id)
-        {
-            //Ensure user has completed the registration process
-            IActionResult checkResult = CheckUserRegisteredOk(out User currentUser);
-            if (checkResult != null)
-            {
-                return checkResult;
-            }
-
-            // Decrypt org id
-            if (!id.DecryptToId(out long organisationId))
-            {
-                return new HttpBadRequestResult($"Cannot decrypt employer id {id}");
-            }
-
-            // Check the user has permission for this organisation
-            UserOrganisation userOrg = currentUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
-            if (userOrg == null)
-            {
-                return new HttpForbiddenResult($"User {currentUser?.EmailAddress} is not registered for employer id {organisationId}");
-            }
-
-            // Ensure this user is registered fully for this organisation
-            if (userOrg.PINConfirmedDate == null)
-            {
-                return new HttpForbiddenResult(
-                    $"User {currentUser?.EmailAddress} has not completed registration for employer {userOrg.Organisation.EmployerReference}");
-            }
-
-            //Get the current snapshot date
-            DateTime snapshotDate = userOrg.Organisation.SectorType.GetAccountingStartDate().AddYears(-1);
-            if (snapshotDate.Year < Global.FirstReportingYear)
-            {
-                return new HttpBadRequestResult($"Snapshot year {snapshotDate.Year} is invalid");
-            }
-
-            ScopeStatuses scopeStatus =
-                ScopeBusinessLogic.GetLatestScopeStatusForSnapshotYear(organisationId, snapshotDate.Year);
-
-            var model = new DeclareScopeModel
-            {
-                OrganisationId = userOrg.OrganisationId, 
-                OrganisationName = userOrg.Organisation.OrganisationName, 
-                SnapshotDate = snapshotDate, 
-                ScopeStatus = scopeStatus
-            };
-
-            return View("ScopeDeclared", model);
-        }
 
         [Authorize]
         [HttpGet("~/activate-organisation/{id}")]
