@@ -73,6 +73,10 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
     
+        <p class="govuk-body">
+            Enter your figures as whole percentages or rounded to one decimal place.
+        </p>
+    
         <form method="post" action="@Url.Action("ReportFiguresPost", "ReportFigures", new { encryptedOrganisationId, reportingYear = Model.ReportingYear })">
             @(Html.AntiForgeryToken())
             @Html.HiddenFor(m => m.IsEditingForTheFirstTime)
@@ -80,8 +84,8 @@
             <fieldset id="HourlyPayFieldset" class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h2 class="govuk-heading-l">Hourly pay</h2>
-                    <h3 class="govuk-heading-s">The difference</h3>
-                    <p class="govuk-caption-m">If women in your organisation are paid more than men, include a negative percentage figure – for example -12%.</p>
+                    <h3 class="govuk-heading-s">Gender pay gap</h3>
+                    <p class="govuk-caption-m">If women in your organisation are paid more than men, enter a negative percentage figure – for example -12%.</p>
                 </legend>
                 
                 @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.ReportingYear))
@@ -113,7 +117,7 @@
                         new LabelViewModel
                         {
                             Html = @<text>
-                                       Enter the difference in <span class="govuk-!-font-weight-bold">mean</span> hourly pay
+                                       Enter the <span class="govuk-!-font-weight-bold">mean (average)</span> gender pay gap for hourly pay
                                     </text>
                         },
                         classes: "govuk-input--width-10",
@@ -128,7 +132,7 @@
                         new LabelViewModel
                         {
                             Html = @<text>
-                                       Enter the difference in <span class="govuk-!-font-weight-bold">median </span>hourly pay
+                                       Enter the <span class="govuk-!-font-weight-bold">median</span> gender pay gap for hourly pay
                                     </text>
                         },
                         classes: "govuk-input--width-10",
@@ -234,8 +238,8 @@
             <fieldset id="BonusPayFieldset" class="govuk-fieldset govuk-!-margin-top-8">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h2 class="govuk-heading-l">Bonus pay</h2>
-                    <h3 class="govuk-heading-s">The difference</h3>
-                    <p class="govuk-caption-m">If women in your organisation are paid more than men, include a negative percentage figure – for example -12%.</p>
+                    <h3 class="govuk-heading-s">Gender pay gap</h3>
+                    <p class="govuk-caption-m">If women in your organisation are paid more than men, enter a negative percentage figure – for example -12%.</p>
                 </legend>
                 
                 @(await Html.GovUkTextInputFor(
@@ -243,7 +247,7 @@
                     new LabelViewModel
                     {
                         Html = @<text>
-                                   Enter the difference in <span class="govuk-!-font-weight-bold">mean</span> bonus pay
+                                   Enter the <span class="govuk-!-font-weight-bold">mean (average)</span> gender pay gap for bonus pay
                                 </text>
                     },
                     classes: "govuk-input--width-10",
@@ -257,7 +261,7 @@
                     new LabelViewModel
                     {
                         Html = @<text>
-                                   Enter the difference in <span class="govuk-!-font-weight-bold">median</span> bonus pay
+                                   Enter the <span class="govuk-!-font-weight-bold">median</span> gender pay gap for bonus pay
                                 </text>
                     },
                     classes: "govuk-input--width-10 govuk-!-margin-bottom-3",
@@ -267,7 +271,7 @@
                     }
                     ))
                 
-                <h3 class="govuk-heading-s">Percentage who recieved bonus pay</h3>
+                <h3 class="govuk-heading-s">Percentage who received bonus pay</h3>
                 
                 @(await Html.GovUkTextInputFor(
                             m => m.FemaleBonusPayPercent,
