@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.ErrorMessages;
-using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
-using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.ManageOrganisations;
 using Microsoft.AspNetCore.Authorization;
@@ -63,7 +58,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             var organisation = dataRepository.Get<Organisation>(organisationId);
             if (OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
             {
-                return RedirectToAction("DeclareScope", "Organisation", new { id = encryptedOrganisationId });
+                return RedirectToAction("DeclareScopeGet", "Scope", new { encryptedOrganisationId = encryptedOrganisationId }); 
             }
 
             // build the view model
@@ -88,7 +83,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             var organisation = dataRepository.Get<Organisation>(organisationId);
             if (OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
             {
-                return RedirectToAction("DeclareScope", "Organisation", new { id = encryptedOrganisationId });
+                return RedirectToAction("DeclareScopeGet", "Scope", new { encryptedOrganisationId = encryptedOrganisationId });
             }
             
             // build the view model
