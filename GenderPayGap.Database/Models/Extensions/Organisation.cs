@@ -334,6 +334,15 @@ namespace GenderPayGap.Database
                 .FirstOrDefault();
         }
 
+        public Return GetReturnForYearAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            return Returns
+                .Where(r => r.AccountingDate.Year == reportingYear)
+                .Where(r => r.Created.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
+                .OrderByDescending(r => r.Created)
+                .FirstOrDefault();
+        }
+
         // Returns the latest scope for the current accounting date
         public OrganisationScope GetCurrentScope()
         {
@@ -348,10 +357,24 @@ namespace GenderPayGap.Database
                 s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == reportingYear);
         }
 
+        public OrganisationScope GetScopeForYearAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            return OrganisationScopes
+                .Where(s => s.SnapshotDate.Year == reportingYear)
+                .Where(s => s.ScopeStatusDate.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
+                .OrderByDescending(s => s.ScopeStatusDate)
+                .FirstOrDefault();
+        }
 
         public ScopeStatuses GetScopeStatusForYear(int reportingYear)
         {
             OrganisationScope scope = GetScopeForYear(reportingYear);
+            return scope == null ? ScopeStatuses.Unknown : scope.ScopeStatus;
+        }
+
+        public ScopeStatuses GetScopeStatusForYearAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            OrganisationScope scope = GetScopeForYearAsOfDate(reportingYear, asOfDate);
             return scope == null ? ScopeStatuses.Unknown : scope.ScopeStatus;
         }
 
@@ -477,6 +500,11 @@ namespace GenderPayGap.Database
         public bool HasSubmittedReturn(int reportingYear)
         {
             return GetReturn(reportingYear) != null;
+        }
+
+        public bool HadSubmittedReturnAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            return GetReturnForYearAsOfDate(reportingYear, asOfDate) != null;
         }
 
     }
