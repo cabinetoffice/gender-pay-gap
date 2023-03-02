@@ -99,6 +99,19 @@ namespace GenderPayGap.Core
 
     }
 
+    public static class ScopeStatusesExtensions
+    {
+        public static bool IsInScopeVariant(this ScopeStatuses scopeStatus)
+        {
+            return scopeStatus == ScopeStatuses.InScope || scopeStatus == ScopeStatuses.PresumedInScope;
+        }
+        
+        public static bool IsScopePresumed(this ScopeStatuses scopeStatus)
+        {
+            return scopeStatus == ScopeStatuses.PresumedInScope || scopeStatus == ScopeStatuses.PresumedOutOfScope;
+        }
+    }
+
     public enum RegisterStatuses
     {
 
