@@ -1,0 +1,206 @@
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.Admin
+@using GenderPayGap.Core.Helpers
+@using GenderPayGap.Core
+@model NotReportedViewModel
+@{
+    ViewBag.Title = $"Data Dashboard - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.AdminDashboardPage == AdminDashboardPage.Now
+                    ? "Data dashboard (now)"
+                    : "Data dashboard (deadline day)",
+                Href = Model.AdminDashboardPage == AdminDashboardPage.Now
+                    ? Url.Action("DataDashboardNow", "AdminDataDashboard")
+                    : Url.Action("DataDashboardDeadlineDay", "AdminDataDashboard")
+            },
+            new CrumbViewModel
+            {
+                Text = "Organisations that have not reported"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Organisations that have not reported
+            <br/>
+            <span class="govuk-!-font-size-27">
+                For reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))
+            </span>
+        </h1>
+        
+        <p class="govuk-body govuk-!-margin-bottom-2">
+            View the data for:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            @if (Model.AdminDashboardPage == AdminDashboardPage.Now)
+            {
+                <li class="govuk-!-font-weight-bold">
+                    Now (currently selected)
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="@Url.Action("DataDashboardNotReportedNow", "AdminDataDashboard", new {reportingYear = Model.ReportingYear})"
+                       class="govuk-link">
+                        Now
+                    </a>
+                </li>
+            }
+            @if (Model.AdminDashboardPage == AdminDashboardPage.DeadlineDay)
+            {
+                <li class="govuk-!-font-weight-bold">
+                    <span>
+                        Deadline day (currently selected)
+                    </span>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="@Url.Action("DataDashboardNotReportedDeadlineDate", "AdminDataDashboard", new {reportingYear = Model.ReportingYear})"
+                       class="govuk-link">
+                        Deadline day
+                    </a>
+                </li>
+            }
+        </ul>
+        
+        <p class="govuk-body">
+            For reporting year <b>@(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))</b>
+            there @(Model.AdminDashboardPage == AdminDashboardPage.Now ? "are" : "were")
+            <b>@(Model.Organisations.Count)</b>
+            organisations that
+            <br/>
+            @(Model.AdminDashboardPage == AdminDashboardPage.Now ? "are" : "were") In Scope or Presumed In Scope
+            and @(Model.AdminDashboardPage == AdminDashboardPage.Now ? "have not" : "had not") reported
+            <br/>
+            as of <b>@(Model.AdminDashboardPage == AdminDashboardPage.Now ? "now" : "EOD on the deadline day")</b>
+        </p>
+        
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Organisation name</th>
+                    <th scope="col" class="govuk-table__header">Sector</th>
+                    @if (Model.AdminDashboardPage == AdminDashboardPage.DeadlineDay)
+                    {
+                        <th scope="col" class="govuk-table__header">
+                            Scope
+                            <br/>
+                            <span class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0" style="white-space: nowrap">
+                                deadline day
+                            </span>
+                        </th>
+                    }
+                    <th scope="col" class="govuk-table__header">
+                        Scope
+                        <br/>
+                        <span class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                            now
+                        </span>
+                    </th>
+                    @if (Model.AdminDashboardPage == AdminDashboardPage.DeadlineDay)
+                    {
+                        <th scope="col" class="govuk-table__header">
+                            Reported
+                            <br/>
+                            <span class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0" style="white-space: nowrap">
+                                deadline day
+                            </span>
+                        </th>
+                    }
+                    <th scope="col" class="govuk-table__header">
+                        Reported
+                        <br/>
+                        <span class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-0">
+                            now
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (Organisation organisation in Model.Organisations)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId})"
+                               class="govuk-link">
+                                @(organisation.OrganisationName)
+                            </a>
+                        </th>
+                        <td class="govuk-table__cell">
+                            @organisation.SectorType
+                        </td>
+                        @if (Model.AdminDashboardPage == AdminDashboardPage.DeadlineDay)
+                        {
+                            <td class="govuk-table__cell">
+                                <a href="@Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId})"
+                                   class="govuk-link">
+                                    @(organisation.GetScopeStatusForYearAsOfDate(Model.ReportingYear, ReportingYearsHelper.GetDeadline(organisation.SectorType, Model.ReportingYear)))
+                                </a>
+                            </td>
+                        }
+                        <td class="govuk-table__cell gpg-data-dashboard-not-reported-scope-cell">
+                            <a href="@Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId})"
+                               class="govuk-link">
+                                @(organisation.GetScopeStatusForYear(Model.ReportingYear))
+                            </a>
+                        </td>
+                        @if (Model.AdminDashboardPage == AdminDashboardPage.DeadlineDay)
+                        {
+                            <td class="govuk-table__cell">
+                                <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn", new {id = organisation.OrganisationId, year = Model.ReportingYear})"
+                                   class="govuk-link">
+                                    @(organisation.HadSubmittedReturnAsOfDate(Model.ReportingYear, ReportingYearsHelper.GetDeadline(organisation.SectorType, Model.ReportingYear))
+                                        ? "Yes"
+                                        : "No")
+                                </a>
+                            </td>
+                        }
+                        <td class="govuk-table__cell">
+                            <a href="@Url.Action("ViewReturnDetailsForYear", "AdminOrganisationReturn", new {id = organisation.OrganisationId, year = Model.ReportingYear})"
+                               class="govuk-link">
+                                @(organisation.HasSubmittedReturn(Model.ReportingYear)
+                                    ? "Yes"
+                                    : "No")
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
