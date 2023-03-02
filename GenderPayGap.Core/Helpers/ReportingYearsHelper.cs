@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core.Classes;
@@ -12,9 +12,15 @@ namespace GenderPayGap.Core.Helpers
         {
             int firstReportingYear = Global.FirstReportingYear;
             int currentReportingYear = GetCurrentReportingYear();
-            int numberOfYears = currentReportingYear - firstReportingYear + 1;
+            int numberOfYears = (currentReportingYear - firstReportingYear) + 1;
 
-            List<int> reportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList();
+            // Use a manual List capacity allocation and a for-loop to reduce memory usage
+            var reportingYears = new List<int>(numberOfYears);
+            for (int year = firstReportingYear; year <= currentReportingYear; year++)
+            {
+                reportingYears.Add(year);
+            }
+
             return reportingYears;
         }
 
