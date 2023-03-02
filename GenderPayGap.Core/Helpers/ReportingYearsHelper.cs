@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core.Classes;
@@ -68,6 +68,13 @@ namespace GenderPayGap.Core.Helpers
         }
 
         //The deadline date is the final date on which returns are not considered late
+        public static DateTime GetDeadline(SectorTypes sector, int reportingYear)
+        {
+            DateTime snapshotDate = sector.GetAccountingStartDate(reportingYear);
+            DateTime deadlineDate = GetDeadlineForAccountingDate(snapshotDate);
+            return deadlineDate;
+        }
+        
         public static DateTime GetDeadlineForAccountingDate(DateTime accountingDate)
         {
             int reportingYear = accountingDate.Year;
