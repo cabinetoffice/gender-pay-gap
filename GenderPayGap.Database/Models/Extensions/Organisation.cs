@@ -339,31 +339,19 @@ namespace GenderPayGap.Database
         {
             var accountingStartDate = SectorType.GetAccountingStartDate();
 
-            return GetScopeForYear(accountingStartDate);
-        }
-
-        //Returns the scope for the specified accounting date
-        public OrganisationScope GetScopeForYear(DateTime accountingStartDate)
-        {
             return GetScopeForYear(accountingStartDate.Year);
         }
 
-        public OrganisationScope GetScopeForYear(int year)
+        public OrganisationScope GetScopeForYear(int reportingYear)
         {
             return OrganisationScopes.FirstOrDefault(
-                s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == year);
+                s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == reportingYear);
         }
 
 
-        public ScopeStatuses GetScopeStatus(int year = 0)
+        public ScopeStatuses GetScopeStatusForYear(int reportingYear)
         {
-            DateTime accountingStartDate = SectorType.GetAccountingStartDate(year);
-            return GetScopeStatus(accountingStartDate);
-        }
-
-        public ScopeStatuses GetScopeStatus(DateTime accountingStartDate)
-        {
-            OrganisationScope scope = GetScopeForYear(accountingStartDate);
+            OrganisationScope scope = GetScopeForYear(reportingYear);
             return scope == null ? ScopeStatuses.Unknown : scope.ScopeStatus;
         }
 
@@ -457,7 +445,7 @@ namespace GenderPayGap.Database
 
         public bool GetIsInscope(int year)
         {
-            return !GetScopeStatus(year).IsAny(ScopeStatuses.PresumedOutOfScope, ScopeStatuses.OutOfScope);
+            return GetScopeStatusForYear(year).IsInScopeVariant();
         }
         
         public IEnumerable<Return> GetSubmittedReports()

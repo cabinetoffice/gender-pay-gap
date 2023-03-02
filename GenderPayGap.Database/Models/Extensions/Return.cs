@@ -137,7 +137,7 @@ namespace GenderPayGap.Database
 
         public ScopeStatuses GetScopeStatus()
         {
-            return Organisation.GetScopeStatus(AccountingDate.Year);
+            return Organisation.GetScopeStatusForYear(AccountingDate.Year);
         }
 
         public bool CalculateIsLateSubmission()
