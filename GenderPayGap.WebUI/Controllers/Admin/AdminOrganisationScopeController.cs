@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult ChangeScopeGet(long id, int year)
         {
             var organisation = dataRepository.Get<Organisation>(id);
-            var currentScopeStatus = organisation.GetScopeStatus(year);
+            var currentScopeStatus = organisation.GetScopeStatusForYear(year);
 
             var viewModel = new AdminChangeScopeViewModel {
                 OrganisationName = organisation.OrganisationName,
@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (!ModelState.IsValid)
             {
                 // If there are any errors, return the user back to the same page to correct the mistakes
-                var currentScopeStatus = organisation.GetScopeStatus(year);
+                var currentScopeStatus = organisation.GetScopeStatusForYear(year);
 
                 viewModel.OrganisationName = organisation.OrganisationName;
                 viewModel.OrganisationId = organisation.OrganisationId;

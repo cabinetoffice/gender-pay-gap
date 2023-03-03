@@ -334,36 +334,47 @@ namespace GenderPayGap.Database
                 .FirstOrDefault();
         }
 
+        public Return GetReturnForYearAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            return Returns
+                .Where(r => r.AccountingDate.Year == reportingYear)
+                .Where(r => r.Created.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
+                .OrderByDescending(r => r.Created)
+                .FirstOrDefault();
+        }
+
         // Returns the latest scope for the current accounting date
         public OrganisationScope GetCurrentScope()
         {
             var accountingStartDate = SectorType.GetAccountingStartDate();
 
-            return GetScopeForYear(accountingStartDate);
-        }
-
-        //Returns the scope for the specified accounting date
-        public OrganisationScope GetScopeForYear(DateTime accountingStartDate)
-        {
             return GetScopeForYear(accountingStartDate.Year);
         }
 
-        public OrganisationScope GetScopeForYear(int year)
+        public OrganisationScope GetScopeForYear(int reportingYear)
         {
             return OrganisationScopes.FirstOrDefault(
-                s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == year);
+                s => s.Status == ScopeRowStatuses.Active && s.SnapshotDate.Year == reportingYear);
         }
 
-
-        public ScopeStatuses GetScopeStatus(int year = 0)
+        public OrganisationScope GetScopeForYearAsOfDate(int reportingYear, DateTime asOfDate)
         {
-            DateTime accountingStartDate = SectorType.GetAccountingStartDate(year);
-            return GetScopeStatus(accountingStartDate);
+            return OrganisationScopes
+                .Where(s => s.SnapshotDate.Year == reportingYear)
+                .Where(s => s.ScopeStatusDate.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
+                .OrderByDescending(s => s.ScopeStatusDate)
+                .FirstOrDefault();
         }
 
-        public ScopeStatuses GetScopeStatus(DateTime accountingStartDate)
+        public ScopeStatuses GetScopeStatusForYear(int reportingYear)
         {
-            OrganisationScope scope = GetScopeForYear(accountingStartDate);
+            OrganisationScope scope = GetScopeForYear(reportingYear);
+            return scope == null ? ScopeStatuses.Unknown : scope.ScopeStatus;
+        }
+
+        public ScopeStatuses GetScopeStatusForYearAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            OrganisationScope scope = GetScopeForYearAsOfDate(reportingYear, asOfDate);
             return scope == null ? ScopeStatuses.Unknown : scope.ScopeStatus;
         }
 
@@ -457,7 +468,7 @@ namespace GenderPayGap.Database
 
         public bool GetIsInscope(int year)
         {
-            return !GetScopeStatus(year).IsAny(ScopeStatuses.PresumedOutOfScope, ScopeStatuses.OutOfScope);
+            return GetScopeStatusForYear(year).IsInScopeVariant();
         }
         
         public IEnumerable<Return> GetSubmittedReports()
@@ -489,6 +500,11 @@ namespace GenderPayGap.Database
         public bool HasSubmittedReturn(int reportingYear)
         {
             return GetReturn(reportingYear) != null;
+        }
+
+        public bool HadSubmittedReturnAsOfDate(int reportingYear, DateTime asOfDate)
+        {
+            return GetReturnForYearAsOfDate(reportingYear, asOfDate) != null;
         }
 
     }

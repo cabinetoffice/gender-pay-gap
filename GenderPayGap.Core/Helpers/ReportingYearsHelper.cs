@@ -12,9 +12,15 @@ namespace GenderPayGap.Core.Helpers
         {
             int firstReportingYear = Global.FirstReportingYear;
             int currentReportingYear = GetCurrentReportingYear();
-            int numberOfYears = currentReportingYear - firstReportingYear + 1;
+            int numberOfYears = (currentReportingYear - firstReportingYear) + 1;
 
-            List<int> reportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList();
+            // Use a manual List capacity allocation and a for-loop to reduce memory usage
+            var reportingYears = new List<int>(numberOfYears);
+            for (int year = firstReportingYear; year <= currentReportingYear; year++)
+            {
+                reportingYears.Add(year);
+            }
+
             return reportingYears;
         }
 
@@ -62,6 +68,13 @@ namespace GenderPayGap.Core.Helpers
         }
 
         //The deadline date is the final date on which returns are not considered late
+        public static DateTime GetDeadline(SectorTypes sector, int reportingYear)
+        {
+            DateTime snapshotDate = sector.GetAccountingStartDate(reportingYear);
+            DateTime deadlineDate = GetDeadlineForAccountingDate(snapshotDate);
+            return deadlineDate;
+        }
+        
         public static DateTime GetDeadlineForAccountingDate(DateTime accountingDate)
         {
             int reportingYear = accountingDate.Year;

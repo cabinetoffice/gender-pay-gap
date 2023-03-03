@@ -48,8 +48,6 @@ namespace GenderPayGap.Core.Classes
             return now > tempDate ? tempDate : tempDate.AddYears(-1);
         }
 
-        #region FileSystem
-
         public static string ToCSV(this DataTable datatable)
         {
             return CsvWriter.Write(
@@ -82,8 +80,6 @@ namespace GenderPayGap.Core.Classes
                     return streamReader.ReadToEnd();
                 });
         }
-
-        #endregion
 
     }
 }
