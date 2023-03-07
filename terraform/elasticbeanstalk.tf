@@ -490,12 +490,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "GpgAnalysisAppApiPassword"
-    value     = var.ELB_GPG_ANALYSIS_APP_API_PASSWORD
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "ObfuscationSeed"
     value     = var.ELB_OBFUSCATION_SEED
   }

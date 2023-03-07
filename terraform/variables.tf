@@ -150,10 +150,6 @@ variable "ELB_GOVUK_NOTIFY_API_KEY" {
   type = string
 }
 
-variable "ELB_GPG_ANALYSIS_APP_API_PASSWORD" {
-  type = string
-}
-
 variable "ELB_OBFUSCATION_SEED" {
   type = string
 }
