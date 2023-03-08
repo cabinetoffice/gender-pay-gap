@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -17,7 +16,6 @@ using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Classes
 {
@@ -27,105 +25,16 @@ namespace GenderPayGap.WebUI.Classes
         #region Constructors
 
         public BaseController(
-            IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
             IWebTracker webTracker)
         {
             DataRepository = dataRepository;
             WebTracker = webTracker;
-            Cache = cache;
             Session = session;
         }
 
         #endregion
-
-        public string EmployerBackUrl
-        {
-            get => Session["EmployerBackUrl"] as string;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("EmployerBackUrl");
-                }
-                else
-                {
-                    Session["EmployerBackUrl"] = value;
-                }
-            }
-        }
-
-        public string ReportBackUrl
-        {
-            get => Session["ReportBackUrl"] as string;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("ReportBackUrl");
-                }
-                else
-                {
-                    Session["ReportBackUrl"] = value;
-                }
-            }
-        }
-
-        private void SaveHistory()
-        {
-            List<string> history = PageHistory;
-            try
-            {
-                string previousPage = UrlReferrer == null || !RequestUrl.Host.Equals(UrlReferrer.Host) ? null : UrlReferrer.PathAndQuery;
-                string currentPage = RequestUrl.PathAndQuery;
-
-                int currentIndex = history.IndexOf(currentPage);
-                int previousIndex = string.IsNullOrWhiteSpace(previousPage) ? -2 : history.IndexOf(previousPage);
-
-                if (previousIndex == -2)
-                {
-                    history.Clear();
-                    history.Insert(0, currentPage);
-                    return;
-                }
-
-                if (currentIndex == -1 && previousIndex == 0)
-                {
-                    history.Insert(0, currentPage);
-                    return;
-                }
-
-                if (currentIndex == -1)
-                {
-                    history.Clear();
-                    if (previousIndex == -1)
-                    {
-                        history.Insert(0, previousPage);
-                    }
-
-                    history.Insert(0, currentPage);
-                    return;
-                }
-
-                if (currentIndex == 0 && previousIndex == 1)
-                {
-                    return;
-                }
-
-                if (currentIndex > previousIndex)
-                {
-                    for (int i = currentIndex - 1; i >= 0; i--)
-                    {
-                        history.RemoveAt(i);
-                    }
-                }
-            }
-            finally
-            {
-                PageHistory = history;
-            }
-        }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -148,13 +57,6 @@ namespace GenderPayGap.WebUI.Classes
                 //Ensure the session data is saved
                 await Session.SaveAsync();
             }
-
-            #region logic after the action goes here
-
-            //Save the history and action/controller names
-            SaveHistory();
-            
-            #endregion
         }
 
         /// <summary>
@@ -214,8 +116,6 @@ namespace GenderPayGap.WebUI.Classes
         public IDataRepository DataRepository { get; protected set; }
         public IWebTracker WebTracker { get; }
         
-        public readonly IHttpCache Cache;
-
         public readonly IHttpSession Session;
         #endregion
 
@@ -227,30 +127,7 @@ namespace GenderPayGap.WebUI.Classes
             set
             {
                 _ReportingOrganisation = null;
-                ReportingOrganisationStartYear = null;
                 Session["ReportingOrganisationId"] = value;
-            }
-        }
-
-        public int? ReportingOrganisationStartYear
-        {
-            get => Session["ReportingOrganisationReportStartYear"].ToInt32();
-            set => Session["ReportingOrganisationReportStartYear"] = value;
-        }
-
-        public string PendingFasttrackCodes
-        {
-            get => (string) Session["PendingFasttrackCodes"];
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("PendingFasttrackCodes");
-                }
-                else
-                {
-                    Session["PendingFasttrackCodes"] = value;
-                }
             }
         }
 
@@ -562,31 +439,7 @@ namespace GenderPayGap.WebUI.Classes
         #endregion
 
 
-        public string UserHostAddress => HttpContext.GetUserHostAddress();
-        public Uri RequestUrl => HttpContext.GetUri();
         public Uri UrlReferrer => HttpContext.GetUrlReferrer();
-
-        public List<string> PageHistory
-        {
-            get
-            {
-                string pageHistory = Session["PageHistory"]?.ToString();
-                return string.IsNullOrWhiteSpace(pageHistory)
-                    ? new List<string>()
-                    : JsonConvert.DeserializeObject<List<string>>(pageHistory);
-            }
-            set
-            {
-                if (value == null || !value.Any())
-                {
-                    Session.Remove("PageHistory");
-                }
-                else
-                {
-                    Session["PageHistory"] = JsonConvert.SerializeObject(value);
-                }
-            }
-        }
 
     }
 }

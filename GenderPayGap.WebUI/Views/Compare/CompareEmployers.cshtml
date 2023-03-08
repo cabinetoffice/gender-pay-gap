@@ -1,7 +1,6 @@
 ﻿@model CompareViewModel
 @{
     ViewBag.Title = "Select and compare gender pay gap data for employers - GOV.UK";
-    string backUrl = string.IsNullOrWhiteSpace(Model.LastSearchUrl) ? "/" : Model.LastSearchUrl;
     var basketModel = ViewBag.BasketViewModel as CompareBasketViewModel;
     basketModel.IsComparePage = true;
 }

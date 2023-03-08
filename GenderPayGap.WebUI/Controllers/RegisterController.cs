@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Services;
@@ -15,14 +14,12 @@ namespace GenderPayGap.WebUI.Controllers
         private readonly AuditLogger auditLogger;
 
         public RegisterController(
-            IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
             IWebTracker webTracker,
             EmailSendingService emailSendingService,
             AuditLogger auditLogger)
             : base(
-            cache,
             session,
             dataRepository,
             webTracker)

@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Helpers;
@@ -27,13 +26,12 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         public CompareController(
-            IHttpCache cache,
             IHttpSession session,
             ISearchViewService searchViewService,
             ICompareViewService compareViewService,
             IDataRepository dataRepository,
             IOrganisationBusinessLogic organisationBusinessLogic,
-            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker)
+            IWebTracker webTracker) : base(session, dataRepository, webTracker)
         {
             OrganisationBusinessLogic = organisationBusinessLogic;
             SearchViewService = searchViewService;
@@ -267,10 +265,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             ViewBag.ReturnUrl = Url.Action("CompareEmployers", new {year});
 
-            //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
-            ReportBackUrl = null;
-
             //Get the compare basket organisations
             IEnumerable<CompareReportModel> compareReports = OrganisationBusinessLogic.GetCompareData(
                 CompareViewService.ComparedEmployers.Value.AsEnumerable(),
@@ -310,7 +304,6 @@ namespace GenderPayGap.WebUI.Controllers
             return View(
                 "CompareEmployers",
                 new CompareViewModel {
-                    LastSearchUrl = SearchViewService.GetLastSearchUrl(),
                     CompareReports = compareReports,
                     CompareBasketCount = CompareViewService.BasketItemCount,
                     ShareEmailUrl =
@@ -334,17 +327,11 @@ namespace GenderPayGap.WebUI.Controllers
             string args = command.AfterFirst(":");
             command = command.BeforeFirst(":");
 
-            //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
-            ReportBackUrl = null;
-
             switch (command.ToLower())
             {
                 case "employer":
-                    EmployerBackUrl = RequestUrl.PathAndQuery;
                     return RedirectToAction(nameof(ViewingController.Employer), "Viewing", new {employerIdentifier = args});
                 case "report":
-                    ReportBackUrl = RequestUrl.PathAndQuery;
                     return RedirectToAction(nameof(ViewingController.Report), "Viewing", new {employerIdentifier = args, year});
             }
 

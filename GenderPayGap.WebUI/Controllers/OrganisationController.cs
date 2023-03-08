@@ -29,7 +29,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public OrganisationController(
-            IHttpCache cache,
             IHttpSession session,
             ISubmissionService submitService,
             IScopeBusinessLogic scopeBL,
@@ -37,7 +36,6 @@ namespace GenderPayGap.WebUI.Controllers
             RegistrationRepository registrationRepository,
             IWebTracker webTracker,
             EmailSendingService emailSendingService) : base(
-            cache,
             session,
             dataRepository,
             webTracker)

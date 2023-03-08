@@ -38,7 +38,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ViewingController(
-            IHttpCache cache,
             IHttpSession session,
             IViewingService viewingService,
             ISearchViewService searchViewService,
@@ -49,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers
             IDataRepository dataRepository,
             IWebTracker webTracker,
             AutoCompleteSearchService autoCompleteSearchService,
-            IFileRepository fileRepository) : base(cache, session, dataRepository, webTracker)
+            IFileRepository fileRepository) : base(session, dataRepository, webTracker)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;
@@ -100,10 +99,6 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/")]
         public IActionResult Index()
         {
-            //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
-            ReportBackUrl = null;
-            
             if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
             {
                 return View("Launchpad/PrototypeIndex");
@@ -145,10 +140,6 @@ namespace GenderPayGap.WebUI.Controllers
                 }
             }
 
-            //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
-            ReportBackUrl = null;
-
             // ensure parameters are valid
             if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
             {
@@ -172,11 +163,6 @@ namespace GenderPayGap.WebUI.Controllers
         // used to generate suggestions for the search on the landing page 
         public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
         {
-            //Clear the default back url of the employer hub pages
-            EmployerBackUrl = null;
-            ReportBackUrl = null;
-
-
             // ensure parameters are valid
             if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
             {
@@ -319,9 +305,6 @@ namespace GenderPayGap.WebUI.Controllers
                 return View("CustomError", new ErrorViewModel(400));
             }
 
-            //Clear the default back url of the report page
-            ReportBackUrl = null;
-
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
             
             var totalEntries = organisationLoadingOutcome.Result.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
@@ -342,9 +325,6 @@ namespace GenderPayGap.WebUI.Controllers
                 "EmployerDetails/Employer",
                 new EmployerDetailsViewModel {
                     Organisation = organisationLoadingOutcome.Result,
-                    LastSearchUrl = SearchViewService.GetLastSearchUrl(),
-                    EmployerBackUrl = EmployerBackUrl,
-                    ComparedEmployers = CompareViewService.ComparedEmployers.Value,
                     CurrentPage = page,
                     TotalPages = totalPages,
                     EntriesPerPage = maxEntriesPerPage

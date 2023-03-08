@@ -267,7 +267,6 @@ namespace GenderPayGap.WebUI
 
             //Register HttpCache and HttpSession
             builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();
-            builder.RegisterType<HttpCache>().As<IHttpCache>().SingleInstance();
 
             // Register Action helpers
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();

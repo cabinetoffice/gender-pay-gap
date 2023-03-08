@@ -18,10 +18,9 @@ namespace GenderPayGap.WebUI.Controllers
         #region Constructors
 
         public ErrorController(
-            IHttpCache cache,
             IHttpSession session,
             IDataRepository dataRepository,
-            IWebTracker webTracker) : base(cache, session, dataRepository, webTracker) { }
+            IWebTracker webTracker) : base(session, dataRepository, webTracker) { }
 
         #endregion
 

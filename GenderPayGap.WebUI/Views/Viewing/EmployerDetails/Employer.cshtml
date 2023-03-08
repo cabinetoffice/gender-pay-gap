@@ -16,7 +16,6 @@
 
     string employerIdentifier = organisation.GetEncryptedId();
 
-    string backUrl = !string.IsNullOrWhiteSpace(Model.EmployerBackUrl) ? Model.EmployerBackUrl : !string.IsNullOrWhiteSpace(Model.LastSearchUrl) ? Model.LastSearchUrl : "/";
     if (string.IsNullOrWhiteSpace(ViewBag.ReturnUrl))
     {
         ViewBag.ReturnUrl = Context.GetUri().PathAndQuery;
