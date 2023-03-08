@@ -25,28 +25,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("pending-registrations")]
         public IActionResult PendingRegistrations()
         {
-            List<UserOrganisation> nonUkAddressUserOrganisations =
-                dataRepository
-                    .GetAll<UserOrganisation>()
-                    .Where(uo => uo.User.Status == UserStatuses.Active)
-                    .Where(uo => uo.PINConfirmedDate == null)
-                    .Where(uo => uo.Method == RegistrationMethods.Manual)
-                    .Where(uo => uo.Address.IsUkAddress.HasValue)
-                    .Where(uo => uo.Address.IsUkAddress.Value == false)
-                    .OrderBy(uo => uo.Modified)
-                    .ToList();
-
-            List<UserOrganisation> publicSectorUserOrganisations =
-                dataRepository
-                    .GetAll<UserOrganisation>()
-                    .Where(uo => uo.User.Status == UserStatuses.Active)
-                    .Where(uo => uo.PINConfirmedDate == null)
-                    .Where(uo => uo.Method == RegistrationMethods.Manual)
-                    .Where(uo => uo.Organisation.SectorType == SectorTypes.Public)
-                    .OrderBy(uo => uo.Modified)
-                    .ToList();
-
-            List<UserOrganisation> allManuallyRegisteredUserOrganisations =
+            List<UserOrganisation> allManualRegistrations =
                 dataRepository
                     .GetAll<UserOrganisation>()
                     .Where(uo => uo.User.Status == UserStatuses.Active)
@@ -55,16 +34,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .OrderBy(uo => uo.Modified)
                     .ToList();
 
-            List<UserOrganisation> remainingManuallyRegisteredUserOrganisations =
-                allManuallyRegisteredUserOrganisations
-                    .Except(publicSectorUserOrganisations)
-                    .Except(nonUkAddressUserOrganisations)
-                    .ToList();
+            List<UserOrganisation> nonUkAddressRegistrations = allManualRegistrations.Where(uo => uo.Address.IsUkAddress == false).ToList();
+            List<UserOrganisation> publicSectorRegistrations = allManualRegistrations.Where(uo => uo.Organisation.SectorType == SectorTypes.Public).ToList();
+            List<UserOrganisation> remainingRegistrations = allManualRegistrations.Except(publicSectorRegistrations).Except(nonUkAddressRegistrations).ToList();
 
             var model = new PendingRegistrationsViewModel {
-                PublicSectorUserOrganisations = publicSectorUserOrganisations,
-                NonUkAddressUserOrganisations = nonUkAddressUserOrganisations,
-                ManuallyRegisteredUserOrganisations = remainingManuallyRegisteredUserOrganisations
+                PublicSectorUserOrganisations = publicSectorRegistrations,
+                NonUkAddressUserOrganisations = nonUkAddressRegistrations,
+                ManuallyRegisteredUserOrganisations = remainingRegistrations
             };
 
             return View("PendingRegistrations", model);
