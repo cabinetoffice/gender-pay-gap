@@ -76,7 +76,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             return View("LateSubmissionReason", viewModel);
         }
 
-        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-reason")]
+        [HttpPost("{encryptedOrganisationId}/reporting-year-{reportingYear}/report/late-submission")]
         [ValidateAntiForgeryToken]
         public IActionResult LateSubmissionReasonPost(string encryptedOrganisationId, int reportingYear, LateSubmissionReasonViewModel viewModel)
         {
