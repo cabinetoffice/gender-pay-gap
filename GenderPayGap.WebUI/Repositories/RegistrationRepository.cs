@@ -172,8 +172,7 @@ namespace GenderPayGap.WebUI.Repositories
             string contactName = $"{user.Fullname} ({user.JobTitle})";
             string reportingAddress = organisation.GetLatestAddress()?.GetAddressString();
 
-            string reviewCode = userOrganisation.GetReviewCode();
-            string reviewUrl = urlHelper.Action("ReviewRequest", "Register", new { code = reviewCode }, "https");
+            string reviewUrl = urlHelper.Action("PendingRegistrationGet", "AdminPendingRegistrations", new { userId = userOrganisation.UserId, organisationId = userOrganisation.OrganisationId }, "https");
 
             emailSendingService.SendGeoOrganisationRegistrationRequestEmail(
                 contactName,
