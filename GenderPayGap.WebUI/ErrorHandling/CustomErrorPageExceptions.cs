@@ -86,4 +86,10 @@ namespace GenderPayGap.WebUI.ErrorHandling
         public long OrganisationId { get; set; }
         public int ReportingYear { get; set; }
     }
+    
+    public class RegistrationNotFoundException : CustomErrorPageException
+    {
+        public override string ViewName => "../Errors/RegistrationNotFound";
+        public override int StatusCode => 404;
+    }
 }
