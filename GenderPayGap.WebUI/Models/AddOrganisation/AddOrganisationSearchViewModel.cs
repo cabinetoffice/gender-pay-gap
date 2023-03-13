@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.AddOrganisation
@@ -26,6 +25,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
     {
         public string OrganisationName { get; set; }
         public string OrganisationAddress { get; set; }
+        public long? OrganisationId { get; set; }
         public string EncryptedOrganisationId { get; set; }
         public string CompanyNumber { get; set; }
         public List<AddOrganisationSearchResultOrganisationIdentifier> Identifiers { get; set; } = new List<AddOrganisationSearchResultOrganisationIdentifier>();
@@ -36,4 +36,11 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public string IdentifierType { get; set; }
         public string Identifier { get; set; }
     }
+    
+    public class AddOrganisationSeparateSearchResults
+    {
+        public List<AddOrganisationSearchResult> SearchResultsFromOurDatabase { get; set; }
+        public List<AddOrganisationSearchResult> SearchResultsFromCompaniesHouse { get; set; }
+    }
+
 }
