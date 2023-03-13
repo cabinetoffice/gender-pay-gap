@@ -396,7 +396,7 @@ else
                         }
                         else
                         {
-                            <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrganisation.GetReviewCode()}))"
+                            <a href="@Url.Action("PendingRegistrationGet", "AdminPendingRegistrations", new {userId = userOrganisation.UserId, organisationId = userOrganisation.OrganisationId})"
                                class="govuk-link">
                                 Review user request <span class="govuk-visually-hidden"> for @(user.Fullname)</span>
                             </a>

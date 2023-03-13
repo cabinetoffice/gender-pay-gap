@@ -1,0 +1,31 @@
+﻿@using GenderPayGap.WebUI.Models.AddOrganisation
+@model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationSearchResult
+
+<li>
+    <div>
+        <h4 class="govuk-heading-s govuk-!-margin-bottom-0">
+            @if (Model.OrganisationId.HasValue)
+            {
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId.Value})"
+                   class="govuk-link">
+                    @(Model.OrganisationName)
+                </a>
+            }
+            else
+            {
+                @(Model.OrganisationName)
+            }
+        </h4>
+
+        <span class="govuk-visually-hidden">Address:</span>
+        @(Model.OrganisationAddress)
+
+        <span class="govuk-!-font-size-16">
+            @foreach (AddOrganisationSearchResultOrganisationIdentifier identifier in Model.Identifiers)
+            {
+                <br />
+                <span>@(identifier.IdentifierType): @(identifier.Identifier)</span>
+            }
+        </span>
+    </div>
+</li>

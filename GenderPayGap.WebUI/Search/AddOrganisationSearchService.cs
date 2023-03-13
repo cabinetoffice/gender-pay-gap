@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Search
             List<RankedAddOrganisationSearchOrganisation> matchingOrganisations = MergeMatchingOrganisations(matchingOrganisationsFromDatabase, matchingOrganisationsFromCompaniesHouse);
 
             List<RankedAddOrganisationSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
-            ReduceRankingOfCompaniesHouseOrganisationsThatDoNotMatchEverySearchTermInQuery(organisationsWithRankings, searchTerms, query, queryContainsPunctuation);
+            ReduceRankingOfCompaniesHouseOrganisationsThatDoNotMatchEverySearchTermInQuery(organisationsWithRankings, searchTerms, queryContainsPunctuation);
             List<RankedAddOrganisationSearchOrganisation> rankedOrganisations = OrderOrganisationsByRank(organisationsWithRankings);
 
             AddOrganisationSearchResults results = ConvertOrganisationsToSearchResults(rankedOrganisations);
@@ -81,10 +81,47 @@ namespace GenderPayGap.WebUI.Search
             return results;
         }
 
+        public AddOrganisationSeparateSearchResults SearchPrivateWithSeparateResults(string query)
+        {
+            bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
+            List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
+
+            // Get matching organisations from our database
+            List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations;
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromDatabase = GetMatchingOrganisationsFromDatabase(allOrganisations, searchTerms, query, queryContainsPunctuation);
+            AddOrganisationSearchResults resultsFromOurDatabase = RankAndConvert(query, searchTerms, queryContainsPunctuation, matchingOrganisationsFromDatabase);
+            
+            // Get matching organisations from Companies House API
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromCompaniesHouse = GetMatchingOrganisationsFromCompaniesHouse(query);
+            
+            // Remove results from Companies House that are also in our own database
+            matchingOrganisationsFromCompaniesHouse = RemoveMatchingOrganisations(matchingOrganisationsFromDatabase, matchingOrganisationsFromCompaniesHouse);
+            AddOrganisationSearchResults resultsFromCompaniesHouse = RankAndConvert(query, searchTerms, queryContainsPunctuation, matchingOrganisationsFromCompaniesHouse);
+            
+            return new AddOrganisationSeparateSearchResults
+            {
+                SearchResultsFromOurDatabase = resultsFromOurDatabase.SearchResults,
+                SearchResultsFromCompaniesHouse = resultsFromCompaniesHouse.SearchResults
+            };
+        }
+
+        private AddOrganisationSearchResults RankAndConvert(
+            string query,
+            List<string> searchTerms,
+            bool queryContainsPunctuation,
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisations)
+        {
+            List<RankedAddOrganisationSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(matchingOrganisations, searchTerms, query, queryContainsPunctuation);
+            ReduceRankingOfCompaniesHouseOrganisationsThatDoNotMatchEverySearchTermInQuery(organisationsWithRankings, searchTerms, queryContainsPunctuation);
+            List<RankedAddOrganisationSearchOrganisation> rankedOrganisations = OrderOrganisationsByRank(organisationsWithRankings);
+
+            AddOrganisationSearchResults results = ConvertOrganisationsToSearchResults(rankedOrganisations);
+            return results;
+        }
+
         private void ReduceRankingOfCompaniesHouseOrganisationsThatDoNotMatchEverySearchTermInQuery(
             List<RankedAddOrganisationSearchOrganisation> organisationsWithRankings,
             List<string> searchTerms,
-            string query,
             bool queryContainsPunctuation)
         {
             foreach (RankedAddOrganisationSearchOrganisation organisation in organisationsWithRankings)
@@ -159,6 +196,20 @@ namespace GenderPayGap.WebUI.Search
             return allMatches;
         }
 
+        private List<RankedAddOrganisationSearchOrganisation> RemoveMatchingOrganisations(
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromDatabase,
+            List<RankedAddOrganisationSearchOrganisation> matchingOrganisationsFromCompaniesHouse)
+        {
+            List<string> companiesHouseNumbersFromDatabase = matchingOrganisationsFromDatabase
+                .Select(company => company.CompanyNumber)
+                .ToList();
+
+            // Remove any match from CoHo list if we already have that organisation in our database
+            matchingOrganisationsFromCompaniesHouse.RemoveAll(company => companiesHouseNumbersFromDatabase.Contains(company.CompanyNumber));
+
+            return matchingOrganisationsFromCompaniesHouse;
+        }
+
         private static List<RankedAddOrganisationSearchOrganisation> CalculateOrganisationRankings(List<RankedAddOrganisationSearchOrganisation> rankReadyOrganisations,
             List<string> searchTerms,
             string query,
@@ -221,6 +272,7 @@ namespace GenderPayGap.WebUI.Search
                         Organisation foundOrganisation = foundOrganisations.FirstOrDefault(o => o.OrganisationId == org.OrganisationId);
                         if (foundOrganisation != null)
                         {
+                            searchResult.OrganisationId = foundOrganisation.OrganisationId;
                             searchResult.EncryptedOrganisationId = foundOrganisation.GetEncryptedId();
                             searchResult.OrganisationAddress = foundOrganisation.GetLatestAddress()?.GetAddressString();
                             searchResult.CompanyNumber = foundOrganisation.CompanyNumber;

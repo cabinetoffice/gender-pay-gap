@@ -44,21 +44,21 @@
         {
             <h2 class="govuk-heading-l">Public-sector organisations</h2>
 
-            @(await Html.PartialAsync("PendingRegistrationsForOrganisationType", Model.PublicSectorUserOrganisations))
+            @(await Html.PartialAsync("Sections/PendingRegistrationsForOrganisationType", Model.PublicSectorUserOrganisations))
         }
 
         @if (Model.NonUkAddressUserOrganisations.Count > 0)
         {
             <h2 class="govuk-heading-l">Private-sector non-UK addresses</h2>
 
-            @(await Html.PartialAsync("PendingRegistrationsForOrganisationType", Model.NonUkAddressUserOrganisations))
+            @(await Html.PartialAsync("Sections/PendingRegistrationsForOrganisationType", Model.NonUkAddressUserOrganisations))
         }
 
         @if (Model.ManuallyRegisteredUserOrganisations.Count > 0)
         {
             <h2 class="govuk-heading-l">Private-sector manual registrations</h2>
 
-            @(await Html.PartialAsync("PendingRegistrationsForOrganisationType", Model.ManuallyRegisteredUserOrganisations))
+            @(await Html.PartialAsync("Sections/PendingRegistrationsForOrganisationType", Model.ManuallyRegisteredUserOrganisations))
         }
 
     </div>
