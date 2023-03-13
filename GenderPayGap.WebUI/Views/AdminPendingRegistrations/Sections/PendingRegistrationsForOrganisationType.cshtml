@@ -38,7 +38,7 @@ else
                         @(userOrg.User.ContactFullname.Coalesce(userOrg.User.Fullname)) (@(userOrg.User.ContactEmailAddress.Coalesce(userOrg.User.EmailAddress)))
                     </td>
                     <td class="govuk-table__cell">
-                        <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrg.GetReviewCode()}))"
+                        <a href="@(Url.Action("ReviewRequest", "Register", new {code = userOrg.GetReviewCode()}))" 
                            class="govuk-link">
                             Review <span class="govuk-visually-hidden">registration process for @(userOrg.Organisation.OrganisationName) submitted by @(userOrg.User.ContactFullname.Coalesce(userOrg.User.Fullname))</span>
                         </a>
