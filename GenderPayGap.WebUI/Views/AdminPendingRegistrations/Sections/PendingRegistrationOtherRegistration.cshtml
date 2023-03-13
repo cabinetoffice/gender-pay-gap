@@ -1,0 +1,17 @@
+﻿@model GenderPayGap.Database.UserOrganisation
+
+<li class="govuk-!-margin-bottom-2">
+    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.OrganisationId})"
+       class="govuk-link">
+        @(Model.Organisation.OrganisationName)
+    </a>
+    <br/>
+    @if (Model.HasBeenActivated())
+    {
+        <span>since @Model.PINConfirmedDate.Value.ToString("d MMMM yyyy")</span>
+    }
+    else
+    {
+        <b>Pending</b>
+    }
+</li>
