@@ -99,36 +99,6 @@ namespace GenderPayGap.Tests
             GenerateTestData();
         }
 
-        #region SaveScope()
-
-        [Test]
-        [Description("SaveScope: Retires any previous submissions in the same snapshot year")]
-        public void SaveScope_retires_any_previous_submissions_in_the_same_snapshot_year()
-        {
-            Organisation testOrg = testOrgData.Where(o => o.OrganisationId == 4).FirstOrDefault();
-            var testNewScope = new OrganisationScope {OrganisationId = 4, SnapshotDate = new DateTime(2017, 4, 5)};
-            var saveChangesCalled = false;
-
-            // Mocks
-            mockDataRepo.Setup(r => r.GetAll<OrganisationScope>()).Returns(testOrgScopeData.AsQueryable().BuildMock().Object);
-            mockDataRepo.Setup(r => r.SaveChanges()).Callback(() => saveChangesCalled = true);
-
-            // Test
-            testScopeBL.SaveScope(testOrg, true, testNewScope);
-
-            // Assert
-            Expect(saveChangesCalled, "Expected SaveChanges() to be called");
-            Expect(testOrg.OrganisationScopes.Contains(testNewScope), "Expected org.OrganisationScopes to contain new scope");
-
-            // ensure only one submitted record for the current snapshot year
-            Expect(testNewScope.Status == ScopeRowStatuses.Active, "Expected new scope status to be submitted");
-            Expect(
-                testOrg.OrganisationScopes.Count(os => os.Status == ScopeRowStatuses.Active && os.SnapshotDate.Year == 2017) == 1,
-                "Expected Count(OrganisationScopes == submitted) to be 1");
-        }
-
-        #endregion
-
         #region GetLatestScopeForSnapshotYear()
 
         [Test]
