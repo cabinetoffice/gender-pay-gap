@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             return View("ManageOrganisation", viewModel);
         }
 
-        [HttpGet("{encryptedOrganisationId}/AllReports")]
+        [HttpGet("{encryptedOrganisationId}/all-reports")]
         [Authorize(Roles = LoginRoles.GpgEmployer)]
         public IActionResult AllOrganisationReportsGet(string encryptedOrganisationId, int? page = 1)
         {
