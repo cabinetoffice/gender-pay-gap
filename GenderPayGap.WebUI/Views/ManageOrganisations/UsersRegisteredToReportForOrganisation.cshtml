@@ -41,7 +41,7 @@
                                    }
                                </p>
                                <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
-                                   <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
+                                   <a class="govuk-link" href="@Url.Action("RemoveUserFromOrganisationGet", "RemoveUserFromOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, userToRemoveEncryptedUserId = encryptedUserId})">
                                        Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
                                    </a>
                                </p>
@@ -69,7 +69,7 @@
                 {
                     Html = @<text>
                               <p class="govuk-!-margin-top-1 govuk-!-margin-bottom-1">
-                                  <a class="govuk-link" href="@(Url.Action("RemoveOrganisation", "Organisation", new {orgId = encryptedOrganisationId, userId = encryptedUserId}))">
+                                  <a class="govuk-link" href="@Url.Action("RemoveUserFromOrganisationGet", "RemoveUserFromOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, userToRemoveEncryptedUserId = encryptedUserId})">
                                       Remove user <span class="govuk-visually-hidden">@userRegisteredToReport.Fullname</span>
                                   </a>
                               </p>
