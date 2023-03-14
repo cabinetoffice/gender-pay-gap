@@ -71,11 +71,6 @@ namespace GenderPayGap.Core
 
 
         #region Settings that only change per environment
-        public static bool SkipSpamProtection
-        {
-            get => Config.GetAppSetting("TESTING-SkipSpamProtection").ToBoolean();
-            set => Config.SetAppSetting("TESTING-SkipSpamProtection", value.ToString());
-        }
         public static bool SendGoogleAnalyticsDataToGovUk => Config.GetAppSetting("SendGoogleAnalyticsDataToGovUk").ToBoolean();
         public static int MaxNumCallsCompaniesHouseApiPerFiveMins => Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
 
@@ -104,7 +99,6 @@ namespace GenderPayGap.Core
         public static DateTime PublicAccountingDate => DateTime.Parse("2017-03-31");
         public static int EmailVerificationExpiryDays => 7;
         public static int EmailVerificationMinResendHours => 1;
-        public static int LevenshteinDistance => 2;
         public static int LockoutMinutes => 30;
         public static int MaxAuthAttempts => 5;
         public static int MaxPinAttempts => 3;

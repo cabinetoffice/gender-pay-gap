@@ -15,12 +15,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
     public interface IOrganisationBusinessLogic
     {
-        CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier);
-
-        CustomResult<Organisation> LoadInfoFromActiveEmployerIdentifier(string employerIdentifier);
-
-        CustomResult<Organisation> GetOrganisationByEncryptedReturnId(string encryptedReturnId);
-
         IEnumerable<CompareReportModel> GetCompareData(IEnumerable<string> comparedOrganisationIds,
             int year,
             string sortColumn,
@@ -33,71 +27,16 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
     public class OrganisationBusinessLogic : IOrganisationBusinessLogic
     {
 
-        private readonly IEncryptionHandler _encryptionHandler;
         private readonly IObfuscator _obfuscator;
-        private readonly ISubmissionBusinessLogic _submissionLogic;
 
         public OrganisationBusinessLogic(IDataRepository dataRepo,
-            ISubmissionBusinessLogic submissionLogic,
-            IEncryptionHandler encryptionHandler,
             IObfuscator obfuscator = null)
         {
             _DataRepository = dataRepo;
-            _submissionLogic = submissionLogic;
             _obfuscator = obfuscator;
-            _encryptionHandler = encryptionHandler;
         }
 
         private IDataRepository _DataRepository { get; }
-
-        public CustomResult<Organisation> LoadInfoFromEmployerIdentifier(string employerIdentifier)
-        {
-            int organisationId = _obfuscator.DeObfuscate(employerIdentifier);
-
-            if (organisationId == 0)
-            {
-                return new CustomResult<Organisation>(InternalMessages.HttpBadRequestCausedByInvalidEmployerIdentifier(employerIdentifier));
-            }
-
-            Organisation organisation = GetOrganisationById(organisationId);
-
-            if (organisation == null)
-            {
-                return new CustomResult<Organisation>(InternalMessages.HttpNotFoundCausedByOrganisationIdNotInDatabase(employerIdentifier));
-            }
-
-            return new CustomResult<Organisation>(organisation);
-        }
-
-
-        public virtual CustomResult<Organisation> LoadInfoFromActiveEmployerIdentifier(string employerIdentifier)
-        {
-            CustomResult<Organisation> result = LoadInfoFromEmployerIdentifier(employerIdentifier);
-
-            if (!result.Failed && !result.Result.IsSearchable())
-            {
-                return new CustomResult<Organisation>(InternalMessages.HttpGoneCausedByOrganisationBeingInactive(result.Result.Status));
-            }
-
-            return result;
-        }
-
-
-        public CustomResult<Organisation> GetOrganisationByEncryptedReturnId(string encryptedReturnId)
-        {
-            string decryptedReturnId = _encryptionHandler.DecryptAndDecode(encryptedReturnId);
-
-            Return result = _submissionLogic.GetSubmissionByReturnId(decryptedReturnId.ToInt64());
-
-            if (result == null)
-            {
-                return new CustomResult<Organisation>(InternalMessages.HttpNotFoundCausedByReturnIdNotInDatabase(encryptedReturnId));
-            }
-
-            Organisation organisation = GetOrganisationById(result.OrganisationId);
-
-            return new CustomResult<Organisation>(organisation);
-        }
 
         public virtual IEnumerable<CompareReportModel> GetCompareData(IEnumerable<string> encBasketOrgIds,
             int year,
@@ -223,8 +162,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
             return datatable;
         }
-
-
+        
         private IEnumerable<CompareReportModel> SortCompareReports(IEnumerable<CompareReportModel> originalList,
             string sortColumn,
             bool sortAscending)
@@ -258,11 +196,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             }
 
             return false;
-        }
-
-        public virtual Organisation GetOrganisationById(long organisationId)
-        {
-            return _DataRepository.Get<Organisation>(organisationId);
         }
 
     }

@@ -21,7 +21,6 @@ using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Controllers.Admin;
 using GenderPayGap.WebUI.Cookies;
@@ -240,7 +239,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             // BL Services
             builder.RegisterInstance(Config.Configuration);
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
-            builder.RegisterType<DraftFileBusinessLogic>().As<IDraftFileBusinessLogic>().InstancePerLifetimeScope();
 
             builder.Register(
                     c => c.ResolveAsMock<ScopeBusinessLogic>(
@@ -250,10 +248,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .As<IScopeBusinessLogic>()
                 .InstancePerLifetimeScope();
 
-            builder.Register(
-                    c => c.ResolveAsMock<SubmissionBusinessLogic>(false, typeof(IDataRepository)).Object)
-                .As<ISubmissionBusinessLogic>()
-                .InstancePerLifetimeScope();
             builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
 
@@ -267,14 +261,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .As<IViewingService>()
                 .InstancePerLifetimeScope();
 
-            builder.Register(
-                    c => new SubmissionService(
-                        c.Resolve<IDataRepository>(),
-                        c.Resolve<IScopeBusinessLogic>(),
-                        c.Resolve<IDraftFileBusinessLogic>()))
-                .As<ISubmissionService>()
-                .InstancePerLifetimeScope();
-
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
             builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
             
@@ -284,7 +270,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             
 
             builder.Register(c => Mock.Of<IObfuscator>()).As<IObfuscator>().SingleInstance();
-            builder.Register(c => Mock.Of<IEncryptionHandler>()).As<IEncryptionHandler>().SingleInstance();
 
             //Register WebTracker
             builder.Register(c => Mock.Of<IWebTracker>()).As<IWebTracker>().InstancePerLifetimeScope();

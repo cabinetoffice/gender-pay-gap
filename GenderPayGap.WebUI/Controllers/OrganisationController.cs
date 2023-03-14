@@ -8,9 +8,7 @@ using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models.Organisation;
 using GenderPayGap.WebUI.Repositories;
@@ -30,8 +28,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         public OrganisationController(
             IHttpSession session,
-            ISubmissionService submitService,
-            IScopeBusinessLogic scopeBL,
             IDataRepository dataRepository,
             RegistrationRepository registrationRepository,
             IWebTracker webTracker,
@@ -40,8 +36,6 @@ namespace GenderPayGap.WebUI.Controllers
             dataRepository,
             webTracker)
         {
-            SubmissionService = submitService;
-            ScopeBusinessLogic = scopeBL;
             RegistrationRepository = registrationRepository;
             this.emailSendingService = emailSendingService;
         }
@@ -95,10 +89,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         #region Dependencies
-
-        public ISubmissionService SubmissionService { get; }
-
-        public IScopeBusinessLogic ScopeBusinessLogic { get; }
 
         public RegistrationRepository RegistrationRepository { get; }
 

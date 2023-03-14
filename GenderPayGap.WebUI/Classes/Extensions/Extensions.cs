@@ -11,11 +11,9 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes.Formatters;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Classes
@@ -40,22 +38,7 @@ namespace GenderPayGap.WebUI.Classes
         {
             return new GDSDateFormatter(dateTime);
         }
-
-        #region AntiSpam
-
-        public static IHtmlContent SpamProtectionTimeStamp(this IHtmlHelper helper)
-        {
-            var builder = new TagBuilder("input");
-
-            builder.MergeAttribute("id", "SpamProtectionTimeStamp");
-            builder.MergeAttribute("name", "SpamProtectionTimeStamp");
-            builder.MergeAttribute("type", "hidden");
-            builder.MergeAttribute("value", Encryption.EncryptData(VirtualDateTime.Now.ToSmallDateTime()));
-            return builder.RenderSelfClosingTag();
-        }
-
-        #endregion
-
+        
         #region IPrinciple
 
         public static string GetClaim(this IPrincipal principal, string claimType)
@@ -284,43 +267,6 @@ namespace GenderPayGap.WebUI.Classes
             return string.Format(error, displayName, par1, par2);
         }
 
-        //Removes all but the specified properties from the model state
-        public static void Include(this ModelStateDictionary modelState, params string[] properties)
-        {
-            foreach (string key in modelState.Keys.ToList())
-            {
-                if (string.IsNullOrWhiteSpace(key))
-                {
-                    continue;
-                }
-
-                if (properties.ContainsI(key))
-                {
-                    continue;
-                }
-
-                modelState.Remove(key);
-            }
-        }
-
-        //Removes all the specified properties from the model state
-        public static void Exclude(this ModelStateDictionary modelState, params string[] properties)
-        {
-            foreach (string key in modelState.Keys.ToList())
-            {
-                if (string.IsNullOrWhiteSpace(key))
-                {
-                    continue;
-                }
-
-                if (!properties.ContainsI(key))
-                {
-                    continue;
-                }
-
-                modelState.Remove(key);
-            }
-        }
 
         public static void AddModelError(this ModelStateDictionary modelState,
             int errorCode,

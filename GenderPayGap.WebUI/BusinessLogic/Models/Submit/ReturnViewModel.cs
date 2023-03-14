@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Helpers;
-using GenderPayGap.WebUI.BusinessLogic.Models.Organisation;
 using GenderPayGap.WebUI.Views.Models.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
@@ -10,11 +8,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
     [Serializable]
     public class ReturnViewModel
     {
-
-        public ReturnViewModel()
-        {
-            ReportInfo = new ReportInfoModel();
-        }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Enter the difference in mean hourly pay")]
@@ -143,7 +136,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         public bool OptedOutOfReportingPayQuarters { get; set; }
 
         public string ReturnUrl { get; set; }
-        public string OriginatingAction { get; set; }
 
         public string Address { get; set; }
         public string LatestAddress { get; set; }
@@ -152,11 +144,9 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         public OrganisationSizes OrganisationSize { get; set; }
         public string Sector { get; set; }
         public string LatestSector { get; set; }
-        public bool IsDifferentFromDatabase { get; set; }
 
         public bool IsVoluntarySubmission { get; set; }
         public bool IsLateSubmission { get; set; }
-        public bool ShouldProvideLateReason { get; set; }
         public bool IsInScopeForThisReportYear { get; set; }
 
         [Display(
@@ -169,99 +159,9 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
         [Required(AllowEmptyStrings = false, ErrorMessage = "You must tell us if you were contacted by EHRC")]
         public string EHRCResponse { get; set; } = "";
 
-        public ReportInfoModel ReportInfo { get; set; }
-
-        public bool HasDraftWithContent()
-        {
-            if (ReportInfo == null)
-            {
-                return false;
-            }
-
-            return ReportInfo.HasDraftContent();
-        }
-
-        public bool HasReported()
-        {
-            return ReturnId != default;
-        }
-
-        public bool IsValidReturn()
-        {
-            bool optOutOfReporting =
-                ReportingYearsHelper.IsReportingYearWithFurloughScheme(AccountingDate) && OptedOutOfReportingPayQuarters;
-
-            bool hasPayQuartersData = MaleLowerPayBand.HasValue
-                                      && FemaleLowerPayBand.HasValue
-                                      && MaleMiddlePayBand.HasValue
-                                      && FemaleMiddlePayBand.HasValue
-                                      && MaleUpperPayBand.HasValue
-                                      && FemaleUpperPayBand.HasValue
-                                      && MaleUpperQuartilePayBand.HasValue
-                                      && FemaleUpperQuartilePayBand.HasValue;
-            bool hasEnterCalculationsData = DiffMeanHourlyPayPercent.HasValue
-                                            && DiffMedianHourlyPercent.HasValue
-                                            && MaleMedianBonusPayPercent.HasValue
-                                            && FemaleMedianBonusPayPercent.HasValue
-                                            && FemaleMoneyFromMeanHourlyRate >= 0
-                                            && FemaleMoneyFromMedianHourlyRate >= 0;
-            bool hasValidBonusFigures = MaleMedianBonusPayPercent == 0 || DiffMeanBonusPercent.HasValue && DiffMedianBonusPercent.HasValue;
-            bool hasValidGpgFigures = (optOutOfReporting || hasPayQuartersData) && hasEnterCalculationsData && hasValidBonusFigures;
-            if (SectorType == SectorTypes.Public)
-            {
-                return hasValidGpgFigures;
-            }
-
-            bool hasPersonResponsibleData = !string.IsNullOrWhiteSpace(JobTitle)
-                                            && !string.IsNullOrWhiteSpace(FirstName)
-                                            && !string.IsNullOrWhiteSpace(LastName);
-
-            return hasValidGpgFigures && hasPersonResponsibleData;
-        }
-
-        public bool HasUserData()
-        {
-            return DiffMeanHourlyPayPercent.HasValue
-                   || DiffMedianHourlyPercent.HasValue
-                   || DiffMeanBonusPercent.HasValue
-                   || DiffMedianBonusPercent.HasValue
-                   || MaleMedianBonusPayPercent.HasValue
-                   || FemaleMedianBonusPayPercent.HasValue
-                   || MaleLowerPayBand.HasValue
-                   || FemaleLowerPayBand.HasValue
-                   || MaleMiddlePayBand.HasValue
-                   || FemaleMiddlePayBand.HasValue
-                   || MaleUpperPayBand.HasValue
-                   || FemaleUpperPayBand.HasValue
-                   || MaleUpperQuartilePayBand.HasValue
-                   || FemaleUpperQuartilePayBand.HasValue
-                   || FemaleMoneyFromMeanHourlyRate > 0
-                   || FemaleMoneyFromMedianHourlyRate > 0
-                   || !string.IsNullOrWhiteSpace(JobTitle)
-                   || !string.IsNullOrWhiteSpace(FirstName)
-                   || !string.IsNullOrWhiteSpace(LastName)
-                   || OrganisationSize > 0
-                   || !string.IsNullOrWhiteSpace(CompanyLinkToGPGInfo);
-        }
-
         #region Hourly Rate Helpers
 
         public bool FemaleHasLowerMeanHourlyPercent => DiffMeanHourlyPayPercent == null || DiffMeanHourlyPayPercent >= 0;
-
-        public decimal FemaleMoneyFromMeanHourlyRate
-        {
-            get
-            {
-                if (DiffMeanHourlyPayPercent == null)
-                {
-                    return 0;
-                }
-
-                return FemaleHasLowerMeanHourlyPercent
-                    ? 100 - DiffMeanHourlyPayPercent.Value
-                    : 100 + Math.Abs(DiffMeanHourlyPayPercent.Value);
-            }
-        }
 
         public bool FemaleHasLowerMedianHourlyPercent => DiffMedianHourlyPercent == null || DiffMedianHourlyPercent >= 0;
 
