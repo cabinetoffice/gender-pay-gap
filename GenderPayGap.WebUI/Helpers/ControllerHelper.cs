@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
@@ -85,8 +85,8 @@ namespace GenderPayGap.WebUI.Helpers
                 throw new UserNotRegisteredToReportForOrganisationException();
             }
 
-            // If organisation exists, but isn't active
-            if (!userOrg.PINConfirmedDate.HasValue)
+            // If UserOrganisation exists, but isn't active
+            if (!userOrg.HasBeenActivated())
             {
                 throw new UserNotRegisteredToReportForOrganisationException();
             }
