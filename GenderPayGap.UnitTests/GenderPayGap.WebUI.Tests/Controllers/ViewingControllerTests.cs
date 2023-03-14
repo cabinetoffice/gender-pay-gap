@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Autofac;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Classes.ErrorMessages;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
@@ -13,6 +14,7 @@ using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -366,14 +368,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Throws(new Exception("Kaboom"));
 
             // Act
-            var result = controller.Employer("ADGFGHU!$£") as ViewResult;
-            Assert.NotNull(result, "Expected ViewResult");
-            var model = result.Model as ErrorViewModel;
-            Assert.NotNull(model);
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Employer("ADGFGHU!$£"));
+            Assert.NotNull(result, "Expected PageNotFoundException");
 
             // Assert
-            Assert.AreEqual("CustomError", result.ViewName);
-            Assert.AreEqual(400, model.ErrorCode);
+            Assert.AreEqual("../Errors/404", result.ViewName);
+            Assert.AreEqual(404, result.StatusCode);
         }
 
         [Test]
@@ -391,11 +391,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
 
             // Act
-            var result = controller.Employer(Encryption.EncryptQuerystring("0")) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Employer(Encryption.EncryptQuerystring("0")));
 
             // Assert
             Assert.NotNull(result, "Expected HttpStatusViewResult");
-            Assert.AreEqual((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
         }
 
         [Test]
@@ -412,23 +412,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var controller = UiTestHelper.GetController<ViewingController>(0, routeData, org, report);
 
-            Mock<IObfuscator> mockedObfuscatorToSetup = AutoFacExtensions.ResolveAsMock<IObfuscator>();
-            mockedObfuscatorToSetup
-                .Setup(x => x.DeObfuscate(It.IsAny<string>()))
-                .Returns(9876);
-
             // Act
-            var result = controller.Employer(Encryption.EncryptQuerystring("200")) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Employer(Obfuscator.Obfuscate("200")));
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
-            Assert.AreEqual("Employer: Could not find organisation ',di0kAFDy6aEo_ovct9iTpg!!'", result.StatusDescription);
         }
 
-        [TestCase(OrganisationStatuses.Deleted, "Employer: The status of this organisation is 'Deleted'")]
-        public void ViewingController_Employer_When_OrganisationStatus_Is_Not_Active_Returns_Gone(OrganisationStatuses orgStatus,
-            string expectedDescriptionMessage)
+        [TestCase(OrganisationStatuses.Deleted)]
+        public void ViewingController_Employer_When_OrganisationStatus_Is_Not_Active_Returns_Gone(OrganisationStatuses orgStatus)
         {
             // Arrange
             var routeData = new RouteData();
@@ -445,12 +438,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Returns(org.OrganisationId.ToInt32());
 
             // Act
-            var result = controller.Employer(org.GetEncryptedId()) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Employer(org.GetEncryptedId()));
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual((int) HttpStatusCode.Gone, result.StatusCode);
-            Assert.AreEqual(expectedDescriptionMessage, result.StatusDescription);
+            Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
         }
 
         [Test]
@@ -461,13 +453,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var controller = UiTestHelper.GetController<ViewingController>(default, null, org);
 
-            Mock<IObfuscator> mockedObfuscatorToSetup = AutoFacExtensions.ResolveAsMock<IObfuscator>();
-            mockedObfuscatorToSetup
-                .Setup(x => x.DeObfuscate(It.IsAny<string>()))
-                .Returns(org.OrganisationId.ToInt32());
+            string obfuscatedOrganisationId = Obfuscator.Obfuscate(org.OrganisationId.ToInt32());
 
             // Act
-            var result = controller.Employer("someEncryptedOrgId") as ViewResult;
+            var result = controller.Employer(obfuscatedOrganisationId) as ViewResult;
 
             // Assert
             // Check for correct view
@@ -700,17 +689,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Throws(new Exception("Kaboom"));
 
             // Act
-            var result = controller.Report("dxDN£34MdgC", Global.FirstReportingYear) as ViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report("dxDN£34MdgC", Global.FirstReportingYear));
             Assert.NotNull(result);
-            var model = result.Model as ErrorViewModel;
-            Assert.NotNull(model);
 
             // Assert
-            Assert.AreEqual("CustomError", result.ViewName);
-            Assert.AreEqual(400, model.ErrorCode);
-            Assert.AreEqual("Please try again later", model.Description);
-            Assert.AreEqual("Something’s gone wrong", model.Title);
-            Assert.AreEqual("Continue", model.ActionText);
+            Assert.AreEqual("../Errors/404", result.ViewName);
+            Assert.AreEqual(404, result.StatusCode);
         }
 
         [Test]
@@ -721,14 +705,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string obfuscatedZeroOrganisationId = new InternalObfuscator().Obfuscate(0);
 
             // Act
-            var result = controller.Report(obfuscatedZeroOrganisationId, Global.FirstReportingYear) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(obfuscatedZeroOrganisationId, Global.FirstReportingYear));
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual((int) HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {obfuscatedZeroOrganisationId}", result.StatusDescription);
-            Assert.AreNotEqual("B7gZMAkD", result.StatusDescription, "InternalObfuscator must NOT use seed 113");
-            Assert.AreNotEqual("dZzBr4ns", result.StatusDescription, "InternalObfuscator must NOT use seed 127");
+            Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
         }
 
         [Test]
@@ -739,12 +720,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string obfuscatedEmployerId = ConfigureObfuscator(1548);
 
             // Act
-            var result = controller.Report(obfuscatedEmployerId, Global.FirstReportingYear) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(obfuscatedEmployerId, Global.FirstReportingYear));
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
-            Assert.AreEqual("Employer: Could not find organisation 'Mzc8pnQs'", result.StatusDescription);
         }
 
         [TestCase(20154, OrganisationStatuses.Deleted)]
@@ -761,12 +741,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Returns(org.OrganisationId.ToInt32());
 
             // Act
-            var result = controller.Report(org.GetEncryptedId(), Global.FirstReportingYear) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(org.GetEncryptedId(), Global.FirstReportingYear));
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual((int) HttpStatusCode.Gone, result.StatusCode);
-            Assert.AreEqual($"Employer: The status of this organisation is '{organisationStatus}'", result.StatusDescription);
+            Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
         }
 
         [Test]
@@ -783,12 +762,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Returns(org.OrganisationId.ToInt32());
 
             // Act
-            var result = controller.Report(org.GetEncryptedId(), Global.FirstReportingYear) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(org.GetEncryptedId(), Global.FirstReportingYear));
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
-            Assert.AreEqual("Employer: Could not find GPG Data for organisation:jdCWd4F1 and year:2017", result.StatusDescription);
         }
 
         [TestCase(ReturnStatuses.Deleted)]
@@ -821,12 +799,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Returns(org.OrganisationId.ToInt32());
 
             // Act
-            var result = controller.Report(org.GetEncryptedId(), report1.AccountingDate.Year) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(org.GetEncryptedId(), report1.AccountingDate.Year));
 
             // Assert
             Assert.NotNull(result, "Expected HttpStatusViewResult");
-            Assert.AreEqual((int) HttpStatusCode.Gone, result.StatusCode);
-            Assert.AreEqual($"Employer report '2017' is showing with status '{returnStatus}'", result.StatusDescription);
+            Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
         }
 
         [Test]
@@ -854,14 +831,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Returns(org.OrganisationId.ToInt32());
 
             // Act
-            var result = controller.Report(obfuscatedOrganisationId, Global.FirstReportingYear + 1) as HttpStatusViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(obfuscatedOrganisationId, Global.FirstReportingYear + 1));
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual((int) HttpStatusCode.NotFound, result.StatusCode);
-            Assert.AreEqual(
-                $"Employer: Could not find GPG Data for organisation:{obfuscatedOrganisationId} and year:2018",
-                result.StatusDescription);
         }
 
         [Test]
@@ -890,17 +864,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.SubmissionBusinessLogic = mockedSubmissionBusinessLogicToSetup.Object;
 
             // Act
-            var result = controller.Report(obfuscatedOrganisationId, Global.FirstReportingYear + 1) as ViewResult;
+            var result = Assert.Throws<PageNotFoundException>(() => controller.Report(obfuscatedOrganisationId, Global.FirstReportingYear + 1));
             Assert.NotNull(result);
-            var model = result.Model as ErrorViewModel;
-            Assert.NotNull(model);
 
             // Assert
-            Assert.AreEqual("CustomError", result.ViewName);
-            Assert.AreEqual(400, model.ErrorCode);
-            Assert.AreEqual("Please try again later", model.Description);
-            Assert.AreEqual("Something’s gone wrong", model.Title);
-            Assert.AreEqual("Continue", model.ActionText);
+            Assert.AreEqual("../Errors/404", result.ViewName);
+            Assert.AreEqual(404, result.StatusCode);
         }
 
         [Test]

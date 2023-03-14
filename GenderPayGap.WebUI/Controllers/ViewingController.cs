@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +20,7 @@ using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
@@ -288,26 +289,13 @@ namespace GenderPayGap.WebUI.Controllers
                 return new HttpBadRequestResult("Missing employer identifier");
             }
 
-            CustomResult<Organisation> organisationLoadingOutcome;
-
-            try
-            {
-                organisationLoadingOutcome = OrganisationBusinessLogic.LoadInfoFromActiveEmployerIdentifier(employerIdentifier);
-
-                if (organisationLoadingOutcome.Failed)
-                {
-                    return organisationLoadingOutcome.ErrorMessage.ToHttpStatusViewResult();
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error($"Cannot decrypt return employerIdentifier from '{employerIdentifier}'", ex);
-                return View("CustomError", new ErrorViewModel(400));
-            }
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, DataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
             
-            var totalEntries = organisationLoadingOutcome.Result.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
+            var totalEntries = organisation.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
             var maxEntriesPerPage = 10;
             var totalPages = (int)Math.Ceiling((double)totalEntries / maxEntriesPerPage);
 
@@ -324,7 +312,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View(
                 "EmployerDetails/Employer",
                 new EmployerDetailsViewModel {
-                    Organisation = organisationLoadingOutcome.Result,
+                    Organisation = organisation,
                     CurrentPage = page,
                     TotalPages = totalPages,
                     EntriesPerPage = maxEntriesPerPage
@@ -373,24 +361,11 @@ namespace GenderPayGap.WebUI.Controllers
 
             #region Load organisation
 
-            CustomResult<Organisation> organisationLoadingOutcome;
+            Organisation foundOrganisation;
 
-            try
-            {
-                organisationLoadingOutcome = OrganisationBusinessLogic.LoadInfoFromActiveEmployerIdentifier(employerIdentifier);
-
-                if (organisationLoadingOutcome.Failed)
-                {
-                    return organisationLoadingOutcome.ErrorMessage.ToHttpStatusViewResult();
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error($"Cannot decrypt return employerIdentifier from '{employerIdentifier}'", ex);
-                return View("CustomError", new ErrorViewModel(400));
-            }
-
-            Organisation foundOrganisation = organisationLoadingOutcome.Result;
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            foundOrganisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, DataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(foundOrganisation);
 
             #endregion
 
@@ -400,20 +375,18 @@ namespace GenderPayGap.WebUI.Controllers
 
             try
             {
-                CustomResult<Return> getLatestSubmissionLoadingOutcome =
-                    SubmissionBusinessLogic.GetSubmissionByOrganisationAndYear(foundOrganisation, year);
+                Return foundReturn = foundOrganisation.GetReturn(year);
 
-                if (getLatestSubmissionLoadingOutcome.Failed)
+                if (foundReturn == null)
                 {
-                    return getLatestSubmissionLoadingOutcome.ErrorMessage.ToHttpStatusViewResult();
+                    throw new PageNotFoundException();
                 }
 
-                model = SubmissionBusinessLogic.ConvertSubmissionReportToReturnViewModel(getLatestSubmissionLoadingOutcome.Result);
+                model = ConvertSubmissionReportToReturnViewModel(foundReturn);
             }
             catch (Exception ex)
             {
-                CustomLogger.Error($"Exception processing the return information for Organisation '{foundOrganisation.OrganisationId}:{foundOrganisation.OrganisationName}'", ex);
-                return View("CustomError", new ErrorViewModel(400));
+                throw new PageNotFoundException();
             }
 
             #endregion
@@ -421,6 +394,61 @@ namespace GenderPayGap.WebUI.Controllers
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
 
             return View("EmployerDetails/Report", model);
+        }
+
+        private ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert)
+        {
+            var model = new ReturnViewModel {
+                SectorType = reportToConvert.Organisation.SectorType,
+                ReturnId = reportToConvert.ReturnId,
+                OrganisationId = reportToConvert.OrganisationId,
+                EncryptedOrganisationId = reportToConvert.Organisation.GetEncryptedId(),
+                DiffMeanBonusPercent = reportToConvert.DiffMeanBonusPercent,
+                DiffMeanHourlyPayPercent = reportToConvert.DiffMeanHourlyPayPercent,
+                DiffMedianBonusPercent = reportToConvert.DiffMedianBonusPercent,
+                DiffMedianHourlyPercent = reportToConvert.DiffMedianHourlyPercent,
+                FemaleLowerPayBand = reportToConvert.FemaleLowerPayBand,
+                FemaleMedianBonusPayPercent = reportToConvert.FemaleMedianBonusPayPercent,
+                FemaleMiddlePayBand = reportToConvert.FemaleMiddlePayBand,
+                FemaleUpperPayBand = reportToConvert.FemaleUpperPayBand,
+                FemaleUpperQuartilePayBand = reportToConvert.FemaleUpperQuartilePayBand,
+                MaleLowerPayBand = reportToConvert.MaleLowerPayBand,
+                MaleMedianBonusPayPercent = reportToConvert.MaleMedianBonusPayPercent,
+                MaleMiddlePayBand = reportToConvert.MaleMiddlePayBand,
+                MaleUpperPayBand = reportToConvert.MaleUpperPayBand,
+                MaleUpperQuartilePayBand = reportToConvert.MaleUpperQuartilePayBand,
+                JobTitle = reportToConvert.JobTitle,
+                FirstName = reportToConvert.FirstName,
+                LastName = reportToConvert.LastName,
+                CompanyLinkToGPGInfo = reportToConvert.CompanyLinkToGPGInfo,
+                AccountingDate = reportToConvert.AccountingDate,
+                Address = reportToConvert.Organisation.GetLatestAddress()?.GetAddressString(),
+                LatestAddress = reportToConvert.Organisation.GetLatestAddress()?.GetAddressString(),
+                EHRCResponse = reportToConvert.EHRCResponse.ToString(),
+                IsVoluntarySubmission = reportToConvert.IsVoluntarySubmission(),
+                IsLateSubmission = reportToConvert.IsLateSubmission,
+                OptedOutOfReportingPayQuarters = reportToConvert.OptedOutOfReportingPayQuarters
+            };
+
+            if (model.Address.EqualsI(model.LatestAddress))
+            {
+                model.LatestAddress = null;
+            }
+
+            model.OrganisationName = reportToConvert.Organisation.GetName(reportToConvert.StatusDate)?.Name
+                                     ?? reportToConvert.Organisation.OrganisationName;
+            model.LatestOrganisationName = reportToConvert.Organisation.OrganisationName;
+
+            model.Sector = reportToConvert.Organisation.GetSicSectorsString(reportToConvert.StatusDate);
+            model.LatestSector = reportToConvert.Organisation.GetSicSectorsString();
+
+            model.OrganisationSize = reportToConvert.OrganisationSize;
+            model.Modified = reportToConvert.Modified;
+
+            model.IsInScopeForThisReportYear =
+                reportToConvert.Organisation.GetIsInscope(reportToConvert.AccountingDate.Year);
+
+            return model;
         }
 
         [HttpGet("add-search-results-to-compare")]

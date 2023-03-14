@@ -2,6 +2,7 @@
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.WebUI.Classes.Presentation;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
             }
             else
             {
-                return new HttpNotFoundResult();
+                throw new PageNotFoundException();
             }
         }
 
@@ -46,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
             }
             else
             {
-                return new HttpNotFoundResult();
+                throw new PageNotFoundException();
             }
         }
 
@@ -84,7 +85,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
             }
             else
             {
-                return new HttpNotFoundResult();
+                throw new PageNotFoundException();
             }
         }
 
@@ -97,7 +98,7 @@ namespace GenderPayGap.WebUI.Controllers.ReportingStepByStep
             }
             else
             {
-                return new HttpNotFoundResult();
+                throw new PageNotFoundException();
             }
         }
 

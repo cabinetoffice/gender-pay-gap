@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -99,6 +100,45 @@ namespace GenderPayGap.WebUI.Helpers
             }
 
             return organisationId;
+        }
+
+        public static long DeObfuscateOrganisationIdOrThrow404(string organisationIdentifier)
+        {
+            try
+            {
+                int organisationId = Obfuscator.DeObfuscate(organisationIdentifier);
+            
+                if (organisationId == 0)
+                {
+                    throw new PageNotFoundException();
+                }
+                
+                return organisationId;
+            }
+            catch (Exception e)
+            {
+                throw new PageNotFoundException();
+            }
+        }
+
+        public static Organisation LoadOrganisationOrThrow404(long organisationId, IDataRepository dataRepository)
+        {
+            var organisation = dataRepository.Get<Organisation>(organisationId);
+
+            if (organisation == null)
+            {
+                throw new PageNotFoundException();
+            }
+
+            return organisation;
+        }
+
+        public static void Throw404IfOrganisationIsNotSearchable(Organisation organisation)
+        {
+            if (!organisation.IsSearchable())
+            {
+                throw new PageNotFoundException();
+            }
         }
 
         public static void ThrowIfReportingYearIsOutsideOfRange(int reportingYear)
