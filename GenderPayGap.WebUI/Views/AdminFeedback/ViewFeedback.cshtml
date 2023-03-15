@@ -54,55 +54,14 @@
             </a>
         </p>
 
-        @{
-            List<Feedback> newFeedback = Model
-                .Where(f => f.FeedbackStatus == FeedbackStatus.New)
-                .OrderByDescending(f => f.CreatedDate)
-                .ToList();
-        }
-
-        @(Html.Partial("ViewFeedbackRowsPartial", new ViewFeedbackRowsPartialViewModel
-        {
-            FeedbackTitle = "new feedback responses",
-            FeedbackRows = newFeedback,
-            ButtonClasses = "",
-            Open = true,
-            ShowMarkAsSpamButton = true,
-            ShowMarkAsNotSpamButton = true
-        }))
-
-        @{
-            List<Feedback> nonSpamFeedback = Model
-                .Where(f => f.FeedbackStatus == FeedbackStatus.NotSpam)
-                .OrderByDescending(f => f.CreatedDate)
-                .ToList();
-        }
-
         @(Html.Partial("ViewFeedbackRowsPartial", new ViewFeedbackRowsPartialViewModel
         {
             FeedbackTitle = "non-spam responses",
-            FeedbackRows = nonSpamFeedback,
+            FeedbackRows = Model,
             ButtonClasses = "govuk-button--secondary",
             Open = true,
             ShowMarkAsSpamButton = true,
             ShowMarkAsNotSpamButton = false
-        }))
-
-        @{
-            List<Feedback> spamFeedback = Model
-                .Where(f => f.FeedbackStatus == FeedbackStatus.Spam)
-                .OrderByDescending(f => f.CreatedDate)
-                .ToList();
-        }
-
-        @(Html.Partial("ViewFeedbackRowsPartial", new ViewFeedbackRowsPartialViewModel
-        {
-            FeedbackTitle = "spam responses",
-            FeedbackRows = spamFeedback,
-            ButtonClasses = "govuk-button--secondary",
-            Open = false,
-            ShowMarkAsSpamButton = false,
-            ShowMarkAsNotSpamButton = true
         }))
 
     </div>

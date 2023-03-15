@@ -3,7 +3,9 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,14 +26,53 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("feedback")]
         public IActionResult ViewFeedback()
         {
-            List<Feedback> feedback = dataRepository.GetAll<Feedback>().ToList();
+            List<Feedback> feedback = dataRepository
+                .GetAll<Feedback>()
+                .Where(f => f.FeedbackStatus == FeedbackStatus.NotSpam)
+                .ToList();
 
             return View("ViewFeedback", feedback);
         }
 
-        [HttpPost("feedback")]
+        [HttpGet("feedback/categorise-feedback/next")]
+        public IActionResult CategoriseNextFeedback()
+        {
+            Feedback nextFeedback = dataRepository
+                .GetAll<Feedback>()
+                .Where(f => f.FeedbackStatus == FeedbackStatus.New)
+                .OrderBy(f => f.FeedbackId)
+                .FirstOrDefault();
+
+            if (nextFeedback == null)
+            {
+                throw new PageNotFoundException();
+            }
+            
+            return RedirectToAction("CategoriseFeedbackGet", "AdminFeedback", new {feedbackId = nextFeedback.FeedbackId});
+        }
+
+        [HttpGet("feedback/categorise-feedback/{feedbackId}")]
+        public IActionResult CategoriseFeedbackGet(long feedbackId)
+        {
+            int numberOfNewFeedbacks = dataRepository
+                .GetAll<Feedback>()
+                .Where(f => f.FeedbackStatus == FeedbackStatus.New)
+                .Count();
+
+            Feedback nextFeedback = dataRepository.Get<Feedback>(feedbackId);
+
+            var viewModel = new AdminFeedbackToCategoriseViewModel
+            {
+                NumberOfNewFeedbacks = numberOfNewFeedbacks,
+                FeedbackToCategorise = nextFeedback
+            };
+
+            return View("CategoriseFeedback", viewModel);
+        }
+
+        [HttpPost("feedback/categorise-feedback")]
         [ValidateAntiForgeryToken]
-        public IActionResult CategoriseFeedback(long feedbackId, FeedbackStatus status)
+        public IActionResult CategoriseFeedbackPost(long feedbackId, FeedbackStatus status)
         {
             Feedback feedback = dataRepository.Get<Feedback>(feedbackId);
 
@@ -39,7 +80,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChanges();
 
-            return RedirectToAction("ViewFeedback", "AdminFeedback");
+            return RedirectToAction("CategoriseNextFeedback", "AdminFeedback");
         }
 
         [HttpGet("feedback/download")]

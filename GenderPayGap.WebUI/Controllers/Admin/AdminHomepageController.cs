@@ -27,12 +27,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             var viewModel = new AdminHomepageViewModel
             {
-                FeedbackCount = dataRepository.GetAll<Feedback>().Count(),
                 NewFeedbackCount = dataRepository.GetAll<Feedback>().Count(f => f.FeedbackStatus == FeedbackStatus.New),
-                LatestFeedbackDate = dataRepository.GetAll<Feedback>()
-                    .OrderByDescending(feedback => feedback.CreatedDate)
-                    .FirstOrDefault()
-                    ?.CreatedDate
+                NonSpamFeedbackCount = dataRepository.GetAll<Feedback>().Count(f => f.FeedbackStatus == FeedbackStatus.NotSpam)
             };
 
             return View("Home", viewModel);
