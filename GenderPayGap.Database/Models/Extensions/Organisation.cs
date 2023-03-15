@@ -55,70 +55,6 @@ namespace GenderPayGap.Database
             StatusDetails = details;
         }
 
-        public EmployerRecord ToEmployerRecord(long userId = 0)
-        {
-            OrganisationAddress address = null;
-            if (userId > 0)
-            {
-                address = UserOrganisations.FirstOrDefault(uo => uo.UserId == userId)?.Address;
-            }
-
-            if (address == null)
-            {
-                address = GetLatestAddress();
-            }
-
-            if (address == null)
-            {
-                return new EmployerRecord {
-                    OrganisationId = OrganisationId,
-                    SectorType = SectorType,
-                    OrganisationName = OrganisationName,
-                    NameSource = GetName()?.Source,
-                    EmployerReference = EmployerReference,
-                    DateOfCessation = DateOfCessation,
-                    CompanyNumber = CompanyNumber,
-                    SicSectors = GetSicSectorsString(null, ",<br/>"),
-                    SicCodeIds = GetSicCodeIdsString(),
-                    SicSource = GetSicSource(),
-                    RegistrationStatus = GetRegistrationStatus(),
-                    References = OrganisationReferences.ToDictionary(
-                        r => r.ReferenceName,
-                        r => r.ReferenceValue,
-                        StringComparer.OrdinalIgnoreCase)
-                };
-            }
-
-            return new EmployerRecord {
-                OrganisationId = OrganisationId,
-                SectorType = SectorType,
-                OrganisationName = OrganisationName,
-                NameSource = GetName()?.Source,
-                EmployerReference = EmployerReference,
-                DateOfCessation = DateOfCessation,
-                CompanyNumber = CompanyNumber,
-                SicSectors = GetSicSectorsString(null, ",<br/>"),
-                SicCodeIds = GetSicCodeIdsString(),
-                SicSource = GetSicSource(),
-                ActiveAddressId = address.AddressId,
-                AddressSource = address.Source,
-                Address1 = address.Address1,
-                Address2 = address.Address2,
-                Address3 = address.Address3,
-                City = address.TownCity,
-                County = address.County,
-                Country = address.Country,
-                PostCode = address.GetPostCodeInAllCaps(),
-                PoBox = address.PoBox,
-                IsUkAddress = address.IsUkAddress,
-                RegistrationStatus = GetRegistrationStatus(),
-                References = OrganisationReferences.ToDictionary(
-                    r => r.ReferenceName,
-                    r => r.ReferenceValue,
-                    StringComparer.OrdinalIgnoreCase)
-            };
-        }
-
         /// <summary>
         ///     Returns true if organisation has been made an orphan and is in scope
         /// </summary>
@@ -225,31 +161,6 @@ namespace GenderPayGap.Database
                 : null;
         }
 
-        public string GetRegistrationStatus()
-        {
-            UserOrganisation reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate).FirstOrDefault(uo => uo.HasBeenActivated());
-            if (reg != null)
-            {
-                return $"Registered {reg.PINConfirmedDate?.ToFriendly(false)}";
-            }
-
-            reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate)
-                .FirstOrDefault(uo => uo.IsAwaitingActivationPIN());
-            if (reg != null)
-            {
-                return "Awaiting PIN";
-            }
-
-            reg = UserOrganisations.OrderBy(uo => uo.PINConfirmedDate)
-                .FirstOrDefault(uo => uo.IsAwaitingRegistrationApproval() && uo.Method == RegistrationMethods.Manual);
-            if (reg != null)
-            {
-                return "Awaiting Approval";
-            }
-
-            return "No registrations";
-        }
-
         public string GetSicSectorsString(DateTime? maxDate = null, string delimiter = ", ")
         {
             IEnumerable<OrganisationSicCode> organisationSicCodes = GetSicCodes(maxDate);
@@ -285,19 +196,6 @@ namespace GenderPayGap.Database
             }
 
             return codes;
-        }
-
-
-        public string GetSicSource(DateTime? maxDate = null)
-        {
-            if (maxDate == null || maxDate.Value == DateTime.MinValue)
-            {
-                maxDate = SectorType.GetAccountingStartDate().AddYears(1);
-            }
-
-            return OrganisationSicCodes
-                .FirstOrDefault(s => s.Created < maxDate.Value && (s.Retired == null || s.Retired.Value > maxDate.Value))
-                ?.Source;
         }
 
         public string GetSicCodeIdsString(DateTime? maxDate = null, string delimiter = ", ")
@@ -417,25 +315,6 @@ namespace GenderPayGap.Database
             return OrganisationId.GetHashCode();
         }
 
-        public static IQueryable<Organisation> Search(IQueryable<Organisation> searchData,
-            string searchText,
-            int records,
-            int levenshteinDistance = 0)
-        {
-            var levenshteinRecords =
-                searchData.ToList().Select(o => new {distance = o.OrganisationName.LevenshteinCompute(searchText), org = o});
-            string pattern = searchText?.ToLower();
-
-            IQueryable<Organisation> searchResults = levenshteinRecords.AsQueryable()
-                .Where(
-                    data => data.org.OrganisationName.ToLower().Contains(pattern)
-                            || data.org.OrganisationName.Length > levenshteinDistance && data.distance <= levenshteinDistance)
-                .OrderBy(o => o.distance)
-                .Take(records)
-                .Select(o => o.org);
-            return searchResults;
-        }
-        
         public IEnumerable<Return> GetRecentReports(int recentCount)
         {
             foreach (int year in GetRecentReportingYears(recentCount))

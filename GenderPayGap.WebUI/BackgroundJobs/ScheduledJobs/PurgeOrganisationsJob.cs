@@ -67,8 +67,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void PurgeOrganisation(Organisation org)
         {
-            EmployerSearchModel searchRecord = org.ToEmployerSearchResult(true);
-
             auditLogger.AuditChangeToOrganisation(
                 AuditedAction.PurgeOrganisation,
                 org,
@@ -82,7 +80,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     org.SectorType,
                     org.Status,
                     SicCodes = org.GetSicSectionIdsString(),
-                    SicSource = org.GetSicSource(),
                     org.DateOfCessation
                 });
 

@@ -20,7 +20,6 @@ using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
-using GenderPayGap.WebUI.Classes.Services;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
@@ -238,15 +237,11 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<DraftReturnService>().As<DraftReturnService>().InstancePerLifetimeScope();
 
             builder.RegisterType<ScopeBusinessLogic>().As<IScopeBusinessLogic>().InstancePerLifetimeScope();
-            builder.RegisterType<SubmissionBusinessLogic>().As<ISubmissionBusinessLogic>().InstancePerLifetimeScope();
             builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
 
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
 
             // register web ui services
-            builder.RegisterType<DraftFileBusinessLogic>().As<IDraftFileBusinessLogic>().InstancePerLifetimeScope();
-            
-            builder.RegisterType<SubmissionService>().As<ISubmissionService>().InstancePerLifetimeScope();
             builder.RegisterType<ViewingService>().As<IViewingService>().InstancePerLifetimeScope();
             builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
@@ -258,7 +253,6 @@ namespace GenderPayGap.WebUI
 
             //Register some singletons
             builder.RegisterType<InternalObfuscator>().As<IObfuscator>().SingleInstance();
-            builder.RegisterType<EncryptionHandler>().As<IEncryptionHandler>().SingleInstance();
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().InstancePerLifetimeScope();
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();

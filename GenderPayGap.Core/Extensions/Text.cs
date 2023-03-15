@@ -18,41 +18,6 @@ namespace GenderPayGap.Extensions
             return Regex.IsMatch(input, "^\\d+$");
         }
 
-        public static bool IsCompanyNumber(this string input, int minLength = 8)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return false;
-            }
-
-            if (!input.ContainsNumber())
-            {
-                return false;
-            }
-
-            return Regex.IsMatch(input, "^[0-9A-Za-z]{" + minLength + ",8}$");
-        }
-
-        public static string FixCompanyNumber(this string input)
-        {
-            if (!string.IsNullOrWhiteSpace(input) && input.IsCompanyNumber(6))
-            {
-                input = input.PadLeft(8, '0');
-            }
-
-            return input;
-        }
-
-        public static bool ContainsNumber(this string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return false;
-            }
-
-            return Regex.IsMatch(input, "[0-9]");
-        }
-
         public static bool IsNullOrWhiteSpace(this string input, params string[] inputs)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -109,25 +74,6 @@ namespace GenderPayGap.Extensions
             return source;
         }
 
-        public static string Strip(this string text, string excludeChars)
-        {
-            if (text == null)
-            {
-                return null;
-            }
-
-            string newText = null;
-            for (var i = 0; i < text.Length; i++)
-            {
-                if (excludeChars.IndexOf(text[i]) < 0)
-                {
-                    newText += text[i];
-                }
-            }
-
-            return newText;
-        }
-
         public static string Coalesce(this string text, params string[] options)
         {
             if (!string.IsNullOrWhiteSpace(text))
@@ -144,25 +90,6 @@ namespace GenderPayGap.Extensions
             }
 
             return null;
-        }
-
-        //Checks if a byte sequence starts with another byte sequence
-
-        public static int LineCount(this string text, string newLineChars = null)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return 0;
-            }
-
-            if (string.IsNullOrWhiteSpace(newLineChars))
-            {
-                newLineChars = Environment.NewLine;
-            }
-
-            text = text.Replace(newLineChars, "\n");
-            string[] args = text.SplitI("\n");
-            return args.Length;
         }
 
         /// <summary>
@@ -402,54 +329,6 @@ namespace GenderPayGap.Extensions
             }
 
             return base64String;
-        }
-
-        public static int LevenshteinCompute(this string s, string t, bool caseIndensitive = true)
-        {
-            if (caseIndensitive)
-            {
-                s = s.ToLower();
-                t = t.ToLower();
-            }
-
-            int n = s.Length;
-            int m = t.Length;
-            var d = new int[n + 1, m + 1];
-
-            // Step 1
-            if (n == 0)
-            {
-                return m;
-            }
-
-            if (m == 0)
-            {
-                return n;
-            }
-
-            // Step 2
-            for (var i = 0; i <= n; d[i, 0] = i++) { }
-
-            for (var j = 0; j <= m; d[0, j] = j++) { }
-
-            // Step 3
-            for (var i = 1; i <= n; i++)
-            {
-                //Step 4
-                for (var j = 1; j <= m; j++)
-                {
-                    // Step 5
-                    int cost = t[j - 1] == s[i - 1] ? 0 : 1;
-
-                    // Step 6
-                    d[i, j] = Math.Min(
-                        Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-                        d[i - 1, j - 1] + cost);
-                }
-            }
-
-            // Step 7
-            return d[n, m];
         }
 
         public static string ToAbbr(this string s, string separator = "", int minLength = 3, params string[] excludeWords)

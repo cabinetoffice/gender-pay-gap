@@ -15,11 +15,8 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         // scope repo
         OrganisationScope GetLatestScopeBySnapshotYear(long organisationId, int snapshotYear = 0);
-        void SaveScope(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes);
 
         // business logic
-        ScopeStatuses GetLatestScopeStatusForSnapshotYear(long organisationId, int snapshotYear = 0);
-
         void SetPresumedScopes();
 
         HashSet<OrganisationMissingScope> FindOrgsWhereScopeNotSet();
@@ -39,21 +36,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         private IDataRepository DataRepository { get; }
 
-        /// <summary>
-        ///     Returns the latest scope status for an organisation and snapshot year
-        /// </summary>
-        /// <param name="organisationId"></param>
-        /// <param name="snapshotYear"></param>
-        public virtual ScopeStatuses GetLatestScopeStatusForSnapshotYear(long organisationId, int snapshotYear)
-        {
-            OrganisationScope latestScope = GetLatestScopeBySnapshotYear(organisationId, snapshotYear);
-            if (latestScope == null)
-            {
-                return ScopeStatuses.Unknown;
-            }
-
-            return latestScope.ScopeStatus;
-        }
 
         /// <summary>
         ///     Returns the latest scope status for an organisation and snapshot year
@@ -69,33 +51,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             }
 
             return latestScope.ScopeStatus;
-        }
-
-        public virtual void SaveScope(Organisation org, bool saveToDatabase = true, params OrganisationScope[] newScopes)
-        {
-            SaveScopes(org, newScopes, saveToDatabase);
-        }
-
-        public virtual void SaveScopes(Organisation org, IEnumerable<OrganisationScope> newScopes, bool saveToDatabase = true)
-        {
-            foreach (OrganisationScope newScope in newScopes.OrderBy(s => s.SnapshotDate).ThenBy(s => s.ScopeStatusDate))
-            {
-                // find any prev submitted scopes in the same snapshot year year and retire them
-                org.OrganisationScopes
-                    .Where(x => x.Status == ScopeRowStatuses.Active && x.SnapshotDate.Year == newScope.SnapshotDate.Year)
-                    .ToList()
-                    .ForEach(x => x.Status = ScopeRowStatuses.Retired);
-
-                // add the new scope
-                newScope.Status = ScopeRowStatuses.Active;
-                org.OrganisationScopes.Add(newScope);
-            }
-
-            // save to db
-            if (saveToDatabase)
-            {
-                DataRepository.SaveChanges();
-            }
         }
 
         public void SetScopeStatuses()

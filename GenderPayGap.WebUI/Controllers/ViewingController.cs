@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,8 +44,6 @@ namespace GenderPayGap.WebUI.Controllers
             ISearchViewService searchViewService,
             ICompareViewService compareViewService,
             IOrganisationBusinessLogic organisationBusinessLogic,
-            ISubmissionBusinessLogic submissionBusinessLogic,
-            IObfuscator obfuscator,
             IDataRepository dataRepository,
             IWebTracker webTracker,
             AutoCompleteSearchService autoCompleteSearchService,
@@ -55,36 +53,11 @@ namespace GenderPayGap.WebUI.Controllers
             SearchViewService = searchViewService;
             CompareViewService = compareViewService;
             OrganisationBusinessLogic = organisationBusinessLogic;
-            Obfuscator = obfuscator;
-            SubmissionBusinessLogic = submissionBusinessLogic;
             this.autoCompleteSearchService = autoCompleteSearchService;
             this.fileRepository = fileRepository;
         }
 
         #endregion
-
-        private string DecodeEmployerIdentifier(string employerIdentifier, out ActionResult actionResult)
-        {
-            string result = string.Empty;
-            actionResult = new EmptyResult();
-
-            if (string.IsNullOrWhiteSpace(employerIdentifier))
-            {
-                actionResult = new HttpBadRequestResult("Missing employer identifier");
-            }
-
-            try
-            {
-                result = HttpUtility.UrlDecode(Encryption.DecryptQuerystring(employerIdentifier));
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error($"Cannot decrypt return id from '{employerIdentifier}'", ex);
-                actionResult = View("CustomError", new ErrorViewModel(400));
-            }
-
-            return result;
-        }
 
         #region Dependencies
 
@@ -92,8 +65,6 @@ namespace GenderPayGap.WebUI.Controllers
         public ISearchViewService SearchViewService { get; }
         public ICompareViewService CompareViewService { get; }
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
-        public ISubmissionBusinessLogic SubmissionBusinessLogic { get; set; }
-        public IObfuscator Obfuscator { get; }
 
         #endregion
 
@@ -226,61 +197,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         #region Employer details
 
-        [HttpGet("employer-details")]
-        [Obsolete("Please use method 'Employer' instead.")] //, true)]
-        public IActionResult EmployerDetails(string e = null, int y = 0, string id = null)
-        {
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                Organisation organisation;
-
-                try
-                {
-                    CustomResult<Organisation> organisationLoadingOutcome =
-                        OrganisationBusinessLogic.GetOrganisationByEncryptedReturnId(id);
-
-                    if (organisationLoadingOutcome.Failed)
-                    {
-                        return organisationLoadingOutcome.ErrorMessage.ToHttpStatusViewResult();
-                    }
-
-                    organisation = organisationLoadingOutcome.Result;
-                }
-                catch (Exception ex)
-                {
-                    CustomLogger.Error("Cannot decrypt return id from query string", ex);
-                    return View("CustomError", new ErrorViewModel(400));
-                }
-
-                string organisationIdEncrypted = organisation.GetEncryptedId();
-                return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = organisationIdEncrypted});
-            }
-
-            if (string.IsNullOrWhiteSpace(e))
-            {
-                return new HttpBadRequestResult("EmployerDetails: \'e\' query parameter was null or white space");
-            }
-
-            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = e});
-        }
-
-        [HttpGet("employer-{employerIdentifier}")]
-        [Obsolete("Please use method 'Employer' instead.")] // , true)]
-        public IActionResult EmployerDeprecated(string employerIdentifier)
-        {
-            string decodedEmployerIdentifier = DecodeEmployerIdentifier(employerIdentifier, out ActionResult actionResult);
-
-            if (string.IsNullOrEmpty(decodedEmployerIdentifier))
-            {
-                return actionResult;
-            }
-
-            int employerIdentifierId = employerIdentifier.ToInt32();
-            string shortUrlObfuscatedEmployerIdentifier = Obfuscator.Obfuscate(employerIdentifierId);
-
-            return RedirectToActionPermanent(nameof(Employer), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier});
-        }
-
         [HttpGet("~/Employer/{employerIdentifier}")]
         public IActionResult Employer(string employerIdentifier, int? page = 1)
         {
@@ -323,29 +239,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         #region Reports
 
-        [HttpGet("employer-{employerIdentifier}/report-{year}")]
-        [Obsolete("ReportDeprecated is (unsurprisingly) deprecated, please use method 'Report' instead.")] // , true)]
-        public IActionResult ReportDeprecated(string employerIdentifier, int year)
-        {
-            if (year < Global.FirstReportingYear || year > VirtualDateTime.Now.Year)
-            {
-                return new HttpBadRequestResult($"Invalid snapshot year {year}");
-            }
-
-            string decodedEmployerIdentifier = DecodeEmployerIdentifier(employerIdentifier, out ActionResult actionResult);
-
-            if (string.IsNullOrEmpty(decodedEmployerIdentifier))
-            {
-                return actionResult;
-            }
-
-            int employerIdentifierId = decodedEmployerIdentifier.ToInt32();
-            string shortUrlObfuscatedEmployerIdentifier = Obfuscator.Obfuscate(employerIdentifierId);
-
-            return RedirectToActionPermanent(nameof(Report), new {employerIdentifier = shortUrlObfuscatedEmployerIdentifier, year});
-        }
-
-
         [HttpGet("~/EmployerReport/{employerIdentifier}/{year}")]
         public IActionResult Report(string employerIdentifier, int year)
         {
@@ -381,7 +274,7 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     throw new PageNotFoundException();
                 }
-
+                
                 model = ConvertSubmissionReportToReturnViewModel(foundReturn);
             }
             catch (Exception ex)

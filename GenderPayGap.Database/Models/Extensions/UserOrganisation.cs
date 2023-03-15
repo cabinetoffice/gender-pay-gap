@@ -12,11 +12,6 @@ namespace GenderPayGap.Database
     public partial class UserOrganisation
     {
 
-        public string GetReviewCode()
-        {
-            return Encryption.EncryptQuerystring(UserId + ":" + OrganisationId + ":" + VirtualDateTime.Now.ToSmallDateTime());
-        }
-
         public IEnumerable<UserOrganisation> GetAssociatedUsers()
         {
             return Organisation.UserOrganisations

@@ -113,11 +113,6 @@ namespace GenderPayGap.Database
             return ReturnId.GetHashCode();
         }
 
-        public bool IsSubmitted()
-        {
-            return Status == Core.ReturnStatuses.Submitted;
-        }
-
         public bool IsRequired()
         {
             return OrganisationSize != OrganisationSizes.Employees0To249
