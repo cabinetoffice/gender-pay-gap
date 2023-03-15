@@ -16,6 +16,8 @@ using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
+using GenderPayGap.WebUI.ErrorHandling;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -353,7 +355,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Ensure we some data
             if (data == null || !data.Any())
             {
-                return new HttpNotFoundResult($"There is no employer data for year {year}");
+                throw new PageNotFoundException();
             }
 
             DataTable model = OrganisationBusinessLogic.GetCompareDatatable(data);
@@ -381,21 +383,15 @@ namespace GenderPayGap.WebUI.Controllers
             EmployerSearchModel employer = SearchViewService.LastSearchResults?.GetEmployer(employerIdentifier);
             if (employer == null)
             {
-                //Get the employer from the database
-                CustomResult<Organisation> organisationResult = activeOnly
-                    ? OrganisationBusinessLogic.LoadInfoFromActiveEmployerIdentifier(employerIdentifier)
-                    : OrganisationBusinessLogic.LoadInfoFromEmployerIdentifier(employerIdentifier);
-                if (organisationResult.Failed)
+                long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+                Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, DataRepository);
+                
+                if (activeOnly)
                 {
-                    throw organisationResult.ErrorMessage.ToHttpException();
+                    ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
                 }
 
-                if (organisationResult.Result.OrganisationId == 0)
-                {
-                    throw new HttpException(HttpStatusCode.NotFound, "Employer not found");
-                }
-
-                employer = organisationResult.Result.ToEmployerSearchResult();
+                employer = organisation.ToEmployerSearchResult();
             }
 
             return employer;

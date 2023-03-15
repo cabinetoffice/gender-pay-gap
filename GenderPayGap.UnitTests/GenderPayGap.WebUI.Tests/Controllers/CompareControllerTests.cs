@@ -13,6 +13,7 @@ using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -74,10 +75,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.SearchViewService.LastSearchResults = null;
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
         }
 
@@ -93,10 +93,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
         }
 
@@ -114,10 +113,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
         }
 
@@ -135,10 +133,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
 
         }
@@ -222,10 +219,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.SearchViewService.LastSearchResults = null;
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
         }
 
@@ -246,7 +242,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 .Returns((int)org.OrganisationId);
 
             // Act
-            Assert.Throws<HttpException>(() => controller.AddEmployerJs(org.EmployerReference, returnUrl), "Expected IdentityNotMappedException");
+            Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(org.EmployerReference, returnUrl), "Expected IdentityNotMappedException");
         }
 
         [Test]
@@ -263,10 +259,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
         }
 
@@ -284,10 +279,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             };
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
         }
 
@@ -390,10 +384,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -411,10 +404,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -434,10 +426,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -457,10 +448,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployer(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -553,10 +543,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -574,10 +563,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -597,10 +585,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -615,10 +602,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
-            var exception = Assert.Throws<HttpException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
+            var exception = Assert.Throws<PageNotFoundException>(() => controller.RemoveEmployerJs(employerIdentifier, returnUrl));
 
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, exception.StatusCode);
-            Assert.AreEqual($"Bad employer identifier {employerIdentifier}", exception.Message);
+            Assert.AreEqual((int)HttpStatusCode.NotFound, exception.StatusCode);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
         }
 
@@ -732,12 +718,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string returnUrl = null;
 
             // Act
-            var result = controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
+            var result = controller.SortEmployers(column, returnUrl) as HttpBadRequestResult;
 
             // Assert
             Assert.NotNull(result);
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.AreEqual($"Missing {nameof(returnUrl)}", result.StatusDescription);
             Assert.AreEqual(controller.CompareViewService.SortColumn, null);
             Assert.AreEqual(controller.CompareViewService.SortAscending, true);
         }

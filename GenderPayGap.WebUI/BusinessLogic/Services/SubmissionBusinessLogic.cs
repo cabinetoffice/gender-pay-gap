@@ -15,7 +15,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
         // Submission
         Return GetSubmissionByReturnId(long returnId);
-        ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert);
         CustomResult<Return> GetSubmissionByOrganisationAndYear(Organisation organisation, int year);
 
     }
@@ -42,61 +41,6 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             return DataRepository.GetAll<Return>()
                 .Where(s => s.OrganisationId == organisationId)
                 .Where(s => s.AccountingDate.Year == snapshotYear);
-        }
-
-        public ReturnViewModel ConvertSubmissionReportToReturnViewModel(Return reportToConvert)
-        {
-            var model = new ReturnViewModel {
-                SectorType = reportToConvert.Organisation.SectorType,
-                ReturnId = reportToConvert.ReturnId,
-                OrganisationId = reportToConvert.OrganisationId,
-                EncryptedOrganisationId = reportToConvert.Organisation.GetEncryptedId(),
-                DiffMeanBonusPercent = reportToConvert.DiffMeanBonusPercent,
-                DiffMeanHourlyPayPercent = reportToConvert.DiffMeanHourlyPayPercent,
-                DiffMedianBonusPercent = reportToConvert.DiffMedianBonusPercent,
-                DiffMedianHourlyPercent = reportToConvert.DiffMedianHourlyPercent,
-                FemaleLowerPayBand = reportToConvert.FemaleLowerPayBand,
-                FemaleMedianBonusPayPercent = reportToConvert.FemaleMedianBonusPayPercent,
-                FemaleMiddlePayBand = reportToConvert.FemaleMiddlePayBand,
-                FemaleUpperPayBand = reportToConvert.FemaleUpperPayBand,
-                FemaleUpperQuartilePayBand = reportToConvert.FemaleUpperQuartilePayBand,
-                MaleLowerPayBand = reportToConvert.MaleLowerPayBand,
-                MaleMedianBonusPayPercent = reportToConvert.MaleMedianBonusPayPercent,
-                MaleMiddlePayBand = reportToConvert.MaleMiddlePayBand,
-                MaleUpperPayBand = reportToConvert.MaleUpperPayBand,
-                MaleUpperQuartilePayBand = reportToConvert.MaleUpperQuartilePayBand,
-                JobTitle = reportToConvert.JobTitle,
-                FirstName = reportToConvert.FirstName,
-                LastName = reportToConvert.LastName,
-                CompanyLinkToGPGInfo = reportToConvert.CompanyLinkToGPGInfo,
-                AccountingDate = reportToConvert.AccountingDate,
-                Address = reportToConvert.Organisation.GetLatestAddress()?.GetAddressString(),
-                LatestAddress = reportToConvert.Organisation.GetLatestAddress()?.GetAddressString(),
-                EHRCResponse = reportToConvert.EHRCResponse.ToString(),
-                IsVoluntarySubmission = reportToConvert.IsVoluntarySubmission(),
-                IsLateSubmission = reportToConvert.IsLateSubmission,
-                OptedOutOfReportingPayQuarters = reportToConvert.OptedOutOfReportingPayQuarters
-            };
-
-            if (model.Address.EqualsI(model.LatestAddress))
-            {
-                model.LatestAddress = null;
-            }
-
-            model.OrganisationName = reportToConvert.Organisation.GetName(reportToConvert.StatusDate)?.Name
-                                     ?? reportToConvert.Organisation.OrganisationName;
-            model.LatestOrganisationName = reportToConvert.Organisation.OrganisationName;
-
-            model.Sector = reportToConvert.Organisation.GetSicSectorsString(reportToConvert.StatusDate);
-            model.LatestSector = reportToConvert.Organisation.GetSicSectorsString();
-
-            model.OrganisationSize = reportToConvert.OrganisationSize;
-            model.Modified = reportToConvert.Modified;
-
-            model.IsInScopeForThisReportYear =
-                reportToConvert.Organisation.GetIsInscope(reportToConvert.AccountingDate.Year);
-
-            return model;
         }
 
         public CustomResult<Return> GetSubmissionByOrganisationAndYear(Organisation organisation, int year)
