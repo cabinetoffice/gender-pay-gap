@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
@@ -139,6 +139,28 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 throw new PageNotFoundException();
             }
+        }
+
+        public static long DecryptUserIdOrThrow404(string encryptedUserId)
+        {
+            if (!encryptedUserId.DecryptToId(out long userId))
+            {
+                throw new PageNotFoundException();
+            }
+
+            return userId;
+        }
+
+        public static User LoadUserOrThrow404(long userId, IDataRepository dataRepository)
+        {
+            var user = dataRepository.Get<User>(userId);
+
+            if (user == null)
+            {
+                throw new PageNotFoundException();
+            }
+
+            return user;
         }
 
         public static void ThrowIfReportingYearIsOutsideOfRange(int reportingYear)
