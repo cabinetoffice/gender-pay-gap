@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
@@ -13,7 +14,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly IDataRepository dataRepository;
         private readonly IFileRepository fileRepository;
-        private readonly string healthCheckFileName = $"HealthCheckFile-{System.Environment.MachineName}.txt";
 
         public HealthCheckController(
             IDataRepository dataRepository,
@@ -46,16 +46,29 @@ namespace GenderPayGap.WebUI.Controllers
 
         private void CheckFileConnection()
         {
-            string guid = Guid.NewGuid().ToString("N");
+            try
+            {
+                string fileContentsToSave = Guid.NewGuid().ToString("N");
+            
+                string healthCheckFileName = $"health-check-files/health-check-file-{Guid.NewGuid().ToString("N")}.txt";
 
-              fileRepository.Write(healthCheckFileName, guid);
+                fileRepository.Write(healthCheckFileName, fileContentsToSave);
+                Thread.Sleep(250);
 
-              string fileContents = fileRepository.Read(healthCheckFileName);
+                string fileContentsRead = fileRepository.Read(healthCheckFileName);
+                Thread.Sleep(250);
+            
+                fileRepository.Delete(healthCheckFileName);
 
-              if (fileContents != guid)
-              {
-                  throw new Exception("Could not read or write a file");
-              }
+                if (fileContentsRead != fileContentsToSave)
+                {
+                    throw new Exception($"Could not read or write a file: fileContentsRead({fileContentsRead}) did not match fileContentsToSave({fileContentsToSave})");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Could not read or write a file: {e.Message}");
+            }
         }
 
         private void CheckSearchRepositoryIsLoaded()
