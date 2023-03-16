@@ -86,23 +86,27 @@
 </p>
 
 
-<h2 class="govuk-heading-l">Logs</h2>
+<h2 class="govuk-heading-l">Feedback</h2>
+
+@if (Model.NewFeedbackCount > 0)
+{
+    <p class="govuk-body">
+        There are <b>@(Model.NewFeedbackCount)</b> new responses.
+        <br/>
+        <a href="@Url.Action("CategoriseNextFeedback", "AdminFeedback")"
+           class="govuk-link">
+            Categorise new feedback responses
+        </a>
+    </p>
+}
 
 <p class="govuk-body">
-    <a href="@Url.Action("ViewFeedback", "AdminFeedback")" class="govuk-link govuk-!-font-weight-bold">View and download feedback</a>
+    There are <b>@(Model.NonSpamFeedbackCount)</b> non-spam feedback responses.
     <br/>
-    View and download feedback submitted through the "Send Feedback" links
-    <br/>
-    @if (Model.NewFeedbackCount > 0)
-    {
-        <span class="govuk-!-font-weight-bold">
-            @(Model.NewFeedbackCount) new responses
-        </span>
-        <br/>
-    }
-    Total feedback submissions: @(Model.FeedbackCount)
-    <br/>
-    Latest feedback received: @(Model.LatestFeedbackDate?.ToString("d MMM yyyy"))
+    <a href="@Url.Action("ViewFeedback", "AdminFeedback")"
+       class="govuk-link">
+        View and download feedback
+    </a>
 </p>
 
 

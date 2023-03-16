@@ -50,18 +50,18 @@
                             </td>
                             <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
                                 <form method="post"
-                                      action="@Url.Action("CategoriseFeedback", "AdminFeedback")"
+                                      action="@Url.Action("CategoriseFeedbackPost", "AdminFeedback")"
                                       style="align-items: center; display: flex; flex-direction: column;">
                                     @(Html.AntiForgeryToken())
                                     <input type="hidden" name="feedbackId" value="@(feedback.FeedbackId)"/>
 
                                     @if (Model.ShowMarkAsSpamButton)
                                     {
-                                        <button class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-bottom-2 govuk-!-width-full @(Model.ButtonClasses)"
+                                        <button class="govuk-button govuk-button--warning govuk-!-margin-bottom-0 govuk-!-margin-bottom-2 govuk-!-width-full @(Model.ButtonClasses)"
                                                 data-module="govuk-button"
                                                 name="status"
                                                 value="@(FeedbackStatus.Spam)">
-                                            <span class="govuk-visually-hidden">Mark feedback ID @(feedback.FeedbackId) as </span>Spam
+                                            Mark as Spam
                                         </button>
                                     }
                                     @if (Model.ShowMarkAsNotSpamButton)
