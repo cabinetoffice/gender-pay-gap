@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -182,7 +182,7 @@ namespace GenderPayGap.WebUI.Controllers
                 year = SectorTypes.Private.GetAccountingStartDate().Year;
             }
 
-            string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");
+            string filePath = UpdatePublicFacingDownloadFilesJob.GetDownloadFileLocationForYear(year);
             string fileContents = fileRepository.Read(filePath);
 
             string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";

@@ -71,7 +71,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     .ToList();
 
                 CustomLogger.Information($"UpdateDownloadFiles: - Saving results to file");
-                string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");
+                string filePath = GetDownloadFileLocationForYear(year);
 
                 try
                 {
@@ -81,11 +81,18 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 {
                     CustomLogger.Error(ex.Message, new {Error = ex});
                 }
-
+                
                 CustomLogger.Information($"UpdateDownloadFiles: Done for year {year}");
             }
 
             CustomLogger.Information($"UpdateDownloadFiles: Done");
+        }
+
+        public static string GetDownloadFileLocationForYear(int year)
+        {
+            string fileName = $"GPGData_{year}-{year + 1}.csv";
+            string filePath = Path.Combine(Global.DownloadsLocation, fileName);
+            return filePath;
         }
 
         private void SaveCsvFile(IEnumerable records, string relativeFilePath)
