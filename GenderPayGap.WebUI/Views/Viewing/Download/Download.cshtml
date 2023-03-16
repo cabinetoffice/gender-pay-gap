@@ -1,6 +1,8 @@
 ﻿@using GenderPayGap.Core.Helpers
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Shared
-@using System.IO
+@using GenderPayGap.WebUI.Models.Viewing.Download
+@model List<GenderPayGap.WebUI.Models.Viewing.Download.DownloadCsvFile>
 
 @{
     ViewBag.Title = "Download gender pay gap figures - Gender pay gap service";
@@ -17,33 +19,53 @@
         <p class="govuk-body">
             These files are in a CSV (Comma Separated Values) format that can be read by any spreadsheet program or word processor. They are not formatted for printing.
         </p>
+        
     </div>
 </div>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+        
         @await Html.PartialModelAsync(new Details
         {
             Id = "AboutCSVData",
             LinkText = "About CSV data",
             SummaryPartial = "Download/CSVDataTable"
         })
-        <hr/>
+        
+    </div>
+</div>
 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
         <ul class="govuk-list">
-            @{
-                List <(int,string)> reportingYearsWithFileSizes = ReportingYearsHelper.GetReportingYearWithCSVFileSize();
-                foreach (var item in reportingYearsWithFileSizes)
-                {
-                    <li>
-                        <a href="@Url.Action("DownloadData", "Viewing", new { year = item.Item1})"
+            @foreach (DownloadCsvFile downloadCsvFile in Model)
+            {
+                <li>
+                    @if (downloadCsvFile.FileIsAvailable)
+                    {
+                        string fileSizeText = downloadCsvFile.FileSize.HasValue ? $"{DownloadHelper.GetFormattedFileSize(downloadCsvFile.FileSize.Value)} " : "";
+                        
+                        <a href="@Url.Action("DownloadData", "Viewing", new {year = downloadCsvFile.ReportingYear})"
                            class="govuk-link">
                             <span class="govuk-visually-hidden">Download gender pay gap data for</span>
-                            Reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(item.Item1)) (@item.Item2 CSV file)
+                            Reporting year
+                            @(ReportingYearsHelper.FormatYearAsReportingPeriod(downloadCsvFile.ReportingYear))
+                            (@(fileSizeText)CSV file)
                         </a>
-                    </li>
-                }
+                    }
+                    else
+                    {
+                        <span>
+                            Reporting year
+                            @(ReportingYearsHelper.FormatYearAsReportingPeriod(downloadCsvFile.ReportingYear))
+                            (no CSV file available)
+                        </span>
+                    }
+                </li>
             }
         </ul>
+
     </div>
 </div>

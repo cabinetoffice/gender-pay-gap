@@ -73,6 +73,25 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             File.Delete(fullFilePath);
         }
 
+        public bool FileExists(string relativeFilePath)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+
+            return File.Exists(fullFilePath);
+        }
+
+        public long? GetFileSize(string relativeFilePath)
+        {
+            string fullFilePath = GetFullPath(relativeFilePath);
+            
+            if (File.Exists(fullFilePath))
+            {
+                return new FileInfo(fullFilePath).Length;
+            }
+
+            return null;
+        }
+
         private string GetFullPath(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))

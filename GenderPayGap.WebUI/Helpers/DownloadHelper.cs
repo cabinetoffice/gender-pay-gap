@@ -42,5 +42,44 @@ namespace GenderPayGap.WebUI.Helpers
             return fileContentResult;
         }
 
+        public static string GetFormattedFileSize(long fileSizeInBytes)
+        {
+            double oneGigabyte = 1024 * 1024 * 1024;
+            if (fileSizeInBytes > oneGigabyte)
+            {
+                return $"{To3SignificantFigures(fileSizeInBytes / oneGigabyte)}GB";
+            }
+            
+            double oneMegaByte = 1024 * 1024;
+            if (fileSizeInBytes > oneMegaByte)
+            {
+                return $"{To3SignificantFigures(fileSizeInBytes / oneMegaByte)}MB";
+            }
+            
+            double oneKiloByte = 1024;
+            if (fileSizeInBytes > oneKiloByte)
+            {
+                return $"{To3SignificantFigures(fileSizeInBytes / oneKiloByte)}KB";
+            }
+            
+            return $"{To3SignificantFigures(fileSizeInBytes)} bytes";
+        }
+
+        private static string To3SignificantFigures(double fileSizeInUnits)
+        {
+            if (fileSizeInUnits > 100)
+            {
+                return fileSizeInUnits.ToString("##");
+            }
+            else if (fileSizeInUnits > 10)
+            {
+                return fileSizeInUnits.ToString("##.#");
+            }
+            else
+            {
+                return fileSizeInUnits.ToString("#.##");
+            }
+        }
+
     }
 }

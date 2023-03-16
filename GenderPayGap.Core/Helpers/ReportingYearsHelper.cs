@@ -29,33 +29,6 @@ namespace GenderPayGap.Core.Helpers
             return SectorTypes.Public.GetAccountingStartDate().Year;
         }
 
-        public static List<(int,string)> GetReportingYearWithCSVFileSize()
-        {
-            List<int> reportingYears = GetReportingYears().OrderByDescending(y => y).ToList<int>();
-            List<(int, int)> yearsWithFileSizes = new List<(int, int)>()
-            {
-                (reportingYears[0], 55),
-                (reportingYears[1], 4032),
-                (reportingYears[2], 4129),
-                (reportingYears[3], 2798),
-                (reportingYears[4], 4266),
-                (reportingYears[5], 4211),
-            };
-
-            List<(int, string)> result = new List<(int, string)>();
-            foreach (var item in yearsWithFileSizes)
-            {
-                string sizeString = string.Concat(item.Item2.ToString(), "kb");
-                if (item.Item2 > 1024)
-                {
-                    double asDecimal = Math.Round((double)item.Item2 / 1024, 2);
-                    sizeString = string.Concat(asDecimal.ToString(), "mb");
-                }
-                result.Add((item.Item1, sizeString));
-            }
-            return result;
-        }
-
         public static string FormatYearAsReportingPeriod(int reportingPeriodStartYear, string separator = "-")
         {
             int fourDigitStartYear = reportingPeriodStartYear;
