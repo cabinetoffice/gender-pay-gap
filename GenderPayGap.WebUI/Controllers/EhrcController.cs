@@ -1,7 +1,7 @@
-using System;
 using System.Text.RegularExpressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
+using GenderPayGap.WebUI.ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -31,7 +31,12 @@ namespace GenderPayGap.WebUI.Controllers
             */
         )
         {
-            var organisationsYear = ValidatePath(
+            if (string.IsNullOrWhiteSpace(p))
+            {
+                throw new PageNotFoundException();
+            }
+            
+            int? organisationsYear = ValidatePath(
                 p,
                 "GPG-Organisations",
                 Global.FirstReportingYear);
@@ -41,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers
                 return AdminDownloadsController.GenerateEhrcAllOrganisationsForYearFile(dataRepository, (int)organisationsYear);
             }
 
-            var OrganisationsWithoutReportsYear = ValidatePath(
+            int? OrganisationsWithoutReportsYear = ValidatePath(
                 p,
                 "GPG-Organisations-Without-Reports",
                 Global.FirstReportingYear);
