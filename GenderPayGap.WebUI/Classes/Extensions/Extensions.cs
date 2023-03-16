@@ -133,7 +133,16 @@ namespace GenderPayGap.WebUI.Classes
                 return false;
             }
 
-            long id = Encryption.DecryptQuerystring(enc).ToInt64();
+            long id;
+            try
+            {
+                id = Encryption.DecryptQuerystring(enc).ToInt64();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            
             if (id <= 0)
             {
                 return false;
