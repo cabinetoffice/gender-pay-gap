@@ -210,7 +210,18 @@ namespace GenderPayGap.WebUI.Controllers
                 year = SectorTypes.Private.GetAccountingStartDate().Year;
             }
 
+            if (!ReportingYearsHelper.GetReportingYears().Contains(year))
+            {
+                throw new PageNotFoundException();
+            }
+
             string filePath = UpdatePublicFacingDownloadFilesJob.GetDownloadFileLocationForYear(year);
+
+            if (!fileRepository.FileExists(filePath))
+            {
+                throw new PageNotFoundException();
+            }
+            
             string fileContents = fileRepository.Read(filePath);
 
             string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";
