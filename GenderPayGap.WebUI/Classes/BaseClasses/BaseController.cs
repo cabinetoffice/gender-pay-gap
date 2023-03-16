@@ -157,8 +157,6 @@ namespace GenderPayGap.WebUI.Classes
                 ? DataRepository.Get<User>(LoginHelper.GetUserId(User))
                 : null;
 
-        public bool IsImpersonatingUser => LoginHelper.IsUserBeingImpersonated(User);
-
         #endregion
 
         #region Authorisation Methods

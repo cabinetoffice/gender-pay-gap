@@ -1,0 +1,102 @@
+﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GovUkDesignSystem
+@using GenderPayGap.Database
+@model GenderPayGap.WebUI.Models.RemoveUserFromOrganisation.RemoveUserFromOrganisationViewModel
+@{
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+    ViewBag.Title = "Confirm removal of user - Gender pay gap service";
+    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string encryptedUserId = Encryption.EncryptQuerystring(Model.UserToRemove.UserId.ToString());
+    bool userRemovingSelf = Model.UserToRemove.UserId == Model.LoggedInUser.UserId;
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})
+            },
+            new CrumbViewModel
+            {
+                Text = $"Remove user ({Model.UserToRemove.Fullname})"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Confirm removal of user
+        </h1>
+
+        <p class="govuk-body">
+            You are about to remove the following user from reporting Gender Pay Gap information for this employer.
+        </p>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    User name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.UserToRemove.Fullname
+                    @if (userRemovingSelf)
+                    {
+                        <span>(You)</span>
+                    }
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employer
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Organisation.OrganisationName
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Registered address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @foreach (string addressLine in Model.Organisation.GetLatestAddress().GetAddressLines())
+                    {
+                        @(addressLine)<br />
+                    }
+                </dd>
+            </div>
+        </dl>
+
+        <form method="POST" action="@Url.Action("RemoveUserFromOrganisationPost", "RemoveUserFromOrganisation", new {encryptedOrganisationId, encryptedUserId})">
+            @Html.AntiForgeryToken()
+
+            <button class="govuk-button govuk-button--warning">
+                Remove user
+            </button>
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ManageOrganisationGet", "ManageOrganisations", new {encryptedOrganisationId})"
+                   class="govuk-link">
+                    Cancel and return to @(Model.Organisation.OrganisationName)
+                </a>
+            </p>
+        </form>
+        
+    </div>
+</div>
