@@ -267,8 +267,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 dataRepository.GetAll<Return>()
                     .Where(r => r.Status == ReturnStatuses.Submitted)
                     .Where(
-                        r => r.DiffMedianHourlyPercent > 100 || r.DiffMedianHourlyPercent < -499.9m
-                             || r.DiffMeanHourlyPayPercent > 100 || r.DiffMeanHourlyPayPercent < -499.9m)
+                        r => r.DiffMedianHourlyPercent > 100
+                             || r.DiffMeanHourlyPayPercent > 100)
                     .ToList();
 
             return PartialView("ReturnsWithInvalidMeanMedianFigures", invalidReturns);

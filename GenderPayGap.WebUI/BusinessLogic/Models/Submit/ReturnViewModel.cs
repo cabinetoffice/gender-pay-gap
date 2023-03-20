@@ -11,14 +11,14 @@ namespace GenderPayGap.WebUI.BusinessLogic.Models.Submit
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Enter the difference in mean hourly pay")]
-        [Range(-499.99, 100, ErrorMessage = "Value must be between -499.99 and 100")]
+        [Range((double) decimal.MinValue, 100, ErrorMessage = "Value must be less than or equal to 100")]
         [RegularExpression(@"^[-]?\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "Enter the difference in median hourly pay")]
-        [Range(-499.99, 100, ErrorMessage = "Value must be between -499.99 and 100")]
+        [Range((double) decimal.MinValue, 100, ErrorMessage = "Value must be less than or equal to 100")]
         [RegularExpression(@"^[-]?\d+(\.{0,1}\d)?$", ErrorMessage = "Value can't have more than 1 decimal place")]
         [DisplayFormat(DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianHourlyPercent { get; set; }
