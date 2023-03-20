@@ -16,6 +16,7 @@ using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
@@ -25,6 +26,7 @@ using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
+using GenderPayGap.WebUI.Models.Viewing.Download;
 using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Mvc;
 
@@ -170,7 +172,33 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("download")]
         public IActionResult Download()
         {
-            return View("Download/Download");
+            List<DownloadCsvFile> downloadCsvFiles = GetListOfCsvFilesToDownload();
+            
+            return View("Download/Download", downloadCsvFiles);
+        }
+
+        private List<DownloadCsvFile> GetListOfCsvFilesToDownload()
+        {
+            List<int> reportingYears = ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y).ToList();
+
+            var csvFiles = new List<DownloadCsvFile>();
+
+            foreach (int year in reportingYears)
+            {
+                string filePath = UpdatePublicFacingDownloadFilesJob.GetDownloadFileLocationForYear(year);
+
+                bool fileIsAvailable = fileRepository.FileExists(filePath);
+                long? fileSize = fileIsAvailable ? fileRepository.GetFileSize(filePath) : null;
+
+                csvFiles.Add(new DownloadCsvFile
+                {
+                    ReportingYear = year,
+                    FileIsAvailable = fileIsAvailable,
+                    FileSize = fileSize
+                });
+            }
+
+            return csvFiles;
         }
 
         [HttpGet("download-data")]
@@ -182,7 +210,18 @@ namespace GenderPayGap.WebUI.Controllers
                 year = SectorTypes.Private.GetAccountingStartDate().Year;
             }
 
-            string filePath = Path.Combine(Global.DownloadsLocation, $"GPGData_{year}-{year + 1}.csv");
+            if (!ReportingYearsHelper.GetReportingYears().Contains(year))
+            {
+                throw new PageNotFoundException();
+            }
+
+            string filePath = UpdatePublicFacingDownloadFilesJob.GetDownloadFileLocationForYear(year);
+
+            if (!fileRepository.FileExists(filePath))
+            {
+                throw new PageNotFoundException();
+            }
+            
             string fileContents = fileRepository.Read(filePath);
 
             string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";

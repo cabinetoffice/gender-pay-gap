@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -119,6 +120,50 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 };
 
                 client.DeleteObjectAsync(request).Wait();
+            }
+        }
+
+        public bool FileExists(string relativeFilePath)
+        {
+            using (AmazonS3Client client = CreateAmazonS3Client())
+            {
+                var request = new GetObjectMetadataRequest
+                {
+                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    Key = Url.DirToUrlSeparator(relativeFilePath)
+                };
+
+                try
+                {
+                    client.GetObjectMetadataAsync(request).Wait();
+                    return true;
+                }
+                catch (AmazonS3Exception exception) when (exception.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+            }
+        }
+
+        public long? GetFileSize(string relativeFilePath)
+        {
+            using (AmazonS3Client client = CreateAmazonS3Client())
+            {
+                var request = new GetObjectMetadataRequest
+                {
+                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    Key = Url.DirToUrlSeparator(relativeFilePath)
+                };
+
+                try
+                {
+                    GetObjectMetadataResponse response = client.GetObjectMetadataAsync(request).Result;
+                    return response.ContentLength;
+                }
+                catch (AmazonS3Exception exception) when (exception.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
             }
         }
 

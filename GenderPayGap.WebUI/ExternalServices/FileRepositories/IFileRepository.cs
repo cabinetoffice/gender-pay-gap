@@ -14,5 +14,9 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 
         void Delete(string relativeFilePath);
 
+        bool FileExists(string relativeFilePath);
+
+        long? GetFileSize(string relativeFilePath);
+
     }
 }
