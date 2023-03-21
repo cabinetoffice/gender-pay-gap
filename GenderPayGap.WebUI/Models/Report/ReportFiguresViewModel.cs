@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Report
 {
-    public class ReportFiguresViewModel 
+    public class ReportFiguresViewModel
     {
 
+        public const double MinimumGapPercent = -999999999;
         private const string PositiveOneDecimalPlaceRegex = @"^\d+(\.?\d)?$";
         private const string PositiveAndNegativeOneDecimalPlaceRegex = @"^[-]?\d+(\.?\d)?$";
         private const string OneDecimalPlaceErrorMessage = "Value can't have more than 1 decimal place";
@@ -41,12 +42,12 @@ namespace GenderPayGap.WebUI.Models.Report
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? MaleBonusPayPercent { get; set; }
         
-        [GovUkValidateDecimalRange("Difference in bonus pay (mean)", -499.9, 100, customErrorMessage: "Enter a percentage lower than or equal to 100")]
+        [GovUkValidateDecimalRange("Difference in bonus pay (mean)", MinimumGapPercent, 100, customErrorMessage: "Enter a percentage lower than or equal to 100")]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanBonusPercent { get; set; }
         
-        [GovUkValidateDecimalRange("Difference in bonus pay (median)",-499.9, 100, customErrorMessage: "Enter a percentage lower than or equal to 100")]
+        [GovUkValidateDecimalRange("Difference in bonus pay (median)",MinimumGapPercent, 100, customErrorMessage: "Enter a percentage lower than or equal to 100")]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianBonusPercent { get; set; }
@@ -108,13 +109,13 @@ namespace GenderPayGap.WebUI.Models.Report
         #region Hourly Pay
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Difference in hourly pay (mean) is required")]
-        [GovUkValidateDecimalRange("Difference in hourly pay (mean)", -499.9, 100)]
+        [GovUkValidateDecimalRange("Difference in hourly pay (mean)", MinimumGapPercent, 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMeanHourlyPayPercent { get; set; }
         
         [GovUkValidateRequired(ErrorMessageIfMissing = "Difference in hourly pay (median) is required")]
-        [GovUkValidateDecimalRange("Difference in hourly pay (median)", -499.9, 100)]
+        [GovUkValidateDecimalRange("Difference in hourly pay (median)", MinimumGapPercent, 100)]
         [GovUkValidationRegularExpression(PositiveAndNegativeOneDecimalPlaceRegex, OneDecimalPlaceErrorMessage)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0.#}")]
         public decimal? DiffMedianHourlyPercent { get; set; }
