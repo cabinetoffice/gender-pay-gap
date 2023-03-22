@@ -365,23 +365,6 @@ namespace GenderPayGap.WebUI.Classes
                 }
             }
 
-            //Ensure user has completed the registration process
-            //If user is fully registered then start submit process
-            if (this is RegisterController)
-            {
-                if (IsAnyAction("Register/RequestReceived"))
-                {
-                    return null;
-                }
-
-                if (IsAnyAction("Register/ServiceActivated") && WasAnyAction("Register/ActivateService", "Register/ConfirmOrganisation"))
-                {
-                    return null;
-                }
-
-                return View("CustomError", new ErrorViewModel(1109));
-            }
-
             //Ensure pending manual registrations always redirected back to home
             if (userOrg.PINConfirmedDate == null)
             {
