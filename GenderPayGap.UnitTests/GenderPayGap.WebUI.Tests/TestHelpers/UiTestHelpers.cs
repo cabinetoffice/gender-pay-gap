@@ -60,6 +60,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
         public static Uri Uri => new Uri(Url, UriKind.Absolute);
 
         public static T GetController<T>(long userId = 0, RouteData routeData = null, params object[] dbObjects)
+            where T : Controller
         {
             DIContainer = BuildContainerIoC(dbObjects);
 
@@ -189,26 +190,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             //Create and return the controller
             var controller = DIContainer.Resolve<T>();
 
-            if (controller is BaseController baseController)
-            {
-                baseController.ControllerContext = controllerContextMock;
-
-                var mockTempDataSerializer = new Mock<TempDataSerializer>();
-
-                //Setup temp data 
-                baseController.TempData = new TempDataDictionary(httpContextMock.Object, new SessionStateTempDataProvider(mockTempDataSerializer.Object));
-
-                //Setup the mockUrlHelper for the controller with the calling action from the Route Data
-                if (baseController.RouteData != null
-                    && baseController.RouteData.Values.ContainsKey("Action")
-                    && !string.IsNullOrWhiteSpace(baseController.RouteData.Values["Action"].ToStringOrNull()))
-                {
-                    baseController.AddMockUriHelper(uri.ToString());
-                }
-
-                return (T) Convert.ChangeType(baseController, typeof(T));
-            }
-
+            controller.ControllerContext = controllerContextMock;
+            
             return controller;
         }
 
@@ -274,13 +257,11 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             //Register WebTracker
             builder.Register(c => Mock.Of<IWebTracker>()).As<IWebTracker>().InstancePerLifetimeScope();
 
-            //Register all BaseControllers - this is required to ensure KeyFilter is resolved in constructors
-            builder.RegisterAssemblyTypes(typeof(BaseController).Assembly)
-                .Where(t => t.IsAssignableTo<BaseController>())
-                .InstancePerLifetimeScope()
-                .WithAttributeFiltering();
-            
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
+            builder.RegisterType<CompareController>().InstancePerLifetimeScope();
+            builder.RegisterType<ViewingController>().InstancePerLifetimeScope();
+            builder.RegisterType<ErrorController>().InstancePerLifetimeScope();
+            
             builder.RegisterType<AdminUnconfirmedPinsController>().InstancePerLifetimeScope();
             builder.RegisterType<AdminDatabaseIntegrityChecksController>().InstancePerLifetimeScope();
             builder.RegisterType<CookieController>().InstancePerLifetimeScope();
