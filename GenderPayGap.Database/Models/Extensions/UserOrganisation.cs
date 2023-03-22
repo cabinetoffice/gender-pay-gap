@@ -42,5 +42,24 @@ namespace GenderPayGap.Database
             return IsAwaitingActivationPIN() && PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now;
         }
 
+        public bool HasAttemptedPinTooManyTimes()
+        {
+            if (ConfirmAttempts <= Global.MaxPinAttempts)
+            {
+                return false;
+            }
+
+            if (!ConfirmAttemptDate.HasValue)
+            {
+                return false;
+            }
+
+            DateTime latestPinAttemptDate = ConfirmAttemptDate.Value;
+            DateTime nextAllowedPinAttemptDate = latestPinAttemptDate.AddMinutes(Global.LockoutMinutes);
+            bool attemptedPinTooRecently = VirtualDateTime.Now < nextAllowedPinAttemptDate;
+
+            return attemptedPinTooRecently;
+        }
+
     }
 }

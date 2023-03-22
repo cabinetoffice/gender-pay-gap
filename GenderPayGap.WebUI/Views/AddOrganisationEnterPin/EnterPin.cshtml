@@ -1,0 +1,107 @@
+﻿@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core
+@using GenderPayGap.Core.Classes
+@model GenderPayGap.WebUI.Models.Report.AddOrganisationEnterPinViewModel
+
+@{
+    ViewBag.Title = "Enter the PIN for this organisation - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Manage Employers",
+                Href = Url.Action("ManageOrganisationsGet", "ManageOrganisations")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.UserOrganisation.Organisation.OrganisationName
+            },
+            new CrumbViewModel
+            {
+                Text = "Enter PIN"
+            },
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        @(await Html.GovUkErrorSummary(ViewData.ModelState))
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Enter PIN
+            <br>
+            <span class="govuk-!-font-size-27">
+                for @(Model.UserOrganisation.Organisation.OrganisationName)
+            </span>
+        </h1>
+
+        <p class="govuk-body govuk-!-margin-bottom-2">
+            We've sent you a PIN by post.
+        </p>
+        <p class="govuk-body">
+            When you receive it, enter it on this page to enable you to report Gender Pay Gap information for @(Model.UserOrganisation.Organisation.OrganisationName).
+        </p>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Problems with your PIN?
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                If your PIN hasn't arrived after 7 days or has expired, contact
+                <a href="mailto:@(Global.GpgReportingEmail)"
+                   class="govuk-link">
+                    @(Global.GpgReportingEmail)
+                </a>
+            </div>
+        </details>
+
+        <form action="@Url.Action("EnterPinPost", "AddOrganisationEnterPin", new {obfuscatedOrganisationId = Obfuscator.Obfuscate(Model.UserOrganisation.OrganisationId)})"
+              method="post">
+            @(Html.AntiForgeryToken())
+
+            <fieldset class="govuk-fieldset">
+
+                @(await Html.GovUkTextInputFor(
+                    m => m.Pin,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "Enter the PIN that we sent you for this organisation",
+                        Classes = "govuk-label--s"
+                    },
+                    autocomplete: "organization",
+                    classes: "govuk-input--width-10"
+                    ))
+            </fieldset>
+            
+            @(await Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Activate and continue",
+                Classes = "govuk-!-margin-bottom-3"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
+                   class="govuk-link">
+                    Cancel and return to Manage Employers
+                </a>
+            </p>
+            
+        </form>
+
+    </div>
+</div>
