@@ -1,6 +1,7 @@
 @using GenderPayGap.WebUI.Controllers.SendFeedback
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core
 @model GenderPayGap.WebUI.Controllers.SendFeedback.FeedbackViewModel
 @{
     ViewBag.Title = "Send us feedback - Gender pay gap reporting service";
@@ -192,7 +193,9 @@
 
                 <div class="govuk-inset-text">
                     If you are having difficulties with the gender pay gap reporting service please email
-                    <a href="mailto:gpg.reporting@cabinetoffice.gov.uk" class="govuk-link">gpg.reporting@cabinetoffice.gov.uk</a>
+                    <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
+                        @(Global.GpgReportingEmail)
+                    </a>
                     so that we can get back to you quickly.
                 </div>
 

@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.Core.Helpers
+@using GenderPayGap.Core
 @model GenderPayGap.WebUI.Models.AccountCreation.ConfirmEmailAddressViewModel
 @{
     ViewBag.Title = "Confirm your email address - Gender pay gap service";
@@ -40,9 +41,9 @@
         </p>
         <p class="govuk-body">
             If you are still unable to access the service, please email 
-            <a href="mailto:gpg.reporting@cabinetoffice.gov.uk"
+            <a href="mailto:@(Global.GpgReportingEmail)"
                class="govuk-link">
-                gpg.reporting@cabinetoffice.gov.uk
+                @(Global.GpgReportingEmail)
             </a>
         </p>
         
