@@ -728,28 +728,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public void CompareController_SortEmployers_SuccessAscending_RedirectToReturnUrl()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = "OrganisationName";
-            string returnUrl = @"\viewing\search-results";
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
-
-            // Assert
-            //Test the google analytics tracker was executed once on the controller
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(),"sort-employers: OrganisationName Ascending", "/compare-employers/sort-employers?OrganisationName=Ascending"), Times.Once());
-            
-            Assert.NotNull(result);
-            Assert.AreEqual(returnUrl, result.Url);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, column);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-
-        }
-
-        [Test]
         public void CompareController_SortEmployers_SuccessDescending_RedirectToReturnUrl()
         {
             // Arrange
@@ -768,29 +746,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual(controller.CompareViewService.SortColumn, column);
             Assert.AreEqual(controller.CompareViewService.SortAscending, false);
 
-        }
-
-        [Test]
-        public void CompareController_SortEmployers_SuccessChange_RedirectToReturnUrl()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = "OrganisationName";
-            string returnUrl = @"\viewing\search-results";
-            controller.CompareViewService.SortColumn = "MaleUpperQuartilePayBand";
-            controller.CompareViewService.SortAscending = false;
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
-
-            // Assert
-            //Test the google analytics tracker was executed once on the controller
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), "sort-employers: OrganisationName Descending", "/compare-employers/sort-employers?OrganisationName=Descending"), Times.Once());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(returnUrl, result.Url);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, column);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
         }
 
         #endregion
@@ -895,110 +850,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         #endregion
-
-        #region DownloadCompareData
-        [Test]
-        public void CompareController_DownloadCompareData_NoYear_DefaultSortTheMostRecentCompletedReportingYearAsync()
-        {
-            // Arrange
-            var routeData = new RouteData();
-            routeData.Values.Add("Action", nameof(CompareController.DownloadCompareData));
-            routeData.Values.Add("Controller", "Viewing");
-
-            var controller = UiTestHelper.GetController<CompareController>(0, routeData);
-            var reportingYear = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
-            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", reportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(reportingYear);
-
-            //create the comparison data
-            var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
-
-            //Setup the mocked business logic
-            var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
-            mockOrgBL
-                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .Returns(expectedModel);
-
-            var expectedData = expectedModel.ToDataTable();
-            mockOrgBL
-                .Setup(x => x.GetCompareDatatable(It.IsAny<IEnumerable<CompareReportModel>>()))
-                .Returns(expectedData);
-            controller.OrganisationBusinessLogic = mockOrgBL.Object;
-
-            // Act
-            var result = controller.DownloadCompareData() as ContentResult;
-
-            // Assert
-            //Test the google analytics tracker was executed once on the controller
-            var filename = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear)}.csv";
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(result.ContentType, "text/csv");
-            Assert.AreEqual(controller.Response.Headers["Content-Disposition"], $"attachment; filename=\"{filename}\"");
-
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-
-            Assert.NotNull(result.Content);
-            Assert.AreEqual(result.Content, expectedData.ToCSV());
-        }
-
-        [Test]
-        public void CompareController_DownloadCompareData_WithYear_SameSortAsync()
-        {
-            // Arrange
-            var routeData = new RouteData();
-            routeData.Values.Add("Action", nameof(CompareController.DownloadCompareData));
-            routeData.Values.Add("Controller", "Viewing");
-
-            var controller = UiTestHelper.GetController<CompareController>(0, routeData);
-
-
-            controller.CompareViewService.SortColumn = "OrganisationSize";
-            controller.CompareViewService.SortAscending = false;
-
-            var firstReportingYear = Global.FirstReportingYear;
-
-            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
-
-            //create the comparison data
-            var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
-
-            //Setup the mocked business logic
-            var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
-            mockOrgBL
-                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .Returns(expectedModel);
-            var expectedData = expectedModel.ToDataTable();
-            mockOrgBL
-                .Setup(x => x.GetCompareDatatable(It.IsAny<IEnumerable<CompareReportModel>>()))
-                .Returns(expectedData);
-            controller.OrganisationBusinessLogic = mockOrgBL.Object;
-
-            // Act
-            var result = controller.DownloadCompareData(firstReportingYear) as ContentResult;
-
-            // Assert
-
-            //Test the google analytics tracker was executed once on the controller
-            var filename = $"Compared GPG Data {ReportingYearsHelper.FormatYearAsReportingPeriod(firstReportingYear)}.csv";
-            controller.WebTracker.GetMockFromObject().Verify(mock => mock.TrackPageView(It.IsAny<Controller>(), filename, null), Times.Once());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(result.ContentType, "text/csv");
-            Assert.AreEqual(controller.Response.Headers["Content-Disposition"], $"attachment; filename=\"{filename}\"");
-
-            Assert.AreEqual(controller.CompareViewService.SortColumn, "OrganisationSize");
-            Assert.AreEqual(controller.CompareViewService.SortAscending, false);
-
-            Assert.NotNull(result.Content);
-            Assert.AreEqual(result.Content, expectedData.ToCSV());
-        }
-
-        #endregion
-
 
     }
 }

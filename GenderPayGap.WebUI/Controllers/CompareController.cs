@@ -24,20 +24,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers
 {
     [Route("viewing")]
-    public class CompareController : BaseController
+    public class CompareController : Controller
     {
 
+        private readonly IDataRepository dataRepository;
+        private readonly IWebTracker webTracker;
+        
         public CompareController(
-            IHttpSession session,
             ISearchViewService searchViewService,
             ICompareViewService compareViewService,
             IDataRepository dataRepository,
             IOrganisationBusinessLogic organisationBusinessLogic,
-            IWebTracker webTracker) : base(session, dataRepository, webTracker)
+            IWebTracker webTracker)
         {
             OrganisationBusinessLogic = organisationBusinessLogic;
             SearchViewService = searchViewService;
             CompareViewService = compareViewService;
+            this.dataRepository = dataRepository;
+            this.webTracker = webTracker;
         }
 
         [HttpGet("add-employer/{employerIdentifier}")]
@@ -220,7 +224,7 @@ namespace GenderPayGap.WebUI.Controllers
             //Track the download 
             if (CompareViewService.SortColumn != column || CompareViewService.SortAscending != sort)
             {
-                WebTracker.TrackPageView(
+                webTracker.TrackPageView(
                     this,
                     $"sort-employers: {column} {(CompareViewService.SortAscending ? "Ascending" : "Descending")}",
                     $"/compare-employers/sort-employers?{column}={(CompareViewService.SortAscending ? "Ascending" : "Descending")}");
@@ -276,16 +280,16 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Track the compared employers
             string lastComparedEmployerList = CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
-            if (CompareViewService.LastComparedEmployerList != lastComparedEmployerList && IsAction("CompareEmployers"))
+            if (CompareViewService.LastComparedEmployerList != lastComparedEmployerList)
             {
                 SortedSet<string> employerIds = compareReports.Select(r => r.EncOrganisationId).ToSortedSet();
-                WebTracker.TrackPageView(
+                webTracker.TrackPageView(
                     this,
                     $"compare-employers: {employerIds.ToDelimitedString()}",
                     $"{ViewBag.ReturnUrl}?{employerIds.ToEncapsulatedString("e=", null, "&", "&", false)}");
                 foreach (CompareReportModel employer in compareReports)
                 {
-                    WebTracker.TrackPageView(
+                    webTracker.TrackPageView(
                         this,
                         $"{employer.EncOrganisationId}: {employer.OrganisationName}",
                         $"{ViewBag.ReturnUrl}?{employer.EncOrganisationId}={employer.OrganisationName}");
@@ -370,7 +374,7 @@ namespace GenderPayGap.WebUI.Controllers
             Response.BufferOutput = true;
             */
             //Track the download 
-            WebTracker.TrackPageView(this, contentDisposition.FileName);
+            webTracker.TrackPageView(this, contentDisposition.FileName);
 
             //Return the data
             return Content(model.ToCSV(), "text/csv");
@@ -384,7 +388,7 @@ namespace GenderPayGap.WebUI.Controllers
             if (employer == null)
             {
                 long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-                Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, DataRepository);
+                Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
                 
                 if (activeOnly)
                 {

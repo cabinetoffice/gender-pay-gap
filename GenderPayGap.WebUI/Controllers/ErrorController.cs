@@ -12,17 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers
 {
     [Route("Error")]
-    public class ErrorController : BaseController
+    public class ErrorController : Controller
     {
-
-        #region Constructors
-
-        public ErrorController(
-            IHttpSession session,
-            IDataRepository dataRepository,
-            IWebTracker webTracker) : base(session, dataRepository, webTracker) { }
-
-        #endregion
 
         [Route("/error/")]
         [Route("/error/{errorCode?}")]
