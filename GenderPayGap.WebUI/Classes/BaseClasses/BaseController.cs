@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -354,19 +354,6 @@ namespace GenderPayGap.WebUI.Classes
                         }
 
                         return View("CustomError", new ErrorViewModel(1106));
-                    }
-
-                    //If PIN resends are allowed and currently on PIN send page then allow it to continue
-                    TimeSpan remainingTime = userOrg.PINSentDate.Value.AddDays(Global.PinInPostMinRepostDays) - VirtualDateTime.Now;
-                    if (remainingTime <= TimeSpan.Zero && IsAnyAction("Register/PINSent", "Register/RequestPIN"))
-                    {
-                        return null;
-                    }
-
-                    //If PIN Not expired redirect to ActivateService where they can either enter the same pin or request a new one 
-                    if (IsAnyAction("Register/RequestPIN"))
-                    {
-                        return View("CustomError", new ErrorViewModel(1120, new {remainingTime = remainingTime.ToFriendly(maxParts: 2)}));
                     }
 
                     if (IsAnyAction("Register/ActivateService"))
