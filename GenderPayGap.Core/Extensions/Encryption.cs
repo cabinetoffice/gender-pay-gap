@@ -196,12 +196,6 @@ namespace GenderPayGap.Extensions
             return nsDecrypted.ToQueryString();
         }
 
-        public static string EncryptAsParams(params string[] param)
-        {
-            string encString = EncryptData(string.Join(":", param));
-            return encString.EncodeUrlBase64();
-        }
-
         public static string EncryptModel<TModel>(TModel model)
         {
             string modelSerialized = JsonConvert.SerializeObject(model);
@@ -396,11 +390,6 @@ namespace GenderPayGap.Extensions
             return header.SequenceEqual(GZipLevel12HeaderBytes)
                    || header.SequenceEqual(GZipHeaderBytes)
                    || header.SequenceEqual(GZipLevel10HeaderBytes);
-        }
-
-        public static string Compress(string text, bool mandatory = false)
-        {
-            return Encoding.UTF8.GetString(Compress(Encoding.UTF8.GetBytes(text), mandatory));
         }
 
         /// <summary>

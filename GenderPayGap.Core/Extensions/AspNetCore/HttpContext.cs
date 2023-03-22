@@ -34,17 +34,6 @@ namespace System.Web
             }
         }
 
-        public static string GetParams(this Microsoft.AspNetCore.Http.HttpContext context, string key)
-        {
-            StringValues? param = context.Request?.Query[key];
-            if (string.IsNullOrWhiteSpace(param))
-            {
-                param = context.Request?.Form[key];
-            }
-
-            return param;
-        }
-
         public static string GetBrowser(this Microsoft.AspNetCore.Http.HttpContext context)
         {
             return context.Request?.Headers["User-Agent"].ToStringOrNull();
@@ -70,24 +59,6 @@ namespace System.Web
             }
 
             return new Uri(uri);
-        }
-
-        public static Uri GetUrlReferrer(this Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            string url = context.Request.Headers["Referer"].ToString();
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                return null;
-            }
-
-            try
-            {
-                return new Uri(url);
-            }
-            catch (UriFormatException ufe)
-            {
-                throw new UriFormatException($"Cannot create uri from '{url}'", ufe);
-            }
         }
 
         #region Cookies

@@ -86,23 +86,6 @@ namespace GenderPayGap.Database
             return this.GetAddressLines().ToDelimitedString(delimiter);
         }
 
-        public void SetStatus(AddressStatuses status, long byUserId, string details = null, DateTime? statusDate = null)
-        {
-            if (status == Status && details == StatusDetails && statusDate == null)
-            {
-                return;
-            }
-
-            if (statusDate == null || statusDate == DateTime.MinValue)
-            {
-                statusDate = VirtualDateTime.Now;
-            }
-
-            Status = status;
-            StatusDate = statusDate.Value;
-            StatusDetails = details;
-        }
-
         public bool AddressMatches(OrganisationAddress other)
         {
             return string.Equals(Address1, other.Address1, StringComparison.Ordinal)

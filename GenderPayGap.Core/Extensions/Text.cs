@@ -64,16 +64,6 @@ namespace GenderPayGap.Extensions
             return trimChars == null || trimChars.Length == 0 ? source.Trim() : source.Trim(trimChars);
         }
 
-        public static string TrimSuffix(this string source, string suffix)
-        {
-            if (source.EndsWith(suffix, StringComparison.CurrentCultureIgnoreCase))
-            {
-                source = source.Remove(source.Length - suffix.Length);
-            }
-
-            return source;
-        }
-
         public static string Coalesce(this string text, params string[] options)
         {
             if (!string.IsNullOrWhiteSpace(text))

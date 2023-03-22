@@ -343,12 +343,6 @@ namespace GenderPayGap.Core
 
     }
 
-    public static class Filenames
-    {
-        public const string SicSectorSynonyms = "GPG-SicSectorSynonyms.csv";
-
-    }
-
     public static class CookieNames
     {
         public const string LastCompareQuery = "compare";
