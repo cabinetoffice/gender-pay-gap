@@ -56,11 +56,10 @@
                 Next piece of feedback
             </h2>
             
-            <form action="@Url.Action("CategoriseFeedbackPost", "AdminFeedback")"
+            <form action="@Url.Action("CategoriseFeedbackPost", "AdminFeedback", new {feedbackId = Model.FeedbackToCategorise.FeedbackId})"
                   method="post"
                   style="display: flex; flex-direction: row; justify-content: space-between;">
                 @(Html.AntiForgeryToken())
-                <input type="hidden" name="feedbackId" value="@(Model.FeedbackToCategorise.FeedbackId)"/>
                 
                 <button class="govuk-button govuk-button--warning"
                         style="min-width: 200px;"
@@ -109,6 +108,41 @@
                             }
                         </td>
                     </tr>
+                    @if (!string.IsNullOrWhiteSpace(Model.FeedbackToCategorise.OtherSourceText))
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                How did you hear about
+                                <br/>
+                                the gender pay gap service?
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.FeedbackToCategorise.OtherSourceText)
+                            </td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.FeedbackToCategorise.OtherReasonText))
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                Why have you visited the site?
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.FeedbackToCategorise.OtherReasonText)
+                            </td>
+                        </tr>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.FeedbackToCategorise.OtherPersonText))
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                Who are you?
+                            </th>
+                            <td class="govuk-table__cell">
+                                @(Model.FeedbackToCategorise.OtherPersonText)
+                            </td>
+                        </tr>
+                    }
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">
                             Email address

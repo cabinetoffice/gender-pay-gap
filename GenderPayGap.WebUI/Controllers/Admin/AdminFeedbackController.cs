@@ -29,6 +29,7 @@ namespace GenderPayGap.WebUI.Controllers
             List<Feedback> feedback = dataRepository
                 .GetAll<Feedback>()
                 .Where(f => f.FeedbackStatus == FeedbackStatus.NotSpam)
+                .OrderByDescending(f => f.CreatedDate)
                 .ToList();
 
             return View("ViewFeedback", feedback);
@@ -45,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             if (nextFeedback == null)
             {
-                throw new PageNotFoundException();
+                return RedirectToAction("ViewFeedback", "AdminFeedback");
             }
             
             return RedirectToAction("CategoriseFeedbackGet", "AdminFeedback", new {feedbackId = nextFeedback.FeedbackId});
@@ -70,7 +71,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View("CategoriseFeedback", viewModel);
         }
 
-        [HttpPost("feedback/categorise-feedback")]
+        [HttpPost("feedback/categorise-feedback/{feedbackId}")]
         [ValidateAntiForgeryToken]
         public IActionResult CategoriseFeedbackPost(long feedbackId, FeedbackStatus status)
         {
