@@ -66,7 +66,7 @@ namespace GenderPayGap.WebUI.Controllers
             CookieHelper.SetCookieSettingsCookie(Response, cookieSettings);
             CookieHelper.SetSeenCookieMessageCookie(Response);
 
-            return RedirectToAction("Index", "Viewing");
+            return RedirectToAction("Index", "Homepage");
         }
 
         [HttpGet("/cookie-details")]

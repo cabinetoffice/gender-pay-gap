@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(result.ControllerName, "Viewing");
+            Assert.AreEqual(result.ControllerName, "Homepage");
             Assert.AreEqual(result.ActionName, "Index");
         }
 

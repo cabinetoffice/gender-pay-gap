@@ -1,32 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.ErrorMessages;
-using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.BusinessLogic.Services;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.ErrorHandling;
-using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
-using GenderPayGap.WebUI.Models.Viewing.Download;
 using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,18 +54,6 @@ namespace GenderPayGap.WebUI.Controllers
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
 
         #endregion
-
-        [HttpGet("~/")]
-        public IActionResult Index()
-        {
-            return View("Launchpad/Index");
-        }
-
-        [HttpGet]
-        public IActionResult Redirect()
-        {
-            return RedirectToActionPermanent("Index");
-        }
 
         #region Search
 
