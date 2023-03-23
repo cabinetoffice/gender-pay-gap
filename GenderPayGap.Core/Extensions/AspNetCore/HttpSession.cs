@@ -10,14 +10,8 @@ namespace GenderPayGap.Extensions.AspNetCore
     public interface IHttpSession
     {
 
-        string SessionID { get; }
         object this[string key] { get; set; }
-        IEnumerable<string> Keys { get; }
-        void Add(string key, object value);
         void Remove(string key);
-        T Get<T>(string key);
-        Task LoadAsync();
-        Task SaveAsync();
 
     }
 
@@ -33,26 +27,6 @@ namespace GenderPayGap.Extensions.AspNetCore
         }
 
         public string SessionID => _httpContextAccessor.HttpContext.Session.Id;
-
-        public async Task LoadAsync()
-        {
-            //Load data from distributed data store asynchronously
-            if (!_httpContextAccessor.HttpContext.Session.IsAvailable)
-            {
-                await _httpContextAccessor.HttpContext.Session.LoadAsync().ConfigureAwait(false);
-                Dirty = false;
-            }
-        }
-
-        public async Task SaveAsync()
-        {
-            if (Dirty)
-            {
-                await _httpContextAccessor.HttpContext.Session.CommitAsync().ConfigureAwait(false);
-            }
-
-            Dirty = false;
-        }
 
         public object this[string key]
         {
@@ -75,9 +49,7 @@ namespace GenderPayGap.Extensions.AspNetCore
             }
         }
 
-        public IEnumerable<string> Keys => _httpContextAccessor.HttpContext.Session.Keys;
-
-        public T Get<T>(string key)
+        private T Get<T>(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
@@ -115,7 +87,7 @@ namespace GenderPayGap.Extensions.AspNetCore
             return JsonConvert.DeserializeObject<T>(value);
         }
 
-        public void Add(string key, object value)
+        private void Add(string key, object value)
         {
             string str = null;
             if (value.GetType().IsSimpleType())

@@ -16,8 +16,7 @@ namespace GenderPayGap.Core.Classes.ErrorMessages
             get => (CustomErrorMessages) this[""];
             set => this[""] = value;
         }
-
-
+        
         public override bool IsReadOnly()
         {
             return false;
@@ -115,18 +114,6 @@ namespace GenderPayGap.Core.Classes.ErrorMessages
         public static CustomErrorMessage GetPageError(int code)
         {
             return DefaultSection.Messages.PageErrors.ContainsKey(code) ? DefaultSection.Messages.PageErrors?[code] : null;
-        }
-
-        public static CustomErrorMessage GetValidationError(string validator)
-        {
-            return DefaultSection.Messages.ValidationErrors.ContainsKey(validator)
-                ? DefaultSection.Messages.ValidationErrors[validator]
-                : null;
-        }
-
-        public static CustomErrorMessage GetError(int errorCode)
-        {
-            return DefaultSection.Messages[errorCode];
         }
 
     }

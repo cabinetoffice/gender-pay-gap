@@ -28,26 +28,6 @@ namespace GenderPayGap.Extensions
             return enumerable != null;
         }
 
-        public static string Resolve(this object obj, string text)
-        {
-            //Bind the parameters
-            if (obj != null && !string.IsNullOrWhiteSpace(text))
-            {
-                foreach (PropertyInfo prop in obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
-                {
-                    string value = prop.GetValue(obj, null)?.ToString();
-                    if (string.IsNullOrWhiteSpace(prop.Name) || string.IsNullOrWhiteSpace(value))
-                    {
-                        continue;
-                    }
-
-                    text = text.ReplaceI("{" + prop.Name + "}", value);
-                }
-            }
-
-            return text;
-        }
-
         public static bool IsWrapped<T>(this T[] data, T[] prefix, T[] suffix)
         {
             if (data.Length < prefix.Length + suffix.Length)
@@ -93,28 +73,6 @@ namespace GenderPayGap.Extensions
             var result = new T[length];
             Buffer.BlockCopy(data, index, result, 0, length);
             return result;
-        }
-
-
-        public static bool EqualsI(this object item, params object[] values)
-        {
-            if (item == null && values.Contains(null))
-            {
-                return true;
-            }
-
-            if (item != null && values != null)
-            {
-                foreach (object value in values)
-                {
-                    if (item.Equals(value))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
         }
 
         public static bool IsAny(this object item, params object[] values)
@@ -257,21 +215,6 @@ namespace GenderPayGap.Extensions
             return string.IsNullOrWhiteSpace(result) ? null : result;
         }
 
-        public static string ToStringOrEmpty(this object text)
-        {
-            string result = null;
-            if (text is string)
-            {
-                result = (string) text;
-            }
-            else if (!text.IsNull())
-            {
-                result = System.Convert.ToString(text);
-            }
-
-            return string.IsNullOrWhiteSpace(result) ? string.Empty : result;
-        }
-
         public static DateTime ToDateTime(this object text)
         {
             if (text.IsNull())
@@ -315,168 +258,6 @@ namespace GenderPayGap.Extensions
                 || new[] {typeof(string), typeof(decimal), typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(Guid)}
                     .Contains(type)
                 || System.Convert.GetTypeCode(type) != TypeCode.Object;
-        }
-
-        public static object CopyProperties(this object source, object target)
-        {
-            Type targetType = target.GetType();
-            foreach (PropertyInfo sourceProperty in source.GetType().GetProperties())
-            {
-                MethodInfo propGetter = sourceProperty.GetGetMethod();
-                PropertyInfo targetProperty = targetType.GetProperty(sourceProperty.Name);
-                if (targetProperty == null)
-                {
-                    continue;
-                }
-
-                MethodInfo propSetter = targetProperty.GetSetMethod();
-                // check the property has a setter
-                if (propSetter != null)
-                {
-                    object valueToSet = propGetter.Invoke(source, null);
-                    propSetter.Invoke(target, new[] {valueToSet});
-                }
-            }
-
-            return target;
-        }
-
-        public static void SetProperty(this object source, string propName, object valueToSet)
-        {
-            PropertyInfo sourceProperty = source.GetType().GetProperty(propName);
-            MethodInfo propSetter = sourceProperty.GetSetMethod();
-            propSetter.Invoke(source, new[] {valueToSet});
-        }
-
-        public static object GetPropertyValue(object Object, string PropertyName)
-        {
-            try
-            {
-                PropertyInfo myInfo = Object.GetType().GetPropertyInfo(PropertyName);
-                return myInfo.GetValue(Object, null);
-            }
-            catch { }
-
-            return null;
-        }
-
-        public static PropertyInfo GetPropertyInfo(this Type type, string propertyName)
-        {
-            try
-            {
-                int i = propertyName.IndexOf(".");
-                if (i > -1)
-                {
-                    return type.GetType().GetProperty(propertyName.Substring(0, i));
-                }
-
-                return type.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            }
-            catch { }
-
-            return null;
-        }
-
-        public static Dictionary<string, object> ToPropertyDictionary(this object obj,
-            StringComparer comparer = null,
-            bool newIfEmpty = false)
-        {
-            if (comparer == null)
-            {
-                comparer = StringComparer.CurrentCultureIgnoreCase;
-            }
-
-            if (obj == null || obj.IsEnumerable())
-            {
-                return newIfEmpty ? new Dictionary<string, object>(comparer) : null;
-            }
-
-            return obj.GetType()
-                .GetProperties()
-                .Where(p => !p.GetIndexParameters().Any())
-                .ToDictionary(x => x.Name.Replace('_', '-'), x => x.GetValue(obj, null), comparer);
-        }
-
-        public static bool SetPropertyValue(object obj, string propertyName, object value, bool recursive = false)
-        {
-            PropertyInfo myInfo = null;
-            Type myType = obj.GetType();
-            try
-            {
-                myInfo = GetPropertyInfo(myType, propertyName);
-                if (myInfo == null)
-                {
-                    if (!recursive)
-                    {
-                        return false;
-                    }
-
-                    PropertyInfo[] properties = myType.GetProperties();
-                    foreach (PropertyInfo property in properties)
-                    {
-                        object propValue = property.GetValue(obj, null);
-                        if (IsSimpleType(property.PropertyType)) { }
-                        else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
-                        {
-                            var enumerable = (IEnumerable) propValue;
-                            foreach (object child in enumerable)
-                            {
-                                if (SetPropertyValue(child, propertyName, value, recursive))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (SetPropertyValue(propValue, propertyName, value, recursive))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                myInfo.SetValue(obj, value, null);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                string m = ex.Message;
-            }
-
-            return false;
-        }
-
-
-        public static void FormatDecimals(this object obj)
-        {
-            // Loop through all properties
-            foreach (PropertyInfo p in obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
-            {
-                object value = p.GetValue(obj);
-                if (value == null)
-                {
-                    continue;
-                }
-
-                Type type = value.GetType();
-                if (type != typeof(decimal))
-                {
-                    continue;
-                }
-
-                // for every property loop through all attributes
-                foreach (DisplayFormatAttribute a in p.GetCustomAttributes(typeof(DisplayFormatAttribute), false))
-                {
-                    if (string.IsNullOrWhiteSpace(a.DataFormatString))
-                    {
-                        continue;
-                    }
-
-                    p.SetValue(obj, decimal.Parse(string.Format(a.DataFormatString, value)));
-                }
-            }
         }
 
         public static MethodBase FindParentWithAttribute<T>(this MethodBase callingMethod, int parentOffset = 0) where T : Attribute

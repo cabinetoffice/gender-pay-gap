@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -126,9 +126,6 @@
     <PackageReference Include="CabinetOffice.GovUkDesignSystem" Version="1.0.0-4ef46d7" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="AzureAttachAutoscalingPolicy.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="buildpack.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

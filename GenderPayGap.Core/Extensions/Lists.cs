@@ -47,17 +47,6 @@ namespace GenderPayGap.Extensions
             return list.Distinct(ignoreCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture);
         }
 
-        public static bool ContainsI(this IEnumerable<string> list, params string[] text)
-        {
-            if (list == null || text == null || text.Length == 0)
-            {
-                return false;
-            }
-
-            List<string> li = list.ToList();
-            return text.Any(t => li.Any(l => l.EqualsI(t)));
-        }
-
         public static string ToQueryString(this NameValueCollection collection, bool allowDuplicateKeys = false)
         {
             var data = "";
@@ -113,24 +102,6 @@ namespace GenderPayGap.Extensions
         public static NameValueCollection FromQueryString(this string querystring)
         {
             return string.IsNullOrWhiteSpace(querystring) ? null : HttpUtility.ParseQueryString(querystring);
-        }
-
-        public static NameValueCollection ToNameValueCollection(this Dictionary<string, StringValues> dictionary)
-        {
-            var collection = new NameValueCollection();
-            foreach (string key in dictionary.Keys)
-            {
-                if (dictionary[key] == "")
-                {
-                    collection[null] = key;
-                }
-                else
-                {
-                    collection[key] = dictionary[key];
-                }
-            }
-
-            return collection;
         }
 
         public static string ToDelimitedString<T>(this IEnumerable<T> list, string delimiter = ",", string appendage = null)
@@ -229,27 +200,13 @@ namespace GenderPayGap.Extensions
 
             return new SortedSet<T>(list);
         }
-
-
+        
         public static void AddRange<T>(this HashSet<T> targetCollection, params T[] pars)
         {
             AddRange(targetCollection, pars.AsEnumerable());
         }
 
         public static void AddRange<T>(this HashSet<T> targetCollection, IEnumerable<T> collection)
-        {
-            foreach (T item in collection)
-            {
-                targetCollection.Add(item);
-            }
-        }
-
-        public static void AddRange<T>(this SortedSet<T> targetCollection, params T[] pars)
-        {
-            AddRange(targetCollection, pars.AsEnumerable());
-        }
-
-        public static void AddRange<T>(this SortedSet<T> targetCollection, IEnumerable<T> collection)
         {
             foreach (T item in collection)
             {
@@ -322,19 +279,6 @@ namespace GenderPayGap.Extensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> list, int length)
-        {
-            if (length == 1)
-            {
-                return list.Select(t => new[] {t});
-            }
-
-            return GetPermutations(list, length - 1)
-                .SelectMany(
-                    t => list.Where(e => !t.Contains(e)),
-                    (t1, t2) => t1.Concat(new[] {t2}));
-        }
-
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             if (source == null)
@@ -353,16 +297,5 @@ namespace GenderPayGap.Extensions
             }
         }
 
-        public static IEnumerable<T> Flatten<T>(this IEnumerable<T> e, Func<T, IEnumerable<T>> f)
-        {
-            if (e == null)
-            {
-                return null;
-            }
-
-            return e.SelectMany(c => f(c).Flatten(f)).Concat(e);
-        }
-
     }
-
 }
