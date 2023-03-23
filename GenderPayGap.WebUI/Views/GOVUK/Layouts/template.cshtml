@@ -105,9 +105,6 @@
                 <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
                 <nav id="proposition-menu" aria-label="proposition menu">
                     <a href="~/" id="proposition-name">Gender pay gap service</a>
-                    @{
-                        string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
-                    }
                     <ul id="proposition-links">
 
                         @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))

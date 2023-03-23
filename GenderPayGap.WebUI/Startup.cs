@@ -281,12 +281,6 @@ namespace GenderPayGap.WebUI
                     (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(IWebTracker)))
                 .WithParameter("trackingId", Global.GoogleAnalyticsAccountId);
 
-            //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
-            builder.RegisterAssemblyTypes(typeof(BaseController).Assembly)
-                .Where(t => t.IsAssignableTo<BaseController>())
-                .InstancePerLifetimeScope()
-                .WithAttributeFiltering();
-
             //TOD: Implement AutoFac modules
             //builder.RegisterModule(new AutofacModule());
 

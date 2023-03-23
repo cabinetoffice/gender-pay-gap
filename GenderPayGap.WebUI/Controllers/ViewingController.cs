@@ -33,15 +33,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers
 {
     [Route("viewing")]
-    public class ViewingController : BaseController
+    public class ViewingController : Controller
     {
         private readonly AutoCompleteSearchService autoCompleteSearchService;
         private readonly IFileRepository fileRepository;
+        private readonly IDataRepository dataRepository;
+        private readonly IWebTracker webTracker;
 
         #region Constructors
 
         public ViewingController(
-            IHttpSession session,
             IViewingService viewingService,
             ISearchViewService searchViewService,
             ICompareViewService compareViewService,
@@ -49,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers
             IDataRepository dataRepository,
             IWebTracker webTracker,
             AutoCompleteSearchService autoCompleteSearchService,
-            IFileRepository fileRepository) : base(session, dataRepository, webTracker)
+            IFileRepository fileRepository)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;
@@ -57,6 +58,8 @@ namespace GenderPayGap.WebUI.Controllers
             OrganisationBusinessLogic = organisationBusinessLogic;
             this.autoCompleteSearchService = autoCompleteSearchService;
             this.fileRepository = fileRepository;
+            this.dataRepository = dataRepository;
+            this.webTracker = webTracker;
         }
 
         #endregion
@@ -227,7 +230,7 @@ namespace GenderPayGap.WebUI.Controllers
             string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";
 
             //Track the download 
-            WebTracker.TrackPageView(this, userFacingDownloadFileName);
+            webTracker.TrackPageView(this, userFacingDownloadFileName);
 
             return DownloadHelper.CreateCsvDownload(fileContents, userFacingDownloadFileName);
         }
@@ -245,7 +248,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, DataRepository);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
@@ -296,7 +299,7 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation foundOrganisation;
 
             long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            foundOrganisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, DataRepository);
+            foundOrganisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(foundOrganisation);
 
             #endregion
