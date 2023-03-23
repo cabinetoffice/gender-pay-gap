@@ -414,11 +414,6 @@ namespace GenderPayGap.WebUI.Controllers
                                             Close the gap
                                         </a>
                                     </li>
-                                    <li class=""govuk-header__navigation-item "">
-                                        <a class=""govuk-header__link"" href=""/reporting-step-by-step"">
-                                            Employer guidance
-                                        </a>
-                                    </li>
                         </ul>
                     </nav>
             </div>

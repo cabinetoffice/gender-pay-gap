@@ -29,9 +29,4 @@
 @import "./components/inset-text";
 
 // these files has been copied directly from the GovUK Prototype kit
-@import "./components/step-by-step-navigation";
 @import "./components/task-list";
-
-// this file overrides some of the GovUK properties
-// and it needs to come after the file copied from the GovUK Prototype kit
-@import "./components/step-by-step-navigation-gpg";

@@ -106,31 +106,15 @@
                 <nav id="proposition-menu" aria-label="proposition menu">
                     <a href="~/" id="proposition-name">Gender pay gap service</a>
                     <ul id="proposition-links">
-
-                        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-                        {
-                            <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action(nameof(ViewingController.SearchResults), "Viewing"))">Search</a>
-                            </li>
-                            <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action("StepByStepStandalone", "ReportingStepByStep"))">Guidance</a>
-                            </li>
-                            <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href=@Url.Action("ManageOrganisationsGet", "ManageOrganisations")>Submit</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action(nameof(ViewingController.SearchResults), "Viewing"))">Search and compare</a>
-                            </li>
-                            <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action(nameof(ViewingController.Download), "Viewing"))">Download</a>
-                            </li>
-                            <li>
-                                <a rel="track" data-track-category="Header Link Clicked" href="@Url.Action("Overview", "ActionHub")">Close the gap</a>
-                            </li>
-                        }
+                        <li>
+                            <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action(nameof(ViewingController.SearchResults), "Viewing"))">Search and compare</a>
+                        </li>
+                        <li>
+                            <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action(nameof(ViewingController.Download), "Viewing"))">Download</a>
+                        </li>
+                        <li>
+                            <a rel="track" data-track-category="Header Link Clicked" href="@Url.Action("Overview", "ActionHub")">Close the gap</a>
+                        </li>
                         
                         @if (User.IsInRole(LoginRoles.GpgAdmin))
                         {

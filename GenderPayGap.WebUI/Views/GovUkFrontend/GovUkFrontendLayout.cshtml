@@ -73,15 +73,6 @@
                 Href = Url.Action("Overview", "ActionHub")
             });
 
-            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-            {
-                headerNavigationLinks.Add(new HeaderNavigationViewModel
-                {
-                    Text = "Employer guidance",
-                    Href = Url.Action("StepByStepStandalone", "ReportingStepByStep")
-                });
-            }
-
             if (User.IsInRole(LoginRoles.GpgAdmin))
             {
                 headerNavigationLinks.Add(new HeaderNavigationViewModel
