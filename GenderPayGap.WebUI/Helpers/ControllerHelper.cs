@@ -92,6 +92,38 @@ namespace GenderPayGap.WebUI.Helpers
             }
         }
 
+        public static void ThrowIfUserIsNotAwaitingPinInThePostForGivenOrganisation(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository, long organisationId)
+        {
+            User gpgUser = GetGpgUserFromAspNetUser(aspDotNetUser, dataRepository);
+
+            Organisation organisation = dataRepository.Get<Organisation>(organisationId);
+            UserOrganisation userOrg = gpgUser.UserOrganisations.FirstOrDefault(uo => uo.OrganisationId == organisationId);
+           
+            // If there's no organisation with the ID provided
+            if (organisation == null)
+            {
+                throw new PageNotFoundException();
+            }
+            
+            // If the organisation isn't active
+            if (organisation.Status != OrganisationStatuses.Active)
+            {
+                throw new UserNotRegisteredToReportForOrganisationException();
+            }
+            
+            // If the UserOrganisation doesn't exist
+            if (userOrg == null)
+            {
+                throw new UserNotRegisteredToReportForOrganisationException();
+            }
+
+            // If UserOrganisation exists, but isn't awaiting PIN in the Post
+            if (!userOrg.IsAwaitingActivationPIN())
+            {
+                throw new PageNotFoundException();
+            }
+        }
+
         public static long DecryptOrganisationIdOrThrow404(string encryptedOrganisationId)
         {
             if (!encryptedOrganisationId.DecryptToId(out long organisationId))

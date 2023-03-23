@@ -105,7 +105,6 @@ namespace GenderPayGap.Core
         public static int MinPasswordResetMinutes => 10;
         public static TimeSpan PasswordResetCodeExpiryDays => TimeSpan.FromDays(1);
         public static int PinInPostExpiryDays => 21;
-        public static int PinInPostMinRepostDays => 5;
         public static int PurgeUnusedOrganisationDays => 30;
         public static int PurgeUnconfirmedPinDays => PinInPostExpiryDays + 30;
         public static string DownloadsLocation => "Downloads";

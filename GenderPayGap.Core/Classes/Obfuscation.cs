@@ -47,6 +47,11 @@ namespace GenderPayGap.Core.Classes
             return Obfuscate(value.ToInt32());
         }
 
+        public static string Obfuscate(long value)
+        {
+            return Obfuscate(value.ToInt32());
+        }
+
         public static string Obfuscate(int value)
         {
             var obfuscator = new Cryptography.Obfuscation.Obfuscator { Seed = Global.ObfuscationSeed };
