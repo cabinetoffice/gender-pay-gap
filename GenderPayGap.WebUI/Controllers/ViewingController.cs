@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -81,12 +81,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpGet]
         public IActionResult Redirect()
-        {
-            return RedirectToActionPermanent("Index");
-        }
-
-        [HttpGet("azure-uptime-pinger")]
-        public IActionResult AzureUptimePingerEndpoint()
         {
             return RedirectToActionPermanent("Index");
         }
