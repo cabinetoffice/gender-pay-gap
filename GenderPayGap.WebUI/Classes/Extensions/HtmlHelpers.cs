@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
-using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes.Attributes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,13 +11,6 @@ namespace GenderPayGap.WebUI.Classes
 {
     public static class HtmlHelpers
     {
-
-        public static async Task<IHtmlContent> PartialModelAsync<T>(this IHtmlHelper htmlHelper, T viewModel)
-        {
-            // extract the parial path from the model class attr
-            string partialPath = viewModel.GetAttribute<PartialAttribute>().PartialPath;
-            return await htmlHelper.PartialAsync(partialPath, viewModel);
-        }
 
         public static string WithQuery(this IUrlHelper helper, string actionName, object routeValues)
         {
