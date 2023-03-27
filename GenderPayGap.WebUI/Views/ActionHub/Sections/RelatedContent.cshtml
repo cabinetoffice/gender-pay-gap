@@ -22,14 +22,6 @@
                 Search and compare employer gender pay gaps
             </a>
         </li>
-        @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-        {
-            <li>
-                <a class="govuk-link govuk-body-s" href="@Url.Action("StepByStepStandalone", "ReportingStepByStep")">
-                    Prepare and report your gender pay gap: step-by-step guidance for employers
-                </a>
-            </li>
-        }
     </ul>
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     <div>

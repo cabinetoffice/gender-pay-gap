@@ -76,14 +76,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/")]
         public IActionResult Index()
         {
-            if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-            {
-                return View("Launchpad/PrototypeIndex");
-            }
-            else
-            {
-                return View("Launchpad/Index");
-            }
+            return View("Launchpad/Index");
         }
 
         [HttpGet]

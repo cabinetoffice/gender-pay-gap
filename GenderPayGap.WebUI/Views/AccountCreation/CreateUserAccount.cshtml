@@ -9,13 +9,6 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-{
-    @section BeforeMain {
-        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
-    }
-}
-
 @if (Model.IsPartOfGovUkReportingJourney)
 {
     <div class="govuk-grid-row">
@@ -177,15 +170,4 @@
             
         </form>
     </div>
-    @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-    {
-        <div class="govuk-grid-column-one-third">
-            @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
-                    new ReportingStepsViewModel
-                    {
-                        CurrentStep = 3,
-                        CurrentTask = 0
-                    }); }
-        </div>
-    }
 </div>

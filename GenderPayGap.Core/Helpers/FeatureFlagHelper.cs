@@ -29,7 +29,6 @@ namespace GenderPayGap.Core.Helpers
 
     public enum FeatureFlag
     {
-        ReportingStepByStep,
         PrivateManualRegistration,
         SendRegistrationReviewEmails
     }

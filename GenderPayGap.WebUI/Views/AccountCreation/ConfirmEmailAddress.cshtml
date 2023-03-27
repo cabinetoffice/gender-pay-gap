@@ -6,13 +6,6 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
-@if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-{
-    @section BeforeMain {
-        @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingPageHeader.cshtml"); }
-    }   
-}
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Confirm your email address</h1>
@@ -48,15 +41,4 @@
         </p>
         
     </div>
-    @if (FeatureFlagHelper.IsFeatureEnabled(FeatureFlag.ReportingStepByStep))
-    {
-        <div class="govuk-grid-column-one-third">
-            @{ await Html.RenderPartialAsync("/Views/ReportingStepByStep/ReportingSidebar.cshtml",
-                   new ReportingStepsViewModel
-                   {
-                       CurrentStep = 3,
-                       CurrentTask = 0
-                   }); }
-        </div>
-    }
 </div>
