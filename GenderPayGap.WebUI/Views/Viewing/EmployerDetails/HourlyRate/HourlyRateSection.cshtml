@@ -1,6 +1,38 @@
 ﻿@using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.WebUI.Models.Viewing
-@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GenderPayGap.WebUI.Classes.TagHelpers
+@model GenderPayGap.Database.Return
+
+@{
+    bool femaleHasLowerMeanHourlyPercent = Model.DiffMeanHourlyPayPercent >= 0;
+    bool femaleHasLowerMedianHourlyPercent = Model.DiffMedianHourlyPercent >= 0;
+
+    decimal FemaleMoneyFromMedianHourlyRate()
+    {
+        return femaleHasLowerMedianHourlyPercent
+            ? 100 - Model.DiffMedianHourlyPercent
+            : 100 + Math.Abs(Model.DiffMedianHourlyPercent);
+    }
+
+    string FemaleMedianHourlyRateMonitised()
+    {
+        decimal femaleMoneyFromMedianHourlyRate = FemaleMoneyFromMedianHourlyRate();
+
+        decimal roundedRate = Math.Round(femaleMoneyFromMedianHourlyRate);
+        if (roundedRate < 100)
+        {
+            return $"{roundedRate}p";
+        }
+
+        if (roundedRate == 100)
+        {
+            return "£1";
+        }
+
+        return $"£{string.Format("{0:#.00}", roundedRate / 100)}";
+    }
+}
 
 <div class="grid-row">
     <div class="column-full">
@@ -12,13 +44,12 @@
             <div class="grid-row">
                 <div class="column-full">
                     <span>
-                        In this organisation, women earn @(Model.FemaleMedianHourlyRateMonitised)
-                        for every @(Model.MaleMedianHourlyRateMonitised)
-                        that men earn when comparing median hourly pay.
+                        In this organisation, women earn @FemaleMedianHourlyRateMonitised()
+                        for every £1 that men earn when comparing median hourly pay.
                     </span>
-                    <span>Their median hourly pay is @(string.Format("{0:0.#}", Math.Abs(Model.DiffMedianHourlyPercent.Value)))%</span>
+                    <span>Their median hourly pay is @(string.Format("{0:0.#}", Math.Abs(Model.DiffMedianHourlyPercent)))%</span>
                     <span>
-                        @(Model.FemaleHasLowerMedianHourlyPercent ? "lower" : "higher")
+                        @(femaleHasLowerMedianHourlyPercent ? "lower" : "higher")
                         than men&rsquo;s.
                     </span>
                 </div>
@@ -38,11 +69,11 @@
                         var medianHourlyRateChartModel = new VerticalBarChartModel
                         {
                             Id = "MedianHourlyDiffChart",
-                            FemaleIsLower = Model.FemaleHasLowerMedianHourlyPercent,
-                            Male = Model.FemaleHasLowerMedianHourlyPercent ? 100 : 100 + Model.DiffMedianHourlyPercent.Value,
-                            Female = Model.FemaleHasLowerMedianHourlyPercent ? 100 - Model.DiffMedianHourlyPercent.Value : 100,
-                            MaleMonetisation = Model.MaleMedianHourlyRateMonitised,
-                            FemaleMonetisation = Model.FemaleMedianHourlyRateMonitised
+                            FemaleIsLower = femaleHasLowerMedianHourlyPercent,
+                            Male = femaleHasLowerMedianHourlyPercent ? 100 : 100 + Model.DiffMedianHourlyPercent,
+                            Female = femaleHasLowerMedianHourlyPercent ? 100 - Model.DiffMedianHourlyPercent : 100,
+                            MaleMonetisation = "£1",
+                            FemaleMonetisation = FemaleMedianHourlyRateMonitised()
                         };
                     }
                     <partial name="EmployerDetails/VerticalBarChart" model="medianHourlyRateChartModel"/>
@@ -52,9 +83,9 @@
             <div class="grid-row">
                 <div class="column-full">
                     <span>When comparing mean (average) hourly pay, </span>
-                    <span>women&rsquo;s mean hourly pay is @(string.Format("{0:0.#}", Math.Abs(Model.DiffMeanHourlyPayPercent.Value)))%</span>
+                    <span>women&rsquo;s mean hourly pay is @(string.Format("{0:0.#}", Math.Abs(Model.DiffMeanHourlyPayPercent)))%</span>
                     <span>
-                        @(Model.FemaleHasLowerMeanHourlyPercent ? "lower" : "higher")
+                        @(femaleHasLowerMeanHourlyPercent ? "lower" : "higher")
                         than men&rsquo;s.
                     </span>
                 </div>
