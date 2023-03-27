@@ -75,13 +75,18 @@
 
                 <div class="grid-row">
                     <div class="column-full">
-                        <br/>
-                        @await Html.PartialModelAsync(new Details
-                        {
-                            Id = "AboutQuartiles",
-                            LinkText = "About pay quarters",
-                            SummaryPartial = "AboutQuartiles"
-                        })
+
+                        <details class="govuk-details govuk-!-margin-top-6" data-module="govuk-details">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    About pay quarters
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <partial name="AboutQuartiles" />
+                            </div>
+                        </details>
+
                     </div>
                 </div>
             }

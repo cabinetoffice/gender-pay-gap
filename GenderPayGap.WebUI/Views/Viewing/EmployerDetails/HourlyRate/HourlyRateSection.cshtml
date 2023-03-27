@@ -1,7 +1,6 @@
 ﻿@using GenderPayGap.WebUI.Models.Shared
 @using GenderPayGap.WebUI.Models.Viewing
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using GenderPayGap.WebUI.Classes.TagHelpers
 @model GenderPayGap.Database.Return
 
 @{
@@ -93,13 +92,18 @@
 
             <div class="grid-row">
                 <div class="column-full">
-                    <br/>
-                    @await Html.PartialModelAsync(new Details
-                    {
-                        Id = "AboutHourlyRate",
-                        LinkText = "About median and mean",
-                        SummaryPartial = "AboutHourlyRate"
-                    })
+
+                    <details class="govuk-details govuk-!-margin-top-6" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                About median and mean
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <partial name="AboutHourlyRate" />
+                        </div>
+                    </details>
+
                 </div>
             </div>
         </section>
