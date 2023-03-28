@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,12 +85,6 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToActionPermanent("Index");
         }
 
-        [HttpGet("azure-uptime-pinger")]
-        public IActionResult AzureUptimePingerEndpoint()
-        {
-            return RedirectToActionPermanent("Index");
-        }
-
         #region Search
 
         /// <summary>
@@ -126,26 +120,6 @@ namespace GenderPayGap.WebUI.Controllers
             };
 
             return View("Finder/SearchResults", model);
-        }
-
-        [HttpGet("~/search-results-js")]
-        [HttpGet("search-results-js")]
-        // used to generate suggestions for the search on the landing page 
-        public async Task<IActionResult> SearchResultsJs([FromQuery] SearchResultsQuery searchQuery)
-        {
-            // ensure parameters are valid
-            if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
-            {
-                return result;
-            }
-
-            // generate result view model
-            var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
-            SearchViewModel model = await ViewingService.SearchAsync(searchParams, "relevance");
-
-            ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
-
-            return PartialView("Finder/Parts/MainContent", model);
         }
 
         [HttpGet("suggest-employer-name-js")]
