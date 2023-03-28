@@ -43,7 +43,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 // Take the user to the "done" URL (the gov.uk survey page)
                 Global.DoneUrl
                 ?? // Or, if we don't have a "done URL", take them to the homepage
-                Url.Action("Index", "Viewing", null, "https");
+                Url.Action("Index", "Homepage", null, "https");
 
             // Global.Done url is not local
             //disable:DoNotUseRedirectWithReturnUrls

@@ -85,7 +85,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
         private bool ReturnUrlIsAllowed(string returnUrl)
         {
-            string fullUrlToHomepage = Url.Action("Index", "Viewing", new { }, "https"); // i.e. (on Prod) https://gender-pay-gap.service.gov.uk/
+            string fullUrlToHomepage = Url.Action("Index", "Homepage", new { }, "https"); // i.e. (on Prod) https://gender-pay-gap.service.gov.uk/
 
             return returnUrl != null
                    && (returnUrl.StartsWith(fullUrlToHomepage)

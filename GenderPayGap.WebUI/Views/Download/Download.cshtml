@@ -30,7 +30,7 @@
         {
             Id = "AboutCSVData",
             LinkText = "About CSV data",
-            SummaryPartial = "Download/CSVDataTable"
+            SummaryPartial = "CSVDataTable"
         })
         
     </div>
@@ -47,7 +47,7 @@
                     {
                         string fileSizeText = downloadCsvFile.FileSize.HasValue ? $"{DownloadHelper.GetFormattedFileSize(downloadCsvFile.FileSize.Value)} " : "";
                         
-                        <a href="@Url.Action("DownloadData", "Viewing", new {year = downloadCsvFile.ReportingYear})"
+                        <a href="@Url.Action("DownloadData", "Download", new {year = downloadCsvFile.ReportingYear})"
                            class="govuk-link">
                             <span class="govuk-visually-hidden">Download gender pay gap data for</span>
                             Reporting year

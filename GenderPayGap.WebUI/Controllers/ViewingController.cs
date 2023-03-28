@@ -1,32 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Classes.ErrorMessages;
-using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs;
 using GenderPayGap.WebUI.BusinessLogic.Models.Submit;
 using GenderPayGap.WebUI.BusinessLogic.Services;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.ErrorHandling;
-using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models;
 using GenderPayGap.WebUI.Models.Search;
-using GenderPayGap.WebUI.Models.Viewing.Download;
 using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,9 +24,7 @@ namespace GenderPayGap.WebUI.Controllers
     public class ViewingController : Controller
     {
         private readonly AutoCompleteSearchService autoCompleteSearchService;
-        private readonly IFileRepository fileRepository;
         private readonly IDataRepository dataRepository;
-        private readonly IWebTracker webTracker;
 
         #region Constructors
 
@@ -48,18 +34,14 @@ namespace GenderPayGap.WebUI.Controllers
             ICompareViewService compareViewService,
             IOrganisationBusinessLogic organisationBusinessLogic,
             IDataRepository dataRepository,
-            IWebTracker webTracker,
-            AutoCompleteSearchService autoCompleteSearchService,
-            IFileRepository fileRepository)
+            AutoCompleteSearchService autoCompleteSearchService)
         {
             ViewingService = viewingService;
             SearchViewService = searchViewService;
             CompareViewService = compareViewService;
             OrganisationBusinessLogic = organisationBusinessLogic;
             this.autoCompleteSearchService = autoCompleteSearchService;
-            this.fileRepository = fileRepository;
             this.dataRepository = dataRepository;
-            this.webTracker = webTracker;
         }
 
         #endregion
@@ -72,18 +54,6 @@ namespace GenderPayGap.WebUI.Controllers
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
 
         #endregion
-
-        [HttpGet("~/")]
-        public IActionResult Index()
-        {
-            return View("Launchpad/Index");
-        }
-
-        [HttpGet]
-        public IActionResult Redirect()
-        {
-            return RedirectToActionPermanent("Index");
-        }
 
         #region Search
 
@@ -135,73 +105,6 @@ namespace GenderPayGap.WebUI.Controllers
             return Json(new {Matches = matches});
         }
         
-        #endregion
-
-        #region Downloads
-
-        [HttpGet("download")]
-        public IActionResult Download()
-        {
-            List<DownloadCsvFile> downloadCsvFiles = GetListOfCsvFilesToDownload();
-            
-            return View("Download/Download", downloadCsvFiles);
-        }
-
-        private List<DownloadCsvFile> GetListOfCsvFilesToDownload()
-        {
-            List<int> reportingYears = ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y).ToList();
-
-            var csvFiles = new List<DownloadCsvFile>();
-
-            foreach (int year in reportingYears)
-            {
-                string filePath = UpdatePublicFacingDownloadFilesJob.GetDownloadFileLocationForYear(year);
-
-                bool fileIsAvailable = fileRepository.FileExists(filePath);
-                long? fileSize = fileIsAvailable ? fileRepository.GetFileSize(filePath) : null;
-
-                csvFiles.Add(new DownloadCsvFile
-                {
-                    ReportingYear = year,
-                    FileIsAvailable = fileIsAvailable,
-                    FileSize = fileSize
-                });
-            }
-
-            return csvFiles;
-        }
-
-        [HttpGet("download-data")]
-        [HttpGet("download-data/{year:int=0}")]
-        public IActionResult DownloadData(int year = 0)
-        {
-            if (year == 0)
-            {
-                year = SectorTypes.Private.GetAccountingStartDate().Year;
-            }
-
-            if (!ReportingYearsHelper.GetReportingYears().Contains(year))
-            {
-                throw new PageNotFoundException();
-            }
-
-            string filePath = UpdatePublicFacingDownloadFilesJob.GetDownloadFileLocationForYear(year);
-
-            if (!fileRepository.FileExists(filePath))
-            {
-                throw new PageNotFoundException();
-            }
-            
-            string fileContents = fileRepository.Read(filePath);
-
-            string userFacingDownloadFileName = $"UK Gender Pay Gap Data - {year} to {year + 1}.csv";
-
-            //Track the download 
-            webTracker.TrackPageView(this, userFacingDownloadFileName);
-
-            return DownloadHelper.CreateCsvDownload(fileContents, userFacingDownloadFileName);
-        }
-
         #endregion
 
         #region Employer details
