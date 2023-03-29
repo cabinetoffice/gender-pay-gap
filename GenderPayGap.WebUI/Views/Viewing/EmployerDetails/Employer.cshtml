@@ -67,12 +67,18 @@
                     <div class="column-full">
                         <hr style="margin-top: 0"/>
                         <div class="body" style="margin-top: 2em">
-                            @await Html.PartialModelAsync(new Details
-                            {
-                                Id = "WhoNeedsToReport",
-                                LinkText = "Who is required to report, and the deadlines",
-                                SummaryPartial = "EmployerDetails/WhoNeedsToReport"
-                            })
+
+                            <details class="govuk-details" data-module="govuk-details">
+                                <summary class="govuk-details__summary">
+                                    <span class="govuk-details__summary-text">
+                                        Who is required to report, and the deadlines
+                                    </span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                    <partial name="EmployerDetails/WhoNeedsToReport"/>
+                                </div>
+                            </details>
+
                             @{
                                 var years = organisation.GetRecentReports(Global.ShowReportYearCount).Select(report => report.GetReportingPeriod()).ToArray();
                                 var options = new List<SelectItemViewModel>();
