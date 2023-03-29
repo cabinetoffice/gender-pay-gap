@@ -2,18 +2,20 @@
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
 @using GenderPayGap.WebUI.Helpers
-@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
+@model GenderPayGap.Database.Return
+
 @{
     var reportingYear = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year);
-    ViewBag.Title = $"{Model.OrganisationName} gender pay gap data for {reportingYear} reporting year - GOV.UK";
-    ViewBag.pageDescription = $"View gender pay gap data for {Model.OrganisationName} for {reportingYear} reporting year and compare with other organisations";
+    ViewBag.Title = $"{Model.Organisation.OrganisationName} gender pay gap data for {reportingYear} reporting year - GOV.UK";
+    ViewBag.pageDescription = $"View gender pay gap data for {Model.Organisation.OrganisationName} for {reportingYear} reporting year and compare with other organisations";
     ViewBag.ogTitle = ViewBag.Title;
     ViewBag.ogType = "business.gender_pay_gap";
     ViewBag.pageClass = "employer-report-page";
+    
+    string employerIdentifier = Model.Organisation.GetEncryptedId();
+    var viewModel = new AddRemoveButtonViewModel {OrganisationIdEncrypted = Model.Organisation.GetEncryptedId(), OrganisationName = Model.Organisation.OrganisationName};
 
-
-    string employerIdentifier = Model.EncryptedOrganisationId;
-    var viewModel = new AddRemoveButtonViewModel {OrganisationIdEncrypted = Model.EncryptedOrganisationId, OrganisationName = Model.LatestOrganisationName};
+    string address = Model.Organisation.GetLatestAddress()?.GetAddressString();
 }
 
 <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
@@ -22,7 +24,7 @@
         <a class="link-back" href="@(Url.Action("Employer", new {employerIdentifier}))">View all reports for this employer</a>
         <h1 class="heading-large">
             <div id="OrganisationName">
-                @Model.LatestOrganisationName
+                @Model.Organisation.OrganisationName
             </div>
             <div>
                 @ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year, "/") Gender pay gap report
@@ -42,9 +44,9 @@
             <div>
                 <dt class="metadata-text-label">Registered address:</dt>
                 <dd class="metadata-text-value">
-                    @if (Model.Address != null)
+                    @if (address != null)
                     {
-                        @Model.Address
+                        @address
                     }
                     else
                     {
@@ -55,9 +57,9 @@
             <div>
                 <dt class="metadata-text-label">Nature of business (SIC):</dt>
                 <dd class="metadata-text-value">
-                    @if (Model.Sector != null)
+                    @if (Model.Organisation.GetSicSectorsString() != null)
                     {
-                        @Model.Sector
+                        @Model.Organisation.GetSicSectorsString()
                     }
                     else
                     {
@@ -75,7 +77,7 @@
                     @string.Format("{0}{1}", Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name, Model.OrganisationSize != OrganisationSizes.NotProvided ? " employees" : "")
                 </dd>
             </div>
-            @if (Model.SectorType == SectorTypes.Private)
+            @if (Model.Organisation.SectorType == SectorTypes.Private)
             {
                 <div>
                     <dt class="metadata-text-label">Person responsible:</dt>

@@ -1,15 +1,50 @@
 ﻿@using GenderPayGap.WebUI.Models.Viewing
-@model GenderPayGap.WebUI.BusinessLogic.Models.Submit.ReturnViewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GenderPayGap.WebUI.Classes.TagHelpers
+@model GenderPayGap.Database.Return
+
 @{
     decimal diffMedianBonus = Model.DiffMedianBonusPercent.HasValue ? Model.DiffMedianBonusPercent.Value : 0;
+    bool femaleHasLowerMedianBonusPay = Model.DiffMedianBonusPercent == null || Model.DiffMedianBonusPercent >= 0;
+    bool femaleHasLowerMeanBonusPay = Model.DiffMeanBonusPercent == null || Model.DiffMeanBonusPercent >= 0;
+    bool menReceivedBonuses = Model.MaleMedianBonusPayPercent != 0;
+    bool womenReceivedBonuses = Model.FemaleMedianBonusPayPercent != 0;
+
+    decimal FemaleMoneyFromMedianBonusPay()
+    {
+        if (Model.DiffMedianBonusPercent == null)
+        {
+            return 0;
+        }
+
+        return femaleHasLowerMedianBonusPay ? 100 - Model.DiffMedianBonusPercent.Value : 100 + Math.Abs(Model.DiffMedianBonusPercent.Value);
+    }
+
+    string FemaleMedianBonusPayMonitised()
+    {
+        decimal roundedRate = Math.Round(FemaleMoneyFromMedianBonusPay());
+        if (roundedRate < 100)
+        {
+            return $"{roundedRate}p";
+        }
+
+        if (roundedRate == 100)
+        {
+            return "£1";
+        }
+
+        return $"£{string.Format("{0:#.00}", roundedRate / 100)}";
+    }
+
+
     var medianBonusChartModel = new VerticalBarChartModel
     {
         Id = "MedianBonusDiffChart",
-        FemaleIsLower = Model.FemaleHasLowerMedianBonusPay,
-        Male = Model.FemaleHasLowerMedianBonusPay ? 100 : 100 + diffMedianBonus,
-        Female = Model.FemaleHasLowerMedianBonusPay ? 100 - diffMedianBonus : 100,
-        MaleMonetisation = Model.MaleMedianBonusPayMonitised,
-        FemaleMonetisation = Model.FemaleMedianBonusPayMonitised
+        FemaleIsLower = femaleHasLowerMedianBonusPay,
+        Male = femaleHasLowerMedianBonusPay ? 100 : 100 + diffMedianBonus,
+        Female = femaleHasLowerMedianBonusPay ? 100 - diffMedianBonus : 100,
+        MaleMonetisation = "£1",
+        FemaleMonetisation = FemaleMedianBonusPayMonitised()
     };
 
     // calculates the median bonus pay text to display
@@ -18,30 +53,30 @@
     var diffMeanBonusText = new BonusDiffTextViewModel
     {
         Id = "DiffMeanBonusPercent",
-        Compare = Model.FemaleHasLowerMeanBonusPay ? "lower" : "higher",
+        Compare = femaleHasLowerMeanBonusPay ? "lower" : "higher",
         Percent = Math.Abs(Model.DiffMeanBonusPercent.HasValue ? Model.DiffMeanBonusPercent.Value : 0),
         Statistic = "mean",
-        MenReceivedBonuses = Model.MenReceivedBonuses,
-        WomenReceivedBonuses = Model.WomenReceivedBonuses
+        MenReceivedBonuses = menReceivedBonuses,
+        WomenReceivedBonuses = womenReceivedBonuses
     };
 
     // who received bonuses
     var femaleBonusPayText = new BonusProportionTextViewModel
     {
         Id = "FemaleBonusPayText",
-        Percent = Model.FemaleMedianBonusPayPercent.Value,
+        Percent = Model.FemaleMedianBonusPayPercent,
         Gender = "women",
-        MenReceivedBonuses = Model.MenReceivedBonuses,
-        WomenReceivedBonuses = Model.WomenReceivedBonuses
+        MenReceivedBonuses = menReceivedBonuses,
+        WomenReceivedBonuses = womenReceivedBonuses
     };
 
     var maleBonusPayText = new BonusProportionTextViewModel
     {
         Id = "MaleBonusPayText",
-        Percent = Model.MaleMedianBonusPayPercent.HasValue ? Model.MaleMedianBonusPayPercent.Value : 0,
+        Percent = Model.MaleMedianBonusPayPercent,
         Gender = "men",
-        MenReceivedBonuses = Model.MenReceivedBonuses,
-        WomenReceivedBonuses = Model.WomenReceivedBonuses
+        MenReceivedBonuses = menReceivedBonuses,
+        WomenReceivedBonuses = womenReceivedBonuses
     };
 }
 
@@ -53,18 +88,18 @@
         </div>
     </div>
 
-    @if (Model.MenReceivedBonuses)
+    @if (menReceivedBonuses)
     {
         <div class="grid-row">
             <div class="column-full">
                 <span>
-                    In this organisation, women earn @(Model.FemaleMedianBonusPayMonitised)
-                    for every @(Model.MaleMedianBonusPayMonitised)
+                    In this organisation, women earn @FemaleMedianBonusPayMonitised()
+                    for every £1
                     that men earn when comparing median bonus pay.
                 </span>
                 <span>Their median bonus pay is @(string.Format("{0:0.#}", Math.Abs(diffMedianBonus)))%</span>
                 <span>
-                    @(Model.FemaleHasLowerMedianBonusPay ? "lower" : "higher")
+                    @(femaleHasLowerMedianBonusPay ? "lower" : "higher")
                     than men&rsquo;s.
                 </span>
             </div>
@@ -93,7 +128,7 @@
 
     <div class="grid-row">
         <div class="column-full">
-            @if (Model.WomenReceivedBonuses || Model.MenReceivedBonuses)
+            @if (womenReceivedBonuses || menReceivedBonuses)
             {
                 <partial name="EmployerDetails/BonusPay/BonusProportionText" model="femaleBonusPayText"/>
                 <partial name="EmployerDetails/BonusPay/BonusProportionText" model="maleBonusPayText"/>
