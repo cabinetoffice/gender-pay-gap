@@ -3,7 +3,7 @@
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Admin.AdminChangeStatusViewModel
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeOrganisationStatusViewModel
 
 @{
     ViewBag.Title = "Change status - Administration - Gender pay gap service";
@@ -56,7 +56,7 @@
         <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
             @(Html.AntiForgeryToken())
 
-            <input type="hidden" name="@(nameof(AdminChangeStatusViewModel.Action))" value="@(ChangeOrganisationStatusViewModelActions.ConfirmStatusChange)"/>
+            <input type="hidden" name="@(nameof(AdminChangeOrganisationStatusViewModel.Action))" value="@(ChangeUserStatusViewModelActions.ConfirmStatusChange)"/>
             @(Html.HiddenFor(m => m.NewStatus))
             @(Html.HiddenFor(m => m.Reason))
 

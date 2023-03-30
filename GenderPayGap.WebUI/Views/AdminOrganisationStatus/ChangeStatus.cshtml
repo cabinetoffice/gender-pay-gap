@@ -3,7 +3,7 @@
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Admin.AdminChangeStatusViewModel
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeOrganisationStatusViewModel
 
 @{
     ViewBag.Title = "Change status - Administration - Gender pay gap service";
@@ -65,7 +65,7 @@
     {
         if (Model.Organisation.Status != status)
         {
-            string fieldName = $"GovUk_Radio_{nameof(AdminChangeStatusViewModel.NewStatus)}";
+            string fieldName = $"GovUk_Radio_{nameof(AdminChangeOrganisationStatusViewModel.NewStatus)}";
             string fieldId = $"{fieldName}_{status}";
 
             items.Add(new RadioItemViewModel
@@ -103,7 +103,7 @@
         <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
             @(Html.AntiForgeryToken())
 
-            @(Html.Hidden(nameof(AdminChangeStatusViewModel.Action),
+            @(Html.Hidden(nameof(AdminChangeOrganisationStatusViewModel.Action),
                 ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason))
 
             @await Html.GovUkErrorSummary(ViewData.ModelState)
@@ -129,7 +129,7 @@
                 }
                 @await Html.GovUkRadios(new RadiosViewModel
                 {
-                    Name = nameof(AdminChangeStatusViewModel.NewStatus),
+                    Name = nameof(AdminChangeOrganisationStatusViewModel.NewStatus),
                     Fieldset = new FieldsetViewModel
                     {
                         Legend = new LegendViewModel

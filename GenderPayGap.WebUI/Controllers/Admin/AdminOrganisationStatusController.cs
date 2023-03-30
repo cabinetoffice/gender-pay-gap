@@ -41,7 +41,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("organisation/{id}/status/change")]
         public IActionResult ChangeStatusGet(long id)
         {
-            var viewModel = new AdminChangeStatusViewModel();
+            var viewModel = new AdminChangeOrganisationStatusViewModel();
 
             UpdateAdminChangeStatusViewModelFromOrganisation(viewModel, id);
 
@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("organisation/{id}/status/change")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public IActionResult ChangeStatusPost(long id, AdminChangeStatusViewModel viewModel)
+        public IActionResult ChangeStatusPost(long id, AdminChangeOrganisationStatusViewModel viewModel)
         {
             switch (viewModel.Action)
             {
@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
         }
 
-        private void UpdateAdminChangeStatusViewModelFromOrganisation(AdminChangeStatusViewModel viewModel, long organisationId)
+        private void UpdateAdminChangeStatusViewModelFromOrganisation(AdminChangeOrganisationStatusViewModel viewModel, long organisationId)
         {
             viewModel.Organisation = dataRepository.Get<Organisation>(organisationId);
 
@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .Where(m => m.OrganisationId == organisationId).ToList();
         }
 
-        private void ChangeStatus(AdminChangeStatusViewModel viewModel, long organisationId)
+        private void ChangeStatus(AdminChangeOrganisationStatusViewModel viewModel, long organisationId)
         {
             var organisation = dataRepository.Get<Organisation>(organisationId);
             User currentUser = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
