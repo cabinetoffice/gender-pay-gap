@@ -79,7 +79,12 @@
                     (since @(Model.StatusDate.ToString("d MMM yyyy")))
                 </span>
             </td>
-            <td class="govuk-table__cell"></td>
+            <td class="govuk-table__cell">
+                <a href="@Url.Action("ViewStatusHistory", "AdminUserStatus", new {id = Model.UserId})"
+                   class="govuk-link">
+                    History <span class="govuk-visually-hidden"> of statuses</span> / change<span class="govuk-visually-hidden"> status</span>
+                </a>
+            </td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Job title</th>
