@@ -1,0 +1,198 @@
+@using GenderPayGap.Core
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeUserStatusViewModel
+
+@{
+    ViewBag.Title = "Change user status - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.User.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Status history",
+                Href = Url.Action("ViewStatusHistory", "AdminUserStatus", new {id = Model.User.UserId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Change status"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Change status
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.User.Fullname)
+    </span>
+</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminUserStatus", new {id = Model.User.UserId})">
+            @(Html.AntiForgeryToken())
+
+            <input type="hidden" name="@(nameof(AdminChangeUserStatusViewModel.Action))" value="@(ChangeUserStatusViewModelActions.ConfirmStatusChange)"/>
+            @(Html.HiddenFor(m => m.NewStatus))
+            @(Html.HiddenFor(m => m.Reason))
+
+            <h2 class="govuk-heading-l">
+                Check the changes
+            </h2>
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">User name</th>
+                        <td class="govuk-table__cell">@(Model.User.Fullname)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Current status</th>
+                        <td class="govuk-table__cell">@(Model.User.Status)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">New status</th>
+                        <td class="govuk-table__cell">@(Model.NewStatus)</td>
+                    </tr>
+                </tbody>
+            </table>
+            @if (Model.User.Status == UserStatuses.Active || Model.NewStatus == UserStatuses.Active)
+            {
+                <h3 class="govuk-heading-m">
+                    These organisations will be
+                    @if (Model.NewStatus == UserStatuses.Active)
+                    {
+                        @: readded to 
+                    }
+                    else
+                    {
+                        @: removed from 
+                    }
+                    the user
+                </h3>
+
+                @if (Model.NewStatus != UserStatuses.Active || !Model.InactiveUserOrganisations.Any())
+                {
+                    <div class="govuk-body">
+                        No inactive organisations
+                    </div>
+                }
+                else
+                {
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">User</th>
+                                <th scope="col" class="govuk-table__header">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+
+                            @if (Model.NewStatus == UserStatuses.Active)
+                            {
+                                @foreach (InactiveUserOrganisation userOrganisation in Model.InactiveUserOrganisations)
+                                {
+                                    User user = userOrganisation.User;
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                                               class="govuk-link">
+                                                @(user.Fullname)
+                                            </a>
+                                            <br/>
+                                            @(user.EmailAddress)
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @if (userOrganisation.IsAwaitingActivationPIN())
+                                            {
+                                                @:Awaiting activation PIN
+                                            }
+                                            else if (userOrganisation.IsAwaitingRegistrationApproval())
+                                            {
+                                                @:Awaiting registration approval
+                                            }
+                                            else
+                                            {
+                                                @:Registration complete
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                @foreach (UserOrganisation userOrganisation in Model.User.UserOrganisations)
+                                {
+                                    User user = userOrganisation.User;
+                                    <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = user.UserId})"
+                                               class="govuk-link">
+                                                @(user.Fullname)
+                                            </a>
+                                            <br/>
+                                            @(user.EmailAddress)
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @if (userOrganisation.IsAwaitingActivationPIN())
+                                            {
+                                                @:Awaiting activation PIN
+                                            }
+                                            else if (userOrganisation.IsAwaitingRegistrationApproval())
+                                            {
+                                                @:Awaiting registration approval
+                                            }
+                                            else
+                                            {
+                                                @:Registration complete
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+            <div class="govuk-form-group">
+                @(await Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Confirm",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})"
+                       class="govuk-link">
+                        Cancel and return to user page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>

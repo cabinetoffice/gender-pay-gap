@@ -1,0 +1,87 @@
+﻿@using GenderPayGap.Database
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.Database.User
+
+@{
+    ViewBag.Title = $"Status history - {Model.Fullname} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Status history"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Status history
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.Fullname)
+    </span>
+</h1>
+
+@await Html.GovUkButton(new ButtonViewModel
+{
+    Href = Url.Action("ChangeStatusGet", "AdminUserStatus", new {id = Model.UserId}),
+    Text = "Change status"
+})
+
+@if (!Model.UserStatuses.Any())
+{
+    <div class="govuk-body">
+        No user statuses
+    </div>
+}
+else
+{
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header">Changed on date</th>
+                <th scope="col" class="govuk-table__header">User</th>
+                <th scope="col" class="govuk-table__header">Details</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (UserStatus status in Model.UserStatuses.OrderByDescending(s => s.StatusDate))
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">@(status.Status)</td>
+                    <td class="govuk-table__cell">@(status.StatusDate.ToString("d MMM yyyy"))</td>
+                    <td class="govuk-table__cell">
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = status.ByUser.UserId})"
+                           class="govuk-link">
+                            @(status.ByUser.Fullname)
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">@(status.StatusDetails)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
