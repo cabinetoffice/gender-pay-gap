@@ -46,7 +46,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             var dashboardData = new AdminDashboardData(onDeadlineDay);
             
             List<Organisation> allOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
+                .Where(org => org.Status == OrganisationStatuses.Active)  // || org.Status == OrganisationStatuses.Retired
                 .Include(org => org.OrganisationScopes)
                 .Include(org => org.Returns)
                 // .AsEnumerable()
@@ -118,7 +118,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 AdminDashboardPage = AdminDashboardPage.Now,
                 ReportingYear = reportingYear,
                 Organisations = dataRepository.GetAll<Organisation>()
-                    .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
+                    .Where(org => org.Status == OrganisationStatuses.Active)  // || org.Status == OrganisationStatuses.Retired
                     .OrderBy(org => org.OrganisationName)
                     .Include(org => org.OrganisationScopes)
                     .Include(org => org.Returns)
@@ -139,7 +139,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 AdminDashboardPage = AdminDashboardPage.DeadlineDay,
                 ReportingYear = reportingYear,
                 Organisations = dataRepository.GetAll<Organisation>()
-                    .Where(org => org.Status == OrganisationStatuses.Active || org.Status == OrganisationStatuses.Retired)
+                    .Where(org => org.Status == OrganisationStatuses.Active)  // || org.Status == OrganisationStatuses.Retired
                     .OrderBy(org => org.OrganisationName)
                     .Include(org => org.OrganisationScopes)
                     .Include(org => org.Returns)
