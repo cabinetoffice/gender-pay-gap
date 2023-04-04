@@ -1,0 +1,56 @@
+﻿@model List<string>
+@{
+    var title = "New or Active users with the same email address";
+    
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Database integrity checks</span>
+        <h1 class="govuk-heading-xl">@title</h1>
+
+        <p class="govuk-body">
+            This shows a list of all new or active users that have the same email address.
+        </p>
+
+        @if (!Model.Any())
+        {
+            <div class="govuk-body">
+                No duplicate users
+            </div>
+        }
+        else
+        {
+            <h2 class="govuk-heading-m">@(Model.Count) duplicate email addresses</h2>
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Email address</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (string emailAddress in Model)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="@(Url.Action("SearchGet", "AdminSearch", new {query = emailAddress}))"
+                                   class="govuk-link">
+                                    <span class="govuk-visually-hidden">Organisation with company number </span>@(emailAddress)
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        
+    </div>
+</div>
