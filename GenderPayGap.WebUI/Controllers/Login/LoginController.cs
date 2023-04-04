@@ -1,10 +1,8 @@
 ﻿using GenderPayGap.Core;
-using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Login;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Login
