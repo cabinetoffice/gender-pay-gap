@@ -3,10 +3,10 @@
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Admin.AdminChangeOrganisationStatusViewModel
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeUserStatusViewModel
 
 @{
-    ViewBag.Title = "Change status - Administration - Gender pay gap service";
+    ViewBag.Title = "Change user status - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -21,13 +21,13 @@
             },
             new CrumbViewModel
             {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
+                Text = Model.User.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})
             },
             new CrumbViewModel
             {
                 Text = "Status history",
-                Href = Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})
+                Href = Url.Action("ViewStatusHistory", "AdminUserStatus", new {id = Model.User.UserId})
             },
             new CrumbViewModel
             {
@@ -43,29 +43,25 @@
 }
 
 @{
-    var statusHints = new Dictionary<OrganisationStatuses, string>
+    var statusHints = new Dictionary<UserStatuses, string>
     {
         {
-            OrganisationStatuses.Active,
-            "An organisation should be Active if it is trading."
+            UserStatuses.Active,
+            "A user should be Active if they want to use their account."
         },
         {
-            OrganisationStatuses.Retired,
-            "An organisation should be Retired if it has ceased trading. It will remain searchable and submissions will remain visible."
-        },
-        {
-            OrganisationStatuses.Deleted,
-            "An organisation should be Deleted if it was created by mistake / there was no reason for it to ever exist in the service. Any submissions will no longer be shown in the public viewing service."
-        },
+            UserStatuses.Retired,
+            "A user should be Retired if they no longer need the account, or the account was created by mistake."
+        }
     };
 
     var items = new List<ItemViewModel>();
 
-    foreach ((OrganisationStatuses status, string hint) in statusHints)
+    foreach ((UserStatuses status, string hint) in statusHints)
     {
-        if (Model.Organisation.Status != status)
+        if (Model.User.Status != status)
         {
-            string fieldName = $"GovUk_Radio_{nameof(AdminChangeOrganisationStatusViewModel.NewStatus)}";
+            string fieldName = $"GovUk_Radio_{nameof(AdminChangeUserStatusViewModel.NewStatus)}";
             string fieldId = $"{fieldName}_{status}";
 
             items.Add(new RadioItemViewModel
@@ -94,17 +90,17 @@
     Change status
     <br/>
     <span class="govuk-!-font-size-27">
-        for @(Model.Organisation.OrganisationName)
+        for @(Model.User.Fullname)
     </span>
 </h1>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
+        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminUserStatus", new {id = Model.User.UserId})">
             @(Html.AntiForgeryToken())
 
-            @(Html.Hidden(nameof(AdminChangeOrganisationStatusViewModel.Action),
-                ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason))
+            @(Html.Hidden(nameof(AdminChangeUserStatusViewModel.Action),
+                ChangeUserStatusViewModelActions.OfferNewStatusAndReason))
 
             @await Html.GovUkErrorSummary(ViewData.ModelState)
 
@@ -112,12 +108,12 @@
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Organisation name</th>
-                        <td class="govuk-table__cell">@(Model.Organisation.OrganisationName)</td>
+                        <th scope="row" class="govuk-table__header">User name</th>
+                        <td class="govuk-table__cell">@(Model.User.Fullname)</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Current status</th>
-                        <td class="govuk-table__cell">@(Model.Organisation.Status)</td>
+                        <td class="govuk-table__cell">@(Model.User.Status)</td>
                     </tr>
                 </tbody>
             </table>
@@ -129,7 +125,7 @@
                 }
                 @await Html.GovUkRadios(new RadiosViewModel
                 {
-                    Name = nameof(AdminChangeOrganisationStatusViewModel.NewStatus),
+                    Name = nameof(AdminChangeUserStatusViewModel.NewStatus),
                     Fieldset = new FieldsetViewModel
                     {
                         Legend = new LegendViewModel
@@ -162,9 +158,9 @@
                 }))
 
                 <p class="govuk-body">
-                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
+                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})"
                        class="govuk-link">
-                        Cancel and return to organisation page
+                        Cancel and return to user page
                     </a>
                 </p>
 

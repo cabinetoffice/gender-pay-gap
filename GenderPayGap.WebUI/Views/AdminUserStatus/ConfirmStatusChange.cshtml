@@ -3,10 +3,10 @@
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@model GenderPayGap.WebUI.Models.Admin.AdminChangeOrganisationStatusViewModel
+@model GenderPayGap.WebUI.Models.Admin.AdminChangeUserStatusViewModel
 
 @{
-    ViewBag.Title = "Change status - Administration - Gender pay gap service";
+    ViewBag.Title = "Change user status - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -21,13 +21,13 @@
             },
             new CrumbViewModel
             {
-                Text = Model.Organisation.OrganisationName,
-                Href = Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})
+                Text = Model.User.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})
             },
             new CrumbViewModel
             {
                 Text = "Status history",
-                Href = Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})
+                Href = Url.Action("ViewStatusHistory", "AdminUserStatus", new {id = Model.User.UserId})
             },
             new CrumbViewModel
             {
@@ -47,16 +47,16 @@
     Change status
     <br/>
     <span class="govuk-!-font-size-27">
-        for @(Model.Organisation.OrganisationName)
+        for @(Model.User.Fullname)
     </span>
 </h1>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
+        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminUserStatus", new {id = Model.User.UserId})">
             @(Html.AntiForgeryToken())
 
-            <input type="hidden" name="@(nameof(AdminChangeOrganisationStatusViewModel.Action))" value="@(ChangeUserStatusViewModelActions.ConfirmStatusChange)"/>
+            <input type="hidden" name="@(nameof(AdminChangeUserStatusViewModel.Action))" value="@(ChangeUserStatusViewModelActions.ConfirmStatusChange)"/>
             @(Html.HiddenFor(m => m.NewStatus))
             @(Html.HiddenFor(m => m.Reason))
 
@@ -67,12 +67,12 @@
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Organisation name</th>
-                        <td class="govuk-table__cell">@(Model.Organisation.OrganisationName)</td>
+                        <th scope="row" class="govuk-table__header">User name</th>
+                        <td class="govuk-table__cell">@(Model.User.Fullname)</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Current status</th>
-                        <td class="govuk-table__cell">@(Model.Organisation.Status)</td>
+                        <td class="govuk-table__cell">@(Model.User.Status)</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">New status</th>
@@ -80,11 +80,11 @@
                     </tr>
                 </tbody>
             </table>
-            @if (Model.Organisation.Status == OrganisationStatuses.Active || Model.NewStatus == OrganisationStatuses.Active)
+            @if (Model.User.Status == UserStatuses.Active || Model.NewStatus == UserStatuses.Active)
             {
                 <h3 class="govuk-heading-m">
-                    These users will be
-                    @if (Model.NewStatus == OrganisationStatuses.Active)
+                    These organisations will be
+                    @if (Model.NewStatus == UserStatuses.Active)
                     {
                         @: readded to 
                     }
@@ -92,13 +92,13 @@
                     {
                         @: removed from 
                     }
-                    the organisation
+                    the user
                 </h3>
 
-                @if (Model.NewStatus != OrganisationStatuses.Active || !Model.InactiveUserOrganisations.Any())
+                @if (Model.NewStatus != UserStatuses.Active || !Model.InactiveUserOrganisations.Any())
                 {
                     <div class="govuk-body">
-                        No inactive users
+                        No inactive organisations
                     </div>
                 }
                 else
@@ -112,7 +112,7 @@
                         </thead>
                         <tbody class="govuk-table__body">
 
-                            @if (Model.NewStatus == OrganisationStatuses.Active)
+                            @if (Model.NewStatus == UserStatuses.Active)
                             {
                                 @foreach (InactiveUserOrganisation userOrganisation in Model.InactiveUserOrganisations)
                                 {
@@ -145,7 +145,7 @@
                             }
                             else
                             {
-                                @foreach (UserOrganisation userOrganisation in Model.Organisation.UserOrganisations)
+                                @foreach (UserOrganisation userOrganisation in Model.User.UserOrganisations)
                                 {
                                     User user = userOrganisation.User;
                                     <tr class="govuk-table__row">
@@ -186,9 +186,9 @@
                 }))
 
                 <p class="govuk-body">
-                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
+                    <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})"
                        class="govuk-link">
-                        Cancel and return to organisation page
+                        Cancel and return to user page
                     </a>
                 </p>
 

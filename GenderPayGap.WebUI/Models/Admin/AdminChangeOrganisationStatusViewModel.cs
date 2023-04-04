@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
-using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminChangeStatusViewModel 
+    public class AdminChangeOrganisationStatusViewModel 
     {
 
         public ChangeOrganisationStatusViewModelActions Action { get; set; }
