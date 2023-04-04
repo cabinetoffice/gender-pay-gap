@@ -203,6 +203,23 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
         }
 
+        [HttpGet("database-integrity-checks/new-or-active-users-with-the-same-email-address")]
+        public IActionResult NewOrActiveUsersWithTheSameEmailAddress()
+        {
+            List<string> duplicateuserEmailAddresses =
+                dataRepository.GetAll<User>()
+                    .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active /* Choose just the new and active users */)
+                    .AsEnumerable() /* LINQ to SQL cannot convert EmailAddress (because it calls a complex method) so we need to load the users into memory by calling .AsEnumerable() */
+                    .Select(u => u.EmailAddress /* Just get their email address (makes the query run faster) */)
+                    .GroupBy(uemail => uemail /* Group by the email address */)
+                    .Select(grouping => new {Name = grouping.Key, Count = grouping.Count()})
+                    .Where(emailAndCount => emailAndCount.Count > 1)
+                    .Select(emailAndCount => emailAndCount.Name)
+                    .ToList();
+
+            return PartialView("NewOrActiveUsersWithTheSameEmailAddress", duplicateuserEmailAddresses);
+        }
+
         [HttpGet("database-integrity-checks/returns-with-figures-with-more-than-one-decimal-place")]
         public IActionResult ReturnsWithFiguresWithMoreThanOneDecimalPlace()
         {
