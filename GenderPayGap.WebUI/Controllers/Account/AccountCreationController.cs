@@ -5,6 +5,7 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
 using GovUkDesignSystem;
@@ -72,6 +73,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         }
 
         [HttpPost("/create-user-account")]
+        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserAccountPost(CreateUserAccountViewModel viewModel)
         {
