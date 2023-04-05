@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
-using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -79,6 +79,87 @@ namespace GenderPayGap.WebUI.Controllers
 
             feedback.FeedbackStatus = status;
 
+            dataRepository.SaveChanges();
+
+            return RedirectToAction("CategoriseNextFeedback", "AdminFeedback");
+        }
+
+        [HttpGet("feedback/bulk-mark-feedback-as-spam")]
+        public IActionResult BulkMarkFeedbackAsSpamGet()
+        {
+            var viewModel = new AdminBulkMarkFeedbackAsSpamViewModel();
+
+            return View("BulkMarkFeedbackAsSpam", viewModel);
+        }
+
+        [HttpPost("feedback/bulk-mark-feedback-as-spam")]
+        [ValidateAntiForgeryToken]
+        public IActionResult BulkMarkFeedbackAsSpamPost(AdminBulkMarkFeedbackAsSpamViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("BulkMarkFeedbackAsSpam", viewModel);
+            }
+
+            string[] feedbackIdsAsStrings = viewModel.FeedbackIdsToMarkAsSpam.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            var feedbackIdsAsNumbers = new List<long>();
+            var nonNumericFeedbackIds = new List<string>();
+            foreach (string feedbackIdAsString in feedbackIdsAsStrings)
+            {
+                if (!string.IsNullOrWhiteSpace(feedbackIdAsString))
+                {
+                    if (long.TryParse(feedbackIdAsString.Trim(), out long feedbackId))
+                    {
+                        feedbackIdsAsNumbers.Add(feedbackId);
+                    }
+                    else
+                    {
+                        nonNumericFeedbackIds.Add(feedbackIdAsString);
+                    }
+                }
+            }
+
+            if (nonNumericFeedbackIds.Any())
+            {
+                string listOfInvalidFeedbackIds = string.Join(", ", nonNumericFeedbackIds);
+                string message = $"Some feedback IDs are not numeric ({listOfInvalidFeedbackIds})";
+                ModelState.AddModelError(nameof(viewModel.FeedbackIdsToMarkAsSpam), message);
+                return View("BulkMarkFeedbackAsSpam", viewModel);
+            }
+
+            List<long> allFeedbackIds = dataRepository
+                .GetAll<Feedback>()
+                .Select(f => f.FeedbackId)
+                .ToList();
+
+            var invalidFeedbackIds = new List<long>();
+            foreach (long feedbackId in feedbackIdsAsNumbers)
+            {
+                if (!allFeedbackIds.Contains(feedbackId))
+                {
+                    invalidFeedbackIds.Add(feedbackId);
+                }
+            }
+            
+            if (invalidFeedbackIds.Any())
+            {
+                string listOfInvalidFeedbackIds = string.Join(", ", invalidFeedbackIds);
+                string message = $"Some IDs that you supplied are not IDs of real feedback messages ({listOfInvalidFeedbackIds})";
+                ModelState.AddModelError(nameof(viewModel.FeedbackIdsToMarkAsSpam), message);
+                return View("BulkMarkFeedbackAsSpam", viewModel);
+            }
+
+            List<Feedback> feedbacksToMarkAsSpam = dataRepository
+                .GetAll<Feedback>()
+                .Where(f => feedbackIdsAsNumbers.Contains(f.FeedbackId))
+                .ToList();
+
+            foreach (Feedback feedback in feedbacksToMarkAsSpam)
+            {
+                feedback.FeedbackStatus = FeedbackStatus.Spam;
+            }
+            
             dataRepository.SaveChanges();
 
             return RedirectToAction("CategoriseNextFeedback", "AdminFeedback");
