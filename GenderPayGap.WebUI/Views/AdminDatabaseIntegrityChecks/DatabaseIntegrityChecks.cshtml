@@ -1,4 +1,4 @@
-﻿@using GovUkDesignSystem
+@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @{
     ViewBag.Title = "Database integrity checks - Administration - Gender pay gap service";
@@ -32,67 +32,67 @@
 
 <h2 class="govuk-heading-l"> Database integrity issues </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ActiveOrganisationsWithTheSameName")" class="govuk-link">
         Active organisations with the same name
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ActiveOrganisationsWithTheSameCompanyNumber")" class="govuk-link">
         Active organisations with the same company number
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("OrganisationsWithMultipleActiveAddresses")" class="govuk-link">
         Organisations with multiple active addresses
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("OrganisationsWithoutAnActiveAddress")" class="govuk-link">
         Organisations without an active address
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("OrganisationsWhereLatestAddressIsNotActive")" class="govuk-link">
         Organisations where latest address is not active
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("OrganisationsWithMultipleActiveScopesForASingleYear")" class="govuk-link">
         Organisations with multiple active scopes for a single year
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("OrganisationsWithNoActiveScopeForEveryYear")" class="govuk-link">
         Organisations with no active scopes for every year
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("OrganisationsWithMultipleActiveReturnsForASingleYear")" class="govuk-link">
         Organisations with multiple active returns for a single year
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("PublicSectorOrganisationsWithoutAPublicSectorType")" class="govuk-link">
         Public sector organisations without a public sector type
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("PrivateSectorOrganisationsWithAPublicSectorType")" class="govuk-link">
         Private sector organisations with a public sector type
     </a>
 </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("NewOrActiveUsersWithTheSameEmailAddress")" class="govuk-link">
         Duplicate users
     </a>
@@ -100,62 +100,62 @@
 
 <h2 class="govuk-heading-l govuk-!-margin-top-8"> Form validation issues </h2>
 
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithFiguresWithMoreThanOneDecimalPlace")" class="govuk-link">
         Submitted reports with figures with more than one decimal place
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithQuartersFiguresSumDifferentThan100")" class="govuk-link">
         Submitted reports with quarters figures that do not add up to 100%
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidQuartersFigures")" class="govuk-link">
         Submitted reports with invalid quarters figures
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidMeanMedianFigures")" class="govuk-link">
         Submitted reports with invalid mean or median figures
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidBonusFigures")" class="govuk-link">
         Submitted reports with invalid bonus figures
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidBonusMeanMedianFigures")" class="govuk-link">
         Submitted reports with mean or median bonus figures greater than 100%
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidBonusFiguresGivenNoWomenBonus")" class="govuk-link">
         Submitted reports with invalid bonus figures (given women % is 0%)
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithMissingFigures")" class="govuk-link">
         Submitted reports with missing required figures
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("PrivateEmployersReturnsWithoutResponsiblePerson")" class="govuk-link">
         Submitted private employer reports without a responsible person
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidTextFieldsValues")" class="govuk-link">
         Submitted reports with text fields that exceed the length limit
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidCompanyLink")" class="govuk-link">
         Submitted reports with invalid company link
     </a>
 </h2>
-<h2 class="govuk-heading-m">
+<h2 class="govuk-heading-s">
     <a href="@Url.Action("ReturnsWithInvalidOptedOutOfReportingPayQuartersValue")" class="govuk-link">
         Submitted reports without pay quarters in years without a furlough scheme available
     </a>
