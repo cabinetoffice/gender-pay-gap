@@ -95,10 +95,13 @@
                     the organisation
                 </h3>
 
-                @if (Model.NewStatus != OrganisationStatuses.Active || !Model.InactiveUserOrganisations.Any())
+                @if ((Model.NewStatus == OrganisationStatuses.Active && !Model.InactiveUserOrganisations.Any()) ||
+                     (Model.NewStatus != OrganisationStatuses.Active && !Model.Organisation.UserOrganisations.Any()))
                 {
                     <div class="govuk-body">
-                        No inactive users
+                        No
+                        @(Model.NewStatus == OrganisationStatuses.Active ? "inactive" : "active")
+                        users
                     </div>
                 }
                 else
