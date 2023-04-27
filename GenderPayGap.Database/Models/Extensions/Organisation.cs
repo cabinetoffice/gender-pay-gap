@@ -268,6 +268,26 @@ namespace GenderPayGap.Database
             return GetScopeStatusForYear(year).IsInScopeVariant();
         }
 
+        public void SetScopeForYear(int reportingYear, ScopeStatuses newScope, string statusDetails)
+        {
+            // Retire old OrganisationScopes
+            foreach (OrganisationScope oldOrganisationScope in GetAllScopesForYear(reportingYear))
+            {
+                oldOrganisationScope.Status = ScopeRowStatuses.Retired;
+            }
+
+            // Add new OrganisationScope
+            var newOrganisationScope = new OrganisationScope {
+                OrganisationId = OrganisationId,
+                SnapshotDate = SectorType.GetAccountingStartDate(reportingYear),
+                ScopeStatus = newScope,
+                Status = ScopeRowStatuses.Active,
+                StatusDetails = statusDetails,
+            };
+
+            OrganisationScopes.Add(newOrganisationScope);
+        }
+
         #endregion
 
         #region Returns

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
@@ -74,24 +74,10 @@ namespace GenderPayGap.WebUI.Controllers
                 return View("ChangeScope", viewModel);
             }
             
-            RetireOldScopesForCurrentSnapshotDate(organisation, year);
-            
             ScopeStatuses newScope = ConvertNewScopeStatusToScopeStatus(viewModel.NewScopeStatus);
 
-            var newOrganisationScope = new OrganisationScope {
-                Organisation = organisation,
-                ScopeStatus = newScope,
-                ScopeStatusDate = VirtualDateTime.Now,
-                ContactFirstname = currentOrganisationScope.ContactFirstname,
-                ContactLastname = currentOrganisationScope.ContactLastname,
-                ContactEmailAddress = currentOrganisationScope.ContactEmailAddress,
-                Reason = viewModel.Reason,
-                SnapshotDate = currentOrganisationScope.SnapshotDate,
-                StatusDetails = "Changed by Admin",
-                Status = ScopeRowStatuses.Active
-            };
-
-            dataRepository.Insert(newOrganisationScope);
+            organisation.SetScopeForYear(year, newScope, viewModel.Reason);
+            
             dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
@@ -105,18 +91,6 @@ namespace GenderPayGap.WebUI.Controllers
                 User);
 
             return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
-        }
-
-        private void RetireOldScopesForCurrentSnapshotDate(Organisation organisation, int year)
-        {
-            IEnumerable<OrganisationScope> organisationScopesForCurrentSnapshotDate =
-                organisation.OrganisationScopes
-                .Where(scope => scope.SnapshotDate.Year == year);
-            
-            foreach (OrganisationScope organisationScope in organisationScopesForCurrentSnapshotDate)
-            {
-                organisationScope.Status = ScopeRowStatuses.Retired;
-            }
         }
 
         private NewScopeStatus? GetNewScopeStatus(ScopeStatuses previousScopeStatus)
