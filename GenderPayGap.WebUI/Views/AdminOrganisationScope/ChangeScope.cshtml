@@ -42,17 +42,18 @@
     }))
 }
 
-<span class="govuk-caption-xl">Administration</span>
-<h1 class="govuk-heading-xl">
-    Change scope
-    <br />
-    <span class="govuk-!-font-size-27">
-        for @(Model.OrganisationName)
-    </span>
-</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change scope
+            <br />
+            <span class="govuk-!-font-size-27">
+                for @(Model.OrganisationName)
+            </span>
+        </h1>
+
         <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.OrganisationId, year = Model.ReportingYear })">
             @(Html.AntiForgeryToken())
 
@@ -141,5 +142,6 @@
 
             </div>
         </form>
+        
     </div>
 </div>
