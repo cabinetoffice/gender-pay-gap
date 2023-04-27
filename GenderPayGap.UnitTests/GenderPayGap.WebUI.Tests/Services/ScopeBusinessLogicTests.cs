@@ -59,8 +59,7 @@ namespace GenderPayGap.Tests
                         OrganisationId = 3,
                         ScopeStatusDate = VirtualDateTime.Now.AddDays(-2),
                         SnapshotDate = new DateTime(2017, 4, 5),
-                        ContactEmailAddress = "user@test.com",
-                        RegisterStatus = RegisterStatuses.RegisterPending
+                        ContactEmailAddress = "user@test.com"
                     },
                     new OrganisationScope {
                         OrganisationScopeId = 45,
