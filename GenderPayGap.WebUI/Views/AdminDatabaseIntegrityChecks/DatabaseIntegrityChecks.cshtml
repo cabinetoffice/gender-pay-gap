@@ -1,5 +1,6 @@
-@using GovUkDesignSystem
+﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.Core.Helpers
 @{
     ViewBag.Title = "Database integrity checks - Administration - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
@@ -91,6 +92,21 @@
         Private sector organisations with a public sector type
     </a>
 </h2>
+
+<h2 class="govuk-heading-s govuk-!-margin-bottom-1">
+    Organisations to consider for de-scoping
+</h2>
+<ul class="govuk-list">
+    @foreach (int reportingYear in ReportingYearsHelper.GetReportingYears())
+    {
+        <li>
+            <a href="@Url.Action("OrganisationsToConsiderForDeScoping", new {reportingYear = reportingYear})" class="govuk-link">
+                ...for reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear))
+            </a>
+        </li>
+    }
+</ul>
+
 
 <h2 class="govuk-heading-s">
     <a href="@Url.Action("NewOrActiveUsersWithTheSameEmailAddress")" class="govuk-link">

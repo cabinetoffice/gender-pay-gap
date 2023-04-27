@@ -1,0 +1,105 @@
+﻿@using GenderPayGap.Database
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Pipelines.Sockets.Unofficial
+@using GenderPayGap.Core.Helpers
+@model GenderPayGap.WebUI.Models.Admin.AdminDatabaseIntegrityCheckOrganisationsToConsiderForDeScopingViewModel
+
+@{
+    var title = "Organisations to consider for de-scoping";
+
+    ViewBag.Title = $"{title} - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    <partial name="~/Views/AdminDatabaseIntegrityChecks/DatabaseIntegrityChecksBreadcrumbs.cshtml" model="title"/>
+}
+
+<span class="govuk-caption-xl">Database integrity checks</span>
+<h1 class="govuk-heading-xl">
+    @title
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))
+    </span>
+</h1>
+
+<p class="govuk-body govuk-!-margin-bottom-1">
+    This shows organisations that:
+</p>
+<ul class="govuk-list govuk-list--bullet">
+    <li>are <b>Retired or Deleted</b></li>
+    <li>are <b>In Scope or Presumed In Scope</b> for Reporting Year <b>@(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))</b></li>
+    <li><b>have not reported</b> for Reporting Year <b>@(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))</b></li>
+</ul>
+
+@if (!Model.Organisations.Any())
+{
+    <div class="govuk-body">
+        No organisations
+    </div>
+}
+else
+{
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">
+        There are @(Model.Organisations.Count) matching organisations
+    </h2>
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Organisation</th>
+                <th scope="col" class="govuk-table__header">Status</th>
+                <th scope="col" class="govuk-table__header">Scope for reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear))</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+
+            @foreach (Organisation organisation in Model.Organisations)
+            {
+                OrganisationStatus organisationStatus = organisation.OrganisationStatuses.OrderByDescending(os => os.StatusDate).First();
+                
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                        <a href="@(Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = organisation.OrganisationId}))"
+                           class="govuk-link">
+                            @(organisation.OrganisationName)
+                        </a>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <a href="@Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = organisation.OrganisationId})"
+                           class="govuk-link">
+                            @(organisation.Status)
+                        </a>
+                        on 
+                        <b style="white-space: nowrap">@(organisationStatus.StatusDate.ToString("d MMM yyyy"))</b>
+                        <br/>
+                        @if (organisationStatus.ByUser != null)
+                        {
+                            @:by
+                            <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = organisationStatus.ByUser.UserId})"
+                               class="govuk-link">
+                                @(organisationStatus.ByUser.Fullname)
+                            </a>
+                        }
+                        with reason:
+                        <br/>
+                        <span class="govuk-body-s">
+                            @(organisationStatus.StatusDetails)
+                        </span>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <a href="@Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId})"
+                           class="govuk-link">
+                            @(organisation.GetScopeStatusForYear(Model.ReportingYear))
+                        </a>
+                        <br/>
+                        <a href="@Url.Action("ChangeMultipleScopesGet", "AdminOrganisationScope", new {id = organisation.OrganisationId})"
+                           class="govuk-button govuk-button-small govuk-button--secondary govuk-!-margin-top-1 govuk-!-margin-bottom-0">
+                            Change
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
