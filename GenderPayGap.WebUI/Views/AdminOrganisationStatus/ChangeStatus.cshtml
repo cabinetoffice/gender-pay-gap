@@ -1,8 +1,11 @@
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
+@using GenderPayGap.Database
 @using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model GenderPayGap.WebUI.Models.Admin.AdminChangeOrganisationStatusViewModel
 
 @{
@@ -89,25 +92,32 @@
 
 }
 
-<span class="govuk-caption-xl">Administration</span>
-<h1 class="govuk-heading-xl">
-    Change status
-    <br/>
-    <span class="govuk-!-font-size-27">
-        for @(Model.Organisation.OrganisationName)
-    </span>
-</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
+        
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change status
+            <br/>
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+        
+        @await Html.GovUkErrorSummary(ViewData.ModelState)
+
+    </div>
+</div>
+
+<form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
             @(Html.AntiForgeryToken())
 
             @(Html.Hidden(nameof(AdminChangeOrganisationStatusViewModel.Action),
                 ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason))
-
-            @await Html.GovUkErrorSummary(ViewData.ModelState)
-
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -142,33 +152,119 @@
                     Items = items,
                     ErrorMessage = radiosErrorMessageViewModel
                 })
+            </div>
 
-                @await Html.GovUkCharacterCountFor(
-                    m => m.Reason,
-                    labelOptions: new LabelViewModel
-                    {
-                        Text = "What is the reason for this change?",
-                        Classes = "govuk-label--m"
-                    },
-                    formGroupOptions: new FormGroupViewModel
-                    {
-                        Classes = "govuk-!-margin-top-6"
-                    })
+        </div>
+    </div>
 
-                @(await Html.GovUkButton(new ButtonViewModel
+    @if (Model.Organisation.Status == OrganisationStatuses.New ||
+         Model.Organisation.Status == OrganisationStatuses.Pending ||
+         Model.Organisation.Status == OrganisationStatuses.Active)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                
+                <h2 class="govuk-heading-m">
+                    Do you want to change the scope of any reporting years?
+                </h2>
+
+                @if (Model.AnyGuessedScopeChanges)
                 {
-                    Text = "Continue",
-                    Classes = "govuk-!-margin-bottom-4"
-                }))
+                    <div class="govuk-inset-text govuk-!-margin-top-0 govuk-!-margin-bottom-2">
+                        We've pre-selected some scopes you might want to change.
+                        <br/>
+                        Please check and change as needed.
+                    </div>
+                }
 
-                <p class="govuk-body">
-                    <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
-                       class="govuk-link">
-                        Cancel and return to organisation page
-                    </a>
-                </p>
+                <table class="govuk-table zgovuk-!-margin-top-6" style="width: fit-content;">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Reporting year</th>
+                            <th scope="col" class="govuk-table__header">Current scope</th>
+                            <th scope="col" class="govuk-table__header">Has reported</th>
+                            <th scope="col" class="govuk-table__header">Change to<br/>“Out Of Scope”?</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @for (int i = 0; i < Model.Years.Count; i++)
+                        {
+                            AdminChangeOrganisationStatusReportingYearViewModel year = Model.Years[i];
+
+                            @Html.HiddenFor(m => m.Years[i].ReportingYear)
+
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    @(ReportingYearsHelper.FormatYearAsReportingPeriod(year.ReportingYear))
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(year.CurrentScope.IsInScopeVariant() ? "✅" : "❌")
+                                    @(year.CurrentScope)
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(year.HasReported ? "✅ Reported" : "❌ Not reported")
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @if (year.CurrentScope != ScopeStatuses.OutOfScope)
+                                    {
+                                        @await Html.GovUkCheckboxItem(new CheckboxItemViewModel
+                                        {
+                                            Id = Html.IdFor(m => m.Years[i].MarkAsOutOfScope),
+                                            Name = Html.NameFor(m => m.Years[i].MarkAsOutOfScope),
+                                            Checked = year.MarkAsOutOfScope,
+                                            Value = true.ToString(),
+
+                                            Label = new LabelViewModel
+                                            {
+                                                Html = @<text>
+                                                           <span class="govuk-visually-hidden">
+                                                               Mark reporting year
+                                                               @(ReportingYearsHelper.FormatYearAsReportingPeriod(year.ReportingYear))
+                                                               as Out Of Scope
+                                                           </span>
+                                                        </text>
+                                            }
+                                        })
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
             </div>
-        </form>
+        </div>
+    }
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            @await Html.GovUkCharacterCountFor(
+                m => m.Reason,
+                labelOptions: new LabelViewModel
+                {
+                    Text = "What is the reason for this change?",
+                    Classes = "govuk-label--m"
+                },
+                formGroupOptions: new FormGroupViewModel
+                {
+                    Classes = "govuk-!-margin-top-6"
+                })
+
+            @(await Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-4"
+            }))
+
+            <p class="govuk-body">
+                <a href="@Url.Action("ViewOrganisation", "AdminViewOrganisation", new {id = Model.Organisation.OrganisationId})"
+                   class="govuk-link">
+                    Cancel and return to organisation page
+                </a>
+            </p>
+
+        </div>
     </div>
-</div>
+
+</form>
