@@ -118,7 +118,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
 
             for (int snapshotYear = firstYear; snapshotYear <= currentSnapshotYear; snapshotYear++)
             {
-                OrganisationScope scope = org.GetLatestScopeForSnapshotYear(snapshotYear);
+                OrganisationScope scope = org.GetScopeForYear(snapshotYear);
 
                 // if we already have a scope then flag (prevYearScope, neverDeclaredScope) and skip this year
                 if (scope != null && scope.ScopeStatus != ScopeStatuses.Unknown)
@@ -189,7 +189,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                 // for all snapshot years check if scope exists
                 for (int year = firstYear; year <= currentYear; year++)
                 {
-                    OrganisationScope scope = org.GetLatestScopeForSnapshotYear(year);
+                    OrganisationScope scope = org.GetScopeForYear(year);
                     if (scope == null || scope.ScopeStatus == ScopeStatuses.Unknown)
                     {
                         missingSnapshotYears.Add(year);

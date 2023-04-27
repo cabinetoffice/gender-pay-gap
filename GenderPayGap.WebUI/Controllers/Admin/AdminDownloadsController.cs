@@ -520,8 +520,8 @@ namespace GenderPayGap.WebUI.Controllers
                         LatestRegistrationDate = o.UserOrganisations.OrderByDescending(uo => uo.Created).FirstOrDefault()?.Created,
                         LatestRegistrationMethod = o.UserOrganisations.OrderByDescending(uo => uo.Created).FirstOrDefault()?.Method.ToString(),
                         LatestReturn = o.GetLatestReturn()?.Modified,
-                        ScopeStatus = o.GetLatestScopeForSnapshotYear(year)?.ScopeStatus,
-                        ScopeDate = o.GetLatestScopeForSnapshotYear(year)?.ScopeStatusDate,
+                        ScopeStatus = o.GetScopeForYear(year)?.ScopeStatus,
+                        ScopeDate = o.GetScopeForYear(year)?.ScopeStatusDate,
                         Created = o.Created,
                     })
                 .ToList();
