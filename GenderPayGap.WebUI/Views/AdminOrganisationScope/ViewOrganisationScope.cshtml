@@ -45,6 +45,12 @@
     </span>
 </h1>
 
+@await Html.GovUkButton(new ButtonViewModel
+{
+    Href = Url.Action("ChangeMultipleScopesGet", "AdminOrganisationScope", new {id = Model.OrganisationId}),
+    Text = "Change scope for multiple years"
+})
+
 @if (!Model.OrganisationScopes.Any())
 {
     <div class="govuk-body">
