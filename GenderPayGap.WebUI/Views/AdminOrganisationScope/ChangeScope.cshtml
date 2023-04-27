@@ -54,7 +54,7 @@
             </span>
         </h1>
 
-        <form method="POST" action="@Url.Action("ChangeScopePost", "AdminOrganisationScope", new { id = Model.OrganisationId, year = Model.ReportingYear })">
+        <form method="POST" action="@Url.Action("ChangeScopeForYearPost", "AdminOrganisationScope", new { id = Model.OrganisationId, year = Model.ReportingYear })">
             @(Html.AntiForgeryToken())
 
             @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]

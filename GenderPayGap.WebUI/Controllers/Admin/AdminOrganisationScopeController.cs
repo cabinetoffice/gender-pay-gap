@@ -38,7 +38,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("organisation/{id}/scope/change/{year}")]
-        public IActionResult ChangeScopeGet(long id, int year)
+        public IActionResult ChangeScopeForYearGet(long id, int year)
         {
             var organisation = dataRepository.Get<Organisation>(id);
             var currentScopeStatus = organisation.GetScopeStatusForYear(year);
@@ -57,7 +57,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("organisation/{id}/scope/change/{year}")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public IActionResult ChangeScopePost(long id, int year, AdminChangeScopeViewModel viewModel)
+        public IActionResult ChangeScopeForYearPost(long id, int year, AdminChangeScopeViewModel viewModel)
         {
             var organisation = dataRepository.Get<Organisation>(id);
             var currentOrganisationScope = organisation.GetScopeForYear(year);
