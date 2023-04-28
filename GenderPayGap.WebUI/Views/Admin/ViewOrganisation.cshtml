@@ -206,17 +206,31 @@
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Scope</th>
             <td class="govuk-table__cell">
-                @{
-                    IOrderedEnumerable<OrganisationScope> scopes = Model.Organisation.OrganisationScopes
-                        .Where(s => s.Status == ScopeRowStatuses.Active)
-                        .OrderByDescending(s => s.SnapshotDate);
-                }
-                @foreach (OrganisationScope scope in scopes)
+                @foreach (int year in Model.ReportingYears)
                 {
                     <b>
-                        @(ReportingYearsHelper.FormatYearAsReportingPeriod(scope.SnapshotDate.Year)):
+                        @(ReportingYearsHelper.FormatYearAsReportingPeriod(year)):
                     </b>
-                    @(scope.ScopeStatus)
+                    
+                    List<OrganisationScope> scopes = Model.Organisation.GetActiveScopesForYear(year).ToList();
+                    @if (scopes.Count == 0)
+                    {
+                        <a href="@Url.Action("OrganisationsWithNoActiveScopeForEveryYear", "AdminDatabaseIntegrityChecks")"
+                           class="govuk-link">
+                            No scope for this reporting year (this is an error)
+                        </a>
+                    }
+                    else if (scopes.Count > 1)
+                    {
+                        <a href="@Url.Action("OrganisationsWithMultipleActiveScopesForASingleYear", "AdminDatabaseIntegrityChecks")"
+                           class="govuk-link">
+                            Too many active scopes for this reporting year (this is an error)
+                        </a>
+                    }
+                    else
+                    {
+                        @(scopes[0].ScopeStatus)
+                    }
                     <br/>
                 }
             </td>

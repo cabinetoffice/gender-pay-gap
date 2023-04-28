@@ -45,6 +45,12 @@
     </span>
 </h1>
 
+@await Html.GovUkButton(new ButtonViewModel
+{
+    Href = Url.Action("ChangeMultipleScopesGet", "AdminOrganisationScope", new {id = Model.OrganisationId}),
+    Text = "Change scope for multiple years"
+})
+
 @if (!Model.OrganisationScopes.Any())
 {
     <div class="govuk-body">
@@ -96,7 +102,7 @@ else
                     else
                     {
                         <td class="govuk-table__cell" rowspan="@(Model.OrganisationScopes.Count(s => s.SnapshotDate == scope.SnapshotDate))">
-                            <a href="@Url.Action("ChangeScopeGet", "AdminOrganisationScope", new {id = scope.OrganisationId, year = scope.SnapshotDate.Year})"
+                            <a href="@Url.Action("ChangeScopeForYearGet", "AdminOrganisationScope", new {id = scope.OrganisationId, year = scope.SnapshotDate.Year})"
                                class="govuk-link">
                                 Change <span class="govuk-visually-hidden"> scope for @(ReportingYearsHelper.FormatYearAsReportingPeriod(scope.SnapshotDate.Year))</span>
                             </a>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -37,8 +38,115 @@ namespace GenderPayGap.WebUI.Controllers
             return View("ViewOrganisationScope", organisation);
         }
 
+        [HttpGet("organisation/{id}/scope/change")]
+        public IActionResult ChangeMultipleScopesGet(long id)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+            
+            var viewModel = new AdminChangeMultipleScopesViewModel();
+            
+            UpdateAdminChangeMultipleScopesViewModelFromOrganisation(viewModel, organisation);
+
+            if (organisation.Status == OrganisationStatuses.Retired || organisation.Status == OrganisationStatuses.Deleted)
+            {
+                SetInitialValueOfNewScopes(viewModel);
+            }
+            
+            return View("ChangeMultipleScopes", viewModel);
+        }
+
+        private void UpdateAdminChangeMultipleScopesViewModelFromOrganisation(AdminChangeMultipleScopesViewModel viewModel, Organisation organisation)
+        {
+            viewModel.Organisation = organisation;
+
+            foreach (int reportingYear in ReportingYearsHelper.GetReportingYears())
+            {
+                if (!viewModel.Years.Any(y => y.ReportingYear == reportingYear))
+                {
+                    viewModel.Years.Add(new AdminChangeMultipleScopesReportingYearViewModel
+                    {
+                        ReportingYear = reportingYear
+                    });
+                }
+            }
+
+            foreach (AdminChangeMultipleScopesReportingYearViewModel yearViewModel in viewModel.Years)
+            {
+                yearViewModel.CurrentScope = organisation.GetScopeStatusForYear(yearViewModel.ReportingYear);
+                yearViewModel.HasReported = organisation.HasSubmittedReturn(yearViewModel.ReportingYear);
+            }
+
+            viewModel.Years = viewModel.Years.OrderByDescending(y => y.ReportingYear).ToList();
+        }
+
+        private void SetInitialValueOfNewScopes(AdminChangeMultipleScopesViewModel viewModel)
+        {
+            // If the status of the organisation is Retired / Deleted, then we can guess at the new scopes.
+            // An organisation is usually Retired / Deleted because the organisation has stopped trading.
+            // When an organisation stops trading, the usually DON'T login to the GPG service and mark themselves as Out Of Scope! :-o
+            // So, the admin team will find this a few months later and mark the organisation as Retired.
+            // 
+            // Often, when the admin team do this, they will also want to mark some years as Out Of Scope (typically the previous 1 or 2 years).
+            // To help them, we will guess which years they will want to change and pre-tick the checkboxes next to those years.
+            // But which years should we pre-tick?
+            // 
+            // Here is our best guess at which years they will want to mark as Our Of Scope:
+            // - Work backwards through the years, starting with the current reporting year
+            // - If, for a reporting year, the organisation has NOT reported and is IN Scope, we think the admin team will probably want to mark them as Out Of Scope
+            // - As soon as we find a year where the organisation HAS reported, stop
+            // - As soon as we find a year where the organisation is OUT Of Scope, stop
+            // - In both these cases, we assume the organisation has taken this action, so this was before they stopped trading
+            
+            // Work backwards through the years
+            foreach (AdminChangeMultipleScopesReportingYearViewModel yearViewModel in viewModel.Years.OrderByDescending(y => y.ReportingYear))
+            {
+                // If the organisation has reported for that year, stop
+                if (yearViewModel.HasReported)
+                {
+                    return;
+                }
+
+                // If the organisation is IN Scope for that year, stop
+                if (!yearViewModel.CurrentScope.IsInScopeVariant())
+                {
+                    return;
+                }
+
+                // Otherwise, pre-tick the "Change to Out Of Scope" checkbox
+                yearViewModel.NewScope = ScopeStatuses.OutOfScope;
+                viewModel.AnyGuessedScopeChanges = true;
+            }
+        }
+
+        [HttpPost("organisation/{id}/scope/change")]
+        [PreventDuplicatePost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangeMultipleScopesPost(long id, AdminChangeMultipleScopesViewModel viewModel)
+        {
+            var organisation = dataRepository.Get<Organisation>(id);
+
+            if (!ModelState.IsValid)
+            {
+                UpdateAdminChangeMultipleScopesViewModelFromOrganisation(viewModel, organisation);
+
+                return View("ChangeMultipleScopes", viewModel);
+            }
+
+            foreach (AdminChangeMultipleScopesReportingYearViewModel yearViewModel in viewModel.Years)
+            {
+                if (yearViewModel.NewScope.HasValue)
+                {
+                    organisation.SetScopeForYear(yearViewModel.ReportingYear, yearViewModel.NewScope.Value, viewModel.Reason);
+                }
+            }
+            
+            dataRepository.SaveChanges();
+
+            return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
+        }
+
         [HttpGet("organisation/{id}/scope/change/{year}")]
-        public IActionResult ChangeScopeGet(long id, int year)
+        public IActionResult ChangeScopeForYearGet(long id, int year)
         {
             var organisation = dataRepository.Get<Organisation>(id);
             var currentScopeStatus = organisation.GetScopeStatusForYear(year);
@@ -57,7 +165,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpPost("organisation/{id}/scope/change/{year}")]
         [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
-        public IActionResult ChangeScopePost(long id, int year, AdminChangeScopeViewModel viewModel)
+        public IActionResult ChangeScopeForYearPost(long id, int year, AdminChangeScopeViewModel viewModel)
         {
             var organisation = dataRepository.Get<Organisation>(id);
             var currentOrganisationScope = organisation.GetScopeForYear(year);
@@ -74,24 +182,10 @@ namespace GenderPayGap.WebUI.Controllers
                 return View("ChangeScope", viewModel);
             }
             
-            RetireOldScopesForCurrentSnapshotDate(organisation, year);
-            
             ScopeStatuses newScope = ConvertNewScopeStatusToScopeStatus(viewModel.NewScopeStatus);
 
-            var newOrganisationScope = new OrganisationScope {
-                Organisation = organisation,
-                ScopeStatus = newScope,
-                ScopeStatusDate = VirtualDateTime.Now,
-                ContactFirstname = currentOrganisationScope.ContactFirstname,
-                ContactLastname = currentOrganisationScope.ContactLastname,
-                ContactEmailAddress = currentOrganisationScope.ContactEmailAddress,
-                Reason = viewModel.Reason,
-                SnapshotDate = currentOrganisationScope.SnapshotDate,
-                StatusDetails = "Changed by Admin",
-                Status = ScopeRowStatuses.Active
-            };
-
-            dataRepository.Insert(newOrganisationScope);
+            organisation.SetScopeForYear(year, newScope, viewModel.Reason);
+            
             dataRepository.SaveChanges();
 
             auditLogger.AuditChangeToOrganisation(
@@ -105,18 +199,6 @@ namespace GenderPayGap.WebUI.Controllers
                 User);
 
             return RedirectToAction("ViewScopeHistory", "AdminOrganisationScope", new {id = organisation.OrganisationId});
-        }
-
-        private void RetireOldScopesForCurrentSnapshotDate(Organisation organisation, int year)
-        {
-            IEnumerable<OrganisationScope> organisationScopesForCurrentSnapshotDate =
-                organisation.OrganisationScopes
-                .Where(scope => scope.SnapshotDate.Year == year);
-            
-            foreach (OrganisationScope organisationScope in organisationScopesForCurrentSnapshotDate)
-            {
-                organisationScope.Status = ScopeRowStatuses.Retired;
-            }
         }
 
         private NewScopeStatus? GetNewScopeStatus(ScopeStatuses previousScopeStatus)

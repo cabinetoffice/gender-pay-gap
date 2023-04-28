@@ -4,10 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -203,6 +203,27 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
         }
 
+        [HttpGet("database-integrity-checks/organisations-to-consider-for-de-scoping/{reportingYear}")]
+        public IActionResult OrganisationsToConsiderForDeScoping(int reportingYear)
+        {
+            List<Organisation> organisationsToConsiderForDeScoping =
+                dataRepository.GetAll<Organisation>()
+                    .Where(o => o.Status == OrganisationStatuses.Retired || o.Status == OrganisationStatuses.Deleted)
+                    .OrderBy(o => o.OrganisationName)
+                    .AsEnumerable()
+                    .Where(o => o.GetScopeStatusForYear(reportingYear).IsInScopeVariant())
+                    .Where(o => !o.HasSubmittedReturn(reportingYear))
+                    .ToList();
+
+            var viewModel = new AdminDatabaseIntegrityCheckOrganisationsToConsiderForDeScopingViewModel
+            {
+                Organisations = organisationsToConsiderForDeScoping,
+                ReportingYear = reportingYear
+            };
+
+            return PartialView("OrganisationsToConsiderForDeScoping", viewModel);
+        }
+
         [HttpGet("database-integrity-checks/new-or-active-users-with-the-same-email-address")]
         public IActionResult NewOrActiveUsersWithTheSameEmailAddress()
         {
@@ -263,7 +284,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return PartialView("ReturnsWithQuartersFiguresSumDifferentThan100", invalidReturns);
         }
-
 
         [HttpGet("database-integrity-checks/returns-with-invalid-quarters-figures")]
         public IActionResult ReturnsWithInvalidQuartersFigures()

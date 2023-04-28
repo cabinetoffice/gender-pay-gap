@@ -1,8 +1,10 @@
 @using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model GenderPayGap.WebUI.Models.Admin.AdminChangeOrganisationStatusViewModel
 
 @{
@@ -42,24 +44,31 @@
     }))
 }
 
-<span class="govuk-caption-xl">Administration</span>
-<h1 class="govuk-heading-xl">
-    Change status
-    <br/>
-    <span class="govuk-!-font-size-27">
-        for @(Model.Organisation.OrganisationName)
-    </span>
-</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
-            @(Html.AntiForgeryToken())
+        
+        <span class="govuk-caption-xl">Administration</span>
+        <h1 class="govuk-heading-xl">
+            Change status
+            <br/>
+            <span class="govuk-!-font-size-27">
+                for @(Model.Organisation.OrganisationName)
+            </span>
+        </h1>
+        
+    </div>
+</div>
 
-            <input type="hidden" name="@(nameof(AdminChangeOrganisationStatusViewModel.Action))" value="@(ChangeUserStatusViewModelActions.ConfirmStatusChange)"/>
-            @(Html.HiddenFor(m => m.NewStatus))
-            @(Html.HiddenFor(m => m.Reason))
+<form method="POST" action="@Url.Action("ChangeStatusPost", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})">
+    @(Html.AntiForgeryToken())
 
+    <input type="hidden" name="@(nameof(AdminChangeOrganisationStatusViewModel.Action))" value="@(ChangeUserStatusViewModelActions.ConfirmStatusChange)"/>
+    @(Html.HiddenFor(m => m.NewStatus))
+    @(Html.HiddenFor(m => m.Reason))
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+        
             <h2 class="govuk-heading-l">
                 Check the changes
             </h2>
@@ -78,11 +87,71 @@
                         <th scope="row" class="govuk-table__header">New status</th>
                         <td class="govuk-table__cell">@(Model.NewStatus)</td>
                     </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Reason</th>
+                        <td class="govuk-table__cell">@(Model.Reason)</td>
+                    </tr>
                 </tbody>
             </table>
+            
+        </div>
+    </div>
+
+    @if (Model.Years.Any(y => y.MarkAsOutOfScope))
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                
+                <h3 class="govuk-heading-m govuk-!-margin-top-3">
+                    Reporting years to mark as Out Of Scope
+                </h3>
+                
+                <table class="govuk-table" style="width: fit-content;">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Reporting year</th>
+                            <th scope="col" class="govuk-table__header">Current scope</th>
+                            <th scope="col" class="govuk-table__header">Has reported</th>
+                            <th scope="col" class="govuk-table__header">Change of scope?</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @for (int i = 0; i < Model.Years.Count; i++)
+                        {
+                            AdminChangeOrganisationStatusReportingYearViewModel year = Model.Years[i];
+
+                            @Html.HiddenFor(m => m.Years[i].ReportingYear)
+                            @Html.HiddenFor(m => m.Years[i].MarkAsOutOfScope)
+
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    @(ReportingYearsHelper.FormatYearAsReportingPeriod(year.ReportingYear))
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(year.CurrentScope.IsInScopeVariant() ? "✅" : "❌")
+                                    @(year.CurrentScope)
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(year.HasReported ? "✅ Reported" : "❌ Not reported")
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(year.MarkAsOutOfScope ? "Change to “Out Of Scope”" : "No change")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    }
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            
             @if (Model.Organisation.Status == OrganisationStatuses.Active || Model.NewStatus == OrganisationStatuses.Active)
             {
-                <h3 class="govuk-heading-m">
+                <h3 class="govuk-heading-m govuk-!-margin-top-3">
                     These users will be
                     @if (Model.NewStatus == OrganisationStatuses.Active)
                     {
@@ -95,10 +164,13 @@
                     the organisation
                 </h3>
 
-                @if (Model.NewStatus != OrganisationStatuses.Active || !Model.InactiveUserOrganisations.Any())
+                @if ((Model.NewStatus == OrganisationStatuses.Active && !Model.InactiveUserOrganisations.Any()) ||
+                     (Model.NewStatus != OrganisationStatuses.Active && !Model.Organisation.UserOrganisations.Any()))
                 {
                     <div class="govuk-body">
-                        No inactive users
+                        No
+                        @(Model.NewStatus == OrganisationStatuses.Active ? "inactive" : "active")
+                        users
                     </div>
                 }
                 else
@@ -191,8 +263,9 @@
                         Cancel and return to organisation page
                     </a>
                 </p>
-
             </div>
-        </form>
+
+        </div>
     </div>
-</div>
+
+</form>

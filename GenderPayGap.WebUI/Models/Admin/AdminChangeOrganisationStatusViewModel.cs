@@ -6,17 +6,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {
-    public class AdminChangeOrganisationStatusViewModel 
+    public class AdminChangeOrganisationStatusViewModel
     {
 
         public ChangeOrganisationStatusViewModelActions Action { get; set; }
 
-        [GovUkValidateRequiredIf(
-            IsRequiredPropertyName = nameof(NewStatusRequired), 
-            ErrorMessageIfMissing = "Please select a new status")]
+        [GovUkValidateRequired(ErrorMessageIfMissing = "Please select a new status")]
         public OrganisationStatuses? NewStatus { get; set; }
-
-        public bool NewStatusRequired => Action is ChangeOrganisationStatusViewModelActions.OfferNewStatusAndReason;
 
         [GovUkValidateRequired(ErrorMessageIfMissing = "Please enter a reason for this change.")]
         [GovUkValidateCharacterCount(MaxCharacters = 250, NameAtStartOfSentence = "Reason", NameWithinSentence = "Reason")]
@@ -26,6 +22,26 @@ namespace GenderPayGap.WebUI.Models.Admin
         public Database.Organisation Organisation { get; set; }
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<InactiveUserOrganisation> InactiveUserOrganisations { get; set; }
+
+        public List<AdminChangeOrganisationStatusReportingYearViewModel> Years { get; set; } =
+            new List<AdminChangeOrganisationStatusReportingYearViewModel>();
+
+        public bool AnyGuessedScopeChanges { get; set; }
+
+    }
+    
+    public class AdminChangeOrganisationStatusReportingYearViewModel
+    {
+
+        public int ReportingYear { get; set; }
+
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public ScopeStatuses CurrentScope { get; set; }
+
+        [BindNever /* Output Only - only used for sending data from the Controller to the View */]
+        public bool HasReported { get; set; }
+
+        public bool MarkAsOutOfScope { get; set; } = false;
 
     }
 
