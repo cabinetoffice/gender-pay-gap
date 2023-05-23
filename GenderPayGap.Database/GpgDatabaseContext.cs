@@ -12,6 +12,12 @@ namespace GenderPayGap.Database
     {
         
         public static string ConnectionString = @"Server=127.0.0.1;Port=5432;Database=GpgDatabase;User Id=gpg_user;Password=local_gpg_database;";
+
+        public GpgDatabaseContext()
+        {
+            // This empty constructor is needed for Entity Framework to create migrations
+            // When you run `dotnet ef migrations add "MigrationName"` it will fail without this constructor
+        }
         
         public GpgDatabaseContext(string connectionString = null, bool useMigrations = false)
         {
