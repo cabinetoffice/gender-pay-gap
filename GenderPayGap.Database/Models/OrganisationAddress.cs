@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using Newtonsoft.Json;
@@ -9,11 +8,6 @@ namespace GenderPayGap.Database
     [JsonObject(MemberSerialization.OptIn)]
     public partial class OrganisationAddress
     {
-
-        public OrganisationAddress()
-        {
-            UserOrganisations = new HashSet<UserOrganisation>();
-        }
 
         [JsonProperty]
         public long AddressId { get; set; }
@@ -53,8 +47,6 @@ namespace GenderPayGap.Database
         public bool? IsUkAddress { get; set; }
 
         public virtual Organisation Organisation { get; set; }
-
-        public virtual ICollection<UserOrganisation> UserOrganisations { get; set; }
 
         public string GetPostCodeInAllCaps()
         {

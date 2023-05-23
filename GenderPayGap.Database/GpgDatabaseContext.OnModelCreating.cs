@@ -386,18 +386,11 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => new {e.UserId, e.OrganisationId}).HasName("PK_dbo.UserOrganisations");
 
-                    entity.HasIndex(e => e.AddressId);
-
                     entity.HasIndex(e => e.OrganisationId);
 
                     entity.HasIndex(e => e.UserId);
 
                     entity.Property(e => e.Method).HasColumnName("MethodId").HasDefaultValueSql("((0))");
-
-                    entity.HasOne(d => d.Address)
-                        .WithMany(p => p.UserOrganisations)
-                        .HasForeignKey(d => d.AddressId)
-                        .HasConstraintName("FK_dbo.UserOrganisations_dbo.OrganisationAddresses_AddressId");
 
                     entity.HasOne(d => d.Organisation)
                         .WithMany(p => p.UserOrganisations)
@@ -417,8 +410,6 @@ namespace GenderPayGap.Database
             modelBuilder.Entity<InactiveUserOrganisation>(
                 entity => {
                     entity.HasKey(e => new { e.UserId, e.OrganisationId }).HasName("PK_dbo.InactiveUserOrganisations");
-
-                    entity.HasIndex(e => e.AddressId);
 
                     entity.HasIndex(e => e.OrganisationId);
 
