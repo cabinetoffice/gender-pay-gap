@@ -227,7 +227,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("database-integrity-checks/new-or-active-users-with-the-same-email-address")]
         public IActionResult NewOrActiveUsersWithTheSameEmailAddress()
         {
-            List<string> duplicateuserEmailAddresses =
+            List<string> duplicateUserEmailAddresses =
                 dataRepository.GetAll<User>()
                     .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active /* Choose just the new and active users */)
                     .AsEnumerable() /* LINQ to SQL cannot convert EmailAddress (because it calls a complex method) so we need to load the users into memory by calling .AsEnumerable() */
@@ -238,7 +238,14 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Select(emailAndCount => emailAndCount.Name)
                     .ToList();
 
-            return PartialView("NewOrActiveUsersWithTheSameEmailAddress", duplicateuserEmailAddresses);
+            List<User> duplicateUsers =
+                dataRepository.GetAll<User>()
+                    .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active /* Choose just the new and active users */)
+                    .AsEnumerable()
+                    .Where(u => duplicateUserEmailAddresses.Contains(u.EmailAddress))
+                    .ToList();
+
+            return PartialView("NewOrActiveUsersWithTheSameEmailAddress", duplicateUsers);
         }
 
         [HttpGet("database-integrity-checks/returns-with-figures-with-more-than-one-decimal-place")]
