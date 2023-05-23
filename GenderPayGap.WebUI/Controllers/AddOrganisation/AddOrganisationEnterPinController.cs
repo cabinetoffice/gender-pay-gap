@@ -154,7 +154,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     Sector = userOrg.Organisation.SectorType,
                     Organisation = userOrg.Organisation.OrganisationName,
                     CompanyNo = userOrg.Organisation.CompanyNumber,
-                    Address = userOrg.Address.GetAddressString(),
                     SicCodes = userOrg.Organisation.GetSicCodeIdsString(),
                     UserFirstname = userOrg.User.Firstname,
                     UserLastname = userOrg.User.Lastname,

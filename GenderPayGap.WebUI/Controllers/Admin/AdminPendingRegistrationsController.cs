@@ -50,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .OrderBy(uo => uo.Modified)
                     .ToList();
 
-            List<UserOrganisation> nonUkAddressRegistrations = allManualRegistrations.Where(uo => uo.Address.IsUkAddress == false).ToList();
+            List<UserOrganisation> nonUkAddressRegistrations = allManualRegistrations.Where(uo => uo.Organisation.GetLatestAddress().IsUkAddress == false).ToList();
             List<UserOrganisation> publicSectorRegistrations = allManualRegistrations.Where(uo => uo.Organisation.SectorType == SectorTypes.Public).ToList();
             List<UserOrganisation> remainingRegistrations = allManualRegistrations.Except(publicSectorRegistrations).Except(nonUkAddressRegistrations).ToList();
 
@@ -170,7 +170,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     Sector = userOrganisation.Organisation.SectorType,
                     Organisation = userOrganisation.Organisation.OrganisationName,
                     CompanyNo = userOrganisation.Organisation.CompanyNumber,
-                    Address = userOrganisation?.Address.GetAddressString(),
+                    Address = userOrganisation.Organisation.GetLatestAddress()?.GetAddressString(),
                     SicCodes = userOrganisation.Organisation.GetSicCodeIdsString(),
                     UserFirstname = userOrganisation.User.Firstname,
                     UserLastname = userOrganisation.User.Lastname,
@@ -207,7 +207,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     Sector = userOrganisation.Organisation.SectorType,
                     Organisation = userOrganisation.Organisation.OrganisationName,
                     CompanyNo = userOrganisation.Organisation.CompanyNumber,
-                    Address = userOrganisation?.Address.GetAddressString(),
+                    Address = userOrganisation?.Organisation.GetLatestAddress()?.GetAddressString(),
                     SicCodes = userOrganisation.Organisation.GetSicCodeIdsString(),
                     UserFirstname = userOrganisation.User.Firstname,
                     UserLastname = userOrganisation.User.Lastname,
