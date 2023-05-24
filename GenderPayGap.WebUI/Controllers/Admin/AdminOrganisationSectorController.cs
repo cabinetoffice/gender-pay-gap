@@ -141,8 +141,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             AuditChange(viewModel, organisation, newPublicSectorType);
 
-            RetireExistingOrganisationPublicSectorTypesForOrganisation(organisation);
-
             AddNewOrganisationPublicSectorType(organisation, viewModel.SelectedPublicSectorTypeId.Value);
 
             dataRepository.SaveChanges();
@@ -165,18 +163,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     viewModel.Reason
                 },
                 User);
-        }
-
-        private void RetireExistingOrganisationPublicSectorTypesForOrganisation(Organisation organisation)
-        {
-            var organisationPublicSectorTypes = dataRepository.GetAll<OrganisationPublicSectorType>()
-                .Where(opst => opst.OrganisationId == organisation.OrganisationId)
-                .ToList();
-
-            foreach (OrganisationPublicSectorType organisationPublicSectorType in organisationPublicSectorTypes)
-            {
-                organisationPublicSectorType.Retired = VirtualDateTime.Now;
-            }
         }
 
         private void AddNewOrganisationPublicSectorType(Organisation organisation, int publicSectorTypeId)
