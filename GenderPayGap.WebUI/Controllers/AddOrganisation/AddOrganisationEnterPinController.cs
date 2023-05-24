@@ -159,10 +159,6 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     UserLastname = userOrg.User.Lastname,
                     UserJobtitle = userOrg.User.JobTitle,
                     UserEmail = userOrg.User.EmailAddress,
-                    userOrg.User.ContactFirstName,
-                    userOrg.User.ContactLastName,
-                    userOrg.User.ContactJobTitle,
-                    userOrg.User.ContactOrganisation,
                     userOrg.User.ContactPhoneNumber
                 },
                 User);

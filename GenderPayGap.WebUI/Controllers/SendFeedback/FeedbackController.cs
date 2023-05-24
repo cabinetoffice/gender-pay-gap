@@ -38,11 +38,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
             {
                 User user = dataRepository.FindUser(User);
 
-                model.EmailAddress =
-                    !string.IsNullOrWhiteSpace(user.ContactEmailAddress)
-                        ? user.ContactEmailAddress
-                        : user.EmailAddress;
-
+                model.EmailAddress = user.EmailAddress;
                 model.PhoneNumber = user.ContactPhoneNumber;
             }
         }

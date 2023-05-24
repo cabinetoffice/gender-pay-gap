@@ -176,10 +176,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     UserLastname = userOrganisation.User.Lastname,
                     UserJobtitle = userOrganisation.User.JobTitle,
                     UserEmail = userOrganisation.User.EmailAddress,
-                    userOrganisation.User.ContactFirstName,
-                    userOrganisation.User.ContactLastName,
-                    userOrganisation.User.ContactJobTitle,
-                    userOrganisation.User.ContactOrganisation,
                     userOrganisation.User.ContactPhoneNumber
                 },
                 User);
@@ -213,10 +209,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     UserLastname = userOrganisation.User.Lastname,
                     UserJobtitle = userOrganisation.User.JobTitle,
                     UserEmail = userOrganisation.User.EmailAddress,
-                    userOrganisation.User.ContactFirstName,
-                    userOrganisation.User.ContactLastName,
-                    userOrganisation.User.ContactJobTitle,
-                    userOrganisation.User.ContactOrganisation,
                     userOrganisation.User.ContactPhoneNumber
                 },
                 User);

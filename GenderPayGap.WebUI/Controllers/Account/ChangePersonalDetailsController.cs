@@ -81,9 +81,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         private void AuditLogChanges(User user, ChangePersonalDetailsViewModel viewModel)
         {
             if (user.Firstname != viewModel.FirstName ||
-               user.Lastname != viewModel.LastName ||
-               user.ContactFirstName != viewModel.FirstName ||
-               user.ContactLastName != viewModel.LastName)
+               user.Lastname != viewModel.LastName)
             {
                 auditLogger.AuditChangeToUser(
                     AuditedAction.UserChangeName,
@@ -92,16 +90,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     {
                         OldFirstName = user.Firstname,
                         OldLastName = user.Lastname,
-                        OldContactFirstName = user.ContactFirstName,
-                        OldContactLastName = user.ContactLastName,
                         NewFirstName = viewModel.FirstName,
                         NewLastName = viewModel.LastName,
                     },
                     user);
             }
 
-            if (user.JobTitle != viewModel.JobTitle ||
-                user.ContactJobTitle != viewModel.JobTitle)
+            if (user.JobTitle != viewModel.JobTitle)
             {
                 auditLogger.AuditChangeToUser(
                     AuditedAction.UserChangeJobTitle,
@@ -109,7 +104,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
                     new
                     {
                         OldJobTitle = user.JobTitle,
-                        OldContactJobTitle = user.ContactJobTitle,
                         NewJobTitle = viewModel.JobTitle,
                     },
                     user);
@@ -133,14 +127,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
         {
             // Update the user's information
             currentUser.Firstname = viewModel.FirstName;
-            currentUser.ContactFirstName = viewModel.FirstName;
-
             currentUser.Lastname = viewModel.LastName;
-            currentUser.ContactLastName = viewModel.LastName;
-
             currentUser.JobTitle = viewModel.JobTitle;
-            currentUser.ContactJobTitle = viewModel.JobTitle;
-
             currentUser.ContactPhoneNumber = viewModel.ContactPhoneNumber;
 
             currentUser.Modified = VirtualDateTime.Now;
