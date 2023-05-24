@@ -395,8 +395,6 @@ namespace GenderPayGap.Database
                 entity => {
                     entity.HasKey(e => e.UserId).HasName("PK_dbo.Users");
 
-                    entity.HasIndex(e => e.ContactEmailAddressDB);
-
                     entity.HasIndex(e => e.ContactPhoneNumber);
 
                     entity.HasIndex(e => e.EmailAddressDB);
@@ -404,18 +402,7 @@ namespace GenderPayGap.Database
                     entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.Status).HasColumnName("StatusId");
-                    entity.Property(e => e.ContactEmailAddressDB).HasColumnName("ContactEmailAddress");
                     entity.Property(e => e.EmailAddressDB).HasColumnName("EmailAddress");
-
-                    entity.Property(e => e.ContactEmailAddressDB).HasMaxLength(255);
-
-                    entity.Property(e => e.ContactFirstName).HasMaxLength(50);
-
-                    entity.Property(e => e.ContactJobTitle).HasMaxLength(50);
-
-                    entity.Property(e => e.ContactLastName).HasMaxLength(50);
-
-                    entity.Property(e => e.ContactOrganisation).HasMaxLength(100);
 
                     entity.Property(e => e.ContactPhoneNumber).HasMaxLength(20);
 
