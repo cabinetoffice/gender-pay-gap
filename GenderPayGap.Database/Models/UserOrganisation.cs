@@ -28,8 +28,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime Created { get; set; } = VirtualDateTime.Now;
         [JsonProperty]
-        public DateTime Modified { get; set; } = VirtualDateTime.Now;
-        [JsonProperty]
         public RegistrationMethods Method { get; set; } = RegistrationMethods.Unknown;
 
         public virtual Organisation Organisation { get; set; }
