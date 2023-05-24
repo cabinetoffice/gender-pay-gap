@@ -28,7 +28,6 @@ namespace GenderPayGap.WebUI.Helpers
                 OrganisationAddresses = dataRepository.GetAll<OrganisationAddress>().OrderBy(x => x.AddressId).AsNoTracking().ToList(),
                 OrganisationNames = dataRepository.GetAll<OrganisationName>().OrderBy(x => x.OrganisationNameId).AsNoTracking().ToList(),
                 OrganisationPublicSectorTypes = dataRepository.GetAll<OrganisationPublicSectorType>().OrderBy(x => x.OrganisationPublicSectorTypeId).AsNoTracking().ToList(),
-                OrganisationReferences = dataRepository.GetAll<OrganisationReference>().OrderBy(x => x.OrganisationReferenceId).AsNoTracking().ToList(),
                 OrganisationScopes = dataRepository.GetAll<OrganisationScope>().OrderBy(x => x.OrganisationScopeId).AsNoTracking().ToList(),
                 OrganisationSicCodes = dataRepository.GetAll<OrganisationSicCode>().OrderBy(x => x.OrganisationSicCodeId).AsNoTracking().ToList(),
                 OrganisationStatuses = dataRepository.GetAll<OrganisationStatus>().OrderBy(x => x.OrganisationStatusId).AsNoTracking().ToList(),

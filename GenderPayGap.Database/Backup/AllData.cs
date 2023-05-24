@@ -28,8 +28,6 @@ namespace GenderPayGap.Database.Backup
         [JsonProperty]
         public List<OrganisationPublicSectorType> OrganisationPublicSectorTypes { get; set; }
         [JsonProperty]
-        public List<OrganisationReference> OrganisationReferences { get; set; }
-        [JsonProperty]
         public List<OrganisationScope> OrganisationScopes { get; set; }
         [JsonProperty]
         public List<OrganisationSicCode> OrganisationSicCodes { get; set; }

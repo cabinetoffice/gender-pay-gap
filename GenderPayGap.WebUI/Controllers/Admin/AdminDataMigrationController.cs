@@ -276,7 +276,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             InsertData(allData.OrganisationNames);
             InsertData(allData.OrganisationAddresses);
-            InsertData(allData.OrganisationReferences);
             InsertData(allData.OrganisationStatuses);
 
             InsertData(allData.InactiveUserOrganisations);
@@ -297,7 +296,6 @@ namespace GenderPayGap.WebUI.Controllers
                 SELECT setval('""OrganisationAddresses_AddressId_seq""', (SELECT max(""AddressId"") FROM ""OrganisationAddresses""), true);
                 SELECT setval('""OrganisationNames_OrganisationNameId_seq""', (SELECT max(""OrganisationNameId"") FROM ""OrganisationNames""), true);
                 SELECT setval('""OrganisationPublicSectorTypes_OrganisationPublicSectorTypeI_seq""', (SELECT max(""OrganisationPublicSectorTypeId"") FROM ""OrganisationPublicSectorTypes""), true);
-                SELECT setval('""OrganisationReferences_OrganisationReferenceId_seq""', (SELECT max(""OrganisationReferenceId"") FROM ""OrganisationReferences""), true);
                 SELECT setval('""Organisations_OrganisationId_seq""', (SELECT max(""OrganisationId"") FROM ""Organisations""), true);
                 SELECT setval('""OrganisationScopes_OrganisationScopeId_seq""', (SELECT max(""OrganisationScopeId"") FROM ""OrganisationScopes""), true);
                 SELECT setval('""OrganisationSicCodes_OrganisationSicCodeId_seq""', (SELECT max(""OrganisationSicCodeId"") FROM ""OrganisationSicCodes""), true);
