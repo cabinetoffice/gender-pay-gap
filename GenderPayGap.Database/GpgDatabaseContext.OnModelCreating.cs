@@ -275,36 +275,6 @@ namespace GenderPayGap.Database
 
             #endregion
 
-            #region ReturnStatus
-
-            modelBuilder.Entity<ReturnStatus>(
-                entity => {
-                    entity.HasKey(e => e.ReturnStatusId).HasName("PK_dbo.ReturnStatus");
-
-                    entity.HasIndex(e => e.ByUserId);
-
-                    entity.HasIndex(e => e.ReturnId);
-
-                    entity.HasIndex(e => e.StatusDate);
-
-                    entity.Property(e => e.Status).HasColumnName("StatusId");
-
-                    entity.Property(e => e.StatusDetails).HasMaxLength(255);
-
-                    entity.HasOne(d => d.Return)
-                        .WithMany(p => p.ReturnStatuses)
-                        .HasForeignKey(d => d.ReturnId)
-                        .HasConstraintName("FK_dbo.ReturnStatus_dbo.Returns_ReturnId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    entity.HasOne(d => d.ByUser)
-                        .WithMany()
-                        .HasForeignKey(d => d.ByUserId)
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            #endregion
-
             #region SicCode
 
             modelBuilder.Entity<SicCode>(
