@@ -102,7 +102,6 @@ namespace GenderPayGap.WebUI.Services
 
             AddOrganisationAddress(
                 organisation,
-                requestingUser,
                 poBox,
                 address1,
                 address2,
@@ -244,8 +243,8 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.Insert(organisationAddress);
         }
 
-        private void AddOrganisationAddress(Organisation organisation,
-            User user,
+        private void AddOrganisationAddress(
+            Organisation organisation,
             string poBox,
             string address1,
             string address2,
@@ -274,8 +273,7 @@ namespace GenderPayGap.WebUI.Services
                 StatusDetails = "Manually registered",
                 StatusDate = VirtualDateTime.Now,
 
-                Organisation = organisation,
-                CreatedByUserId = user.UserId
+                Organisation = organisation
             };
 
             organisation.OrganisationAddresses.Add(organisationAddress);
