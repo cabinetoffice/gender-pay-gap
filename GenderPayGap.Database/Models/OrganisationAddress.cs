@@ -12,8 +12,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public long AddressId { get; set; }
         [JsonProperty]
-        public long CreatedByUserId { get; set; }
-        [JsonProperty]
         public string Address1 { get; set; }
         [JsonProperty]
         public string Address2 { get; set; }
