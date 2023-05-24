@@ -26,9 +26,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime Created { get; set; } = VirtualDateTime.Now;
 
-        [JsonProperty]
-        public DateTime? Retired { get; set; }
-
         public virtual PublicSectorType PublicSectorType { get; set; }
 
         public virtual ICollection<Organisation> Organisations { get; set; }
