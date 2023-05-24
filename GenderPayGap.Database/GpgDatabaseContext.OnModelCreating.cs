@@ -101,10 +101,6 @@ namespace GenderPayGap.Database
                         .IsUnique()
                         .HasFilter(null);
 
-                    entity.HasIndex(e => e.EmployerReference)
-                        .IsUnique()
-                        .HasFilter(null);
-
                     entity.HasIndex(e => e.OrganisationName);
 
                     entity.HasIndex(e => e.SectorType);
@@ -115,8 +111,6 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.SectorType).HasColumnName("SectorTypeId");
 
                     entity.Property(e => e.CompanyNumber).HasMaxLength(10);
-
-                    entity.Property(e => e.EmployerReference).HasMaxLength(10);
 
                     entity.Property(e => e.OrganisationName)
                         .IsRequired()
