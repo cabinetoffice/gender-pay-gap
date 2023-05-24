@@ -74,7 +74,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 {
                     org.OrganisationId,
                     Address = org.GetLatestAddress()?.GetAddressString(),
-                    org.EmployerReference,
                     org.CompanyNumber,
                     org.OrganisationName,
                     org.SectorType,

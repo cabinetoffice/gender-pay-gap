@@ -81,9 +81,8 @@ namespace GenderPayGap.WebUI.Search
                     {
                         bool nameMatches = SearchHelper
                             .CurrentOrPreviousOrganisationNameMatchesSearchTerms(organisation, searchTerms, queryContainsPunctuation);
-                        bool employerRefMatches = organisation.EmployerReference == query;
                         bool companyNumberMatches = organisation.CompanyNumber == query;
-                        return nameMatches || employerRefMatches || companyNumberMatches;
+                        return nameMatches || companyNumberMatches;
                     })
                 .ToList();
         }
@@ -121,7 +120,6 @@ namespace GenderPayGap.WebUI.Search
                 organisation.MinEmployees);
             rankedAdminSearchOrganisation.TopName.Ranks = ranks;
 
-            string employerRefMatch = organisation.EmployerReference == query ? organisation.EmployerReference : null;
             string companyNumberMatch = organisation.CompanyNumber == query ? organisation.CompanyNumber : null;
 
             var previousNames = rankedAdminSearchOrganisation.Names
@@ -133,7 +131,6 @@ namespace GenderPayGap.WebUI.Search
             {
                 OrganisationName = rankedAdminSearchOrganisation.Names[0].Name,
                 OrganisationPreviousNames = previousNames,
-                EmployerRef = employerRefMatch,
                 CompanyNumber = companyNumberMatch,
                 OrganisationId = organisation.OrganisationId,
                 Status = organisation.Status,

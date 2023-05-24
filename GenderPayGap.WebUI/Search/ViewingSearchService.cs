@@ -28,7 +28,6 @@ namespace GenderPayGap.WebUI.Search
         public string OrganisationName { get; set; }
         public List<string> OrganisationPreviousNames { get; set; }
         public long OrganisationId { get; set; }
-        public string EmployerRef { get; set; }
         public string CompanyNumber { get; set; }
         public OrganisationStatuses Status { get; set; }
         public string EncryptedId { get; set; }
