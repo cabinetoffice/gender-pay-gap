@@ -22,8 +22,6 @@ namespace GenderPayGap.Database
         public string Description { get; set; }
         [JsonProperty]
         public string Synonyms { get; set; }
-        [JsonProperty]
-        public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public virtual SicSection SicSection { get; set; }
         public virtual ICollection<OrganisationSicCode> OrganisationSicCodes { get; set; }
