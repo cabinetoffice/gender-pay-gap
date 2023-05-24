@@ -1189,7 +1189,7 @@ namespace GenderPayGap.Database.Migrations
             modelBuilder.Entity("GenderPayGap.Database.Organisation", b =>
                 {
                     b.HasOne("GenderPayGap.Database.OrganisationPublicSectorType", "LatestPublicSectorType")
-                        .WithMany("Organisations")
+                        .WithMany()
                         .HasForeignKey("LatestPublicSectorTypeId")
                         .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationPublicSectorTypes_LatestPublicSectorTypeId");
                 });

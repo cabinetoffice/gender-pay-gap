@@ -28,7 +28,5 @@ namespace GenderPayGap.Database
 
         public virtual PublicSectorType PublicSectorType { get; set; }
 
-        public virtual ICollection<Organisation> Organisations { get; set; }
-
     }
 }
