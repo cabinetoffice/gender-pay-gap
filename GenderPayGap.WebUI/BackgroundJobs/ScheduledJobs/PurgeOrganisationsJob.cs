@@ -78,8 +78,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                     org.OrganisationName,
                     org.SectorType,
                     org.Status,
-                    SicCodes = org.GetSicSectionIdsString(),
-                    org.DateOfCessation
+                    SicCodes = org.GetSicSectionIdsString()
                 });
 
             // Un-register all users for this Organisation
