@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
-    [Authorize(Roles = LoginRoles.GpgEmployer)]
+    [Authorize(Roles = LoginRoles.GpgEmployer+ "," + LoginRoles.GpgAdmin)]
     public class CloseAccountController : Controller
     {
 
