@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace GenderPayGap.Database
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class SicSection
+    public class SicSection
     {
 
         public SicSection()
@@ -22,6 +22,18 @@ namespace GenderPayGap.Database
         public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public virtual ICollection<SicCode> SicCodes { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            // Check for null values and compare run-time types.
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var target = (SicSection) obj;
+            return SicSectionId == target.SicSectionId;
+        }
 
     }
 }
