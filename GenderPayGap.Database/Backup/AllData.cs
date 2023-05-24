@@ -40,8 +40,6 @@ namespace GenderPayGap.Database.Backup
         [JsonProperty]
         public List<Return> Returns { get; set; }
         [JsonProperty]
-        public List<ReturnStatus> ReturnStatuses { get; set; }
-        [JsonProperty]
         public List<SicCode> SicCodes { get; set; }
         [JsonProperty]
         public List<SicSection> SicSections { get; set; }

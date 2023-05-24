@@ -34,7 +34,6 @@ namespace GenderPayGap.WebUI.Helpers
                 PublicSectorTypes = dataRepository.GetAll<PublicSectorType>().OrderBy(x => x.PublicSectorTypeId).AsNoTracking().ToList(),
                 ReminderEmails = dataRepository.GetAll<ReminderEmail>().OrderBy(x => x.ReminderEmailId).AsNoTracking().ToList(),
                 Returns = dataRepository.GetAll<Return>().OrderBy(x => x.ReturnId).AsNoTracking().ToList(),
-                ReturnStatuses = dataRepository.GetAll<ReturnStatus>().OrderBy(x => x.ReturnStatusId).AsNoTracking().ToList(),
                 SicCodes = dataRepository.GetAll<SicCode>().OrderBy(x => x.SicCodeId).AsNoTracking().ToList(),
                 SicSections = dataRepository.GetAll<SicSection>().OrderBy(x => x.SicSectionId).AsNoTracking().ToList(),
                 Users = dataRepository.GetAll<User>().OrderBy(x => x.UserId).AsNoTracking().ToList(),

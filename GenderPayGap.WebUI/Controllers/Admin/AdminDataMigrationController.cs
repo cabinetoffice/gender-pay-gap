@@ -286,7 +286,6 @@ namespace GenderPayGap.WebUI.Controllers
 
             InsertData(allData.AuditLogs);
             InsertData(allData.Returns);
-            InsertData(allData.ReturnStatuses);
 
             string updateSequencesSql = @"
                 SELECT setval('""AuditLogs_AuditLogId_seq""', (SELECT max(""AuditLogId"") FROM ""AuditLogs""), true);
@@ -303,7 +302,6 @@ namespace GenderPayGap.WebUI.Controllers
                 SELECT setval('""PublicSectorTypes_PublicSectorTypeId_seq""', (SELECT max(""PublicSectorTypeId"") FROM ""PublicSectorTypes""), true);
                 SELECT setval('""ReminderEmails_ReminderEmailId_seq""', (SELECT max(""ReminderEmailId"") FROM ""ReminderEmails""), true);
                 SELECT setval('""Returns_ReturnId_seq""', (SELECT max(""ReturnId"") FROM ""Returns""), true);
-                SELECT setval('""ReturnStatus_ReturnStatusId_seq""', (SELECT max(""ReturnStatusId"") FROM ""ReturnStatus""), true);
                 SELECT setval('""Users_UserId_seq""', (SELECT max(""UserId"") FROM ""Users""), true);
                 SELECT setval('""UserStatus_UserStatusId_seq""', (SELECT max(""UserStatusId"") FROM ""UserStatus""), true);
             ";
