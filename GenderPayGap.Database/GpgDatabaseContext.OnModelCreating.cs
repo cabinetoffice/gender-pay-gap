@@ -134,8 +134,6 @@ namespace GenderPayGap.Database
 
                     entity.HasIndex(e => e.OrganisationId);
 
-                    entity.HasIndex(e => e.RegisterStatus);
-
                     entity.HasIndex(e => e.ScopeStatusDate);
 
                     entity.HasIndex(e => e.ScopeStatus);
@@ -145,7 +143,6 @@ namespace GenderPayGap.Database
                     entity.HasIndex(e => e.Status);
 
                     entity.Property(e => e.ScopeStatus).HasColumnName("ScopeStatusId");
-                    entity.Property(e => e.RegisterStatus).HasColumnName("RegisterStatusId");
                     entity.Property(e => e.Status).HasColumnName("StatusId").HasDefaultValueSql("((0))");
 
                     entity.Property(e => e.Reason).HasMaxLength(1000);

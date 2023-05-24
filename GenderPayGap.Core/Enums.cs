@@ -111,20 +111,7 @@ namespace GenderPayGap.Core
             return scopeStatus == ScopeStatuses.PresumedInScope || scopeStatus == ScopeStatuses.PresumedOutOfScope;
         }
     }
-
-    public enum RegisterStatuses
-    {
-
-        Unknown = 0,
-        RegisterSkipped = 1,
-        RegisterPending = 2,
-        RegisterComplete = 3,
-        RegisterCancelled = 4
-
-    }
-
-
-
+    
     public enum OrganisationSizes
     {
 
