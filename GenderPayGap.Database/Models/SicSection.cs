@@ -18,8 +18,6 @@ namespace GenderPayGap.Database
         public string SicSectionId { get; set; }
         [JsonProperty]
         public string Description { get; set; }
-        [JsonProperty]
-        public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public virtual ICollection<SicCode> SicCodes { get; set; }
 
