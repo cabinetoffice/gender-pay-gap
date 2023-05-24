@@ -139,7 +139,8 @@ namespace GenderPayGap.WebUI.Controllers
                 PINConfirmedDate = inactiveUserOrganisation.PINConfirmedDate,
                 ConfirmAttemptDate = inactiveUserOrganisation.ConfirmAttemptDate,
                 ConfirmAttempts = inactiveUserOrganisation.ConfirmAttempts,
-                Method = inactiveUserOrganisation.Method
+                Method = inactiveUserOrganisation.Method,
+                Created = inactiveUserOrganisation.Created
             };
         }
 
@@ -164,7 +165,8 @@ namespace GenderPayGap.WebUI.Controllers
                 PINConfirmedDate = userOrganisation.PINConfirmedDate,
                 ConfirmAttemptDate = userOrganisation.ConfirmAttemptDate,
                 ConfirmAttempts = userOrganisation.ConfirmAttempts,
-                Method = userOrganisation.Method
+                Method = userOrganisation.Method,
+                Created = userOrganisation.Created
             };
         }
 

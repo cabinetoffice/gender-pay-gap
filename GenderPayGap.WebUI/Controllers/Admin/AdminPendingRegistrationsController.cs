@@ -47,7 +47,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(uo => uo.User.Status == UserStatuses.Active)
                     .Where(uo => uo.PINConfirmedDate == null)
                     .Where(uo => uo.Method == RegistrationMethods.Manual)
-                    .OrderBy(uo => uo.Modified)
+                    .OrderBy(uo => uo.Created)
                     .ToList();
 
             List<UserOrganisation> nonUkAddressRegistrations = allManualRegistrations.Where(uo => uo.Organisation.GetLatestAddress().IsUkAddress == false).ToList();
