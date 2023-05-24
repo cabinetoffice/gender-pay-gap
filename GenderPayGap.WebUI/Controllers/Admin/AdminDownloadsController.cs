@@ -300,7 +300,6 @@ namespace GenderPayGap.WebUI.Controllers
                         org.SectorType,
                         Submitted = org.GetReturn(year) != null,
                         ReportingDeadline = ReportingYearsHelper.GetDeadlineForAccountingDate(org.SectorType.GetAccountingStartDate(year)).ToString("d MMMM yyyy"),
-                        SubmittedDate = org.GetReturn(year)?.Created,
                         ModifiedDate = org.GetReturn(year)?.Modified,
                         org.GetReturn(year)?.LateReason
 
