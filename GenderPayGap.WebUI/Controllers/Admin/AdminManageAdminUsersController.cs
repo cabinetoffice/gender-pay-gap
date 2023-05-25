@@ -22,27 +22,5 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             this.dataRepository = dataRepository;
         }
 
-
-        [HttpGet("migrate-admin-users")]
-        public IActionResult MigrateAdminUsers()
-        {
-            List<User> adminUsers = dataRepository.GetAll<User>()
-                .AsEnumerable()
-                .Where(u => u.EmailAddress.IsEmailAddress())
-                .Where(u => u.IsAdministrator())
-                .ToList();
-
-            foreach (User adminUser in adminUsers)
-            {
-                adminUser.UserRole = UserRole.Admin;
-            }
-            
-            dataRepository.SaveChanges();
-
-            List<string> adminEmails = adminUsers.Select(u => u.EmailAddress).ToList();
-
-            return Json(adminEmails);
-        }
-
     }
 }
