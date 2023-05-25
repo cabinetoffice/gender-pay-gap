@@ -266,37 +266,6 @@ namespace GenderPayGap.Extensions
             return false;
         }
 
-        public static bool LikeAny(this string input, IEnumerable<string> patterns)
-        {
-            foreach (string pattern in patterns)
-            {
-                if (input.Like(pattern))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool Like(this string input, string pattern)
-        {
-            if (string.IsNullOrWhiteSpace(input) || string.IsNullOrEmpty(pattern))
-            {
-                return false;
-            }
-
-            input = input.ToLower();
-            pattern = pattern.ToLower().Trim();
-            if (input == pattern)
-            {
-                return true;
-            }
-
-            string expression = "^" + Regex.Escape(pattern).Replace("\\*", ".*").Replace("\\?", ".").Replace("+", "\\+") + "$";
-            return Regex.IsMatch(input, expression);
-        }
-
         public static string EncodeUrlBase64(this string base64String)
         {
             if (!string.IsNullOrWhiteSpace(base64String))

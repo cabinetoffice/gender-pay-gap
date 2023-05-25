@@ -37,7 +37,6 @@ namespace GenderPayGap.Core
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
-        public static string AdminEmails => Config.GetAppSetting("AdminEmails");
         public static VcapServices VcapServices =>
             Config.GetAppSetting("VCAP_SERVICES") != null
                 ? JsonConvert.DeserializeObject<VcapServices>(Config.GetAppSetting("VCAP_SERVICES"))
