@@ -210,12 +210,10 @@
                                 @(organisation.OrganisationAddress)
 
                                 <span class="govuk-!-font-size-16">
-                                    @foreach (AddOrganisationSearchResultOrganisationIdentifier identifier in organisation.Identifiers)
+                                    @if (!string.IsNullOrWhiteSpace(organisation.CompanyNumber))
                                     {
                                         <br />
-                                        // ":" is a special character in C# Razor
-                                        // To show an actual ":", we need to write "@::"
-                                        @(identifier.IdentifierType)@:: @(identifier.Identifier)
+                                        <span>Company number: @(organisation.CompanyNumber)</span>
                                     }
                                 </span>
                             </div>
