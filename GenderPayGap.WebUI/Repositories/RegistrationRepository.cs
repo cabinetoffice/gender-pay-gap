@@ -103,10 +103,6 @@ namespace GenderPayGap.WebUI.Repositories
             {
                 User = user,
                 Organisation = organisation,
-
-                // The address isn't important for registering organisation that are already in our database, or are from Companies House
-                // But, for manual registrations, we use this to validate the address and mark the address as Active once it is approved
-                Address = organisation.GetLatestAddress()
             };
 
             DecideRegistrationMethod(userOrganisation);

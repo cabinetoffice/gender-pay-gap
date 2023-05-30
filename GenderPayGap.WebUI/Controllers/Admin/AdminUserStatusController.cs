@@ -139,7 +139,6 @@ namespace GenderPayGap.WebUI.Controllers
                 PINConfirmedDate = inactiveUserOrganisation.PINConfirmedDate,
                 ConfirmAttemptDate = inactiveUserOrganisation.ConfirmAttemptDate,
                 ConfirmAttempts = inactiveUserOrganisation.ConfirmAttempts,
-                AddressId = inactiveUserOrganisation.AddressId,
                 Method = inactiveUserOrganisation.Method
             };
         }
@@ -165,7 +164,6 @@ namespace GenderPayGap.WebUI.Controllers
                 PINConfirmedDate = userOrganisation.PINConfirmedDate,
                 ConfirmAttemptDate = userOrganisation.ConfirmAttemptDate,
                 ConfirmAttempts = userOrganisation.ConfirmAttempts,
-                AddressId = userOrganisation.AddressId,
                 Method = userOrganisation.Method
             };
         }

@@ -30,13 +30,9 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
         [JsonProperty]
-        public long? AddressId { get; set; }
-        [JsonProperty]
         public RegistrationMethods Method { get; set; } = RegistrationMethods.Unknown;
 
         public virtual Organisation Organisation { get; set; }
-
-        public virtual OrganisationAddress Address { get; set; }
 
         public virtual User User { get; set; }
 
