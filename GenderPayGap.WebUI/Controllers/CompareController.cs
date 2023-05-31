@@ -57,6 +57,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
+            
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Add the employer to the compare list
             CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
@@ -84,6 +87,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
+
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Add the employer to the compare list
             CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
@@ -129,6 +135,9 @@ namespace GenderPayGap.WebUI.Controllers
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
 
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
+
             //Remove the employer from the list
             CompareViewService.RemoveFromBasket(employer.OrganisationIdEncrypted);
 
@@ -154,6 +163,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
+
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Remove the employer from the list
             CompareViewService.RemoveFromBasket(employer.OrganisationIdEncrypted);
@@ -191,6 +203,9 @@ namespace GenderPayGap.WebUI.Controllers
                 return new HttpBadRequestResult($"Missing {nameof(returnUrl)}");
             }
 
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
+
             CompareViewService.ClearBasket();
 
             //Save the compared employers to the cookie
@@ -207,6 +222,9 @@ namespace GenderPayGap.WebUI.Controllers
                 year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
             }
 
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
+
             //Load employers from querystring (via shared email)
             if (!string.IsNullOrWhiteSpace(employers))
             {
@@ -219,17 +237,11 @@ namespace GenderPayGap.WebUI.Controllers
                 }
             }
 
-            //If the session is lost then load employers from the cookie
-            else if (CompareViewService.BasketItemCount == 0)
-            {
-                CompareViewService.LoadComparedEmployersFromCookie();
-            }
-
             ViewBag.ReturnUrl = Url.Action("CompareEmployers", new {year});
 
             //Get the compare basket organisations
             IEnumerable<CompareReportModel> compareReports = OrganisationBusinessLogic.GetCompareData(
-                CompareViewService.ComparedEmployers.Value.AsEnumerable(),
+                CompareViewService.ComparedEmployers,
                 year,
                 sortColumn,
                 sortAscending);
@@ -238,7 +250,7 @@ namespace GenderPayGap.WebUI.Controllers
             string shareEmailUrl = Url.Action(
                 nameof(CompareEmployers),
                 "Compare",
-                new {year, employers = CompareViewService.ComparedEmployers.Value.ToList().ToDelimitedString("-")},
+                new {year, employers = CompareViewService.ComparedEmployers.ToDelimitedString("-")},
                 Request.Scheme);
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = false, CanClearCompare = true};
