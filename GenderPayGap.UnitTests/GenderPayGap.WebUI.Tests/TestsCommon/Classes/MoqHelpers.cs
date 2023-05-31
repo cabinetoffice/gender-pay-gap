@@ -22,7 +22,6 @@ namespace GenderPayGap.Tests.Common.Classes
             mockDataRepo.SetupGetAllItemsOfType(new Organisation[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationAddress[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationName[] { });
-            mockDataRepo.SetupGetAllItemsOfType(new OrganisationReference[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationScope[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationSicCode[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationStatus[] { });
@@ -61,7 +60,6 @@ namespace GenderPayGap.Tests.Common.Classes
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<Organisation>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationAddress>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationName>());
-            mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationReference>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationScope>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationSicCode>());
             mockDataRepo.SetupGetAllItemsOfType(items.OfType<OrganisationStatus>());

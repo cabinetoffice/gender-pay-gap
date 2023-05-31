@@ -61,7 +61,6 @@ namespace GenderPayGap.Database
         public virtual DbSet<Organisation> Organisation { get; set; }
         public virtual DbSet<OrganisationAddress> OrganisationAddress { get; set; }
         public virtual DbSet<OrganisationName> OrganisationName { get; set; }
-        public virtual DbSet<OrganisationReference> OrganisationReference { get; set; }
         public virtual DbSet<OrganisationScope> OrganisationScope { get; set; }
         public virtual DbSet<OrganisationSicCode> OrganisationSicCode { get; set; }
         public virtual DbSet<OrganisationStatus> OrganisationStatus { get; set; }

@@ -276,15 +276,6 @@ namespace GenderPayGap.WebUI.Search
                             searchResult.EncryptedOrganisationId = foundOrganisation.GetEncryptedId();
                             searchResult.OrganisationAddress = foundOrganisation.GetLatestAddress()?.GetAddressString();
                             searchResult.CompanyNumber = foundOrganisation.CompanyNumber;
-
-                            foreach (OrganisationReference reference in foundOrganisation.OrganisationReferences)
-                            {
-                                searchResult.Identifiers.Add(new AddOrganisationSearchResultOrganisationIdentifier
-                                {
-                                    IdentifierType = reference.ReferenceName,
-                                    Identifier = reference.ReferenceValue
-                                });
-                            }
                         }
                         else
                         {

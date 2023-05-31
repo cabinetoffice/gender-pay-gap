@@ -12,7 +12,6 @@ namespace GenderPayGap.Database
             modelBuilder.Entity<Organisation>().ToTable("Organisations");
             modelBuilder.Entity<OrganisationAddress>().ToTable("OrganisationAddresses");
             modelBuilder.Entity<OrganisationName>().ToTable("OrganisationNames");
-            modelBuilder.Entity<OrganisationReference>().ToTable("OrganisationReferences");
             modelBuilder.Entity<OrganisationScope>().ToTable("OrganisationScopes");
             modelBuilder.Entity<OrganisationSicCode>().ToTable("OrganisationSicCodes");
             modelBuilder.Entity<Return>().ToTable("Returns");
@@ -88,36 +87,6 @@ namespace GenderPayGap.Database
                         .WithMany(p => p.OrganisationNames)
                         .HasForeignKey(d => d.OrganisationId)
                         .HasConstraintName("FK_dbo.OrganisationNames_dbo.Organisations_OrganisationId");
-                });
-
-            #endregion
-
-            #region OrganisationReference
-
-            modelBuilder.Entity<OrganisationReference>(
-                entity => {
-                    entity.HasKey(e => e.OrganisationReferenceId).HasName("PK_dbo.OrganisationReferences");
-
-                    entity.HasIndex(e => e.Created);
-
-                    entity.HasIndex(e => e.OrganisationId);
-
-                    entity.HasIndex(e => e.ReferenceName);
-
-                    entity.HasIndex(e => e.ReferenceValue);
-
-                    entity.Property(e => e.ReferenceName)
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    entity.Property(e => e.ReferenceValue)
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    entity.HasOne(d => d.Organisation)
-                        .WithMany(p => p.OrganisationReferences)
-                        .HasForeignKey(d => d.OrganisationId)
-                        .HasConstraintName("FK_dbo.OrganisationReferences_dbo.Organisations_OrganisationId");
                 });
 
             #endregion
