@@ -14,7 +14,6 @@ module "vpc" {
   azs                 = slice(data.aws_availability_zones.available.zone_ids, 0, 2)
   public_subnets      = [cidrsubnet("10.0.0.0/16", 4, 0), cidrsubnet("10.0.0.0/16", 4, 1)]
   database_subnets    = [cidrsubnet("10.0.0.0/16", 4, 2), cidrsubnet("10.0.0.0/16", 4, 3)]
-  elasticache_subnets = [cidrsubnet("10.0.0.0/16", 4, 4), cidrsubnet("10.0.0.0/16", 4, 5)]
 
   enable_ipv6                     = true
   assign_ipv6_address_on_creation = true
@@ -23,7 +22,6 @@ module "vpc" {
 
   public_subnet_ipv6_prefixes      = [0, 1]
   database_subnet_ipv6_prefixes    = [2, 3]
-  elasticache_subnet_ipv6_prefixes = [4, 5]
 
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -35,16 +33,10 @@ module "vpc" {
   create_database_subnet_route_table     = true
   create_database_nat_gateway_route      = true
   create_database_internet_gateway_route = true
-  create_elasticache_subnet_group        = true
 
   database_subnet_group_name = "${local.env_prefix}-db-subnet-group"
   database_subnet_group_tags = {
     Name = "${local.env_prefix}-db-subnet-group"
-  }
-
-  elasticache_subnet_group_name = "${local.env_prefix}-gpg-db-elasticache-group"
-  elasticache_subnet_group_tags = {
-    Name = "${local.env_prefix}-gpg-db-elasticache-group"
   }
 
   public_subnet_tags = {
