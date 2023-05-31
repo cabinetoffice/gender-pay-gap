@@ -17,12 +17,6 @@ namespace GenderPayGap.Extensions
                 ?.GetCustomAttribute<TAttribute>();
         }
 
-        // Object
-        public static TAttribute GetAttribute<TAttribute>(this object value) where TAttribute : Attribute
-        {
-            return value.GetType().GetCustomAttribute<TAttribute>();
-        }
-
     }
 
 }
