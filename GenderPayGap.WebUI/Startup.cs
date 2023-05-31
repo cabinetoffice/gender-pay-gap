@@ -1,12 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Features.AttributeFilters;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
@@ -38,7 +36,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using StackExchange.Redis;
 
 namespace GenderPayGap.WebUI
 {
@@ -125,9 +122,6 @@ namespace GenderPayGap.WebUI
                     o.IdleTimeout = TimeSpan.FromDays(30); // This is how long the session DATA is kept, not how long the cookie lasts
                 });
 
-            //Add the distributed redis cache
-            AddRedisCache(services);
-
             DataProtectionKeysHelper.AddDataProtectionKeyStorage(services);
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -150,37 +144,6 @@ namespace GenderPayGap.WebUI
 
             // Create the IServiceProvider based on the container.
             return new AutofacServiceProvider(Global.ContainerIoC);
-        }
-
-        private static void AddRedisCache(IServiceCollection services, string applicationDiscriminator = null)
-        {
-            //Add distributed cache service backed by Redis cache
-            if (Debugger.IsAttached || Config.IsEnvironment("Local"))
-            {
-                //Use a memory cache
-                services.AddDistributedMemoryCache();
-            }
-            else
-            {
-                if (Global.VcapServices != null && Global.VcapServices.Redis != null)
-                {
-                    VcapRedis redisConfiguration = Global.VcapServices.Redis.First(b => b.Name.EndsWith("-cache"));
-
-                    services.AddStackExchangeRedisCache(
-                        options =>
-                        {
-                            options.ConfigurationOptions = new ConfigurationOptions
-                            {
-                                EndPoints = { { redisConfiguration.Credentials.Host, redisConfiguration.Credentials.Port } },
-                                AbortOnConnectFail = false
-                            };
-                        });
-                }
-                else
-                {
-                    throw new ArgumentNullException("VCAP_SERVICES", "Cannot find 'VCAP_SERVICES' config setting");
-                }
-            }
         }
 
         // ConfigureContainer is where you can register things directly
