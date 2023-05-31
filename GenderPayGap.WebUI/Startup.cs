@@ -244,7 +244,6 @@ namespace GenderPayGap.WebUI
             // register web ui services
             builder.RegisterType<ViewingService>().As<IViewingService>().InstancePerLifetimeScope();
             builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
-            builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
             builder.RegisterType<AdminSearchService>().As<AdminSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();

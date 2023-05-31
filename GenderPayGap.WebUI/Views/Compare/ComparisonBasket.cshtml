@@ -1,5 +1,4 @@
-﻿@inject ISearchViewService SearchViewService
-@inject ICompareViewService CompareViewService
+﻿@inject ICompareViewService CompareViewService
 @model CompareBasketViewModel
 @{
     int compareCount = CompareViewService.BasketItemCount;
@@ -42,7 +41,7 @@
                 @if (compareCount > 0 && Model.CanAddEmployers)
                 {
                     <li>
-                        <a href="@SearchViewService.GetLastSearchUrl()">Add another employer</a>
+                        <a href="@Url.Action("SearchResults", "Viewing")">Add another employer</a>
                     </li>
                 }
                 @if (compareCount > 0)

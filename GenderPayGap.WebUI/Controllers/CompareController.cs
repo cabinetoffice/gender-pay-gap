@@ -30,15 +30,12 @@ namespace GenderPayGap.WebUI.Controllers
         private readonly IDataRepository dataRepository;
         private readonly IWebTracker webTracker;
         
-        public CompareController(
-            ISearchViewService searchViewService,
-            ICompareViewService compareViewService,
+        public CompareController(ICompareViewService compareViewService,
             IDataRepository dataRepository,
             IOrganisationBusinessLogic organisationBusinessLogic,
             IWebTracker webTracker)
         {
             OrganisationBusinessLogic = organisationBusinessLogic;
-            SearchViewService = searchViewService;
             CompareViewService = compareViewService;
             this.dataRepository = dataRepository;
             this.webTracker = webTracker;
@@ -384,19 +381,15 @@ namespace GenderPayGap.WebUI.Controllers
 
         private EmployerSearchModel GetEmployer(string employerIdentifier, bool activeOnly = true)
         {
-            EmployerSearchModel employer = SearchViewService.LastSearchResults?.GetEmployer(employerIdentifier);
-            if (employer == null)
-            {
-                long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-                Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
-                
-                if (activeOnly)
-                {
-                    ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
-                }
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
 
-                employer = organisation.ToEmployerSearchResult();
+            if (activeOnly)
+            {
+                ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             }
+
+            EmployerSearchModel employer = organisation.ToEmployerSearchResult();
 
             return employer;
         }
@@ -406,8 +399,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Dependencies
 
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
-
-        public ISearchViewService SearchViewService { get; }
 
         public ICompareViewService CompareViewService { get; }
 

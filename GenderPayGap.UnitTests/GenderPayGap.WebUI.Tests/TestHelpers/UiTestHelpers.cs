@@ -245,7 +245,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
-            builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
             
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
