@@ -24,10 +24,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         string LastComparedEmployerList { get; set; }
 
-        string SortColumn { get; set; }
-
-        bool SortAscending { get; set; }
-
         int BasketItemCount { get; }
 
         void AddToBasket(string encEmployerId);
@@ -115,28 +111,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         {
             get => Session["LastComparedEmployerList"].ToStringOrNull();
             set => Session["LastComparedEmployerList"] = value;
-        }
-
-        public string SortColumn
-        {
-            get => Session["SortColumn"].ToStringOrNull();
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    Session.Remove("SortColumn");
-                }
-                else
-                {
-                    Session["SortColumn"] = value;
-                }
-            }
-        }
-
-        public bool SortAscending
-        {
-            get => Session["SortAscending"].ToBoolean(true);
-            set => Session["SortAscending"] = value;
         }
 
         public int BasketItemCount => ComparedEmployers.Value.Count;

@@ -199,50 +199,11 @@ namespace GenderPayGap.WebUI.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        [HttpGet("sort-employers/{column}")]
-        public IActionResult SortEmployers(string column, string returnUrl)
-        {
-            //Check the parameters are populated
-            if (string.IsNullOrWhiteSpace(column))
-            {
-                return new HttpBadRequestResult($"Missing {nameof(column)}");
-            }
-
-            //Check the parameters are populated
-            if (string.IsNullOrWhiteSpace(returnUrl))
-            {
-                return new HttpBadRequestResult($"Missing {nameof(returnUrl)}");
-            }
-
-
-            //Calculate the sort direction
-            bool sort = CompareViewService.SortColumn != column || !CompareViewService.SortAscending;
-
-            //Track the download 
-            if (CompareViewService.SortColumn != column || CompareViewService.SortAscending != sort)
-            {
-                webTracker.TrackPageView(
-                    this,
-                    $"sort-employers: {column} {(CompareViewService.SortAscending ? "Ascending" : "Descending")}",
-                    $"/compare-employers/sort-employers?{column}={(CompareViewService.SortAscending ? "Ascending" : "Descending")}");
-
-                //Change the sort order
-                CompareViewService.SortAscending = sort;
-
-                //Set the column
-                CompareViewService.SortColumn = column;
-            }
-
-            return LocalRedirect(returnUrl);
-        }
-
         [HttpGet("~/compare-employers/{year:int=0}")]
-        public IActionResult CompareEmployers(int year, string employers = null)
+        public IActionResult CompareEmployers(int year, string employers = null, string sortColumn = null, bool sortAscending = true)
         {
             if (year == 0)
             {
-                CompareViewService.SortColumn = null;
-                CompareViewService.SortAscending = true;
                 year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
             }
 
@@ -254,8 +215,6 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     CompareViewService.ClearBasket();
                     CompareViewService.AddRangeToBasket(comparedEmployers);
-                    CompareViewService.SortAscending = true;
-                    CompareViewService.SortColumn = null;
                     return RedirectToAction("CompareEmployers", new {year});
                 }
             }
@@ -272,8 +231,8 @@ namespace GenderPayGap.WebUI.Controllers
             IEnumerable<CompareReportModel> compareReports = OrganisationBusinessLogic.GetCompareData(
                 CompareViewService.ComparedEmployers.Value.AsEnumerable(),
                 year,
-                CompareViewService.SortColumn,
-                CompareViewService.SortAscending);
+                sortColumn,
+                sortAscending);
 
             //Track the compared employers
             string lastComparedEmployerList = CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
@@ -312,8 +271,8 @@ namespace GenderPayGap.WebUI.Controllers
                     ShareEmailUrl =
                         CompareViewService.BasketItemCount <= CompareViewService.MaxCompareBasketShareCount ? shareEmailUrl : null,
                     Year = year,
-                    SortAscending = CompareViewService.SortAscending,
-                    SortColumn = CompareViewService.SortColumn
+                    SortAscending = sortAscending,
+                    SortColumn = sortColumn
                 });
         }
 

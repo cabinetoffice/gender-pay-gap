@@ -589,69 +589,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
         }
         #endregion
-
-        #region SortEmployers
-
-        [Test]
-        public void CompareController_SortEmployers_NoColumn_ReturnsBadRequest()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = null;
-            string returnUrl = @"\viewing\search-results";
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.AreEqual($"Missing {nameof(column)}", result.StatusDescription);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-        }
-
-        [Test]
-        public void CompareController_SortEmployers_NoReturnUrl_ReturnsBadRequest()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = "OrganisationName";
-            string returnUrl = null;
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as HttpBadRequestResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-        }
-
-        [Test]
-        public void CompareController_SortEmployers_SuccessDescending_RedirectToReturnUrl()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = "OrganisationName";
-            string returnUrl = @"\viewing\search-results";
-            controller.CompareViewService.SortColumn = column;
-            controller.CompareViewService.SortAscending = true;
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(returnUrl, result.Url);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, column);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, false);
-
-        }
-
-        #endregion
-
+        
         #region CompareEmployers
         [Test]
         public void CompareController_CompareEmployers_NoYear_DefaultSortTheMostRecentCompletedReportingYearAsync()
@@ -688,8 +626,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(result.ViewName, "CompareEmployers");
             Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
 
             var lastComparedEmployerList = controller.CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
             controller.CompareViewService.LastComparedEmployerList.Compare(lastComparedEmployerList);
@@ -715,9 +651,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var testUri = new Uri("https://localhost/Viewing/compare-employers");
             controller.AddMockUriHelper(testUri.ToString(), "CompareEmployers");
 
-            controller.CompareViewService.SortColumn = "OrganisationSize";
-            controller.CompareViewService.SortAscending = false;
-
             var firstReportingYear = Global.FirstReportingYear;
 
             var mockOrg = OrganisationHelper.GetOrganisationInScope(firstReportingYear);
@@ -740,8 +673,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(result.ViewName, "CompareEmployers");
             Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, "OrganisationSize");
-            Assert.AreEqual(controller.CompareViewService.SortAscending, false);
 
 
             var actualModel = result.Model as CompareViewModel;
