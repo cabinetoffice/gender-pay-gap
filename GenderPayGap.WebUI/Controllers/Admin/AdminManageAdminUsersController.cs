@@ -4,6 +4,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
@@ -19,11 +20,16 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     {
 
         private readonly IDataRepository dataRepository;
+        private readonly IUserRepository userRepository;
         private readonly AuditLogger auditLogger;
 
-        public AdminManageAdminUsersController(IDataRepository dataRepository, AuditLogger auditLogger)
+        public AdminManageAdminUsersController(
+            IDataRepository dataRepository,
+            IUserRepository userRepository,
+            AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
+            this.userRepository = userRepository;
             this.auditLogger = auditLogger;
         }
         
@@ -80,6 +86,84 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 viewModel.Reason);
 
             dataRepository.SaveChanges();
+
+            return RedirectToAction("ViewAdminUsers", "AdminManageAdminUsers");
+        }
+        
+        [HttpGet("add-new-admin-user")]
+        public IActionResult AddNewAdminUserGet()
+        {
+            var viewModel = new AdminAddNewAdminUserViewModel();
+
+            return View("AddNewAdminUser", viewModel);
+        }
+        
+        [ValidateAntiForgeryToken]
+        [HttpPost("add-new-admin-user")]
+        public IActionResult AddNewAdminUserPost(AdminAddNewAdminUserViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("AddNewAdminUser", viewModel);
+            }
+
+            User user = userRepository.FindByEmail(viewModel.EmailAddress);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(nameof(viewModel.EmailAddress), "Could not find a user with this email address");
+            }
+            else if (user.IsAdministrator())
+            {
+                ModelState.AddModelError(nameof(viewModel.EmailAddress), "This user is already an admin user");
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                return View("AddNewAdminUser", viewModel);
+            }
+
+            return RedirectToAction("ConfirmNewAdminUserGet", "AdminManageAdminUsers", new {userId = user.UserId});
+        }
+        
+        [HttpGet("add-new-admin-user/{userId}")]
+        public IActionResult ConfirmNewAdminUserGet(long userId)
+        {
+            User user = dataRepository.Get<User>(userId);
+
+            if (user == null || user.IsAdministrator())
+            {
+                throw new PageNotFoundException();
+            }
+
+            return View("ConfirmNewAdminUser", user);
+        }
+        
+        [ValidateAntiForgeryToken]
+        [HttpPost("add-new-admin-user/{userId}")]
+        public IActionResult ConfirmNewAdminUserPost(long userId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("ConfirmNewAdminUser");
+            }
+
+            User user = dataRepository.Get<User>(userId);
+
+            if (user == null || user.IsAdministrator())
+            {
+                throw new PageNotFoundException();
+            }
+
+            user.UserRole = UserRole.Admin;
+
+            dataRepository.SaveChanges();
+            
+            auditLogger.AuditChangeToUser(
+                AuditedAction.AdminAddAdminUser,
+                user,
+                new {UserIdToMakeAdmin = user.UserId},
+                User);
 
             return RedirectToAction("ViewAdminUsers", "AdminManageAdminUsers");
         }

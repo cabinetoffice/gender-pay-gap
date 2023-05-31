@@ -288,9 +288,11 @@ namespace GenderPayGap.Core
 
         [Display(Name = "User automatically reactivated a deleted or retired organisation")]
         UserReactivatedOrganisationAutomatically = 43,
-            
+
         [Display(Name = "Admin changed user status")]
-        AdminChangeUserStatus = 44
+        AdminChangeUserStatus = 44,
+        [Display(Name = "Admin add admin user")]
+        AdminAddAdminUser = 45
     }
 
     public enum HashingAlgorithm
