@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -266,7 +266,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<CookieController>().InstancePerLifetimeScope();
 
             builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
-            builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();
             builder.Register(c => Mock.Of<IHttpContextAccessor>()).As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();

@@ -22,12 +22,6 @@ namespace GenderPayGap.Extensions
             return false;
         }
 
-        public static bool IsEnumerable(this object list)
-        {
-            var enumerable = list as IEnumerable;
-            return enumerable != null;
-        }
-
         public static bool IsWrapped<T>(this T[] data, T[] prefix, T[] suffix)
         {
             if (data.Length < prefix.Length + suffix.Length)
@@ -248,16 +242,6 @@ namespace GenderPayGap.Extensions
             }
 
             return DateTime.MinValue;
-        }
-
-        public static bool IsSimpleType(this Type type)
-        {
-            return
-                type.IsValueType
-                || type.IsPrimitive
-                || new[] {typeof(string), typeof(decimal), typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan), typeof(Guid)}
-                    .Contains(type)
-                || System.Convert.GetTypeCode(type) != TypeCode.Object;
         }
 
         public static MethodBase FindParentWithAttribute<T>(this MethodBase callingMethod, int parentOffset = 0) where T : Attribute

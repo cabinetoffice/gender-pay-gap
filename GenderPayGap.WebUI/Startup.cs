@@ -258,9 +258,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<BackgroundJobsApi>().As<IBackgroundJobsApi>().InstancePerLifetimeScope();
 
 
-            //Register HttpCache and HttpSession
-            builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();
-
             // Register Action helpers
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();
             builder.Register(
