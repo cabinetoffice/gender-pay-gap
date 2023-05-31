@@ -37,6 +37,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 .Where(u => !u.HasBeenAnonymised)
                 .GroupBy(u => u.EmailAddress).Where(e => e.Count() > 1)
                 .SelectMany(g => g.OrderBy(u => (int)u.Status).ThenByDescending(u => u.Created).Skip(1))
+                .Where(u => u.UserRole != UserRole.Admin)  // Do not anonymise Admin users
                 .ToList();
 
             foreach (var user in usersWithMultipleAccounts.Where(u => u.Status == UserStatuses.Retired))
