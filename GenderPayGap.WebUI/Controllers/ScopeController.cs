@@ -180,7 +180,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("{encryptedOrganisationId}/declare-scope")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult DeclareScopePost(string encryptedOrganisationId, DeclareScopeViewModel viewModel)
         {

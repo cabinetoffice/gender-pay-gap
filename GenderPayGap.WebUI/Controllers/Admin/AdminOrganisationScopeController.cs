@@ -119,7 +119,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/scope/change")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeMultipleScopesPost(long id, AdminChangeMultipleScopesViewModel viewModel)
         {
@@ -163,7 +162,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/scope/change/{year}")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeScopeForYearPost(long id, int year, AdminChangeScopeViewModel viewModel)
         {

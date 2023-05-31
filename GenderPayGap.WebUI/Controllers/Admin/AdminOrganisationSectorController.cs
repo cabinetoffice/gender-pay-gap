@@ -61,7 +61,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
         
         [HttpPost("organisation/{id}/sector/change")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeSectorPost(long id, AdminChangeSectorViewModel viewModel)
         {

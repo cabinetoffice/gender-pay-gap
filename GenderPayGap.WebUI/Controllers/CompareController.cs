@@ -317,7 +317,6 @@ namespace GenderPayGap.WebUI.Controllers
                 });
         }
 
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("~/compare-employers/{year:int=0}")]
         public IActionResult CompareEmployers(string command, int year = 0)

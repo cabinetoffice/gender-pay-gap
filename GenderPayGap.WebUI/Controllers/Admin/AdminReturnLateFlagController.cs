@@ -36,7 +36,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("return/{id}/change-late-flag")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeLateFlag(long id, AdminReturnLateFlagViewModel viewModel)
         {

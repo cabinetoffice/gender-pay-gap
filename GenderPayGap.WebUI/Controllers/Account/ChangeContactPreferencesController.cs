@@ -46,7 +46,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
         // We validate them
         // Then we save the updates and return the user to the Manage Account page
         [HttpPost("change-contact-preferences")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeContactPreferencesPost(ChangeContactPreferencesViewModel viewModel)
         {

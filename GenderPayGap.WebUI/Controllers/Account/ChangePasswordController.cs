@@ -44,7 +44,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
         [HttpPost("change-password-new")]
         [ValidateAntiForgeryToken]
-        [PreventDuplicatePost]
         public IActionResult ChangePasswordPost(ChangePasswordViewModel viewModel)
         {
             ControllerHelper.ThrowIfAdminIsImpersonatingUser(User);

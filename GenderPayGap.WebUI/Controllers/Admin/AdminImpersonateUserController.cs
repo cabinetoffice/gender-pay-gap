@@ -36,7 +36,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("impersonate")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ImpersonatePost(AdminImpersonateUserViewModel viewModel)
         {
@@ -71,7 +70,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("impersonate/{userId}")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ImpersonateDirectPost(long userId)
         {

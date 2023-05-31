@@ -53,7 +53,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("send-pin")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult SendPin(long userId, long organisationId)
         {
