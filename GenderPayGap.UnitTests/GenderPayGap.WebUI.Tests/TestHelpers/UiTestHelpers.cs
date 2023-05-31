@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -167,7 +167,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             httpContextMock.SetupGet(ctx => ctx.Response.Cookies).Returns(responseCookies.Object);
             httpContextMock.SetupGet(ctx => ctx.Response.Headers).Returns(responseHeaders);
             httpContextMock.SetupGet(ctx => ctx.Response.HttpContext).Returns(httpContextMock.Object);
-            httpContextMock.SetupGet(ctx => ctx.Session).Returns(new MockHttpSession());
             httpContextMock.SetupGet(ctx => ctx.Features).Returns(features);
 
             //Mock the httpcontext to the controllercontext
