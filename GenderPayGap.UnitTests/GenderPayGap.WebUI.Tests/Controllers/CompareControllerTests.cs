@@ -627,9 +627,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual(result.ViewName, "CompareEmployers");
             Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
 
-            var lastComparedEmployerList = controller.CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
-            controller.CompareViewService.LastComparedEmployerList.Compare(lastComparedEmployerList);
-
             var actualModel = result.Model as CompareViewModel;
             Assert.NotNull(actualModel);
             Assert.NotNull(actualModel.CompareReports);

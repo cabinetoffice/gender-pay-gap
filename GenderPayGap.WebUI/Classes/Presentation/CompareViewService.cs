@@ -22,8 +22,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         int MaxCompareBasketCount { get; }
 
-        string LastComparedEmployerList { get; set; }
-
         int BasketItemCount { get; }
 
         void AddToBasket(string encEmployerId);
@@ -106,12 +104,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         #region Properties
 
         public Lazy<SessionList<string>> ComparedEmployers { get; }
-
-        public string LastComparedEmployerList
-        {
-            get => Session["LastComparedEmployerList"].ToStringOrNull();
-            set => Session["LastComparedEmployerList"] = value;
-        }
 
         public int BasketItemCount => ComparedEmployers.Value.Count;
 

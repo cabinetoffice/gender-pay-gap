@@ -234,26 +234,6 @@ namespace GenderPayGap.WebUI.Controllers
                 sortColumn,
                 sortAscending);
 
-            //Track the compared employers
-            string lastComparedEmployerList = CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
-            if (CompareViewService.LastComparedEmployerList != lastComparedEmployerList)
-            {
-                SortedSet<string> employerIds = compareReports.Select(r => r.EncOrganisationId).ToSortedSet();
-                webTracker.TrackPageView(
-                    this,
-                    $"compare-employers: {employerIds.ToDelimitedString()}",
-                    $"{ViewBag.ReturnUrl}?{employerIds.ToEncapsulatedString("e=", null, "&", "&", false)}");
-                foreach (CompareReportModel employer in compareReports)
-                {
-                    webTracker.TrackPageView(
-                        this,
-                        $"{employer.EncOrganisationId}: {employer.OrganisationName}",
-                        $"{ViewBag.ReturnUrl}?{employer.EncOrganisationId}={employer.OrganisationName}");
-                }
-
-                CompareViewService.LastComparedEmployerList = lastComparedEmployerList;
-            }
-
             //Generate the shared links
             string shareEmailUrl = Url.Action(
                 nameof(CompareEmployers),
