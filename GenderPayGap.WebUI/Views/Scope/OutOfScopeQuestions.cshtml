@@ -1,7 +1,5 @@
 ﻿@using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GovUkDesignSystem
-@using GenderPayGap.WebUI.Classes.Formatters
-@using GenderPayGap.WebUI.Controllers.SendFeedback
 @using GenderPayGap.WebUI.Models.ScopeNew
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
@@ -73,7 +71,7 @@
                         WhyOutOfScope.Under250,
                         new LabelViewModel
                         {
-                            Text = "My employer had a head count of less than 250 employees on our snapshot date of " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+                            Text = "My employer had a head count of less than 250 employees on our snapshot date of " + Model.ReportingYear.ToString("d MMMM yyyy")
                         }
                     }
                 },

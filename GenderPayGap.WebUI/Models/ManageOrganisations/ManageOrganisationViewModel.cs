@@ -167,7 +167,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             switch (GetReportTag())
             {
                 case ReportTag.Due:
-                    return "Report due by " + GetReportingDeadline().ToGDSDate().FullStartDate;
+                    return "Report due by " + GetReportingDeadline().ToString("d MMMM yyyy");
                 case ReportTag.Overdue:
                     return "Report overdue";
                 case ReportTag.Submitted:
@@ -203,10 +203,10 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             switch (tag)
             {
                 case ReportTag.Overdue:
-                    return "This report was due on " + GetReportingDeadline().ToGDSDate().FullStartDate;
+                    return "This report was due on " + GetReportingDeadline().ToString("d MMMM yyyy");
                 case ReportTag.Submitted:
                 case ReportTag.SubmittedLate:
-                    return "Reported on " + returnForYear.Modified.ToGDSDate().FullStartDate;
+                    return "Reported on " + returnForYear.Modified.ToString("d MMMM yyyy");
                 default:
                     return null;
             }
@@ -216,7 +216,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
         {
             if (hasDraftReturnForYear && draftReturnForYear.Modified != DateTime.MinValue)
             {
-                return "Last edited on " + draftReturnForYear.Modified.ToGDSDate().FullStartDate;
+                return "Last edited on " + draftReturnForYear.Modified.ToString("d MMMM yyyy");
             }
 
             return null;

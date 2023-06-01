@@ -172,7 +172,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             switch (GetReportTag())
             {
                 case ReportTag.Due:
-                    return "Report due by " + GetReportingDeadline().ToGDSDate().FullStartDate;
+                    return "Report due by " + GetReportingDeadline().ToString("d MMMM yyyy");
                 case ReportTag.Overdue:
                     return "Report overdue";
                 case ReportTag.Submitted:

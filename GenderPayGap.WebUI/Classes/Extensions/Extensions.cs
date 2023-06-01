@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
-using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
@@ -27,11 +21,6 @@ namespace GenderPayGap.WebUI.Classes
 
             int index = option.ModelBinderProviders.IndexOf(binderToFind);
             option.ModelBinderProviders.Insert(index, new TrimmingModelBinderProvider());
-        }
-        
-        public static GDSDateFormatter ToGDSDate(this DateTime dateTime)
-        {
-            return new GDSDateFormatter(dateTime);
         }
         
         #region Encypt Decrypt
