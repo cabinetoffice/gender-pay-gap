@@ -82,8 +82,6 @@ namespace GenderPayGap.WebUI
                         options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
                         options.ModelMetadataDetailsProviders.Add(
                             new TrimModelBinder()); //Set DisplayMetadata to input empty strings as null
-                        options.ModelMetadataDetailsProviders.Add(
-                            new DefaultResourceValidationMetadataProvider()); // sets default resource type to use for display text and error messages
                         options.Filters.Add<ErrorHandlingFilter>();
                     })
                 .AddControllersAsServices() // Add controllers as services so attribute filters be resolved in contructors.
@@ -94,9 +92,7 @@ namespace GenderPayGap.WebUI
                     // These options tell ASP.Net to use the original C# property names, without changing the case
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                })
-                .AddDataAnnotationsLocalization(
-                    options => { options.DataAnnotationLocalizerProvider = DataAnnotationLocalizerProvider.DefaultResourceHandler; });
+                });
 
             IMvcBuilder mvcBuilder = services.AddRazorPages();
 
