@@ -17,7 +17,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 GoogleAnalyticsGpg = cookieSettings.GoogleAnalyticsGpg ? "On" : "Off",
                 GoogleAnalyticsGovUk = cookieSettings.GoogleAnalyticsGovUk ? "On" : "Off",
-                RememberSettings = cookieSettings.RememberSettings ? "On" : "Off"
             };
 
             return View("CookieSettings", cookieSettingsViewModel);
@@ -31,7 +30,6 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 GoogleAnalyticsGpg = cookieSettingsViewModel != null && cookieSettingsViewModel.GoogleAnalyticsGpg == "On",
                 GoogleAnalyticsGovUk = cookieSettingsViewModel != null && cookieSettingsViewModel.GoogleAnalyticsGovUk == "On",
-                RememberSettings = cookieSettingsViewModel != null && cookieSettingsViewModel.RememberSettings == "On"
             };
 
             CookieHelper.SetCookieSettingsCookie(Response, cookieSettings);
@@ -59,8 +57,7 @@ namespace GenderPayGap.WebUI.Controllers
             var cookieSettings = new CookieSettings
             {
                 GoogleAnalyticsGpg = additionalCookiesConsent,
-                GoogleAnalyticsGovUk = additionalCookiesConsent,
-                RememberSettings = additionalCookiesConsent
+                GoogleAnalyticsGovUk = additionalCookiesConsent
             };
 
             CookieHelper.SetCookieSettingsCookie(Response, cookieSettings);

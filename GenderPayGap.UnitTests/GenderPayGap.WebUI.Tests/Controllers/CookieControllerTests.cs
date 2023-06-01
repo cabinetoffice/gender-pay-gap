@@ -42,7 +42,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var cookieConsent = new CookieConsent {AdditionalCookies = "accept"};
             var expectedCookieSettings = new CookieSettings
             {
-                GoogleAnalyticsGpg = true, GoogleAnalyticsGovUk = true, RememberSettings = true
+                GoogleAnalyticsGpg = true, GoogleAnalyticsGovUk = true
             };
 
             // Act
@@ -63,7 +63,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var cookieConsent = new CookieConsent {AdditionalCookies = "reject"};
             var expectedCookieSettings = new CookieSettings
             {
-                GoogleAnalyticsGpg = false, GoogleAnalyticsGovUk = false, RememberSettings = false
+                GoogleAnalyticsGpg = false, GoogleAnalyticsGovUk = false
             };
 
             // Act

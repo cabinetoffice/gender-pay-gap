@@ -101,43 +101,6 @@
                 </fieldset>
             </div>
 
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset" aria-describedby="RememberSettings__Hint">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h3 class="govuk-fieldset__heading">Cookies that remember your settings</h3>
-                    </legend>
-                    <div id="RememberSettings__Hint" class="govuk-hint">
-                        These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the gender pay gap service.
-                    </div>
-                    <div class="govuk-radios govuk-radios--inline">
-                        <div class="govuk-radios__item">
-                            @(Html.RadioButtonFor(x => x.RememberSettings, "On",
-                                new
-                                {
-                                    @class = "govuk-radios__input",
-                                    id = "RememberSettings__On",
-                                    @checked = Model.RememberSettings == "On"
-                                }))
-                            <label class="govuk-label govuk-radios__label" for="RememberSettings__On">
-                                On
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            @(Html.RadioButtonFor(x => x.RememberSettings, "Off",
-                                new
-                                {
-                                    @class = "govuk-radios__input",
-                                    id = "RememberSettings__Off",
-                                    @checked = Model.RememberSettings == "Off"
-                                }))
-                            <label class="govuk-label govuk-radios__label" for="RememberSettings__Off">
-                                Off
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-
             <h3 class="govuk-heading-m">Strictly necessary cookies</h3>
 
             <p class="govuk-body">These essential cookies do things like:</p>

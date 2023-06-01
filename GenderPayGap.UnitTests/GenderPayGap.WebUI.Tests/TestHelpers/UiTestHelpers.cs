@@ -120,7 +120,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                         "cookie_settings",
                         JsonConvert.SerializeObject(
                             new CookieSettings {
-                                GoogleAnalyticsGpg = true, GoogleAnalyticsGovUk = true, RememberSettings = true
+                                GoogleAnalyticsGpg = true, GoogleAnalyticsGovUk = true
                             })
                     }
                 });
