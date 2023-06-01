@@ -7,6 +7,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.SendFeedback
@@ -36,7 +37,7 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
         {
             if (User.Identity.IsAuthenticated)
             {
-                User user = dataRepository.FindUser(User);
+                User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
                 model.EmailAddress = user.EmailAddress;
                 model.PhoneNumber = user.ContactPhoneNumber;
