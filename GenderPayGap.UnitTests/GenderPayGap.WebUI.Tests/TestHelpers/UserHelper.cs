@@ -23,34 +23,10 @@ namespace GenderPayGap.Tests.TestHelpers
             };
         }
 
-        public static User GetNotAdminUserWithVerifiedEmailAddress()
-        {
-            User user = GetNotAdminUserWithoutVerifiedEmailAddress();
-            user.EmailVerifiedDate = VirtualDateTime.Now;
-            return user;
-        }
-
         public static User GetGovEqualitiesOfficeUser()
         {
             User user = GetNotAdminUserWithoutVerifiedEmailAddress();
             user.EmailAddress = "test@geo.gov.uk";
-            return user;
-        }
-
-        public static User GetDatabaseAdmin()
-        {
-            return Mock.Of<User>(
-                u => u.EmailAddress == "databaseadmin@email.com"
-                     && u.UserId == new Random().Next(1000, 9999)
-                     && u.ContactEmailAddress == "testContactEmailAddress@emailAddress.com"
-                     && u.ContactFirstName == "testContactFirstName"
-                     && u.ContactLastName == "testContactLastName");
-        }
-
-        public static User GetRegisteredUserAlreadyLinkedToAnOrganisation(UserOrganisation userOrganisation)
-        {
-            User user = GetNotAdminUserWithVerifiedEmailAddress();
-            user.UserOrganisations = new[] {userOrganisation};
             return user;
         }
 

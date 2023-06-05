@@ -73,27 +73,7 @@ namespace GenderPayGap.Database
         }
 
         [NotMapped]
-        public string ContactEmailAddress
-        {
-            get => string.IsNullOrWhiteSpace(ContactEmailAddressDB) ? ContactEmailAddressDB : Encryption.DecryptData(ContactEmailAddressDB);
-            set
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    ContactEmailAddressDB = Encryption.EncryptData(value);
-                }
-                else
-                {
-                    ContactEmailAddressDB = value;
-                }
-            }
-        }
-
-        [NotMapped]
         public string Fullname => (Firstname + " " + Lastname).TrimI();
-
-        [NotMapped]
-        public string ContactFullname => (ContactFirstName + " " + ContactLastName).TrimI();
 
         public bool IsAdministrator()
         {

@@ -91,35 +91,6 @@
             <td class="govuk-table__cell">@(Model.JobTitle)</td>
             <td class="govuk-table__cell"></td>
         </tr>
-        @if (!string.IsNullOrEmpty(Model.ContactFirstName)
-             || !string.IsNullOrEmpty(Model.ContactLastName)
-             || !string.IsNullOrEmpty(Model.ContactJobTitle)
-             || !string.IsNullOrEmpty(Model.ContactEmailAddress))
-        {
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Contact name</th>
-                <td class="govuk-table__cell">@(Model.ContactFullname)</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Contact job title</th>
-                <td class="govuk-table__cell">@(Model.ContactJobTitle)</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Contact email address</th>
-                <td class="govuk-table__cell">@(Model.ContactEmailAddress)</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-        }
-        else
-        {
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Contact name / job title / email</th>
-                <td class="govuk-table__cell">(not set)</td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-        }
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Email Verified</th>
             <td class="govuk-table__cell">

@@ -14,11 +14,6 @@ namespace GenderPayGap.WebUI.Helpers
             user.Lastname = $"User{user.UserId}";
             user.JobTitle = "Anonymised";
             user.EmailAddress = "Anonymised";
-            user.ContactFirstName = "Anonymised";
-            user.ContactLastName = "Anonymised";
-            user.ContactJobTitle = "Anonymised";
-            user.ContactOrganisation = "Anonymised";
-            user.ContactEmailAddress = "Anonymised";
             user.ContactPhoneNumber = "Anonymised";
             user.Salt = "Anonymised";
             user.PasswordHash = "Anonymised";
