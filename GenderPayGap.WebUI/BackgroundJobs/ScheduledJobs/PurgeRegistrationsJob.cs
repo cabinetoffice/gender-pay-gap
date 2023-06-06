@@ -49,7 +49,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                         registration.UserId,
                         registration.User.EmailAddress,
                         registration.OrganisationId,
-                        registration.Organisation.EmployerReference,
                         registration.Organisation.OrganisationName,
                         registration.Method,
                         registration.PINSentDate,

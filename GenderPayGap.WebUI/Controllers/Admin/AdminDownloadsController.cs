@@ -508,7 +508,6 @@ namespace GenderPayGap.WebUI.Controllers
                     o => new
                     {
                         OrganisationId = o.OrganisationId,
-                        EmployerReference = o.EmployerReference,
                         OrganisationName = o.OrganisationName,
                         CompanyNo = o.CompanyNumber,
                         Sector = o.SectorType,
@@ -570,7 +569,6 @@ namespace GenderPayGap.WebUI.Controllers
                     {
                         dynamic record = new ExpandoObject();
                         record.OrganisationId = org.OrganisationId;
-                        record.EmployerReference = org.EmployerReference;
                         record.OrganisationName = org.OrganisationName;
                         record.CompanyNumber = org.CompanyNumber;
                         record.SectorType = org.SectorType;

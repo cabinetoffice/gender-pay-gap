@@ -93,8 +93,7 @@ namespace GenderPayGap.WebUI.Services
             Organisation organisation = new Organisation
             {
                 SectorType = sector,
-                CompanyNumber = companyNumber,
-                EmployerReference = GenerateUniqueEmployerReference()
+                CompanyNumber = companyNumber
             };
 
             SetInitialStatus(organisation, requestingUser, SourceOfData.Manual);
@@ -149,8 +148,7 @@ namespace GenderPayGap.WebUI.Services
             Organisation organisation = new Organisation
             {
                 SectorType = SectorTypes.Private, // All companies imported from CoHo are private-sector
-                CompanyNumber = companyNumber,
-                EmployerReference = GenerateUniqueEmployerReference()
+                CompanyNumber = companyNumber
             };
 
             SetInitialStatus(organisation, requestingUser, SourceOfData.CompaniesHouse);
@@ -166,21 +164,6 @@ namespace GenderPayGap.WebUI.Services
             dataRepository.Insert(organisation);
             dataRepository.SaveChanges();
             return organisation;
-        }
-
-        private string GenerateUniqueEmployerReference()
-        {
-            string employerReference;
-            bool isAlreadyTaken;
-
-            do
-            {
-                employerReference = Crypto.GenerateEmployerReference();
-                isAlreadyTaken = dataRepository.GetAll<Organisation>().Any(o => o.EmployerReference == employerReference);
-
-            } while (isAlreadyTaken);
-
-            return employerReference;
         }
 
         private void SetInitialStatus(Organisation organisation, User user, SourceOfData sourceOfData)

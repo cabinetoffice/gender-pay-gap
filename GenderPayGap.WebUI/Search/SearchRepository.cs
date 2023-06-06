@@ -121,7 +121,6 @@ namespace GenderPayGap.WebUI.Search
                                 EncryptedId = o.GetEncryptedId(),
                                 OrganisationName = new SearchReadyValue(o.OrganisationName),
                                 CompanyNumber = o.CompanyNumber?.Trim(),
-                                EmployerReference = o.EmployerReference?.Trim(),
                                 OrganisationNames =
                                     o.OrganisationNames.OrderByDescending(n => n.Created)
                                         .Select(on => new SearchReadyValue(on.Name))

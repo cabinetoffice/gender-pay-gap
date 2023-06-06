@@ -226,26 +226,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
 
         [Test]
-        public void CompareController_AddEmployerJS_NoEmployers_ReturnsNotFound()
-        {
-            // Arrange
-            var org = OrganisationHelper.GetMockedOrganisation("abc123");
-            var controller = UiTestHelper.GetController<CompareController>();
-            string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = null
-            };
-
-            var mockedObfuscatorToSetup = AutoFacExtensions.ResolveAsMock<IObfuscator>();
-            mockedObfuscatorToSetup
-                .Setup(x => x.DeObfuscate(org.EmployerReference))
-                .Returns((int)org.OrganisationId);
-
-            // Act
-            Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(org.EmployerReference, returnUrl), "Expected IdentityNotMappedException");
-        }
-
-        [Test]
         public void CompareController_AddEmployerJS_NoResults_ReturnsNotFound()
         {
             // Arrange
@@ -766,7 +746,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             controller.AddMockUriHelper(testUri.ToString(), "CompareEmployers");
 
             var reportingYear = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
-            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", reportingYear);
+            var mockOrg = OrganisationHelper.GetOrganisationInScope(reportingYear);
             DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(reportingYear);
 
             //create the comparison data
@@ -818,7 +798,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
 
             var firstReportingYear = Global.FirstReportingYear;
 
-            var mockOrg = OrganisationHelper.GetOrganisationInScope("MockedOrg", firstReportingYear);
+            var mockOrg = OrganisationHelper.GetOrganisationInScope(firstReportingYear);
             DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
 
             //create the comparison data

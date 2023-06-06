@@ -40,8 +40,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
         [JsonProperty]
-        public string EmployerReference { get; set; }
-        [JsonProperty]
         public DateTime? DateOfCessation { get; set; }
         [JsonProperty]
         public long? LatestPublicSectorTypeId { get; set; }

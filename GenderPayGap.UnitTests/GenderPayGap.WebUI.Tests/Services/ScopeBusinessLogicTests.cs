@@ -32,11 +32,11 @@ namespace GenderPayGap.Tests
         {
             testOrgData = new List<Organisation>(
                 new[] {
-                    new Organisation {OrganisationId = 1, EmployerReference = "6B2LF57C"},
-                    new Organisation {OrganisationId = 2, EmployerReference = "DR994D7L"},
-                    new Organisation {OrganisationId = 3, EmployerReference = "23TYLBLB"},
-                    new Organisation {OrganisationId = 4, EmployerReference = "SNGNB4BH"},
-                    new Organisation {OrganisationId = 5, EmployerReference = "RWT2TY62"}
+                    new Organisation {OrganisationId = 1},
+                    new Organisation {OrganisationId = 2},
+                    new Organisation {OrganisationId = 3},
+                    new Organisation {OrganisationId = 4},
+                    new Organisation {OrganisationId = 5}
                 });
 
             testOrgScopeData = new List<OrganisationScope>(
@@ -112,7 +112,7 @@ namespace GenderPayGap.Tests
             OrganisationScope result = testScopeBL.GetLatestScopeBySnapshotYear(4, 2016);
 
             // Assert
-            Assert.That(result == null, "Expected to return null when using an existing EmployerReference that has no scope");
+            Assert.That(result == null, "Expected to return null when using an existing organisation that has no scope");
         }
 
         [Test]

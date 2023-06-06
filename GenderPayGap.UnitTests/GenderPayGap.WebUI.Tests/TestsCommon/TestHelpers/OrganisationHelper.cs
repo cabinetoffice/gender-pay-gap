@@ -9,20 +9,13 @@ namespace GenderPayGap.Tests.Common.TestHelpers
     public static class OrganisationHelper
     {
 
-        public static Organisation GetConcreteOrganisation(string employerRef,
+        public static Organisation GetConcreteOrganisation(
             string organisationName = "Org123",
             OrganisationStatuses organisationStatus = OrganisationStatuses.Active,
             ICollection<OrganisationStatus> organisationStatuses = null)
         {
-            if (string.IsNullOrWhiteSpace(employerRef))
-            {
-                int someId = new Random().Next(1000, 9999);
-                employerRef = employerRef ?? $"Org_{someId}";
-            }
-
             // todo: Use Moq
             return new Organisation {
-                EmployerReference = employerRef,
                 //OrganisationId = 123,
                 OrganisationName = organisationName,
                 OrganisationAddresses = new List<OrganisationAddress> { new OrganisationAddress() },
@@ -32,39 +25,38 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             };
         }
 
-        public static Organisation GetPublicOrganisation(string employerRef = null)
+        public static Organisation GetPublicOrganisation()
         {
-            Organisation organisation = GetConcreteOrganisation(employerRef);
+            Organisation organisation = GetConcreteOrganisation();
             organisation.SectorType = SectorTypes.Public;
             return organisation;
         }
 
-        public static Organisation GetPrivateOrganisation(string employerRef = null)
+        public static Organisation GetPrivateOrganisation()
         {
-            Organisation organisation = GetConcreteOrganisation(employerRef);
+            Organisation organisation = GetConcreteOrganisation();
             organisation.SectorType = SectorTypes.Private;
             return organisation;
         }
 
-        public static Organisation GetMockedOrganisation(string employerRef = null)
+        public static Organisation GetMockedOrganisation()
         {
             int someId = new Random().Next(1000, 9999);
             var mockedOrg = Mock.Of<Organisation>(org => org.OrganisationId == someId);
-            mockedOrg.EmployerReference = employerRef ?? $"Org_{someId}";
             mockedOrg.SectorType = SectorTypes.Private;
             mockedOrg.Status = OrganisationStatuses.Active;
             mockedOrg.OrganisationName = $"OrgName_{someId}";
             return mockedOrg;
         }
 
-        public static Organisation GetOrganisationInScope(string employerRef = null, int snapshotYear = 0)
+        public static Organisation GetOrganisationInScope(int snapshotYear = 0)
         {
-            return GetOrganisationInAGivenScope(ScopeStatuses.InScope, employerRef, snapshotYear);
+            return GetOrganisationInAGivenScope(ScopeStatuses.InScope, snapshotYear);
         }
 
-        public static Organisation GetOrganisationInAGivenScope(ScopeStatuses scope, string employerRef = null, int snapshotYear = 0)
+        public static Organisation GetOrganisationInAGivenScope(ScopeStatuses scope, int snapshotYear = 0)
         {
-            Organisation org = GetPrivateOrganisation(employerRef);
+            Organisation org = GetPrivateOrganisation();
 
             OrganisationScope organisationScope = OrganisationScopeHelper.GetOrgScopeWithThisScope(snapshotYear, org.SectorType, scope);
             org.OrganisationScopes.Add(organisationScope);

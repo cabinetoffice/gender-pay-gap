@@ -423,7 +423,7 @@ namespace GenderPayGap.Database
 
         public override string ToString()
         {
-            return $"ref:{EmployerReference}, name:{OrganisationName}";
+            return $"name:{OrganisationName}";
         }
 
     }

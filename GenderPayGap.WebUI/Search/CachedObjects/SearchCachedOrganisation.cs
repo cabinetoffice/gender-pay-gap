@@ -17,7 +17,6 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public SearchReadyValue OrganisationName { get; set; }
         public List<SearchReadyValue> OrganisationNames { get; set; } // All names (current and previous)
         public string CompanyNumber { get; set; }
-        public string EmployerReference { get; set; }
         public OrganisationStatuses Status { get; set; }
         public int MinEmployees { get; set; }
         public List<int> ReportingYears { get; set; }

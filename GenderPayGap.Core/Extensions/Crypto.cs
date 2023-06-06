@@ -74,10 +74,5 @@ namespace GenderPayGap.Extensions
             return GeneratePasscode(Global.PINChars.ToCharArray(), 7);
         }
 
-        public static string GenerateEmployerReference()
-        {
-            return GeneratePasscode(Global.EmployerCodeChars.ToCharArray(), 8);
-        }
-
     }
 }

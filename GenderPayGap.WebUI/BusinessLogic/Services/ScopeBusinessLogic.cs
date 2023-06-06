@@ -229,7 +229,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
             if (org.OrganisationScopes.Any(os => os.SnapshotDate == snapshotDate))
             {
                 throw new ArgumentException(
-                    $"A scope already exists for snapshot year {snapshotDate.Year} for organisation employer reference '{org.EmployerReference}'",
+                    $"A scope already exists for snapshot year {snapshotDate.Year} for organisation ID '{org.OrganisationId}'",
                     nameof(scopeStatus));
             }
 
@@ -241,7 +241,7 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
                     || previousScope == ScopeStatuses.OutOfScope && scopeStatus == ScopeStatuses.PresumedInScope)
                 {
                     throw new ArgumentException(
-                        $"Cannot set {scopeStatus} for snapshot year {snapshotDate.Year} when previos year was {previousScope} for organisation employer reference '{org.EmployerReference}'",
+                        $"Cannot set {scopeStatus} for snapshot year {snapshotDate.Year} when previos year was {previousScope} for organisation ID '{org.OrganisationId}'",
                         nameof(scopeStatus));
                 }
             }

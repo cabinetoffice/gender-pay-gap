@@ -17,9 +17,9 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
         private const int PastReportingYear = 2018;
         private readonly User user = UserHelpers.CreateUsers().Find(u => u.UserId == 24572);
         
-        private readonly Organisation organisationOutOfScope = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.OutOfScope, null, ReportingYear);
-        private readonly Organisation organisationInScope = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.InScope, null, ReportingYear);
-        private readonly Organisation organisationInScopeForPastYear = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.InScope, null, PastReportingYear);
+        private readonly Organisation organisationOutOfScope = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.OutOfScope, ReportingYear);
+        private readonly Organisation organisationInScope = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.InScope, ReportingYear);
+        private readonly Organisation organisationInScopeForPastYear = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.InScope, PastReportingYear);
         
         
         [SetUp]
