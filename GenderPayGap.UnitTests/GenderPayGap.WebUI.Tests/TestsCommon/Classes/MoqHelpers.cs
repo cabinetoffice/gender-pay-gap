@@ -26,7 +26,6 @@ namespace GenderPayGap.Tests.Common.Classes
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationSicCode[] { });
             mockDataRepo.SetupGetAllItemsOfType(new OrganisationStatus[] { });
             mockDataRepo.SetupGetAllItemsOfType(new Return[] { });
-            mockDataRepo.SetupGetAllItemsOfType(new ReturnStatus[] { });
             mockDataRepo.SetupGetAllItemsOfType(new SicCode[] { });
             mockDataRepo.SetupGetAllItemsOfType(new SicSection[] { });
             mockDataRepo.SetupGetAllItemsOfType(new User[] { });

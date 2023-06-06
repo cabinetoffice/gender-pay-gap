@@ -157,14 +157,6 @@ namespace GenderPayGap.Database
                 return;
             }
 
-            ReturnStatuses.Add(
-                new ReturnStatus {
-                    ReturnId = ReturnId,
-                    Status = status,
-                    StatusDate = VirtualDateTime.Now,
-                    StatusDetails = details,
-                    ByUserId = byUserId
-                });
             Status = status;
             StatusDate = VirtualDateTime.Now;
             StatusDetails = details;

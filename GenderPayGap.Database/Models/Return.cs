@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using Newtonsoft.Json;
@@ -9,11 +8,6 @@ namespace GenderPayGap.Database
     [JsonObject(MemberSerialization.OptIn)]
     public partial class Return
     {
-
-        public Return()
-        {
-            ReturnStatuses = new HashSet<ReturnStatus>();
-        }
 
         [JsonProperty]
         public long ReturnId { get; set; }
@@ -84,6 +78,5 @@ namespace GenderPayGap.Database
         public bool OptedOutOfReportingPayQuarters { get; set; }
 
         public virtual Organisation Organisation { get; set; }
-        public virtual ICollection<ReturnStatus> ReturnStatuses { get; set; }
     }
 }
