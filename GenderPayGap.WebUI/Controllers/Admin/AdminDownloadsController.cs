@@ -577,7 +577,7 @@ namespace GenderPayGap.WebUI.Controllers
                         record.Address = org.GetLatestAddress()?.GetAddressString();
 
                         UserOrganisation latestUserOrg = org.UserOrganisations
-                            .OrderByDescending(uo => uo.Modified)
+                            .OrderByDescending(uo => uo.Created)
                             .FirstOrDefault(
                                 uo => uo.HasBeenActivated()
                                       && uo.User.Status == UserStatuses.Active);
