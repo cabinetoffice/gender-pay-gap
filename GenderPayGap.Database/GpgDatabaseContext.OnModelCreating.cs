@@ -150,12 +150,6 @@ namespace GenderPayGap.Database
 
                     entity.Property(e => e.CampaignId).HasMaxLength(50);
 
-                    entity.Property(e => e.ContactEmailAddress).HasMaxLength(255);
-
-                    entity.Property(e => e.ContactFirstname).HasMaxLength(50);
-
-                    entity.Property(e => e.ContactLastname).HasMaxLength(50);
-
                     entity.Property(e => e.Reason).HasMaxLength(1000);
 
                     entity.Property(e => e.SnapshotDate).HasDefaultValueSql("('1900-01-01T00:00:00.000')");

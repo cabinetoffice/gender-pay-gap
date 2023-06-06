@@ -23,12 +23,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public DateTime RegisterStatusDate { get; set; } = VirtualDateTime.Now;
         [JsonProperty]
-        public string ContactFirstname { get; set; }
-        [JsonProperty]
-        public string ContactLastname { get; set; }
-        [JsonProperty]
-        public string ContactEmailAddress { get; set; }
-        [JsonProperty]
         public bool? ReadGuidance { get; set; }
         [JsonProperty]
         public string Reason { get; set; }
