@@ -152,7 +152,6 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 AccountingDate = snapshotDate,
                 MinEmployees = 250,
                 MaxEmployees = 499,
-                Created = modifiedDate,
                 Modified = modifiedDate,
                 Status = ReturnStatuses.Submitted
             };

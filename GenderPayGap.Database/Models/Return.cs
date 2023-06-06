@@ -52,9 +52,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public string StatusDetails { get; set; }
         [JsonProperty]
-        public DateTime Created { get; set; } = VirtualDateTime.Now;
-
-        [JsonProperty]
         public DateTime Modified { get; set; } = VirtualDateTime.Now;
         [JsonProperty]
         public string JobTitle { get; set; }

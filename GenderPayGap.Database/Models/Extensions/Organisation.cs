@@ -118,7 +118,7 @@ namespace GenderPayGap.Database
                 SicSectionNames = sicCodes.Select(sic => sic.SicCode.SicSection.Description).Distinct().ToArray(),
                 SicCodeIds = sicCodes.Select(sicCode => sicCode.SicCodeId.ToString()).Distinct().ToArray(),
                 Address = GetLatestAddress()?.GetAddressString(),
-                LatestReportedDate = submittedReports.Select(x => x.Created).FirstOrDefault(),
+                LatestReportedDate = submittedReports.Select(x => x.Modified).FirstOrDefault(),
                 ReportedYears = submittedReports.Select(x => x.AccountingDate.Year.ToString()).ToArray(),
                 ReportedLateYears =
                     submittedReports.Where(x => x.IsLateSubmission).Select(x => x.AccountingDate.Year.ToString()).ToArray(),
@@ -329,8 +329,8 @@ namespace GenderPayGap.Database
         public Return GetReturnForYearAsOfDate(int reportingYear, DateTime asOfDate)
         {
             return GetAllReturnsForYear(reportingYear)
-                .Where(r => r.Created.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
-                .OrderByDescending(r => r.Created)
+                .Where(r => r.Modified.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
+                .OrderByDescending(r => r.Modified)
                 .FirstOrDefault();
         }
 
