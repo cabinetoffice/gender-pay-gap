@@ -148,8 +148,6 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.RegisterStatus).HasColumnName("RegisterStatusId");
                     entity.Property(e => e.Status).HasColumnName("StatusId").HasDefaultValueSql("((0))");
 
-                    entity.Property(e => e.CampaignId).HasMaxLength(50);
-
                     entity.Property(e => e.Reason).HasMaxLength(1000);
 
                     entity.Property(e => e.SnapshotDate).HasDefaultValueSql("('1900-01-01T00:00:00.000')");

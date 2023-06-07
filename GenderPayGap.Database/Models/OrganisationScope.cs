@@ -27,8 +27,6 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public string Reason { get; set; }
         [JsonProperty]
-        public string CampaignId { get; set; }
-        [JsonProperty]
         public DateTime SnapshotDate { get; set; }
         [JsonProperty]
         public ScopeRowStatuses Status { get; set; }
