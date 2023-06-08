@@ -17,11 +17,6 @@ namespace GenderPayGap.Database
         public ScopeStatuses ScopeStatus { get; set; }
         [JsonProperty]
         public DateTime ScopeStatusDate { get; set; } = VirtualDateTime.Now;
-
-        [JsonProperty]
-        public RegisterStatuses RegisterStatus { get; set; }
-        [JsonProperty]
-        public DateTime RegisterStatusDate { get; set; } = VirtualDateTime.Now;
         [JsonProperty]
         public bool? ReadGuidance { get; set; }
         [JsonProperty]
