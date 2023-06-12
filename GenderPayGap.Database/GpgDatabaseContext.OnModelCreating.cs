@@ -425,8 +425,6 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.Description)
                         .HasMaxLength(250)
                         .IsRequired();
-
-                    entity.Property(e => e.Created).IsRequired();
                 });
 
             #endregion

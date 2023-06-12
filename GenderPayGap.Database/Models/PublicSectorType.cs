@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace GenderPayGap.Database
 {
-
     [Serializable]
     [JsonObject(MemberSerialization.OptIn)]
     public class PublicSectorType
@@ -15,9 +14,6 @@ namespace GenderPayGap.Database
 
         [JsonProperty]
         public string Description { get; set; }
-
-        [JsonProperty]
-        public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public override bool Equals(object obj)
         {
@@ -32,5 +28,4 @@ namespace GenderPayGap.Database
         }
 
     }
-
 }
