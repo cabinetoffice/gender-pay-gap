@@ -21,10 +21,10 @@
         @(Model.OrganisationAddress)
 
         <span class="govuk-!-font-size-16">
-            @foreach (AddOrganisationSearchResultOrganisationIdentifier identifier in Model.Identifiers)
+            @if (!string.IsNullOrWhiteSpace(Model.CompanyNumber))
             {
                 <br />
-                <span>@(identifier.IdentifierType): @(identifier.Identifier)</span>
+                <span>Company number: @(Model.CompanyNumber)</span>
             }
         </span>
     </div>

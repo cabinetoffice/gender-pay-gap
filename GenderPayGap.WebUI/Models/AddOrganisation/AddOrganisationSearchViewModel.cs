@@ -28,15 +28,8 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public long? OrganisationId { get; set; }
         public string EncryptedOrganisationId { get; set; }
         public string CompanyNumber { get; set; }
-        public List<AddOrganisationSearchResultOrganisationIdentifier> Identifiers { get; set; } = new List<AddOrganisationSearchResultOrganisationIdentifier>();
     }
 
-    public class AddOrganisationSearchResultOrganisationIdentifier
-    {
-        public string IdentifierType { get; set; }
-        public string Identifier { get; set; }
-    }
-    
     public class AddOrganisationSeparateSearchResults
     {
         public List<AddOrganisationSearchResult> SearchResultsFromOurDatabase { get; set; }

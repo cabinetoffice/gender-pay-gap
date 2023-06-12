@@ -283,15 +283,6 @@ namespace GenderPayGap.WebUI.Search
                             searchResult.OrganisationAddress = org.Address;
                         }
 
-                        if (!string.IsNullOrWhiteSpace(searchResult.CompanyNumber))
-                        {
-                            searchResult.Identifiers.Add(new AddOrganisationSearchResultOrganisationIdentifier
-                            {
-                                IdentifierType = "Company number",
-                                Identifier = searchResult.CompanyNumber
-                            });
-                        }
-
                         return searchResult;
                     })
                 .ToList();
