@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace GenderPayGap.Database
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class SicCode
+    public class SicCode
     {
 
         public SicCode()
@@ -22,11 +22,21 @@ namespace GenderPayGap.Database
         public string Description { get; set; }
         [JsonProperty]
         public string Synonyms { get; set; }
-        [JsonProperty]
-        public DateTime Created { get; set; } = VirtualDateTime.Now;
 
         public virtual SicSection SicSection { get; set; }
         public virtual ICollection<OrganisationSicCode> OrganisationSicCodes { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            // Check for null values and compare run-time types.
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var target = (SicCode) obj;
+            return SicCodeId == target.SicCodeId;
+        }
 
     }
 }
