@@ -119,7 +119,7 @@ namespace GenderPayGap.Database
                     entity.Property(e => e.StatusDetails).HasMaxLength(255);
 
                     entity.HasOne(d => d.LatestPublicSectorType)
-                        .WithMany(x => x.Organisations)
+                        .WithMany()
                         .HasForeignKey(d => d.LatestPublicSectorTypeId)
                         .HasConstraintName("FK_dbo.Organisations_dbo.OrganisationPublicSectorTypes_LatestPublicSectorTypeId");
                 });
