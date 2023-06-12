@@ -439,8 +439,6 @@ namespace GenderPayGap.Database
 
                     entity.HasIndex(e => e.Created);
 
-                    entity.HasIndex(e => e.Retired);
-
                     entity.HasIndex(e => e.PublicSectorTypeId);
 
                     entity.HasIndex(e => e.OrganisationId);
