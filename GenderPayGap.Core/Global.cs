@@ -17,30 +17,25 @@ namespace GenderPayGap.Core
 
         #region Secrets / connection strings / API keys
 
-        public static string DatabaseConnectionString
-        {
-            get
-            {
-                if (Global.VcapServices != null && Global.VcapServices.Postgres != null)
-                {
-                    VcapPostgres postgresConfiguration = Global.VcapServices.Postgres.First(b => b.Name.EndsWith("-db"));
-                    return postgresConfiguration.GetConnectionString();
-                }
-                else
-                {
-                    return Config.GetConnectionString("GpgDatabase");
-                }
-            }
-        }
+        public static string DatabaseConnectionString =>
+            $"Server={Config.GetAppSetting("DATABASE_HOST")};"
+            + $"Port={Config.GetAppSetting("DATABASE_PORT")};"
+            + $"Database={Config.GetAppSetting("DATABASE_DB_NAME")};"
+            + $"User Id={Config.GetAppSetting("DATABASE_USERNAME")};"
+            + $"Password={Config.GetAppSetting("DATABASE_PASSWORD")};"
+            + (Config.IsLocal()
+                ? ""
+                : "SslMode=Require;Trust Server Certificate=true");
+
+        public static string S3BucketName => Config.GetAppSetting("S3_BUCKET_NAME");
+        public static string S3BucketAwsAccessKeyId => Config.GetAppSetting("S3_BUCKET_AWS_ACCESS_KEY_ID");
+        public static string S3BucketAwsSecretAccessKey => Config.GetAppSetting("S3_BUCKET_AWS_SECRET_ACCESS_KEY");
+        public static string S3BucketAwsRegion => Config.GetAppSetting("S3_BUCKET_AWS_REGION");
 
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
-        public static VcapServices VcapServices =>
-            Config.GetAppSetting("VCAP_SERVICES") != null
-                ? JsonConvert.DeserializeObject<VcapServices>(Config.GetAppSetting("VCAP_SERVICES"))
-                : null;
         public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
         public static string BasicAuthUsername => Config.GetAppSetting("BasicAuthUsername");
         public static string BasicAuthPassword => Config.GetAppSetting("BasicAuthPassword");

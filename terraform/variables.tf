@@ -126,10 +126,6 @@ variable "ELB_EHRC_IP_RANGE" {
   type = string
 }
 
-variable "ELB_FEATURE_FLAG_NEW_REPORTING_JOURNEY" {
-  type = string
-}
-
 variable "ELB_FEATURE_FLAG_PRIVATE_MANUAL_REGISTRATION" {
   type = string
 }

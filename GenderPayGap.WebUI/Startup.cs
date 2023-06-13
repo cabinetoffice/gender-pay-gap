@@ -176,9 +176,12 @@ namespace GenderPayGap.WebUI
 
             if (!Config.IsLocal())
             {
-                VcapAwsS3Bucket fileStorageBucketConfiguration = Global.VcapServices.AwsS3Bucket.First(b => b.Name.EndsWith("-filestorage"));
-
-                builder.Register(c => new AwsFileRepository(fileStorageBucketConfiguration))
+                builder.Register(c => new AwsFileRepository(
+                        bucketName: Global.S3BucketName,
+                        awsAccessKeyId: Global.S3BucketAwsAccessKeyId,
+                        awsSecretAccessKey: Global.S3BucketAwsSecretAccessKey,
+                        awsRegion: Global.S3BucketAwsRegion
+                        ))
                     .As<IFileRepository>()
                     .SingleInstance();
             }
