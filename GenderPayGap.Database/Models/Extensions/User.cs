@@ -77,17 +77,7 @@ namespace GenderPayGap.Database
 
         public bool IsAdministrator()
         {
-            if (!EmailAddress.IsEmailAddress())
-            {
-                throw new ArgumentException("Bad email address");
-            }
-
-            if (string.IsNullOrWhiteSpace(Global.AdminEmails))
-            {
-                throw new ArgumentException("Missing AdminEmails from web.config");
-            }
-
-            return EmailAddress.LikeAny(Global.AdminEmails.SplitI(";"));
+            return UserRole == UserRole.Admin;
         }
 
         /// <summary>

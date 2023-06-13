@@ -406,12 +406,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "AdminEmails"
-    value     = var.ELB_ADMIN_EMAILS
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "ASPNETCORE_ENVIRONMENT"
     value     = var.ELB_ASPNETCORE_ENVIRONMENT
   }

@@ -1,0 +1,106 @@
+@using GenderPayGap.Core
+@using GenderPayGap.WebUI.Helpers
+@using GenderPayGap.WebUI.Models.Admin
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@model GenderPayGap.WebUI.Models.Admin.AdminRetireAdminUserViewModel
+
+@{
+    ViewBag.Title = "Retire admin user - Administration - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Admin users",
+                Href = Url.Action("ViewAdminUsers", "AdminManageAdminUsers")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.User.Fullname,
+                Href = Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})
+            },
+            new CrumbViewModel
+            {
+                Text = "Retire admin user"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<span class="govuk-caption-xl">Administration</span>
+<h1 class="govuk-heading-xl">
+    Retire admin user
+    <br/>
+    <span class="govuk-!-font-size-27">
+        for @(Model.User.Fullname)
+    </span>
+</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST" action="@Url.Action("RetireAdminUserPost", "AdminManageAdminUsers", new {userId = Model.User.UserId})">
+            @(Html.AntiForgeryToken())
+            @await Html.GovUkErrorSummary(ViewData.ModelState)
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">User name</th>
+                        <td class="govuk-table__cell">@(Model.User.Fullname)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Current status</th>
+                        <td class="govuk-table__cell">@(Model.User.Status)</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">New status</th>
+                        <td class="govuk-table__cell">@(UserStatuses.Retired)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="govuk-form-group">
+                @await Html.GovUkCharacterCountFor(
+                    m => m.Reason,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "What is the reason for this change?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
+                        Classes = "govuk-!-margin-top-6"
+                    })
+
+                @(await Html.GovUkButton(new ButtonViewModel
+                {
+                    Text = "Continue",
+                    Classes = "govuk-!-margin-bottom-4"
+                }))
+
+                <p class="govuk-body">
+                    <a href="@Url.Action("ViewAdminUsers", "AdminManageAdminUsers")"
+                       class="govuk-link">
+                        Cancel and return to manage admin users page
+                    </a>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>

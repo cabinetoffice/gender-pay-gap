@@ -1,4 +1,7 @@
 ﻿@using GenderPayGap.WebUI.Views.Components.StatusMessages
+@using GenderPayGap.WebUI.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Account.ManageAccountViewModel
 
 @{
@@ -7,8 +10,29 @@
 }
 
 @section BeforeMain {
-    @{
+    @if (User.IsInRole(LoginRoles.GpgEmployer))
+    {
         await Html.RenderPartialAsync("../Components/Navigation/AccountTabs");
+    }
+    else
+    {
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Admin",
+                Href = Url.Action("AdminHomePage", "AdminHomepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Manage account"
+            }
+        };
+
+        @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+        {
+            Crumbs = crumbs
+        }))
     }
 }
 
@@ -135,63 +159,66 @@
             </div>
         </dl>
         
-        <div class="govuk-!-margin-top-9">
-            <h2 class="govuk-heading-m" style="float: left;">
-                Contact preferences
-            </h2>
+        @if (User.IsInRole(LoginRoles.GpgEmployer))
+        {
+            <div class="govuk-!-margin-top-9">
+                <h2 class="govuk-heading-m" style="float: left;">
+                    Contact preferences
+                </h2>
 
-            @if (!Model.IsUserBeingImpersonated)
-            {
-                <p class="govuk-body" style="float: right;">
-                    <a href="@(Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences"))"
-                       class="govuk-link" >
-                        Change
-                        <span class="govuk-visually-hidden"> contact preferences</span>
-                    </a>
-                </p>
-            }
+                @if (!Model.IsUserBeingImpersonated)
+                {
+                    <p class="govuk-body" style="float: right;">
+                        <a href="@(Url.Action("ChangeContactPreferencesGet", "ChangeContactPreferences"))"
+                           class="govuk-link">
+                            Change
+                            <span class="govuk-visually-hidden"> contact preferences</span>
+                        </a>
+                    </p>
+                }
+            </div>
+            <div style="clear: both;">
+                @* This <div> is deliberately empty
+                The elements above use "float: left;" and "float:right;"
+                We use this <div> (with "clear: both;") to ensure that the elements below
+                don't float up inline with the elements above *@
+            </div>
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__cell govuk-!-font-weight-regular">
+                            I would like to receive information about webinars, events and new guidance
+                        </th>
+                        <td class="govuk-table__cell">
+                            @if (Model.User.SendUpdates)
+                            {
+                                <span class="gpg-yesno gpg-yesno--yes">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="gpg-yesno gpg-yesno--no">No</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__cell govuk-!-font-weight-regular">
+                            I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys
+                        </th>
+                        <td class="govuk-table__cell">
+                            @if (Model.User.AllowContact)
+                            {
+                                <span class="gpg-yesno gpg-yesno--yes">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="gpg-yesno gpg-yesno--no">No</span>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+
         </div>
-        <div style="clear: both;">
-            @* This <div> is deliberately empty
-            The elements above use "float: left;" and "float:right;"
-            We use this <div> (with "clear: both;") to ensure that the elements below
-            don't float up inline with the elements above *@
-        </div>
-
-        <table class="govuk-table">
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__cell govuk-!-font-weight-regular">
-                        I would like to receive information about webinars, events and new guidance
-                    </th>
-                    <td class="govuk-table__cell">
-                        @if (Model.User.SendUpdates)
-                        {
-                            <span class="gpg-yesno gpg-yesno--yes">Yes</span>
-                        }
-                        else
-                        {
-                            <span class="gpg-yesno gpg-yesno--no">No</span>
-                        }
-                    </td>
-                </tr>
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__cell govuk-!-font-weight-regular">
-                        I'm happy to be contacted for feedback on this service and take part in gender pay gap surveys
-                    </th>
-                    <td class="govuk-table__cell">
-                        @if (Model.User.AllowContact)
-                        {
-                            <span class="gpg-yesno gpg-yesno--yes">Yes</span>
-                        }
-                        else
-                        {
-                            <span class="gpg-yesno gpg-yesno--no">No</span>
-                        }
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
 </div>

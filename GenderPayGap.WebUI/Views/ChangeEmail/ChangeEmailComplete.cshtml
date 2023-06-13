@@ -1,4 +1,5 @@
-﻿@model string
+﻿@using GenderPayGap.WebUI.Helpers
+@model string
 
 @{
     ViewBag.Title = "Change email address - My Account - Gender pay gap service";
@@ -19,12 +20,24 @@
             <span class="govuk-!-font-weight-bold">@(Model)</span>
         </p>
         
-        <p class="govuk-body">
-            <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
-               class="govuk-link">
-                Back to Manage Employers
-            </a>
-        </p>
+        @if (User.IsInRole(LoginRoles.GpgEmployer))
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")"
+                   class="govuk-link">
+                    Back to Manage Employers
+                </a>
+            </p>
+        }
+        else
+        {
+            <p class="govuk-body">
+                <a href="@Url.Action("AdminHomePage", "AdminHomepage")"
+                   class="govuk-link">
+                    Back to Admin homepage
+                </a>
+            </p>
+        }
         <p class="govuk-body">
             <a href="@Url.Action("ManageAccountGet", "ManageAccount")"
                class="govuk-link">

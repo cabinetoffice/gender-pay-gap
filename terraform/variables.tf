@@ -94,10 +94,6 @@ variable "ELB_LOAD_BALANCER_SSL_CERTIFICATE_ARN" {
 
 // Elastic Beanstalk environment variables
 // These are set in azure devops
-variable "ELB_ADMIN_EMAILS" {
-  type = string
-}
-
 variable "ELB_ASPNETCORE_ENVIRONMENT" {
   type = string
 }
