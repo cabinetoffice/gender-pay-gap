@@ -10,7 +10,7 @@ locals {
   elb_health_check_path        = "/health-check"
   elb_matcher_http_code        = 200
 
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier","arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
+  managed_policy_arns = ["arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier", "arn:aws:iam::aws:policy/AmazonRDSFullAccess", "arn:aws:iam::aws:policy/AmazonSSMFullAccess", "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier","arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"]
 }
 
 data "aws_iam_instance_profile" "elastic_beanstalk" {
@@ -384,13 +384,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
         },
         // Identifier ends in -db, which is used by Global.cs to fetch the configuration
         name = aws_db_instance.gpg-dev-db.identifier
-      }],
-      redis = [{
-        credentials = {
-          port = aws_elasticache_cluster.redis-cluster.port,
-          host = aws_elasticache_cluster.redis-cluster.cache_nodes[0].address
-        }
-        name = "gpg-${var.env}-cache"
       }],
       aws-s3-bucket = [{
         name = aws_s3_bucket.gpg_filestorage.bucket,
