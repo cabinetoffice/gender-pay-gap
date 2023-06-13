@@ -41,6 +41,8 @@ namespace GenderPayGap.Database
         [JsonProperty]
         public HashingAlgorithm HashingAlgorithm { get; set; }
         [JsonProperty]
+        public UserRole UserRole { get; set; }
+        [JsonProperty]
         public string EmailVerifyHash { get; set; }
         [JsonProperty]
         public DateTime? EmailVerifySendDate { get; set; }

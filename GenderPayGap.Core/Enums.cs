@@ -14,6 +14,12 @@ namespace GenderPayGap.Core
 
     }
 
+    public enum UserRole
+    {
+        Employer = 0,
+        Admin = 1
+    }
+    
     public enum OrganisationStatuses : byte
     {
 
@@ -348,4 +354,5 @@ namespace GenderPayGap.Core
         VoluntarilyReported,
         SubmittedLate,
     }
+
 }
