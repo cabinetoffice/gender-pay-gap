@@ -368,35 +368,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     value     = 5
   }
 
-  // Elastic beanstalk environment variables 
-  // VCAP services is a legacy object from PaaS 
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "VCAP_SERVICES"
-    value = jsonencode({
-      postgres = [{
-        credentials = {
-          password = aws_db_instance.gpg-dev-db.password,
-          port     = aws_db_instance.gpg-dev-db.port,
-          name     = aws_db_instance.gpg-dev-db.name,
-          host     = aws_db_instance.gpg-dev-db.address,
-          username = aws_db_instance.gpg-dev-db.username
-        },
-        // Identifier ends in -db, which is used by Global.cs to fetch the configuration 
-        name = aws_db_instance.gpg-dev-db.identifier
-      }],
-      aws-s3-bucket = [{
-        name = aws_s3_bucket.gpg_filestorage.bucket,
-        credentials = {
-          aws_region            = var.aws_region,
-          bucket_name           = aws_s3_bucket.gpg_filestorage.bucket,
-          aws_access_key_id     = var.AWS_ACCESS_KEY_ID,
-          aws_secret_access_key = var.AWS_SECRET_ACCESS_KEY
-        }
-      }]
-    })
-  }
-
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DATABASE_HOST"
