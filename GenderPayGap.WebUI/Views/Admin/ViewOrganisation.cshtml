@@ -386,9 +386,14 @@ else
                                   style="display: inline"
                                   gpg-module="impersonate-form">
                                 @Html.AntiForgeryToken()
-                                <button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">
-                                    Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
-                                </button>
+                                @(await Html.GovUkButton(new ButtonViewModel
+                                {
+                                    Html = @<text>
+                                               Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                                            </text>,
+                                    Classes = "govuk-button--secondary govuk-!-margin-bottom-0",
+                                    PreventDoubleClick = true
+                                }))
                                 <a href="#"
                                    class="govuk-link"
                                    style="display: none">

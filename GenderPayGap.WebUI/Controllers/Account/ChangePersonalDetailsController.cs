@@ -54,7 +54,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
         // We validate it (e.g. that all fields except contact phone number are filled in)
         // Then we save the updates and return the user to the Manage Account page
         [HttpPost("change-personal-details")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangePersonalDetailsPost(ChangePersonalDetailsViewModel viewModel)
         {

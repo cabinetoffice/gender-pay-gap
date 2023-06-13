@@ -61,7 +61,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
         }
 
         [HttpPost("close")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult CloseAccountPost(CloseAccountViewModel viewModel)
         {

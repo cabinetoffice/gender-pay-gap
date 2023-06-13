@@ -6,6 +6,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models.HttpResultModels;
+using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
@@ -72,7 +73,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = null;
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
@@ -88,9 +88,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = null
-            };
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
@@ -106,11 +103,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = null
-                }
-            };
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
@@ -126,11 +118,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>()
-                }
-            };
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployer(employerIdentifier, returnUrl));
@@ -144,21 +131,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         public void CompareController_AddEmployer_Success_RedirectToReturnUrl()
         {
             // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
+            var organisation = new Organisation {OrganisationId = 123, Status = OrganisationStatuses.Active, SectorType = SectorTypes.Private};
+            var controller = UiTestHelper.GetController<CompareController>(dbObjects: new object[] {organisation});
             long organisationId = 123;
             var expectedObfuscatedOrganisationId = ViewingControllerTests.ConfigureObfuscator(organisationId);
             var employerIdentifier = expectedObfuscatedOrganisationId;
             var returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>() {
-                        new Core.Models.EmployerSearchModel() {
-                             OrganisationIdEncrypted=employerIdentifier,
-                             OrganisationId=organisationId.ToString()
-                        }
-                    }
-                }
-            };
 
             // Act
             var result = controller.AddEmployer(employerIdentifier, returnUrl) as LocalRedirectResult;
@@ -167,7 +145,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(returnUrl, result.Url);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(employerIdentifier));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(employerIdentifier));
             controller.AssertCookieAdded(CookieNames.LastCompareQuery, expectedObfuscatedOrganisationId);
         }
         #endregion
@@ -216,7 +194,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = null;
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
@@ -232,11 +209,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = null
-                }
-            };
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
@@ -252,11 +224,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var controller = UiTestHelper.GetController<CompareController>();
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>()
-                }
-            };
 
             // Act
             var exception = Assert.Throws<PageNotFoundException>(() => controller.AddEmployerJs(employerIdentifier, returnUrl));
@@ -271,7 +238,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Arrange
             Config.SetAppSetting("SearchService:CacheResults", "true");
 
-            var controller = UiTestHelper.GetController<CompareController>();
+            var organisation = new Organisation {OrganisationId = 123, OrganisationName = "Org123", Status = OrganisationStatuses.Active, SectorType = SectorTypes.Private};
+            var controller = UiTestHelper.GetController<CompareController>(dbObjects: new object[] {organisation});
             string returnUrl = @"\viewing\search-results";
             var organisationId = 123;
             var expectedObfuscatedOrganisationId = ViewingControllerTests.ConfigureObfuscator(organisationId);
@@ -287,14 +255,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
                 OrganisationName = employer.Name
             };
 
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>() {
-                        employer
-                    }
-                }
-            };
-
             // Act
             var result = controller.AddEmployerJs(employer.OrganisationIdEncrypted, returnUrl) as PartialViewResult;
 
@@ -304,7 +264,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("Basket_Button", result.ViewName);
             CompareHelpers.Compare(model, result.Model);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(model.OrganisationIdEncrypted));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(model.OrganisationIdEncrypted));
             controller.AssertCookieAdded(CookieNames.LastCompareQuery, expectedObfuscatedOrganisationId);
         }
         #endregion
@@ -328,7 +288,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.AreEqual($"Missing {nameof(employerIdentifier)}", result.StatusDescription);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(organisationId));
         }
 
         [Test]
@@ -349,7 +309,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.AreEqual($"Missing {nameof(returnUrl)}", result.StatusDescription);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(organisationId));
         }
 
         [Test]
@@ -360,7 +320,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             string organisationId = "AFA123";
             string employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = null;
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -378,9 +337,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var organisationId = "12ASF3";
             var employerIdentifier = "abc123";
             string returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = null
-            };
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -398,11 +354,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var organisationId = "12AS3";
             var employerIdentifier = "abc123";
             var returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = null
-                }
-            };
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -420,11 +371,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var organisationId = "12sd3";
             var employerIdentifier = "abc123";
             var returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>()
-                }
-            };
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -440,20 +386,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             // Arrange
             Config.SetAppSetting("SearchService:CacheResults", "true");
             var organisationId = 123;
-            var employerIdentifier = "abc123";
+            var employerIdentifier = Obfuscator.Obfuscate(organisationId);
             var returnUrl = @"\viewing\search-results";
 
-            var controller = UiTestHelper.GetController<CompareController>();
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>() {
-                        new Core.Models.EmployerSearchModel() {
-                             OrganisationIdEncrypted=employerIdentifier,
-                             OrganisationId=organisationId.ToString()
-                        }
-                    }
-                }
-            };
+            var organisation = new Organisation {OrganisationId = 123, Status = OrganisationStatuses.Active, SectorType = SectorTypes.Private};
+            var controller = UiTestHelper.GetController<CompareController>(dbObjects: new object[] {organisation});
             controller.CompareViewService.AddToBasket(employerIdentifier);
 
             // Act
@@ -463,7 +400,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(returnUrl, result.Url);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
-            Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Value.Contains(employerIdentifier));
+            Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Contains(employerIdentifier));
             controller.AssertCookieDeleted(CookieNames.LastCompareQuery);
         }
         #endregion
@@ -487,7 +424,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.AreEqual($"Missing {nameof(employerIdentifier)}", result.StatusDescription);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(organisationId));
         }
 
         [Test]
@@ -508,7 +445,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.AreEqual($"Missing {nameof(returnUrl)}", result.StatusDescription);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(organisationId));
         }
 
         [Test]
@@ -519,7 +456,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var organisationId = "ga123";
             var employerIdentifier = "abc123";
             var returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = null;
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -537,9 +473,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var organisationId = "123fa";
             var employerIdentifier = "abc123";
             var returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = null
-            };
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -557,11 +490,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             var organisationId = "1b2c3";
             var employerIdentifier = "abc123";
             var returnUrl = @"\viewing\search-results";
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = null
-                }
-            };
             controller.CompareViewService.AddToBasket(organisationId);
 
             // Act
@@ -592,22 +520,16 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         public void CompareController_RemoveEmployerJS_Success_ReturnAddButtons()
         {
             // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
+            var organisation = new Organisation {OrganisationId = 123, Status = OrganisationStatuses.Active, SectorType = SectorTypes.Private};
+            var controller = UiTestHelper.GetController<CompareController>(dbObjects: new object[] {organisation});
             long organisationId = 123;
-            string employerIdentifier = "abc123";
+            string employerIdentifier = Obfuscator.Obfuscate(organisationId);
             string returnUrl = @"\viewing\search-results";
             var employer = new Core.Models.EmployerSearchModel() {
                 OrganisationIdEncrypted = employerIdentifier,
                 OrganisationId = organisationId.ToString()
             };
 
-            controller.SearchViewService.LastSearchResults = new SearchViewModel() {
-                Employers = new PagedResult<Core.Models.EmployerSearchModel>() {
-                    Results = new List<Core.Models.EmployerSearchModel>() {
-                        employer
-                    }
-                }
-            };
             controller.CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
             var model = new AddRemoveButtonViewModel() { OrganisationIdEncrypted = employer.OrganisationIdEncrypted, OrganisationName = employer.Name };
 
@@ -620,7 +542,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual("Basket_Button", result.ViewName);
             CompareHelpers.Compare(model, result.Model);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
-            Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Value.Contains(employer.OrganisationIdEncrypted));
+            Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Contains(employer.OrganisationIdEncrypted));
             controller.AssertCookieDeleted(CookieNames.LastCompareQuery);
         }
         #endregion
@@ -644,7 +566,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.AreEqual($"Missing {nameof(returnUrl)}", result.StatusDescription);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 1);
-            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
+            Assert.IsTrue(controller.CompareViewService.ComparedEmployers.Contains(organisationId));
         }
 
         [Test]
@@ -664,72 +586,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(returnUrl, result.Url);
             Assert.AreEqual(controller.CompareViewService.BasketItemCount, 0);
-            Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Value.Contains(organisationId));
+            Assert.IsFalse(controller.CompareViewService.ComparedEmployers.Contains(organisationId));
         }
         #endregion
-
-        #region SortEmployers
-
-        [Test]
-        public void CompareController_SortEmployers_NoColumn_ReturnsBadRequest()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = null;
-            string returnUrl = @"\viewing\search-results";
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as HttpStatusViewResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.AreEqual($"Missing {nameof(column)}", result.StatusDescription);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-        }
-
-        [Test]
-        public void CompareController_SortEmployers_NoReturnUrl_ReturnsBadRequest()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = "OrganisationName";
-            string returnUrl = null;
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as HttpBadRequestResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-        }
-
-        [Test]
-        public void CompareController_SortEmployers_SuccessDescending_RedirectToReturnUrl()
-        {
-            // Arrange
-            var controller = UiTestHelper.GetController<CompareController>();
-            string column = "OrganisationName";
-            string returnUrl = @"\viewing\search-results";
-            controller.CompareViewService.SortColumn = column;
-            controller.CompareViewService.SortAscending = true;
-
-            // Act
-            var result = controller.SortEmployers(column, returnUrl) as LocalRedirectResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(returnUrl, result.Url);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, column);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, false);
-
-        }
-
-        #endregion
-
+        
         #region CompareEmployers
         [Test]
         public void CompareController_CompareEmployers_NoYear_DefaultSortTheMostRecentCompletedReportingYearAsync()
@@ -766,11 +626,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(result.ViewName, "CompareEmployers");
             Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, null);
-            Assert.AreEqual(controller.CompareViewService.SortAscending, true);
-
-            var lastComparedEmployerList = controller.CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
-            controller.CompareViewService.LastComparedEmployerList.Compare(lastComparedEmployerList);
 
             var actualModel = result.Model as CompareViewModel;
             Assert.NotNull(actualModel);
@@ -792,9 +647,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             //Setup the mock url helper
             var testUri = new Uri("https://localhost/Viewing/compare-employers");
             controller.AddMockUriHelper(testUri.ToString(), "CompareEmployers");
-
-            controller.CompareViewService.SortColumn = "OrganisationSize";
-            controller.CompareViewService.SortAscending = false;
 
             var firstReportingYear = Global.FirstReportingYear;
 
@@ -818,8 +670,6 @@ namespace GenderPayGap.WebUI.Tests.Controllers
             Assert.NotNull(result);
             Assert.AreEqual(result.ViewName, "CompareEmployers");
             Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
-            Assert.AreEqual(controller.CompareViewService.SortColumn, "OrganisationSize");
-            Assert.AreEqual(controller.CompareViewService.SortAscending, false);
 
 
             var actualModel = result.Model as CompareViewModel;

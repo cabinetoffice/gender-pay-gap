@@ -30,15 +30,12 @@ namespace GenderPayGap.WebUI.Controllers
         private readonly IDataRepository dataRepository;
         private readonly IWebTracker webTracker;
         
-        public CompareController(
-            ISearchViewService searchViewService,
-            ICompareViewService compareViewService,
+        public CompareController(ICompareViewService compareViewService,
             IDataRepository dataRepository,
             IOrganisationBusinessLogic organisationBusinessLogic,
             IWebTracker webTracker)
         {
             OrganisationBusinessLogic = organisationBusinessLogic;
-            SearchViewService = searchViewService;
             CompareViewService = compareViewService;
             this.dataRepository = dataRepository;
             this.webTracker = webTracker;
@@ -60,6 +57,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
+            
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Add the employer to the compare list
             CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
@@ -87,6 +87,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
+
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Add the employer to the compare list
             CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
@@ -132,6 +135,9 @@ namespace GenderPayGap.WebUI.Controllers
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
 
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
+
             //Remove the employer from the list
             CompareViewService.RemoveFromBasket(employer.OrganisationIdEncrypted);
 
@@ -157,6 +163,9 @@ namespace GenderPayGap.WebUI.Controllers
 
             //Get the employer from the encrypted identifier
             EmployerSearchModel employer = GetEmployer(employerIdentifier);
+
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Remove the employer from the list
             CompareViewService.RemoveFromBasket(employer.OrganisationIdEncrypted);
@@ -194,6 +203,9 @@ namespace GenderPayGap.WebUI.Controllers
                 return new HttpBadRequestResult($"Missing {nameof(returnUrl)}");
             }
 
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
+
             CompareViewService.ClearBasket();
 
             //Save the compared employers to the cookie
@@ -202,52 +214,16 @@ namespace GenderPayGap.WebUI.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        [HttpGet("sort-employers/{column}")]
-        public IActionResult SortEmployers(string column, string returnUrl)
-        {
-            //Check the parameters are populated
-            if (string.IsNullOrWhiteSpace(column))
-            {
-                return new HttpBadRequestResult($"Missing {nameof(column)}");
-            }
-
-            //Check the parameters are populated
-            if (string.IsNullOrWhiteSpace(returnUrl))
-            {
-                return new HttpBadRequestResult($"Missing {nameof(returnUrl)}");
-            }
-
-
-            //Calculate the sort direction
-            bool sort = CompareViewService.SortColumn != column || !CompareViewService.SortAscending;
-
-            //Track the download 
-            if (CompareViewService.SortColumn != column || CompareViewService.SortAscending != sort)
-            {
-                webTracker.TrackPageView(
-                    this,
-                    $"sort-employers: {column} {(CompareViewService.SortAscending ? "Ascending" : "Descending")}",
-                    $"/compare-employers/sort-employers?{column}={(CompareViewService.SortAscending ? "Ascending" : "Descending")}");
-
-                //Change the sort order
-                CompareViewService.SortAscending = sort;
-
-                //Set the column
-                CompareViewService.SortColumn = column;
-            }
-
-            return LocalRedirect(returnUrl);
-        }
-
         [HttpGet("~/compare-employers/{year:int=0}")]
-        public IActionResult CompareEmployers(int year, string employers = null)
+        public IActionResult CompareEmployers(int year, string employers = null, string sortColumn = null, bool sortAscending = true)
         {
             if (year == 0)
             {
-                CompareViewService.SortColumn = null;
-                CompareViewService.SortAscending = true;
                 year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
             }
+
+            // Load the current compared employers from the cookie
+            CompareViewService.LoadComparedEmployersFromCookie();
 
             //Load employers from querystring (via shared email)
             if (!string.IsNullOrWhiteSpace(employers))
@@ -257,52 +233,24 @@ namespace GenderPayGap.WebUI.Controllers
                 {
                     CompareViewService.ClearBasket();
                     CompareViewService.AddRangeToBasket(comparedEmployers);
-                    CompareViewService.SortAscending = true;
-                    CompareViewService.SortColumn = null;
                     return RedirectToAction("CompareEmployers", new {year});
                 }
-            }
-
-            //If the session is lost then load employers from the cookie
-            else if (CompareViewService.BasketItemCount == 0)
-            {
-                CompareViewService.LoadComparedEmployersFromCookie();
             }
 
             ViewBag.ReturnUrl = Url.Action("CompareEmployers", new {year});
 
             //Get the compare basket organisations
             IEnumerable<CompareReportModel> compareReports = OrganisationBusinessLogic.GetCompareData(
-                CompareViewService.ComparedEmployers.Value.AsEnumerable(),
+                CompareViewService.ComparedEmployers,
                 year,
-                CompareViewService.SortColumn,
-                CompareViewService.SortAscending);
-
-            //Track the compared employers
-            string lastComparedEmployerList = CompareViewService.ComparedEmployers.Value.ToList().ToSortedSet().ToDelimitedString();
-            if (CompareViewService.LastComparedEmployerList != lastComparedEmployerList)
-            {
-                SortedSet<string> employerIds = compareReports.Select(r => r.EncOrganisationId).ToSortedSet();
-                webTracker.TrackPageView(
-                    this,
-                    $"compare-employers: {employerIds.ToDelimitedString()}",
-                    $"{ViewBag.ReturnUrl}?{employerIds.ToEncapsulatedString("e=", null, "&", "&", false)}");
-                foreach (CompareReportModel employer in compareReports)
-                {
-                    webTracker.TrackPageView(
-                        this,
-                        $"{employer.EncOrganisationId}: {employer.OrganisationName}",
-                        $"{ViewBag.ReturnUrl}?{employer.EncOrganisationId}={employer.OrganisationName}");
-                }
-
-                CompareViewService.LastComparedEmployerList = lastComparedEmployerList;
-            }
+                sortColumn,
+                sortAscending);
 
             //Generate the shared links
             string shareEmailUrl = Url.Action(
                 nameof(CompareEmployers),
                 "Compare",
-                new {year, employers = CompareViewService.ComparedEmployers.Value.ToList().ToDelimitedString("-")},
+                new {year, employers = CompareViewService.ComparedEmployers.ToDelimitedString("-")},
                 Request.Scheme);
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = false, CanClearCompare = true};
@@ -315,12 +263,11 @@ namespace GenderPayGap.WebUI.Controllers
                     ShareEmailUrl =
                         CompareViewService.BasketItemCount <= CompareViewService.MaxCompareBasketShareCount ? shareEmailUrl : null,
                     Year = year,
-                    SortAscending = CompareViewService.SortAscending,
-                    SortColumn = CompareViewService.SortColumn
+                    SortAscending = sortAscending,
+                    SortColumn = sortColumn
                 });
         }
 
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("~/compare-employers/{year:int=0}")]
         public IActionResult CompareEmployers(string command, int year = 0)
@@ -384,19 +331,15 @@ namespace GenderPayGap.WebUI.Controllers
 
         private EmployerSearchModel GetEmployer(string employerIdentifier, bool activeOnly = true)
         {
-            EmployerSearchModel employer = SearchViewService.LastSearchResults?.GetEmployer(employerIdentifier);
-            if (employer == null)
-            {
-                long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-                Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
-                
-                if (activeOnly)
-                {
-                    ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
-                }
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
 
-                employer = organisation.ToEmployerSearchResult();
+            if (activeOnly)
+            {
+                ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             }
+
+            EmployerSearchModel employer = organisation.ToEmployerSearchResult();
 
             return employer;
         }
@@ -406,8 +349,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Dependencies
 
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
-
-        public ISearchViewService SearchViewService { get; }
 
         public ICompareViewService CompareViewService { get; }
 

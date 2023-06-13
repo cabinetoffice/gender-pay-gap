@@ -81,7 +81,12 @@
             @Html.AntiForgeryToken()
             <input type="hidden" name="userId" value="@(Model.User.UserId)" />
             <input type="hidden" name="organisationId" value="@(Model.Organisation.OrganisationId)" />
-            <input type="submit" class="govuk-button govuk-!-margin-bottom-4" data-module="govuk-button" value="Send PIN" />
+            @(await Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Send PIN",
+                Classes = "govuk-!-margin-bottom-4",
+                PreventDoubleClick = true
+            }))
         </form>
 
         <p class="govuk-body">

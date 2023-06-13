@@ -49,7 +49,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("user/{id}/status/change")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeStatusPost(long id, AdminChangeUserStatusViewModel viewModel)
         {

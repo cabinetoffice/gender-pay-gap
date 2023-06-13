@@ -46,7 +46,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
         }
 
         [ValidateAntiForgeryToken]
-        [PreventDuplicatePost]
         [HttpPost("password-reset")]
         public IActionResult PasswordResetPost(PasswordResetViewModel viewModel)
         {
@@ -146,7 +145,6 @@ namespace GenderPayGap.WebUI.Controllers.Account
         }
         
         [ValidateAntiForgeryToken]
-        [PreventDuplicatePost]
         [HttpPost("choose-new-password")]
         public IActionResult ChooseNewPasswordPost(ChooseNewPasswordViewModel viewModel)
         {

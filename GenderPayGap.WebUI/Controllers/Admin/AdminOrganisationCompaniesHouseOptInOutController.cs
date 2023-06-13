@@ -47,7 +47,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/coho-sync/opt-in")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult OptIn(long id, AdminChangeCompaniesHouseOptInOutViewModel viewModel)
         {
@@ -107,7 +106,6 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/coho-sync/opt-out")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult OptOut(long id, AdminChangeCompaniesHouseOptInOutViewModel viewModel)
         {

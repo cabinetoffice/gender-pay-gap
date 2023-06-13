@@ -147,7 +147,6 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("organisation/{id}/returns/{year}/delete")]
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteReturnsPost(long id, int year, AdminDeleteReturnViewModel viewModel)
         {

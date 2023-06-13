@@ -86,7 +86,8 @@
                 @(await Html.GovUkButton(new ButtonViewModel
                 {
                     Text = "Remove user from organisation",
-                    Classes = "govuk-!-margin-bottom-4 govuk-button--warning"
+                    Classes = "govuk-!-margin-bottom-4 govuk-button--warning",
+                    PreventDoubleClick = true
                 }))
 
                 <p class="govuk-body">

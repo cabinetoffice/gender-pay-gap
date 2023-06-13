@@ -1,5 +1,4 @@
-﻿@inject ISearchViewService SearchViewService
-@inject ICompareViewService CompareViewService
+﻿@inject ICompareViewService CompareViewService
 @model CompareBasketViewModel
 @{
     int compareCount = CompareViewService.BasketItemCount;
@@ -37,14 +36,14 @@
             @if (compareCount > 0 && !Model.IsSearchPage)
             {
                 <p class="govuk-body">
-                    <a href="@SearchViewService.GetLastSearchUrl()">Add another employer</a>
+                    <a href="@Url.Action("SearchResults", "Viewing")">Add another employer</a>
                 </p>
             }
             @if (compareCount > 0)
             {
                 string clearBasketUrl = Url.Action(
                     nameof(CompareController.ClearEmployers), "Compare",
-                    new { returnUrl = SearchViewService.GetLastSearchUrl() }
+                    new { returnUrl = Url.Action("SearchResults", "Viewing") }
                     );
                 <p class="govuk-body">
                     <a href="@clearBasketUrl">Clear list@(Model.IsSearchPage ? "" : " and return to Search and Compare")</a>

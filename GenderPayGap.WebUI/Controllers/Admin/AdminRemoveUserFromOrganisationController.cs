@@ -46,7 +46,6 @@ namespace GenderPayGap.WebUI.Controllers
             return UnlinkUserAndOrganisationGet(organisationId, userId, true);
         }
 
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("organisation/{organisationId}/remove-user/{userId}")]
         public IActionResult RemoveUserFromOrganisationPost(
@@ -57,7 +56,6 @@ namespace GenderPayGap.WebUI.Controllers
             return UnlinkUserAndOrganisationPost(organisationId, userId, viewModel, false);
         }
 
-        [PreventDuplicatePost]
         [ValidateAntiForgeryToken]
         [HttpPost("user/{userId}/remove-organisation/{organisationId}")]
         public IActionResult RemoveOrganisationFromUserPost(

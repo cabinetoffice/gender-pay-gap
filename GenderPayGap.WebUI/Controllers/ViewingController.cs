@@ -29,14 +29,12 @@ namespace GenderPayGap.WebUI.Controllers
 
         public ViewingController(
             IViewingService viewingService,
-            ISearchViewService searchViewService,
             ICompareViewService compareViewService,
             IOrganisationBusinessLogic organisationBusinessLogic,
             IDataRepository dataRepository,
             AutoCompleteSearchService autoCompleteSearchService)
         {
             ViewingService = viewingService;
-            SearchViewService = searchViewService;
             CompareViewService = compareViewService;
             OrganisationBusinessLogic = organisationBusinessLogic;
             this.autoCompleteSearchService = autoCompleteSearchService;
@@ -48,7 +46,6 @@ namespace GenderPayGap.WebUI.Controllers
         #region Dependencies
 
         public IViewingService ViewingService { get; }
-        public ISearchViewService SearchViewService { get; }
         public ICompareViewService CompareViewService { get; }
         public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
 
@@ -63,14 +60,10 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("search-results")]
         public async Task<IActionResult> SearchResults([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
         {
-            //When never searched in this session
-            if (string.IsNullOrWhiteSpace(SearchViewService.LastSearchParameters))
+            //If no compare employers in session then load employers from the cookie
+            if (CompareViewService.BasketItemCount == 0)
             {
-                //If no compare employers in session then load employers from the cookie
-                if (CompareViewService.BasketItemCount == 0)
-                {
-                    CompareViewService.LoadComparedEmployersFromCookie();
-                }
+                CompareViewService.LoadComparedEmployersFromCookie();
             }
 
             // ensure parameters are valid
@@ -82,7 +75,7 @@ namespace GenderPayGap.WebUI.Controllers
             // generate result view model
             var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
             SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
-            ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
+            ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {
                 CanAddEmployers = false, CanViewCompare = CompareViewService.BasketItemCount > 1, CanClearCompare = true
@@ -106,7 +99,7 @@ namespace GenderPayGap.WebUI.Controllers
             var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
             SearchViewModel model = await ViewingService.SearchAsync(searchParams, "relevance");
 
-            ViewBag.ReturnUrl = SearchViewService.GetLastSearchUrl();
+            ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
 
             return PartialView("Finder/Parts/MainContent", model);
         }

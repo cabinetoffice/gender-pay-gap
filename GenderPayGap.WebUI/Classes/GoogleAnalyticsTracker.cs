@@ -41,8 +41,7 @@ namespace GenderPayGap.WebUI.Classes
             googleTrackingId = trackingId;
         }
 
-        private string googleClientId =>
-            _httpContextAccessor.HttpContext?.Session?.Id ?? Guid.NewGuid().ToString(); // 555 - any user identifier
+        private string googleClientId => Guid.NewGuid().ToString();
 
         public void Dispose()
         {

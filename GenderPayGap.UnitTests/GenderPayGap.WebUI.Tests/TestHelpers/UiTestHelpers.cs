@@ -167,7 +167,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             httpContextMock.SetupGet(ctx => ctx.Response.Cookies).Returns(responseCookies.Object);
             httpContextMock.SetupGet(ctx => ctx.Response.Headers).Returns(responseHeaders);
             httpContextMock.SetupGet(ctx => ctx.Response.HttpContext).Returns(httpContextMock.Object);
-            httpContextMock.SetupGet(ctx => ctx.Session).Returns(new MockHttpSession());
             httpContextMock.SetupGet(ctx => ctx.Features).Returns(features);
 
             //Mock the httpcontext to the controllercontext
@@ -245,7 +244,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
-            builder.RegisterType<SearchViewService>().As<ISearchViewService>().InstancePerLifetimeScope();
             
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
@@ -267,7 +265,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<CookieController>().InstancePerLifetimeScope();
 
             builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
-            builder.RegisterType<HttpSession>().As<IHttpSession>().InstancePerLifetimeScope();
             builder.Register(c => Mock.Of<IHttpContextAccessor>()).As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();

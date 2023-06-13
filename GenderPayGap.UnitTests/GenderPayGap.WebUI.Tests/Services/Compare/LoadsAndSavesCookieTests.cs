@@ -1,9 +1,9 @@
 ﻿using GenderPayGap.Core;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Classes.Presentation;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
+using System.Linq;
 
 namespace GenderPayGap.Tests.Services.Compare
 {
@@ -33,8 +33,7 @@ namespace GenderPayGap.Tests.Services.Compare
                 .Returns(string.Join(",", expectedEmployerIds));
 
             var testService = new CompareViewService(
-                mockHttpContextAccessor.Object,
-                Mock.Of<IHttpSession>());
+                mockHttpContextAccessor.Object);
 
             // Act
             testService.LoadComparedEmployersFromCookie();
@@ -44,7 +43,7 @@ namespace GenderPayGap.Tests.Services.Compare
                 expectedEmployerIds.Length,
                 testService.BasketItemCount,
                 $"Expected basket to contain {expectedEmployerIds.Length} employers");
-            Assert.IsTrue(testService.ComparedEmployers.Value.Contains(expectedEmployerIds), "Expected employer ids to match basket items");
+            Assert.IsTrue(expectedEmployerIds.All(eId => testService.ComparedEmployers.Contains(eId)), "Expected employer ids to match basket items");
         }
 
         [TestCase]
@@ -55,8 +54,7 @@ namespace GenderPayGap.Tests.Services.Compare
                 .Returns("12345678");
 
             var testService = new CompareViewService(
-                mockHttpContextAccessor.Object,
-                Mock.Of<IHttpSession>());
+                mockHttpContextAccessor.Object);
 
             var testPreviousIds = new[] {"AAA", "BBB", "CCC"};
             testService.AddRangeToBasket(testPreviousIds);
@@ -67,7 +65,7 @@ namespace GenderPayGap.Tests.Services.Compare
             // Assert
             Assert.AreEqual(1, testService.BasketItemCount, "Expected basket to contain 1 employer");
             Assert.IsFalse(
-                testService.ComparedEmployers.Value.Contains(testPreviousIds),
+                testPreviousIds.All(id => testService.ComparedEmployers.Contains(id)),
                 "Expected previous employer ids to be cleared from basket");
         }
 

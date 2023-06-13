@@ -60,7 +60,8 @@
                 <div class="govuk-form-group">
                     @(await Html.GovUkButton(new ButtonViewModel
                     {
-                        Text = "Impersonate"
+                        Text = "Impersonate",
+                        PreventDoubleClick = true
                     }))
                 </div>
             </fieldset>

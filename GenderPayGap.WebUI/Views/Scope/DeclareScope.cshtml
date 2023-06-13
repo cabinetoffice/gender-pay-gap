@@ -75,13 +75,12 @@
                     how to work out if you have 250 or more employees (opens in a new window)</a>.
             </p>
 
-            @(await Html.GovUkButton(
-                new ButtonViewModel
-                {
-                    Text = "Continue",
-                    Classes = "govuk-!-margin-bottom-3"
-                }
-            ))
+            @(await Html.GovUkButton(new ButtonViewModel
+            {
+                Text = "Continue",
+                Classes = "govuk-!-margin-bottom-3",
+                PreventDoubleClick = true
+            }))
             
             <p class="govuk-body">
                 <a class="govuk-link" href="@Url.Action("ManageOrganisationsGet", "ManageOrganisations")">
