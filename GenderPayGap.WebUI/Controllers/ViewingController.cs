@@ -74,7 +74,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             // generate result view model
             var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
-            SearchViewModel model = await ViewingService.SearchAsync(searchParams, orderBy);
+            SearchViewModel model = ViewingService.Search(searchParams, orderBy);
             ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
 
             ViewBag.BasketViewModel = new CompareBasketViewModel {
@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.Controllers
 
             // generate result view model
             var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
-            SearchViewModel model = await ViewingService.SearchAsync(searchParams, "relevance");
+            SearchViewModel model = ViewingService.Search(searchParams, "relevance");
 
             ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
 
@@ -223,7 +223,7 @@ namespace GenderPayGap.WebUI.Controllers
             // set maximum search size
             searchParams.Page = 1;
             searchParams.PageSize = CompareViewService.MaxCompareBasketCount;
-            SearchViewModel searchResultsModel = await ViewingService.SearchAsync(searchParams, orderBy);
+            SearchViewModel searchResultsModel = ViewingService.Search(searchParams, orderBy);
 
             // add any new items to the compare list
             string[] resultIds = searchResultsModel.Employers.Results

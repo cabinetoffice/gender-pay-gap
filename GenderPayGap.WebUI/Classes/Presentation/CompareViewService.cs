@@ -67,16 +67,12 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public void SaveComparedEmployersToCookie(HttpRequest request)
         {
-            CookieSettings cookieSettings = CookieHelper.GetCookieSettingsCookie(request);
-            if (cookieSettings.RememberSettings)
-            {
-                //Save into the cookie
-                HttpContext.SetResponseCookie(
-                    CookieNames.LastCompareQuery,
-                    string.Join(',', ComparedEmployers),
-                    VirtualDateTime.Now.AddMonths(1),
-                    secure: true);
-            }
+            //Save into the cookie
+            HttpContext.SetResponseCookie(
+                CookieNames.LastCompareQuery,
+                string.Join(',', ComparedEmployers),
+                VirtualDateTime.Now.AddMonths(1),
+                secure: true);
         }
 
         #region Dependencies

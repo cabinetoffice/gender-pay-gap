@@ -1,5 +1,4 @@
 ﻿@using GenderPayGap.WebUI.Models.ScopeNew
-@using GenderPayGap.WebUI.Classes.Formatters
 @using GenderPayGap.WebUI.Models.Shared.Patterns
 @using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.ScopeNew.ScopeViewModel
@@ -13,7 +12,7 @@
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string reportingYearsString = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear.Year);
     string reason = Model.WhyOutOfScope == WhyOutOfScope.Under250
-        ? "My organisation had fewer than 250 employees on " + new GDSDateFormatter(Model.ReportingYear).FullStartDate
+        ? "My organisation had fewer than 250 employees on " + Model.ReportingYear.ToString("d MMMM yyyy")
         : Model.WhyOutOfScopeDetails;
     var breadcrumbModel = new ManageOrganisationBreadcrumbs 
     { 

@@ -13,11 +13,21 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
     public class AwsFileRepository : IFileRepository
     {
 
-        private readonly VcapAwsS3Bucket vcapAwsS3Bucket;
+        private readonly string bucketName;
+        private readonly string awsAccessKeyId;
+        private readonly string awsSecretAccessKey;
+        private readonly string awsRegion;
 
-        public AwsFileRepository(VcapAwsS3Bucket vcapAwsS3Bucket)
+        public AwsFileRepository(
+            string bucketName,
+            string awsAccessKeyId,
+            string awsSecretAccessKey,
+            string awsRegion)
         {
-            this.vcapAwsS3Bucket = vcapAwsS3Bucket;
+            this.bucketName = bucketName;
+            this.awsAccessKeyId = awsAccessKeyId;
+            this.awsSecretAccessKey = awsSecretAccessKey;
+            this.awsRegion = awsRegion;
         }
 
 
@@ -27,7 +37,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             {
                 var putRequest = new PutObjectRequest
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Key = Url.DirToUrlSeparator(relativeFilePath),
                     ContentBody = fileContents
                 };
@@ -45,7 +55,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 
                 var putRequest = new PutObjectRequest
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Key = Url.DirToUrlSeparator(relativeFilePath),
                     InputStream = memoryStream
                 };
@@ -60,7 +70,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             {
                 GetObjectRequest request = new GetObjectRequest
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Key = Url.DirToUrlSeparator(relativeFilePath)
                 };
 
@@ -80,7 +90,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             {
                 ListObjectsV2Request request = new ListObjectsV2Request
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Prefix = Url.DirToUrlSeparator(relativeDirectoryPath),
                     MaxKeys = 10000
                 };
@@ -115,7 +125,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             {
                 var request = new DeleteObjectRequest
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Key = Url.DirToUrlSeparator(relativeFilePath)
                 };
 
@@ -129,7 +139,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             {
                 var request = new GetObjectMetadataRequest
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Key = Url.DirToUrlSeparator(relativeFilePath)
                 };
 
@@ -151,7 +161,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             {
                 var request = new GetObjectMetadataRequest
                 {
-                    BucketName = vcapAwsS3Bucket.Credentials.BucketName,
+                    BucketName = bucketName,
                     Key = Url.DirToUrlSeparator(relativeFilePath)
                 };
 
@@ -169,11 +179,8 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 
         private AmazonS3Client CreateAmazonS3Client()
         {
-            string accessKey = vcapAwsS3Bucket.Credentials.AwsAccessKeyId;
-            string secretKey = vcapAwsS3Bucket.Credentials.AwsSecretAccessKey;
-
-            var credentials = new BasicAWSCredentials(accessKey, secretKey);
-            var amazonS3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(vcapAwsS3Bucket.Credentials.Region));
+            var credentials = new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
+            var amazonS3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(awsRegion));
 
             return amazonS3Client;
         }

@@ -368,8 +368,8 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     value     = 5
   }
 
-  // Elastic beanstalk environment variables
-  // VCAP services is a legacy object from PaaS
+  // Elastic beanstalk environment variables 
+  // VCAP services is a legacy object from PaaS 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "VCAP_SERVICES"
@@ -382,7 +382,7 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
           host     = aws_db_instance.gpg-dev-db.address,
           username = aws_db_instance.gpg-dev-db.username
         },
-        // Identifier ends in -db, which is used by Global.cs to fetch the configuration
+        // Identifier ends in -db, which is used by Global.cs to fetch the configuration 
         name = aws_db_instance.gpg-dev-db.identifier
       }],
       aws-s3-bucket = [{
@@ -397,6 +397,53 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     })
   }
 
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DATABASE_HOST"
+    value     = aws_db_instance.gpg-dev-db.address
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DATABASE_PORT"
+    value     = aws_db_instance.gpg-dev-db.port
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DATABASE_USERNAME"
+    value     = aws_db_instance.gpg-dev-db.username
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DATABASE_PASSWORD"
+    value     = aws_db_instance.gpg-dev-db.password
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DATABASE_DB_NAME"
+    value     = aws_db_instance.gpg-dev-db.name
+  }
+  
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "S3_BUCKET_NAME"
+    value     = aws_s3_bucket.gpg_filestorage.bucket
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "S3_BUCKET_AWS_ACCESS_KEY_ID"
+    value     = var.AWS_ACCESS_KEY_ID
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "S3_BUCKET_AWS_SECRET_ACCESS_KEY"
+    value     = var.AWS_SECRET_ACCESS_KEY
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "S3_BUCKET_AWS_REGION"
+    value     = var.aws_region
+  }
+  
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "ASPNETCORE_ENVIRONMENT"

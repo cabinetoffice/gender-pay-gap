@@ -138,23 +138,6 @@ namespace GenderPayGap.Extensions.AspNetCore
             appSettings[key] = value;
         }
 
-        public static string GetConnectionString(string key)
-        {
-            var prefix = "ConnectionStrings:";
-            if (key.StartsWithI(prefix))
-            {
-                key = key.Substring(prefix.Length);
-            }
-
-            string value = Configuration.GetConnectionString(key);
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                value = GetAppSetting($"{prefix}{key}");
-            }
-
-            return string.IsNullOrWhiteSpace(value) ? null : value;
-        }
-
         public static TimeSpan OffsetCurrentDateTimeForSite()
         {
             if (SingletonOffsetCurrentDateTimeForSite == null)

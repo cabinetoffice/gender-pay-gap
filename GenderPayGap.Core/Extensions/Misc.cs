@@ -224,13 +224,15 @@ namespace GenderPayGap.Extensions
             string str = System.Convert.ToString(text);
             if (!string.IsNullOrWhiteSpace(str))
             {
+                string shortDateFormat = "yyMMddHHmmss";
+                
                 DateTime parsedValue;
-                if (DateTime.TryParseExact(str, Time.ShortDateFormat, null, DateTimeStyles.AssumeLocal, out parsedValue))
+                if (DateTime.TryParseExact(str, shortDateFormat, null, DateTimeStyles.AssumeLocal, out parsedValue))
                 {
                     return parsedValue;
                 }
 
-                if (DateTime.TryParseExact(str, Time.ShortDateFormat, null, DateTimeStyles.AssumeLocal, out parsedValue))
+                if (DateTime.TryParseExact(str, shortDateFormat, null, DateTimeStyles.AssumeLocal, out parsedValue))
                 {
                     return parsedValue;
                 }

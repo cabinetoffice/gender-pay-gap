@@ -17,11 +17,6 @@ namespace System.Web
             _contextAccessor = contextAccessor;
         }
 
-        public static void DisableResponseCache(this Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            SetResponseCache(context, 0);
-        }
-
         public static void SetResponseCache(this Microsoft.AspNetCore.Http.HttpContext context, int maxSeconds)
         {
             if (maxSeconds > 0)

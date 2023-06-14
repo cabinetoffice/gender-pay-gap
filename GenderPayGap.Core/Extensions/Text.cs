@@ -64,24 +64,6 @@ namespace GenderPayGap.Extensions
             return trimChars == null || trimChars.Length == 0 ? source.Trim() : source.Trim(trimChars);
         }
 
-        public static string Coalesce(this string text, params string[] options)
-        {
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                return text;
-            }
-
-            foreach (string option in options)
-            {
-                if (!string.IsNullOrWhiteSpace(option))
-                {
-                    return option;
-                }
-            }
-
-            return null;
-        }
-
         /// <summary>
         ///     Returns all characters before the first occurrence of a string
         /// </summary>

@@ -15,16 +15,24 @@ namespace GenderPayGap.WebUI.Helpers
     public static class ControllerHelper
     {
 
-        public static User GetGpgUserFromAspNetUser(ClaimsPrincipal user, IDataRepository dataRepository)
+        public static User GetGpgUserFromAspNetUser(ClaimsPrincipal principal, IDataRepository dataRepository)
         {
-            if (user != null && user.Identity.IsAuthenticated)
+            if (principal != null && principal.Identity.IsAuthenticated)
             {
-                return dataRepository.FindUser(user);
+                // Get the claim called "user_id"
+                Claim claim = principal.Claims.FirstOrDefault(c => c.Type.ToLower() == "user_id");
+                
+                if (claim != null)
+                {
+                    // The claim value is a number which is the user ID
+                    if (long.TryParse(claim.Value, out long userId))
+                    {
+                        return dataRepository.Get<User>(userId);
+                    }
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static void ThrowIfUserAccountRetiredOrEmailNotVerified(ClaimsPrincipal aspDotNetUser, IDataRepository dataRepository)

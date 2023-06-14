@@ -128,7 +128,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
                     {
                         "cookie_settings",
                         JsonConvert.SerializeObject(
-                            new CookieSettings {GoogleAnalyticsGpg = true, GoogleAnalyticsGovUk = true, RememberSettings = true})
+                            new CookieSettings {GoogleAnalyticsGpg = true, GoogleAnalyticsGovUk = true})
                     }
                 });
             requestMock.SetupGet(x => x.Headers).Returns(requestHeaders);

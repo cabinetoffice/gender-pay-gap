@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
@@ -10,7 +9,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Classes.Presentation
 {
@@ -18,10 +16,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public interface IViewingService
     {
         
-        Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams, string orderBy);
-        Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync();
-        List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetResults);
-        Task<List<OptionSelect>> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds, Dictionary<object, long> facetResults);
+        SearchViewModel Search(EmployerSearchParameters searchParams, string orderBy);
         
     }
 
@@ -38,21 +33,14 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         }
         
 
-        public async Task<SearchViewModel> SearchAsync(EmployerSearchParameters searchParams, string orderBy)
+        public SearchViewModel Search(EmployerSearchParameters searchParams, string orderBy)
         {
             bool orderByRelevance = orderBy == "relevance";
             
-            var facets = new Dictionary<string, Dictionary<object, long>>();
-            facets.Add("Size", null);
-            facets.Add("SicSectionIds", null);
-            facets.Add("ReportedYears", null);
-            facets.Add("ReportedLateYears", null);
-            facets.Add("ReportedExplanationYears", null);
-            
             // build the result view model
             return new SearchViewModel {
-                SizeOptions = GetOrgSizeOptions(searchParams.FilterEmployerSizes, facets["Size"]),
-                SectorOptions = await GetSectorOptionsAsync(searchParams.FilterSicSectionIds, facets["SicSectionIds"]),
+                SizeOptions = GetOrgSizeOptions(searchParams.FilterEmployerSizes),
+                SectorOptions = GetSectorOptionsAsync(searchParams.FilterSicSectionIds),
                 ReportingYearOptions = GetReportingYearOptions(searchParams.FilterReportedYears),
                 ReportingStatusOptions = GetReportingStatusOptions(searchParams.FilterReportingStatus),
                 Employers = viewingSearchService.Search(searchParams, orderByRelevance),
@@ -66,8 +54,8 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 OrderBy = orderBy
             };
         }
-        
-        public List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes, Dictionary<object, long> facetResults)
+
+        private List<OptionSelect> GetOrgSizeOptions(IEnumerable<int> filterOrgSizes)
         {
             Array allSizes = Enum.GetValues(typeof(OrganisationSizes));
 
@@ -88,11 +76,10 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             return results;
         }
 
-        public async Task<List<OptionSelect>> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds,
-            Dictionary<object, long> facetResults)
+        private List<OptionSelect> GetSectorOptionsAsync(IEnumerable<char> filterSicSectionIds)
         {
             // setup the filters
-            List<SearchViewModel.SicSection> allSectors = await GetAllSicSectionsAsync();
+            List<SearchViewModel.SicSection> allSectors = GetAllSicSectionsAsync();
             var sources = new List<OptionSelect>();
             foreach (SearchViewModel.SicSection sector in allSectors)
             {
@@ -109,11 +96,11 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
             return sources;
         }
-        
-        public async Task<List<SearchViewModel.SicSection>> GetAllSicSectionsAsync()
+
+        private List<SearchViewModel.SicSection> GetAllSicSectionsAsync()
         {
             var results = new List<SearchViewModel.SicSection>();
-            List<SicSection> sortedSics = await dataRepo.GetAll<SicSection>().OrderBy(sic => sic.Description).ToListAsync();
+            List<SicSection> sortedSics = dataRepo.GetAll<SicSection>().OrderBy(sic => sic.Description).ToList();
 
             foreach (SicSection sector in sortedSics)
             {
@@ -126,8 +113,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             return results;
         }
 
-        
-        public List<OptionSelect> GetReportingYearOptions(IEnumerable<int> filterSnapshotYears)
+        private List<OptionSelect> GetReportingYearOptions(IEnumerable<int> filterSnapshotYears)
         {
             // setup the filters
             int firstYear = Global.FirstReportingYear;
@@ -153,7 +139,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             return sources;
         }
 
-        public List<OptionSelect> GetReportingStatusOptions(IEnumerable<int> filterReportingStatus)
+        private List<OptionSelect> GetReportingStatusOptions(IEnumerable<int> filterReportingStatus)
         {
             Array allStatuses = Enum.GetValues(typeof(SearchReportingStatusFilter));
 

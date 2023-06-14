@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
                 // Migration to dotnet core work around return status codes until over haul of this API client
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new HttpException(response.StatusCode);
+                    throw new Exception($"Companies House API responded with an error: {response.StatusCode}, message: {response.Content}");
                 }
 
                 json = response.Content.ReadAsStringAsync().Result;
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
                 // Migration to dotnet core work around return status codes until over haul of this API client
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new HttpException(response.StatusCode);
+                    throw new Exception($"Companies House API responded with an error: {response.StatusCode}, message: {response.Content}");
                 }
 
                 json = response.Content.ReadAsStringAsync().Result;
