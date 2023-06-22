@@ -3,15 +3,17 @@ using System;
 using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GenderPayGap.Database.Migrations
 {
     [DbContext(typeof(GpgDatabaseContext))]
-    partial class GpgDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230622161807_RemoveObsoleteFieldsFromDraftReturn")]
+    partial class RemoveObsoleteFieldsFromDraftReturn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
