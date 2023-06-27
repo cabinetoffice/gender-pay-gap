@@ -33,7 +33,7 @@
                                 @(feedback.FeedbackId)
                             </td>
                         </tr>
-                        <tr class="govuk-table__row">
+                        <tr class="govuk-table__row" id="feedback-row-@(feedback.FeedbackId)">
                             <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
                                 <span style="white-space: nowrap">
                                     @(feedback.CreatedDate.ToString("d MMM yyyy"))
@@ -50,10 +50,10 @@
                             </td>
                             <td class="govuk-table__cell" rowspan="7" style="border-bottom-width: 2px;">
                                 <form method="post"
-                                      action="@Url.Action("CategoriseFeedbackPost", "AdminFeedback")"
+                                      action="@Url.Action("CategoriseFeedbackPost", "AdminFeedback", new {feedbackId = feedback.FeedbackId})"
                                       style="align-items: center; display: flex; flex-direction: column;">
                                     @(Html.AntiForgeryToken())
-                                    <input type="hidden" name="feedbackId" value="@(feedback.FeedbackId)"/>
+                                    <input type="hidden" name="fromListPage" value="True"/>
 
                                     @if (Model.ShowMarkAsSpamButton)
                                     {
