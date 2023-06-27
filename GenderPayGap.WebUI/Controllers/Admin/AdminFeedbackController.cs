@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.Controllers
             List<Feedback> feedback = dataRepository
                 .GetAll<Feedback>()
                 .Where(f => f.FeedbackStatus == FeedbackStatus.NotSpam)
-                .OrderByDescending(f => f.CreatedDate)
+                .OrderByDescending(f => f.FeedbackId)
                 .ToList();
 
             return View("ViewFeedback", feedback);
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpPost("feedback/categorise-feedback/{feedbackId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult CategoriseFeedbackPost(long feedbackId, FeedbackStatus status)
+        public IActionResult CategoriseFeedbackPost(long feedbackId, FeedbackStatus status, bool fromListPage = false)
         {
             Feedback feedback = dataRepository.Get<Feedback>(feedbackId);
 
@@ -81,7 +81,22 @@ namespace GenderPayGap.WebUI.Controllers
 
             dataRepository.SaveChanges();
 
-            return RedirectToAction("CategoriseNextFeedback", "AdminFeedback");
+            if (fromListPage)
+            {
+                Feedback nextFeedback = dataRepository
+                    .GetAll<Feedback>()
+                    .Where(f => f.FeedbackStatus == FeedbackStatus.NotSpam)
+                    .Where(f => f.FeedbackId < feedbackId)
+                    .OrderByDescending(f => f.FeedbackId)
+                    .FirstOrDefault();
+
+                string hashComponent = nextFeedback != null ? $"feedback-row-{nextFeedback.FeedbackId}" : "";
+                return RedirectToAction("ViewFeedback", "AdminFeedback", fragment: hashComponent);
+            }
+            else
+            {
+                return RedirectToAction("CategoriseNextFeedback", "AdminFeedback");
+            }
         }
 
         [HttpGet("feedback/bulk-mark-feedback-as-spam")]
