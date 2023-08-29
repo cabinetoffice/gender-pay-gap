@@ -559,6 +559,7 @@ namespace GenderPayGap.WebUI.Controllers
                 .Where(org => !org.Returns.Any(r => r.AccountingDate.Year == year && r.Status == ReturnStatuses.Submitted))
                 .Include(o => o.OrganisationAddresses)
                 .Include(o => o.UserOrganisations)
+                .ThenInclude(uo => uo.User)
                 .Include(o => o.Returns);
         }
 
