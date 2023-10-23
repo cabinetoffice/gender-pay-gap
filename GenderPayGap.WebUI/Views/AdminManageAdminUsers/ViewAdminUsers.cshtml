@@ -51,6 +51,7 @@
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Name</th>
                     <th scope="col" class="govuk-table__header">Email address</th>
+                    <th scope="col" class="govuk-table__header">Type of admin</th>
                     <th scope="col" class="govuk-table__header">
                         <span class="govuk-visually-hidden">Actions</span>
                     </th>
@@ -71,16 +72,40 @@
                             </a>
                         </th>
                         <td class="govuk-table__cell">
-                            @(adminUser.EmailAddress)
+                            <span style="word-break: break-all">
+                                @(adminUser.EmailAddress)
+                            </span>
                         </td>
                         <td class="govuk-table__cell">
-                            <a href="@Url.Action("RetireAdminUserGet", "AdminManageAdminUsers", new {userId = adminUser.UserId})"
-                               class="govuk-button govuk-button--secondary govuk-!-margin-0">
-                                Retire user
-                                <span class="govuk-visually-hidden">
-                                    @(adminUser.Fullname)
-                                </span>
-                            </a>
+                            @switch (adminUser.UserRole)
+                            {
+                                case UserRole.Admin:
+                                    <span>Full admin</span>
+                                    break;
+                                case UserRole.AdminReadOnly:
+                                    <span>Read-Only admin</span>
+                                    break;
+                            }
+                        </td>
+                        <td class="govuk-table__cell">
+                            <div class="govuk-!-margin-bottom-2">
+                                <a href="@Url.Action("RetireAdminUserGet", "AdminManageAdminUsers", new {userId = adminUser.UserId})"
+                                   class="govuk-link">
+                                    Retire user
+                                    <span class="govuk-visually-hidden">
+                                        @(adminUser.Fullname)
+                                    </span>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="@Url.Action("ChangeTypeOfAdminUserGet", "AdminManageAdminUsers", new {userId = adminUser.UserId})"
+                                   class="govuk-link">
+                                    Change type of admin
+                                    <span class="govuk-visually-hidden">
+                                        @(adminUser.Fullname)
+                                    </span>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -100,6 +125,7 @@
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">Name</th>
                             <th scope="col" class="govuk-table__header">Email address</th>
+                            <th scope="col" class="govuk-table__header">Type of admin</th>
                             <th scope="col" class="govuk-table__header">Status</th>
                             <th scope="col" class="govuk-table__header">
                                 <span class="govuk-visually-hidden">Actions</span>
@@ -122,6 +148,17 @@
                                 </th>
                                 <td class="govuk-table__cell">
                                     @(adminUser.EmailAddress)
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @switch (adminUser.UserRole)
+                                    {
+                                        case UserRole.Admin:
+                                            <span>Full admin</span>
+                                            break;
+                                        case UserRole.AdminReadOnly:
+                                            <span>Read-Only admin</span>
+                                            break;
+                                    }
                                 </td>
                                 <td class="govuk-table__cell">
                                     @(adminUser.Status)

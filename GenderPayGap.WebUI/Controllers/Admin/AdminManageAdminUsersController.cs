@@ -3,7 +3,6 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
@@ -37,7 +36,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         public IActionResult ViewAdminUsers()
         {
             List<User> adminUsers = dataRepository.GetAll<User>()
-                .Where(user => user.UserRole == UserRole.Admin)
+                .Where(user => user.UserRole == UserRole.Admin || user.UserRole == UserRole.AdminReadOnly)
                 .AsEnumerable()
                 .OrderBy(user => user.Fullname)
                 .ToList();
@@ -45,6 +44,52 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return View("ViewAdminUsers", adminUsers);
         }
 
+        [HttpGet("change-type-of-admin-user/{userId}")]
+        public IActionResult ChangeTypeOfAdminUserGet(long userId)
+        {
+            User adminUser = dataRepository.Get<User>(userId);
+
+            if (adminUser == null || !adminUser.IsFullOrReadOnlyAdministrator())
+            {
+                throw new PageNotFoundException();
+            }
+            
+            var viewModel = new AdminChangeTypeOfAdminUserViewModel
+            {
+                User = adminUser,
+                ReadOnly = (adminUser.UserRole == UserRole.AdminReadOnly)
+            };
+
+            return View("ChangeTypeOfAdminUser", viewModel);
+        }
+        
+        [ValidateAntiForgeryToken]
+        [HttpPost("change-type-of-admin-user/{userId}")]
+        public IActionResult ChangeTypeOfAdminUserPost(long userId, AdminChangeTypeOfAdminUserViewModel viewModel)
+        {
+            User adminUser = dataRepository.Get<User>(userId);
+            User userMakingTheChange = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
+
+            if (adminUser == null || !adminUser.IsFullOrReadOnlyAdministrator())
+            {
+                throw new PageNotFoundException();
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                viewModel.User = adminUser;
+                viewModel.ReadOnly = (adminUser.UserRole == UserRole.AdminReadOnly);
+                return View("ChangeTypeOfAdminUser", viewModel);
+            }
+
+            // Update the status
+            adminUser.UserRole = viewModel.ReadOnly ? UserRole.AdminReadOnly : UserRole.Admin;
+
+            dataRepository.SaveChanges();
+
+            return RedirectToAction("ViewAdminUsers", "AdminManageAdminUsers");
+        }
+        
         [HttpGet("retire-user/{userId}")]
         public IActionResult RetireAdminUserGet(long userId)
         {
@@ -123,46 +168,53 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("AddNewAdminUser", viewModel);
             }
 
-            return RedirectToAction("ConfirmNewAdminUserGet", "AdminManageAdminUsers", new {userId = user.UserId});
+            return RedirectToAction("ConfirmNewAdminUserGet", "AdminManageAdminUsers", new {userId = user.UserId, readOnly = viewModel.ReadOnly});
         }
         
         [HttpGet("add-new-admin-user/{userId}")]
-        public IActionResult ConfirmNewAdminUserGet(long userId)
+        public IActionResult ConfirmNewAdminUserGet(long userId, [FromQuery] bool readOnly)
         {
             User user = dataRepository.Get<User>(userId);
 
-            if (user == null || user.IsAdministrator())
+            if (user == null || user.IsFullOrReadOnlyAdministrator())
             {
                 throw new PageNotFoundException();
             }
 
-            return View("ConfirmNewAdminUser", user);
+            var viewModel = new AdminConfirmNewAdminUserViewModel {User = user, ReadOnly = readOnly};
+
+            return View("ConfirmNewAdminUser", viewModel);
         }
         
         [ValidateAntiForgeryToken]
         [HttpPost("add-new-admin-user/{userId}")]
-        public IActionResult ConfirmNewAdminUserPost(long userId)
+        public IActionResult ConfirmNewAdminUserPost(long userId, [FromQuery] bool readOnly)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("ConfirmNewAdminUser");
-            }
-
             User user = dataRepository.Get<User>(userId);
 
-            if (user == null || user.IsAdministrator())
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new AdminConfirmNewAdminUserViewModel {User = user, ReadOnly = readOnly};
+                return View("ConfirmNewAdminUser", viewModel);
+            }
+
+            if (user == null || user.IsFullOrReadOnlyAdministrator())
             {
                 throw new PageNotFoundException();
             }
 
-            user.UserRole = UserRole.Admin;
+            user.UserRole = readOnly ? UserRole.AdminReadOnly : UserRole.Admin;
 
             dataRepository.SaveChanges();
             
             auditLogger.AuditChangeToUser(
                 AuditedAction.AdminAddAdminUser,
                 user,
-                new {UserIdToMakeAdmin = user.UserId},
+                new
+                {
+                    UserIdToMakeAdmin = user.UserId,
+                    Role = user.UserRole
+                },
                 User);
 
             return RedirectToAction("ViewAdminUsers", "AdminManageAdminUsers");
