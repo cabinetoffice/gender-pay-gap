@@ -16,6 +16,7 @@ namespace GenderPayGap.WebUI.Helpers
     public static class LoginRoles
     {
         public const string GpgAdmin = "GPGadmin";
+        public const string GpgAdminReadOnly = "GPGadminReadOnly";
         public const string GpgEmployer = "GPGemployer";
     }
 
@@ -132,6 +133,24 @@ namespace GenderPayGap.WebUI.Helpers
             //Use this to lookup the long UserID from the db - ignore the authProvider for now
             Claim claim = claims.FirstOrDefault(c => c.Type.ToLower() == claimType.ToLower());
             return claim == null ? null : claim.Value;
+        }
+
+        public static string GetLoginRoleFromUserRole(User user)
+        {
+            switch (user.UserRole)
+            {
+                case UserRole.Employer:
+                    return LoginRoles.GpgEmployer;
+                
+                case UserRole.Admin:
+                    return LoginRoles.GpgAdmin;
+                    
+                case UserRole.AdminReadOnly:
+                    return LoginRoles.GpgAdminReadOnly;
+                    
+                default:
+                    return null;
+            }
         }
 
         public static bool UserIsLockedOutBecauseOfTooManyRecentFailedLoginAttempts(User user)

@@ -1,4 +1,5 @@
-﻿using GenderPayGap.Core;
+using System;
+using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
@@ -61,7 +62,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
 
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
 
-            string userRole = user.IsAdministrator() ? LoginRoles.GpgAdmin : LoginRoles.GpgEmployer;
+            string userRole = LoginHelper.GetLoginRoleFromUserRole(user);
 
             LoginHelper.Login(HttpContext, user.UserId, userRole);
 
