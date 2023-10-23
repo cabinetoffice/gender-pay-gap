@@ -2,7 +2,7 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Database
-@model GenderPayGap.Database.User
+@model GenderPayGap.WebUI.Models.Admin.AdminConfirmNewAdminUserViewModel
 
 @{
     ViewBag.Title = "Add new admin user - Administration - Gender pay gap service";
@@ -53,26 +53,26 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">User Id</th>
                     <td class="govuk-table__cell">
-                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.UserId})"
+                        <a href="@Url.Action("ViewUser", "AdminViewUser", new {id = Model.User.UserId})"
                            class="govuk-link">
-                            @(Model.UserId)
+                            @(Model.User.UserId)
                         </a>
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Email address</th>
-                    <td class="govuk-table__cell">@(Model.EmailAddress)</td>
+                    <td class="govuk-table__cell">@(Model.User.EmailAddress)</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Email Verified</th>
                     <td class="govuk-table__cell">
-                        @if (Model.EmailVerifiedDate.HasValue)
+                        @if (Model.User.EmailVerifiedDate.HasValue)
                         {
                             <span>
                                 Yes
                                 <br/>
                                 <span class="govuk-body-s">
-                                    (on @(Model.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
+                                    (on @(Model.User.EmailVerifiedDate.Value.ToString("d MMM yyyy")))
                                 </span>
                             </span>
                         }
@@ -83,7 +83,7 @@
                             </span>
                             <br/>
                             <span>
-                                Verification email sent on @(Model.EmailVerifySendDate.Value.ToString("d MMM yyyy, HH:mm"))
+                                Verification email sent on @(Model.User.EmailVerifySendDate.Value.ToString("d MMM yyyy, HH:mm"))
                             </span>
                         }
                     </td>
@@ -91,20 +91,20 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Status</th>
                     <td class="govuk-table__cell">
-                        @(Model.Status)
+                        @(Model.User.Status)
                         <br/>
                         <span class="govuk-body-s">
-                            (since @(Model.StatusDate.ToString("d MMM yyyy")))
+                            (since @(Model.User.StatusDate.ToString("d MMM yyyy")))
                         </span>
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Name</th>
-                    <td class="govuk-table__cell">@(Model.Fullname)</td>
+                    <td class="govuk-table__cell">@(Model.User.Fullname)</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Job title</th>
-                    <td class="govuk-table__cell">@(Model.JobTitle)</td>
+                    <td class="govuk-table__cell">@(Model.User.JobTitle)</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header" style="max-width: 150px;">
@@ -113,10 +113,10 @@
                         <small>(should be none)</small>
                     </th>
                     <td class="govuk-table__cell">
-                        @if (Model.UserOrganisations.Count > 0)
+                        @if (Model.User.UserOrganisations.Count > 0)
                         {
                             <ul class="govuk-list govuk-!-margin-bottom-0">
-                                @foreach (UserOrganisation registration in Model.UserOrganisations)
+                                @foreach (UserOrganisation registration in Model.User.UserOrganisations)
                                 {
                                     @(await Html.PartialAsync("../AdminPendingRegistrations/Sections/PendingRegistrationOtherRegistration", registration))
                                 }
@@ -128,10 +128,25 @@
                         }
                     </td>
                 </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header" style="max-width: 150px;">
+                        Type of admin account
+                    </th>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold">
+                        @if (Model.ReadOnly)
+                        {
+                            <span>Read-only</span>
+                        }
+                        else
+                        {
+                            <span>Full admin account - able to make changes</span>
+                        }
+                    </td>
+                </tr>
             </tbody>
         </table>
         
-        <form method="POST" action="@Url.Action("ConfirmNewAdminUserPost", "AdminManageAdminUsers", new {userId = Model.UserId})">
+        <form method="POST" action="@Url.Action("ConfirmNewAdminUserPost", "AdminManageAdminUsers", new {userId = Model.User.UserId, readOnly = Model.ReadOnly})">
             @(Html.AntiForgeryToken())
             @await Html.GovUkErrorSummary(ViewData.ModelState)
 

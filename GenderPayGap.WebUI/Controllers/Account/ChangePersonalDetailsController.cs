@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GenderPayGap.WebUI.Controllers.Account
 {
     [Route("manage-account")]
-    [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     public class ChangePersonalDetailsController : Controller
     {
         

@@ -17,7 +17,8 @@ namespace GenderPayGap.Core
     public enum UserRole
     {
         Employer = 0,
-        Admin = 1
+        Admin = 1,
+        AdminReadOnly = 2
     }
     
     public enum OrganisationStatuses : byte

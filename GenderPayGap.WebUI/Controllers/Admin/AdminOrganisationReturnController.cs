@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminOrganisationReturnController : Controller
     {
@@ -120,6 +120,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("organisation/{id}/returns/{year}/delete")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult DeleteReturnsOfAYearGet(long id, int year)
         {
             var organisation = dataRepository.Get<Organisation>(id);
@@ -131,6 +132,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("organisation/{id}/returns/{year}/delete/{returnId}")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult DeleteReturnGet(long id, int year, long returnId)
         {
             var organisation = dataRepository.Get<Organisation>(id);
@@ -147,6 +149,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("organisation/{id}/returns/{year}/delete")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteReturnsPost(long id, int year, AdminDeleteReturnViewModel viewModel)
         {

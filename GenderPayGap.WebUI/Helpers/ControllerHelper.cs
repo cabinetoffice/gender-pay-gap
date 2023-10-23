@@ -222,7 +222,7 @@ namespace GenderPayGap.WebUI.Helpers
         public static void RedirectIfUserNeedsToReadPrivacyPolicy(ClaimsPrincipal aspDotNetUser, User gpgUser, IUrlHelper url)
         {
             // Show the privacy policy to non-admin users (if they're not being impersonated) if they haven't read it yet
-            if (!LoginHelper.IsUserBeingImpersonated(aspDotNetUser) && !gpgUser.IsAdministrator())
+            if (!LoginHelper.IsUserBeingImpersonated(aspDotNetUser) && !gpgUser.IsFullOrReadOnlyAdministrator())
             {
                 DateTime? hasReadPrivacy = gpgUser.AcceptedPrivacyStatement;
                 if (hasReadPrivacy == null || hasReadPrivacy.Value < Global.PrivacyChangedDate)

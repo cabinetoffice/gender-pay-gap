@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminReferenceDataController : Controller
     {
@@ -82,6 +82,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("reference-data/sic-sections/upload")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult SicSectionUploadGet()
         {
             var viewModel = new AdminFileUploadViewModel();
@@ -89,6 +90,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("reference-data/sic-codes/upload")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult SicCodeUploadGet()
         {
             var viewModel = new AdminFileUploadViewModel();
@@ -97,6 +99,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpPost("reference-data/sic-sections/upload")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult SicSectionUploadPost(AdminFileUploadViewModel viewModel)
         {
             if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
@@ -127,6 +130,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpPost("reference-data/sic-codes/upload")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult SicCodeUploadPost(AdminFileUploadViewModel viewModel)
         {
             if (!ReferenceDataHelper.TryParseCsvFileWithHeadings(
@@ -159,6 +163,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpPost("reference-data/sic-sections/upload/check")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult SicSectionUploadCheckPost(AdminSicSectionUploadCheckViewModel viewModel)
         {
             var newRecords = JsonConvert.DeserializeObject<List<SicSection>>(viewModel.SerializedNewRecords);
@@ -220,6 +225,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         [HttpPost("reference-data/sic-codes/upload/check")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult SicCodeUploadCheckPost(AdminSicCodeUploadCheckViewModel viewModel)
         {
             var newRecords = JsonConvert.DeserializeObject<List<SicCode>>(viewModel.SerializedNewRecords);

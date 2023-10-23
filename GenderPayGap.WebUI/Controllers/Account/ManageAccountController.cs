@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
 {
-    [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     public class ManageAccountController : Controller
     {
 

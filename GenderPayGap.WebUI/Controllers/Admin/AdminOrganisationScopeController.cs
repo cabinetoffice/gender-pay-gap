@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminOrganisationScopeController : Controller
     {
@@ -39,6 +39,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("organisation/{id}/scope/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangeMultipleScopesGet(long id)
         {
             var organisation = dataRepository.Get<Organisation>(id);
@@ -119,6 +120,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/scope/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeMultipleScopesPost(long id, AdminChangeMultipleScopesViewModel viewModel)
         {
@@ -145,6 +147,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("organisation/{id}/scope/change/{year}")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangeScopeForYearGet(long id, int year)
         {
             var organisation = dataRepository.Get<Organisation>(id);
@@ -162,6 +165,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/scope/change/{year}")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeScopeForYearPost(long id, int year, AdminChangeScopeViewModel viewModel)
         {

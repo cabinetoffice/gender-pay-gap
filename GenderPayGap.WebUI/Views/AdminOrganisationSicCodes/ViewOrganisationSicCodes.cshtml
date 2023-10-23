@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -44,11 +45,14 @@
     </span>
 </h1>
 
-@await Html.GovUkButton(new ButtonViewModel
+@if (User.IsInRole(LoginRoles.GpgAdmin))
 {
-    Href = Url.Action("ChangeSicCodesGet", "AdminOrganisationSicCodes", new {id = Model.OrganisationId}),
-    Text = "Change SIC codes"
-})
+    @await Html.GovUkButton(new ButtonViewModel
+    {
+        Href = Url.Action("ChangeSicCodesGet", "AdminOrganisationSicCodes", new {id = Model.OrganisationId}),
+        Text = "Change SIC codes"
+    })
+}
 
 <h2 class="govuk-heading-m">Current SIC codes</h2>
 

@@ -1,6 +1,7 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -117,12 +118,15 @@
                                         </a>
                                         @if (Model.Returns.Any(r => r.Status != ReturnStatuses.Deleted))
                                         {
-                                            <br/>
-                                            <a href="@Url.Action("DeleteReturnsOfAYearGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
-                                               class="govuk-link" style="font-weight: normal">
-                                                <span style="white-space: nowrap">Delete returns</span>
-                                                <span class="govuk-visually-hidden">for reporting year @reportingYear</span>
-                                            </a>
+                                            @if (User.IsInRole(LoginRoles.GpgAdmin))
+                                            {
+                                                <br/>
+                                                <a href="@Url.Action("DeleteReturnsOfAYearGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
+                                                   class="govuk-link" style="font-weight: normal">
+                                                    <span style="white-space: nowrap">Delete returns</span>
+                                                    <span class="govuk-visually-hidden">for reporting year @reportingYear</span>
+                                                </a>
+                                            }
                                         }
                                     </span>
                                 </td>
@@ -144,21 +148,28 @@
                             <td class="govuk-table__cell">
                                 @if (returnForYear.AccountingDate != previousAccountingDate)
                                 {
-                                    <span>@(returnForYear.IsLateSubmission ? "Yes" : "No") - </span>
-                                    <a href="@Url.Action("ChangeLateFlag", "AdminReturnLateFlag", new {id = returnForYear.ReturnId})" class="govuk-link">
-                                        Change <span class="govuk-visually-hidden"> late submission status for @(returnForYear.GetReportingPeriod())</span>
-                                    </a>
+                                    <span>@(returnForYear.IsLateSubmission ? "Yes" : "No")</span>
+                                    @if (User.IsInRole(LoginRoles.GpgAdmin))
+                                    {
+                                        <br/>
+                                        <a href="@Url.Action("ChangeLateFlag", "AdminReturnLateFlag", new {id = returnForYear.ReturnId})" class="govuk-link">
+                                            Change <span class="govuk-visually-hidden"> late submission status for @(returnForYear.GetReportingPeriod())</span>
+                                        </a>
+                                    }
                                 }
                             </td>
                             <td class="govuk-table__cell">@(returnForYear.LateReason)</td>
                             <td class="govuk-table__cell">
                                 @if (returnForYear.Status != ReturnStatuses.Deleted)
                                 {
-                                    <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year, returnId = returnForYear.ReturnId})"
-                                       class="govuk-link">
-                                        Delete
-                                        <span class="govuk-visually-hidden"> the return for @(returnForYear.GetReportingPeriod()) modified on @(returnForYear.Modified.ToString("d MMM yyyy HH:mm"))</span>
-                                    </a>
+                                    @if (User.IsInRole(LoginRoles.GpgAdmin))
+                                    {
+                                        <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.OrganisationId, year = returnForYear.AccountingDate.Year, returnId = returnForYear.ReturnId})"
+                                           class="govuk-link">
+                                            Delete
+                                            <span class="govuk-visually-hidden"> the return for @(returnForYear.GetReportingPeriod()) modified on @(returnForYear.Modified.ToString("d MMM yyyy HH:mm"))</span>
+                                        </a>
+                                    }
                                 }
                             </td>
                         </tr>

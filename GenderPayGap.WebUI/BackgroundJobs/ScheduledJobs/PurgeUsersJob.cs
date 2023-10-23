@@ -36,7 +36,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             List<User> users = dataRepository.GetAll<User>()
                 .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active)
-                .Where(u => u.UserRole != UserRole.Admin)  // Do not purge Admin users 
+                .Where(u => u.UserRole == UserRole.Employer)  // Only purge Employer users 
                 .Where(u => u.EmailVerifiedDate == null)
                 .Where(u => u.EmailVerifySendDate == null || u.EmailVerifySendDate.Value < deadline)
                 .Include(u => u.UserOrganisations)

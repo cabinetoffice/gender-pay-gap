@@ -1,6 +1,7 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.Admin.AdminOrganisationReturnDetailsViewModel
@@ -414,10 +415,13 @@
                         <td class="govuk-table__cell">
                             @if (thisVersion.Status != ReturnStatuses.Deleted)
                             {
-                                <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.Organisation.OrganisationId, year = thisVersion.AccountingDate.Year, returnId = thisVersion.ReturnId})"
-                                   class="govuk-link">
-                                    Delete
-                                </a>
+                                @if (User.IsInRole(LoginRoles.GpgAdmin))
+                                {
+                                    <a href="@Url.Action("DeleteReturnGet", "AdminOrganisationReturn", new {id = Model.Organisation.OrganisationId, year = thisVersion.AccountingDate.Year, returnId = thisVersion.ReturnId})"
+                                       class="govuk-link">
+                                        Delete
+                                    </a>
+                                }
                             }
                         </td>
                     }

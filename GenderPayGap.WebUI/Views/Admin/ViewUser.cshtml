@@ -1,8 +1,10 @@
 @using GenderPayGap.Core
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model GenderPayGap.Database.User
 
 @{
@@ -53,7 +55,7 @@
 </h1>
 
 <h2 class="govuk-heading-l">General information</h2>
-<table class="govuk-table">
+<table class="govuk-table govuk-!-margin-bottom-8">
     <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Name</th>
@@ -65,12 +67,12 @@
             <td class="govuk-table__cell">@(Model.EmailAddress)</td>
             <td class="govuk-table__cell"></td>
         </tr>
-        @if (Model.IsAdministrator())
+        @if (Model.IsFullOrReadOnlyAdministrator())
         {
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">User Role</th>
                 <td class="govuk-table__cell govuk-!-font-weight-bold">
-                    Admin User
+                    @(Model.UserRole)
                 </td>
                 <td class="govuk-table__cell">
                     <a href="@Url.Action("ViewAdminUsers", "AdminManageAdminUsers")"
@@ -97,7 +99,10 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewStatusHistory", "AdminUserStatus", new {id = Model.UserId})"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of statuses</span> / change<span class="govuk-visually-hidden"> status</span>
+                    History <span class="govuk-visually-hidden"> of statuses</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> status</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -144,40 +149,52 @@
             <th scope="row" class="govuk-table__header">Happy to be contacted</th>
             <td class="govuk-table__cell">@(Model.AllowContact ? "Yes" : "No")</td>
             <td class="govuk-table__cell">
-                <a href="@Url.Action("ChangeContactPreferencesGet", "AdminUserContactPreferences", new {id = Model.UserId})"
-                   class="govuk-link">
-                    Change <span class="govuk-visually-hidden"> contact preferences</span>
-                </a>
+                @if (User.IsInRole(LoginRoles.GpgAdmin))
+                {
+                    <a href="@Url.Action("ChangeContactPreferencesGet", "AdminUserContactPreferences", new {id = Model.UserId})"
+                       class="govuk-link">
+                        Change <span class="govuk-visually-hidden"> contact preferences</span>
+                    </a>
+                }
             </td>
         </tr>
         <tr class="govuk-table__row">
             <th scope="row" class="govuk-table__header">Would like to receive updates</th>
             <td class="govuk-table__cell">@(Model.SendUpdates ? "Yes" : "No")</td>
             <td class="govuk-table__cell">
-                <a href="@Url.Action("ChangeContactPreferencesGet", "AdminUserContactPreferences", new {id = Model.UserId})"
-                   class="govuk-link">
-                    Change <span class="govuk-visually-hidden"> contact preferences</span>
-                </a>
+                @if (User.IsInRole(LoginRoles.GpgAdmin))
+                {
+                    <a href="@Url.Action("ChangeContactPreferencesGet", "AdminUserContactPreferences", new {id = Model.UserId})"
+                       class="govuk-link">
+                        Change <span class="govuk-visually-hidden"> contact preferences</span>
+                    </a>
+                }
             </td>
         </tr>
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">Audit logs</th>
-            <td class="govuk-table__cell"></td>
-            <td class="govuk-table__cell">
-                <a href="@Url.Action("ViewUserAuditLogs", "AdminViewAuditLogs", new {id = Model.UserId})"
-                   class="govuk-link">
-                    View audit logs
-                </a>
-            </td>
-        </tr>
+        @if (User.IsInRole(LoginRoles.GpgAdmin))
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Audit logs</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell">
+                    <a href="@Url.Action("ViewUserAuditLogs", "AdminViewAuditLogs", new {id = Model.UserId})"
+                       class="govuk-link">
+                        View audit logs
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
-<h2 class="govuk-heading-l">Impersonate User</h2>
-<form method="POST" action="@Url.Action("ImpersonateDirectPost", "AdminImpersonateUser", new { userId = Model.UserId })">
-    @Html.AntiForgeryToken()
-    <input type="submit" class="govuk-button" data-module="govuk-button" value="Impersonate"/>
-</form>
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <h2 class="govuk-heading-l">Impersonate User</h2>
+    <form method="POST" action="@Url.Action("ImpersonateDirectPost", "AdminImpersonateUser", new {userId = Model.UserId})">
+        @Html.AntiForgeryToken()
+        <input type="submit" class="govuk-button" data-module="govuk-button" value="Impersonate"/>
+    </form>
+}
 
 <h2 class="govuk-heading-l">Registered organisations</h2>
 @if (!Model.UserOrganisations.Any())
@@ -193,7 +210,10 @@ else
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">Organisation</th>
                 <th scope="col" class="govuk-table__header">Status</th>
-                <th scope="col" class="govuk-table__header">Actions</th>
+                @if (User.IsInRole(LoginRoles.GpgAdmin))
+                {
+                    <th scope="col" class="govuk-table__header">Actions</th>
+                }
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -274,31 +294,33 @@ else
                             </span>
                         }
                     </td>
-                    <td class="govuk-table__cell">
-                        @if (userStatus == "AWAITING_APPROVAL")
-                        {
-                            <a href="@Url.Action("PendingRegistrationGet", "AdminPendingRegistrations", new {userId = userOrganisation.UserId, organisationId = userOrganisation.OrganisationId})"
+                    @if (User.IsInRole(LoginRoles.GpgAdmin))
+                    {
+                        <td class="govuk-table__cell">
+                            @if (userStatus == "AWAITING_APPROVAL")
+                            {
+                                <a href="@Url.Action("PendingRegistrationGet", "AdminPendingRegistrations", new {userId = userOrganisation.UserId, organisationId = userOrganisation.OrganisationId})"
+                                   class="govuk-link">
+                                    Review user request<span class="govuk-visually-hidden"> for @(Model.Fullname)</span>
+                                </a>
+                                <br/>
+                                <br/>
+                            }
+                            else if (userStatus == "AWAITING_PIN")
+                            {
+                                <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins", new {userId = Model.UserId, organisationId = organisation.OrganisationId}))"
+                                   class="govuk-link">
+                                    Send PIN <span class="govuk-visually-hidden"> to @(Model.Fullname) at @(organisation.OrganisationName)</span>
+                                </a>
+                                <br/>
+                                <br/>
+                            }
+                            <a href="@Url.Action("RemoveOrganisationFromUserGet", "AdminRemoveUserFromOrganisation", new {organisationId = organisation.OrganisationId, userId = Model.UserId})"
                                class="govuk-link">
-                                Review user request<span class="govuk-visually-hidden"> for @(Model.Fullname)</span>
+                                Remove user <span class="govuk-visually-hidden">@(Model.Fullname)</span> from organisation <span class="govuk-visually-hidden">@(organisation.OrganisationName)</span>
                             </a>
-                            <br/>
-                            <br/>
-                        }
-                        else if (userStatus == "AWAITING_PIN")
-                        {
-                            <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
-                                         new {userId = Model.UserId, organisationId = organisation.OrganisationId}))"
-                               class="govuk-link">
-                                Send PIN <span class="govuk-visually-hidden"> to @(Model.Fullname) at @(organisation.OrganisationName)</span>
-                            </a>
-                            <br/>
-                            <br/>
-                        }
-                        <a href="@Url.Action("RemoveOrganisationFromUserGet", "AdminRemoveUserFromOrganisation", new {organisationId = organisation.OrganisationId, userId = Model.UserId})"
-                           class="govuk-link">
-                            Remove user <span class="govuk-visually-hidden">@(Model.Fullname)</span> from organisation <span class="govuk-visually-hidden">@(organisation.OrganisationName)</span>
-                        </a>
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

@@ -25,10 +25,10 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
         }
 
         [HttpGet]
-        [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin)]
+        [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
         public IActionResult ManageOrganisationsGet()
         {
-            if (User.IsInRole(LoginRoles.GpgAdmin))
+            if (User.IsInRole(LoginRoles.GpgAdmin) || User.IsInRole(LoginRoles.GpgAdminReadOnly))
             {
                 return RedirectToAction("AdminHomePage", "AdminHomepage");
             }

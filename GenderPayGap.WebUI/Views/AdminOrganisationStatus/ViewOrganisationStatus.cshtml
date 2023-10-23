@@ -1,5 +1,6 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Organisation
@@ -45,42 +46,45 @@
     </span>
 </h1>
 
-@if (Model.Status == OrganisationStatuses.Pending && Model.UserOrganisations.Any(uo => !uo.HasBeenActivated()))
+@if (User.IsInRole(LoginRoles.GpgAdmin))
 {
-    <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
-        Change status
-    </button>
-    <br/>
-    <p class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-1">
-        You cannot change status of a Pending organisation that has outstanding Pending Registrations.
-    </p>
-    <p class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-4">
-        Please
-        <a href="@Url.Action("PendingRegistrations", "AdminPendingRegistrations")"
-           class="govuk-link">
-            review the Pending Registrations</a>
-        first, then come back here to change the status of the organisation.
-    </p>
-}
-else if (Model.Status == OrganisationStatuses.Retired ||
-         Model.Status == OrganisationStatuses.Active ||
-         Model.Status == OrganisationStatuses.Deleted ||
-         Model.Status == OrganisationStatuses.Pending)
-{
-    @await Html.GovUkButton(new ButtonViewModel
+    @if (Model.Status == OrganisationStatuses.Pending && Model.UserOrganisations.Any(uo => !uo.HasBeenActivated()))
     {
-        Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
-        Text = "Change status"
-    })
-}
-else
-{
-    <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
-        Change status
-    </button>
-    <span class="govuk-hint">
-        You cannot change status of an organisation that is @(Model.Status)
-    </span>
+        <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
+            Change status
+        </button>
+        <br/>
+        <p class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-1">
+            You cannot change status of a Pending organisation that has outstanding Pending Registrations.
+        </p>
+        <p class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-4">
+            Please
+            <a href="@Url.Action("PendingRegistrations", "AdminPendingRegistrations")"
+               class="govuk-link">
+                review the Pending Registrations</a>
+            first, then come back here to change the status of the organisation.
+        </p>
+    }
+    else if (Model.Status == OrganisationStatuses.Retired ||
+             Model.Status == OrganisationStatuses.Active ||
+             Model.Status == OrganisationStatuses.Deleted ||
+             Model.Status == OrganisationStatuses.Pending)
+    {
+        @await Html.GovUkButton(new ButtonViewModel
+        {
+            Href = Url.Action("ChangeStatusGet", "AdminOrganisationStatus", new {id = Model.OrganisationId}),
+            Text = "Change status"
+        })
+    }
+    else
+    {
+        <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
+            Change status
+        </button>
+        <span class="govuk-hint">
+            You cannot change status of an organisation that is @(Model.Status)
+        </span>
+    }
 }
 
 @if (!Model.OrganisationStatuses.Any())

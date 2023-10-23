@@ -1,6 +1,7 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Database
 @using GenderPayGap.Database.Models
+@using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.WebUI.Models.Admin
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
@@ -50,22 +51,25 @@
             </span>
         </h1>
         
-        @if (Model.Organisation.Status == OrganisationStatuses.Retired || Model.Organisation.Status == OrganisationStatuses.Active || Model.Organisation.Status == OrganisationStatuses.Deleted)
+        @if (User.IsInRole(LoginRoles.GpgAdmin))
         {
-            @await Html.GovUkButton(new ButtonViewModel
+            @if (Model.Organisation.Status == OrganisationStatuses.Retired || Model.Organisation.Status == OrganisationStatuses.Active || Model.Organisation.Status == OrganisationStatuses.Deleted)
             {
-                Href = Url.Action("ChangeSectorGet", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId}),
-                Text = "Change sector"
-            })
-        }
-        else
-        {
-            <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
-                Change sector
-            </button>
-            <span class="govuk-hint">
-                You cannot change sector of an organisation that is @(Model.Organisation.Status)
-            </span>
+                @await Html.GovUkButton(new ButtonViewModel
+                {
+                    Href = Url.Action("ChangeSectorGet", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId}),
+                    Text = "Change sector"
+                })
+            }
+            else
+            {
+                <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-bottom-2" data-module="govuk-button" style="vertical-align: baseline;">
+                    Change sector
+                </button>
+                <span class="govuk-hint">
+                    You cannot change sector of an organisation that is @(Model.Organisation.Status)
+                </span>
+            }
         }
         
         @if (!Model.SectorHistory.Any())

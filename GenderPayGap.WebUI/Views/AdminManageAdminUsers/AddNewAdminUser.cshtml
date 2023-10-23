@@ -76,6 +76,13 @@
                 {
                     Classes = "govuk-!-margin-top-6"
                 })
+            
+            @(await Html.GovUkCheckboxFromBoolFor(
+                m => m.ReadOnly,
+                label: new LabelViewModel
+                {
+                    Text = "Make this admin user Read-Only"
+                }))
 
             @(await Html.GovUkButton(new ButtonViewModel
             {

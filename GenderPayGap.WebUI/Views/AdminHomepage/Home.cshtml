@@ -1,3 +1,4 @@
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminHomepageViewModel
 @{
     ViewBag.Title = "Administration - Gender pay gap service";
@@ -33,28 +34,31 @@
 </form>
 
 
-<h2 class="govuk-heading-l">Actions</h2>
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <h2 class="govuk-heading-l">Actions</h2>
 
-<p class="govuk-body">
-    <a href="@Url.Action("Impersonate", "AdminImpersonateUser")" class="govuk-link govuk-!-font-weight-bold">Impersonate user</a>
-    <br/>
-    Login as a user to view their screens.
-</p>
+    <p class="govuk-body">
+        <a href="@Url.Action("Impersonate", "AdminImpersonateUser")" class="govuk-link govuk-!-font-weight-bold">Impersonate user</a>
+        <br/>
+        Login as a user to view their screens.
+    </p>
 
 
-<h2 class="govuk-heading-l">Registrations</h2>
+    <h2 class="govuk-heading-l">Registrations</h2>
 
-<p class="govuk-body">
-    <a href="@(Url.Action("UnconfirmedPins", "AdminUnconfirmedPins"))" class="govuk-link govuk-!-font-weight-bold">Unconfirmed PINs in the post</a>
-    <br/>
-    PINs in the Post that haven't yet been confirmed.
-</p>
+    <p class="govuk-body">
+        <a href="@(Url.Action("UnconfirmedPins", "AdminUnconfirmedPins"))" class="govuk-link govuk-!-font-weight-bold">Unconfirmed PINs in the post</a>
+        <br/>
+        PINs in the Post that haven't yet been confirmed.
+    </p>
 
-<p class="govuk-body">
-    <a href="@(Url.Action("PendingRegistrations", "AdminPendingRegistrations"))" class="govuk-link govuk-!-font-weight-bold">Pending registrations</a>
-    <br/>
-    List of registrations which are awaiting manual authorisation.
-</p>
+    <p class="govuk-body">
+        <a href="@(Url.Action("PendingRegistrations", "AdminPendingRegistrations"))" class="govuk-link govuk-!-font-weight-bold">Pending registrations</a>
+        <br/>
+        List of registrations which are awaiting manual authorisation.
+    </p>
+}
 
 
 <h2 class="govuk-heading-l">Information</h2>
@@ -75,7 +79,7 @@
     <a href="@Url.Action("ReferenceData", "AdminReferenceData")" class="govuk-link govuk-!-font-weight-bold">
         Reference Data (formerly Uploads)
     </a>
-    <br />
+    <br/>
     Used to keep the list of SIC codes / SIC sections up to date
 </p>
 
@@ -86,7 +90,9 @@
 </p>
 
 
-<h2 class="govuk-heading-l">Feedback</h2>
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <h2 class="govuk-heading-l">Feedback</h2>
 
 @if (Model.NewFeedbackCount > 0)
 {
@@ -105,15 +111,15 @@
     </p>
 }
 
-<p class="govuk-body">
-    There are <b>@(Model.NonSpamFeedbackCount)</b> non-spam feedback responses.
-    <br/>
-    <a href="@Url.Action("ViewFeedback", "AdminFeedback")"
-       class="govuk-link">
-        View and download feedback
-    </a>
-</p>
-
+    <p class="govuk-body">
+        There are <b>@(Model.NonSpamFeedbackCount)</b> non-spam feedback responses.
+        <br/>
+        <a href="@Url.Action("ViewFeedback", "AdminFeedback")"
+           class="govuk-link">
+            View and download feedback
+        </a>
+    </p>
+}
 
 <h2 class="govuk-heading-l">Admin users</h2>
 
@@ -126,20 +132,25 @@
     Change your own email address, password, name, job title or phone number
 </p>
 
-<p class="govuk-body">
-    <a href="@Url.Action("ViewAdminUsers", "AdminManageAdminUsers")"
-       class="govuk-link govuk-!-font-weight-bold">
-        Manage admin users
-    </a>
-    <br />
-    Add or remove admin users
-</p>
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <p class="govuk-body">
+        <a href="@Url.Action("ViewAdminUsers", "AdminManageAdminUsers")"
+           class="govuk-link govuk-!-font-weight-bold">
+            Manage admin users
+        </a>
+        <br/>
+        Add or remove admin users
+    </p>
+}
 
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <h2 class="govuk-heading-l">Background Jobs</h2>
 
-<h2 class="govuk-heading-l">Background Jobs</h2>
-
-<p class="govuk-body">
-    <a href="/admin/hangfire" class="govuk-link govuk-!-font-weight-bold">Background Jobs dashboard (Hangfire)</a>
-    <br />
-    A technical dashboard showing background jobs that are queued / running / succeeded / failed.
-</p>
+    <p class="govuk-body">
+        <a href="/admin/hangfire" class="govuk-link govuk-!-font-weight-bold">Background Jobs dashboard (Hangfire)</a>
+        <br/>
+        A technical dashboard showing background jobs that are queued / running / succeeded / failed.
+    </p>
+}
