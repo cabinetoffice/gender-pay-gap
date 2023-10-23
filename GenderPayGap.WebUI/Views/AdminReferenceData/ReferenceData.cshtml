@@ -1,5 +1,6 @@
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminUploadsViewModel
 @{
     ViewBag.Title = "Reference Data - Administration - Gender pay gap service";
@@ -58,15 +59,18 @@
         </span>
     </a>
 </p>
-<p class="govuk-body">
-    <a href="@Url.Action("SicSectionUploadGet", "AdminReferenceData")" 
-       class="govuk-link"> 
-        Upload a new version 
-        <span class="govuk-visually-hidden"> 
-            of the SIC sections list 
-        </span> 
-    </a>
-</p>
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <p class="govuk-body">
+        <a href="@Url.Action("SicSectionUploadGet", "AdminReferenceData")"
+           class="govuk-link">
+            Upload a new version
+            <span class="govuk-visually-hidden">
+                of the SIC sections list
+            </span>
+        </a>
+    </p>
+}
 
 
 <h2 class="govuk-heading-l">
@@ -94,12 +98,15 @@
         </span>
     </a>
 </p>
-<p class="govuk-body">
-    <a href="@Url.Action("SicCodeUploadGet", "AdminReferenceData")" 
-       class="govuk-link"> 
-        Upload a new version 
-        <span class="govuk-visually-hidden"> 
-            of the SIC codes list 
-        </span> 
-    </a>
-</p>
+@if (User.IsInRole(LoginRoles.GpgAdmin))
+{
+    <p class="govuk-body">
+        <a href="@Url.Action("SicCodeUploadGet", "AdminReferenceData")"
+           class="govuk-link">
+            Upload a new version
+            <span class="govuk-visually-hidden">
+                of the SIC codes list
+            </span>
+        </a>
+    </p>
+}

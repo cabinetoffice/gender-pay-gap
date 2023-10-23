@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminOrganisationNameController : Controller
     {
@@ -41,6 +41,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("organisation/{id}/name/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangeNameGet(long id)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
@@ -99,6 +100,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [HttpPost("organisation/{id}/name/change")]
         public IActionResult ChangeNamePost(long id, ChangeOrganisationNameViewModel viewModel)
         {
@@ -220,6 +222,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("organisation/{organisationId}/name/{nameId}/delete")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult DeleteNameGet(long organisationId, long nameId)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);
@@ -240,6 +243,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
         [ValidateAntiForgeryToken]
         [HttpPost("organisation/{organisationId}/name/{nameId}/delete")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult DeleteNamePost(long organisationId, long nameId, DeleteOrganisationNameViewModel viewModel)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);

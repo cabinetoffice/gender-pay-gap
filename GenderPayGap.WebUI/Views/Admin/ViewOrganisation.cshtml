@@ -4,6 +4,7 @@
 @using GenderPayGap.Core
 @using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
 @model GenderPayGap.WebUI.Models.Admin.AdminViewOrganisationViewModel
 
 @{
@@ -71,7 +72,10 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewNameHistory", "AdminOrganisationName", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of names</span> / change<span class="govuk-visually-hidden"> name</span>
+                    History <span class="govuk-visually-hidden"> of names</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> name</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -83,7 +87,10 @@
             <td class="govuk-table__cell">
                 <a href="@(Url.Action("ViewAddressHistory", "AdminOrganisationAddress", new {id = Model.Organisation.OrganisationId}))"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of addresses</span> / change<span class="govuk-visually-hidden"> address</span>
+                    History <span class="govuk-visually-hidden"> of addresses</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> address</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -95,11 +102,14 @@
             <th scope="row" class="govuk-table__header">Company Number</th>
             <td class="govuk-table__cell">@(Model.Organisation.CompanyNumber)</td>
             <td class="govuk-table__cell">
-                <a href="@Url.Action("ChangeCompanyNumberGet", "AdminOrganisationCompanyNumber", new {id = Model.Organisation.OrganisationId})"
-                   class="govuk-link">
-                    @(string.IsNullOrWhiteSpace(Model.Organisation.CompanyNumber) ? "Add" : "Change")
-                    <span class="govuk-visually-hidden"> company number</span>
-                </a>
+                @if (User.IsInRole(LoginRoles.GpgAdmin))
+                {
+                    <a href="@Url.Action("ChangeCompanyNumberGet", "AdminOrganisationCompanyNumber", new {id = Model.Organisation.OrganisationId})"
+                       class="govuk-link">
+                        @(string.IsNullOrWhiteSpace(Model.Organisation.CompanyNumber) ? "Add" : "Change")
+                        <span class="govuk-visually-hidden"> company number</span>
+                    </a>
+                }
             </td>
         </tr>
         <tr class="govuk-table__row">
@@ -113,19 +123,22 @@
                     @(Model.Organisation.OptedOutFromCompaniesHouseUpdate ? "Opted out" : "Opted in")
                 </td>
                 <td class="govuk-table__cell">
-                    @if (Model.Organisation.OptedOutFromCompaniesHouseUpdate)
+                    @if (User.IsInRole(LoginRoles.GpgAdmin))
                     {
-                        <a href="@Url.Action("OptIn", "AdminOrganisationCompaniesHouseOptInOut", new {id = Model.Organisation.OrganisationId})"
-                           class="govuk-link">
-                            Change <span class="govuk-visually-hidden"> Companies House sync to opted in</span>
-                        </a>
-                    }
-                    else
-                    {
-                        <a href="@Url.Action("OptOut", "AdminOrganisationCompaniesHouseOptInOut", new {id = Model.Organisation.OrganisationId})"
-                           class="govuk-link">
-                            Change <span class="govuk-visually-hidden"> Companies House sync to opted out</span>
-                        </a>
+                        @if (Model.Organisation.OptedOutFromCompaniesHouseUpdate)
+                        {
+                            <a href="@Url.Action("OptIn", "AdminOrganisationCompaniesHouseOptInOut", new {id = Model.Organisation.OrganisationId})"
+                               class="govuk-link">
+                                Change <span class="govuk-visually-hidden"> Companies House sync to opted in</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("OptOut", "AdminOrganisationCompaniesHouseOptInOut", new {id = Model.Organisation.OrganisationId})"
+                               class="govuk-link">
+                                Change <span class="govuk-visually-hidden"> Companies House sync to opted out</span>
+                            </a>
+                        }
                     }
                 </td>
             }
@@ -147,7 +160,10 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewStatusHistory", "AdminOrganisationStatus", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of statuses</span> / change<span class="govuk-visually-hidden"> status</span>
+                    History <span class="govuk-visually-hidden"> of statuses</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> status</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -159,7 +175,10 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewSectorHistory", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of sectors</span> / change<span class="govuk-visually-hidden"> sector</span>
+                    History <span class="govuk-visually-hidden"> of sectors</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> sector</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -171,10 +190,13 @@
                     @(Model.Organisation.LatestPublicSectorType?.PublicSectorType?.Description ?? "(none)")
                 </td>
                 <td class="govuk-table__cell">
-                    <a href="@Url.Action("ChangePublicSectorClassificationGet", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId})"
-                       class="govuk-link">
-                        Change <span class="govuk-visually-hidden">public sector classification</span>
-                    </a>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin))
+                    {
+                        <a href="@Url.Action("ChangePublicSectorClassificationGet", "AdminOrganisationSector", new {id = Model.Organisation.OrganisationId})"
+                           class="govuk-link">
+                            Change <span class="govuk-visually-hidden">public sector classification</span>
+                        </a>
+                    }
                 </td>
             </tr>
         }
@@ -195,7 +217,10 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewSicCodesHistory", "AdminOrganisationSicCodes", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of SIC codes</span> / change<span class="govuk-visually-hidden"> SIC codes</span>
+                    History <span class="govuk-visually-hidden"> of SIC codes</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> SIC codes</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -233,7 +258,10 @@
             <td class="govuk-table__cell">
                 <a href="@Url.Action("ViewScopeHistory", "AdminOrganisationScope", new {id = Model.Organisation.OrganisationId})"
                    class="govuk-link">
-                    History <span class="govuk-visually-hidden"> of scopes</span> / change<span class="govuk-visually-hidden"> scope</span>
+                    History <span class="govuk-visually-hidden"> of scopes</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin)) {
+                        <span>/ change<span class="govuk-visually-hidden"> scopes</span></span>
+                    }
                 </a>
             </td>
         </tr>
@@ -269,15 +297,18 @@
                 </a>
             </td>
         </tr>
-        <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header" colspan="2">Audit logs</th>
-            <td class="govuk-table__cell">
-                <a href="@Url.Action("ViewOrganisationAuditLogs", "AdminViewAuditLogs", new {id = Model.Organisation.OrganisationId})"
-                   class="govuk-link">
-                    View audit logs
-                </a>
-            </td>
-        </tr>
+        @if (User.IsInRole(LoginRoles.GpgAdmin))
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header" colspan="2">Audit logs</th>
+                <td class="govuk-table__cell">
+                    <a href="@Url.Action("ViewOrganisationAuditLogs", "AdminViewAuditLogs", new {id = Model.Organisation.OrganisationId})"
+                       class="govuk-link">
+                        View audit logs
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -295,7 +326,10 @@ else
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">User</th>
                 <th scope="col" class="govuk-table__header">Status</th>
-                <th scope="col" class="govuk-table__header">Actions</th>
+                @if (User.IsInRole(LoginRoles.GpgAdmin))
+                {
+                    <th scope="col" class="govuk-table__header">Actions</th>
+                }
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -378,51 +412,53 @@ else
                             </span>
                         }
                     </td>
-                    <td class="govuk-table__cell">
-                        @if (userStatus == "REGISTERED")
-                        {
-                            <form method="POST"
-                                  action="@Url.Action("ImpersonateDirectPost", "AdminImpersonateUser", new { userId = user.UserId })"
-                                  style="display: inline"
-                                  gpg-module="impersonate-form">
-                                @Html.AntiForgeryToken()
-                                @(await Html.GovUkButton(new ButtonViewModel
-                                {
-                                    Html = @<text>
-                                               Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
-                                            </text>,
-                                    Classes = "govuk-button--secondary govuk-!-margin-bottom-0",
-                                    PreventDoubleClick = true
-                                }))
-                                <a href="#"
-                                   class="govuk-link"
-                                   style="display: none">
-                                    Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                    @if (User.IsInRole(LoginRoles.GpgAdmin))
+                    {
+                        <td class="govuk-table__cell">
+                            @if (userStatus == "REGISTERED")
+                            {
+                                <form method="POST"
+                                      action="@Url.Action("ImpersonateDirectPost", "AdminImpersonateUser", new {userId = user.UserId})"
+                                      style="display: inline"
+                                      gpg-module="impersonate-form">
+                                    @Html.AntiForgeryToken()
+                                    @(await Html.GovUkButton(new ButtonViewModel
+                                    {
+                                        Html = @<text>
+                                                   Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                                                </text>,
+                                        Classes = "govuk-button--secondary govuk-!-margin-bottom-0",
+                                        PreventDoubleClick = true
+                                    }))
+                                    <a href="#"
+                                       class="govuk-link"
+                                       style="display: none">
+                                        Impersonate user <span class="govuk-visually-hidden">@(user.Fullname)</span>
+                                    </a>
+                                </form>
+                            }
+                            else if (userStatus == "AWAITING_PIN")
+                            {
+                                <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins", new {userId = user.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                                   class="govuk-link">
+                                    Send PIN <span class="govuk-visually-hidden"> to @(user.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
                                 </a>
-                            </form>
-                        }
-                        else if (userStatus == "AWAITING_PIN")
-                        {
-                            <a href="@(Url.Action("SendPinWarning", "AdminUnconfirmedPins",
-                                         new {userId = user.UserId, organisationId = userOrganisation.Organisation.OrganisationId}))"
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("PendingRegistrationGet", "AdminPendingRegistrations", new {userId = userOrganisation.UserId, organisationId = userOrganisation.OrganisationId})"
+                                   class="govuk-link">
+                                    Review user request <span class="govuk-visually-hidden"> for @(user.Fullname)</span>
+                                </a>
+                            }
+                            <br/>
+                            <br/>
+                            <a href="@Url.Action("RemoveUserFromOrganisationGet", "AdminRemoveUserFromOrganisation", new {organisationId = userOrganisation.Organisation.OrganisationId, userId = user.UserId})"
                                class="govuk-link">
-                                Send PIN <span class="govuk-visually-hidden"> to @(user.Fullname) at @(userOrganisation.Organisation.OrganisationName)</span>
+                                Remove user <span class="govuk-visually-hidden">@(user.Fullname)</span> from organisation <span class="govuk-visually-hidden">@(userOrganisation.Organisation.OrganisationName)</span>
                             </a>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("PendingRegistrationGet", "AdminPendingRegistrations", new {userId = userOrganisation.UserId, organisationId = userOrganisation.OrganisationId})"
-                               class="govuk-link">
-                                Review user request <span class="govuk-visually-hidden"> for @(user.Fullname)</span>
-                            </a>
-                        }
-                        <br/>
-                        <br/>
-                        <a href="@Url.Action("RemoveUserFromOrganisationGet", "AdminRemoveUserFromOrganisation", new {organisationId = userOrganisation.Organisation.OrganisationId, userId = user.UserId})"
-                           class="govuk-link">
-                            Remove user <span class="govuk-visually-hidden">@(user.Fullname)</span> from organisation <span class="govuk-visually-hidden">@(userOrganisation.Organisation.OrganisationName)</span>
-                        </a>
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminOrganisationSectorController : Controller
     {
@@ -50,6 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
         
         [HttpGet("organisation/{id}/sector/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangeSectorGet(long id)
         {
             var viewModel = new AdminChangeSectorViewModel();
@@ -61,6 +62,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
         
         [HttpPost("organisation/{id}/sector/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeSectorPost(long id, AdminChangeSectorViewModel viewModel)
         {
@@ -102,6 +104,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("organisation/{id}/change-public-sector-classification")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangePublicSectorClassificationGet(long id)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
@@ -118,6 +121,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpPost("organisation/{id}/change-public-sector-classification")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult ChangePublicSectorClassificationPost(long id, AdminChangePublicSectorClassificationViewModel viewModel)
         {

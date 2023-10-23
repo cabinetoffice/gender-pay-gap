@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminDownloadsController : Controller
     {

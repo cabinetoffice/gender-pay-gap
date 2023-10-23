@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
 {
-    [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgEmployer + "," + LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("manage-account")]
     public class ChangeEmailController : Controller
     {

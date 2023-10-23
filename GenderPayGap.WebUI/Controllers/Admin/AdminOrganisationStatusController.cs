@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminOrganisationStatusController : Controller
     {
@@ -41,6 +41,7 @@ namespace GenderPayGap.WebUI.Controllers
 
 
         [HttpGet("organisation/{id}/status/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangeStatusGet(long id)
         {
             var viewModel = new AdminChangeOrganisationStatusViewModel();
@@ -52,6 +53,7 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpPost("organisation/{id}/status/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [ValidateAntiForgeryToken]
         public IActionResult ChangeStatusPost(long id, AdminChangeOrganisationStatusViewModel viewModel)
         {

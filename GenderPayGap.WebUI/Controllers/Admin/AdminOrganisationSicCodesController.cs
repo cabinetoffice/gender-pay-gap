@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
-    [Authorize(Roles = LoginRoles.GpgAdmin)]
+    [Authorize(Roles = LoginRoles.GpgAdmin + "," + LoginRoles.GpgAdminReadOnly)]
     [Route("admin")]
     public class AdminOrganisationSicCodesController : Controller
     {
@@ -43,6 +43,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("organisation/{id}/sic-codes/change")]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         public IActionResult ChangeSicCodesGet(long id)
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
@@ -157,6 +158,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = LoginRoles.GpgAdmin)]
         [HttpPost("organisation/{id}/sic-codes/change")]
         public IActionResult ChangeSicCodesPost(long id, ChangeOrganisationSicCodesViewModel viewModel)
         {
