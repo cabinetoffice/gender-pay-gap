@@ -176,7 +176,7 @@ namespace GenderPayGap.WebUI.Controllers
             bool databaseIsEmpty = dataRepository.GetAll<User>().Count() == 0;
 
             bool userIsAdministrator = User.Identity.IsAuthenticated
-                                       && ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository).IsAdministrator();
+                                       && ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository).IsFullAdministrator();
 
             return databaseIsEmpty || userIsAdministrator;
         }

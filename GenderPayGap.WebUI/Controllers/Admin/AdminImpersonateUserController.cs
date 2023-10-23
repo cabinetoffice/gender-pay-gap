@@ -3,10 +3,8 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 return View("ImpersonateUser");
             }
 
-            if (impersonatedUser.IsAdministrator())
+            if (impersonatedUser.IsFullOrReadOnlyAdministrator())
             {
                 ModelState.AddModelError(nameof(viewModel.EmailAddress), "Impersonating other administrators is not permitted");
                 return View("ImpersonateUser");
@@ -79,7 +77,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 throw new Exception($"Trying to impersonate user ({userId}) but this user does not exist");
             }
 
-            if (impersonatedUser.IsAdministrator())
+            if (impersonatedUser.IsFullOrReadOnlyAdministrator())
             {
                 throw new Exception($"Trying to impersonate user ({userId}) but this user is an administrator");
             }

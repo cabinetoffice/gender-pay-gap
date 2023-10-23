@@ -75,9 +75,19 @@ namespace GenderPayGap.Database
         [NotMapped]
         public string Fullname => (Firstname + " " + Lastname).TrimI();
 
-        public bool IsAdministrator()
+        public bool IsFullAdministrator()
         {
             return UserRole == UserRole.Admin;
+        }
+
+        public bool IsReadOnlyAdministrator()
+        {
+            return UserRole == UserRole.AdminReadOnly;
+        }
+
+        public bool IsFullOrReadOnlyAdministrator()
+        {
+            return UserRole == UserRole.Admin || UserRole == UserRole.AdminReadOnly;
         }
 
         /// <summary>

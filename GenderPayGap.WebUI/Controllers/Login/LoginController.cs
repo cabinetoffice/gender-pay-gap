@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.Controllers.Login
                 //disable:DoNotUseRedirectWithReturnUrls
                 return Redirect(viewModel.ReturnUrl);
             }
-            else if (user.IsAdministrator())
+            else if (user.IsFullOrReadOnlyAdministrator())
             {
                 return RedirectToAction("AdminHomePage", "AdminHomepage");
             }

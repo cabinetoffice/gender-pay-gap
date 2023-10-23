@@ -50,7 +50,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         {
             User adminUser = dataRepository.Get<User>(userId);
 
-            if (adminUser == null || !adminUser.IsAdministrator())
+            if (adminUser == null || !adminUser.IsFullOrReadOnlyAdministrator())
             {
                 throw new PageNotFoundException();
             }
@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             User adminUser = dataRepository.Get<User>(userId);
             User userMakingTheChange = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
-            if (adminUser == null || !adminUser.IsAdministrator())
+            if (adminUser == null || !adminUser.IsFullOrReadOnlyAdministrator())
             {
                 throw new PageNotFoundException();
             }
@@ -113,7 +113,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             {
                 ModelState.AddModelError(nameof(viewModel.EmailAddress), "Could not find a user with this email address");
             }
-            else if (user.IsAdministrator())
+            else if (user.IsFullOrReadOnlyAdministrator())
             {
                 ModelState.AddModelError(nameof(viewModel.EmailAddress), "This user is already an admin user");
             }
