@@ -77,5 +77,14 @@ namespace GenderPayGap.WebUI.Controllers
             return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
         }
         
+        [HttpGet("actions-to-close-the-gap")]
+        [HttpGet("actions-to-close-the-gap/effective-actions")]
+        [HttpGet("actions-to-close-the-gap/promising-actions")]
+        [HttpGet("actions-to-close-the-gap/actions-with-mixed-results")]
+        public IActionResult ActionHubRedirects()
+        {
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
+        }
     }
 }
