@@ -1,3 +1,4 @@
+using GenderPayGap.WebUI.Classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -7,6 +8,13 @@ namespace GenderPayGap.WebUI.Controllers
         // This class contains redirects for outdated URLs
         // Some of these URLs might appear in emails / printed letters, so we want to redirect to an appropriate page, rather than showing a 404
 
+        private IWebTracker webTracker;
+
+        public RedirectController(IWebTracker webTracker)
+        {
+            this.webTracker = webTracker;
+        }
+        
         [HttpGet("activate-service")]
         public IActionResult ActivateService()
         {
@@ -20,6 +28,38 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult AboutYou()
         {
             return RedirectToActionPermanent("CreateUserAccountGet", "AccountCreation");
+        }
+
+        [HttpGet("go/register")]
+        public IActionResult Register()
+        {
+            webTracker.TrackPageView(this);
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/report-gender-pay-gap-data");
+        }
+        
+        [HttpGet("go/guidance")]
+        public IActionResult Guidance()
+        {
+            webTracker.TrackPageView(this);
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/guidance/gender-pay-gap-who-needs-to-report");
+        }
+        
+        [HttpGet("go/report")]
+        public IActionResult Report()
+        {
+            webTracker.TrackPageView(this);
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/report-gender-pay-gap-data");
+        }
+
+        [HttpGet("go/actions")]
+        public IActionResult Actions()
+        {
+            webTracker.TrackPageView(this);
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/664017/Gender_pay_gap_-_actions_for_employers.pdf");
         }
 
     }
