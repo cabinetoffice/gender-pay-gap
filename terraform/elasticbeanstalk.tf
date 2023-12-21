@@ -257,31 +257,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
     value     = -1  // How many instances to ADD when we scale down
   }                 // (this needs to be a negative number so we scale down!)
 
-  // Elastic beanstalk static assets config
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
-    name      = "/images"
-    value     = "wwwroot/assets/images"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
-    name      = "/public"
-    value     = "wwwroot/public"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
-    name      = "/compiled"
-    value     = "wwwroot/compiled"
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:environment:proxy:staticfiles"
-    name      = "/assets"
-    value     = "wwwroot/assets"
-  }
-
   // Elastic beanstalk log config
   setting {
     namespace = "aws:elasticbeanstalk:cloudwatch:logs"
