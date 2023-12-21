@@ -22,10 +22,10 @@
                 <li>
                     <a class="govuk-link"
                        target="_blank"
-                       href=""@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")
+                       href=""@Url.Action("EightWaysGuidanceRedirect", "Redirect")
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
-                        eventAction: '@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")',
+                        eventAction: '@Url.Action("EightWaysGuidanceRedirect", "Redirect")',
                         eventLabel: 'Eight ways to understand your organisation\'s gender pay gap'
                        })">
                         Eight ways to understand your organisation's gender pay gap

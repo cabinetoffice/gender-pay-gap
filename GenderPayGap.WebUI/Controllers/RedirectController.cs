@@ -62,5 +62,20 @@ namespace GenderPayGap.WebUI.Controllers
             return Redirect("https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/664017/Gender_pay_gap_-_actions_for_employers.pdf");
         }
 
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/overview")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/1")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/2")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/3")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/4")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/5")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/6")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/7")]
+        [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/8")]
+        public IActionResult EightWaysGuidanceRedirect()
+        {
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
+        }
+        
     }
 }
