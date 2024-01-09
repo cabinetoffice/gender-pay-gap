@@ -59,7 +59,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             webTracker.TrackPageView(this);
             //disable:DoNotUseRedirectWithReturnUrls
-            return Redirect("https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/664017/Gender_pay_gap_-_actions_for_employers.pdf");
+            return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
         }
 
         [HttpGet("guidance/eight-ways-to-understand-your-organisations-gender-pay-gap/overview")]
@@ -86,5 +86,17 @@ namespace GenderPayGap.WebUI.Controllers
             //disable:DoNotUseRedirectWithReturnUrls
             return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
         }
+        
+        [HttpGet("/public/assets/pdf/action-plan-guidance.pdf")]
+        [HttpGet("/public/assets/pdf/Evidence-based_actions_for_employers.pdf")]
+        [HttpGet("/public/assets/pdf/gender-pay-gap-explained.pdf")]
+        [HttpGet("/public/assets/pdf/GEO_Actions_to_Close_the_Gender_Pay_Gap.pdf")]
+        [HttpGet("/public/assets/pdf/understand-your-gender-pay-gap.pdf")]
+        public IActionResult GuidancePdfRedirects()
+        {
+            //disable:DoNotUseRedirectWithReturnUrls
+            return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
+        }
+        
     }
 }
