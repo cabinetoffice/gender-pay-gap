@@ -1,5 +1,6 @@
 ﻿using System;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
@@ -13,7 +14,7 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
     [TestFixture]
     public class ManageOrganisation
     {
-        private static readonly int ReportingYear = DateTime.Now.Year;
+        private static readonly int ReportingYear = ReportingYearsHelper.GetCurrentReportingYearForSector(SectorTypes.Private);
         private const int PastReportingYear = 2018;
         private readonly User user = UserHelpers.CreateUsers().Find(u => u.UserId == 24572);
         
@@ -21,12 +22,6 @@ namespace GenderPayGap.WebUI.Tests.Views.ManageOrganisations
         private readonly Organisation organisationInScope = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.InScope, ReportingYear);
         private readonly Organisation organisationInScopeForPastYear = OrganisationHelper.GetOrganisationInAGivenScope(ScopeStatuses.InScope, PastReportingYear);
         
-        
-        [SetUp]
-        public void Setup()
-        {
-            VirtualDateTime.Initialise(TimeSpan.Zero);
-        }
         
         [Test]
         public void WhenOnManageOrganisationPage_IfOrganisationIsNotRequiredToReport_ThenReportStatusIsNotRequired()
