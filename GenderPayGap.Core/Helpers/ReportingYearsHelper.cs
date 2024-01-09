@@ -29,6 +29,11 @@ namespace GenderPayGap.Core.Helpers
             return SectorTypes.Public.GetAccountingStartDate().Year;
         }
 
+        public static int GetCurrentReportingYearForSector(SectorTypes sector)
+        {
+            return sector.GetAccountingStartDate().Year;
+        }
+
         public static string FormatYearAsReportingPeriod(int reportingPeriodStartYear, string separator = "-")
         {
             int fourDigitStartYear = reportingPeriodStartYear;

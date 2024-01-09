@@ -70,7 +70,7 @@
             headerNavigationLinks.Add(new HeaderNavigationViewModel
             {
                 Text = "Close the gap",
-                Href = Url.Action("Overview", "ActionHub")
+                Href = Url.Action("ActionHubRedirects", "Redirect")
             });
 
             if (User.IsInRole(LoginRoles.GpgAdmin))

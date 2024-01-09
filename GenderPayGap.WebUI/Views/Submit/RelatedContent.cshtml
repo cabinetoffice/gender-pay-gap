@@ -1,5 +1,4 @@
 @using GenderPayGap.Core
-@using GenderPayGap.WebUI.Controllers.Guidance
 
 <div class="govuk-grid-column-one-third">
     <aside style="border-top: 2px solid #005ea5; padding-top: 5px;" role="complementary">
@@ -22,10 +21,10 @@
                 <li>
                     <a class="govuk-link"
                        target="_blank"
-                       href=""@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")
+                       href=""@Url.Action("EightWaysGuidanceRedirect", "Redirect")
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
-                        eventAction: '@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")',
+                        eventAction: '@Url.Action("EightWaysGuidanceRedirect", "Redirect")',
                         eventLabel: 'Eight ways to understand your organisation\'s gender pay gap'
                        })">
                         Eight ways to understand your organisation's gender pay gap
@@ -48,10 +47,10 @@
                 <li>
                     <a class="govuk-link"
                        target="_blank"
-                       href="@Url.Action("Overview", "ActionHub")"
+                       href="@Url.Action("ActionHubRedirects", "Redirect")"
                        onclick="sendGpgEvent({
                         eventCategory: 'Related Link Clicked',
-                        eventAction: '@Url.Action("Overview", "ActionHub")',
+                        eventAction: '@Url.Action("ActionHubRedirects", "Redirect")',
                         eventLabel: 'Actions to close the gap'
                        })">
                         Actions to close the gap

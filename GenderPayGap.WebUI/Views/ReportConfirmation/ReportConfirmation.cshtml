@@ -1,5 +1,4 @@
 ﻿@using GenderPayGap.Core.Helpers
-@using GenderPayGap.WebUI.Controllers.Guidance
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.Database.Return
@@ -52,7 +51,7 @@
         </p>
         
         <p class="govuk-body govuk-!-margin-bottom-4">
-            <a class="govuk-link" href="@Url.Action(nameof(EightWaysGuidanceController.EightWaysOverview), "EightWaysGuidance")" target="_blank">
+            <a class="govuk-link" href="@Url.Action("EightWaysGuidanceRedirect", "Redirect")" target="_blank">
                 Eight ways to understand your organisation's gender pay gap
                 <span class="govuk-visually-hidden">
                     (opens in a new window)
@@ -70,7 +69,7 @@
         </p>    
 
         <p class="govuk-body govuk-!-margin-bottom-4">
-            <a class="govuk-link" href="@Url.Action("Overview", "ActionHub")" target="_blank">
+            <a class="govuk-link" href="@Url.Action("ActionHubRedirects", "Redirect")" target="_blank">
                 Actions to close the gap
                 <span class="govuk-visually-hidden">
                     (opens in a new window)
