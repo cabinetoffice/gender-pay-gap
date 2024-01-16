@@ -1,8 +1,9 @@
-@using GenderPayGap.Core 
-@{ 
+@using GenderPayGap.Core
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     ViewBag.Title = "Search and compare gender pay gap data - Gender pay gap service - GOV.UK";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml"; 
-} 
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
 
 <style>
     .govuk-main-wrapper {
@@ -10,128 +11,110 @@
     }
 </style>
 
-<div class="hero-banner govuk-!-margin-bottom-8"> 
-    <div class="govuk-grid-row"> 
-        <div class="govuk-grid-column-two-thirds"> 
+<div class="hero-banner govuk-!-margin-bottom-8">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl hero-banner-content govuk-!-margin-top-6">
                 Search and compare gender pay gap data
-            </h1> 
+            </h1>
             <p class="govuk-body hero-banner-content">
                 Employers with 250 or more employees have published their figures comparing men and women&rsquo;s average pay across the organisation.
-            </p> 
-            <partial name="Parts/SearchByOrganisation"/> 
-        </div> 
-    </div> 
-    <div class="govuk-grid-row"> 
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-3 govuk-!-margin-bottom-1"> 
-            <p class="govuk-body"> 
+            </p>
+            <partial name="Parts/SearchByOrganisation"/>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-3 govuk-!-margin-bottom-1">
+            <p class="govuk-body">
                 <a href="@Url.Action("SearchResults", "Viewing")"
-                   class="govuk-link hero-banner-content"> 
-                    Or browse all employers and compare data 
-                </a> 
-            </p> 
-            <p class="govuk-body"> 
+                   class="govuk-link hero-banner-content">
+                    Or browse all employers and compare data
+                </a>
+            </p>
+            <p class="govuk-body">
                 <a href="@Url.Action("Download", "Download")"
-                   class="govuk-link hero-banner-content"> 
-                    Download all gender pay gap data 
-                </a> 
-            </p> 
+                   class="govuk-link hero-banner-content">
+                    Download all gender pay gap data
+                </a>
+            </p>
 
-        </div> 
-    </div> 
-</div> 
- 
-<div class="govuk-grid-row"> 
-    <div class="govuk-grid-column-two-thirds"> 
-        <h3 class="govuk-heading-m">
-            Prepare and report your organisation's gender pay gap
-        </h3> 
-    </div> 
-</div> 
-<div class="govuk-grid-row"> 
-    <div class="govuk-grid-column-one-third"> 
-        <h4 class="govuk-heading-s govuk-!-margin-bottom-2"> 
-            <a href="@(Global.GpgGuidanceLink)"
-               class="govuk-link"> 
-                Guidance on gender pay gap reporting for employers
-            </a> 
-        </h4>
-        <p class="govuk-body">
-            Step-by-step guidance on preparing your gender pay gap information
-        </p> 
-    </div> 
-    <div class="govuk-grid-column-one-third"> 
-        <h4 class="govuk-heading-s govuk-!-margin-bottom-2"> 
-            <a href="@(Global.StartUrl ?? Url.Action("ManageOrganisationsGet", "ManageOrganisations"))"
-               class="govuk-link"> 
-                Submit your gender pay gap information
-            </a> 
-        </h4> 
-        <p class="govuk-body">
-            For employers to sign in, or create an account, and report gender pay gap information
-        </p> 
-    </div> 
-</div> 
- 
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible"> 
- 
-<div class="govuk-grid-row"> 
-    <div class="govuk-grid-column-two-thirds"> 
-        <h3 class="govuk-heading-m">
-            Understanding the gender pay gap
-        </h3> 
-    </div> 
-</div> 
-<div class="govuk-grid-row"> 
-    <div class="govuk-grid-column-one-third"> 
-        <h4 class="govuk-heading-s govuk-!-margin-bottom-2"> 
-            <a href="@Url.Action("EightWaysGuidanceRedirect", "Redirect")"
-               class="govuk-link"> 
-                Eight ways to understand your organisation’s gender pay gap 
-            </a> 
-        </h4> 
-        <p class="govuk-body">
-            Identify potential causes of the gender pay gap in your organisation.
-        </p> 
-    </div> 
-</div> 
- 
-<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible"> 
+        </div>
+    </div>
+</div>
 
-<div class="govuk-grid-row"> 
-    <div class="govuk-grid-column-two-thirds"> 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
         <h3 class="govuk-heading-m">
-            Closing the gender pay gap
-        </h3> 
-    </div> 
-</div> 
-<div class="govuk-grid-row"> 
-    <div class="govuk-grid-column-one-third"> 
-        <h4 class="govuk-heading-s govuk-!-margin-bottom-2"> 
-            <a href="@Url.Action("ActionHubRedirects", "Redirect")"
-               class="govuk-link"> 
-                Actions to close the gap 
-            </a> 
-        </h4> 
-        <p class="govuk-body">
-            Recommended actions for employers that make a difference
-        </p> 
-    </div> 
-    <div class="govuk-grid-column-one-third"> 
-        <h4 class="govuk-heading-s govuk-!-margin-bottom-2"> 
-            <a href="/public/assets/pdf/action-plan-guidance.pdf" rel="download" 
-               class="govuk-link"> 
-                Four steps to developing a gender pay gap action plan (pdf) 
-            </a> 
-        </h4> 
-        <p class="govuk-body">
-            A step by step guide for employers to develop an effective action plan
-        </p> 
-    </div> 
-</div> 
- 
-@section AfterLoadedCompiledScripts { 
-    <script type="text/javascript"> 
-            generateOrganisationSearchbar('#organisation-search-container', 'organisation-search'); 
-    </script> 
-} 
+            Gender pay gap reporting: guidance for employers
+        </h3>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-7">
+            <li>
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/who-needs-to-report"
+                   class="govuk-link">
+                    Who needs to report
+                </a>
+            </li>
+            <li>
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/overview"
+                   class="govuk-link">
+                    What to report
+                </a>
+            </li>
+            <li>
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/when-to-report"
+                   class="govuk-link">
+                    When to report
+                </a>
+            </li>
+            <li>
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/preparing-your-data"
+                   class="govuk-link">
+                    Preparing your data
+                </a>
+            </li>
+            <li>
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/making-your-calculations"
+                   class="govuk-link">
+                    Making your calculations
+                </a>
+            </li>
+            <li>
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap"
+                   class="govuk-link">
+                    Closing your gender pay gap
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h3 class="govuk-heading-m">
+            Submit your gender pay gap data
+        </h3>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                <a href="@(Global.StartUrl ?? Url.Action("ManageOrganisationsGet", "ManageOrganisations"))"
+                   class="govuk-link">
+                    Report your gender pay gap data
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+@section AfterLoadedCompiledScripts {
+    <script type="text/javascript">
+            generateOrganisationSearchbar('#organisation-search-container', 'organisation-search');
+    </script>
+}
