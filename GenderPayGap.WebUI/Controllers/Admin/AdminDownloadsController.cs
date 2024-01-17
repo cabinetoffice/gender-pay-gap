@@ -203,6 +203,11 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("downloads/full-submission-history-for-{year}")]
         public FileContentResult DownloadFullSubmissionHistoryForYear(int year)
         {
+            return GenerateFullSubmissionHistoryForYear(dataRepository, year);
+        }
+
+        public static FileContentResult GenerateFullSubmissionHistoryForYear(IDataRepository dataRepository, int year)
+        {
             List<Organisation> organisationsWithReturnsForYear = dataRepository.GetAll<Organisation>()
                 .Where(org => org.Status == OrganisationStatuses.Active)
                 .Include(org => org.OrganisationScopes)

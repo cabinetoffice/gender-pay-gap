@@ -434,8 +434,8 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "EhrcIPRange"
-    value     = var.ELB_EHRC_IP_RANGE
+    name      = "EhrcApiToken"
+    value     = var.ELB_EHRC_API_TOKEN
   }
 
   setting {
