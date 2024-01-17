@@ -122,7 +122,7 @@ variable "ELB_DISABLE_SEARCH_CACHE" {
   type = string
 }
 
-variable "ELB_EHRC_IP_RANGE" {
+variable "ELB_EHRC_API_TOKEN" {
   type = string
 }
 

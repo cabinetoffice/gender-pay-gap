@@ -39,6 +39,7 @@ namespace GenderPayGap.Core
         public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
         public static string BasicAuthUsername => Config.GetAppSetting("BasicAuthUsername");
         public static string BasicAuthPassword => Config.GetAppSetting("BasicAuthPassword");
+        public static string EhrcApiToken => Config.GetAppSetting("EhrcApiToken");
 
         #endregion
 
