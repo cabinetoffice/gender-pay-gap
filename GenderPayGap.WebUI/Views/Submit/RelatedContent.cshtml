@@ -1,63 +1,17 @@
-@using GenderPayGap.Core
 
 <div class="govuk-grid-column-one-third">
     <aside style="border-top: 2px solid #005ea5; padding-top: 5px;" role="complementary">
-        <h3 class="govuk-heading-s">Related content</h3>
+        <h3 class="govuk-heading-s">
+            Related content
+        </h3>
         <nav role="navigation" aria-labelledby="subsection-title">
-            <ul class="govuk-body govuk-body-s govuk-list govuk-list--spaced">
-                <li>
-                    <a class="govuk-link"
-                       target="_blank"
-                       href="@Global.GpgGuidanceLink"
-                       onclick="sendGpgEvent({
-                        eventCategory: 'Related Link Clicked',
-                        eventAction: '@Global.GpgGuidanceLink',
-                        eventLabel: 'Gender pay gap reporting'
-                       })">
-                        Gender pay gap reporting
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="govuk-link"
-                       target="_blank"
-                       href=""@Url.Action("EightWaysGuidanceRedirect", "Redirect")
-                       onclick="sendGpgEvent({
-                        eventCategory: 'Related Link Clicked',
-                        eventAction: '@Url.Action("EightWaysGuidanceRedirect", "Redirect")',
-                        eventLabel: 'Eight ways to understand your organisation\'s gender pay gap'
-                       })">
-                        Eight ways to understand your organisation's gender pay gap
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="govuk-link"
-                       target="_blank"
-                       href="/public/assets/pdf/action-plan-guidance.pdf"
-                       onclick="sendGpgEvent({
-                        eventCategory: 'Related Link Clicked',
-                        eventAction: '/public/assets/pdf/action-plan-guidance.pdf',
-                        eventLabel: 'Eight ways to understand your organisation\'s gender pay gap'
-                       })">
-                        Four steps to developing a gender pay gap action plan
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="govuk-link"
-                       target="_blank"
-                       href="@Url.Action("ActionHubRedirects", "Redirect")"
-                       onclick="sendGpgEvent({
-                        eventCategory: 'Related Link Clicked',
-                        eventAction: '@Url.Action("ActionHubRedirects", "Redirect")',
-                        eventLabel: 'Actions to close the gap'
-                       })">
-                        Actions to close the gap
-                        <span class="govuk-visually-hidden">(opens in a new window)</span>
-                    </a>
-                </li>
-            </ul>
+            <p class="govuk-body govuk-body-s">
+                <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers"
+                   class="govuk-link"
+                   target="_blank">
+                    Gender pay gap reporting: guidance for employers (opens in a new window)
+                </a>
+            </p>
         </nav>
     </aside>
 </div>

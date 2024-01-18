@@ -107,13 +107,22 @@
                     <a href="~/" id="proposition-name">Gender pay gap service</a>
                     <ul id="proposition-links">
                         <li>
-                            <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action(nameof(ViewingController.SearchResults), "Viewing"))">Search and compare</a>
+                            <a href="@(Url.Action(nameof(ViewingController.SearchResults), "Viewing"))"
+                               rel="track" data-track-category="Header Link Clicked">
+                                Search and compare
+                            </a>
                         </li>
                         <li>
-                            <a rel="track" data-track-category="Header Link Clicked" href="@(Url.Action("Download", "Download"))">Download</a>
+                            <a href="@(Url.Action("Download", "Download"))"
+                               rel="track" data-track-category="Header Link Clicked">
+                                Download
+                            </a>
                         </li>
                         <li>
-                            <a rel="track" data-track-category="Header Link Clicked" href="@Url.Action("ActionHubRedirects", "Redirect")">Close the gap</a>
+                            <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers"
+                               rel="track" data-track-category="Header Link Clicked">
+                                Guidance for employers
+                            </a>
                         </li>
                         
                         @if (User.IsInRole(LoginRoles.GpgAdmin))
