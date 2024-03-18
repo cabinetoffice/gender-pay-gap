@@ -130,33 +130,8 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
-            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
 
-            ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
-            
-            var totalEntries = organisation.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
-            var maxEntriesPerPage = 10;
-            var totalPages = (int)Math.Ceiling((double)totalEntries / maxEntriesPerPage);
-
-            if (page < 1)
-            {
-                page = 1;
-            }
-
-            if (page > totalPages)
-            {
-                page = totalPages;
-            }
-
-            return View(
-                "EmployerDetails/Employer",
-                new EmployerDetailsViewModel {
-                    Organisation = organisation,
-                    CurrentPage = page,
-                    TotalPages = totalPages,
-                    EntriesPerPage = maxEntriesPerPage
-                });
+            return RedirectToAction("Employer", "ViewReports", new {organisationId});
         }
 
         #endregion

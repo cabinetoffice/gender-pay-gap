@@ -358,4 +358,15 @@ namespace GenderPayGap.Core
         SubmittedLate,
     }
 
+    public enum ReportStatusTag
+    {
+        SubmittedVoluntarily,
+        SubmittedLate,
+        Submitted,
+        NotRequiredDueToCovid,
+        NotRequired,
+        Overdue,
+        Due,
+    }
+
 }

@@ -1,0 +1,78 @@
+﻿@model GenderPayGap.WebUI.Models.ViewReports.ReportStatusBadgeViewModel
+@using GenderPayGap.Core
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+
+@{
+    Func<object, object> reportTagHtml = null;
+    string reportTagColour = "";
+
+
+    switch(Model.ReportStatusTag)
+    {
+        case ReportStatusTag.SubmittedVoluntarily:
+            reportTagHtml = @<text>Reported voluntarily</text>;
+            reportTagColour = "govuk-tag--green";
+            break;
+            
+        case ReportStatusTag.SubmittedLate:
+            reportTagHtml = @<text>
+                                Submitted late
+                                @if (Model.ReportSubmittedDate.HasValue)
+                                {
+                                    <span>
+                                        on
+                                        <br/>
+                                        @Model.ReportSubmittedDate.Value.ToString("d MMMM yyyy")
+                                    </span>
+                                }
+                             </text>;
+            reportTagColour = "govuk-tag--orange";
+            break;
+            
+        case ReportStatusTag.Submitted:
+            reportTagHtml = @<text>Reported</text>;
+            reportTagColour = "govuk-tag--green";
+            break;
+            
+        case ReportStatusTag.Due:
+            reportTagHtml = @<text>
+                                <span class="employer-reports-page--visually-hidden-on-desktop">Report</span>
+                                due
+                                <span class="employer-reports-page--visually-hidden-on-desktop"><br/></span>
+                                @Model.DeadlineDate.ToString("d MMMM yyyy")
+                             </text>;
+            reportTagColour = "govuk-tag--blue";
+            break;
+        case ReportStatusTag.Overdue:
+            reportTagHtml = @<text>
+                                <span class="employer-reports-page--visually-hidden-on-desktop">Report</span>
+                                overdue
+                                <span class="employer-reports-page--visually-hidden-on-desktop"><br/></span>
+                                @Model.DeadlineDate.ToString("d MMMM yyyy")
+                             </text>;
+            reportTagColour = "govuk-tag--red";
+            break;
+        case ReportStatusTag.NotRequired:
+            reportTagHtml = @<text>
+                                <span class="employer-reports-page--visually-hidden-on-desktop">Report</span>
+                                not required
+                             </text>;
+            reportTagColour = "govuk-tag--grey";
+            break;
+        case ReportStatusTag.NotRequiredDueToCovid:
+            reportTagHtml = @<text>
+                                <span class="employer-reports-page--visually-hidden-on-desktop">Report</span>
+                                not required
+                             </text>;
+            reportTagColour = "govuk-tag--grey";
+            break;
+
+    }
+}
+
+@await Html.GovUkTag(new TagViewModel
+{
+    Html = reportTagHtml,
+    Classes = reportTagColour
+})

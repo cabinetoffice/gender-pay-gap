@@ -81,6 +81,12 @@ namespace GenderPayGap.Core.Helpers
             return mostRecentReportingYear;
         }
 
+        public static bool DeadlineHasPassedForYearAndSector(int reportingYear, SectorTypes sector)
+        {
+            DateTime snapshotDate = sector.GetAccountingStartDate(reportingYear);
+            return DeadlineForAccountingDateHasPassed(snapshotDate);
+        }
+
         public static bool DeadlineForAccountingDateHasPassed(DateTime accountingDate)
         {
             return GetDeadlineForAccountingDate(accountingDate).AddDays(1) < VirtualDateTime.Now;
@@ -94,6 +100,11 @@ namespace GenderPayGap.Core.Helpers
         public static bool IsReportingYearWithFurloughScheme(int reportingYear)
         {
             return Global.ReportingStartYearsWithFurloughScheme.Contains(reportingYear);
+        }
+
+        public static bool IsReportingYearExcludedFromLateFlagEnforcement(int reportingYear)
+        {
+            return Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
         }
 
     }

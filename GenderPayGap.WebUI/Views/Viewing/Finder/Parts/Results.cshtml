@@ -24,14 +24,16 @@
                         <dd class="metadata-text-value">@employer.SicSectionNames.ToDelimitedString(", ")</dd>
                     </dl>
                 </div>
-                @{
-                    var viewModel = new AddRemoveButtonViewModel
-                    {
-                        OrganisationIdEncrypted = employer.OrganisationIdEncrypted,
-                        OrganisationName = employer.Name
-                    };
-                }
-                <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
+                <div class="govuk-grid-column-one-third">
+                    @{
+                        var viewModel = new AddRemoveButtonViewModel
+                        {
+                            OrganisationIdEncrypted = employer.OrganisationIdEncrypted,
+                            OrganisationName = employer.Name
+                        };
+                    }
+                    <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="viewModel"/>
+                </div>
             </div>
         </li>
     }
