@@ -101,7 +101,7 @@
         }
         <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="addRemoveButtonViewModel"/>
 
-        @if (true || Model.GetSubmittedReports().Any() && Model.Status == OrganisationStatuses.Retired)
+        @if (Model.GetSubmittedReports().Any() && Model.Status == OrganisationStatuses.Retired)
         {
             <div class="govuk-warning-text" id="warningText">
                 <span class="govuk-warning-text__icon" aria-hidden="true" style="top: calc(50% - 15px)">!</span>
