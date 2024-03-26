@@ -40,8 +40,8 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         {
             CustomLogger.Information($"UpdateDownloadFiles: Loading Organisations");
             // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
-            List<Organisation> activeOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(o => o.Status == OrganisationStatuses.Active)
+            List<Organisation> nonDeletedOrganisations = dataRepository.GetAll<Organisation>()
+                .Where(o => o.Status != OrganisationStatuses.Deleted)
                 .Include(o => o.OrganisationNames)
                 .Include(o => o.OrganisationAddresses)
                 .Include(o => o.OrganisationSicCodes)
@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
             CustomLogger.Information($"UpdateDownloadFiles: Loading Returns");
             List<Return> allReturns = dataRepository.GetAll<Return>()
-                .Where(r => r.Organisation.Status == OrganisationStatuses.Active)
+                .Where(r => r.Organisation.Status != OrganisationStatuses.Deleted)
                 .Include(r => r.Organisation)
                 .ToList();
 
