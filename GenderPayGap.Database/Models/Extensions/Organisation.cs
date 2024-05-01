@@ -329,6 +329,7 @@ namespace GenderPayGap.Database
         public Return GetReturnForYearAsOfDate(int reportingYear, DateTime asOfDate)
         {
             return GetAllReturnsForYear(reportingYear)
+                .Where(r => r.Status == ReturnStatuses.Submitted || r.Status == ReturnStatuses.Retired)
                 .Where(r => r.Modified.Date <= asOfDate.Date)  // Use "X.Date <= Y.Date" to make sure we're not comparing times of day
                 .OrderByDescending(r => r.Modified)
                 .FirstOrDefault();
