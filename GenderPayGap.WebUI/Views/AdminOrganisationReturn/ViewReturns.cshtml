@@ -87,7 +87,7 @@
                 </thead>
                 <tbody class="govuk-table__body">
                     @{ var previousAccountingDate = DateTime.MinValue; }
-                    @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenBy(r => r.Status).ThenByDescending(r => r.Modified))
+                    @foreach (Return returnForYear in Model.Returns.OrderByDescending(r => r.AccountingDate).ThenByDescending(r => r.Modified))
                     {
                         <tr class="govuk-table__row">
                             @if (returnForYear.AccountingDate == previousAccountingDate)
