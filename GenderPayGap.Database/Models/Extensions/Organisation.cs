@@ -426,5 +426,21 @@ namespace GenderPayGap.Database
             return $"name:{OrganisationName}";
         }
 
+        public OrganisationStatuses GetStatusAsOfDate(DateTime asOfDate)
+        {
+            OrganisationStatus mostRecentStatusBeforeDate = OrganisationStatuses
+                .Where(os => os.StatusDate <= asOfDate)
+                .OrderByDescending(os => os.StatusDate)
+                .FirstOrDefault(); // We use FirstOrDefault because this list might be empty (for dates before the organisation was created)
+
+            if (mostRecentStatusBeforeDate != null)
+            {
+                return mostRecentStatusBeforeDate.Status;
+            }
+
+            // If we don't have a status for this date (e.g. a date before the organisation was created) then use Unknown
+            return Core.OrganisationStatuses.Unknown;
+        }
+
     }
 }

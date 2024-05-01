@@ -46,10 +46,8 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             var dashboardData = new AdminDashboardData(onDeadlineDay);
             
             List<Organisation> allOrganisations = dataRepository.GetAll<Organisation>()
-                .Where(org => org.Status == OrganisationStatuses.Active)  // || org.Status == OrganisationStatuses.Retired
                 .Include(org => org.OrganisationScopes)
                 .Include(org => org.Returns)
-                // .AsEnumerable()
                 .ToList();
 
             foreach (DashboardDataForReportingYear dataForYear in dashboardData.DashboardDataForReportingYears)
@@ -58,51 +56,58 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 {
                     DashboardDataForReportingYearAndSector sectorData = dataForYear.DataFor(organisation.SectorType);
 
-                    sectorData.TotalNumberOfOrganisations++;
+                    OrganisationStatuses status = sectorData.Date.HasValue
+                        ? organisation.GetStatusAsOfDate(sectorData.Date.Value)
+                        : organisation.Status;
 
-                    ScopeStatuses scope = sectorData.Date.HasValue
-                        ? organisation.GetScopeStatusForYearAsOfDate(dataForYear.ReportingYear, sectorData.Date.Value)
-                        : organisation.GetScopeStatusForYear(dataForYear.ReportingYear);
+                    if (status == OrganisationStatuses.Active || status == OrganisationStatuses.Retired)
+                    {
+                        sectorData.TotalNumberOfOrganisations++;
 
-                    bool hasSubmittedReturn = sectorData.Date.HasValue
-                        ? organisation.HadSubmittedReturnAsOfDate(dataForYear.ReportingYear, sectorData.Date.Value)
-                        : organisation.HasSubmittedReturn(dataForYear.ReportingYear);
+                        ScopeStatuses scope = sectorData.Date.HasValue
+                            ? organisation.GetScopeStatusForYearAsOfDate(dataForYear.ReportingYear, sectorData.Date.Value)
+                            : organisation.GetScopeStatusForYear(dataForYear.ReportingYear);
 
-                    switch (scope)
-                    {
-                        case ScopeStatuses.OutOfScope:
-                            sectorData.OrganisationsOutOfScope++;
-                            break;
-                        case ScopeStatuses.PresumedOutOfScope:
-                            sectorData.OrganisationsPresumedOutOfScope++;
-                            break;
-                        case ScopeStatuses.PresumedInScope:
-                            sectorData.OrganisationsPresumedInScope++;
-                            break;
-                        case ScopeStatuses.InScope:
-                            sectorData.OrganisationsInScope++;
-                            break;
-                        case ScopeStatuses.Unknown:
-                        default:
-                            sectorData.OrganisationsNoScopeForYear++;
-                            break;
-                    }
+                        bool hasSubmittedReturn = sectorData.Date.HasValue
+                            ? organisation.HadSubmittedReturnAsOfDate(dataForYear.ReportingYear, sectorData.Date.Value)
+                            : organisation.HasSubmittedReturn(dataForYear.ReportingYear);
 
-                    if (!scope.IsInScopeVariant() && !hasSubmittedReturn)
-                    {
-                        sectorData.OrganisationsOutOfScopeAndNotReported++;
-                    }
-                    else if (!scope.IsInScopeVariant() & hasSubmittedReturn)
-                    {
-                        sectorData.OrganisationsVoluntarilyReported++;
-                    }
-                    else if (scope.IsInScopeVariant() && hasSubmittedReturn)
-                    {
-                        sectorData.OrganisationsInScopeAndReported++;
-                    }
-                    else if (scope.IsInScopeVariant() && !hasSubmittedReturn)
-                    {
-                        sectorData.OrganisationsFailedToReport++;
+                        switch (scope)
+                        {
+                            case ScopeStatuses.OutOfScope:
+                                sectorData.OrganisationsOutOfScope++;
+                                break;
+                            case ScopeStatuses.PresumedOutOfScope:
+                                sectorData.OrganisationsPresumedOutOfScope++;
+                                break;
+                            case ScopeStatuses.PresumedInScope:
+                                sectorData.OrganisationsPresumedInScope++;
+                                break;
+                            case ScopeStatuses.InScope:
+                                sectorData.OrganisationsInScope++;
+                                break;
+                            case ScopeStatuses.Unknown:
+                            default:
+                                sectorData.OrganisationsNoScopeForYear++;
+                                break;
+                        }
+
+                        if (!scope.IsInScopeVariant() && !hasSubmittedReturn)
+                        {
+                            sectorData.OrganisationsOutOfScopeAndNotReported++;
+                        }
+                        else if (!scope.IsInScopeVariant() & hasSubmittedReturn)
+                        {
+                            sectorData.OrganisationsVoluntarilyReported++;
+                        }
+                        else if (scope.IsInScopeVariant() && hasSubmittedReturn)
+                        {
+                            sectorData.OrganisationsInScopeAndReported++;
+                        }
+                        else if (scope.IsInScopeVariant() && !hasSubmittedReturn)
+                        {
+                            sectorData.OrganisationsFailedToReport++;
+                        }
                     }
                 }
             }
