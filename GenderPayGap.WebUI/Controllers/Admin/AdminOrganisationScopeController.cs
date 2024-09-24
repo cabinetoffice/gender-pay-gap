@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             viewModel.Organisation = organisation;
 
-            foreach (int reportingYear in ReportingYearsHelper.GetReportingYears())
+            foreach (int reportingYear in ReportingYearsHelper.GetReportingYears(organisation.SectorType))
             {
                 if (!viewModel.Years.Any(y => y.ReportingYear == reportingYear))
                 {

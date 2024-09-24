@@ -33,7 +33,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
         public List<AllOrganisationReportsForYearViewModel> GetOrganisationDetailsForYears()
         {
-            List<int> reportingYears = ReportingYearsHelper.GetReportingYears();
+            List<int> reportingYears = ReportingYearsHelper.GetReportingYears(Organisation.SectorType);
             var detailsForYears = new List<AllOrganisationReportsForYearViewModel>();
 
             foreach (int reportingYear in reportingYears)

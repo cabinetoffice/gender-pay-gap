@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
             var viewModel = new ReportLinkToWebsiteViewModel();
             PopulateViewModel(viewModel, organisationId, reportingYear);
@@ -85,7 +85,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
             ValidateUserInput(viewModel);
 

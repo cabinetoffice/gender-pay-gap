@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              
              ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
              ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
              var viewModel = new ReportStartingViewModel();
              

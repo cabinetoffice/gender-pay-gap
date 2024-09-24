@@ -597,7 +597,7 @@ namespace GenderPayGap.WebUI.Controllers
                         record.PhoneNumber = latestUserOrg?.User.ContactPhoneNumber;
                         record.EmailAddress = latestUserOrg?.User.EmailAddress;
 
-                        foreach (int repYear in ReportingYearsHelper.GetReportingYears())
+                        foreach (int repYear in ReportingYearsHelper.GetReportingYears(org.SectorType))
                         {
                             ((IDictionary<string, object>) record)["ReportDateTimeFor" + repYear] = org.GetReturn(repYear)?.StatusDate;
                         }
