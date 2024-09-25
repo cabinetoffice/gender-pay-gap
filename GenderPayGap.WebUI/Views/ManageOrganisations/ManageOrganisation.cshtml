@@ -1,5 +1,8 @@
 ﻿@using GenderPayGap.Core
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
+@using GenderPayGap.WebUI.Models.ViewReports
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationViewModel
@@ -42,44 +45,267 @@
                 for @(Model.Organisation.OrganisationName)
             </span>
         </h1>
-
-        <details class="govuk-details" data-module="govuk-details">
+    
+        
+        <h2 class="govuk-heading-l">
+            Your employer's reports
+        </h2>
+    
+        <table class="govuk-table govuk-!-margin-bottom-9">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">
+                        Deadline
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        Reporting requirement
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        Report status
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        <span class="govuk-visually-hidden">
+                            Action
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (int reportingYear in ReportingYearsHelper.GetReportingYears(Model.Organisation.SectorType).OrderByDescending(y => y))
+                {
+                    bool requiredToReportForYear = Model.OrganisationIsRequiredToSubmit(reportingYear);
+                    ReportStatusTag reportStatusTag = ReportStatusTagHelper.GetReportStatusTag(Model.Organisation, reportingYear);
+                    
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            @(ReportingYearsHelper.GetDeadline(Model.Organisation.SectorType, reportingYear).ToString("d MMM yyyy"))
+                        </th>
+                        
+                        <td class="govuk-table__cell">
+                            You
+                            @(requiredToReportForYear ? "are required" : "are not required")
+                            to report.
+                            @if (ReportingYearsHelper.CanChangeScope(Model.Organisation.SectorType, reportingYear))
+                            {
+                                <br/>
+                                <a href="@Url.Action("ChangeOrganisationScope", "Scope", new {encryptedOrganisationId, reportingYear = reportingYear})"
+                                   class="govuk-link">
+                                    Think this is wrong?
+                                    <span class="govuk-visually-hidden">
+                                        Change scope for year @(ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear))
+                                    </span>
+                                </a>
+                            }
+                        </td>
+                        
+                        <td class="govuk-table__cell">
+                            @await Html.PartialAsync("ReportStatusBadge",
+                                new ReportStatusBadgeViewModel
+                                {
+                                    ReportStatusTag = reportStatusTag,
+                                    ReportSubmittedDate = Model.Organisation.GetReturn(reportingYear)?.Modified,
+                                    DeadlineDate = ReportingYearsHelper.GetDeadline(Model.Organisation.SectorType, reportingYear)
+                                })
+                            
+                            @if (requiredToReportForYear &&
+                                 ReportingYearsHelper.IsReportingYearExcludedFromLateFlagEnforcement(reportingYear) &&
+                                 (reportStatusTag == ReportStatusTag.NotRequiredDueToCovid ||
+                                  reportStatusTag == ReportStatusTag.Overdue ||
+                                  reportStatusTag == ReportStatusTag.SubmittedLate))
+                            {
+                                <br/>
+                                <div class="govuk-!-padding-top-2" style="max-width: 375px;">
+                                        The deadline for 2019-20 was
+                                        @(ReportingYearsHelper.GetDeadline(Model.Organisation.SectorType, 2019).ToString("d MMMM yyyy")).
+                                        Due to Coronavirus (COVID-19), enforcement of reporting deadlines does not
+                                        apply to employers in the 2019-20 reporting year.
+                                </div>
+                            }
+                        </td>
+                        
+                        <td class="govuk-table__cell">
+                            @if (Model.DoesReturnOrDraftReturnExistForYear(reportingYear))
+                            {
+                               <a loadtest-id="create-report-@(reportingYear)"
+                                  href="@Url.Action("ReportOverview", "ReportOverview", new { encryptedOrganisationId, reportingYear = reportingYear, canTriggerLateSubmissionWarning = true}) ">
+                                   @Model.GetReportLinkText(reportingYear)
+                               </a>
+                            }
+                            else
+                            {
+                               <a loadtest-id="create-report-@(reportingYear)"
+                                  href="@Url.Action("ReportingStart", "ReportStarting", new {encryptedOrganisationId, reportingYear = reportingYear})">
+                                   @Model.GetReportLinkText(reportingYear)
+                               </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        <h2 class="govuk-heading-l">
+            Registered users
+        </h2>
+        
+        @{
+            List<User> usersRegisteredToReportForOrganisation = Model.GetFullyRegisteredUsersForOrganisationWithCurrentUserFirst();
+        }
+        
+        @if (usersRegisteredToReportForOrganisation.Count == 1)  // If s User can view this page, then there will always be at least 1 User - themselves!
+        {
+            <p class="govuk-body">
+                You are the only person registered to report for this employer.
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-2">
+                If you remove yourself:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>You will not be able to report for this employer</li>
+                <li>Someone else must register to report on behalf of this employer - this can take up to a week</li>
+                <li>Your account will remain open</li>
+            </ul>
+        }
+        else
+        {
+            <p class="govuk-body">
+                The following people are registered to report gender pay gap information for this employer:
+            </p>
+        }
+        
+        <table class="govuk-table govuk-!-margin-bottom-9">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">
+                        Name
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        Email address
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        <span class="govuk-visually-hidden">
+                            Action
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (User userRegisteredToReport in usersRegisteredToReportForOrganisation)
+                {
+                    string encryptedUserId = Encryption.EncryptQuerystring(userRegisteredToReport.UserId.ToString());
+                    
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">
+                            @(userRegisteredToReport.Fullname)
+                            @if (userRegisteredToReport.UserId == Model.User.UserId)
+                            {
+                                <span>(You)</span>
+                            }
+                        </th>
+                        <td class="govuk-table__cell" style="word-wrap: anywhere;">
+                            @(userRegisteredToReport.EmailAddress)
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a href="@Url.Action("RemoveUserFromOrganisationGet", "RemoveUserFromOrganisation", new {encryptedOrganisationId = encryptedOrganisationId, userToRemoveEncryptedUserId = encryptedUserId})"
+                               class="govuk-link">
+                                Remove user
+                                <span class="govuk-visually-hidden">
+                                    @(userRegisteredToReport.Fullname)
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        
+        <h2 class="govuk-heading-l">
+            Employer details
+        </h2>
+        
+        <details class="govuk-details govuk-!-margin-bottom-4"
+                 data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
                     Need to make changes to your employer's details?
                 </span>
             </summary>
-            <div class="govuk-details__text">
-                If you are a private or voluntary employer and need to change your employer name, sector information,
-                or address you should do this via Companies House. Changes you make will automatically be reflected on this service. 
-                If this information is not available on Companies House, please contact 
-                <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
-                    @Global.GpgReportingEmail
-                </a>
-            </div>
+            
+            @if (Model.Organisation.SectorType == SectorTypes.Private &&
+                 !string.IsNullOrWhiteSpace(Model.Organisation.CompanyNumber) &&
+                 !Model.Organisation.OptedOutFromCompaniesHouseUpdate)
+            {
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        If you need to change your employer name, sector information, or registered address you should do this via Companies House.
+                        Changes you make will automatically be reflected on this service.
+                    </p>
+                    <p class="govuk-body">
+                        If this information is not available on Companies House, please contact
+                        <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
+                            @Global.GpgReportingEmail
+                        </a>
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="govuk-details__text">
+                    Please contact
+                    <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
+                        @Global.GpgReportingEmail
+                    </a>
+                </div>
+            }
         </details>
         
-        @{
-            await Html.RenderPartialAsync("OrganisationReportsTable", Model);
-
-            <div class="govuk-!-margin-bottom-6">
-                <p>
-                    <a href="@Url.Action("AllOrganisationReportsGet", "ManageOrganisations", new{encryptedOrganisationId})" class="govuk-!-font-size-19 govuk-link govuk-!-font-weight-bold">See all reports</a> <!--TODO: GPG-916: Point this link to the manage all reports page when that is created-->
-                </p>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employer name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.Organisation.OrganisationName)
+                </dd>
             </div>
-            await Html.RenderPartialAsync("UsersRegisteredToReportForOrganisation", Model);
-        }
-        
-        <h2 class="govuk-heading-l">
-            Registered Address
-        </h2>
-        <p class="govuk-body">
-            @foreach (string addressLine in Model.Organisation.GetLatestAddress().GetAddressLines())
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Registered address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @foreach (string addressLine in Model.Organisation.GetLatestAddress().GetAddressLines())
+                    {
+                        @(addressLine)<br/>
+                    }
+                </dd>
+            </div>
+            @if (Model.Organisation.GetSicCodes().Any())
             {
-                @(addressLine)<br/>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Nature of business
+                        <br/>
+                        (SIC codes)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list">
+                            @foreach (OrganisationSicCode organisationSicCode in Model.Organisation.OrganisationSicCodes.Where(osc => !osc.IsRetired()))
+                            {
+                                <li>
+                                    <b>@(organisationSicCode.SicCode.SicCodeId)</b>
+                                    @(organisationSicCode.SicCode.Description)
+                                    <br/>
+                                    <span class="govuk-body-s">
+                                        part of: @(organisationSicCode.SicCode.SicSection.Description)
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                </div>
             }
-        </p>
-
+        </dl>
 
     </div>
 </div>

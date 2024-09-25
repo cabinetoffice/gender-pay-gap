@@ -6,20 +6,18 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
-using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
 
 namespace GenderPayGap.WebUI.Models.ManageOrganisations
 {
     public class ManageOrganisationViewModel
     {
 
-        public Database.Organisation Organisation { get; }
+        public Organisation Organisation { get; }
         public User User { get; }
 
         private readonly List<DraftReturn> allDraftReturns;
 
-        public ManageOrganisationViewModel(Database.Organisation organisation, User user, List<DraftReturn> allDraftReturns)
+        public ManageOrganisationViewModel(Organisation organisation, User user, List<DraftReturn> allDraftReturns)
         {
             Organisation = organisation;
             User = user;
@@ -31,6 +29,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             List<User> users = Organisation.UserOrganisations
                 .Where(uo => uo.PINConfirmedDate.HasValue)
                 .Select(uo => uo.User)
+                .OrderBy(user => user.Fullname)
                 .ToList();
 
             // The current user must be in this list (otherwise we wouldn't be able to visit this page)
@@ -42,6 +41,43 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
             return users;
         }
 
+        public bool DoesReturnOrDraftReturnExistForYear(int reportingYear)
+        {
+            bool hasReturnForYear = Organisation.HasSubmittedReturn(reportingYear);
+            bool hasDraftReturnForYear = allDraftReturns.Any(d => d.SnapshotYear == reportingYear);
+
+            return hasReturnForYear || hasDraftReturnForYear;
+        }
+
+        public string GetReportLinkText(int reportingYear)
+        {
+            bool hasReturnForYear = Organisation.HasSubmittedReturn(reportingYear);
+            bool hasDraftReturnForYear = allDraftReturns.Any(d => d.SnapshotYear == reportingYear);
+
+            if (!hasReturnForYear && !hasDraftReturnForYear)
+            {
+                return "Draft report";
+            }
+
+            if (!hasReturnForYear && hasDraftReturnForYear)
+            {
+                return "Edit draft";
+            }
+
+            if (hasReturnForYear && !hasDraftReturnForYear)
+            {
+                return "Edit report";
+            }
+
+            return "Edit draft report";
+        }
+
+        public bool OrganisationIsRequiredToSubmit(int reportingYear)
+        {
+            return Organisation.GetScopeForYear(reportingYear).IsInScopeVariant()
+                   && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
+        }
+        
         public List<ManageOrganisationDetailsForYearViewModel> GetOrganisationDetailsForYears()
         {
             List<int> reportingYears = ReportingYearsHelper.GetReportingYears(Organisation.SectorType);

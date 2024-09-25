@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core.Classes;
@@ -107,5 +107,11 @@ namespace GenderPayGap.Core.Helpers
             return Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
         }
 
+        public static bool CanChangeScope(SectorTypes sectorType, int reportingYear)
+        {
+            int currentReportingYear = sectorType.GetAccountingStartDate().Year;
+            int earliestAllowedReportingYear = currentReportingYear - (Global.EditableScopeCount - 1);
+            return reportingYear >= earliestAllowedReportingYear;
+        }
     }
 }
