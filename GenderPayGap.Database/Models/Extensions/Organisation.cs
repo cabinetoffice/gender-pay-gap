@@ -345,21 +345,6 @@ namespace GenderPayGap.Database
             return GetReturnForYearAsOfDate(reportingYear, asOfDate) != null;
         }
 
-        public IEnumerable<Return> GetRecentReports(int recentCount)
-        {
-            foreach (int year in GetRecentReportingYears(recentCount))
-            { 
-                var defaultReturn = new Return {
-                    Organisation = this,
-                    AccountingDate = SectorType.GetAccountingStartDate(year),
-                    Modified = VirtualDateTime.Now
-                };
-                defaultReturn.IsLateSubmission = defaultReturn.CalculateIsLateSubmission();
-
-                yield return GetReturn(year) ?? defaultReturn;
-            }
-        }
-
         #endregion
         
         /// <summary>
@@ -399,22 +384,6 @@ namespace GenderPayGap.Database
         public override int GetHashCode()
         {
             return OrganisationId.GetHashCode();
-        }
-
-        [Obsolete("Use ReportingYearsHelper.GetReportingYears() instead")]
-        public IEnumerable<int> GetRecentReportingYears(int recentCount)
-        {
-            int endYear = SectorType.GetAccountingStartDate().Year;
-            int startYear = endYear - (recentCount - 1);
-            if (startYear < Global.FirstReportingYear)
-            {
-                startYear = Global.FirstReportingYear;
-            }
-
-            for (int year = endYear; year >= startYear; year--)
-            {
-                yield return year;
-            }
         }
 
         public bool IsSearchable()

@@ -317,15 +317,6 @@ namespace GenderPayGap.Core
         Completed = 1
     }
 
-    public enum ReportTag
-    {
-        Submitted = 0,
-        SubmittedLate = 1,
-        Due = 2,
-        Overdue = 3,
-        NotRequired = 4
-    }
-
     public static class EnumHelper
     {
 
@@ -345,17 +336,6 @@ namespace GenderPayGap.Core
     public static class CookieNames
     {
         public const string LastCompareQuery = "compare";
-    }
-
-    public enum ReportStatusBadgeType
-    {
-        Due,
-        Overdue,
-        Reported,
-        NotRequired,
-        NotRequiredDueToCovid,
-        VoluntarilyReported,
-        SubmittedLate,
     }
 
     public enum ReportStatusTag

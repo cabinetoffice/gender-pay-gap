@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -69,45 +68,6 @@ namespace GenderPayGap.WebUI.Controllers.ManageOrganisations
             var viewModel = new ManageOrganisationViewModel(organisation, user, allDraftReturns);
 
             return View("ManageOrganisation", viewModel);
-        }
-
-        [HttpGet("{encryptedOrganisationId}/all-reports")]
-        [Authorize(Roles = LoginRoles.GpgEmployer)]
-        public IActionResult AllOrganisationReportsGet(string encryptedOrganisationId, int? page = 1)
-        {
-            long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
-            User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(user);
-            ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            
-            var organisation = dataRepository.Get<Organisation>(organisationId);
-            if (OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(organisation))
-            {
-                return RedirectToAction("DeclareScopeGet", "Scope", new { encryptedOrganisationId = encryptedOrganisationId });
-            }
-            
-            // build the view model
-            List<DraftReturn> allDraftReturns =
-                dataRepository.GetAll<DraftReturn>()
-                    .Where(d => d.OrganisationId == organisationId)
-                    .ToList();
-
-            var totalEntries = organisation.GetRecentReports(Global.ShowReportYearCount).Count() + 1; // Years we report for + the year they joined
-            var maxEntriesPerPage = 10;
-            var totalPages = (int)Math.Ceiling((double)totalEntries / maxEntriesPerPage);
-
-            if (page < 1)
-            {
-                page = 1;
-            }
-
-            if (page > totalPages)
-            {
-                page = totalPages;
-            }
-            
-            var viewModel = new AllOrganisationReportsViewModel(organisation, user, allDraftReturns, page, totalPages, maxEntriesPerPage);
-            return View("AllOrganisationReports", viewModel);
         }
 
         private static bool OrganisationIsNewThisYearAndHasNotProvidedScopeForLastYear(Organisation organisation)
