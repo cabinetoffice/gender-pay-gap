@@ -167,7 +167,7 @@
                 </div>
             </div>
             
-            @foreach (int reportingYear in ReportingYearsHelper.GetReportingYears().OrderByDescending(y => y))
+            @foreach (int reportingYear in ReportingYearsHelper.GetReportingYears(Model.SectorType).OrderByDescending(y => y))
             {
                 Return returnForYear = Model.GetReturn(reportingYear);
                 ReportStatusTag reportStatusTag = ReportStatusTagHelper.GetReportStatusTag(Model, reportingYear);

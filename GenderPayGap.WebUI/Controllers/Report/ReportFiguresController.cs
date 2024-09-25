@@ -36,7 +36,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
              
              ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
              ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
              var viewModel = new ReportFiguresViewModel();
 
@@ -73,7 +73,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
             ReportFiguresHelper.ValidateUserInput(ModelState, viewModel, reportingYear);
 

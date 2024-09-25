@@ -8,10 +8,10 @@ namespace GenderPayGap.Core.Helpers
 {
     public static class ReportingYearsHelper
     {
-        public static List<int> GetReportingYears()
+        public static List<int> GetReportingYears(SectorTypes sector = SectorTypes.Public)
         {
             int firstReportingYear = Global.FirstReportingYear;
-            int currentReportingYear = GetCurrentReportingYear();
+            int currentReportingYear = GetCurrentReportingYear(sector);
             int numberOfYears = (currentReportingYear - firstReportingYear) + 1;
 
             // Use a manual List capacity allocation and a for-loop to reduce memory usage
@@ -24,9 +24,9 @@ namespace GenderPayGap.Core.Helpers
             return reportingYears;
         }
 
-        public static int GetCurrentReportingYear()
+        public static int GetCurrentReportingYear(SectorTypes sector = SectorTypes.Public)
         {
-            return SectorTypes.Public.GetAccountingStartDate().Year;
+            return sector.GetAccountingStartDate().Year;
         }
 
         public static int GetCurrentReportingYearForSector(SectorTypes sector)
@@ -107,5 +107,11 @@ namespace GenderPayGap.Core.Helpers
             return Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
         }
 
+        public static bool CanChangeScope(SectorTypes sectorType, int reportingYear)
+        {
+            int currentReportingYear = sectorType.GetAccountingStartDate().Year;
+            int earliestAllowedReportingYear = currentReportingYear - (Global.EditableScopeCount - 1);
+            return reportingYear >= earliestAllowedReportingYear;
+        }
     }
 }

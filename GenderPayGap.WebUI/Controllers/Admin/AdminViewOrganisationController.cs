@@ -2,6 +2,7 @@
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
@@ -28,10 +29,7 @@ namespace GenderPayGap.WebUI.Controllers
         {
             Organisation organisation = dataRepository.Get<Organisation>(id);
 
-            int firstReportingYear = Global.FirstReportingYear;
-            int currentReportingYear = SectorTypes.Public.GetAccountingStartDate().Year;
-            int numberOfYears = currentReportingYear - firstReportingYear + 1;
-            List<int> reportingYears = Enumerable.Range(firstReportingYear, numberOfYears).Reverse().ToList();
+            List<int> reportingYears = ReportingYearsHelper.GetReportingYears(organisation.SectorType).OrderByDescending(year => year).ToList();
 
             var viewModel = new AdminViewOrganisationViewModel
             {

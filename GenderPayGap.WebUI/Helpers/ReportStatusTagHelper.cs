@@ -30,14 +30,14 @@ namespace GenderPayGap.WebUI.Helpers
             else
             {   // Report has not been submitted
 
-                if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear))
-                {
-                    return ReportStatusTag.NotRequiredDueToCovid;
-                }
-
                 if (!organisation.GetScopeStatusForYear(reportingYear).IsInScopeVariant())
                 {
                     return ReportStatusTag.NotRequired;
+                }
+
+                if (Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear))
+                {
+                    return ReportStatusTag.NotRequiredDueToCovid;
                 }
 
                 if (ReportingYearsHelper.DeadlineHasPassedForYearAndSector(reportingYear, organisation.SectorType))

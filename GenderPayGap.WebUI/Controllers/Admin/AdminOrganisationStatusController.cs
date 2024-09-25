@@ -89,7 +89,7 @@ namespace GenderPayGap.WebUI.Controllers
                 organisation.Status == OrganisationStatuses.Pending ||
                 organisation.Status == OrganisationStatuses.Active)
             {
-                foreach (int reportingYear in ReportingYearsHelper.GetReportingYears())
+                foreach (int reportingYear in ReportingYearsHelper.GetReportingYears(organisation.SectorType))
                 {
                     if (!viewModel.Years.Any(y => y.ReportingYear == reportingYear))
                     {

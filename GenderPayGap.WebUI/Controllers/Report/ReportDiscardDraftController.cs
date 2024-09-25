@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
             bool draftReturnExists = draftReturn != null;
@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             long organisationId = ControllerHelper.DecryptOrganisationIdOrThrow404(encryptedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserDoesNotHavePermissionsForGivenOrganisation(User, dataRepository, organisationId);
-            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
 
             DraftReturn draftReturn = draftReturnService.GetDraftReturn(organisationId, reportingYear);
             bool draftReturnExists = draftReturn != null;
