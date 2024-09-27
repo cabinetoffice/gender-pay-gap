@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
@@ -216,6 +216,18 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 throw new PageNotFoundException();
             }
+        }
+
+        public static Return LoadReturnForYearOrThrow404(Organisation organisation, int reportingYear)
+        {
+            Return returnForYear = organisation.GetReturn(reportingYear);
+            
+            if (returnForYear == null)
+            {
+                throw new PageNotFoundException();
+            }
+
+            return returnForYear;
         }
 
         public static void ThrowIfAdminIsImpersonatingUser(ClaimsPrincipal aspDotNetUser)
