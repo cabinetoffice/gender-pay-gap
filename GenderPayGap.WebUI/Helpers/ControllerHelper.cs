@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using GenderPayGap.Core;
@@ -144,6 +144,11 @@ namespace GenderPayGap.WebUI.Helpers
 
         public static long DeObfuscateOrganisationIdOrThrow404(string organisationIdentifier)
         {
+            if (string.IsNullOrWhiteSpace(organisationIdentifier))
+            {
+                throw new PageNotFoundException();
+            }
+            
             try
             {
                 int organisationId = Obfuscator.DeObfuscate(organisationIdentifier);
