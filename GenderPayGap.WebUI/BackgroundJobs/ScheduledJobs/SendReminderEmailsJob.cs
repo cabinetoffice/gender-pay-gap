@@ -57,13 +57,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         private void SendReminderEmailsForSectorType(SectorTypes sector, string runId, DateTime startTime)
         {
-            var activeReportingYears = GetActiveReportingYears(sector);
-            foreach (int year in activeReportingYears)
+            int activeReportingYear = ReportingYearsHelper.GetCurrentReportingYearForSector(sector);
+            if (IsAfterEarliestReminderForReportingYear(sector, activeReportingYear))
             {
-                if (IsAfterEarliestReminderForReportingYear(sector, year))
-                {
-                    SendReminderEmailForSectorTypeAndYear(sector, year, runId, startTime);
-                }
+                SendReminderEmailForSectorTypeAndYear(sector, activeReportingYear, runId, startTime);
             }
         }
 
@@ -314,13 +311,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
             var reminderEmailDays = JsonConvert.DeserializeObject<List<int>>(Global.ReminderEmailDays);
             reminderEmailDays.Sort();
             return reminderEmailDays;
-        }
-
-        private static List<int> GetActiveReportingYears(SectorTypes sectorType)
-        {
-            return ReportingYearsHelper.GetReportingYears()
-                .Where(year => GetDeadlineDateForReportingYear(sectorType, year) > VirtualDateTime.Now)
-                .ToList();
         }
 
     }
