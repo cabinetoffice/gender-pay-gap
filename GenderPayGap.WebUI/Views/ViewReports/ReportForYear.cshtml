@@ -49,14 +49,14 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
+            
         <h1 class="govuk-heading-l">
             @(Model.Organisation.OrganisationName)
             <br/>
             @(reportingYearFormatted)
             Gender pay gap report
         </h1>
-        
+            
         @{
             var addRemoveButtonViewModel = new AddRemoveButtonViewModel
             {
@@ -65,8 +65,8 @@
             };
         }
         <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="addRemoveButtonViewModel"/>
-        
-        
+            
+            
         <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
             Contents
         </h2>
@@ -99,11 +99,11 @@
         </ul>
 
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    
+        
         <h2 class="govuk-heading-m" id="main-facts-and-figures">
             1. Main gender pay gap figures
         </h2>
-        
+            
         <p class="govuk-body">
             In this organisation:
         </p>
@@ -140,11 +140,11 @@
         </ul>
 
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    
+        
         <h2 class="govuk-heading-m" id="hourly-pay">
             2. Hourly pay
         </h2>
-        
+            
         <p class="govuk-body">
             In this organisation:
         </p>
@@ -160,7 +160,7 @@
                 </div>
                 <partial name="PayComparisonVerticalBarChart" model="Model.DiffMedianHourlyPercent"/>
             </li>
-
+                
             <li>
                 women’s mean (average) hourly pay was
                 @Math.Abs((double) Model.DiffMeanHourlyPayPercent)%
@@ -215,7 +215,7 @@
         </details>
 
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    
+        
         <h2 class="govuk-heading-m" id="pay-quarters">
             3. Pay quarters
         </h2>
@@ -251,7 +251,22 @@
                 </li>
             </ul>
         }
-        
+    
+    </div>
+</div>
+
+@if (!(ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate) && Model.OptedOutOfReportingPayQuarters))
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+            <partial name="PayComparisonQuartersVisualisation" model="Model"/>
+        </div>
+    </div>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    
         <details class="govuk-details govuk-!-margin-top-6" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">

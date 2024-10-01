@@ -1,0 +1,199 @@
+﻿
+$pay-comparison-quarters-vis--men-color: #12436d;
+$pay-comparison-quarters-vis--women-color: #28a197;
+
+.pay-comparison-quarters-vis {
+    margin: 0;
+    
+    #pay-comparison-quarters-show-explanation-container:has(input[type=checkbox]#pay-comparison-quarters-show-explanation-checkbox) ~ .pay-comparison-quarters-vis-quarter-explanation {
+        height: 0;
+    }
+    #pay-comparison-quarters-show-explanation-container:has(input[type=checkbox]#pay-comparison-quarters-show-explanation-checkbox:checked) ~ .pay-comparison-quarters-vis-quarter-explanation {
+        height: 60px;
+    }
+    
+    .pay-comparison-quarters-vis-face--face-feature {
+        fill: none;
+        stroke: none;
+    }
+    #pay-comparison-quarters-show-faces-container:has(input[type=checkbox]#pay-comparison-quarters-show-faces-checkbox:checked) ~ * .pay-comparison-quarters-vis-face--face-feature {
+        fill: white;
+        stroke: white;
+    }
+    
+    .pay-comparison-quarters-vis-face--rectangle-outline {
+        display: none;
+    }
+    #pay-comparison-quarters-show-rectangles-container:has(input[type=checkbox]#pay-comparison-quarters-show-rectangles-checkbox:checked) ~ * .pay-comparison-quarters-vis-face--rectangle-outline {
+        display: block;
+    }
+    #pay-comparison-quarters-show-rectangles-container:has(input[type=checkbox]#pay-comparison-quarters-show-rectangles-checkbox:checked) ~ * .pay-comparison-quarters-vis-face--face-outline {
+        display: none;
+    }
+    
+    .pay-comparison-quarters-vis-quarter-explanation {
+        text-align: center;
+        font-size: 16px;
+        height: 60px;
+        transition-property: height;
+        transition-duration: 1s;
+        transition-timing-function: ease;
+        overflow-y: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        
+        .pay-comparison-quarters-vis-quarter-explanation-sides {
+            display: flex;
+            
+            .pay-comparison-quarters-vis-quarter-explanation-side {
+                width: 50%;
+                
+                &.pay-comparison-quarters-vis-quarter-explanation-side--left {
+                    text-align: right;
+                    padding-right: 15px;
+                    border-right: 2px solid black;
+                }
+                &.pay-comparison-quarters-vis-quarter-explanation-side--right {
+                    text-align: left;
+                    padding-left: 15px;
+                    border-left: 2px solid black;
+                }
+            }
+        }
+    }
+
+    .pay-comparison-quarters-vis-arrow {
+        position: relative;
+        text-align: center;
+        font-weight: bold;
+
+        &::after {
+            content: "";
+            position: absolute;
+            left: calc(50% - 15px);
+            border: 15px solid transparent;
+        }
+    }
+    
+    .pay-comparison-quarters-vis-arrow--up {
+        padding-bottom: 20px;
+
+        &::after {
+            bottom: 0;
+            border-bottom-color: black;
+        }
+    }
+
+    .pay-comparison-quarters-vis-arrow--down {
+        padding-top: 20px;
+
+        &::after {
+            top: 0;
+            border-top-color: black;
+        }
+    }
+
+    .pay-comparison-quarters-vis-quarter {
+        display: flex;
+        justify-content: center;
+        
+        &.pay-comparison-quarters-vis-quarter--bottom-border {
+            border-bottom-width: 2px;
+            border-bottom-style: solid;
+            border-bottom-color: #ddd;
+        }
+        
+        .pay-comparison-quarters-vis-quarter-side {
+            width: 50%;
+            display: flex;
+            justify-content: space-between;
+            
+            &.pay-comparison-quarters-vis-quarter-side--left {
+                border-right: 2px solid black;
+                flex-direction: row-reverse;
+            }
+            &.pay-comparison-quarters-vis-quarter-side--right {
+                border-left: 2px solid black;
+                flex-direction: row;
+            }
+            
+            .pay-comparison-quarters-vis-quarter-caption {
+                padding: 5px 15px;
+            }
+        }
+        
+        .pay-comparison-quarters-vis-quarter-faces {
+            flex-shrink: 0;
+            height: calc((min(28px, (50vw - 25px) / 8 - 3px, 4.5vh - 1px) + 3px) * 3 + 10px);
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: flex-start;
+            
+            @media screen and (min-width: 769px) {
+                height: calc((min(28px, (33.3333vw - 25px) / 8 - 3px, 4.5vh - 1px) + 3px) * 3 + 10px);
+            }
+
+            &.pay-comparison-quarters-vis-quarter-faces--women {
+                direction: rtl;
+                padding: 5px 10px 5px 0;
+            }
+
+            &.pay-comparison-quarters-vis-quarter-faces--men {
+                padding: 5px 0 5px 10px;
+            }
+        }
+    }
+
+    .pay-comparison-quarters-vis-face-container {
+        width: 28px; /* fallback for older browsers */
+        width: calc(min(28px, (50vw - 25px) / 8 - 3px, 4.5vh - 1px));
+
+        @media screen and (min-width: 769px) {
+            width: calc(min(28px, (33.3333vw - 25px) / 8 - 3px, 4.5vh - 1px));
+        }
+    }
+
+    .pay-comparison-quarters-vis-face {
+        display: block;
+        width: 28px; /* fallback for older browsers */
+        height: 28px; /* fallback for older browsers */
+        width: calc(min(28px, (50vw - 25px) / 8 - 3px, 4.5vh - 1px));
+        height: calc(min(28px, (50vw - 25px) / 8 - 3px, 4.5vh - 1px));
+        margin: 1px;
+
+        @media screen and (min-width: 769px) {
+            width: calc(min(28px, (33.3333vw - 25px) / 8 - 3px, 4.5vh - 1px));
+            height: calc(min(28px, (33.3333vw - 25px) / 8 - 3px, 4.5vh - 1px));
+        }
+        
+        &.pay-comparison-quarters-vis-face--man .pay-comparison-quarters-vis-face--face-outline {
+            fill: $pay-comparison-quarters-vis--men-color;
+            stroke: $pay-comparison-quarters-vis--men-color;
+        }
+        &.pay-comparison-quarters-vis-face--man .pay-comparison-quarters-vis-face--rectangle-outline {
+            fill: $pay-comparison-quarters-vis--men-color;
+            stroke: $pay-comparison-quarters-vis--men-color;
+        }
+        &.pay-comparison-quarters-vis-face--woman .pay-comparison-quarters-vis-face--face-outline {
+            fill: $pay-comparison-quarters-vis--women-color;
+            stroke: $pay-comparison-quarters-vis--women-color;
+        }
+        &.pay-comparison-quarters-vis-face--woman .pay-comparison-quarters-vis-face--rectangle-outline {
+            fill: $pay-comparison-quarters-vis--women-color;
+            stroke: $pay-comparison-quarters-vis--women-color;
+        }
+    }
+
+    .pay-comparison-quarters-vis-caption {
+        margin-top: 10px;
+
+        .pay-comparison-quarters-vis-face .pay-comparison-quarters-vis-face--face-outline,
+        .pay-comparison-quarters-vis-face .pay-comparison-quarters-vis-face--rectangle-outline {
+            fill: govuk-colour("black");
+            stroke: govuk-colour("black");
+        }
+    }
+}
