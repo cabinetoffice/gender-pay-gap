@@ -150,13 +150,17 @@
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
             <li>
-                women’s median hourly pay was
-                @Math.Abs((double) Model.DiffMedianHourlyPercent)%
-                @(Model.DiffMedianHourlyPercent >= 0 ? "lower" : "higher")
-                than men’s – this means they earned
-                @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianHourlyPercent) / 100))
-                for every £1 that men earn when comparing median hourly pay
+                <div>
+                    women’s median hourly pay was
+                    @Math.Abs((double) Model.DiffMedianHourlyPercent)%
+                    @(Model.DiffMedianHourlyPercent >= 0 ? "lower" : "higher")
+                    than men’s – this means they earned
+                    @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianHourlyPercent) / 100))
+                    for every £1 that men earn when comparing median hourly pay
+                </div>
+                <partial name="PayComparisonVerticalBarChart" model="Model.DiffMedianHourlyPercent"/>
             </li>
+
             <li>
                 women’s mean (average) hourly pay was
                 @Math.Abs((double) Model.DiffMeanHourlyPayPercent)%
@@ -279,12 +283,15 @@
                 @if (Model.DiffMedianBonusPercent.HasValue)
                 {
                     <li>
-                        women’s median bonus pay was
-                        @Math.Abs((double) Model.DiffMedianBonusPercent.Value)%
-                        @(Model.DiffMedianBonusPercent.Value >= 0 ? "lower" : "higher")
-                        than men’s – this means they earned
-                        @ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianBonusPercent.Value) / 100)
-                        for every £1 that men earn when comparing median bonus pay
+                        <div>
+                            women’s median bonus pay was
+                            @Math.Abs((double) Model.DiffMedianBonusPercent.Value)%
+                            @(Model.DiffMedianBonusPercent.Value >= 0 ? "lower" : "higher")
+                            than men’s – this means they earned
+                            @ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianBonusPercent.Value) / 100)
+                            for every £1 that men earn when comparing median bonus pay
+                        </div>
+                        <partial name="PayComparisonVerticalBarChart" model="Model.DiffMedianBonusPercent.Value"/>
                     </li>
                 }
                 @if (Model.DiffMeanBonusPercent.HasValue)

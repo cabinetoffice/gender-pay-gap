@@ -17,5 +17,21 @@ namespace GenderPayGap.WebUI.Helpers
             }
         }
 
+        public static decimal CalculateBarChartHeightForWomen(decimal payGapPercent)
+        {
+            return
+                payGapPercent >= 0
+                    ? 100 - payGapPercent
+                    : 100;
+        }
+
+        public static decimal CalculateBarChartHeightForMen(decimal payGapPercent)
+        {
+            return
+                payGapPercent >= 0
+                    ? 100
+                    : 10000 / (100 - payGapPercent);
+        }
+
     }
 }
