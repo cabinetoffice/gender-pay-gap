@@ -69,7 +69,8 @@ namespace GenderPayGap.Core.Helpers
         public static int GetTheMostRecentCompletedReportingYear()
         {
             int mostRecentReportingYear = Global.FirstReportingYear;
-            foreach (int year in from year in GetReportingYears()
+            foreach (int year in from year in GetReportingYears() 
+                orderby year descending
                 let accountingDate = SectorTypes.Private.GetAccountingStartDate(year)
                 where DeadlineForAccountingDateHasPassed(accountingDate)
                 select year)
