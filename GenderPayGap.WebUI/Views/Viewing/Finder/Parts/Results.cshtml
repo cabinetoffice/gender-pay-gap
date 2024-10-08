@@ -1,4 +1,5 @@
 ﻿@using GenderPayGap.Core.Models
+@using GenderPayGap.Core.Classes
 @model GenderPayGap.WebUI.Models.Search.SearchViewModel
 
 <ul id="SearchResults" class="results">
@@ -9,7 +10,7 @@
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
                     <h2>
-                        @Html.ActionLink(employer.Name, "Employer", "Viewing", new {employerIdentifier = employer.OrganisationIdEncrypted}, new {data_name = "ViewLink", data_id = employer.OrganisationIdEncrypted, data_loadtestid = employer.Name})
+                        @Html.ActionLink(employer.Name, "Employer", "ViewReports", new {organisationId = Obfuscator.DeObfuscate(employer.OrganisationIdEncrypted)}, new {data_name = "ViewLink", data_id = employer.OrganisationIdEncrypted, data_loadtestid = employer.Name})
                     </h2>
                     @if (string.IsNullOrWhiteSpace(employer.PreviousName) == false)
                     {

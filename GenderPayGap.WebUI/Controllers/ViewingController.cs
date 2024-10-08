@@ -115,18 +115,6 @@ namespace GenderPayGap.WebUI.Controllers
         
         #endregion
 
-        #region Employer details
-
-        [HttpGet("~/Employer/{employerIdentifier}")]
-        public IActionResult Employer(string employerIdentifier, int? page = 1)
-        {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-
-            return RedirectToAction("Employer", "ViewReports", new {organisationId});
-        }
-
-        #endregion
-
         #region Reports
 
         [HttpGet("~/EmployerReport/{employerIdentifier}/{year}")]

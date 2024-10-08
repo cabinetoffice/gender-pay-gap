@@ -55,7 +55,7 @@
 </h1>
 
 <p class="govuk-body">
-    <a href="@Url.Action("Employer", "Viewing", new {employerIdentifier = Model.Organisation.GetEncryptedId()})"
+    <a href="@Url.Action("Employer", "ViewReports", new {organisationId = Model.Organisation.OrganisationId})"
        class="govuk-link">
         '@(Model.Organisation.OrganisationName)' on viewing service
     </a>
