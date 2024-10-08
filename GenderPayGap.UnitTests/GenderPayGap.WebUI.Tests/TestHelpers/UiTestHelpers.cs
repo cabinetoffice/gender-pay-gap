@@ -230,7 +230,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 .As<IScopeBusinessLogic>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
 
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();

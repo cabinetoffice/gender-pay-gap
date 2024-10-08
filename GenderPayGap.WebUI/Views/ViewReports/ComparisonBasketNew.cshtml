@@ -1,4 +1,4 @@
-@inject ICompareViewService CompareViewService
+﻿@inject ICompareViewService CompareViewService
 
 @if (CompareViewService.BasketItemCount >= 1)
 {
@@ -18,7 +18,8 @@
             <p class="govuk-body govuk-!-margin-bottom-2">
                 Your comparison list contains
                 <strong>
-                    @(CompareViewService.BasketItemCount) employer@(CompareViewService.BasketItemCount != 1 ? "s" : "")
+                    @(CompareViewService.BasketItemCount)
+                    @(CompareViewService.BasketItemCount == 1 ? "employer" : "employers")
                 </strong>
             </p>
             <ul class="govuk-list govuk-body-s">

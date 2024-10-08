@@ -157,11 +157,6 @@ namespace GenderPayGap.Extensions
             return defaultValue;
         }
 
-        public static long ToLong(this object text, long defaultValue = 0)
-        {
-            return ToInt64(text, defaultValue);
-        }
-
         public static long ToInt64(this object text, long defaultValue = 0)
         {
             if (text.IsNull())
@@ -182,16 +177,6 @@ namespace GenderPayGap.Extensions
             }
 
             return defaultValue;
-        }
-
-        public static string FormatDecimal(this decimal? value, string format)
-        {
-            if (value == null)
-            {
-                value = default(decimal);
-            }
-
-            return value.Value.ToString(format);
         }
 
         public static string ToStringOrNull(this object text)
