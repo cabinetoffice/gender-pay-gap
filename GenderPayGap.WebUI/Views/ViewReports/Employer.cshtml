@@ -219,17 +219,9 @@
                             }
                         </div>
                         <dd class="govuk-summary-list__value employer-reports-page--alight-right-on-desktop govuk-!-padding-top-0">
-                            <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = reportingYear})"
-                               class="govuk-link">
-                                View report (old)
-                                <span class="govuk-visually-hidden">
-                                    for reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear))
-                                </span>
-                            </a>
-                            <br/>
                             <a href="@Url.Action("ReportForYear", "ViewReports", new {organisationId = Model.OrganisationId, reportingYear = reportingYear})"
                                class="govuk-link">
-                                View report (new)
+                                View report
                                 <span class="govuk-visually-hidden">
                                     for reporting year @(ReportingYearsHelper.FormatYearAsReportingPeriod(reportingYear))
                                 </span>

@@ -117,56 +117,6 @@ namespace GenderPayGap.WebUI.Controllers
             return Json(new {Matches = matches});
         }
         
-        #endregion
-
-        #region Reports
-
-        [HttpGet("~/EmployerReport/{employerIdentifier}/{year}")]
-        public IActionResult Report(string employerIdentifier, int year)
-        {
-            if (string.IsNullOrWhiteSpace(employerIdentifier))
-            {
-                return new HttpBadRequestResult("Missing employer identifier");
-            }
-
-            if (year < Global.FirstReportingYear || year > VirtualDateTime.Now.Year)
-            {
-                return new HttpBadRequestResult($"Invalid snapshot year {year}");
-            }
-
-            #region Load organisation
-
-            Organisation foundOrganisation;
-
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            foundOrganisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
-            ControllerHelper.Throw404IfOrganisationIsNotSearchable(foundOrganisation);
-
-            #endregion
-
-            #region Load latest submission 
-
-            try
-            {
-                Return foundReturn = foundOrganisation.GetReturn(year);
-
-                if (foundReturn == null)
-                {
-                    throw new PageNotFoundException();
-                }
-                
-                ViewBag.BasketViewModel = new CompareBasketViewModel {CanAddEmployers = true, CanViewCompare = true};
-
-                return View("EmployerDetails/Report", foundReturn);
-            }
-            catch (Exception ex)
-            {
-                throw new PageNotFoundException();
-            }
-
-            #endregion
-        }
-
         [HttpGet("add-search-results-to-compare")]
         public async Task<IActionResult> AddSearchResultsToCompare([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
         {
