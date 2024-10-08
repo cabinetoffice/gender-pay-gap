@@ -41,8 +41,6 @@ namespace GenderPayGap.WebUI.Controllers
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
             
             Return returnForYear = ControllerHelper.LoadReturnForYearOrThrow404(organisation, reportingYear);
-            
-            
 
             return View("ReportForYear", returnForYear);
         }

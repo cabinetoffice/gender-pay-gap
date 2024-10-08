@@ -4,6 +4,7 @@
 @using GenderPayGap.WebUI.Helpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Core
 @model GenderPayGap.Database.Return
 
 @{
@@ -184,37 +185,50 @@
         <h2 class="govuk-heading-m" id="pay-quarters">
             3. Pay quarters
         </h2>
-            
-        <p class="govuk-body">
-            In this organisation, women made up:
-        </p>
-        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-            <li>
-                @(Model.FemaleUpperQuartilePayBand)%
-                of employees in the upper hourly pay quarter (highest paid jobs)
-            </li>
-            <li>
-                @(Model.FemaleUpperPayBand)%
-                of employees in the upper middle hourly pay quarter
-            </li>
-            <li>
-                @(Model.FemaleMiddlePayBand)%
-                of employees in the lower middle hourly pay quarter
-            </li>
-            <li>
-                @(Model.FemaleLowerPayBand)%
-                of employees in the lower hourly pay quarter (lowest paid jobs)
-            </li>
-        </ul>
+        
+        @if (ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate) && Model.OptedOutOfReportingPayQuarters)
+        {
+            <p class="govuk-body">
+                Due to the number of employees placed on the Coronavirus Job Retention Scheme (furlough)
+                this employer was not required to provide quarter data.
+            </p>
+        }
+        else
+        {
+            <p class="govuk-body">
+                In this organisation, women made up:
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                <li>
+                    @(Model.FemaleUpperQuartilePayBand)%
+                    of employees in the upper hourly pay quarter (highest paid jobs)
+                </li>
+                <li>
+                    @(Model.FemaleUpperPayBand)%
+                    of employees in the upper middle hourly pay quarter
+                </li>
+                <li>
+                    @(Model.FemaleMiddlePayBand)%
+                    of employees in the lower middle hourly pay quarter
+                </li>
+                <li>
+                    @(Model.FemaleLowerPayBand)%
+                    of employees in the lower hourly pay quarter (lowest paid jobs)
+                </li>
+            </ul>
+        }
         
     </div>
 </div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds-from-desktop">
-        <partial name="PayComparisonQuartersVisualisation" model="Model"/>
+@if (!(ReportingYearsHelper.IsReportingYearWithFurloughScheme(Model.AccountingDate) && Model.OptedOutOfReportingPayQuarters))
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+            <partial name="PayComparisonQuartersVisualisation" model="Model"/>
+        </div>
     </div>
-</div>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -240,7 +254,7 @@
             In this organisation:
         </p>
         <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-            @if (Model.FemaleMedianBonusPayPercent > 0 || Model.MaleMedianBonusPayPercent > 0)
+            @if (Model.FemaleMedianBonusPayPercent > 0 && Model.MaleMedianBonusPayPercent > 0)
             {
                 @if (Model.DiffMedianBonusPercent.HasValue)
                 {
@@ -268,6 +282,26 @@
                 <li>
                     @(Model.FemaleMedianBonusPayPercent)%
                     of women and
+                    @(Model.MaleMedianBonusPayPercent)%
+                    of men received bonus pay
+                </li>
+            }
+            else if (Model.FemaleMedianBonusPayPercent > 0 && Model.MaleMedianBonusPayPercent <= 0)
+            {
+                <li>
+                    @(Model.FemaleMedianBonusPayPercent)%
+                    of women received bonus pay
+                </li>
+                <li>
+                    no men received bonus pay
+                </li>
+            }
+            else if (Model.FemaleMedianBonusPayPercent <= 0 && Model.MaleMedianBonusPayPercent > 0)
+            {
+                <li>
+                    no women received bonus pay
+                </li>
+                <li>
                     @(Model.MaleMedianBonusPayPercent)%
                     of men received bonus pay
                 </li>
@@ -319,14 +353,17 @@
                     @(Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name) employees
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Person responsible
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(Model.ResponsiblePerson)
-                </dd>
-            </div>
+            @if (Model.Organisation.SectorType == SectorTypes.Private)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Person responsible
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.ResponsiblePerson)
+                    </dd>
+                </div>
+            }
         </dl>
         
         @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
