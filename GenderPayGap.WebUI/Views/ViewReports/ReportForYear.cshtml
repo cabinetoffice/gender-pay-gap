@@ -1,0 +1,345 @@
+@using GenderPayGap.Core.Helpers
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using GenderPayGap.WebUI.Helpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.ComponentModel.DataAnnotations
+@model GenderPayGap.Database.Return
+
+@{
+    string reportingYearFormatted = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year);
+    ViewBag.Title = $"{Model.Organisation.OrganisationName} gender pay gap report for {reportingYearFormatted} reporting year";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Homepage",
+                Href = Url.Action("Index", "Homepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Search and compare",
+                Href = Url.Action("SearchResults", "Viewing")
+            },
+            new CrumbViewModel
+            {
+                Text = Model.Organisation.OrganisationName,
+                Href = Url.Action("Employer", "ViewReports", new { organisationId = Model.Organisation.OrganisationId })
+            },
+            new CrumbViewModel
+            {
+                Text = $"Gender pay gap report for {reportingYearFormatted}"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<partial name="ComparisonBasketNew"/>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+            
+        <h1 class="govuk-heading-l">
+            @(Model.Organisation.OrganisationName)
+            <br/>
+            @(reportingYearFormatted)
+            Gender pay gap report
+        </h1>
+            
+        @{
+            var addRemoveButtonViewModel = new AddRemoveButtonViewModel
+            {
+                OrganisationIdEncrypted = Model.Organisation.GetEncryptedId(),
+                OrganisationName = Model.Organisation.OrganisationName
+            };
+        }
+        <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="addRemoveButtonViewModel"/>
+            
+            
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+            Contents
+        </h2>
+        <ul class="govuk-list govuk-list--number">
+            <li>
+                <a href="#main-facts-and-figures" class="govuk-link">
+                    Main facts and figures
+                </a>
+            </li>
+            <li>
+                <a href="#hourly-pay" class="govuk-link">
+                    Hourly pay
+                </a>
+            </li>
+            <li>
+                <a href="#pay-quarters" class="govuk-link">
+                    Pay quarters
+                </a>
+            </li>
+            <li>
+                <a href="#bonus-pay" class="govuk-link">
+                    Bonus pay
+                </a>
+            </li>
+            <li>
+                <a href="#about-employer" class="govuk-link">
+                    About @(Model.Organisation.OrganisationName)
+                </a>
+            </li>
+        </ul>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        
+        <h2 class="govuk-heading-m" id="main-facts-and-figures">
+            1. Main gender pay gap figures
+        </h2>
+            
+        <p class="govuk-body">
+            In this organisation:
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>
+                women earned
+                @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianHourlyPercent)/100))
+                for every £1 that men earned (comparing median hourly pay)
+            </li>
+            <li>
+                women made up
+                @(Model.FemaleUpperQuartilePayBand)%
+                of employees in the highest paid quarter, and
+                @(Model.FemaleLowerPayBand)%
+                of employees in the lowest paid quarter
+            </li>
+            @if ((Model.FemaleMedianBonusPayPercent > 0 || 
+                  Model.MaleMedianBonusPayPercent > 0) &&
+                 Model.DiffMedianBonusPercent.HasValue)
+            {
+                <li>
+                    @(Model.FemaleMedianBonusPayPercent)%
+                    of women received bonus pay, compared with
+                    @(Model.MaleMedianBonusPayPercent)%
+                    of men
+                </li>
+                <li>
+                    women’s bonus pay was
+                    @Math.Abs((double) Model.DiffMedianBonusPercent)%
+                    @(Model.DiffMedianBonusPercent >= 0 ? "lower" : "higher")
+                    than men’s (comparing median bonus pay)
+                </li>
+            }
+        </ul>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        
+        <h2 class="govuk-heading-m" id="hourly-pay">
+            2. Hourly pay
+        </h2>
+            
+        <p class="govuk-body">
+            In this organisation:
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>
+                <div>
+                    women’s median hourly pay was
+                    @Math.Abs((double) Model.DiffMedianHourlyPercent)%
+                    @(Model.DiffMedianHourlyPercent >= 0 ? "lower" : "higher")
+                    than men’s – this means they earned
+                    @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianHourlyPercent) / 100))
+                    for every £1 that men earn when comparing median hourly pay
+                </div>
+                <partial name="PayComparisonVerticalBarChart" model="Model.DiffMedianHourlyPercent"/>
+            </li>
+                
+            <li>
+                women’s mean (average) hourly pay was
+                @Math.Abs((double) Model.DiffMeanHourlyPayPercent)%
+                @(Model.DiffMeanHourlyPayPercent >= 0 ? "lower" : "higher")
+                than men’s
+            </li>
+        </ul>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Read more about median and mean
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <partial name="AboutHourlyRate" />
+            </div>
+        </details>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        
+        <h2 class="govuk-heading-m" id="pay-quarters">
+            3. Pay quarters
+        </h2>
+            
+        <p class="govuk-body">
+            In this organisation, women made up:
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>
+                @(Model.FemaleUpperQuartilePayBand)%
+                of employees in the upper hourly pay quarter (highest paid jobs)
+            </li>
+            <li>
+                @(Model.FemaleUpperPayBand)%
+                of employees in the upper middle hourly pay quarter
+            </li>
+            <li>
+                @(Model.FemaleMiddlePayBand)%
+                of employees in the lower middle hourly pay quarter
+            </li>
+            <li>
+                @(Model.FemaleLowerPayBand)%
+                of employees in the lower hourly pay quarter (lowest paid jobs)
+            </li>
+        </ul>
+        
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <partial name="PayComparisonQuartersVisualisation" model="Model"/>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    
+        <details class="govuk-details govuk-!-margin-top-6" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Read more about pay quarters
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <partial name="AboutQuartiles" />
+            </div>
+        </details>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    
+        <h2 class="govuk-heading-m" id="bonus-pay">
+            4. Bonus pay
+        </h2>
+        
+        <p class="govuk-body">
+            In this organisation:
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            @if (Model.FemaleMedianBonusPayPercent > 0 || Model.MaleMedianBonusPayPercent > 0)
+            {
+                @if (Model.DiffMedianBonusPercent.HasValue)
+                {
+                    <li>
+                        <div>
+                            women’s median bonus pay was
+                            @Math.Abs((double) Model.DiffMedianBonusPercent.Value)%
+                            @(Model.DiffMedianBonusPercent.Value >= 0 ? "lower" : "higher")
+                            than men’s – this means they earned
+                            @ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianBonusPercent.Value) / 100)
+                            for every £1 that men earn when comparing median bonus pay
+                        </div>
+                        <partial name="PayComparisonVerticalBarChart" model="Model.DiffMedianBonusPercent.Value"/>
+                    </li>
+                }
+                @if (Model.DiffMeanBonusPercent.HasValue)
+                {
+                    <li>
+                        women’s mean (average) bonus pay was
+                        @Math.Abs((double) Model.DiffMeanBonusPercent.Value)%
+                        @(Model.DiffMeanBonusPercent.Value >= 0 ? "lower" : "higher")
+                        than men’s
+                    </li>
+                }
+                <li>
+                    @(Model.FemaleMedianBonusPayPercent)%
+                    of women and
+                    @(Model.MaleMedianBonusPayPercent)%
+                    of men received bonus pay
+                </li>
+            }
+            else
+            {
+                <li>
+                    no bonuses were paid
+                </li>
+            }
+        </ul>
+
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    
+        <h2 class="govuk-heading-m" id="about-employer">
+            5. About @(Model.Organisation.OrganisationName)
+        </h2>
+        
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Registered address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.Organisation.GetLatestAddress()?.GetAddressString())
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Sector
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.Organisation.GetSicSectorsString())
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Snapshot date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.AccountingDate.ToString("d MMMM yyyy"))
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Employee headcount
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name) employees
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Person responsible
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.ResponsiblePerson)
+                </dd>
+            </div>
+        </dl>
+        
+        @if (UriSanitiser.IsValidHttpOrHttpsLink(Model.CompanyLinkToGPGInfo))
+        {
+            <p class="govuk-body">
+                <a href="@(Model.CompanyLinkToGPGInfo)"
+                   target="_blank"
+                   rel="nofollow noreferrer"
+                   class="govuk-link">
+                    What this employer says about their gender pay gap (opens in a new window)
+                </a>
+            </p>
+        }
+
+    </div>
+</div>

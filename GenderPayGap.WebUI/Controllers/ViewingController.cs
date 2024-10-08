@@ -124,11 +124,6 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("~/Employer/{employerIdentifier}")]
         public IActionResult Employer(string employerIdentifier, int? page = 1)
         {
-            if (string.IsNullOrWhiteSpace(employerIdentifier))
-            {
-                return new HttpBadRequestResult("Missing employer identifier");
-            }
-
             long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
 
             return RedirectToAction("Employer", "ViewReports", new {organisationId});
