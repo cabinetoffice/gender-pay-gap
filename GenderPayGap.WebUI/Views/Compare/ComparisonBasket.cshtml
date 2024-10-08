@@ -59,7 +59,7 @@
 
                     @if (Model.CanViewCompare)
                     {
-                        string viewBasketUrl = Url.Action(nameof(CompareController.CompareEmployers), "Compare");
+                        string viewBasketUrl = Url.Action("CompareEmployersNoYear", "CompareEmployers");
                         <li>
                             <a class="button" href="@viewBasketUrl">View comparison</a>
                         </li>
