@@ -27,7 +27,7 @@
         </p>
         
         <p class="govuk-body govuk-!-margin-bottom-6">
-            <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.Organisation.GetEncryptedId(), year = reportingYear})"
+            <a href="@Url.Action("ReportForYear", "ViewReports", new {organisationId = Model.Organisation.OrganisationId, year = reportingYear})"
                class="govuk-link">
                 View your published gender pay gap information
             </a>
