@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
-        [HttpGet("/compare-employers-2")]
+        [HttpGet("/compare-employers")]
         public IActionResult CompareEmployersNoYear(string employers = null)
         {
             int year = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
@@ -40,7 +40,7 @@ namespace GenderPayGap.WebUI.Controllers
             return action;
         }
 
-        [HttpGet("/compare-employers-2/{year}")]
+        [HttpGet("/compare-employers/{year}")]
         public IActionResult CompareEmployersForYear(int year, string employers = null)
         {
             compareViewService.LoadComparedEmployersFromCookie();
@@ -80,7 +80,7 @@ namespace GenderPayGap.WebUI.Controllers
             return View("CompareEmployersForYear", viewModel);
         }
 
-        [HttpGet("/compare-employers-2/{year}/download-csv")]
+        [HttpGet("/compare-employers/{year}/download-csv")]
         public IActionResult DownloadCSVOfCompareEmployersForYear(int year, string employers = null)
         {
             compareViewService.LoadComparedEmployersFromCookie();
