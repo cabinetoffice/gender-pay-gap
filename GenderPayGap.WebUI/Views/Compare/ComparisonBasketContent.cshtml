@@ -1,4 +1,4 @@
-﻿@inject ICompareViewService CompareViewService
+@inject ICompareViewService CompareViewService
 @model CompareBasketViewModel
 @{
     int compareCount = CompareViewService.BasketItemCount;
@@ -50,7 +50,7 @@
                 </p>
                 @if (!Model.IsComparePage)
                 {
-                    string viewBasketUrl = Url.Action(nameof(CompareController.CompareEmployers), "Compare");
+                    string viewBasketUrl = Url.Action("CompareEmployersNoYear", "CompareEmployers");
                     <p class="govuk-body">
                         <a class="govuk-button govuk-!-margin-0" href="@viewBasketUrl">View comparison</a>
                     </p>

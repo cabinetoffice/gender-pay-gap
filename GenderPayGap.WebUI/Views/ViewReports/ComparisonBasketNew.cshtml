@@ -1,4 +1,4 @@
-﻿@inject ICompareViewService CompareViewService
+@inject ICompareViewService CompareViewService
 
 @if (CompareViewService.BasketItemCount >= 1)
 {
@@ -38,7 +38,7 @@
                     </li>
 
                     <li>
-                        <a href="@(Url.Action("CompareEmployers", "Compare"))"
+                        <a href="@Url.Action("CompareEmployersNoYear", "CompareEmployers")"
                            class="govuk-link">
                             View comparison
                         </a>
