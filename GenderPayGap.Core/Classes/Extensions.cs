@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Data;
-using CsvHelper.Configuration;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Core.Classes
@@ -46,39 +43,6 @@ namespace GenderPayGap.Core.Classes
             var tempDate = new DateTime(year, tempMonth, tempDay);
 
             return now > tempDate ? tempDate : tempDate.AddYears(-1);
-        }
-
-        public static string ToCSV(this DataTable datatable)
-        {
-            return CsvWriter.Write(
-                (memoryStream, streamReader, streamWriter, csvWriter) =>
-                {
-                    csvWriter.Configuration.ShouldQuote = (s, context) => true;
-                    csvWriter.Configuration.TrimOptions = TrimOptions.InsideQuotes;
-
-                    // Write columns
-                    foreach (DataColumn column in datatable.Columns) // copy datatable CHAIN to DT, or just use CHAIN
-                    {
-                        csvWriter.WriteField(column.ColumnName);
-                    }
-
-                    csvWriter.NextRecord();
-
-                    // Write row values
-                    foreach (DataRow row1 in datatable.Rows)
-                    {
-                        for (var i = 0; i < datatable.Columns.Count; i++)
-                        {
-                            csvWriter.WriteField(row1[i]);
-                        }
-
-                        csvWriter.NextRecord();
-                    }
-
-                    streamWriter.Flush();
-                    memoryStream.Position = 0;
-                    return streamReader.ReadToEnd();
-                });
         }
 
     }
