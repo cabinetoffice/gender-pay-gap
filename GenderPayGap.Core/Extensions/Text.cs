@@ -87,29 +87,6 @@ namespace GenderPayGap.Extensions
             return includeWhenNoSeparator ? text : null;
         }
 
-        /// <summary>
-        ///     Returns all characters after the first occurrence of a string
-        /// </summary>
-        public static string AfterFirst(this string text,
-            string separator,
-            StringComparison comparisionType = StringComparison.OrdinalIgnoreCase,
-            bool includeSeparator = false,
-            bool includeWhenNoSeparator = true)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return text;
-            }
-
-            int i = text.IndexOf(separator, 0, comparisionType);
-            if (i > -1)
-            {
-                return text.Substring(includeSeparator ? i : i + separator.Length);
-            }
-
-            return includeWhenNoSeparator ? text : null;
-        }
-
         public static bool EqualsI(this string original, params string[] target)
         {
             if (string.IsNullOrWhiteSpace(original))

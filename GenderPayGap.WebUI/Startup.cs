@@ -199,7 +199,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<DraftReturnService>().As<DraftReturnService>().InstancePerLifetimeScope();
 
             builder.RegisterType<ScopeBusinessLogic>().As<IScopeBusinessLogic>().InstancePerLifetimeScope();
-            builder.RegisterType<OrganisationBusinessLogic>().As<IOrganisationBusinessLogic>().InstancePerLifetimeScope();
 
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
 
