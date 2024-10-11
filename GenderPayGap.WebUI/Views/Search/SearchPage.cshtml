@@ -1,0 +1,78 @@
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@* @model GenderPayGap.Database.Return *@
+
+@{
+    ViewBag.Title = "Search for an employer's gender pay gap report";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Homepage",
+                Href = Url.Action("Index", "Homepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Search and compare",
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<partial name="../ViewReports/ComparisonBasketNew"/>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+            
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Search by employer name
+            <br/>
+            <span class="govuk-!-font-size-27" style="display: inline-block;">
+                or filter by sector or number of employees
+            </span>
+        </h1>
+        
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="query">
+                Employer name
+            </label>
+
+            <div class="gpg-search-box">
+                <input type="text"
+                       name="query"
+                       id="query"
+                       class="govuk-input"
+                       value=""
+                       aria-describedby="query-hint">
+                <input type="submit" value="Search" class="gpg-search-button" />
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">
+            Filters
+        </h2>
+    </div>
+    
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">
+            Search results
+        </h2>
+    </div>
+</div>
