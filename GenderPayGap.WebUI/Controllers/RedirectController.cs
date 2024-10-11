@@ -1,4 +1,5 @@
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -98,5 +99,13 @@ namespace GenderPayGap.WebUI.Controllers
             return Redirect("https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/closing-your-gender-pay-gap");
         }
         
+        [HttpGet("/Employer/{employerIdentifier}")]
+        public IActionResult ViewEmployerPage(string employerIdentifier, int? page = 1)
+        {
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+
+            return RedirectToAction("Employer", "ViewReports", new {organisationId});
+        }
+
     }
 }
