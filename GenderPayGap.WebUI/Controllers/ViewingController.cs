@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -117,23 +117,6 @@ namespace GenderPayGap.WebUI.Controllers
             return Json(new {Matches = matches});
         }
         
-        #endregion
-
-        #region Employer details
-
-        [HttpGet("~/Employer/{employerIdentifier}")]
-        public IActionResult Employer(string employerIdentifier, int? page = 1)
-        {
-            if (string.IsNullOrWhiteSpace(employerIdentifier))
-            {
-                return new HttpBadRequestResult("Missing employer identifier");
-            }
-
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-
-            return RedirectToAction("Employer", "ViewReports", new {organisationId});
-        }
-
         #endregion
 
         #region Reports

@@ -21,7 +21,7 @@
 <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel"/>
 <div class="grid-row">
     <div class="column-full">
-        <a class="link-back" href="@(Url.Action("Employer", new {employerIdentifier}))">View all reports for this employer</a>
+        <a class="link-back" href="@Url.Action("Employer", "ViewReports", new {organisationId = Model.Organisation.OrganisationId})">View all reports for this employer</a>
         <h1 class="heading-large">
             <div id="OrganisationName">
                 @Model.Organisation.OrganisationName
