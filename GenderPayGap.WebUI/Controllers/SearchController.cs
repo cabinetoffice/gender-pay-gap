@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.WebUI.Classes.Presentation;
+using GenderPayGap.WebUI.Models.Search;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -16,16 +17,11 @@ namespace GenderPayGap.WebUI.Controllers
         }
 
         [HttpGet("search")]
-        public IActionResult SearchPage(
-            string employerName = "",
-            List<OrganisationSizes> employerSize = null,
-            List<string> sector = null,
-            bool reportedLate = false,
-            string orderBy = "relevance")
+        public IActionResult SearchPage(SearchPageViewModel viewModel)
         {
             compareViewService.LoadComparedEmployersFromCookie();
             
-            return View("SearchPage");
+            return View("SearchPage", viewModel);
         }
 
 

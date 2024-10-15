@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Core
 @using System.ComponentModel.DataAnnotations
-@* @model GenderPayGap.Database.Return *@
+@model GenderPayGap.WebUI.Models.Search.SearchPageViewModel
 
 @{
     ViewBag.Title = "Search for an employer's gender pay gap report";
@@ -73,50 +73,40 @@
         </h2>
         
         <p class="govuk-body">
-            <a href="#"
-               class="govuk-link">
-                Clear all filters
-            </a>
-            <br/>
-            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2" data-module="govuk-button">
                 Clear all filters
             </button>
         </p>
         
-        <details class="govuk-details">
+        <details class="govuk-details" open="@(Model.EmployerSize.Count > 0)">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
                     Number of employees
                 </span>
             </summary>
-            <div class="govuk-details__text">
+            <div class="govuk-details__text govuk-!-padding-top-0 govuk-!-padding-bottom-0">
                 @{
                     OrganisationSizes[] allOrganisationSizes = (OrganisationSizes[]) Enum.GetValues(typeof(OrganisationSizes));
-                    
-                    List<ItemViewModel> checkboxItems = allOrganisationSizes
-                        .Where(orgSize => orgSize != OrganisationSizes.NotProvided)
-                        .OrderBy(orgSize => orgSize.GetAttribute<RangeAttribute>().Maximum)
-                        .Select(orgSize => new CheckboxItemViewModel
-                        {
-                            Name = orgSize.ToString(),
-                            Value = orgSize.ToString(),
-                            Label = new LabelViewModel
-                            {
-                                Text = orgSize.GetAttribute<DisplayAttribute>().Name
-                            },
-                            // Classes = "govuk-checkboxes--small"
-                        })
-                        .Cast<ItemViewModel>()
-                        .ToList();
                 }
-                @(await Html.GovUkCheckboxes(new CheckboxesViewModel
-                {
-                    Items = checkboxItems,
-                    FormGroup = new FormGroupViewModel
+                @await Html.GovUkCheckboxesFor(
+                    m => m.EmployerSize,
+                    labelOptions: allOrganisationSizes.ToDictionary(
+                        orgSize => orgSize,
+                        orgSize => new LabelViewModel
+                        {
+                            Text = orgSize.GetAttribute<DisplayAttribute>().Name
+                        }
+                        ),
+                    classOptions: new Dictionary<OrganisationSizes, string> {{OrganisationSizes.NotProvided, "gpg-search-page--filter-employerSize--not-provided"}},
+                    fieldsetOptions: new FieldsetViewModel
                     {
-                        Classes = "govuk-!-margin-bottom-0"
+                        Classes = "gpg-search-page--filter-employerSize--fieldset",
+                        Legend = new LegendViewModel
+                        {
+                            Html = @<text></text>
+                        }
                     }
-                }))
+                )
             </div>
         </details>        
     </div>

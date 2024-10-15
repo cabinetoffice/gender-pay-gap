@@ -1,0 +1,12 @@
+﻿
+.gpg-search-page--filter-employerSize--not-provided {
+    display: none;
+}
+
+.gpg-search-page--filter-employerSize--fieldset .govuk-form-group {
+    margin-bottom: 0;
+}
+
+.gpg-search-page--filter-employerSize--fieldset .govuk-checkboxes {
+    @extend .govuk-checkboxes--small;
+}
