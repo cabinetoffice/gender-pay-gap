@@ -262,6 +262,116 @@
             <partial name="PayComparisonQuartersVisualisation" model="Model"/>
         </div>
     </div>
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <details class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Table: pay quarters
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    
+                    <table class="govuk-table" style="max-width: 700px;">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header" colspan="2">Pay quarter</th>
+                                <th scope="col" class="govuk-table__header">Women (%)</th>
+                                <th scope="col" class="govuk-table__header">Men (%)</th>
+                                <th scope="col" class="govuk-table__header">Total (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            
+                            @{
+                                async Task TableRowsForPayQuarter(string quarterName, decimal womenInQuarter, decimal menInQuarter)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header" rowspan="2">
+                                            @(quarterName)
+                                        </th>
+                                        <th scope="row" class="govuk-table__header">
+                                            Percentage in this pay quarter
+                                        </th>
+                                        <td class="govuk-table__cell">
+                                            @(womenInQuarter.ToString("0.0"))
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @(menInQuarter.ToString("0.0"))
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            100
+                                        </td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">
+                                            Percentage of all employees
+                                        </th>
+                                        <td class="govuk-table__cell">
+                                            @((womenInQuarter / 4).ToString("0.0"))
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            @((menInQuarter / 4).ToString("0.0"))
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            25
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            @{ await TableRowsForPayQuarter(
+                                   quarterName: "Upper hourly pay quarter (highest paid)",
+                                   womenInQuarter: Model.FemaleUpperQuartilePayBand.Value,
+                                   menInQuarter: Model.MaleUpperQuartilePayBand.Value); }
+                            @{ await TableRowsForPayQuarter(
+                                   quarterName: "Upper middle hourly pay quarter",
+                                   womenInQuarter: Model.FemaleUpperPayBand.Value,
+                                   menInQuarter: Model.MaleUpperPayBand.Value); }
+                            @{ await TableRowsForPayQuarter(
+                                   quarterName: "Lower middle pay quarter",
+                                   womenInQuarter: Model.FemaleMiddlePayBand.Value,
+                                   menInQuarter: Model.MaleMiddlePayBand.Value); }
+                            @{ await TableRowsForPayQuarter(
+                                   quarterName: "Lower hourly pay quarter (lowest paid)",
+                                   womenInQuarter: Model.FemaleLowerPayBand.Value,
+                                   menInQuarter: Model.MaleLowerPayBand.Value); }
+
+                            <tr class="govuk-table__row">
+                                @{
+                                    decimal totalFemaleEmployeePercent =
+                                        (Model.FemaleUpperQuartilePayBand.Value +
+                                         Model.FemaleUpperPayBand.Value +
+                                         Model.FemaleMiddlePayBand.Value +
+                                         Model.FemaleLowerPayBand.Value
+                                            ) / 4;
+                                    decimal totalMaleEmployeePercent =
+                                        (Model.MaleUpperQuartilePayBand.Value +
+                                         Model.MaleUpperPayBand.Value +
+                                         Model.MaleMiddlePayBand.Value +
+                                         Model.MaleLowerPayBand.Value
+                                            ) / 4;
+                                }
+                                <th scope="row" class="govuk-table__header" colspan="2">
+                                    Totals
+                                </th>
+                                <td class="govuk-table__cell">
+                                    @(totalFemaleEmployeePercent.ToString("0.0"))
+                                </td>
+                                <td class="govuk-table__cell">
+                                    @(totalMaleEmployeePercent.ToString("0.0"))
+                                </td>
+                                <td class="govuk-table__cell">
+                                    100
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </details>
+        </div>
+    </div>
 }
 
 <div class="govuk-grid-row">
