@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Core
 @using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.Search.SearchPageViewModel
 
 @{
@@ -98,6 +99,34 @@
                         }
                         ),
                     classOptions: new Dictionary<OrganisationSizes, string> {{OrganisationSizes.NotProvided, "gpg-search-page--filter-employerSize--not-provided"}},
+                    fieldsetOptions: new FieldsetViewModel
+                    {
+                        Classes = "gpg-search-page--filter-employerSize--fieldset",
+                        Legend = new LegendViewModel
+                        {
+                            Html = @<text></text>
+                        }
+                    }
+                )
+            </div>
+        </details>        
+        
+        <details class="govuk-details" open="@(Model.Sector.Count > 0)">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Sector
+                </span>
+            </summary>
+            <div class="govuk-details__text govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+                @await Html.GovUkCheckboxesFromStringsFor(
+                    m => m.Sector,
+                    checkboxOptions: Model.PossibleSectors.OrderBy(sicSection => sicSection.Description).ToDictionary(
+                        sicSection => sicSection.SicSectionId,
+                        sicSection => new LabelViewModel
+                        {
+                            Text = sicSection.Description
+                        }
+                        ),
                     fieldsetOptions: new FieldsetViewModel
                     {
                         Classes = "gpg-search-page--filter-employerSize--fieldset",

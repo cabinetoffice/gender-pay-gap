@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using GenderPayGap.Core;
+using GenderPayGap.Database;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.Search
 {
@@ -11,6 +13,9 @@ namespace GenderPayGap.WebUI.Models.Search
         public List<string> Sector { get; set; } = new List<string>();
         public bool ReportedLate { get; set; }
         public string OrderBy { get; set; } = "relevance";
+
+        [BindNever]
+        public List<SicSection> PossibleSectors { get; set; }
 
     }
 }
