@@ -111,7 +111,7 @@
                                             <span class="govuk-visually-hidden">of returns for reporting year @reportingYear</span>
                                         </a>
                                         <br/>
-                                        <a href="@Url.Action("Report", "Viewing", new {employerIdentifier = Model.GetEncryptedId(), year = returnForYear.AccountingDate.Year})"
+                                        <a href="@Url.Action("ReportForYear", "ViewReports", new {organisationId = Model.OrganisationId, year = returnForYear.AccountingDate.Year})"
                                            class="govuk-link" style="font-weight: normal">
                                             <span style="white-space: nowrap">Public page</span>
                                             <span class="govuk-visually-hidden">for reporting year @reportingYear</span>

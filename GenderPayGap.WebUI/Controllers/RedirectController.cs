@@ -107,5 +107,13 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("Employer", "ViewReports", new {organisationId});
         }
 
+        [HttpGet("/EmployerReport/{employerIdentifier}/{year}")]
+        public IActionResult ViewEmployerReportForYear(string employerIdentifier, int year)
+        {
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+        
+            return RedirectToAction("ReportForYear", "ViewReports", new {organisationId = organisationId, reportingYear = year});
+        }
+        
     }
 }

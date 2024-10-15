@@ -144,6 +144,11 @@ namespace GenderPayGap.WebUI.Helpers
 
         public static long DeObfuscateOrganisationIdOrThrow404(string organisationIdentifier)
         {
+            if (string.IsNullOrWhiteSpace(organisationIdentifier))
+            {
+                throw new PageNotFoundException();
+            }
+            
             try
             {
                 int organisationId = Obfuscator.DeObfuscate(organisationIdentifier);
@@ -211,6 +216,18 @@ namespace GenderPayGap.WebUI.Helpers
             {
                 throw new PageNotFoundException();
             }
+        }
+
+        public static Return LoadReturnForYearOrThrow404(Organisation organisation, int reportingYear)
+        {
+            Return returnForYear = organisation.GetReturn(reportingYear);
+            
+            if (returnForYear == null)
+            {
+                throw new PageNotFoundException();
+            }
+
+            return returnForYear;
         }
 
         public static void ThrowIfAdminIsImpersonatingUser(ClaimsPrincipal aspDotNetUser)
