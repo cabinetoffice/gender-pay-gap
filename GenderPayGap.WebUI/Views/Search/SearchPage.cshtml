@@ -58,7 +58,10 @@
                        id="EmployerName"
                        class="govuk-input"
                        value="@(Model.EmployerName)">
-                <input type="submit" value="Search" class="gpg-search-button" />
+                <input type="submit"
+                       value="Search"
+                       id="gpg-search-page--search-button"
+                       class="gpg-search-button" />
             </div>
         </div>
         
@@ -242,25 +245,26 @@
         
         const getInputs = (checkboxName) => document.querySelectorAll(`input[name='${checkboxName}']`);
         const getCheckedInputs = (checkboxName) => document.querySelectorAll(`input[name='${checkboxName}']:checked`);
+        let loadSearchResultsRequestId = 0;
         
-        document.getElementById('gpg-search-page--clear-all-filters').addEventListener("click", () => {
-            getInputs('EmployerSize').forEach((checkbox) => { checkbox.checked = false; });
-            getInputs('Sector').forEach((checkbox) => { checkbox.checked = false; });
-            getInputs('ReportedLateYear').forEach((checkbox) => { checkbox.checked = false; });
-            document.getElementById('gpg-search-page--order-by--relevance').checked = true;
-            
-            updatePage();
-        });
+        const searchResultsId = (function () {
+            let curr
+            return {
+                getNextId
+            }
+        })();
         
         function updatePage() {
             updateSelectedCount('EmployerSize', 'gpg-search-page--filters--number-of-employees--selected');
             updateSelectedCount('Sector', 'gpg-search-page--filters--sector--selected');
             updateSelectedCount('ReportedLateYear', 'gpg-search-page--filters--reported-late-years--selected');
             
-            updatePageUrl();
+            const urlQuery = getPageUrlQuery();
+            setPageUrl(urlQuery);
+            loadSearchResults(urlQuery);
         }
         
-        function updatePageUrl() {
+        function getPageUrlQuery() {
             const queryParameters = [];
             
             function addQueryParametersForSearch() {
@@ -289,10 +293,18 @@
             addQueryParametersForCheckboxes('ReportedLateYear');
             addQueryParameterForOrderBy();
             
-            const queryPortion = queryParameters.length > 0 ? ('?' + queryParameters.join('&')) : '';
-            const newUrl = `${window.location.pathname}${queryPortion}`;
+            const urlQuery = queryParameters.length > 0 ? ('?' + queryParameters.join('&')) : '';
+            return urlQuery;
+        }
+        
+        function setPageUrl(urlQuery) {
+            const newUrl = `${window.location.pathname}${urlQuery}`;
             console.log(newUrl);
             window.history.replaceState(null, '', newUrl);
+        }
+        
+        function loadSearchResults(urlQuery) {
+            
         }
         
         function updateSelectedCount(checkboxName, numberSelectedId) {
@@ -300,29 +312,22 @@
             document.getElementById(numberSelectedId).innerText = (numberSelected ? `(${numberSelected} selected)` : '');
         }
         
-        getInputs('EmployerSize').forEach((employerSizeCheckboxElement) => {
-            employerSizeCheckboxElement.addEventListener("change", () => {
-                updatePage();
-            });
+        document.getElementById('gpg-search-page--clear-all-filters').addEventListener("click", () => {
+            getInputs('EmployerSize').forEach((checkbox) => { checkbox.checked = false; });
+            getInputs('Sector').forEach((checkbox) => { checkbox.checked = false; });
+            getInputs('ReportedLateYear').forEach((checkbox) => { checkbox.checked = false; });
+            document.getElementById('gpg-search-page--order-by--relevance').checked = true;
+            
+            updatePage();
         });
         
-        getInputs('Sector').forEach((sectorCheckboxElement) => {
-            sectorCheckboxElement.addEventListener("change", () => {
-                updatePage();
-            });
-        });
+        document.getElementById('EmployerName').addEventListener("keyup", event => { if (event.key === "Enter") { updatePage(); } } );
+        document.getElementById('gpg-search-page--search-button').addEventListener("click", updatePage );
         
-        getInputs('ReportedLateYear').forEach((reportedLateYearCheckboxElement) => {
-            reportedLateYearCheckboxElement.addEventListener("change", () => {
-                updatePage();
-            });
-        });
-        
-        getInputs('OrderBy').forEach((orderByRadioElement) => {
-            orderByRadioElement.addEventListener("change", () => {
-                updatePage();
-            });
-        });
+        getInputs('EmployerSize').forEach((checkbox) => { checkbox.addEventListener("change", updatePage ); });
+        getInputs('Sector').forEach((checkbox) => { checkbox.addEventListener("change", updatePage ); });
+        getInputs('ReportedLateYear').forEach((checkbox) => { checkbox.addEventListener("change", updatePage ); });
+        getInputs('OrderBy').forEach((radio) => { radio.addEventListener("change", updatePage ); });
         
     });
 </script>
