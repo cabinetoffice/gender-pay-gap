@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Core
 @using System.ComponentModel.DataAnnotations
+@using GenderPayGap.Core.Helpers
 @using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.Search.SearchPageViewModel
 
@@ -47,17 +48,16 @@
         </h1>
         
         <div class="govuk-form-group">
-            <label class="govuk-label" for="query">
+            <label class="govuk-label" for="EmployerName">
                 Employer name
             </label>
 
             <div class="gpg-search-box">
                 <input type="text"
-                       name="query"
-                       id="query"
+                       name="EmployerName"
+                       id="EmployerName"
                        class="govuk-input"
-                       value=""
-                       aria-describedby="query-hint">
+                       value="@(Model.EmployerName)">
                 <input type="submit" value="Search" class="gpg-search-button" />
             </div>
         </div>
@@ -74,7 +74,11 @@
         </h2>
         
         <p class="govuk-body">
-            <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2" data-module="govuk-button">
+            <button type="submit"
+                    id="gpg-search-page--clear-all-filters"
+                    class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2"
+                    data-module="govuk-button"
+                    style="width: fit-content;">
                 Clear all filters
             </button>
         </p>
@@ -82,7 +86,16 @@
         <details class="govuk-details" open="@(Model.EmployerSize.Count > 0)">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
-                    Number of employees
+                    <span class="govuk-visually-hidden">
+                        Number of
+                    </span>
+                    Employees
+                    <span id="gpg-search-page--filters--number-of-employees--selected">
+                        @if (Model.EmployerSize.Count > 0)
+                        {
+                            @:(@(Model.EmployerSize.Count) selected)
+                        }
+                    </span>
                 </span>
             </summary>
             <div class="govuk-details__text govuk-!-padding-top-0 govuk-!-padding-bottom-0">
@@ -101,10 +114,11 @@
                     classOptions: new Dictionary<OrganisationSizes, string> {{OrganisationSizes.NotProvided, "gpg-search-page--filter-employerSize--not-provided"}},
                     fieldsetOptions: new FieldsetViewModel
                     {
-                        Classes = "gpg-search-page--filter-employerSize--fieldset",
+                        Classes = "gpg-search-page--filter--fieldset",
                         Legend = new LegendViewModel
                         {
-                            Html = @<text></text>
+                            Text = "Employer size",
+                            Classes = "govuk-visually-hidden"
                         }
                     }
                 )
@@ -115,6 +129,12 @@
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
                     Sector
+                    <span id="gpg-search-page--filters--sector--selected">
+                        @if (Model.Sector.Count > 0)
+                        {
+                            @:(@(Model.Sector.Count) selected)
+                        }
+                    </span>
                 </span>
             </summary>
             <div class="govuk-details__text govuk-!-padding-top-0 govuk-!-padding-bottom-0">
@@ -129,10 +149,46 @@
                         ),
                     fieldsetOptions: new FieldsetViewModel
                     {
-                        Classes = "gpg-search-page--filter-employerSize--fieldset",
+                        Classes = "gpg-search-page--filter--fieldset",
                         Legend = new LegendViewModel
                         {
-                            Html = @<text></text>
+                            Text = "Sector",
+                            Classes = "govuk-visually-hidden"
+                        }
+                    }
+                )
+            </div>
+        </details>        
+        
+        <details class="govuk-details" open="@(Model.ReportedLateYear.Count > 0)">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Reported late
+                    <span id="gpg-search-page--filters--reported-late-years--selected">
+                        @if (Model.ReportedLateYear.Count > 0)
+                        {
+                            @:(@(Model.ReportedLateYear.Count) selected)
+                        }
+                    </span>
+                </span>
+            </summary>
+            <div class="govuk-details__text govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+                @await Html.GovUkCheckboxesFromStringsFor(
+                    m => m.ReportedLateYear,
+                    checkboxOptions: Model.PossibleReportedLateYears.ToDictionary(
+                        year => year.ToString(),
+                        year => new LabelViewModel
+                        {
+                            Text = ReportingYearsHelper.FormatYearAsReportingPeriod(year)
+                        }
+                        ),
+                    fieldsetOptions: new FieldsetViewModel
+                    {
+                        Classes = "gpg-search-page--filter--fieldset",
+                        Legend = new LegendViewModel
+                        {
+                            Text = "Years where the employer has reported late",
+                            Classes = "govuk-visually-hidden"
                         }
                     }
                 )
@@ -144,5 +200,129 @@
         <h2 class="govuk-heading-m">
             Search results
         </h2>
+
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-radios govuk-radios--small govuk-radios--inline">
+                <div class="govuk-radios__item" style="padding-left: 0;">
+                    <legend class="govuk-body govuk-!-font-weight-bold" style="padding-top: 7px;">
+                        Order:
+                    </legend>
+                </div>
+                <div class="govuk-radios__item" style="margin-right: 0;">
+                    <input type="radio"
+                           name="OrderBy"
+                           value="relevance"
+                           id="gpg-search-page--order-by--relevance"
+                           class="govuk-radios__input"
+                           checked="@(Model.OrderBy == "relevance")">
+                    <label for="gpg-search-page--order-by--relevance"
+                           class="govuk-label govuk-radios__label">
+                        By relevance
+                    </label>
+                </div>
+                <div class="govuk-radios__item" style="margin-right: 0;">
+                    <input type="radio"
+                           name="OrderBy"
+                           value="alphabetically"
+                           id="gpg-search-page--order-by--alphabetically"
+                           class="govuk-radios__input"
+                           checked="@(Model.OrderBy == "alphabetically")">
+                    <label for="gpg-search-page--order-by--alphabetically"
+                           class="govuk-label govuk-radios__label">
+                        Alphabetically
+                    </label>
+                </div>
+            </div>
+        </fieldset>
     </div>
 </div>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        
+        const getInputs = (checkboxName) => document.querySelectorAll(`input[name='${checkboxName}']`);
+        const getCheckedInputs = (checkboxName) => document.querySelectorAll(`input[name='${checkboxName}']:checked`);
+        
+        document.getElementById('gpg-search-page--clear-all-filters').addEventListener("click", () => {
+            getInputs('EmployerSize').forEach((checkbox) => { checkbox.checked = false; });
+            getInputs('Sector').forEach((checkbox) => { checkbox.checked = false; });
+            getInputs('ReportedLateYear').forEach((checkbox) => { checkbox.checked = false; });
+            document.getElementById('gpg-search-page--order-by--relevance').checked = true;
+            
+            updatePage();
+        });
+        
+        function updatePage() {
+            updateSelectedCount('EmployerSize', 'gpg-search-page--filters--number-of-employees--selected');
+            updateSelectedCount('Sector', 'gpg-search-page--filters--sector--selected');
+            updateSelectedCount('ReportedLateYear', 'gpg-search-page--filters--reported-late-years--selected');
+            
+            updatePageUrl();
+        }
+        
+        function updatePageUrl() {
+            const queryParameters = [];
+            
+            function addQueryParametersForSearch() {
+                const searchBoxId = 'EmployerName';
+                const searchBoxText = document.getElementById(searchBoxId).value;
+                if (searchBoxText) {
+                    queryParameters.push(`${searchBoxId}=${searchBoxText}`);                    
+                }
+            }
+            
+            function addQueryParametersForCheckboxes(checkboxName) {
+                getCheckedInputs(checkboxName).forEach((checkboxElement) => {
+                    queryParameters.push(`${checkboxName}=${checkboxElement.value}`);
+                });
+            }
+            
+            function addQueryParameterForOrderBy() {
+                if (document.getElementById('gpg-search-page--order-by--alphabetically').checked) {
+                    queryParameters.push('OrderBy=alphabetically');
+                }
+            }
+            
+            addQueryParametersForSearch();
+            addQueryParametersForCheckboxes('EmployerSize');
+            addQueryParametersForCheckboxes('Sector');
+            addQueryParametersForCheckboxes('ReportedLateYear');
+            addQueryParameterForOrderBy();
+            
+            const queryPortion = queryParameters.length > 0 ? ('?' + queryParameters.join('&')) : '';
+            const newUrl = `${window.location.pathname}${queryPortion}`;
+            console.log(newUrl);
+            window.history.replaceState(null, '', newUrl);
+        }
+        
+        function updateSelectedCount(checkboxName, numberSelectedId) {
+            const numberSelected = getCheckedInputs(checkboxName).length;
+            document.getElementById(numberSelectedId).innerText = (numberSelected ? `(${numberSelected} selected)` : '');
+        }
+        
+        getInputs('EmployerSize').forEach((employerSizeCheckboxElement) => {
+            employerSizeCheckboxElement.addEventListener("change", () => {
+                updatePage();
+            });
+        });
+        
+        getInputs('Sector').forEach((sectorCheckboxElement) => {
+            sectorCheckboxElement.addEventListener("change", () => {
+                updatePage();
+            });
+        });
+        
+        getInputs('ReportedLateYear').forEach((reportedLateYearCheckboxElement) => {
+            reportedLateYearCheckboxElement.addEventListener("change", () => {
+                updatePage();
+            });
+        });
+        
+        getInputs('OrderBy').forEach((orderByRadioElement) => {
+            orderByRadioElement.addEventListener("change", () => {
+                updatePage();
+            });
+        });
+        
+    });
+</script>

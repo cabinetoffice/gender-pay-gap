@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes.Presentation;
@@ -26,9 +27,19 @@ namespace GenderPayGap.WebUI.Controllers
         {
             compareViewService.LoadComparedEmployersFromCookie();
 
-            viewModel.PossibleSectors = dataRepository.GetAll<SicSection>().ToList();
+            PopulateViewModel(viewModel);
             
             return View("SearchPage", viewModel);
+        }
+
+        private void PopulateViewModel(SearchPageViewModel viewModel)
+        {
+            viewModel.PossibleSectors = dataRepository.GetAll<SicSection>().ToList();
+            viewModel.PossibleReportedLateYears =
+                ReportingYearsHelper.GetReportingYears()
+                    .Where(year => year != ReportingYearsHelper.GetCurrentReportingYear())
+                    .OrderByDescending(year => year)
+                    .ToList();
         }
 
 
