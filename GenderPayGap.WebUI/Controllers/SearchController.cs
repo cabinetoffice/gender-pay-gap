@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GenderPayGap.Core;
+﻿using System.Linq;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Models.Search;
+using GenderPayGap.WebUI.Search;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -15,11 +14,16 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly ICompareViewService compareViewService;
         private readonly IDataRepository dataRepository;
+        private readonly ViewingSearchServiceNew viewingSearchService;
         
-        public SearchController(ICompareViewService compareViewService, IDataRepository dataRepository)
+        public SearchController(
+            ICompareViewService compareViewService,
+            IDataRepository dataRepository,
+            ViewingSearchServiceNew viewingSearchService)
         {
             this.compareViewService = compareViewService;
             this.dataRepository = dataRepository;
+            this.viewingSearchService = viewingSearchService;
         }
 
         [HttpGet("search")]
@@ -40,6 +44,12 @@ namespace GenderPayGap.WebUI.Controllers
                     .Where(year => year != ReportingYearsHelper.GetCurrentReportingYear())
                     .OrderByDescending(year => year)
                     .ToList();
+        }
+
+        [HttpGet("search-api")]
+        public IActionResult SearchApi(SearchPageViewModel viewModel)
+        {
+            return Json(viewingSearchService.Search(viewModel));
         }
 
 

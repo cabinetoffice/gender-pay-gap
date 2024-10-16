@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -18,6 +19,27 @@ namespace GenderPayGap.WebUI.Models.Search
         public List<SicSection> PossibleSectors { get; set; }
         [BindNever]
         public List<int> PossibleReportedLateYears { get; set; }
+
+        public List<char> GetSectorCodesAsChars()
+        {
+            return Sector
+                .Where(sectorCode => sectorCode.Length == 1)
+                .Select(sectorCode => sectorCode[0])
+                .ToList();
+        }
+
+        public List<int> GetReportedLateYearsAsInts()
+        {
+            return ReportedLateYear
+                .Where(year => int.TryParse(year, out _))
+                .Select(year => int.Parse(year))
+                .ToList();
+        }
+
+        public bool IsOrderByRelevance()
+        {
+            return OrderBy == "relevance";
+        }
 
     }
 }

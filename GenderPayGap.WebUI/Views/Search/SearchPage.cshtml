@@ -47,7 +47,7 @@
             </span>
         </h1>
         
-        <div class="govuk-form-group">
+        <div class="govuk-form-group govuk-!-margin-bottom-3">
             <label class="govuk-label" for="EmployerName">
                 Employer name
             </label>
@@ -72,7 +72,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-        <h2 class="govuk-heading-m">
+        <h2 class="govuk-heading-m zzgovuk-visually-hidden">
             Filters
         </h2>
         
@@ -200,7 +200,7 @@
     </div>
     
     <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">
+        <h2 class="govuk-heading-m zzgovuk-visually-hidden">
             Search results
         </h2>
 
@@ -237,6 +237,41 @@
                 </div>
             </div>
         </fieldset>
+        
+        <p class="govuk-body" id="gpg-search-page--results-info" style="display: none;">
+            <span id="gpg-search-page--results--number-of-results" class="govuk-!-font-size-48 govuk-!-font-weight-bold"></span>
+            employers
+            <span id="gpg-search-page--results--containing">
+                containing
+                <span class="govuk-!-font-weight-bold" id="gpg-search-page--results--containing-search-term">
+                    
+                </span>
+            </span>
+        </p>
+        
+        <div id="gpg-search-page--results">
+            <table>
+                <caption>Search results 1 to 100</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Employer name</th>
+                        <th scope="col">Previous name</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Sector</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Softwire Technology Limited</th>
+                        <td>Softwire 3 LTD</td>
+                        <td>1st Floor Gallery Court, 28 Arcadia Avenue, London, N3 2FG</td>
+                        <td>Information and communication</td>
+                        <td><button>Add to compare</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -245,12 +280,15 @@
         
         const getInputs = (checkboxName) => document.querySelectorAll(`input[name='${checkboxName}']`);
         const getCheckedInputs = (checkboxName) => document.querySelectorAll(`input[name='${checkboxName}']:checked`);
-        let loadSearchResultsRequestId = 0;
         
-        const searchResultsId = (function () {
-            let curr
+        const searchResultsIdGenerator = (function () {
+            let currentSearchResultsId = 0;
             return {
-                getNextId
+                getNextId: () => {
+                    currentSearchResultsId++;
+                    return currentSearchResultsId
+                },
+               isCurrentId: (id) => id === currentSearchResultsId
             }
         })();
         
@@ -260,8 +298,9 @@
             updateSelectedCount('ReportedLateYear', 'gpg-search-page--filters--reported-late-years--selected');
             
             const urlQuery = getPageUrlQuery();
+            const employerName = document.getElementById('EmployerName').value;
             setPageUrl(urlQuery);
-            loadSearchResults(urlQuery);
+            loadSearchResults(urlQuery, employerName);
         }
         
         function getPageUrlQuery() {
@@ -299,12 +338,90 @@
         
         function setPageUrl(urlQuery) {
             const newUrl = `${window.location.pathname}${urlQuery}`;
-            console.log(newUrl);
             window.history.replaceState(null, '', newUrl);
         }
         
-        function loadSearchResults(urlQuery) {
+        async function loadSearchResults(urlQuery, employerName) {
+            const searchApiPath = '@(Url.Action("SearchApi", "Search"))';
+            const searchResultsId = searchResultsIdGenerator.getNextId();
             
+            try {
+                const response = await fetch(`${searchApiPath}${urlQuery}`);
+                if (response.ok) {
+                    if (searchResultsIdGenerator.isCurrentId(searchResultsId)) {
+                        const json = await response.json();
+                        displaySearchResults(json, employerName);
+                    }
+                }
+                else {
+                    console.error(`Response status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+        
+        function displaySearchResults(json, employerName) {
+            document.getElementById('gpg-search-page--results--number-of-results').innerText = json.Employers.length.toLocaleString();
+
+            document.getElementById('gpg-search-page--results--containing-search-term').innerText = employerName;
+            document.getElementById('gpg-search-page--results--containing').style.display = employerName ? 'inline' : 'none';
+
+            document.getElementById('gpg-search-page--results-info').style.display = 'block';
+            
+            document.getElementById('gpg-search-page--results').innerHTML = '';
+            
+            displaySearchResultsFromIndex(json, 0);
+        }
+        
+        function displaySearchResultsFromIndex(json, startIndex) {
+            function createThWithTextAndAddToTr(tr, th_text) {
+                const th = document.createElement('th');
+                th.innerText = th_text;
+                th.scope = 'col';
+                // th.classList.add('govuk-visually-hidden');
+                tr.appendChild(th);
+            }
+            
+            if (json.Employers.length > startIndex) {
+                const resultsSection = document.getElementById('gpg-search-page--results');
+                
+                const numberOfResultsInFirstBlock = Math.min(json.Employers.length, startIndex + 100);
+                const moreResults = json.Employers.length > numberOfResultsInFirstBlock;
+                
+                const results_new_table = document.createElement('table');
+                
+                const results_new_caption = document.createElement('caption');
+                results_new_caption.innerText = `Search results ${startIndex + 1} to ${numberOfResultsInFirstBlock}`;
+                // results_new_caption.classList.add('govuk-visually-hidden');
+                results_new_table.appendChild(results_new_caption);
+                
+                const results_new_thead = document.createElement('thead');
+                const results_new_thead_tr = document.createElement('tr');
+                createThWithTextAndAddToTr(results_new_thead_tr, 'Employer name');
+                createThWithTextAndAddToTr(results_new_thead_tr, 'Previous name');
+                createThWithTextAndAddToTr(results_new_thead_tr, 'Address');
+                createThWithTextAndAddToTr(results_new_thead_tr, 'Sector');
+                createThWithTextAndAddToTr(results_new_thead_tr, 'Action');
+                results_new_thead.appendChild(results_new_thead_tr);
+                results_new_table.appendChild(results_new_thead);
+                
+                const results_new_tbody = document.createElement('tbody');
+                results_new_table.appendChild(results_new_tbody);
+                
+                resultsSection.appendChild(results_new_table);
+                
+                if (moreResults) {
+                    const more_button = document.createElement('button');
+                    const numberOfResultsInNextBlock = Math.min(json.Employers.length, numberOfResultsInFirstBlock + 100);
+                    more_button.innerText = `Load search results ${numberOfResultsInFirstBlock+1} to ${numberOfResultsInNextBlock}`;
+                    more_button.addEventListener('click', () => {
+                        displaySearchResultsFromIndex(json, numberOfResultsInFirstBlock);
+                        resultsSection.removeChild(more_button);
+                    })
+                    resultsSection.appendChild(more_button);
+                }
+            }
         }
         
         function updateSelectedCount(checkboxName, numberSelectedId) {
@@ -329,5 +446,6 @@
         getInputs('ReportedLateYear').forEach((checkbox) => { checkbox.addEventListener("change", updatePage ); });
         getInputs('OrderBy').forEach((radio) => { radio.addEventListener("change", updatePage ); });
         
+        updatePage();
     });
 </script>

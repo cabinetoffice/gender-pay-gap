@@ -29,6 +29,7 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
         public List<int> ReportedLateYears { get; set; }
         public List<int> ReportedWithCompanyLinkYears { get; set; }
         public Dictionary<int, DateTime> ReportingYearToDateOfLatestReportMap { get; set; }
+        public string Address { get; set; }
         
         public List<OrganisationSizes> GetOrganisationSizes(List<int> years)
         {
