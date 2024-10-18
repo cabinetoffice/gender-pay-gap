@@ -5,6 +5,7 @@ namespace GenderPayGap.WebUI.Models.Search
     public class SearchApiResult
     {
 
+        public SearchPageViewModel SearchParameters { get; set; }
         public List<SearchApiResultEmployer> Employers { get; set; }
 
     }

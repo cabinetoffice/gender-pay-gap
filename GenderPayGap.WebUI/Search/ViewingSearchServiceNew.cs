@@ -33,6 +33,7 @@ namespace GenderPayGap.WebUI.Search
                 
                 return new SearchApiResult
                 {
+                    SearchParameters = searchParams,
                     Employers = orderedOrganisations.Select(ConvertToSearchApiResultEmployer).ToList()
                 };
             }
@@ -62,6 +63,7 @@ namespace GenderPayGap.WebUI.Search
             
             return new SearchApiResult
             {
+                SearchParameters = searchParams,
                 Employers = rankedOrganisations.Select(ConvertRankedOrgsToSearchApiResultEmployer).ToList()
             };
         }
