@@ -102,7 +102,7 @@ namespace GenderPayGap.WebUI.Search
                 Name = searchCachedOrganisation.OrganisationName.OriginalValue,
                 PreviousName = previousName,
                 Address = searchCachedOrganisation.Address,
-                Sectors = searchCachedOrganisation.SicSectionIds.Select(s => s.ToString()).ToList()
+                Sectors = searchCachedOrganisation.SicSectionIds.Distinct().Select(s => s.ToString()).ToList()
             };
         }
 
@@ -187,7 +187,7 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationId = organisation.OrganisationId,
                 EncryptedId = organisation.EncryptedId,
                 Address = organisation.Address,
-                Sectors = organisation.SicSectionIds.Select(s => s.ToString()).ToList()
+                Sectors = organisation.SicSectionIds.Distinct().Select(s => s.ToString()).ToList()
             };
 
             return rankedViewingSearchOrganisation;

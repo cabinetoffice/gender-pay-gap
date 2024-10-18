@@ -420,10 +420,13 @@
             }
             function createTdWithTextAndAddToTr(tr, td_text) {
                 const td = document.createElement('td');
-                if (!td_text) {
+                if (td_text) {
+                    td.innerText = td_text;                    
+                }
+                else {
+                    td.innerText = 'No previous name';
                     td.classList.add('gpg-search-results--empty-cell')
                 }
-                td.innerText = td_text;
                 tr.appendChild(td);
             }
             function createTdWithCompareButton(tr, org_enc_id, org_name) {
@@ -438,9 +441,9 @@
                 button_span_action.innerText = orgIsInCompareList ? 'Remove from comparison' : 'Add to comparison';
                 compare_button.appendChild(button_span_action);
                 
-                const button_span_from_comparison_org_name = document.createElement('span');
-                button_span_from_comparison_org_name.innerText = ` ${org_name}`;
-                compare_button.appendChild(button_span_from_comparison_org_name);
+                const button_span_org_name = document.createElement('span');
+                button_span_org_name.innerText = ` ${org_name}`;
+                compare_button.appendChild(button_span_org_name);
                 
                 compare_button.addEventListener('click', () => { addOrRemoveCompareButtonClicked(compare_button, button_span_action, org_enc_id) });
                 td.appendChild(compare_button);
@@ -477,7 +480,7 @@
                 createThWithTextAndAddToTr(results_new_tbody_tr, employer.Name, 'row');
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.PreviousName);
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Address);
-                const sectorsNames = [employer.Sectors.map(sectorId => json.Sectors[sectorId])].join('; ');
+                const sectorsNames = employer.Sectors.map(sectorId => json.Sectors[sectorId]).join('; ').replaceAll('\n','').replaceAll('\r','');
                 createTdWithTextAndAddToTr(results_new_tbody_tr, sectorsNames);
                 createTdWithCompareButton(results_new_tbody_tr, employer.EncId, employer.Name);
                 results_new_tbody.appendChild(results_new_tbody_tr);                
@@ -501,7 +504,7 @@
             const numberOfResultsInNextBlock = Math.min(json.Employers.length, numberOfResultsInThisBlock + NUMBER_OF_SEARCH_RESULTS_PER_TABLE);
             
             const more_button = document.createElement('button');
-            more_button.innerText = `Load search results ${numberOfResultsInThisBlock+1} to ${numberOfResultsInNextBlock}`;
+            more_button.innerText = `Show search results ${numberOfResultsInThisBlock+1} to ${numberOfResultsInNextBlock}`;
             more_button.addEventListener('click', () => {
                 resultsSection.removeChild(more_button);
                 displaySearchResultsFromIndex(json, numberOfResultsInThisBlock);
