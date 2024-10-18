@@ -4,7 +4,6 @@
 @using GenderPayGap.Core
 @using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core.Helpers
-@using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.Search.SearchPageViewModel
 
 @{
@@ -203,8 +202,15 @@
         <h2 class="govuk-heading-m zzgovuk-visually-hidden">
             Search results
         </h2>
-
-        <fieldset class="govuk-fieldset">
+        
+        @{
+            // Order By is only allowed when the search box is used
+            // If the user is just using filters (with no search term) the results are always ordered alphabetically
+            bool orderAlphabetically = (Model.OrderBy == "alphabetically") && !string.IsNullOrWhiteSpace(Model.EmployerName);
+        }
+        <fieldset id="gpg-search-page--order-by"
+                  class="govuk-fieldset"
+                  style="@(string.IsNullOrWhiteSpace(Model.EmployerName) ? "display: none;" : "")">
             <div class="govuk-radios govuk-radios--small govuk-radios--inline">
                 <div class="govuk-radios__item" style="padding-left: 0;">
                     <legend class="govuk-body govuk-!-font-weight-bold" style="padding-top: 7px;">
@@ -217,7 +223,7 @@
                            value="relevance"
                            id="gpg-search-page--order-by--relevance"
                            class="govuk-radios__input"
-                           checked="@(Model.OrderBy == "relevance")">
+                           checked="@(!orderAlphabetically)">
                     <label for="gpg-search-page--order-by--relevance"
                            class="govuk-label govuk-radios__label">
                         By relevance
@@ -229,7 +235,7 @@
                            value="alphabetically"
                            id="gpg-search-page--order-by--alphabetically"
                            class="govuk-radios__input"
-                           checked="@(Model.OrderBy == "alphabetically")">
+                           checked="@(orderAlphabetically)">
                     <label for="gpg-search-page--order-by--alphabetically"
                            class="govuk-label govuk-radios__label">
                         Alphabetically
@@ -243,9 +249,7 @@
             employers
             <span id="gpg-search-page--results--containing">
                 containing
-                <span class="govuk-!-font-weight-bold" id="gpg-search-page--results--containing-search-term">
-                    
-                </span>
+                <span class="govuk-!-font-weight-bold" id="gpg-search-page--results--containing-search-term"></span>
             </span>
         </p>
         
@@ -297,6 +301,8 @@
             updateSelectedCount('Sector', 'gpg-search-page--filters--sector--selected');
             updateSelectedCount('ReportedLateYear', 'gpg-search-page--filters--reported-late-years--selected');
             
+            updateOrderByVisibility();
+            
             const urlQuery = getPageUrlQuery();
             const employerName = document.getElementById('EmployerName').value;
             setPageUrl(urlQuery);
@@ -305,11 +311,11 @@
         
         function getPageUrlQuery() {
             const queryParameters = [];
+            const searchBoxId = 'EmployerName';
             
             function addQueryParametersForSearch() {
-                const searchBoxId = 'EmployerName';
                 const searchBoxText = document.getElementById(searchBoxId).value;
-                if (searchBoxText) {
+                if (searchBoxText != null && searchBoxText.trim() !== '') {
                     queryParameters.push(`${searchBoxId}=${searchBoxText}`);                    
                 }
             }
@@ -321,7 +327,11 @@
             }
             
             function addQueryParameterForOrderBy() {
-                if (document.getElementById('gpg-search-page--order-by--alphabetically').checked) {
+                const searchBoxText = document.getElementById(searchBoxId).value;
+                if (document.getElementById('gpg-search-page--order-by--alphabetically').checked &&
+                    searchBoxText != null && searchBoxText.trim() !== '') {
+                    // Order By is only allowed when the search box is used
+                    // If the user is just using filters (with no search term) the results are always ordered alphabetically
                     queryParameters.push('OrderBy=alphabetically');
                 }
             }
@@ -452,6 +462,14 @@
         function updateSelectedCount(checkboxName, numberSelectedId) {
             const numberSelected = getCheckedInputs(checkboxName).length;
             document.getElementById(numberSelectedId).innerText = (numberSelected ? `(${numberSelected} selected)` : '');
+        }
+        
+        function updateOrderByVisibility() {
+            const employerName = document.getElementById('EmployerName').value;
+            const employerNameIsEmpty = (employerName == null || employerName.trim() === '');
+            
+            const orderByRadios = document.getElementById('gpg-search-page--order-by');
+            orderByRadios.style.display = employerNameIsEmpty ? 'none' : 'block';
         }
         
         document.getElementById('gpg-search-page--clear-all-filters').addEventListener("click", () => {
