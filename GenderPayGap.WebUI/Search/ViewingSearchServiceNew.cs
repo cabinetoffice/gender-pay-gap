@@ -75,6 +75,7 @@ namespace GenderPayGap.WebUI.Search
             return new SearchApiResultEmployer
             {
                 Id = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId,
+                EncId = rankedViewingSearchOrganisation.ViewingSearchResult.EncryptedId,
                 Name = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationName,
                 PreviousName = previousName,
                 Address = rankedViewingSearchOrganisation.ViewingSearchResult.Address,
@@ -97,6 +98,7 @@ namespace GenderPayGap.WebUI.Search
             return new SearchApiResultEmployer
             {
                 Id = searchCachedOrganisation.OrganisationId,
+                EncId = searchCachedOrganisation.EncryptedId,
                 Name = searchCachedOrganisation.OrganisationName.OriginalValue,
                 PreviousName = previousName,
                 Address = searchCachedOrganisation.Address,
