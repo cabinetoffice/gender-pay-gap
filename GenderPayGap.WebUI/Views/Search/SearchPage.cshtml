@@ -375,53 +375,78 @@
         }
         
         function displaySearchResultsFromIndex(json, startIndex) {
-            function createThWithTextAndAddToTr(tr, th_text) {
-                const th = document.createElement('th');
-                th.innerText = th_text;
-                th.scope = 'col';
-                // th.classList.add('govuk-visually-hidden');
-                tr.appendChild(th);
-            }
-            
             if (json.Employers.length > startIndex) {
-                const resultsSection = document.getElementById('gpg-search-page--results');
+                const numberOfResultsInThisBlock = Math.min(json.Employers.length, startIndex + 100);
+                const moreResults = json.Employers.length > numberOfResultsInThisBlock;
                 
-                const numberOfResultsInFirstBlock = Math.min(json.Employers.length, startIndex + 100);
-                const moreResults = json.Employers.length > numberOfResultsInFirstBlock;
-                
-                const results_new_table = document.createElement('table');
-                
-                const results_new_caption = document.createElement('caption');
-                results_new_caption.innerText = `Search results ${startIndex + 1} to ${numberOfResultsInFirstBlock}`;
-                // results_new_caption.classList.add('govuk-visually-hidden');
-                results_new_table.appendChild(results_new_caption);
-                
-                const results_new_thead = document.createElement('thead');
-                const results_new_thead_tr = document.createElement('tr');
-                createThWithTextAndAddToTr(results_new_thead_tr, 'Employer name');
-                createThWithTextAndAddToTr(results_new_thead_tr, 'Previous name');
-                createThWithTextAndAddToTr(results_new_thead_tr, 'Address');
-                createThWithTextAndAddToTr(results_new_thead_tr, 'Sector');
-                createThWithTextAndAddToTr(results_new_thead_tr, 'Action');
-                results_new_thead.appendChild(results_new_thead_tr);
-                results_new_table.appendChild(results_new_thead);
-                
-                const results_new_tbody = document.createElement('tbody');
-                results_new_table.appendChild(results_new_tbody);
-                
-                resultsSection.appendChild(results_new_table);
+                createTableOfResultsForThisBlock(json,  startIndex, numberOfResultsInThisBlock);
                 
                 if (moreResults) {
-                    const more_button = document.createElement('button');
-                    const numberOfResultsInNextBlock = Math.min(json.Employers.length, numberOfResultsInFirstBlock + 100);
-                    more_button.innerText = `Load search results ${numberOfResultsInFirstBlock+1} to ${numberOfResultsInNextBlock}`;
-                    more_button.addEventListener('click', () => {
-                        displaySearchResultsFromIndex(json, numberOfResultsInFirstBlock);
-                        resultsSection.removeChild(more_button);
-                    })
-                    resultsSection.appendChild(more_button);
+                    createMoreButton(json, numberOfResultsInThisBlock);
                 }
             }
+        }
+        
+        function createTableOfResultsForThisBlock(json, startIndex, numberOfResultsInThisBlock) {
+            function createThWithTextAndAddToTr(tr, th_text, scope = 'col') {
+                const th = document.createElement('th');
+                th.innerText = th_text;
+                th.scope = scope;
+                tr.appendChild(th);
+            }
+            function createTdWithTextAndAddToTr(tr, td_text) {
+                const td = document.createElement('td');
+                td.innerText = td_text;
+                tr.appendChild(td);
+            }
+            
+            const resultsSection = document.getElementById('gpg-search-page--results');
+            
+            const results_new_table = document.createElement('table');
+            
+            const results_new_caption = document.createElement('caption');
+            results_new_caption.innerText = `Search results ${startIndex + 1} to ${numberOfResultsInThisBlock}`;
+            // results_new_caption.classList.add('govuk-visually-hidden');
+            results_new_table.appendChild(results_new_caption);
+            
+            const results_new_thead = document.createElement('thead');
+            // results_new_thead.classList.add('govuk-visually-hidden');
+            const results_new_thead_tr = document.createElement('tr');
+            createThWithTextAndAddToTr(results_new_thead_tr, 'Employer name');
+            createThWithTextAndAddToTr(results_new_thead_tr, 'Previous name');
+            createThWithTextAndAddToTr(results_new_thead_tr, 'Address');
+            createThWithTextAndAddToTr(results_new_thead_tr, 'Sector');
+            createThWithTextAndAddToTr(results_new_thead_tr, 'Action');
+            results_new_thead.appendChild(results_new_thead_tr);
+            results_new_table.appendChild(results_new_thead);
+            
+            const results_new_tbody = document.createElement('tbody');
+            const employersInThisBlock = json.Employers.slice(startIndex, startIndex + numberOfResultsInThisBlock);
+            employersInThisBlock.forEach((employer) => {
+                const results_new_tbody_tr = document.createElement('tr');
+                createThWithTextAndAddToTr(results_new_tbody_tr, employer.Name, 'row');
+                createTdWithTextAndAddToTr(results_new_tbody_tr, employer.PreviousName);
+                createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Address);
+                createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Sector);
+                results_new_tbody.appendChild(results_new_tbody_tr);                
+            });
+            results_new_table.appendChild(results_new_tbody);
+            
+            resultsSection.appendChild(results_new_table);
+        }
+        
+        function createMoreButton(json, numberOfResultsInThisBlock) {            
+            const resultsSection = document.getElementById('gpg-search-page--results');
+            
+            const numberOfResultsInNextBlock = Math.min(json.Employers.length, numberOfResultsInThisBlock + 100);
+            
+            const more_button = document.createElement('button');
+            more_button.innerText = `Load search results ${numberOfResultsInThisBlock+1} to ${numberOfResultsInNextBlock}`;
+            more_button.addEventListener('click', () => {
+                resultsSection.removeChild(more_button);
+                displaySearchResultsFromIndex(json, numberOfResultsInThisBlock);
+            })
+            resultsSection.appendChild(more_button);
         }
         
         function updateSelectedCount(checkboxName, numberSelectedId) {
