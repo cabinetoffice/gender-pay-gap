@@ -412,11 +412,22 @@
         }
         
         function createTableOfResultsForThisBlock(json, startIndex, numberOfResultsInThisBlock) {
-            function createThWithTextAndAddToTr(tr, th_text, scope = 'col') {
+            function createThWithTextAndAddToTr(tr, th_text) {
                 const th = document.createElement('th');
                 th.innerText = th_text;
-                th.scope = scope;
+                th.scope = 'col';
                 tr.appendChild(th);
+            }
+            function createThWithLinkToEmployerAndAddToTr(tr, employerId, employerName) {
+                const th = document.createElement('th');
+                th.scope = 'row';
+                tr.appendChild(th);
+                
+                const link = document.createElement('a');
+                const employerPagePath = '@(Url.Action("Employer", "ViewReports", new { organisationId = 99999 }))'.replace('99999', '');
+                link.href = `${employerPagePath}${employerId}`;
+                link.innerText = employerName;
+                th.appendChild(link);
             }
             function createTdWithTextAndAddToTr(tr, td_text) {
                 const td = document.createElement('td');
@@ -477,7 +488,7 @@
             const employersInThisBlock = json.Employers.slice(startIndex, startIndex + numberOfResultsInThisBlock);
             employersInThisBlock.forEach((employer) => {
                 const results_new_tbody_tr = document.createElement('tr');
-                createThWithTextAndAddToTr(results_new_tbody_tr, employer.Name, 'row');
+                createThWithLinkToEmployerAndAddToTr(results_new_tbody_tr, employer.Id, employer.Name);
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.PreviousName);
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Address);
                 const sectorsNames = employer.Sectors.map(sectorId => json.Sectors[sectorId]).join('; ').replaceAll('\n','').replaceAll('\r','');
