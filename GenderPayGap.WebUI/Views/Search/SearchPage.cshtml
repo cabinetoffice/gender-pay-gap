@@ -261,6 +261,18 @@
     window.addEventListener("DOMContentLoaded", () => {        
         const NUMBER_OF_SEARCH_RESULTS_PER_TABLE = 100;
         
+        const searchResultsIdGenerator = (() => {
+            let currentSearchResultsId = 0;
+            return {
+                getNextId: () => {
+                    currentSearchResultsId++;
+                    return currentSearchResultsId
+                },
+               isCurrentId: (id) => id === currentSearchResultsId
+            }
+        })();
+        
+        
         wireUpEventListeners();
         updatePage();
         
@@ -373,17 +385,6 @@
             }
         }
         
-        const searchResultsIdGenerator = (() => {
-            let currentSearchResultsId = 0;
-            return {
-                getNextId: () => {
-                    currentSearchResultsId++;
-                    return currentSearchResultsId
-                },
-               isCurrentId: (id) => id === currentSearchResultsId
-            }
-        })();
-        
         function displaySearchResults(json) {
             document.getElementById('gpg-search-page--results--number-of-results').innerText = json.Employers.length.toLocaleString();
 
@@ -476,7 +477,8 @@
                 createThWithTextAndAddToTr(results_new_tbody_tr, employer.Name, 'row');
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.PreviousName);
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Address);
-                createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Sector);
+                const sectorsNames = [employer.Sectors.map(sectorId => json.Sectors[sectorId])].join('; ');
+                createTdWithTextAndAddToTr(results_new_tbody_tr, sectorsNames);
                 createTdWithCompareButton(results_new_tbody_tr, employer.EncId, employer.Name);
                 results_new_tbody.appendChild(results_new_tbody_tr);                
             });

@@ -5,6 +5,7 @@ namespace GenderPayGap.WebUI.Models.Search
     public class SearchApiResult
     {
 
+        public Dictionary<string, string> Sectors { get; set; } = new Dictionary<string, string> {{"A", "Hello"}};
         public SearchPageViewModel SearchParameters { get; set; }
         public List<SearchApiResultEmployer> Employers { get; set; }
 
@@ -18,7 +19,7 @@ namespace GenderPayGap.WebUI.Models.Search
         public string Name { get; set; }
         public string PreviousName { get; set; }
         public string Address { get; set; }
-        public string Sector { get; set; }
+        public List<string> Sectors { get; set; }
 
     }
 }

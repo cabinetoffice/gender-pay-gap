@@ -32,7 +32,7 @@ namespace GenderPayGap.WebUI.Search
         public OrganisationStatuses Status { get; set; }
         public string EncryptedId { get; set; }
         public string Address { get; set; }
-        public string Sector { get; set; }
+        public List<string> Sectors { get; set; }
 
     }
 

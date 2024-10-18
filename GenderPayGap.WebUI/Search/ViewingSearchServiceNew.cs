@@ -12,10 +12,13 @@ namespace GenderPayGap.WebUI.Search
     {
 
         private readonly List<SicSection> sicSections;
+        private readonly Dictionary<string,string> sectorsDictionary;
+
 
         public ViewingSearchServiceNew(IDataRepository dataRepository)
         {
             sicSections = dataRepository.GetAll<SicSection>().ToList();
+            sectorsDictionary = sicSections.ToDictionary(sicSection => sicSection.SicSectionId, sicSection => sicSection.Description);
         }
 
         public SearchApiResult Search(SearchPageViewModel searchParams)
@@ -33,6 +36,7 @@ namespace GenderPayGap.WebUI.Search
                 
                 return new SearchApiResult
                 {
+                    Sectors = sectorsDictionary,
                     SearchParameters = searchParams,
                     Employers = orderedOrganisations.Select(ConvertToSearchApiResultEmployer).ToList()
                 };
@@ -81,7 +85,7 @@ namespace GenderPayGap.WebUI.Search
                 Name = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationName,
                 PreviousName = previousName,
                 Address = rankedViewingSearchOrganisation.ViewingSearchResult.Address,
-                Sector = rankedViewingSearchOrganisation.ViewingSearchResult.Sector
+                Sectors = rankedViewingSearchOrganisation.ViewingSearchResult.Sectors
             };
         }
 
@@ -91,12 +95,6 @@ namespace GenderPayGap.WebUI.Search
                 ? searchCachedOrganisation.OrganisationNames[1].OriginalValue
                 : null;
 
-            IEnumerable<string> sicSectionNames = sicSections
-                .Where(sicSection => searchCachedOrganisation.SicSectionIds.Contains(sicSection.SicSectionId[0]))
-                .Select(sicSection => sicSection.Description);
-
-            string sector = string.Join(",", sicSectionNames);
-            
             return new SearchApiResultEmployer
             {
                 Id = searchCachedOrganisation.OrganisationId,
@@ -104,7 +102,7 @@ namespace GenderPayGap.WebUI.Search
                 Name = searchCachedOrganisation.OrganisationName.OriginalValue,
                 PreviousName = previousName,
                 Address = searchCachedOrganisation.Address,
-                Sector = sector
+                Sectors = searchCachedOrganisation.SicSectionIds.Select(s => s.ToString()).ToList()
             };
         }
 
@@ -182,12 +180,6 @@ namespace GenderPayGap.WebUI.Search
                 .Select(name => name.Name)
                 .ToList();
 
-            IEnumerable<string> sicSectionNames = sicSections
-                .Where(sicSection => organisation.SicSectionIds.Contains(sicSection.SicSectionId[0]))
-                .Select(sicSection => sicSection.Description);
-
-            string sector = string.Join(",", sicSectionNames);
-            
             rankedViewingSearchOrganisation.ViewingSearchResult = new ViewingSearchResultOrganisationViewModel
             {
                 OrganisationName = rankedViewingSearchOrganisation.Names[0].Name,
@@ -195,7 +187,7 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationId = organisation.OrganisationId,
                 EncryptedId = organisation.EncryptedId,
                 Address = organisation.Address,
-                Sector = sector
+                Sectors = organisation.SicSectionIds.Select(s => s.ToString()).ToList()
             };
 
             return rankedViewingSearchOrganisation;
