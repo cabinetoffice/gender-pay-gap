@@ -14,7 +14,6 @@ namespace GenderPayGap.WebUI.Search
         private readonly List<SicSection> sicSections;
         private readonly Dictionary<string,string> sectorsDictionary;
 
-
         public ViewingSearchServiceNew(IDataRepository dataRepository)
         {
             sicSections = dataRepository.GetAll<SicSection>().ToList();
@@ -103,26 +102,25 @@ namespace GenderPayGap.WebUI.Search
                 Name = searchCachedOrganisation.OrganisationName.OriginalValue,
                 PreviousName = previousName,
                 Address = searchCachedOrganisation.Address,
-                Sectors = searchCachedOrganisation.SicSectionIds.Distinct().Select(s => s.ToString()).ToList()
+                Sectors = searchCachedOrganisation.SicSectionIds
             };
         }
 
         private List<SearchCachedOrganisation> FilterByOrganisations(List<SearchCachedOrganisation> organisations,
             SearchPageViewModel searchParams)
         {
-            IEnumerable<char> selectedSicSections = searchParams.GetSectorCodesAsChars();
             List<int> selectedReportedLateYears = searchParams.GetReportedLateYearsAsInts();
 
             IEnumerable<SearchCachedOrganisation> filteredOrgs = organisations.AsEnumerable();
 
             if (searchParams.EmployerSize.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.GetOrganisationSizes(null).Intersect(searchParams.EmployerSize).Any());
+                filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes.Intersect(searchParams.EmployerSize).Any());
             }
 
-            if (selectedSicSections.Any())
+            if (searchParams.Sector.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.SicSectionIds.Intersect(selectedSicSections).Any());
+                filteredOrgs = filteredOrgs.Where(o => o.SicSectionIds.Intersect(searchParams.Sector).Any());
             }
 
             if (selectedReportedLateYears.Any())
@@ -188,7 +186,7 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationId = organisation.OrganisationId,
                 EncryptedId = organisation.EncryptedId,
                 Address = organisation.Address,
-                Sectors = organisation.SicSectionIds.Distinct().Select(s => s.ToString()).ToList()
+                Sectors = organisation.SicSectionIds
             };
 
             return rankedViewingSearchOrganisation;

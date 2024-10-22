@@ -64,29 +64,6 @@ namespace GenderPayGap.Extensions
             return trimChars == null || trimChars.Length == 0 ? source.Trim() : source.Trim(trimChars);
         }
 
-        /// <summary>
-        ///     Returns all characters before the first occurrence of a string
-        /// </summary>
-        public static string BeforeFirst(this string text,
-            string separator,
-            StringComparison comparisionType = StringComparison.OrdinalIgnoreCase,
-            bool inclusive = false,
-            bool includeWhenNoSeparator = true)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return text;
-            }
-
-            int i = text.IndexOf(separator, 0, comparisionType);
-            if (i > -1)
-            {
-                return text.Substring(0, inclusive ? i + 1 : i);
-            }
-
-            return includeWhenNoSeparator ? text : null;
-        }
-
         public static bool EqualsI(this string original, params string[] target)
         {
             if (string.IsNullOrWhiteSpace(original))
@@ -247,28 +224,6 @@ namespace GenderPayGap.Extensions
             }
 
             return base64String;
-        }
-
-        public static string ToAbbr(this string s, string separator = "", int minLength = 3, params string[] excludeWords)
-        {
-            if (string.IsNullOrWhiteSpace(s))
-            {
-                return s;
-            }
-
-            List<string> wordList = s.ToLower().SplitI(" .-;:_,&+[]{}<>()").ToList();
-
-            if (excludeWords != null && excludeWords.Length > 0)
-            {
-                wordList = wordList.Except(excludeWords, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-
-            if (wordList.Count < minLength)
-            {
-                return null;
-            }
-
-            return string.Join(separator, wordList.Select(x => x[0]));
         }
 
     }

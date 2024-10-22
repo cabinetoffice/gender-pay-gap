@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -15,15 +17,18 @@ namespace GenderPayGap.WebUI.Controllers
         private readonly ICompareViewService compareViewService;
         private readonly IDataRepository dataRepository;
         private readonly ViewingSearchServiceNew viewingSearchService;
+        private readonly AutoCompleteSearchService autoCompleteSearchService;
         
         public SearchController(
             ICompareViewService compareViewService,
             IDataRepository dataRepository,
-            ViewingSearchServiceNew viewingSearchService)
+            ViewingSearchServiceNew viewingSearchService,
+            AutoCompleteSearchService autoCompleteSearchService)
         {
             this.compareViewService = compareViewService;
             this.dataRepository = dataRepository;
             this.viewingSearchService = viewingSearchService;
+            this.autoCompleteSearchService = autoCompleteSearchService;
         }
 
         [HttpGet("search")]
@@ -52,6 +57,19 @@ namespace GenderPayGap.WebUI.Controllers
             return Json(viewingSearchService.Search(viewModel));
         }
 
+        [HttpGet("search/suggest-employer-name-js")]
+        // Used to generate suggestions for the search on the landing page 
+        public IActionResult SuggestEmployerNameJs(string search)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                return Json(new {ErrorCode = HttpStatusCode.BadRequest, ErrorMessage = "Cannot search for a null or empty value"});
+            }
+
+            List<SuggestOrganisationResult> matches = autoCompleteSearchService.Search(search);
+
+            return Json(new {Matches = matches});
+        }
 
     }
 }

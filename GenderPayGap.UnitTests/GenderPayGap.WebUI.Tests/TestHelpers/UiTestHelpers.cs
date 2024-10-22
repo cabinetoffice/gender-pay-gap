@@ -234,19 +234,11 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
 
-            builder.Register(
-                    c => new ViewingService(
-                        c.Resolve<IDataRepository>(),
-                        c.Resolve<ViewingSearchService>())
-                    )
-                .As<IViewingService>()
-                .InstancePerLifetimeScope();
-
             builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
             
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
-            builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
+            builder.RegisterType<ViewingSearchServiceNew>().As<ViewingSearchServiceNew>().InstancePerLifetimeScope();
             
 
             builder.Register(c => Mock.Of<IObfuscator>()).As<IObfuscator>().SingleInstance();
@@ -256,7 +248,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterType<CompareController>().InstancePerLifetimeScope();
-            builder.RegisterType<ViewingController>().InstancePerLifetimeScope();
             builder.RegisterType<ErrorController>().InstancePerLifetimeScope();
             
             builder.RegisterType<AdminUnconfirmedPinsController>().InstancePerLifetimeScope();
@@ -325,7 +316,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             if (controllerName != null)
             {
-                controllerName = controllerName.BeforeFirst("Controller");
+                controllerName = controllerName.Replace("Controller", "");
             }
 
             var uri = new Uri(url);
