@@ -9,7 +9,6 @@ namespace GenderPayGap.WebUI.Search
 
     internal class AutoCompleteOrganisation
     {
-        public string EncryptedId { get; set; }
         public List<RankedName> Names { get; set; }
         
         public RankedName TopName { get; set; }
@@ -68,7 +67,6 @@ namespace GenderPayGap.WebUI.Search
         {
             var autoCompleteOrganisation = new AutoCompleteOrganisation
             {
-                EncryptedId = organisation.EncryptedId,
                 Names = new List<RankedName>()
             };
             
@@ -112,7 +110,6 @@ namespace GenderPayGap.WebUI.Search
 
                     var result = new SuggestOrganisationResult
                     {
-                        Id = org.EncryptedId,
                         Text = currentName.Name,
                         PreviousName = previousName
                     };
