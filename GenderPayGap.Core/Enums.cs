@@ -152,32 +152,6 @@ namespace GenderPayGap.Core
 
     }
 
-    public enum SearchType
-    {
-
-        ByEmployerName = 1,
-        BySectorType = 2,
-        NotSet = 99
-
-    }
-
-    public enum SearchReportingStatusFilter
-    {
-
-        [Display(Name = "Reported in the last 7 days")]
-        ReportedInTheLast7Days,
-
-        [Display(Name = "Reported in the last 30 days")]
-        ReportedInTheLast30Days,
-
-        [Display(Name = "Reported late")]
-        ReportedLate,
-
-        [Display(Name = "Reported with extra information")]
-        ReportedWithCompanyLinkToGpgInfo
-
-    }
-
     public enum AuditedAction
     {
         [Display(Name = "Admin changed late flag")]

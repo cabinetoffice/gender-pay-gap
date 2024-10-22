@@ -13,7 +13,7 @@
     });
 
     function organisationList (query, syncResults) {
-        var organisationListUrl = '/viewing/suggest-employer-name-js?search=';
+        var organisationListUrl = '/search/suggest-employer-name-js?search=';
         return getSuggestions(organisationListUrl, query, syncResults);
     }
 

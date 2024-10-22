@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
@@ -20,8 +19,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         void AddToBasket(string encEmployerId);
 
-        void AddRangeToBasket(string[] encEmployerIds);
-
         void RemoveFromBasket(string encEmployerId);
 
         void ClearBasket();
@@ -37,15 +34,22 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public class CompareViewService : ICompareViewService
     {
 
+        private readonly HttpContext httpContext;
+
+        public List<string> ComparedEmployers { get; } = new List<string>();
+
+        public int BasketItemCount => ComparedEmployers.Count;
+
+        public int MaxCompareBasketCount => Global.MaxCompareBasketCount;
+
         public CompareViewService(IHttpContextAccessor httpContext)
         {
-            HttpContext = httpContext.HttpContext;
-            ComparedEmployers = new List<string>();
+            this.httpContext = httpContext.HttpContext;
         }
 
         public void LoadComparedEmployersFromCookie()
         {
-            string value = HttpContext.GetRequestCookieValue(CookieNames.LastCompareQuery);
+            string value = httpContext.GetRequestCookieValue(CookieNames.LastCompareQuery);
 
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -54,41 +58,19 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
             string[] employerIds = value.SplitI(",");
 
-            ClearBasket();
-
-            if (employerIds.Any())
-            {
-                AddRangeToBasket(employerIds);
-            }
+            ComparedEmployers.Clear();
+            ComparedEmployers.AddRange(employerIds);
         }
 
         public void SaveComparedEmployersToCookie(HttpRequest request)
         {
             //Save into the cookie
-            HttpContext.SetResponseCookie(
+            httpContext.SetResponseCookie(
                 CookieNames.LastCompareQuery,
                 string.Join(',', ComparedEmployers),
                 VirtualDateTime.Now.AddMonths(1),
                 secure: true);
         }
-
-        #region Dependencies
-
-        public HttpContext HttpContext { get; }
-
-        #endregion
-
-        #region Properties
-        
-        public List<string> ComparedEmployers { get; }
-
-        public int BasketItemCount => ComparedEmployers.Count;
-
-        public int MaxCompareBasketCount => Global.MaxCompareBasketCount;
-
-        #endregion
-
-        #region Basket Methods
 
         public void AddToBasket(string encEmployerId)
         {
@@ -96,15 +78,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             if (newBasketCount <= MaxCompareBasketCount)
             {
                 ComparedEmployers.Add(encEmployerId);
-            }
-        }
-
-        public void AddRangeToBasket(string[] encEmployerIds)
-        {
-            int newBasketCount = ComparedEmployers.Count + encEmployerIds.Length;
-            if (newBasketCount <= MaxCompareBasketCount)
-            {
-                ComparedEmployers.AddRange(encEmployerIds);
             }
         }
 
@@ -122,8 +95,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         {
             return ComparedEmployers.Contains(encEmployerId);
         }
-
-        #endregion
 
     }
 

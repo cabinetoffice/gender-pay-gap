@@ -46,29 +46,6 @@ namespace GenderPayGap.Tests.Services.Compare
             Assert.IsTrue(expectedEmployerIds.All(eId => testService.ComparedEmployers.Contains(eId)), "Expected employer ids to match basket items");
         }
 
-        [TestCase]
-        public void ClearsBasketBeforeLoadingFromCookie()
-        {
-            // Arrange
-            mockHttpContext.Setup(x => x.Request.Cookies[It.Is<string>(arg => arg == CookieNames.LastCompareQuery)])
-                .Returns("12345678");
-
-            var testService = new CompareViewService(
-                mockHttpContextAccessor.Object);
-
-            var testPreviousIds = new[] {"AAA", "BBB", "CCC"};
-            testService.AddRangeToBasket(testPreviousIds);
-
-            // Act
-            testService.LoadComparedEmployersFromCookie();
-
-            // Assert
-            Assert.AreEqual(1, testService.BasketItemCount, "Expected basket to contain 1 employer");
-            Assert.IsFalse(
-                testPreviousIds.All(id => testService.ComparedEmployers.Contains(id)),
-                "Expected previous employer ids to be cleared from basket");
-        }
-
     }
 
 }

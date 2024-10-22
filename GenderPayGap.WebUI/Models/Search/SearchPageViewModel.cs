@@ -20,14 +20,6 @@ namespace GenderPayGap.WebUI.Models.Search
         [BindNever]
         public List<int> PossibleReportedLateYears { get; set; }
 
-        public List<char> GetSectorCodesAsChars()
-        {
-            return Sector
-                .Where(sectorCode => sectorCode.Length == 1)
-                .Select(sectorCode => sectorCode[0])
-                .ToList();
-        }
-
         public List<int> GetReportedLateYearsAsInts()
         {
             return ReportedLateYear
