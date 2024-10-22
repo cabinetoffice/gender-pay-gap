@@ -15,26 +15,6 @@ namespace GenderPayGap.Database
     public partial class Organisation
     {
 
-        private IObfuscator _obfuscator;
-
-        public Organisation(IObfuscator obfuscator)
-        {
-            _obfuscator = obfuscator;
-        }
-
-        private IObfuscator obfuscator
-        {
-            get
-            {
-                if (_obfuscator == null)
-                {
-                    _obfuscator = new InternalObfuscator();
-                }
-
-                return _obfuscator;
-            }
-        }
-
         public void SetStatus(OrganisationStatuses status, long? byUserId = null, string details = null)
         {
             if (status == Status && details == StatusDetails)
@@ -122,7 +102,7 @@ namespace GenderPayGap.Database
 
         public string GetEncryptedId()
         {
-            return obfuscator.Obfuscate(OrganisationId.ToString());
+            return Obfuscator.Obfuscate(OrganisationId);
         }
 
         #region Scope

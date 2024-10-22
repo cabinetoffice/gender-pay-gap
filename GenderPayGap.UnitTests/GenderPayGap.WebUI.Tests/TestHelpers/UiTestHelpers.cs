@@ -241,8 +241,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
             
 
-            builder.Register(c => Mock.Of<IObfuscator>()).As<IObfuscator>().SingleInstance();
-
             //Register WebTracker
             builder.Register(c => Mock.Of<IWebTracker>()).As<IWebTracker>().InstancePerLifetimeScope();
 
