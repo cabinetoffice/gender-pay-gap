@@ -3,7 +3,7 @@
         element: document.querySelector(element),
         id: id,  // To match it to the existing <label>.
         source: organisationList,
-        name: 'search',
+        name: 'EmployerName',
         minLength: 2,
         displayMenu: 'overlay',
         templates: {

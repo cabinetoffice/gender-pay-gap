@@ -52,33 +52,33 @@ namespace GenderPayGap.WebUI.Controllers
         /// <summary>
         /// </summary>
         /// <param name="searchQuery"></param>
-        [HttpGet("~/search-results")]
-        [HttpGet("search-results")]
-        public async Task<IActionResult> SearchResults([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
-        {
-            //If no compare employers in session then load employers from the cookie
-            if (CompareViewService.BasketItemCount == 0)
-            {
-                CompareViewService.LoadComparedEmployersFromCookie();
-            }
-
-            // ensure parameters are valid
-            if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
-            {
-                return result;
-            }
-
-            // generate result view model
-            var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
-            SearchViewModel model = ViewingService.Search(searchParams, orderBy);
-            ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
-
-            ViewBag.BasketViewModel = new CompareBasketViewModel {
-                CanAddEmployers = false, CanViewCompare = CompareViewService.BasketItemCount > 1, CanClearCompare = true
-            };
-
-            return View("Finder/SearchResults", model);
-        }
+        // [HttpGet("~/search-results")]
+        // [HttpGet("search-results")]
+        // public async Task<IActionResult> SearchResults([FromQuery] SearchResultsQuery searchQuery, string orderBy = "relevance")
+        // {
+        //     //If no compare employers in session then load employers from the cookie
+        //     if (CompareViewService.BasketItemCount == 0)
+        //     {
+        //         CompareViewService.LoadComparedEmployersFromCookie();
+        //     }
+        //
+        //     // ensure parameters are valid
+        //     if (!searchQuery.TryValidateSearchParams(out HttpStatusViewResult result))
+        //     {
+        //         return result;
+        //     }
+        //
+        //     // generate result view model
+        //     var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
+        //     SearchViewModel model = ViewingService.Search(searchParams, orderBy);
+        //     ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
+        //
+        //     ViewBag.BasketViewModel = new CompareBasketViewModel {
+        //         CanAddEmployers = false, CanViewCompare = CompareViewService.BasketItemCount > 1, CanClearCompare = true
+        //     };
+        //
+        //     return View("Finder/SearchResults", model);
+        // }
 
         [HttpGet("~/search-results-js")]
         [HttpGet("search-results-js")]
@@ -90,13 +90,13 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 return result;
             }
-
+        
             // generate result view model
             var searchParams = SearchResultsQueryToEmployerSearchParameters(searchQuery);
             SearchViewModel model = ViewingService.Search(searchParams, "relevance");
-
-            ViewBag.ReturnUrl = Url.Action("SearchResults", "Viewing");
-
+        
+            ViewBag.ReturnUrl = Url.Action("SearchPage", "Search");
+        
             return PartialView("Finder/Parts/MainContent", model);
         }
 
@@ -141,7 +141,7 @@ namespace GenderPayGap.WebUI.Controllers
             // save the results to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
 
-            return RedirectToAction(nameof(SearchResults), "Viewing", searchQuery);
+            return RedirectToAction("OldSearchResultsPage", "Redirect", searchQuery);
         }
 
         #endregion
