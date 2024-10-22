@@ -273,7 +273,6 @@ namespace GenderPayGap.WebUI.Search
                         if (foundOrganisation != null)
                         {
                             searchResult.OrganisationId = foundOrganisation.OrganisationId;
-                            searchResult.EncryptedOrganisationId = foundOrganisation.GetEncryptedId();
                             searchResult.OrganisationAddress = foundOrganisation.GetLatestAddress()?.GetAddressString();
                             searchResult.CompanyNumber = foundOrganisation.CompanyNumber;
                         }

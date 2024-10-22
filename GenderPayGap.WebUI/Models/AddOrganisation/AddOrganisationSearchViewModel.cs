@@ -26,7 +26,6 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
         public string OrganisationName { get; set; }
         public string OrganisationAddress { get; set; }
         public long? OrganisationId { get; set; }
-        public string EncryptedOrganisationId { get; set; }
         public string CompanyNumber { get; set; }
     }
 

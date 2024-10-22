@@ -7,7 +7,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
     {
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public string Query { get; set; }
