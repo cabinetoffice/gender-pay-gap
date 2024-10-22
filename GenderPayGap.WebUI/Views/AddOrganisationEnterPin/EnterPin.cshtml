@@ -1,7 +1,6 @@
 ﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using GenderPayGap.Core
-@using GenderPayGap.Core.Classes
 @model GenderPayGap.WebUI.Models.Report.AddOrganisationEnterPinViewModel
 
 @{
@@ -70,7 +69,7 @@
             </div>
         </details>
 
-        <form action="@Url.Action("EnterPinPost", "AddOrganisationEnterPin", new {obfuscatedOrganisationId = Obfuscator.Obfuscate(Model.UserOrganisation.OrganisationId)})"
+        <form action="@Url.Action("EnterPinPost", "AddOrganisationEnterPin", new {organisationId = Model.UserOrganisation.OrganisationId})"
               method="post">
             @(Html.AntiForgeryToken())
 
