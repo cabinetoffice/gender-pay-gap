@@ -31,6 +31,8 @@ namespace GenderPayGap.WebUI.Search
         public string CompanyNumber { get; set; }
         public OrganisationStatuses Status { get; set; }
         public string EncryptedId { get; set; }
+        public string Address { get; set; }
+        public List<string> Sectors { get; set; }
 
     }
 

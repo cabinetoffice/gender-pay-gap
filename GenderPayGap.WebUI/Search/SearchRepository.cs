@@ -87,6 +87,13 @@ namespace GenderPayGap.WebUI.Search
 
             CustomLogger.Information($"Search Repository: Time taken to load Scopes: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithAddresses = repository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses)
+                .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Addresses: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
+
             List<Organisation> allOrganisations = repository
                 .GetAll<Organisation>()
                 //.Include(o => o.OrganisationNames) // Moved into separate pre-load query 
@@ -146,7 +153,8 @@ namespace GenderPayGap.WebUI.Search
                                 SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
                                 SicCodeSynonyms = sicCodeSynonyms,
                                 IncludeInViewingService = GetIncludeInViewingService(o),
-                                Sector = o.SectorType
+                                Sector = o.SectorType,
+                                Address = o.GetLatestAddress()?.GetAddressString() ?? ""
                             };
                     })
                 .ToList();
