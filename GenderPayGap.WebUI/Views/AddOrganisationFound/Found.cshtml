@@ -1,6 +1,4 @@
-﻿@using GenderPayGap.Database
-@using GenderPayGap.WebUI.Models.AddOrganisation
-@using GovUkDesignSystem
+﻿@using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationFoundViewModel
 @{
@@ -10,8 +8,8 @@
 
 @section BeforeMain {
     @{
-        string resultId = Model.Id != null
-            ? $"search-result-id-{Model.Id}"
+        string resultId = Model.Id.HasValue
+            ? $"search-result-id-{Model.Id.Value}"
             : $"search-result-coho-{Model.CompanyNumber}";
     }
     @(await Html.GovUkBackLink(new BackLinkViewModel
@@ -78,7 +76,7 @@
             
             @(Html.AntiForgeryToken())
 
-            @if (Model.Id != null)
+            @if (Model.Id.HasValue)
             {
                 @(Html.HiddenFor(m => m.Id))
             }

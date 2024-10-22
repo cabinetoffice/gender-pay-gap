@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using GenderPayGap.Core.Classes;
-using GenderPayGap.Database;
-using GovUkDesignSystem;
-using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.AddOrganisation
@@ -11,13 +7,7 @@ namespace GenderPayGap.WebUI.Models.AddOrganisation
     public class AddOrganisationFoundViewModel 
     {
 
-        public string Id { get; set; }
-        [BindNever]
-        public long DeObfuscatedId
-        {
-            get => Obfuscator.DeObfuscate(Id);
-            set => Id = Obfuscator.Obfuscate((int) value);
-        }
+        public long? Id { get; set; }
 
         public string CompanyNumber { get; set; }
         public string Query { get; set; }
