@@ -16,13 +16,13 @@ namespace GenderPayGap.WebUI.Controllers
 
         private readonly ICompareViewService compareViewService;
         private readonly IDataRepository dataRepository;
-        private readonly ViewingSearchServiceNew viewingSearchService;
+        private readonly ViewingSearchService viewingSearchService;
         private readonly AutoCompleteSearchService autoCompleteSearchService;
         
         public SearchController(
             ICompareViewService compareViewService,
             IDataRepository dataRepository,
-            ViewingSearchServiceNew viewingSearchService,
+            ViewingSearchService viewingSearchService,
             AutoCompleteSearchService autoCompleteSearchService)
         {
             this.compareViewService = compareViewService;
