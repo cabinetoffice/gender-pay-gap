@@ -10,7 +10,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        @using (Html.BeginForm("SearchResults", "Viewing", FormMethod.Get, new { id = "FinderForm", @class = "js-live-search-form" }))
+        @using (Html.BeginForm("OldSearchResultsPage", "Redirect", FormMethod.Get, new { id = "FinderForm", @class = "js-live-search-form" }))
         {
             <partial name="~/Views/Compare/ComparisonBasket.cshtml" model="ViewBag.BasketViewModel" />
             <div class="govuk-grid-row finder comparison-divider">

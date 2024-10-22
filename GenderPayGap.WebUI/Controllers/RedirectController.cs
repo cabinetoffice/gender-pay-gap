@@ -1,5 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using GenderPayGap.Core;
+using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Search;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -9,11 +16,13 @@ namespace GenderPayGap.WebUI.Controllers
         // This class contains redirects for outdated URLs
         // Some of these URLs might appear in emails / printed letters, so we want to redirect to an appropriate page, rather than showing a 404
 
-        private IWebTracker webTracker;
+        private readonly IWebTracker webTracker;
+        private readonly IDataRepository dataRepository;
 
-        public RedirectController(IWebTracker webTracker)
+        public RedirectController(IWebTracker webTracker, IDataRepository dataRepository)
         {
             this.webTracker = webTracker;
+            this.dataRepository = dataRepository;
         }
         
         [HttpGet("activate-service")]
@@ -114,6 +123,43 @@ namespace GenderPayGap.WebUI.Controllers
         
             return RedirectToAction("ReportForYear", "ViewReports", new {organisationId = organisationId, reportingYear = year});
         }
-        
+
+        [HttpGet("/viewing/search-results")]
+        public IActionResult OldSearchResultsPage(
+            string search,  // Keywords
+            IEnumerable<char> s,  // Sector
+            IEnumerable<int> es, // Employer Size
+            int t = 1,  // Search Type (ByEmployerName = 1, BySectorType = 2, NotSet = 99)
+            string orderBy = "relevance"
+            )
+        {
+            if (t != 1)
+            {
+                // We no longer support searching by SIC code or Sector name (you can still filter by sector, just not search).
+                // If a user has searched by SIC code, redirect them to the main search page 
+                return RedirectToAction("SearchPage", "Search");
+            }
+
+            List<string> selectedSectorsStrings = s.Select(sector => sector.ToString()).ToList();
+            List<string> sectors = dataRepository.GetAll<SicSection>()
+                .Where(sicSection => selectedSectorsStrings.Contains(sicSection.SicSectionId))
+                .Select(sicSection => sicSection.SicSectionId)
+                .ToList();
+
+            List<OrganisationSizes> employerSizes = es
+                .Where(employerSize => Enum.IsDefined(typeof(OrganisationSizes), employerSize))
+                .Cast<OrganisationSizes>()
+                .ToList();
+
+            var searchPageViewModel = new SearchPageViewModel
+            {
+                EmployerName = search,
+                OrderBy = orderBy,
+                Sector = sectors,
+                EmployerSize = employerSizes
+            };
+            return RedirectToAction("SearchPage", "Search", searchPageViewModel);
+        }
+
     }
 }
