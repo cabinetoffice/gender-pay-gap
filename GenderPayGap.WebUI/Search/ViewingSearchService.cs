@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Models.Search;
@@ -23,7 +24,6 @@ namespace GenderPayGap.WebUI.Search
         public string OrganisationName { get; set; }
         public List<string> OrganisationPreviousNames { get; set; }
         public long OrganisationId { get; set; }
-        public string EncryptedId { get; set; }
         public string Address { get; set; }
         public List<string> Sectors { get; set; }
 
@@ -102,7 +102,7 @@ namespace GenderPayGap.WebUI.Search
             return new SearchApiResultEmployer
             {
                 Id = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId,
-                EncId = rankedViewingSearchOrganisation.ViewingSearchResult.EncryptedId,
+                EncId = Obfuscator.Obfuscate(rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId),
                 Name = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationName,
                 PreviousName = previousName,
                 Address = rankedViewingSearchOrganisation.ViewingSearchResult.Address,
@@ -119,7 +119,7 @@ namespace GenderPayGap.WebUI.Search
             return new SearchApiResultEmployer
             {
                 Id = searchCachedOrganisation.OrganisationId,
-                EncId = searchCachedOrganisation.EncryptedId,
+                EncId = Obfuscator.Obfuscate(searchCachedOrganisation.OrganisationId),
                 Name = searchCachedOrganisation.OrganisationName.OriginalValue,
                 PreviousName = previousName,
                 Address = searchCachedOrganisation.Address,
@@ -205,7 +205,6 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationName = rankedViewingSearchOrganisation.Names[0].Name,
                 OrganisationPreviousNames = previousNames,
                 OrganisationId = organisation.OrganisationId,
-                EncryptedId = organisation.EncryptedId,
                 Address = organisation.Address,
                 Sectors = organisation.SicSectionIds
             };
