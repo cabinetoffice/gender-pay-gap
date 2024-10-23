@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Web;
 using GenderPayGap.Core;
+using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
@@ -15,9 +16,9 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         
         int BasketItemCount { get; }
 
-        void AddToBasket(string encEmployerId);
+        void AddToBasket(long organisationId);
 
-        void RemoveFromBasket(string encEmployerId);
+        void RemoveFromBasket(long organisationId);
 
         void ClearBasket();
 
@@ -25,7 +26,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         void SaveComparedEmployersToCookie();
 
-        bool BasketContains(string encEmployerId);
+        bool BasketContains(long organisationId);
 
     }
 
@@ -70,18 +71,18 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 secure: true);
         }
 
-        public void AddToBasket(string encEmployerId)
+        public void AddToBasket(long organisationId)
         {
             int newBasketCount = ComparedEmployers.Count + 1;
             if (newBasketCount <= MaxCompareBasketCount)
             {
-                ComparedEmployers.Add(encEmployerId);
+                ComparedEmployers.Add(Obfuscator.Obfuscate(organisationId));
             }
         }
 
-        public void RemoveFromBasket(string encEmployerId)
+        public void RemoveFromBasket(long organisationId)
         {
-            ComparedEmployers.Remove(encEmployerId);
+            ComparedEmployers.Remove(Obfuscator.Obfuscate(organisationId));
         }
 
         public void ClearBasket()
@@ -89,9 +90,9 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             ComparedEmployers.Clear();
         }
 
-        public bool BasketContains(string encEmployerId)
+        public bool BasketContains(long organisationId)
         {
-            return ComparedEmployers.Contains(encEmployerId);
+            return ComparedEmployers.Contains(Obfuscator.Obfuscate(organisationId));
         }
 
     }
