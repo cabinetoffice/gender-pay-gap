@@ -245,7 +245,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.Register(c => Mock.Of<IWebTracker>()).As<IWebTracker>().InstancePerLifetimeScope();
 
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
-            builder.RegisterType<CompareController>().InstancePerLifetimeScope();
             builder.RegisterType<ErrorController>().InstancePerLifetimeScope();
             
             builder.RegisterType<AdminUnconfirmedPinsController>().InstancePerLifetimeScope();
