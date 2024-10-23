@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
@@ -113,20 +112,18 @@ namespace GenderPayGap.WebUI.Controllers
                 ReportingYear = year
             };
 
-            List<string> encodedEmployerIds;
+            List<long> organisationIds;
             if (!string.IsNullOrWhiteSpace(employers))
             {
-                encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                organisationIds = DecodeOrganisationIds(encodedEmployerIds);
                 viewModel.CameFromShareLink = true;
             }
             else
             {
-                encodedEmployerIds = compareViewService.ComparedEmployers;
+                organisationIds = DecodeOrganisationIds(compareViewService.ComparedEmployers);
                 viewModel.CameFromShareLink = false;
             }
-
-            // Hopefully we can remove this step one day!
-            List<long> organisationIds = DecodeOrganisationIds(encodedEmployerIds);
 
             foreach (long organisationId in organisationIds)
             {
@@ -149,20 +146,18 @@ namespace GenderPayGap.WebUI.Controllers
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
 
-            List<string> encodedEmployerIds;
+            List<long> organisationIds;
             if (!string.IsNullOrWhiteSpace(employers))
             {
-                encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                organisationIds = DecodeOrganisationIds(encodedEmployerIds);
             }
             else
             {
-                encodedEmployerIds = compareViewService.ComparedEmployers;
+                organisationIds = DecodeOrganisationIds(compareViewService.ComparedEmployers);
             }
             
-            // Hopefully we can remove this step one day!
-            List<long> organisationIds = DecodeOrganisationIds(encodedEmployerIds);
             var organisationsToDownload = new List<Organisation>();
-            
             foreach (long organisationId in organisationIds)
             {
                 try
@@ -220,8 +215,15 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 try
                 {
-                    long organisationId = Obfuscator.DeObfuscate(encodedEmployerId);
-                    organisationIds.Add(organisationId);
+                    if (long.TryParse(encodedEmployerId, out long parsedOrganisationId))
+                    {
+                        organisationIds.Add(parsedOrganisationId);
+                    }
+                    else
+                    {
+                        long deObfuscatedOrganisationId = Obfuscator.DeObfuscate(encodedEmployerId);
+                        organisationIds.Add(deObfuscatedOrganisationId);
+                    }
                 }
                 catch (Exception e)
                 {}
