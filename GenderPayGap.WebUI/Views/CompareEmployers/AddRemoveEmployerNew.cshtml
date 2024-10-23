@@ -1,12 +1,11 @@
 ﻿@inject ICompareViewService CompareViewService
-@using GenderPayGap.Core.Classes
 @model GenderPayGap.Database.Organisation
 
 @{
     string returnUrl = Context.GetUri().PathAndQuery;
 }
 
-@if (CompareViewService.BasketContains(Obfuscator.Obfuscate(Model.OrganisationId)))
+@if (CompareViewService.BasketContains(Model.OrganisationId))
 {
     <form method="GET" action="@Url.Action("RemoveEmployer", "CompareEmployers", new { organisationId = Model.OrganisationId, returnUrl = returnUrl })">
         <button type="submit"
