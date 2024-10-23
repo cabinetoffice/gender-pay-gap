@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -30,6 +30,68 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
+        [HttpGet("/compare-employers/add/{organisationId}")]
+        public IActionResult AddEmployer(long organisationId, string returnUrl)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.AddToBasket(Obfuscator.Obfuscate(organisationId));
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return LocalRedirect(returnUrl);
+        }
+        
+        [HttpGet("/compare-employers/add-js/{organisationId}")]
+        public IActionResult AddEmployerJs(long organisationId)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.AddToBasket(Obfuscator.Obfuscate(organisationId));
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return Ok();
+        }
+        
+        [HttpGet("/compare-employers/remove/{organisationId}")]
+        public IActionResult RemoveEmployer(long organisationId, string returnUrl)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.RemoveFromBasket(Obfuscator.Obfuscate(organisationId));
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return LocalRedirect(returnUrl);
+        }
+        
+        [HttpGet("/compare-employers/remove-js/{organisationId}")]
+        public IActionResult RemoveEmployerJs(long organisationId)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.RemoveFromBasket(Obfuscator.Obfuscate(organisationId));
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return Ok();
+        }
+        
+        [HttpGet("/compare-employers/clear")]
+        public IActionResult ClearEmployers(string returnUrl)
+        {
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.ClearBasket();
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return LocalRedirect(returnUrl);
+        }
+        
         [HttpGet("/compare-employers")]
         public IActionResult CompareEmployersNoYear(string employers = null)
         {
