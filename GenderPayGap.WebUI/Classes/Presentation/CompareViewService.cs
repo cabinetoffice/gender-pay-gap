@@ -98,7 +98,10 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             int newBasketCount = ComparedEmployers.Count + 1;
             if (newBasketCount <= MaxCompareBasketCount)
             {
-                ComparedEmployers.Add(organisationId);
+                if (!ComparedEmployers.Contains(organisationId))
+                {
+                    ComparedEmployers.Add(organisationId);
+                }
             }
         }
 
