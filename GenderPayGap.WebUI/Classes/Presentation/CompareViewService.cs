@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
@@ -12,7 +13,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     public interface ICompareViewService
     {
 
-        List<string> ComparedEmployers { get; }
+        List<long> ComparedEmployers { get; }
         
         int BasketItemCount { get; }
 
@@ -35,7 +36,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         private readonly HttpContext httpContext;
 
-        public List<string> ComparedEmployers { get; } = new List<string>();
+        public List<long> ComparedEmployers { get; } = new List<long>();
 
         public int BasketItemCount => ComparedEmployers.Count;
 
@@ -58,7 +59,17 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             string[] employerIds = value.SplitI(",");
 
             ComparedEmployers.Clear();
-            ComparedEmployers.AddRange(employerIds);
+            foreach (string employerId in employerIds)
+            {
+                if (long.TryParse(employerId, out long parsedOrganisationId))
+                {
+                    ComparedEmployers.Add(parsedOrganisationId);
+                }
+                else
+                {
+                    ComparedEmployers.Add(Obfuscator.DeObfuscate(employerId));
+                }
+            }
         }
 
         public void SaveComparedEmployersToCookie()
@@ -66,7 +77,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             //Save into the cookie
             httpContext.SetResponseCookie(
                 CookieNames.LastCompareQuery,
-                string.Join(',', ComparedEmployers),
+                string.Join(',', ComparedEmployers.Select(Obfuscator.Obfuscate)),
                 VirtualDateTime.Now.AddMonths(1),
                 secure: true);
         }
@@ -76,13 +87,13 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             int newBasketCount = ComparedEmployers.Count + 1;
             if (newBasketCount <= MaxCompareBasketCount)
             {
-                ComparedEmployers.Add(Obfuscator.Obfuscate(organisationId));
+                ComparedEmployers.Add(organisationId);
             }
         }
 
         public void RemoveFromBasket(long organisationId)
         {
-            ComparedEmployers.Remove(Obfuscator.Obfuscate(organisationId));
+            ComparedEmployers.Remove(organisationId);
         }
 
         public void ClearBasket()
@@ -92,7 +103,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public bool BasketContains(long organisationId)
         {
-            return ComparedEmployers.Contains(Obfuscator.Obfuscate(organisationId));
+            return ComparedEmployers.Contains(organisationId);
         }
 
     }

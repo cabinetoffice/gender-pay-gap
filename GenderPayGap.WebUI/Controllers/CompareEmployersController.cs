@@ -121,7 +121,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                organisationIds = DecodeOrganisationIds(compareViewService.ComparedEmployers);
+                organisationIds = compareViewService.ComparedEmployers;
                 viewModel.CameFromShareLink = false;
             }
 
@@ -154,7 +154,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                organisationIds = DecodeOrganisationIds(compareViewService.ComparedEmployers);
+                organisationIds = compareViewService.ComparedEmployers;
             }
             
             var organisationsToDownload = new List<Organisation>();
