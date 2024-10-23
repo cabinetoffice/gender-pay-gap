@@ -13,8 +13,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         List<string> ComparedEmployers { get; }
         
-        int MaxCompareBasketCount { get; }
-
         int BasketItemCount { get; }
 
         void AddToBasket(string encEmployerId);

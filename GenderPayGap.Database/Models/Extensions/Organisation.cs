@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Database
@@ -98,11 +97,6 @@ namespace GenderPayGap.Database
         {
             IEnumerable<OrganisationSicCode> organisationSicCodes = GetSicCodes(maxDate);
             return organisationSicCodes.Select(s => s.SicCode.SicSectionId).UniqueI().OrderBy(s => s).ToDelimitedString(delimiter);
-        }
-
-        public string GetEncryptedId()
-        {
-            return Obfuscator.Obfuscate(OrganisationId);
         }
 
         #region Scope
