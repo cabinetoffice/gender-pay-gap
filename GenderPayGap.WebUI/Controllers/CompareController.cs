@@ -23,7 +23,7 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
-        [HttpGet("add-employer/{employerIdentifier}")]
+        // [HttpGet("add-employer/{employerIdentifier}")]
         public IActionResult AddEmployer(string employerIdentifier, string returnUrl)
         {
             //Check the parameters are populated
@@ -55,7 +55,7 @@ namespace GenderPayGap.WebUI.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        [HttpGet("add-employer-js/{employerIdentifier}")]
+        // [HttpGet("add-employer-js/{employerIdentifier}")]
         public IActionResult AddEmployerJs(string employerIdentifier, string returnUrl)
         {
             //Check the parameters are populated
@@ -104,7 +104,7 @@ namespace GenderPayGap.WebUI.Controllers
             return PartialView("Basket_Button", model);
         }
 
-        [HttpGet("remove-employer/{employerIdentifier}")]
+        // [HttpGet("remove-employer/{employerIdentifier}")]
         public IActionResult RemoveEmployer(string employerIdentifier, string returnUrl)
         {
             //Check the parameters are populated
@@ -135,7 +135,7 @@ namespace GenderPayGap.WebUI.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        [HttpGet("remove-employer-js/{employerIdentifier}")]
+        // [HttpGet("remove-employer-js/{employerIdentifier}")]
         public IActionResult RemoveEmployerJs(string employerIdentifier, string returnUrl)
         {
             //Check the parameters are populated
@@ -184,7 +184,7 @@ namespace GenderPayGap.WebUI.Controllers
             return PartialView("Basket_Button", model);
         }
 
-        [HttpGet("clear-employers")]
+        // [HttpGet("clear-employers")]
         public IActionResult ClearEmployers(string returnUrl)
         {
             //Check the parameters are populated

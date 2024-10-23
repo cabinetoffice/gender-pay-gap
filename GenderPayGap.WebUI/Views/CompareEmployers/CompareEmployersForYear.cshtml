@@ -81,7 +81,7 @@
                 @if (CompareViewService.BasketItemCount > 0)
                 {
                     <li>
-                        <form method="GET" action="@Url.Action("ClearEmployers", "Compare")">
+                        <form method="GET" action="@Url.Action("ClearEmployers", "CompareEmployers")">
                             <input type="hidden" name="returnUrl" value="@(Url.Action("SearchPage", "Search"))" />
                             <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-1" data-module="govuk-button">
                                 Clear list and start a new search
@@ -239,8 +239,6 @@
                         <tbody class="govuk-table__body">
                             @foreach (Organisation organisation in Model.Organisations.OrderBy(org => org.OrganisationName))
                             {
-                                string organisationEncodedId = organisation.GetEncryptedId();
-
                                 bool hasEmployerReportedForYear = organisation.HasSubmittedReturn(Model.ReportingYear);
                                 Return returnForYear = organisation.GetReturn(Model.ReportingYear);
 
@@ -248,8 +246,8 @@
                                     ? Url.Action("ReportForYear", "ViewReports", new {organisationId = organisation.OrganisationId, reportingYear = Model.ReportingYear})
                                     : Url.Action("Employer", "ViewReports", new {organisationId = organisation.OrganisationId});
                                 string removeEmployerUrl = Url.Action(
-                                    "RemoveEmployer", "Compare",
-                                    new {employerIdentifier = organisationEncodedId}
+                                    "RemoveEmployer", "CompareEmployers",
+                                    new {organisationId = organisation.OrganisationId}
                                     );
 
                                 ReportStatusTag reportStatusTag = ReportStatusTagHelper.GetReportStatusTag(organisation, Model.ReportingYear);

@@ -49,7 +49,7 @@
                     @if (Model.CanClearCompare)
                     {
                         string clearBasketUrl = Url.Action(
-                            nameof(CompareController.ClearEmployers), "Compare",
+                            "ClearEmployers", "CompareEmployers",
                             new {returnUrl = ViewBag.ReturnUrl}
                             );
                         <li>

@@ -92,14 +92,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        @{
-            var addRemoveButtonViewModel = new AddRemoveButtonViewModel
-            {
-                OrganisationIdEncrypted = Model.GetEncryptedId(),
-                OrganisationName = Model.OrganisationName
-            };
-        }
-        <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="addRemoveButtonViewModel"/>
+        <partial name="../CompareEmployers/AddRemoveEmployerNew.cshtml" model="Model"/>
 
         @if (Model.GetSubmittedReports().Any() && Model.Status == OrganisationStatuses.Retired)
         {
