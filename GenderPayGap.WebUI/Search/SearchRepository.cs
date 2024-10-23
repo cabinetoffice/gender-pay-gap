@@ -113,7 +113,6 @@ namespace GenderPayGap.WebUI.Search
                         return new SearchCachedOrganisation
                             {
                                 OrganisationId = o.OrganisationId,
-                                EncryptedId = o.GetEncryptedId(),
                                 OrganisationName = new SearchReadyValue(o.OrganisationName),
                                 CompanyNumber = o.CompanyNumber?.Trim(),
                                 OrganisationNames =
