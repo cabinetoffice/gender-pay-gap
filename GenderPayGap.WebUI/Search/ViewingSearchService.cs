@@ -1,6 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Models.Search;
@@ -102,7 +101,6 @@ namespace GenderPayGap.WebUI.Search
             return new SearchApiResultEmployer
             {
                 Id = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId,
-                EncId = Obfuscator.Obfuscate(rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId),
                 Name = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationName,
                 PreviousName = previousName,
                 Address = rankedViewingSearchOrganisation.ViewingSearchResult.Address,
@@ -119,7 +117,6 @@ namespace GenderPayGap.WebUI.Search
             return new SearchApiResultEmployer
             {
                 Id = searchCachedOrganisation.OrganisationId,
-                EncId = Obfuscator.Obfuscate(searchCachedOrganisation.OrganisationId),
                 Name = searchCachedOrganisation.OrganisationName.OriginalValue,
                 PreviousName = previousName,
                 Address = searchCachedOrganisation.Address,

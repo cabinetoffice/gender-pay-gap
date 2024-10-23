@@ -16,7 +16,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class FindOrgsWhereScopeNotSetTests : BaseBusinessLogicTests
+    public class FindOrgsWhereScopeNotSetTests
     {
 
         [SetUp]
