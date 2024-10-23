@@ -25,7 +25,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         void LoadComparedEmployersFromCookie();
 
-        void SaveComparedEmployersToCookie(HttpRequest request);
+        void SaveComparedEmployersToCookie();
 
         bool BasketContains(string encEmployerId);
 
@@ -62,7 +62,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
             ComparedEmployers.AddRange(employerIds);
         }
 
-        public void SaveComparedEmployersToCookie(HttpRequest request)
+        public void SaveComparedEmployersToCookie()
         {
             //Save into the cookie
             httpContext.SetResponseCookie(

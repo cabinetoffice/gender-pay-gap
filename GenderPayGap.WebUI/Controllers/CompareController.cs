@@ -49,7 +49,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompareViewService.AddToBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
-            CompareViewService.SaveComparedEmployersToCookie(Request);
+            CompareViewService.SaveComparedEmployersToCookie();
 
             //Redirect the user to the original page
             return LocalRedirect(returnUrl);
@@ -81,7 +81,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompareViewService.AddToBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
-            CompareViewService.SaveComparedEmployersToCookie(Request);
+            CompareViewService.SaveComparedEmployersToCookie();
 
             //Setup compare basket
             bool fromSearchResults = returnUrl.Contains("/search-results");
@@ -130,7 +130,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompareViewService.RemoveFromBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
-            CompareViewService.SaveComparedEmployersToCookie(Request);
+            CompareViewService.SaveComparedEmployersToCookie();
 
             return LocalRedirect(returnUrl);
         }
@@ -161,7 +161,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompareViewService.RemoveFromBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
-            CompareViewService.SaveComparedEmployersToCookie(Request);
+            CompareViewService.SaveComparedEmployersToCookie();
 
             //Setup compare basket
             bool fromSearchResults = returnUrl.Contains("/search-results");
@@ -199,7 +199,7 @@ namespace GenderPayGap.WebUI.Controllers
             CompareViewService.ClearBasket();
 
             //Save the compared employers to the cookie
-            CompareViewService.SaveComparedEmployersToCookie(Request);
+            CompareViewService.SaveComparedEmployersToCookie();
 
             return LocalRedirect(returnUrl);
         }
