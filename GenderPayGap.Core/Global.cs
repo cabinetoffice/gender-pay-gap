@@ -33,7 +33,6 @@ namespace GenderPayGap.Core
 
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
-        public static int ObfuscationSeed => Config.GetAppSetting("ObfuscationSeed").ToInt32(127);
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
         public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
         public static string BasicAuthUsername => Config.GetAppSetting("BasicAuthUsername");
@@ -131,6 +130,7 @@ namespace GenderPayGap.Core
                 {"X-AspNetMvc-Version", ""},
                 {"Server", ""}
             };
+        public static int ObfuscationSeed => 1045659205;
 
         #endregion
         
