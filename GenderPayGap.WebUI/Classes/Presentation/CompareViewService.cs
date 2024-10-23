@@ -26,6 +26,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         void LoadComparedEmployersFromCookie();
 
         void SaveComparedEmployersToCookie();
+        void SaveComparedEmployersToCookieIfAnyAreObfuscated();
 
         bool BasketContains(long organisationId);
 
@@ -35,6 +36,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
     {
 
         private readonly HttpContext httpContext;
+        private bool areAnyIdsObfuscated = false;
 
         public List<long> ComparedEmployers { get; } = new List<long>();
 
@@ -67,17 +69,26 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 }
                 else
                 {
+                    areAnyIdsObfuscated = true;
                     ComparedEmployers.Add(Obfuscator.DeObfuscate(employerId));
                 }
             }
         }
 
+        public void SaveComparedEmployersToCookieIfAnyAreObfuscated()
+        {
+            if (areAnyIdsObfuscated)
+            {
+                SaveComparedEmployersToCookie();
+            }
+        }
+        
         public void SaveComparedEmployersToCookie()
         {
             //Save into the cookie
             httpContext.SetResponseCookie(
                 CookieNames.LastCompareQuery,
-                string.Join(',', ComparedEmployers.Select(Obfuscator.Obfuscate)),
+                string.Join(',', ComparedEmployers),
                 VirtualDateTime.Now.AddMonths(1),
                 secure: true);
         }
