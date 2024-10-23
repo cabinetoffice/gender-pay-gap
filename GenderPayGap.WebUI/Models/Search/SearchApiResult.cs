@@ -16,7 +16,6 @@ namespace GenderPayGap.WebUI.Models.Search
     {
 
         public long Id { get; set; }
-        public string EncId { get; set; }
         public string Name { get; set; }
         public string PreviousName { get; set; }
         public string Address { get; set; }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
