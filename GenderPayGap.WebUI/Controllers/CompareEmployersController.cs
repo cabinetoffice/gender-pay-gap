@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -105,6 +105,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult CompareEmployersForYear(int year, string employers = null)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
             var viewModel = new CompareEmployersForYearViewModel
@@ -143,6 +144,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult DownloadCSVOfCompareEmployersForYear(int year, string employers = null)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
 

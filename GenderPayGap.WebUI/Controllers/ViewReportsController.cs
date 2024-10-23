@@ -24,6 +24,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult Employer(long organisationId)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
@@ -35,6 +36,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult ReportForYear(long organisationId, int reportingYear)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
