@@ -6,6 +6,7 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Search;
 using Microsoft.AspNetCore.Mvc;
@@ -112,7 +113,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("/Employer/{employerIdentifier}")]
         public IActionResult ViewEmployerPage(string employerIdentifier, int? page = 1)
         {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
 
             return RedirectToAction("Employer", "ViewReports", new {organisationId});
         }
@@ -120,7 +121,7 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("/EmployerReport/{employerIdentifier}/{year}")]
         public IActionResult ViewEmployerReportForYear(string employerIdentifier, int year)
         {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
         
             return RedirectToAction("ReportForYear", "ViewReports", new {organisationId = organisationId, reportingYear = year});
         }
@@ -165,31 +166,55 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("/viewing/add-employer/{employerIdentifier}")]
         public IActionResult AddEmployer(string employerIdentifier, string returnUrl)
         {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
             return RedirectToAction("AddEmployer", "CompareEmployers", new {organisationId = organisationId, returnUrl = returnUrl});
         }
         [HttpGet("/viewing/add-employer-js/{employerIdentifier}")]
         public IActionResult AddEmployerJs(string employerIdentifier)
         {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
             return RedirectToAction("AddEmployerJs","CompareEmployers", new {organisationId = organisationId});
         }
         [HttpGet("/viewing/remove-employer/{employerIdentifier}")]
         public IActionResult RemoveEmployer(string employerIdentifier, string returnUrl)
         {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
             return RedirectToAction("RemoveEmployer", "CompareEmployers", new {organisationId = organisationId, returnUrl = returnUrl});
         }
         [HttpGet("/viewing/remove-employer-js/{employerIdentifier}")]
         public IActionResult RemoveEmployerJs(string employerIdentifier)
         {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
             return RedirectToAction("RemoveEmployerJs","CompareEmployers", new {organisationId = organisationId});
         }
         [HttpGet("/viewing/clear-employers")]
         public IActionResult ClearEmployers(string returnUrl)
         {
             return RedirectToAction("ClearEmployers", "CompareEmployers", new {returnUrl = returnUrl});
+        }
+
+        private static long DeObfuscateOrganisationIdOrThrow404(string organisationIdentifier)
+        {
+            if (string.IsNullOrWhiteSpace(organisationIdentifier))
+            {
+                throw new PageNotFoundException();
+            }
+            
+            try
+            {
+                int organisationId = Obfuscator.DeObfuscate(organisationIdentifier);
+            
+                if (organisationId == 0)
+                {
+                    throw new PageNotFoundException();
+                }
+                
+                return organisationId;
+            }
+            catch (Exception e)
+            {
+                throw new PageNotFoundException();
+            }
         }
 
     }
