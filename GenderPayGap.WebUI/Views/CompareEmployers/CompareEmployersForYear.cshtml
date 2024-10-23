@@ -16,7 +16,7 @@
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 
     string currentRelativeUrl = Context.GetUri().PathAndQuery;
-    string commaSeparatedListOfObfuscatedEmployerIds = string.Join("-", Model.Organisations.Select(org => org.GetEncryptedId()));
+    string commaSeparatedListOfOrganisationIds = string.Join("-", Model.Organisations.Select(org => org.OrganisationId));
 }
 
 @section BeforeMain {
@@ -37,7 +37,7 @@
             {
                 Text = "Employer comparison",
                 Href = Model.CameFromShareLink
-                    ?Url.Action("CompareEmployersNoYear", "CompareEmployers", new {employers = commaSeparatedListOfObfuscatedEmployerIds})
+                    ?Url.Action("CompareEmployersNoYear", "CompareEmployers", new {employers = commaSeparatedListOfOrganisationIds})
                     :Url.Action("CompareEmployersNoYear", "CompareEmployers")
             },
             new CrumbViewModel
@@ -113,7 +113,7 @@
 
                             @{
                                 string url = Model.CameFromShareLink
-                                    ? Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = year, employers = commaSeparatedListOfObfuscatedEmployerIds})
+                                    ? Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = year, employers = commaSeparatedListOfOrganisationIds})
                                     : Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = year});
                             }
                             <a href="@url"
@@ -343,7 +343,7 @@
         <p class="govuk-body">
             @{
                 string downloadCsvUrl = Model.CameFromShareLink
-                    ? Url.Action("DownloadCSVOfCompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear, employers = commaSeparatedListOfObfuscatedEmployerIds})
+                    ? Url.Action("DownloadCSVOfCompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear, employers = commaSeparatedListOfOrganisationIds})
                     : Url.Action("DownloadCSVOfCompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear});
             }
             <a href="@downloadCsvUrl"
@@ -353,7 +353,7 @@
         </p>
         <p class="govuk-body">
             @{
-                string shareEmailUrl = Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear, employers = commaSeparatedListOfObfuscatedEmployerIds}, "https");
+                string shareEmailUrl = Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear, employers = commaSeparatedListOfOrganisationIds}, "https");
                 
                 string emailSubject = "Compare employers' Gender Pay Gaps";
                 string emailBody = $"Hi,%0D%0DI used the Gender Pay Gap service on Gov.UK to compare these employers.%0D%0dThought you'd like to see the results...%0D{shareEmailUrl}%0D%0D";
