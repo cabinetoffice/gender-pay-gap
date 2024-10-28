@@ -113,26 +113,29 @@
                 @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianHourlyPercent)/100))
                 for every £1 that men earned (comparing median hourly pay)
             </li>
-            <li>
-                women made up
-                @(Model.FemaleUpperQuartilePayBand)%
-                of employees in the highest paid quarter, and
-                @(Model.FemaleLowerPayBand)%
-                of employees in the lowest paid quarter
-            </li>
+            @if (Model.FemaleUpperQuartilePayBand.HasValue && Model.FemaleLowerPayBand.HasValue)
+            {
+                <li>
+                    women made up
+                    @(Model.FemaleUpperQuartilePayBand.Value.ToString("0.0"))%
+                    of employees in the highest paid quarter, and
+                    @(Model.FemaleLowerPayBand.Value.ToString("0.0"))%
+                    of employees in the lowest paid quarter
+                </li>
+            }
             @if ((Model.FemaleMedianBonusPayPercent > 0 || 
                   Model.MaleMedianBonusPayPercent > 0) &&
                  Model.DiffMedianBonusPercent.HasValue)
             {
                 <li>
-                    @(Model.FemaleMedianBonusPayPercent)%
+                    @(Model.FemaleMedianBonusPayPercent.ToString("0.0"))%
                     of women received bonus pay, compared with
-                    @(Model.MaleMedianBonusPayPercent)%
+                    @(Model.MaleMedianBonusPayPercent.ToString("0.0"))%
                     of men
                 </li>
                 <li>
                     women’s bonus pay was
-                    @Math.Abs((double) Model.DiffMedianBonusPercent)%
+                    @Math.Abs((double) Model.DiffMedianBonusPercent).ToString("0.0")%
                     @(Model.DiffMedianBonusPercent >= 0 ? "lower" : "higher")
                     than men’s (comparing median bonus pay)
                 </li>
@@ -152,7 +155,7 @@
             <li>
                 <div>
                     women’s median hourly pay was
-                    @Math.Abs((double) Model.DiffMedianHourlyPercent)%
+                    @Math.Abs((double) Model.DiffMedianHourlyPercent).ToString("0.0")%
                     @(Model.DiffMedianHourlyPercent >= 0 ? "lower" : "higher")
                     than men’s – this means they earned
                     @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model.DiffMedianHourlyPercent) / 100))
@@ -163,7 +166,7 @@
                 
             <li>
                 women’s mean (average) hourly pay was
-                @Math.Abs((double) Model.DiffMeanHourlyPayPercent)%
+                @Math.Abs((double) Model.DiffMeanHourlyPayPercent).ToString("0.0")%
                 @(Model.DiffMeanHourlyPayPercent >= 0 ? "lower" : "higher")
                 than men’s
             </li>
@@ -234,19 +237,19 @@
             </p>
             <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
                 <li>
-                    @(Model.FemaleUpperQuartilePayBand)%
+                    @(Model.FemaleUpperQuartilePayBand.Value.ToString("0.0"))%
                     of employees in the upper hourly pay quarter (highest paid jobs)
                 </li>
                 <li>
-                    @(Model.FemaleUpperPayBand)%
+                    @(Model.FemaleUpperPayBand.Value.ToString("0.0"))%
                     of employees in the upper middle hourly pay quarter
                 </li>
                 <li>
-                    @(Model.FemaleMiddlePayBand)%
+                    @(Model.FemaleMiddlePayBand.Value.ToString("0.0"))%
                     of employees in the lower middle hourly pay quarter
                 </li>
                 <li>
-                    @(Model.FemaleLowerPayBand)%
+                    @(Model.FemaleLowerPayBand.Value.ToString("0.0"))%
                     of employees in the lower hourly pay quarter (lowest paid jobs)
                 </li>
             </ul>
@@ -429,16 +432,16 @@
                     </li>
                 }
                 <li>
-                    @(Model.FemaleMedianBonusPayPercent)%
+                    @(Model.FemaleMedianBonusPayPercent.ToString("0.0"))%
                     of women and
-                    @(Model.MaleMedianBonusPayPercent)%
+                    @(Model.MaleMedianBonusPayPercent.ToString("0.0"))%
                     of men received bonus pay
                 </li>
             }
             else if (Model.FemaleMedianBonusPayPercent > 0 && Model.MaleMedianBonusPayPercent <= 0)
             {
                 <li>
-                    @(Model.FemaleMedianBonusPayPercent)%
+                    @(Model.FemaleMedianBonusPayPercent.ToString("0.0"))%
                     of women received bonus pay
                 </li>
                 <li>
@@ -451,7 +454,7 @@
                     no women received bonus pay
                 </li>
                 <li>
-                    @(Model.MaleMedianBonusPayPercent)%
+                    @(Model.MaleMedianBonusPayPercent.ToString("0.0"))%
                     of men received bonus pay
                 </li>
             }
