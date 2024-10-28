@@ -135,7 +135,7 @@
                             
                             @if (ReportingYearsHelper.IsReportingYearExcludedFromLateFlagEnforcement(year))
                             {
-                                <span>(reporting not mandatory due to COVID-19)</span>
+                                <span>(reporting not enforced due to COVID-19)</span>
                             }
                         </li>
                     }
@@ -316,10 +316,10 @@
                                             @(returnForYear.MaleMedianBonusPayPercent)%
                                         </td>
                                         <td class="govuk-table__cell gpg-compare-table-cell compare-table-bonus-pay-column gpg-compare-table-cell--border-left">
-                                            @(returnForYear.DiffMeanBonusPercent)%
+                                            @(returnForYear.DiffMeanBonusPercent.HasValue ? returnForYear.DiffMeanBonusPercent.Value + "%" : "no data")
                                         </td>
                                         <td class="govuk-table__cell gpg-compare-table-cell compare-table-bonus-pay-column">
-                                            @(returnForYear.DiffMedianBonusPercent)%
+                                            @(returnForYear.DiffMedianBonusPercent.HasValue ? returnForYear.DiffMedianBonusPercent.Value + "%" : "no data")
                                         </td>
                                     }
                                     else
