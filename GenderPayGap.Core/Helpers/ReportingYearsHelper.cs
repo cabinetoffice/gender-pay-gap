@@ -45,6 +45,16 @@ namespace GenderPayGap.Core.Helpers
             return formattedYear;
         }
 
+        public static string FormatYearAsReportingPeriodLongFormat(int reportingPeriodStartYear)
+        {
+            int fourDigitStartYear = reportingPeriodStartYear;
+
+            int fourDigitEndYear = reportingPeriodStartYear + 1;
+
+            string formattedYear = $"{fourDigitStartYear} to {fourDigitEndYear}";
+            return formattedYear;
+        }
+
         //The deadline date is the final date on which returns are not considered late
         public static DateTime GetDeadline(SectorTypes sector, int reportingYear)
         {
