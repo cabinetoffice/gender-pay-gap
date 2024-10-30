@@ -4,7 +4,7 @@
 @using GenderPayGap.Core
 @model GenderPayGap.WebUI.Controllers.SendFeedback.FeedbackViewModel
 @{
-    ViewBag.Title = "Send us feedback - Gender pay gap reporting service";
+    ViewBag.Title = "Give feedback about the gender pay gap service - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
@@ -20,7 +20,9 @@
     <div class="govuk-grid-column-two-thirds">
         <form method="POST" action="@Url.Action("SendFeedbackPost", "Feedback")">
             @(Html.AntiForgeryToken())
-            <h1 class="govuk-heading-xl">Send us feedback</h1>
+            <h1 class="govuk-heading-xl">
+                Give feedback about the gender pay gap service
+            </h1>
             <div class="govuk-form-group">
 
                 @(await Html.GovUkErrorSummary(ViewData.ModelState, new[]
@@ -40,6 +42,19 @@
                             Text = "How easy was this service to use?",
                             Classes = "govuk-fieldset__legend--m"
                         },
+                        Classes = "govuk-!-margin-top-6"
+                    }
+                    ))
+
+                @(await Html.GovUkCharacterCountFor(
+                    m => m.Details,
+                    labelOptions: new LabelViewModel
+                    {
+                        Text = "How could we improve your experience?",
+                        Classes = "govuk-label--m"
+                    },
+                    formGroupOptions: new FormGroupViewModel
+                    {
                         Classes = "govuk-!-margin-top-6"
                     }
                     ))
@@ -137,7 +152,7 @@
                     {
                         Legend = new LegendViewModel
                         {
-                            Text = "Are you",
+                            Text = "Which of these best describe you?",
                             Classes = "govuk-fieldset__legend--m"
                         },
                         Classes = "govuk-!-margin-top-6"
@@ -149,26 +164,16 @@
                     conditionalOptions: whoAreYouConditionalOptions
                     ))
 
-                @(await Html.GovUkCharacterCountFor(
-                    m => m.Details,
-                    labelOptions: new LabelViewModel
-                    {
-                        Text = "Please take a moment to tell us about your experience, what worked and what didn’t?",
-                        Classes = "govuk-label--m"
-                    },
-                    formGroupOptions: new FormGroupViewModel
-                    {
-                        Classes = "govuk-!-margin-top-6"
-                    }
-                    ))
-
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend">
-                        We’d like to reach out from time to time to follow up on the feedback that’s been submitted to us.
-                        If you would like us to get in touch please leave your email and/or phone number below.
-                        For more information about how we use your data, please see our
-                        <a href="@(Url.Action("PrivacyPolicyGet", "PrivacyPolicy"))" class="govuk-link">Privacy Policy</a>
+                <fieldset class="govuk-fieldset govuk-!-margin-top-6">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        Can we contact you?
                     </legend>
+                    <div class="govuk-hint">
+                        We sometimes like to follow up on the feedback that has been submitted to us.
+                        If you are happy for us to get in touch with you, please enter your email address and/or phone number below.
+                        For more information about how we use your data, see our
+                        <a href="@(Url.Action("PrivacyPolicyGet", "PrivacyPolicy"))" class="govuk-link">privacy policy</a>
+                    </div>
 
                     @(await Html.GovUkTextInput(new TextInputViewModel
                     {
@@ -191,20 +196,32 @@
                     }))
                 </fieldset>
 
-                <div class="govuk-inset-text">
-                    If you are having difficulties with the gender pay gap reporting service please email
-                    <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
-                        @(Global.GpgReportingEmail)
-                    </a>
-                    so that we can get back to you quickly.
-                </div>
-
                 @(await Html.GovUkButton(new ButtonViewModel
                 {
-                    Text = "Submit"
+                    Text = "Submit",
+                    Classes = "govuk-!-margin-top-6"
                 }))
 
             </div>
         </form>
+        
+        <h2 class="govuk-heading-m">
+            If you need help
+        </h2>
+        <p class="govuk-body govuk-!-margin-bottom-2">
+            Email us at
+            <a href="mailto:@(Global.GpgReportingEmail)"
+               class="govuk-link">
+                @(Global.GpgReportingEmail)</a>
+            if you:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>need help with technical difficulties, managing your account, or using the gender pay gap service</li>
+            <li>use an assistive technology, such as a screen reader, and cannot access all or part of the service</li>
+        </ul>
+        <p class="govuk-body">
+            We cannot give case-by-case guidance on how you should calculate your gender pay gap or interpret the regulations.
+        </p>
+
     </div>
 </div>
