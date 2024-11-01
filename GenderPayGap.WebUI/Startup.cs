@@ -254,7 +254,6 @@ namespace GenderPayGap.WebUI
         public void Configure(IApplicationBuilder app, IApplicationLifetime lifetime)
         {
             app.UseForwardedHeaders();
-            app.UseMiddleware<ExceptionMiddleware>();
             if (Config.IsLocal())
             {
                 app.UseBrowserLink();

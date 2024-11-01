@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -124,63 +123,7 @@ namespace GenderPayGap.Extensions
         {
             return source.Length > 0 && source[0].IsAny(chars);
         }
-
-        /// <summary>
-        ///     Super-fast Case-Insensitive text replace
-        /// </summary>
-        /// <param name="text">The original text string</param>
-        /// <param name="fromStr">The string to search for</param>
-        /// <param name="toStr">The string to replace with</param>
-        /// <returns></returns>
-        public static string ReplaceI(this string original, string pattern, string replacement = null)
-        {
-            if (string.IsNullOrWhiteSpace(original))
-            {
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(replacement))
-            {
-                replacement = "";
-            }
-
-            int count, position0, position1;
-            count = position0 = position1 = 0;
-            string upperString = original.ToUpper();
-            string upperPattern = pattern.ToUpper();
-            int inc = (original.Length / pattern.Length) * (replacement.Length - pattern.Length);
-            var chars = new char[original.Length + Math.Max(0, inc)];
-            while ((position1 = upperString.IndexOf(
-                       upperPattern,
-                       position0))
-                   != -1)
-            {
-                for (int i = position0; i < position1; ++i)
-                {
-                    chars[count++] = original[i];
-                }
-
-                for (var i = 0; i < replacement.Length; ++i)
-                {
-                    chars[count++] = replacement[i];
-                }
-
-                position0 = position1 + pattern.Length;
-            }
-
-            if (position0 == 0)
-            {
-                return original;
-            }
-
-            for (int i = position0; i < original.Length; ++i)
-            {
-                chars[count++] = original[i];
-            }
-
-            return new string(chars, 0, count);
-        }
-
+        
         public static bool StartsWithI(this string original, params string[] texts)
         {
             if (string.IsNullOrWhiteSpace(original))
