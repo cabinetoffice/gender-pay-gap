@@ -10,7 +10,6 @@
 
 @{
     ViewBag.Title = "Review pending registration request - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 
     List<User> otherUsers = Model.UserOrganisation.Organisation.UserOrganisations
         .Except(new[] {Model.UserOrganisation})

@@ -8,7 +8,6 @@
 
 @{
     ViewBag.Title = "Declare scope - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.PreviousReportingYear);
     DateTime snapshotDate = Model.Organisation.SectorType.GetAccountingStartDate(Model.PreviousReportingYear);
