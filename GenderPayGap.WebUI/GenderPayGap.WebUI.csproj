@@ -35,8 +35,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Views\Shared\Patterns\ManageOrganisationBreadcrumbs.cshtml" />
-    <None Include="wwwroot\assets\javascripts\application.min.js" />
-    <None Include="wwwroot\assets\stylesheets\application.min.css" />
   </ItemGroup>
 
   <ItemGroup>
