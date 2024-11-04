@@ -90,6 +90,8 @@
 
     <PackageReference Include="AWSSDK.S3" Version="3.3.111.26" />
 
+    <PackageReference Include="CsvHelper" Version="15.0.5" />
+
     <PackageReference Include="Hangfire" Version="1.7.11" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
     <PackageReference Include="HangFire.Autofac" Version="2.3.1" />
