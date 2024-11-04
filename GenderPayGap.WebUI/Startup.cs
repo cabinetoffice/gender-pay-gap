@@ -291,8 +291,8 @@ namespace GenderPayGap.WebUI
                 MinimumSameSitePolicy = SameSiteMode.Lax,
             };
             app.UseCookiePolicy(cookiePolicyOptions);
-            app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
-            app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
+            app.UseMiddleware<MaintenancePageMiddleware>(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
+            app.UseMiddleware<SecurityHeaderMiddleware>(); //Add/remove security headers from all responses
 
             if (!string.IsNullOrWhiteSpace(Global.BasicAuthUsername)
                 && !string.IsNullOrWhiteSpace(Global.BasicAuthPassword))
