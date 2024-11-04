@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Database
@@ -243,39 +242,6 @@ namespace GenderPayGap.Database
             return true;
         }
 
-        public DownloadResult ToDownloadResult()
-        {
-            return new DownloadResult {
-                EmployerName = Organisation?.GetName(StatusDate)?.Name ?? Organisation.OrganisationName,
-                EmployerId = OrganisationId,
-                Address = Organisation.GetLatestAddress()?.GetAddressString(),
-                PostCode = Organisation.GetLatestAddress()?.GetPostCodeInAllCaps(),
-                CompanyNumber = Organisation?.CompanyNumber,
-                SicCodes = Organisation?.GetSicCodeIdsString(StatusDate, "," + Environment.NewLine),
-                DiffMeanHourlyPercent = DiffMeanHourlyPayPercent,
-                DiffMedianHourlyPercent = DiffMedianHourlyPercent,
-                DiffMeanBonusPercent = DiffMeanBonusPercent,
-                DiffMedianBonusPercent = DiffMedianBonusPercent,
-                MaleBonusPercent = MaleMedianBonusPayPercent,
-                FemaleBonusPercent = FemaleMedianBonusPayPercent,
-                MaleLowerQuartile = MaleLowerPayBand,
-                FemaleLowerQuartile = FemaleLowerPayBand,
-                MaleLowerMiddleQuartile = MaleMiddlePayBand,
-                FemaleLowerMiddleQuartile = FemaleMiddlePayBand,
-                MaleUpperMiddleQuartile = MaleUpperPayBand,
-                FemaleUpperMiddleQuartile = FemaleUpperPayBand,
-                MaleTopQuartile = MaleUpperQuartilePayBand,
-                FemaleTopQuartile = FemaleUpperQuartilePayBand,
-                CompanyLinkToGPGInfo = CompanyLinkToGPGInfo,
-                ResponsiblePerson = ResponsiblePerson,
-                EmployerSize = OrganisationSize.GetAttribute<DisplayAttribute>().Name,
-                CurrentName = Organisation?.OrganisationName,
-                SubmittedAfterTheDeadline = IsLateSubmission,
-                DueDate = GetDueDate(),
-                DateSubmitted = Modified
-            };
-        }
-
         public string GetReportingPeriod()
         {
             return ReportingYearsHelper.FormatYearAsReportingPeriod(AccountingDate.Year, "/");
@@ -284,7 +250,7 @@ namespace GenderPayGap.Database
         // The deadline date is the final day that a return can be submitted without being considered late
         // The due date is a day later, the point at which a return is considered late
         // i.e. if the deadline date is 2021/04/01, submissions on that day are not late, any after 2021/04/02 00:00:00 are
-        private DateTime GetDueDate()
+        public DateTime GetDueDate()
         {
             return ReportingYearsHelper.GetDeadlineForAccountingDate(AccountingDate).AddDays(1);
         }
