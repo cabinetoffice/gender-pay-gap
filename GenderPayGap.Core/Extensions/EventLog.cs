@@ -142,7 +142,7 @@ namespace GenderPayGap.Extensions
         /// <param name="stackTrace">Stack trace string.</param>
         private static List<string> GetStackTraceLines(string stackTrace)
         {
-            return stackTrace.SplitI(Environment.NewLine).ToList();
+            return stackTrace.Split(Environment.NewLine).ToList();
         }
 
         /// <summary>

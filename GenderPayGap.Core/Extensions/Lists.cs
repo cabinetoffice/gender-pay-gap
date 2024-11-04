@@ -14,34 +14,6 @@ namespace GenderPayGap.Extensions
     public static class Lists
     {
 
-        public static string[] SplitI(this string list,
-            string separators = ";,",
-            int maxItems = 0,
-            StringSplitOptions options = StringSplitOptions.RemoveEmptyEntries)
-        {
-            if (string.IsNullOrWhiteSpace(list))
-            {
-                return new string[0];
-            }
-
-            if (separators == null)
-            {
-                throw new ArgumentNullException("separators");
-            }
-
-            if (separators == string.Empty)
-            {
-                return list.ToCharArray().Select(c => c.ToString()).ToArray();
-            }
-
-            if (maxItems > 0)
-            {
-                return list.Split(separators.ToCharArray(), maxItems, options);
-            }
-
-            return list.Split(separators.ToCharArray(), options);
-        }
-
         public static IEnumerable<string> UniqueI(this IEnumerable<string> list, bool ignoreCase = true)
         {
             return list.Distinct(ignoreCase ? StringComparer.CurrentCultureIgnoreCase : StringComparer.CurrentCulture);
@@ -62,7 +34,7 @@ namespace GenderPayGap.Extensions
 
                     if (allowDuplicateKeys)
                     {
-                        foreach (string value in collection[key].SplitI(","))
+                        foreach (string value in collection[key].Split(","))
                         {
                             keyValues.Add(new KeyValuePair<string, string>(key, value));
                         }

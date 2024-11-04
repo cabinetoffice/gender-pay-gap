@@ -55,7 +55,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 cookieValue = "";
             }
 
-            string[] employerIds = cookieValue.SplitI(",");
+            string[] employerIds = cookieValue.Split(",");
 
             ComparedEmployers.Clear();
             foreach (string employerId in employerIds)

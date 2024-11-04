@@ -338,7 +338,7 @@ namespace GenderPayGap.Extensions
             querystring = ns[null];
             ns.Remove(null);
             ns = new NameValueCollection(ns);
-            foreach (string qs in querystring.SplitI(","))
+            foreach (string qs in querystring.Split(","))
             {
                 querystring = qs.Replace('-', '+');
                 querystring = querystring.Replace('_', '/');
