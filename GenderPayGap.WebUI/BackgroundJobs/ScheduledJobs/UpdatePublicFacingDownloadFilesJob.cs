@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
@@ -11,7 +10,6 @@ using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Download;
@@ -148,7 +146,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 FemaleTopQuartile = ret.FemaleUpperQuartilePayBand,
                 CompanyLinkToGPGInfo = ret.CompanyLinkToGPGInfo,
                 ResponsiblePerson = ret.ResponsiblePerson,
-                EmployerSize = ret.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
+                EmployerSize = ret.OrganisationSize.GetDisplayName(),
                 CurrentName = ret.Organisation?.OrganisationName,
                 SubmittedAfterTheDeadline = ret.IsLateSubmission,
                 DueDate = ret.GetDueDate(),

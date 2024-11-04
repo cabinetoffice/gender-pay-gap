@@ -6,7 +6,6 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Core
-@using System.ComponentModel.DataAnnotations
 @inject ICompareViewService CompareViewService
 @model GenderPayGap.WebUI.Models.Compare.CompareEmployersForYearViewModel
 
@@ -286,7 +285,7 @@
                                     @if (hasEmployerReportedForYear)
                                     {
                                         <td class="govuk-table__cell gpg-compare-table-cell gpg-compare-table-cell--border-left">
-                                            @(returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name)
+                                            @(returnForYear.OrganisationSize.GetDisplayName())
                                         </td>
                                         <td class="govuk-table__cell gpg-compare-table-cell compare-table-hourly-pay-column gpg-compare-table-cell--border-left">
                                             @(returnForYear.DiffMeanHourlyPayPercent)%

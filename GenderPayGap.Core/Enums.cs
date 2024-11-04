@@ -152,6 +152,27 @@ namespace GenderPayGap.Core
 
     }
 
+    public static class OrganisationSizesExtensions
+    {
+        public static string GetDisplayName(this OrganisationSizes organisationSize)
+        {
+            DisplayAttribute displayAttribute = organisationSize.GetType()
+                .GetMember(organisationSize.ToString())
+                .FirstOrDefault()
+                ?.GetCustomAttribute<DisplayAttribute>();
+                
+            return displayAttribute?.Name;
+        }
+        
+        public static RangeAttribute GetRange(this OrganisationSizes organisationSize)
+        {
+            return organisationSize.GetType()
+                .GetMember(organisationSize.ToString())
+                .FirstOrDefault()
+                ?.GetCustomAttribute<RangeAttribute>();
+        }
+    }
+
     public enum AuditedAction
     {
         [Display(Name = "Admin changed late flag")]

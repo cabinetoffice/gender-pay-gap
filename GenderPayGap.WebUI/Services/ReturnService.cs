@@ -90,7 +90,7 @@ namespace GenderPayGap.WebUI.Services
         {
             Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
             Return existingReturn = organisation.GetReturn(draftReturn.SnapshotYear);
-            var organisationSizeRange = draftReturn.OrganisationSize?.GetAttribute<RangeAttribute>();
+            RangeAttribute organisationSizeRange = draftReturn.OrganisationSize?.GetRange();
 
             var newReturn = new Return
             {

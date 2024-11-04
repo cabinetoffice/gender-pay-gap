@@ -1,7 +1,6 @@
 @using GenderPayGap.Core.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Models.Report
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
@@ -212,7 +211,7 @@
                         Title = @<text>Number of employees used to establish your headcount for gender pay gap reporting, on your snapshot date</text>,
                         RightValue = !Model.SizeOfOrganisation.HasValue ? 
                             await Html.GovUkHtmlText(new HtmlText(null, "Not Provided" ))
-                            : await Html.GovUkHtmlText(new HtmlText(null, Model.SizeOfOrganisation.GetAttribute<DisplayAttribute>().Name))
+                            : await Html.GovUkHtmlText(new HtmlText(null, Model.SizeOfOrganisation.Value.GetDisplayName()))
                     }
                 }
             };
