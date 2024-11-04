@@ -32,17 +32,6 @@ namespace GenderPayGap.Extensions
             return false;
         }
 
-        /// <summary>
-        ///     Returns the name of the variable between $( and )
-        /// </summary>
-        /// <param name="text">The text to search</param>
-        /// <param name="matchPattern">The pattern to use</param>
-        /// <returns></returns>
-        public static string GetVariableName(this string text, string matchPattern = @"^\$\((.*)\)$")
-        {
-            return new Regex(matchPattern).Matches(text)?.FirstOrDefault()?.Groups[1]?.Value;
-        }
-
         public static string TrimI(this string source, string trimChars)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(trimChars))

@@ -118,7 +118,7 @@ namespace GenderPayGap.Core
                 {"X-Permitted-Cross-Domain-Policies", "master-only"},
                 {"X-Xss-Protection", "1; mode=block;"},
                 {"Content-Security-Policy", "frame-ancestors 'none'"},
-                {"X-Content-Security-Policy", "$(Content-Security-Policy)"},
+                {"X-Content-Security-Policy", "frame-ancestors 'none'"},
                 {"Referrer-Policy", "origin-when-cross-origin"},
                 {"Strict-Transport-Security", "max-age=31536000; includeSubDomains"},
                 {"X-Powered-By", ""},
