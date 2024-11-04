@@ -64,9 +64,9 @@ namespace GenderPayGap.WebUI.Classes
             {
                 pageUrl = $"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}";
             }
-            else if (!pageUrl.IsUrl())
+            else if (!IsUrl(pageUrl))
             {
-                pageUrl = Url.RelativeToAbsoluteUrl(pageUrl, new Uri($"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}"));
+                pageUrl = RelativeToAbsoluteUrl(pageUrl, new Uri($"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}"));
             }
 
             SendPageViewTracking(pageTitle, pageUrl);
@@ -85,12 +85,13 @@ namespace GenderPayGap.WebUI.Classes
                 throw new ArgumentNullException(nameof(url));
             }
 
-            if (!url.IsUrl())
+            if (!IsUrl(url))
             {
                 throw new ArgumentException("Url is not absolute", nameof(url));
             }
 
-            var postData = new List<KeyValuePair<string, string>> {
+            var postData = new List<KeyValuePair<string, string>>
+            {
                 new KeyValuePair<string, string>("v", googleVersion),
                 new KeyValuePair<string, string>("tid", googleTrackingId),
                 new KeyValuePair<string, string>("cid", googleClientId),
@@ -119,6 +120,47 @@ namespace GenderPayGap.WebUI.Classes
                     6,
                     retryAttempt =>
                         TimeSpan.FromMilliseconds(new Random().Next(1, 1000)) + TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        }
+
+        private static bool IsUrl(string url)
+        {
+            try
+            {
+                if (!url.StartsWithI("http:") && !url.StartsWithI("https:") && !url.StartsWithI("file:"))
+                {
+                    return false;
+                }
+
+                var uri = new Uri(url, UriKind.Absolute);
+                return uri.IsAbsoluteUri;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static string RelativeToAbsoluteUrl(string relativeUrl, Uri baseUrl)
+        {
+            if (baseUrl == null)
+            {
+                throw new ArgumentNullException(nameof(baseUrl));
+            }
+
+            if (relativeUrl.StartsWithI("http://", "https://"))
+            {
+                return relativeUrl;
+            }
+
+            if (!relativeUrl.StartsWith("/"))
+            {
+                relativeUrl += $"/{relativeUrl}";
+            }
+
+            var baseUri = new Uri($"{baseUrl.Scheme}://{baseUrl.Authority}/");
+            var absoluteUri = new Uri(baseUri, relativeUrl);
+            
+            return absoluteUri.ToString();
         }
 
     }

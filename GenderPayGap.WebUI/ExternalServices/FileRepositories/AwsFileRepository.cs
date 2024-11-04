@@ -5,7 +5,6 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
-using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
@@ -37,7 +36,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 var putRequest = new PutObjectRequest
                 {
                     BucketName = bucketName,
-                    Key = Url.DirToUrlSeparator(relativeFilePath),
+                    Key = DirToUrlSeparator(relativeFilePath),
                     ContentBody = fileContents
                 };
 
@@ -55,7 +54,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 var putRequest = new PutObjectRequest
                 {
                     BucketName = bucketName,
-                    Key = Url.DirToUrlSeparator(relativeFilePath),
+                    Key = DirToUrlSeparator(relativeFilePath),
                     InputStream = memoryStream
                 };
 
@@ -70,7 +69,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 GetObjectRequest request = new GetObjectRequest
                 {
                     BucketName = bucketName,
-                    Key = Url.DirToUrlSeparator(relativeFilePath)
+                    Key = DirToUrlSeparator(relativeFilePath)
                 };
 
                 using (GetObjectResponse response = client.GetObjectAsync(request).Result)
@@ -90,7 +89,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 ListObjectsV2Request request = new ListObjectsV2Request
                 {
                     BucketName = bucketName,
-                    Prefix = Url.DirToUrlSeparator(relativeDirectoryPath),
+                    Prefix = DirToUrlSeparator(relativeDirectoryPath),
                     MaxKeys = 10000
                 };
 
@@ -125,7 +124,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 var request = new DeleteObjectRequest
                 {
                     BucketName = bucketName,
-                    Key = Url.DirToUrlSeparator(relativeFilePath)
+                    Key = DirToUrlSeparator(relativeFilePath)
                 };
 
                 client.DeleteObjectAsync(request).Wait();
@@ -139,7 +138,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 var request = new GetObjectMetadataRequest
                 {
                     BucketName = bucketName,
-                    Key = Url.DirToUrlSeparator(relativeFilePath)
+                    Key = DirToUrlSeparator(relativeFilePath)
                 };
 
                 try
@@ -161,7 +160,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 var request = new GetObjectMetadataRequest
                 {
                     BucketName = bucketName,
-                    Key = Url.DirToUrlSeparator(relativeFilePath)
+                    Key = DirToUrlSeparator(relativeFilePath)
                 };
 
                 try
@@ -182,6 +181,11 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             var amazonS3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(awsRegion));
 
             return amazonS3Client;
+        }
+
+        private static string DirToUrlSeparator(string filePath)
+        {
+            return filePath?.Replace('\\', '/');
         }
 
     }
