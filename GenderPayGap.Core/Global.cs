@@ -110,7 +110,7 @@ namespace GenderPayGap.Core
         public static int MaxCompareBasketCount => 500; // Maximum number of employers you can add to the compare basket
         public static int EditableReportCount => 4; // Specifies how many reports an employer can edit
         public static int EditableScopeCount => 2; // Specifies how many scopes an employer can edit
-        public static Dictionary<string, string> SecurityHeaders =>
+        public static Dictionary<string, string> SecurityHeadersToAdd =>
             new Dictionary<string, string>
             {
                 {"X-Content-Type-Options", "nosniff"},
@@ -121,11 +121,16 @@ namespace GenderPayGap.Core
                 {"X-Content-Security-Policy", "frame-ancestors 'none'"},
                 {"Referrer-Policy", "origin-when-cross-origin"},
                 {"Strict-Transport-Security", "max-age=31536000; includeSubDomains"},
-                {"X-Powered-By", ""},
-                {"X-AspNet-Version", ""},
-                {"X-AspNetMvc-Version", ""},
-                {"Server", ""}
             };
+        public static List<string> SecurityHeadersToRemove =>
+            new List<string>
+            {
+                "X-Powered-By",
+                "X-AspNet-Version",
+                "X-AspNetMvc-Version",
+                "Server"
+            };
+
         public static int ObfuscationSeed => 1045659205;
 
         #endregion
