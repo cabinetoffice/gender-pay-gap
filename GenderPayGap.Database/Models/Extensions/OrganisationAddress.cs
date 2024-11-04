@@ -80,7 +80,7 @@ namespace GenderPayGap.Database
 
         public string GetAddressString(string delimiter = ", ")
         {
-            return this.GetAddressLines().ToDelimitedString(delimiter);
+            return string.Join(delimiter, this.GetAddressLines());
         }
 
         public bool AddressMatches(OrganisationAddress other)

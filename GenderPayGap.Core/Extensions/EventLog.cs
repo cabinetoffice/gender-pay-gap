@@ -133,7 +133,7 @@ namespace GenderPayGap.Extensions
                 environmentStackTraceLines.AddRange(stackTraceLines);
             }
 
-            return exception.Message + Environment.NewLine + environmentStackTraceLines.ToDelimitedString(Environment.NewLine);
+            return exception.Message + Environment.NewLine + string.Join(Environment.NewLine, environmentStackTraceLines);
         }
 
         /// <summary>

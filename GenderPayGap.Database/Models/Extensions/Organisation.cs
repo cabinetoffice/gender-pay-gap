@@ -54,10 +54,10 @@ namespace GenderPayGap.Database
         public string GetSicSectorsString(DateTime? maxDate = null, string delimiter = ", ")
         {
             IEnumerable<OrganisationSicCode> organisationSicCodes = GetSicCodes(maxDate);
-            return organisationSicCodes.Select(s => s.SicCode.SicSection.Description.Trim())
-                .UniqueI()
-                .OrderBy(s => s)
-                .ToDelimitedString(delimiter);
+            IOrderedEnumerable<string> sicSectionDescriptions = organisationSicCodes.Select(s => s.SicCode.SicSection.Description.Trim())
+                .Distinct()
+                .OrderBy(s => s);
+            return string.Join(delimiter, sicSectionDescriptions);
         }
 
         /// <summary>
@@ -90,13 +90,15 @@ namespace GenderPayGap.Database
 
         public string GetSicCodeIdsString(DateTime? maxDate = null, string delimiter = ", ")
         {
-            return GetSicCodes(maxDate).OrderBy(s => s.SicCodeId).Select(s => s.SicCodeId).ToDelimitedString(delimiter);
+            IEnumerable<int> sicCodeIds = GetSicCodes(maxDate).OrderBy(s => s.SicCodeId).Select(s => s.SicCodeId);
+            return string.Join(delimiter, sicCodeIds);
         }
 
         public string GetSicSectionIdsString(DateTime? maxDate = null, string delimiter = ", ")
         {
             IEnumerable<OrganisationSicCode> organisationSicCodes = GetSicCodes(maxDate);
-            return organisationSicCodes.Select(s => s.SicCode.SicSectionId).UniqueI().OrderBy(s => s).ToDelimitedString(delimiter);
+            IOrderedEnumerable<string> sicSectionIds = organisationSicCodes.Select(s => s.SicCode.SicSectionId).Distinct().OrderBy(s => s);
+            return string.Join(delimiter, sicSectionIds);
         }
 
         #region Scope

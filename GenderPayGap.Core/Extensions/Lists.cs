@@ -104,39 +104,6 @@ namespace GenderPayGap.Extensions
             return string.IsNullOrWhiteSpace(querystring) ? null : HttpUtility.ParseQueryString(querystring);
         }
 
-        public static string ToDelimitedString<T>(this IEnumerable<T> list, string delimiter = ",", string appendage = null)
-        {
-            if (list == null)
-            {
-                return null;
-            }
-
-            string result = null;
-
-            foreach (T item in list)
-            {
-                if (item == null)
-                {
-                    continue;
-                }
-
-                string text = item.ToString();
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    continue;
-                }
-
-                if (result != null && !string.IsNullOrEmpty(delimiter) && !result.EndsWithI(delimiter))
-                {
-                    result += delimiter;
-                }
-
-                result += text + appendage;
-            }
-
-            return result;
-        }
-
         public static List<T> ToList<T>(this ICollection collection)
         {
             var list = new List<T>(collection.Count);
