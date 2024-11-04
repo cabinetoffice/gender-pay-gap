@@ -153,7 +153,7 @@ namespace GenderPayGap.WebUI.Controllers
             var httpClient = new HttpClient();
             if (!string.IsNullOrWhiteSpace(viewModel.BasicAuthUsername) && !string.IsNullOrWhiteSpace(viewModel.BasicAuthPassword))
             {
-                httpClient.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(viewModel.BasicAuthUsername, viewModel.BasicAuthPassword);
+                httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderHelper.GetBasicAuthenticationHeaderValue(viewModel.BasicAuthUsername, viewModel.BasicAuthPassword);
             }
             string requestUrl = $"https://{viewModel.Hostname}/admin/data-migration/export-all?password={viewModel.Password}";
             string responseString = httpClient.GetStringAsync(requestUrl).Result;

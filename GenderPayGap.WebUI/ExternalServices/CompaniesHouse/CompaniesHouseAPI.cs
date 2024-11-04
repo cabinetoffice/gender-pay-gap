@@ -5,6 +5,7 @@ using System.Net.Http;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Helpers;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
@@ -92,7 +93,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
             httpClient.BaseAddress = BaseUri;
 
             httpClient.DefaultRequestHeaders.Clear();
-            httpClient.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(ApiKey, "");
+            httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderHelper.GetBasicAuthenticationHeaderValue(ApiKey, "");
             httpClient.DefaultRequestHeaders.ConnectionClose = false;
             ServicePointManager.FindServicePoint(httpClient.BaseAddress).ConnectionLeaseTimeout = 60 * 1000;
         }
