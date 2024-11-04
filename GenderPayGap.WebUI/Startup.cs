@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http;
-using System.Web;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
@@ -274,7 +273,7 @@ namespace GenderPayGap.WebUI
                         //Caching static files is required to reduce connections since the default behavior of checking if a static file has changed and returning a 304 still requires a connection.
                         if (Global.StaticCacheSeconds > 0)
                         {
-                            ctx.Context.SetResponseCache(Global.StaticCacheSeconds);
+                            HttpContextHelper.SetResponseCache(ctx.Context, Global.StaticCacheSeconds);
                         }
                     }
                 }); //For the wwwroot folder
