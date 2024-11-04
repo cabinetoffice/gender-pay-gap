@@ -1,7 +1,7 @@
 ﻿using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 
-namespace GenderPayGap.Core.Helpers
+namespace GenderPayGap.WebUI.Helpers
 {
     public static class FeatureFlagHelper
     {
