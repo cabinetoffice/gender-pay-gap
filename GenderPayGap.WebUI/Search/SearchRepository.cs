@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Search
 
         public static void LoadSearchDataIntoCache()
         {
-            using (ILifetimeScope scope = Global.ContainerIoC.BeginLifetimeScope())
+            using (ILifetimeScope scope = Startup.ContainerIoC.BeginLifetimeScope())
             {
                 var dataRepository = scope.Resolve<IDataRepository>();
 

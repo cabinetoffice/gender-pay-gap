@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Web;
 using Autofac;
@@ -34,7 +32,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 
 namespace GenderPayGap.WebUI
 {
@@ -43,6 +40,8 @@ namespace GenderPayGap.WebUI
 
         public static Action<IServiceCollection> ConfigureTestServices;
         public static Action<ContainerBuilder> ConfigureTestContainer;
+        
+        public static IContainer ContainerIoC;
 
         // ConfigureServices is where you register dependencies. This gets
         // called by the runtime before the ConfigureContainer method, below.
@@ -135,10 +134,10 @@ namespace GenderPayGap.WebUI
             ConfigureTestServices?.Invoke(services);
 
             //Create Inversion of Control container
-            Global.ContainerIoC = BuildContainerIoC(services);
+            ContainerIoC = BuildContainerIoC(services);
 
             // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(Global.ContainerIoC);
+            return new AutofacServiceProvider(ContainerIoC);
         }
 
         // ConfigureContainer is where you can register things directly

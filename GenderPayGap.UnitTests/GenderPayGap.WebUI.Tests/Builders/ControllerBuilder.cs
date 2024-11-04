@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Claims;
 using Autofac;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -21,7 +20,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -70,7 +68,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         public T Build()
         {
             IContainer DIContainer = BuildContainerIocForControllerOfType();
-            Global.ContainerIoC = DIContainer;
+            Startup.ContainerIoC = DIContainer;
 
             var httpContextMock = new Mock<HttpContext>();
 

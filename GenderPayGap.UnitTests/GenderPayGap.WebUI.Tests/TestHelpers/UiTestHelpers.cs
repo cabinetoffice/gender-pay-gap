@@ -7,8 +7,6 @@ using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using Autofac;
-using Autofac.Features.AttributeFilters;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -37,8 +35,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -65,7 +61,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             DIContainer = BuildContainerIoC(dbObjects);
 
             //Create Inversion of Control container
-            Global.ContainerIoC = DIContainer;
+            Startup.ContainerIoC = DIContainer;
 
             //Mock UserId as claim
             var claims = new List<Claim>();

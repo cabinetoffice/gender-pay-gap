@@ -266,7 +266,7 @@ namespace GenderPayGap.WebUI.Controllers
             InsertData(allData.ReminderEmails);
 
             WriteParagraph($"Starting Organisations and OrganisationPublicSectorTypes");
-            var newDataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            var newDataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
             newDataRepository.Insert(allData.Organisations);
             newDataRepository.Insert(allData.OrganisationPublicSectorTypes);
             newDataRepository.SaveChanges();
@@ -313,7 +313,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private void InsertData<T>(List<T> items) where T : class
         {
-            var newDataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            var newDataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
 
             newDataRepository.Insert(items);
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
@@ -10,9 +9,6 @@ namespace GenderPayGap.Core
 {
     public static class Global
     {
-
-        public static IContainer ContainerIoC;
-
 
         #region Secrets / connection strings / API keys
 
