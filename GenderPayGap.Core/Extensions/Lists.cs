@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -154,21 +154,6 @@ namespace GenderPayGap.Extensions
             }
 
             return collection.ToList();
-        }
-
-        public static IEnumerable<T> Randomise<T>(this IList<T> list)
-        {
-            int[] indexes = Enumerable.Range(0, list.Count).ToArray();
-            var generator = new Random();
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                int position = generator.Next(i, list.Count);
-
-                yield return list[indexes[position]];
-
-                indexes[position] = indexes[i];
-            }
         }
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)

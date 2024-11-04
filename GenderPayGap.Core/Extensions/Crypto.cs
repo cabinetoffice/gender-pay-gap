@@ -46,32 +46,19 @@ namespace GenderPayGap.Extensions
             return calculatedChecksum;
         }
 
-        public static string GeneratePasscode(char[] charset, int passcodeLength)
-        {
-            //Ensure characters are distinct and mixed up
-            charset = charset.Distinct().ToList().Randomise().ToArray();
-
-            var chars = new char[passcodeLength];
-
-            //Generate a load of random numbers
-            var randomData = new byte[chars.Length];
-            using (var generator = new RNGCryptoServiceProvider())
-            {
-                generator.GetBytes(randomData);
-            }
-
-            //use the random number to pick from the character set
-            for (int i = 0; i < chars.Length; i++)
-            {
-                chars[i] = charset[randomData[i] % charset.Length];
-            }
-
-            return new string(chars);
-        }
-
         public static string GeneratePinInThePost()
         {
-            return GeneratePasscode(Global.PINChars.ToCharArray(), 7);
+            string pin = "";
+
+            while (pin.Length < 7)
+            {
+                int randomIndex = new Random().Next(Global.PINChars.Length);
+                char nextCharacter = Global.PINChars[randomIndex];
+                
+                pin += nextCharacter;
+            }
+            
+            return pin;
         }
 
     }
