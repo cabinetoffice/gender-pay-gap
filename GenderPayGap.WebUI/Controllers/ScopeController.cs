@@ -241,7 +241,10 @@ namespace GenderPayGap.WebUI.Controllers
 
         public void RetireOldScopes(Organisation organisation, int reportingYear)
         {
-            organisation.OrganisationScopes.Where(o => o.SnapshotDate.Year == reportingYear).ForEach(s => s.Status = ScopeRowStatuses.Retired);
+            foreach (OrganisationScope s in organisation.OrganisationScopes.Where(o => o.SnapshotDate.Year == reportingYear))
+            {
+                s.Status = ScopeRowStatuses.Retired;
+            }
         }
 
         public void UpdateScopes(Organisation organisation, ScopeStatuses newStatus, int reportingYear, string reasonForChange, bool? haveReadGuidance)

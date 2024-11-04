@@ -201,14 +201,16 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             organisation.OrganisationSicCodes.Clear();
             
             // Change snapshot date for all organisation scopes to match new sector
-            organisation.OrganisationScopes.ForEach(
-                scope => scope.SnapshotDate = organisation.SectorType.GetAccountingStartDate(scope.SnapshotDate.Year)
-            );
+            foreach (OrganisationScope scope in organisation.OrganisationScopes)
+            {
+                scope.SnapshotDate = organisation.SectorType.GetAccountingStartDate(scope.SnapshotDate.Year);
+            }
             
             // Change accounting date for all returns to match new sector
-            organisation.Returns.ForEach(
-                returnItem => returnItem.AccountingDate = organisation.SectorType.GetAccountingStartDate(returnItem.AccountingDate.Year)
-            );
+            foreach (Return returnItem in organisation.Returns)
+            {
+                returnItem.AccountingDate = organisation.SectorType.GetAccountingStartDate(returnItem.AccountingDate.Year);
+            }
 
             dataRepository.SaveChanges();
 

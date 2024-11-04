@@ -80,7 +80,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
                 });
 
             // Un-register all users for this Organisation
-            org.UserOrganisations.ForEach(uo => dataRepository.Delete(uo));
+            foreach (UserOrganisation uo in org.UserOrganisations)
+            {
+                dataRepository.Delete(uo);
+            }
 
             // Soft-Delete the Organisation
             org.SetStatus(OrganisationStatuses.Deleted, details: "Organisation deleted by PurgeOrganisationJob");

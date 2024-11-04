@@ -689,7 +689,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             Assert.NotNull(result);
             var model = result.Model as List<Return>;
             Assert.AreEqual(returns.Length, model.Count);
-            returns.ForEach(r => Assert.Contains(r, model));
+
+            foreach (Return ret in returns)
+            {
+                Assert.Contains(ret, model);
+            }
         }
 
     }
