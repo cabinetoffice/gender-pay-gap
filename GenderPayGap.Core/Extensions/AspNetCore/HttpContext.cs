@@ -17,11 +17,6 @@ namespace System.Web
             }
         }
 
-        public static string GetRequestCookieValue(this Microsoft.AspNetCore.Http.HttpContext context, string key)
-        {
-            return context.Request.Cookies.ContainsKey(key) ? context.Request.Cookies[key] : null;
-        }
-
         public static void SetResponseCookie(this Microsoft.AspNetCore.Http.HttpContext context,
             string key,
             string value,

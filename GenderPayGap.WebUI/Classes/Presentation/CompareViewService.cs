@@ -50,14 +50,12 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public void LoadComparedEmployersFromCookie()
         {
-            string value = httpContext.GetRequestCookieValue(CookieNames.LastCompareQuery);
-
-            if (string.IsNullOrWhiteSpace(value))
+            if (!httpContext.Request.Cookies.TryGetValue(CookieNames.LastCompareQuery, out string cookieValue))
             {
-                return;
+                cookieValue = "";
             }
 
-            string[] employerIds = value.SplitI(",");
+            string[] employerIds = cookieValue.SplitI(",");
 
             ComparedEmployers.Clear();
             foreach (string employerId in employerIds)
