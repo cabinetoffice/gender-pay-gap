@@ -80,13 +80,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
             var routeData = new RouteData();
             var controllerContextMock = new ControllerContext { HttpContext = httpContextMock.Object, RouteData = routeData };
 
-            //Mock IHttpContextAccessor
-            Mock<IHttpContextAccessor> mockHttpContextAccessor = DIContainer.Resolve<IHttpContextAccessor>().GetMockFromObject();
-            mockHttpContextAccessor.SetupGet(a => a.HttpContext).Returns(httpContextMock.Object);
-
-            //Configure the global HttpContext using the mock accessor
-            System.Web.HttpContext.Configure(mockHttpContextAccessor.Object);
-
             //Create and return the controller
             var controller = DIContainer.Resolve<T>();
             controller.ControllerContext = controllerContextMock;

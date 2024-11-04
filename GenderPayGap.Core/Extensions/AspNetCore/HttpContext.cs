@@ -1,21 +1,9 @@
-﻿using GenderPayGap.Extensions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace System.Web
 {
     public static class HttpContext
     {
-
-        private static IHttpContextAccessor _contextAccessor;
-
-        public static Microsoft.AspNetCore.Http.HttpContext Current => _contextAccessor?.HttpContext;
-
-        public static void Configure(IHttpContextAccessor contextAccessor)
-        {
-            _contextAccessor = contextAccessor;
-        }
 
         public static void SetResponseCache(this Microsoft.AspNetCore.Http.HttpContext context, int maxSeconds)
         {
@@ -28,35 +16,6 @@ namespace System.Web
                 context.Response.Headers["Cache-Control"] = $"no-cache,no-store,max-age=0,must-revalidate";
             }
         }
-
-        public static string GetBrowser(this Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            return context.Request?.Headers["User-Agent"].ToStringOrNull();
-        }
-
-        public static Uri GetUri(this Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            string host = context.Request.Scheme.EqualsI("https") && context.Request.Host.Port == 443
-                          || context.Request.Scheme.EqualsI("http") && context.Request.Host.Port == 80
-                ? context.Request.Host.Host
-                : context.Request.Host.ToString();
-            string uri = $"{context.Request.Scheme}://{host}";
-            string path = context.Request.Path.ToString().TrimI("/\\ ");
-            if (!string.IsNullOrWhiteSpace(path))
-            {
-                uri += $"/{path}";
-            }
-
-            string querystring = context.Request.QueryString.ToString().TrimI("? ");
-            if (!string.IsNullOrWhiteSpace(querystring))
-            {
-                uri += $"?{querystring}";
-            }
-
-            return new Uri(uri);
-        }
-
-        #region Cookies
 
         public static string GetRequestCookieValue(this Microsoft.AspNetCore.Http.HttpContext context, string key)
         {
@@ -88,8 +47,6 @@ namespace System.Web
                 context.Response.Cookies.Append(key, value, cookieOptions);
             }
         }
-
-        #endregion
 
     }
 }

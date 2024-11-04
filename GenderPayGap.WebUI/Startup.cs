@@ -282,7 +282,6 @@ namespace GenderPayGap.WebUI
             app.UseRouting();
             app.UseResponseCaching();
             app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters
-            app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseSession(); //Must be before UseMvC or any middleware which requires session
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
             app.UseAuthorization();

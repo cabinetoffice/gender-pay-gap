@@ -2,7 +2,7 @@
 @model GenderPayGap.Database.Organisation
 
 @{
-    string returnUrl = Context.GetUri().PathAndQuery;
+    string returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 
 @if (CompareViewService.BasketContains(Model.OrganisationId))

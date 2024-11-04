@@ -14,7 +14,7 @@
     string reportingYearFormatted = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
     ViewBag.Title = $"Compare employers' gender pay gaps for {reportingYearFormatted} reporting year";
 
-    string currentRelativeUrl = Context.GetUri().PathAndQuery;
+    string currentRelativeUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
     string commaSeparatedListOfOrganisationIds = string.Join("-", Model.Organisations.Select(org => org.OrganisationId));
 }
 

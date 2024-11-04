@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
@@ -20,14 +19,14 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
+            if (httpContext.Request.Path.Value.StartsWith("/health-check"))
             {
                 await _next.Invoke(httpContext);
                 return;
             }
 
             // Redirect to holding page if in maintenance mode
-            if (_enabled && !httpContext.GetUri().PathAndQuery.StartsWithI(@"/error/service-unavailable"))
+            if (_enabled && !httpContext.Request.Path.Value.StartsWithI(@"/error/service-unavailable"))
             {
                 httpContext.Response.Redirect(@"/error/service-unavailable", permanent: false);
             }
