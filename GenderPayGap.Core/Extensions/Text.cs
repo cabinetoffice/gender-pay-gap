@@ -32,16 +32,6 @@ namespace GenderPayGap.Extensions
             return false;
         }
 
-        public static string TrimI(this string source, string trimChars)
-        {
-            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(trimChars))
-            {
-                return source;
-            }
-
-            return source.Trim(trimChars.ToCharArray());
-        }
-
         public static string TrimI(this string source, params char[] trimChars)
         {
             if (string.IsNullOrEmpty(source))
@@ -83,29 +73,6 @@ namespace GenderPayGap.Extensions
             }
 
             return source.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        public static bool EndsWithI(this string source, params string[] strings)
-        {
-            if (string.IsNullOrWhiteSpace(source))
-            {
-                return false;
-            }
-
-            foreach (string str in strings)
-            {
-                if (string.IsNullOrWhiteSpace(str))
-                {
-                    continue;
-                }
-
-                if (source.ToLower().EndsWith(str.ToLower()))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public static bool StartsWithAny(this string source, params char[] chars)

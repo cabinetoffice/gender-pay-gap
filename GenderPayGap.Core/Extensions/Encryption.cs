@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Extensions
@@ -540,6 +542,63 @@ namespace GenderPayGap.Extensions
         }
 
         #endregion
+
+        private static string ToQueryString(this NameValueCollection collection, bool allowDuplicateKeys = false)
+        {
+            var data = "";
+            if (collection != null)
+            {
+                var keyValues = new List<KeyValuePair<string, string>>();
+                foreach (string key in collection.Keys)
+                {
+                    if (string.IsNullOrWhiteSpace(collection[key]))
+                    {
+                        continue;
+                    }
+
+                    if (allowDuplicateKeys)
+                    {
+                        foreach (string value in collection[key].Split(","))
+                        {
+                            keyValues.Add(new KeyValuePair<string, string>(key, value));
+                        }
+                    }
+                    else
+                    {
+                        keyValues.Add(new KeyValuePair<string, string>(key, collection[key]));
+                    }
+                }
+
+                foreach (KeyValuePair<string, string> keyValue in keyValues)
+                {
+                    if (string.IsNullOrWhiteSpace(keyValue.Value))
+                    {
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(data))
+                    {
+                        data += "&";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(keyValue.Key))
+                    {
+                        data += keyValue.Value;
+                    }
+                    else
+                    {
+                        data += $"{WebUtility.UrlEncode(keyValue.Key)}={keyValue.Value}";
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        private static NameValueCollection FromQueryString(this string querystring)
+        {
+            return string.IsNullOrWhiteSpace(querystring) ? null : HttpUtility.ParseQueryString(querystring);
+        }
 
     }
 }
