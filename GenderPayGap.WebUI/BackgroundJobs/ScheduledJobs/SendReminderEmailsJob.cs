@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;

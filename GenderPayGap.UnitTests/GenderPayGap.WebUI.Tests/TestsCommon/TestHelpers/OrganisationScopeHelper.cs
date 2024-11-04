@@ -1,5 +1,5 @@
 ﻿using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 
 namespace GenderPayGap.Tests.Common.TestHelpers
