@@ -1,9 +1,9 @@
 using System.Threading;
 using GenderPayGap.Core;
 
-namespace GenderPayGap.Extensions.AspNetCore
+namespace GenderPayGap.WebUI.Helpers
 {
-    public static class Extensions
+    public static class ThreadCountHelper
     {
 
         public static string GetThreadCount()

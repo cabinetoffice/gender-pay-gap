@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,10 +32,10 @@ namespace GenderPayGap.WebUI
             IWebHost host = BuildWebHost(args);
 
             // Set the minumum threads 
-            Console.WriteLine(Extensions.AspNetCore.Extensions.SetThreadCount());
+            Console.WriteLine(ThreadCountHelper.SetThreadCount());
 
             // Show thread availability
-            Console.WriteLine(Extensions.AspNetCore.Extensions.GetThreadCount());
+            Console.WriteLine(ThreadCountHelper.GetThreadCount());
 
             // Run the webhost
             host.Run();
@@ -48,7 +49,7 @@ namespace GenderPayGap.WebUI
             Debug.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ex.GetDetailsText()}");
 
             //Show thread availability
-            Console.WriteLine(Extensions.AspNetCore.Extensions.GetThreadCount());
+            Console.WriteLine(ThreadCountHelper.GetThreadCount());
 
             throw ex;
         }
