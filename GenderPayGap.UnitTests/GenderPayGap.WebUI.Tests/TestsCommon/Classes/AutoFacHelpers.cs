@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moq;
@@ -47,7 +48,7 @@ namespace GenderPayGap.Tests.Common.Classes
             string testName = TestContext.CurrentContext.Test.FullName;
             if (string.IsNullOrWhiteSpace(testName))
             {
-                testName = MethodBase.GetCurrentMethod().FindParentWithAttribute<TestAttribute>().Name;
+                testName = UiTestHelper.GetCurrentTestName();
             }
 
             DbContextOptionsBuilder<GpgDatabaseContext> optionsBuilder =

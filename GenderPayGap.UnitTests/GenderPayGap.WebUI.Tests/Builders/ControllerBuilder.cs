@@ -196,7 +196,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
             string testName = TestContext.CurrentContext.Test.FullName;
             if (string.IsNullOrWhiteSpace(testName))
             {
-                testName = MethodBase.GetCurrentMethod().FindParentWithAttribute<TestAttribute>().Name;
+                testName = UiTestHelper.GetCurrentTestName();
             }
 
             DbContextOptionsBuilder<GpgDatabaseContext> optionsBuilder =

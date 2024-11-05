@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -111,7 +112,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             var requestHeaders = new HeaderDictionary();
             var requestCookies = new MockRequestCookieCollection(
-                new Dictionary<string, string> {
+                new Dictionary<string, string>
+                {
                     {
                         "cookie_settings",
                         JsonConvert.SerializeObject(
@@ -350,7 +352,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             string testName = TestContext.CurrentContext.Test.FullName;
             if (string.IsNullOrWhiteSpace(testName))
             {
-                testName = MethodBase.GetCurrentMethod().FindParentWithAttribute<TestAttribute>().Name;
+                testName = GetCurrentTestName();
             }
 
             DbContextOptionsBuilder<GpgDatabaseContext> optionsBuilder =
@@ -395,6 +397,33 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             mockUrlHelper.Setup(helper => helper.Action(It.IsAny<UrlActionContext>())).Returns(url).Verifiable();
 
             controller.Url = mockUrlHelper.Object;
+        }
+
+        public static string GetCurrentTestName()
+        {
+            return FindParentMethodWithTestAttribute(MethodBase.GetCurrentMethod()).Name;
+        }
+
+        private static MethodBase FindParentMethodWithTestAttribute(MethodBase callingMethod)
+        {
+            // Iterate throught all attributes
+            StackFrame[] frames = new StackTrace().GetFrames();
+
+            for (int i = 1; i < frames.Length; i++)
+            {
+                StackFrame frame = frames[i];
+                if (frame.HasMethod())
+                {
+                    MethodBase method = frame.GetMethod();
+
+                    if (method.GetCustomAttribute<TestAttribute>() != null)
+                    {
+                        return method;
+                    }
+                }
+            }
+
+            return callingMethod;
         }
 
     }

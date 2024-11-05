@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -229,28 +229,6 @@ namespace GenderPayGap.Extensions
             }
 
             return DateTime.MinValue;
-        }
-
-        public static MethodBase FindParentWithAttribute<T>(this MethodBase callingMethod, int parentOffset = 0) where T : Attribute
-        {
-            // Iterate throught all attributes
-            StackFrame[] frames = new StackTrace().GetFrames();
-
-            for (int i = 1 + parentOffset; i < frames.Length; i++)
-            {
-                StackFrame frame = frames[i];
-                if (frame.HasMethod())
-                {
-                    MethodBase method = frame.GetMethod();
-
-                    if (method.GetCustomAttribute<T>() != null)
-                    {
-                        return method;
-                    }
-                }
-            }
-
-            return callingMethod;
         }
 
     }
