@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Security.Claims;
 using Autofac;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
-using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Cookies;

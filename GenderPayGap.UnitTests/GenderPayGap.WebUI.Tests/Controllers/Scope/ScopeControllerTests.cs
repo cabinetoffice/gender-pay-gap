@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
-using Microsoft.Extensions.Primitives;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Scope

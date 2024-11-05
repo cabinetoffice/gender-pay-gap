@@ -12,7 +12,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Backup;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
@@ -11,7 +9,6 @@ using Autofac;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
@@ -43,7 +40,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace GenderPayGap.WebUI.Tests.TestHelpers
 {

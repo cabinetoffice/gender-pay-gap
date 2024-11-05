@@ -4,8 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using GenderPayGap.Core;
-using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Helpers;
 using Newtonsoft.Json;
 using Polly;

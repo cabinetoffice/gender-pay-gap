@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 

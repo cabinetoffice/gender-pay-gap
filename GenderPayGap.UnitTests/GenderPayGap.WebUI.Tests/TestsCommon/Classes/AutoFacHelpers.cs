@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Autofac;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

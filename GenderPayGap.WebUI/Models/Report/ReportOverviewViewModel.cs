@@ -3,17 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
-using GenderPayGap.Extensions;
 using GovUkDesignSystem;
-using GovUkDesignSystem.Attributes;
-using GovUkDesignSystem.Attributes.ValidationAttributes;
-using GovUkDesignSystem.GovUkDesignSystemComponents;
 using GovUkDesignSystem.GovUkDesignSystemComponents.SubComponents;
-using GovUkDesignSystem.Helpers;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace GenderPayGap.WebUI.Models.Report
 {

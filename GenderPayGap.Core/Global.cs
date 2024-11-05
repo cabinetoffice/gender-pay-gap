@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
 

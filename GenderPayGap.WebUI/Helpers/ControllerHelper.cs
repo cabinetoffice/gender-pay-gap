@@ -6,7 +6,6 @@ using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
 
