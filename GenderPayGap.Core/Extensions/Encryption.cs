@@ -18,7 +18,7 @@ namespace GenderPayGap.Extensions
 
         private static string DefaultEncryptionKey = "BA9138B8C0724F168A05482456802405";
 
-        public static Encoding EncryptionEncoding = Encoding.UTF8;
+        private static Encoding EncryptionEncoding = Encoding.UTF8;
         
         public static void SetDefaultEncryptionKey(string defaultEncryptionKey)
         {
@@ -114,12 +114,12 @@ namespace GenderPayGap.Extensions
         private static readonly byte[] PrimerBytes = {0, 0, 0, 0};
 
         //Check the unencrypted data is delimited by the primer bytes
-        public static bool WasEncrypted(this byte[] bytes)
+        private static bool WasEncrypted(this byte[] bytes)
         {
             return bytes.IsWrapped(PrimerBytes, PrimerBytes);
         }
 
-        public static byte[] Encrypt(byte[] bytes, string password = null)
+        private static byte[] Encrypt(byte[] bytes, string password = null)
         {
             password = DefaultEncryptionKey + password;
 
@@ -135,7 +135,7 @@ namespace GenderPayGap.Extensions
             return Compress(bytes);
         }
 
-        public static string Encrypt(string text, string password = null, bool base64Encode = true)
+        private static string Encrypt(string text, string password = null, bool base64Encode = true)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -210,13 +210,13 @@ namespace GenderPayGap.Extensions
         #region AES-256 Decryption
 
         //[DebuggerStepThrough]
-        public static byte[] Decrypt(byte[] bytes, params string[] passwords)
+        private static byte[] Decrypt(byte[] bytes, params string[] passwords)
         {
             return Decrypt(bytes, new List<string>(passwords));
         }
 
         //[DebuggerStepThrough]
-        public static byte[] Decrypt(byte[] encryptedBytes, List<string> passwords)
+        private static byte[] Decrypt(byte[] encryptedBytes, List<string> passwords)
         {
             //Ensure the bytes are decompressed
             encryptedBytes = Decompress(encryptedBytes);
@@ -293,7 +293,7 @@ namespace GenderPayGap.Extensions
         }
 
         [DebuggerStepThrough]
-        public static string Decrypt(string text, bool base64Encoded = true, params string[] passwords)
+        private static string Decrypt(string text, bool base64Encoded = true, params string[] passwords)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -371,7 +371,7 @@ namespace GenderPayGap.Extensions
         private static readonly byte[] GZipLevel10HeaderBytes = {0x1f, 0x8b, 8, 0, 0, 0, 0, 0, 2, 0};
         private static readonly byte[] GZipLevel12HeaderBytes = {0x1f, 0x8b, 8, 0, 0, 0, 0, 0, 0, 11};
 
-        public static bool IsCompressed(this byte[] bytes)
+        private static bool IsCompressed(this byte[] bytes)
         {
             if (bytes.Length <= 14)
             {
@@ -399,7 +399,7 @@ namespace GenderPayGap.Extensions
         /// </summary>
         /// <param name="text">The text.</param>
         /// <returns></returns>
-        public static byte[] Compress(byte[] buffer, bool mandatory = false)
+        private static byte[] Compress(byte[] buffer, bool mandatory = false)
         {
             using (var memoryStream = new MemoryStream())
             {
@@ -430,7 +430,7 @@ namespace GenderPayGap.Extensions
         /// </summary>
         /// <param name="compressedText">The compressed text.</param>
         /// <returns></returns>
-        public static byte[] Decompress(byte[] gZipBuffer)
+        private static byte[] Decompress(byte[] gZipBuffer)
         {
             if (gZipBuffer == null || gZipBuffer.Length < 1 || !gZipBuffer.IsCompressed())
             {
@@ -458,7 +458,7 @@ namespace GenderPayGap.Extensions
 
         #region Public General Encryption Methods
 
-        public static bool IsEncryptedData(string data)
+        private static bool IsEncryptedData(string data)
         {
             if (string.IsNullOrWhiteSpace(data))
             {
@@ -468,7 +468,7 @@ namespace GenderPayGap.Extensions
             return data.StartsWith("===") && data.EndsWith("===");
         }
 
-        public static bool IsPrivateData(this string data, params string[] passwords)
+        private static bool IsPrivateData(this string data, params string[] passwords)
         {
             if (string.IsNullOrWhiteSpace(data))
             {
@@ -519,7 +519,7 @@ namespace GenderPayGap.Extensions
             return DecryptData(data, out isPrivate);
         }
 
-        public static string DecryptData(string data, out bool isPrivate, params string[] passwords)
+        private static string DecryptData(string data, out bool isPrivate, params string[] passwords)
         {
             if (string.IsNullOrWhiteSpace(data))
             {
@@ -598,6 +598,53 @@ namespace GenderPayGap.Extensions
         private static NameValueCollection FromQueryString(this string querystring)
         {
             return string.IsNullOrWhiteSpace(querystring) ? null : HttpUtility.ParseQueryString(querystring);
+        }
+
+        private static bool IsWrapped<T>(this T[] data, T[] prefix, T[] suffix)
+        {
+            if (data.Length < prefix.Length + suffix.Length)
+            {
+                return false;
+            }
+
+            T[] end = data.SubArray(0, prefix.Length);
+
+            if (!end.SequenceEqual(prefix))
+            {
+                return false;
+            }
+
+            end = data.SubArray(data.Length - suffix.Length, suffix.Length);
+
+            return end.SequenceEqual(suffix);
+        }
+
+        private static T[] Wrap<T>(this T[] data, T[] prefix, T[] suffix)
+        {
+            var result = new T[data.Length + prefix.Length + suffix.Length];
+            Buffer.BlockCopy(prefix, 0, result, 0, prefix.Length);
+            Buffer.BlockCopy(data, 0, result, prefix.Length, data.Length);
+            Buffer.BlockCopy(suffix, 0, result, prefix.Length + data.Length, suffix.Length);
+            return result;
+        }
+
+        private static T[] Strip<T>(this T[] data, int left, int right)
+        {
+            var result = new T[data.Length - (left + right)];
+            Buffer.BlockCopy(data, left, result, 0, result.Length);
+            return result;
+        }
+
+        private static T[] SubArray<T>(this T[] data, int index, int length)
+        {
+            if (length > data.Length)
+            {
+                length = data.Length;
+            }
+
+            var result = new T[length];
+            Buffer.BlockCopy(data, index, result, 0, length);
+            return result;
         }
 
     }

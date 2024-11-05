@@ -257,68 +257,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             return container;
         }
 
-        public static void Bind(this Controller controller, object Model)
-        {
-            var validationContext = new ValidationContext(Model, null, null);
-            var validationResults = new List<ValidationResult>();
-            Validator.TryValidateObject(Model, validationContext, validationResults, true);
-            foreach (ValidationResult validationResult in validationResults)
-            {
-                controller.ModelState.AddModelError(string.Join(", ", validationResult.MemberNames), validationResult.ErrorMessage);
-            }
-        }
-
-        /// <summary>
-        ///     Adds a new mock url to the action method of an existing or new Mock URl helper of the controller
-        /// </summary>
-        /// <param name="controller">The source controller to add the mock setup</param>
-        /// <param name="url">The url to be returned by the Action method</param>
-        /// <param name="actionName">The name of the action to mock. If null tries to get from Controller.RoutData.</param>
-        /// <param name="controllerName">
-        ///     The name of the action to mock. If null tries to get from Controller.RoutData, then uses
-        ///     the Controller name.
-        /// </param>
-        public static void AddMockUriHelper(this Controller controller, string url, string actionName = null, string controllerName = null)
-        {
-            actionName = actionName ?? controller.RouteData?.Values["Action"].ToStringOrNull();
-            if (string.IsNullOrWhiteSpace(actionName))
-            {
-                throw new ArgumentNullException(nameof(actionName));
-            }
-
-            controllerName = controllerName ?? controller.RouteData?.Values["Controller"].ToStringOrNull();
-            if (string.IsNullOrWhiteSpace(controllerName))
-            {
-                controllerName = controller.GetType().Name;
-            }
-
-            if (string.IsNullOrWhiteSpace(controllerName))
-            {
-                throw new ArgumentNullException(nameof(controllerName));
-            }
-
-            if (controllerName != null)
-            {
-                controllerName = controllerName.Replace("Controller", "");
-            }
-
-            var uri = new Uri(url);
-            if (uri.Authority.EqualsI(Uri.Authority))
-            {
-                url = uri.PathAndQuery;
-            }
-
-            Mock<IUrlHelper> mockUrlHelper = controller.Url?.GetMockFromObject() ?? new Mock<IUrlHelper>();
-            Expression<Func<IUrlHelper, string>> urlSetup = helper => helper.Action(
-                It.Is<UrlActionContext>(
-                    uac => (string.IsNullOrWhiteSpace(actionName) || uac.Action == actionName)
-                           && (string.IsNullOrWhiteSpace(controllerName) || uac.Controller == controllerName || uac.Controller == null)));
-
-            mockUrlHelper.Setup(urlSetup).Returns(url).Verifiable();
-
-            controller.Url = mockUrlHelper.Object;
-        }
-
         public static void AssertCookieAdded(this Controller controller, string key, string value)
         {
             Mock<IResponseCookies> mockCookies = Mock.Get(controller.HttpContext.Response.Cookies);
@@ -326,12 +264,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 c => c.Append(key, value, It.IsAny<CookieOptions>()),
                 Times.Once(),
                 $"The cookie '{key}' was not saved with value '{value}'");
-        }
-
-        public static void AssertCookieDeleted(this Controller controller, string key)
-        {
-            Mock<IResponseCookies> mockCookies = Mock.Get(controller.HttpContext.Response.Cookies);
-            mockCookies.Verify(c => c.Delete(key), Times.Once(), $"The cookie '{key}' was not deleted");
         }
 
 

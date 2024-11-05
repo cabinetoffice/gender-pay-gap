@@ -41,8 +41,8 @@ namespace GenderPayGap.Core
 
         #region Settings that we expect to want to update at short notice
 
-        public static bool MaintenanceMode => Config.GetAppSetting("MaintenanceMode").ToBoolean(false);
-        public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSetting("MaintenanceModeUpAgainTime")?.ToDateTime();
+        public static bool MaintenanceMode => Config.GetAppSettingBool("MaintenanceMode", defaultValue: false);
+        public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSettingDateTime("MaintenanceModeUpAgainTime");
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>
             LoadListOfIntegers("ReportingStartYearsToExcludeFromLateFlagEnforcement");
         public static List<int> ReportingStartYearsWithFurloughScheme => 
@@ -50,27 +50,27 @@ namespace GenderPayGap.Core
         public static string ReminderEmailDays => Config.GetAppSetting("ReminderEmailDays");
         public static bool EnableSubmitAlerts
         {
-            get => Config.GetAppSetting("EnableSubmitAlerts").ToBoolean(false);
+            get => Config.GetAppSettingBool("EnableSubmitAlerts", defaultValue: false);
             set => Config.SetAppSetting("EnableSubmitAlerts", value.ToString());
         }
-        public static bool DisableSearchCache => Config.GetAppSetting("DisableSearchCache").ToBoolean();
+        public static bool DisableSearchCache => Config.GetAppSettingBool("DisableSearchCache");
 
         #endregion
 
 
 
         #region Settings that only change per environment
-        public static bool SendGoogleAnalyticsDataToGovUk => Config.GetAppSetting("SendGoogleAnalyticsDataToGovUk").ToBoolean();
-        public static int MaxNumCallsCompaniesHouseApiPerFiveMins => Config.GetAppSetting("MaxNumCallsCompaniesHouseApiPerFiveMins").ToInt32(10);
+        public static bool SendGoogleAnalyticsDataToGovUk => Config.GetAppSettingBool("SendGoogleAnalyticsDataToGovUk");
+        public static int MaxNumCallsCompaniesHouseApiPerFiveMins => Config.GetAppSettingInt("MaxNumCallsCompaniesHouseApiPerFiveMins", defaultValue: 10);
 
         public static string GoogleAnalyticsAccountId => Config.GetAppSetting("GoogleAnalyticsAccountId");
         public static List<string> GeoDistributionList => Config.GetAppSetting("GEODistributionList").Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
-        public static TimeSpan TimeToKeepBackupFiles => TimeSpan.FromDays(Config.GetAppSetting("DaysToKeepBackupFiles").ToInt32(35));
-        public static bool LogToSentry => Config.GetAppSetting("LogToSentry").ToBoolean(defaultValue: false);
+        public static TimeSpan TimeToKeepBackupFiles => TimeSpan.FromDays(Config.GetAppSettingInt("DaysToKeepBackupFiles", defaultValue: 35));
+        public static bool LogToSentry => Config.GetAppSettingBool("LogToSentry", defaultValue: false);
         #endregion
 
         #region Settings that change per deployment slot
-        public static bool BackgroundJobsEnabled => Config.GetAppSetting("WEBJOBS_STOPPED").ToInt32(0) == 0;
+        public static bool BackgroundJobsEnabled => Config.GetAppSettingInt("WEBJOBS_STOPPED", defaultValue: 0) == 0;
         #endregion
 
 
@@ -103,7 +103,7 @@ namespace GenderPayGap.Core
         public static int MinIOThreads => 300;
         public static int MinWorkerThreads => 300;
         public static string StartUrl =>
-            Config.GetAppSetting("UseStartUrl").ToBoolean()
+            Config.GetAppSettingBool("UseStartUrl")
                 ? "https://www.gov.uk/report-gender-pay-gap-data"
                 : null;
         public static string DoneUrl => "https://www.gov.uk/done/report-gender-pay-gap-data";

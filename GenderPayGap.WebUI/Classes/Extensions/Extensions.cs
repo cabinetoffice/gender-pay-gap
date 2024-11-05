@@ -36,7 +36,7 @@ namespace GenderPayGap.WebUI.Classes
             long id;
             try
             {
-                id = Encryption.DecryptQuerystring(enc).ToInt64();
+                id = long.Parse(Encryption.DecryptQuerystring(enc));
             }
             catch (Exception e)
             {

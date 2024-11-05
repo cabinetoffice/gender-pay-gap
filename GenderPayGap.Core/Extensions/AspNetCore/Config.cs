@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 
@@ -46,7 +47,7 @@ namespace GenderPayGap.Extensions.AspNetCore
                         _EnvironmentName = Environment.GetEnvironmentVariable("Environment"); //This is used by webjobs SDK v3 
                     }
 
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName) && Environment.GetEnvironmentVariable("DEV_ENVIRONMENT").ToBoolean())
+                    if (string.IsNullOrWhiteSpace(_EnvironmentName) && Environment.GetEnvironmentVariable("DEV_ENVIRONMENT") == "true")
                     {
                         _EnvironmentName = "Local";
                     }
@@ -119,6 +120,47 @@ namespace GenderPayGap.Extensions.AspNetCore
             string value = appSettings[key];
 
             return string.IsNullOrWhiteSpace(value) ? defaultValue : value;
+        }
+
+        public static bool GetAppSettingBool(string key, bool defaultValue = false)
+        {
+            string settingValue = GetAppSetting(key);
+
+            if (bool.TryParse(settingValue, out bool settingValueBool))
+            {
+                return settingValueBool;
+            }
+
+            return defaultValue;
+        }
+
+        public static int GetAppSettingInt(string key, int defaultValue = 0)
+        {
+            string settingValue = GetAppSetting(key);
+
+            if (int.TryParse(settingValue, out int settingValueInt))
+            {
+                return settingValueInt;
+            }
+
+            return defaultValue;
+        }
+
+        public static DateTime GetAppSettingDateTime(string key)
+        {
+            string settingValue = GetAppSetting(key);
+
+            if (DateTime.TryParseExact(settingValue, "yyMMddHHmmss", null, DateTimeStyles.AssumeLocal, out DateTime parsedValueShortFormat))
+            {
+                return parsedValueShortFormat;
+            }
+
+            if (DateTime.TryParse(settingValue, out DateTime parsedValueOtherFormat))
+            {
+                return parsedValueOtherFormat;
+            }
+
+            return DateTime.MinValue;
         }
 
         private static IConfiguration GetAppSettings()

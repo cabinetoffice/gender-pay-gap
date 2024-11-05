@@ -247,7 +247,7 @@
                     Model.SectorType == SectorTypes.Private ? personResponsibleSection : null,
                     employeeHeadcountSection,
                     linkToGenderPayGapInformationSection
-                }.Where(s => !s.IsNull()).ToList()
+                }.Where(s => s != null).ToList()
             };
 
             await Html.RenderPartialAsync("../Components/ReportOverview/ReportOverviewSections", reportOverviewSections);

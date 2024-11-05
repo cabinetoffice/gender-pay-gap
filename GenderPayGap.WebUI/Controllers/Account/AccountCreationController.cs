@@ -119,7 +119,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             var user = CreateNewOrUpdateRetiredUser(viewModel, retiredUser);
                 
-            if (retiredUser.IsNull())
+            if (retiredUser == null)
             {
                 dataRepository.Insert(user);
             }
@@ -167,8 +167,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // If user creates a new account with same email address as retired account, reuse the old
             // account to avoid duplicates, add status change details and update all info except created date.
             var user = retiredUser ?? new User();
-            var createdDate = retiredUser.IsNull() ? currentTime : retiredUser.Created;
-            var statusDetails = retiredUser.IsNull() ? null : "Retired user account has been reactivated";
+            var createdDate = retiredUser == null ? currentTime : retiredUser.Created;
+            var statusDetails = retiredUser == null ? null : "Retired user account has been reactivated";
 
             user.Created = createdDate;
             user.Modified = currentTime;
