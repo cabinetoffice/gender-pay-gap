@@ -160,7 +160,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
                 return Path.GetFullPath(uri.LocalPath);
             }
 
-            while (path.StartsWithAny('\\', '/'))
+            while (path.StartsWith('\\') || path.StartsWith('/'))
             {
                 path = path.Substring(1);
             }

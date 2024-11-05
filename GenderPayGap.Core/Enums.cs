@@ -112,6 +112,10 @@ namespace GenderPayGap.Core
         {
             return scopeStatus == ScopeStatuses.InScope || scopeStatus == ScopeStatuses.PresumedInScope;
         }
+        public static bool IsOutOfScopeVariant(this ScopeStatuses scopeStatus)
+        {
+            return scopeStatus == ScopeStatuses.OutOfScope || scopeStatus == ScopeStatuses.PresumedOutOfScope;
+        }
         
         public static bool IsScopePresumed(this ScopeStatuses scopeStatus)
         {

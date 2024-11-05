@@ -80,7 +80,7 @@ namespace GenderPayGap.Database
         public bool IsRequired()
         {
             return OrganisationSize != OrganisationSizes.Employees0To249
-                && GetScopeStatus().IsAny(ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)
+                && GetScopeStatus().IsInScopeVariant()
                 && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(AccountingDate.Year);
         }
 
@@ -103,15 +103,15 @@ namespace GenderPayGap.Database
         {
             return Modified > GetDueDate()
                    && OrganisationSize != OrganisationSizes.Employees0To249
-                   && GetScopeStatus().IsAny(ScopeStatuses.InScope, ScopeStatuses.PresumedInScope)
+                   && GetScopeStatus().IsInScopeVariant()
                    && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(AccountingDate.Year);
         }
 
         public bool IsVoluntarySubmission()
         {
             return ReturnId > 0
-                   && OrganisationSize.IsAny(OrganisationSizes.Employees0To249)
-                   && GetScopeStatus().IsAny(ScopeStatuses.OutOfScope, ScopeStatuses.PresumedOutOfScope);
+                   && OrganisationSize == OrganisationSizes.Employees0To249
+                   && GetScopeStatus().IsOutOfScopeVariant();
         }
 
         public void SetStatus(ReturnStatuses status, long byUserId, string details = null)

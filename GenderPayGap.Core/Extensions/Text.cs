@@ -75,11 +75,6 @@ namespace GenderPayGap.Extensions
             return source.IndexOf(pattern, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        public static bool StartsWithAny(this string source, params char[] chars)
-        {
-            return source.Length > 0 && source[0].IsAny(chars);
-        }
-        
         public static bool StartsWithI(this string original, params string[] texts)
         {
             if (string.IsNullOrWhiteSpace(original))
