@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -29,6 +30,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -76,7 +79,7 @@ namespace GenderPayGap.WebUI
             services.AddControllersWithViews(
                     options =>
                     {
-                        options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
+                        AddStringTrimmingProvider(options); //Add modelstate binder to trim input 
                         options.ModelMetadataDetailsProviders.Add(
                             new TrimModelBinder()); //Set DisplayMetadata to input empty strings as null
                         options.Filters.Add<ErrorHandlingFilter>();
@@ -327,6 +330,19 @@ namespace GenderPayGap.WebUI
                     //     may still be in flight. Shutdown will block until this event completes.
                     CustomLogger.Information("Application Stopping");
                 });
+        }
+
+        private static void AddStringTrimmingProvider(MvcOptions option)
+        {
+            IModelBinderProvider binderToFind =
+                option.ModelBinderProviders.FirstOrDefault(x => x.GetType() == typeof(SimpleTypeModelBinderProvider));
+            if (binderToFind == null)
+            {
+                return;
+            }
+
+            int index = option.ModelBinderProviders.IndexOf(binderToFind);
+            option.ModelBinderProviders.Insert(index, new TrimmingModelBinderProvider());
         }
 
     }

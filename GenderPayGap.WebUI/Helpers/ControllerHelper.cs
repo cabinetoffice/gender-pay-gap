@@ -5,6 +5,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using Microsoft.AspNetCore.Mvc;
@@ -133,7 +134,7 @@ namespace GenderPayGap.WebUI.Helpers
 
         public static long DecryptOrganisationIdOrThrow404(string encryptedOrganisationId)
         {
-            if (!encryptedOrganisationId.DecryptToId(out long organisationId))
+            if (!DecryptToId(encryptedOrganisationId, out long organisationId))
             {
                 throw new PageNotFoundException();
             }
@@ -163,7 +164,7 @@ namespace GenderPayGap.WebUI.Helpers
 
         public static long DecryptUserIdOrThrow404(string encryptedUserId)
         {
-            if (!encryptedUserId.DecryptToId(out long userId))
+            if (!DecryptToId(encryptedUserId, out long userId))
             {
                 throw new PageNotFoundException();
             }
@@ -232,6 +233,33 @@ namespace GenderPayGap.WebUI.Helpers
                     throw new RedirectToPrivacyPolicyException(url);
                 }
             }
+        }
+
+        private static bool DecryptToId(string encryptedId, out long decryptedId)
+        {
+            decryptedId = 0;
+            if (string.IsNullOrWhiteSpace(encryptedId))
+            {
+                return false;
+            }
+
+            long id;
+            try
+            {
+                id = long.Parse(Encryption.DecryptQuerystring(encryptedId));
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            
+            if (id <= 0)
+            {
+                return false;
+            }
+
+            decryptedId = id;
+            return true;
         }
 
     }
