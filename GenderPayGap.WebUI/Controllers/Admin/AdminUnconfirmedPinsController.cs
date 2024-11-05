@@ -4,12 +4,10 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.Controllers.Admin
 {
@@ -61,7 +59,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             if (userOrganisation.PINSentDate.Value.AddDays(Global.PinInPostExpiryDays) < VirtualDateTime.Now)
             {
-                string newPin = Crypto.GeneratePinInThePost();
+                string newPin = PinInThePostService.GeneratePinInThePost();
                 userOrganisation.PIN = newPin;
             }
 

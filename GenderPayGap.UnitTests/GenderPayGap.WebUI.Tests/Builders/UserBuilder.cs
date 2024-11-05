@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 
 namespace GenderPayGap.WebUI.Tests.Builders
@@ -28,7 +29,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
                 UserOrganisations = new List<UserOrganisation>(),
                 HashingAlgorithm = HashingAlgorithm.PBKDF2,
                 Salt = Salt,
-                PasswordHash = Crypto.GetPBKDF2("password", Convert.FromBase64String(Salt)),
+                PasswordHash = PasswordHelper.GetPBKDF2("password", Convert.FromBase64String(Salt)),
                 PasswordResetCode = null
             };
         }
@@ -86,7 +87,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         public UserBuilder WithPassword(string password)
         {
             userInProgress.Salt = Salt;
-            userInProgress.PasswordHash = Crypto.GetPBKDF2(password, Convert.FromBase64String(Salt));
+            userInProgress.PasswordHash = PasswordHelper.GetPBKDF2(password, Convert.FromBase64String(Salt));
             userInProgress.HashingAlgorithm = HashingAlgorithm.PBKDF2; 
             return this; 
         }

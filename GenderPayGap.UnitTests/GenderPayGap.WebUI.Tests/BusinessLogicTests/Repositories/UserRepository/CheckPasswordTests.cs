@@ -2,8 +2,8 @@
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
 using Moq;
 using NUnit.Framework;
@@ -42,7 +42,7 @@ namespace Repositories.UserRepository
             var testPassword = "currentPassword123";
             var salt = "testSalt";
             var testUser = new User {
-                PasswordHash = Crypto.GetPBKDF2(testPassword, Convert.FromBase64String(salt)),
+                PasswordHash = PasswordHelper.GetPBKDF2(testPassword, Convert.FromBase64String(salt)),
                 Salt = salt,
                 HashingAlgorithm = HashingAlgorithm.PBKDF2, LoginAttempts = 3
             };
@@ -66,7 +66,7 @@ namespace Repositories.UserRepository
             var testPassword = "currentPassword123";
             var salt = "testSalt";
             var testUser = new User {
-                PasswordHash = Crypto.GetPBKDF2("WrongPassword123", Convert.FromBase64String(salt)), Salt = salt, HashingAlgorithm = HashingAlgorithm.PBKDF2, LoginAttempts = 0
+                PasswordHash = PasswordHelper.GetPBKDF2("WrongPassword123", Convert.FromBase64String(salt)), Salt = salt, HashingAlgorithm = HashingAlgorithm.PBKDF2, LoginAttempts = 0
             };
             var testAttempts = 3;
 

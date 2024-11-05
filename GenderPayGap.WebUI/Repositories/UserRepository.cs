@@ -1,12 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.Repositories
@@ -169,11 +169,11 @@ namespace GenderPayGap.WebUI.Repositories
             switch (user.HashingAlgorithm)
             {
                 case HashingAlgorithm.SHA512:
-                    return user.PasswordHash == Crypto.GetSHA512Checksum(password);
+                    return user.PasswordHash == PasswordHelper.GetSHA512Checksum(password);
                 case HashingAlgorithm.PBKDF2:
-                    return user.PasswordHash == Crypto.GetPBKDF2(password, Convert.FromBase64String(user.Salt));
+                    return user.PasswordHash == PasswordHelper.GetPBKDF2(password, Convert.FromBase64String(user.Salt));
                 case HashingAlgorithm.PBKDF2AppliedToSHA512:
-                    return user.PasswordHash == Crypto.GetPBKDF2(Crypto.GetSHA512Checksum(password), Convert.FromBase64String(user.Salt));
+                    return user.PasswordHash == PasswordHelper.GetPBKDF2(PasswordHelper.GetSHA512Checksum(password), Convert.FromBase64String(user.Salt));
                 case HashingAlgorithm.Unknown:
                     throw new InvalidOperationException($"Hashing algorithm should not be unknown {user.HashingAlgorithm}");
                 default:
@@ -188,9 +188,9 @@ namespace GenderPayGap.WebUI.Repositories
                 throw new ArgumentNullException(nameof(user));
             }
 
-            byte[] salt = Crypto.GetSalt();
+            byte[] salt = PasswordHelper.GetSalt();
             user.Salt = Convert.ToBase64String(salt);
-            user.PasswordHash = Crypto.GetPBKDF2(password, salt);
+            user.PasswordHash = PasswordHelper.GetPBKDF2(password, salt);
             user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
 
             dataRepository.SaveChanges();

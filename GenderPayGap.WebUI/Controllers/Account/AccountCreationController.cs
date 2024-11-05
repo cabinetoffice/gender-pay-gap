@@ -5,10 +5,9 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
@@ -180,9 +179,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             user.AllowContact = viewModel.AllowContact;
             user.SendUpdates = viewModel.SendUpdates;
 
-            byte[] salt = Crypto.GetSalt();
+            byte[] salt = PasswordHelper.GetSalt();
             user.Salt = Convert.ToBase64String(salt);
-            user.PasswordHash = Crypto.GetPBKDF2(viewModel.Password, salt);
+            user.PasswordHash = PasswordHelper.GetPBKDF2(viewModel.Password, salt);
             user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
 
             user.EmailVerifySendDate = null;
