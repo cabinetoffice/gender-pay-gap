@@ -1,75 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
-namespace GenderPayGap.Extensions
+namespace GenderPayGap.WebUI.Helpers
 {
-    public static class EventLog
+    public static class ExceptionDetailsHelper
     {
 
-        public const string LogName = "GenderPayGap";
-
-        private static Assembly _TopAssembly;
-        public static string LogSource;
-
-        static EventLog()
-        {
-            LogSource = TopAssembly.GetName().Name;
-        }
-
-        public static Assembly TopAssembly
-        {
-            get
-            {
-                if (_TopAssembly == null)
-                {
-                    if (Assembly.GetEntryAssembly() != null)
-                    {
-                        _TopAssembly = Assembly.GetEntryAssembly();
-                    }
-                    //else if (HttpContext.Current != null && HttpContext.Current.ApplicationInstance != null)
-                    //{
-                    //    _TopAssembly = HttpContext.Current.ApplicationInstance.GetType().Assembly;
-                    //}
-                    else
-                    {
-                        var stackTrace = new StackTrace(); // get call stack
-                        StackFrame[] stackFrames = stackTrace.GetFrames();
-
-                        // write call stack method names
-                        for (int i = stackFrames.Length - 1; i > -1; i--)
-                        {
-                            _TopAssembly = stackFrames[i].GetMethod().ReflectedType.Assembly;
-                            if (_TopAssembly.GetName() != null && _TopAssembly.GetName().Name.Contains(LogName))
-                            {
-                                break;
-                            }
-
-                            try
-                            {
-                                if (((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
-                                    _TopAssembly,
-                                    typeof(AssemblyCompanyAttribute),
-                                    false)).Company.Contains(LogName))
-                                {
-                                    break;
-                                }
-                            }
-                            catch { }
-                        }
-                    }
-                }
-
-                return _TopAssembly;
-            }
-        }
+        private const string LogName = "GenderPayGap";
 
 
-        public static string GetDetailsText(this Exception ex)
+        public static string GetDetailsText(Exception ex)
         {
             return JsonConvert.SerializeObject(ex.GetDetails(), Formatting.Indented);
         }
@@ -119,7 +62,7 @@ namespace GenderPayGap.Extensions
         /// </summary>
         /// <param name="exception">Exception object.</param>
         /// <param name="environmentStackTrace">Environment stack trace, for pulling additional stack frames.</param>
-        public static string FullStackTrace(this Exception exception)
+        private static string FullStackTrace(this Exception exception)
         {
             List<string> environmentStackTraceLines = GetUserStackTraceLines(Environment.StackTrace);
             if (environmentStackTraceLines.Count > 0)
@@ -166,7 +109,7 @@ namespace GenderPayGap.Extensions
             return outputList;
         }
 
-        public class ErrorDetails
+        private class ErrorDetails
         {
 
             public string Message { get; set; }

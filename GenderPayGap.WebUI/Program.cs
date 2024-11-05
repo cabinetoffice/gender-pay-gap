@@ -45,8 +45,8 @@ namespace GenderPayGap.WebUI
         {
             var ex = e.ExceptionObject as Exception;
 
-            Console.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ex.GetDetailsText()}");
-            Debug.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ex.GetDetailsText()}");
+            Console.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ExceptionDetailsHelper.GetDetailsText(ex)}");
+            Debug.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ExceptionDetailsHelper.GetDetailsText(ex)}");
 
             //Show thread availability
             Console.WriteLine(ThreadCountHelper.GetThreadCount());
