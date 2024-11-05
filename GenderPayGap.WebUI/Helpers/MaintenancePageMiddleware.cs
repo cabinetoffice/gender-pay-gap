@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
@@ -27,7 +28,7 @@ namespace GenderPayGap.WebUI.Helpers
             }
 
             // Redirect to holding page if in maintenance mode
-            if (_enabled && !httpContext.Request.Path.Value.StartsWithI(@"/error/service-unavailable"))
+            if (_enabled && !httpContext.Request.Path.Value.StartsWith(@"/error/service-unavailable", StringComparison.InvariantCultureIgnoreCase))
             {
                 httpContext.Response.Redirect(@"/error/service-unavailable", permanent: false);
             }

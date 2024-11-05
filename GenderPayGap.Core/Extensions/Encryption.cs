@@ -480,12 +480,12 @@ namespace GenderPayGap.Extensions
                 data = Decrypt(data.Substring(3, data.Length - 6), true, passwords);
             }
 
-            if (data.StartsWithI("##mkPrivatePassword:"))
+            if (data.StartsWith("##mkPrivatePassword:", StringComparison.InvariantCultureIgnoreCase))
             {
                 return true;
             }
 
-            if (data.StartsWithI("mkRecipientPassword:"))
+            if (data.StartsWith("mkRecipientPassword:", StringComparison.InvariantCultureIgnoreCase))
             {
                 return true;
             }
@@ -645,6 +645,30 @@ namespace GenderPayGap.Extensions
             var result = new T[length];
             Buffer.BlockCopy(data, index, result, 0, length);
             return result;
+        }
+
+        private static string EncodeUrlBase64(this string base64String)
+        {
+            if (!string.IsNullOrWhiteSpace(base64String))
+            {
+                base64String = base64String.Replace('+', '-');
+                base64String = base64String.Replace('/', '_');
+                base64String = base64String.Replace('=', '!');
+            }
+
+            return base64String;
+        }
+
+        private static string DecodeUrlBase64(this string base64String)
+        {
+            if (!string.IsNullOrWhiteSpace(base64String))
+            {
+                base64String = base64String.Replace('-', '+');
+                base64String = base64String.Replace('_', '/');
+                base64String = base64String.Replace('!', '=');
+            }
+
+            return base64String;
         }
 
     }

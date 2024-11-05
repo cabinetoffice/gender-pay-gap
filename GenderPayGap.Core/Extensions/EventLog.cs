@@ -44,7 +44,7 @@ namespace GenderPayGap.Extensions
                         for (int i = stackFrames.Length - 1; i > -1; i--)
                         {
                             _TopAssembly = stackFrames[i].GetMethod().ReflectedType.Assembly;
-                            if (_TopAssembly.GetName() != null && _TopAssembly.GetName().Name.ContainsI(LogName))
+                            if (_TopAssembly.GetName() != null && _TopAssembly.GetName().Name.Contains(LogName))
                             {
                                 break;
                             }
@@ -54,7 +54,7 @@ namespace GenderPayGap.Extensions
                                 if (((AssemblyCompanyAttribute) Attribute.GetCustomAttribute(
                                     _TopAssembly,
                                     typeof(AssemblyCompanyAttribute),
-                                    false)).Company.ContainsI(LogName))
+                                    false)).Company.Contains(LogName))
                                 {
                                     break;
                                 }

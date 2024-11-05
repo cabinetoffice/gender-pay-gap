@@ -73,7 +73,7 @@ namespace GenderPayGap.Database
         }
 
         [NotMapped]
-        public string Fullname => (Firstname + " " + Lastname).TrimI();
+        public string Fullname => (Firstname + " " + Lastname).Trim();
 
         public bool IsFullAdministrator()
         {

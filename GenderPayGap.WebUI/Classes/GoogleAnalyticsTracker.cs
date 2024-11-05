@@ -126,7 +126,7 @@ namespace GenderPayGap.WebUI.Classes
         {
             try
             {
-                if (!url.StartsWithI("http:") && !url.StartsWithI("https:") && !url.StartsWithI("file:"))
+                if (!url.StartsWith("http:") && !url.StartsWith("https:") && !url.StartsWith("file:"))
                 {
                     return false;
                 }
@@ -147,7 +147,7 @@ namespace GenderPayGap.WebUI.Classes
                 throw new ArgumentNullException(nameof(baseUrl));
             }
 
-            if (relativeUrl.StartsWithI("http://", "https://"))
+            if (relativeUrl.StartsWith("http://") || relativeUrl.StartsWith("https://"))
             {
                 return relativeUrl;
             }

@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.Repositories
                 throw new ArgumentNullException(nameof(userToUpdate));
             }
 
-            if (newEmailAddress.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(newEmailAddress))
             {
                 throw new ArgumentNullException(nameof(newEmailAddress));
             }
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Repositories
                 throw new ArgumentNullException(nameof(userToUpdate));
             }
 
-            if (newPassword.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(newPassword))
             {
                 throw new ArgumentNullException(nameof(newPassword));
             }

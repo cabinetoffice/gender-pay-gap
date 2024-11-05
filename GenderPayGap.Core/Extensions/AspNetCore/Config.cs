@@ -105,7 +105,7 @@ namespace GenderPayGap.Extensions.AspNetCore
         {
             foreach (string environmentName in environmentNames)
             {
-                if (EnvironmentName.EqualsI(environmentName))
+                if (EnvironmentName.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return true;
                 }
