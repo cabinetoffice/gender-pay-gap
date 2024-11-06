@@ -57,8 +57,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
             int reportingYear,
             string confirmationId)
         {
-            string returnIdString = Encryption.DecryptQuerystring(confirmationId);
-            long returnId = long.Parse(returnIdString);
+            long returnId = Encryption.DecryptId(confirmationId);
 
             var foundReturn = dataRepository.Get<Return>(returnId);
 

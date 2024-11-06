@@ -4,7 +4,7 @@
 @model UserOrganisation
 @{
     UserOrganisation userOrg = Model;
-    string encryptedOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
+    string encryptedOrgId = Encryption.EncryptId(userOrg.OrganisationId);
 
     if (userOrg.PINConfirmedDate.HasValue)
     {

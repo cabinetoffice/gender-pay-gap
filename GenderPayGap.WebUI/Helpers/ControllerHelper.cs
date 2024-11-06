@@ -245,7 +245,7 @@ namespace GenderPayGap.WebUI.Helpers
             long id;
             try
             {
-                id = long.Parse(Encryption.DecryptQuerystring(encryptedId));
+                id = Encryption.DecryptId(encryptedId);
             }
             catch (Exception e)
             {

@@ -6,7 +6,7 @@
 
 @{
     ViewBag.Title = "Scope declared - Gender pay gap reporting service";
-    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string encryptedOrganisationId = Encryption.EncryptId(Model.Organisation.OrganisationId);
     string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
 }
 

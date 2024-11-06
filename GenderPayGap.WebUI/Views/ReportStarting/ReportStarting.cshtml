@@ -6,7 +6,7 @@
 @{
     ViewBag.Title = $"Report gender pay gap data - reporting year {Model.ReportingYear}  - Gender pay gap service"; 
     
-    var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    var encryptedOrganisationId = Encryption.EncryptId(Model.Organisation.OrganisationId);
     string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
 }
 

@@ -118,6 +118,10 @@ variable "ELB_DEFAULT_ENCRYPTION_KEY" {
   type = string
 }
 
+variable "ELB_DEFAULT_ENCRYPTION_IV" {
+  type = string
+}
+
 variable "ELB_DISABLE_SEARCH_CACHE" {
   type = string
 }

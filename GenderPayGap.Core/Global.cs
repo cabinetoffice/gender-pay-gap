@@ -29,6 +29,7 @@ namespace GenderPayGap.Core
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
         public static string DefaultEncryptionKey => Config.GetAppSetting("DefaultEncryptionKey");
+        public static string DefaultEncryptionIv => Config.GetAppSetting("DefaultEncryptionIv");
         public static string DataMigrationPassword => Config.GetAppSetting("DataMigrationPassword");
         public static string BasicAuthUsername => Config.GetAppSetting("BasicAuthUsername");
         public static string BasicAuthPassword => Config.GetAppSetting("BasicAuthPassword");

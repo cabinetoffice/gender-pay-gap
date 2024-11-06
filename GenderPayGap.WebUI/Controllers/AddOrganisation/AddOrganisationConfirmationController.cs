@@ -38,7 +38,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             try
             {
-                string userIdAndOrganisationId = Encryption.DecryptQuerystring(confirmationId);
+                string userIdAndOrganisationId = Encryption.DecryptString(confirmationId);
                 long userId = long.Parse(userIdAndOrganisationId.Split(":")[0]);
                 long organisationId = long.Parse(userIdAndOrganisationId.Split(":")[1]);
 

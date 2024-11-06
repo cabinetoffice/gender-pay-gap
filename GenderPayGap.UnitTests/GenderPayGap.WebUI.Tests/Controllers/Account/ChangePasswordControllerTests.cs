@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GenderPayGap.Core;
@@ -14,7 +13,6 @@ using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using NUnit.Framework;
 

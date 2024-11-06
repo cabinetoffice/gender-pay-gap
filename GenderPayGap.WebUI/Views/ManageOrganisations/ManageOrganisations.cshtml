@@ -39,7 +39,7 @@
             <tbody class="govuk-table__body">
                 @foreach (UserOrganisation userOrganisation in Model.UserOrganisations)
                 {
-                    string encryptedOrganisationId = Encryption.EncryptQuerystring(userOrganisation.OrganisationId.ToString());
+                    string encryptedOrganisationId = Encryption.EncryptId(userOrganisation.OrganisationId);
 
                     <tr class="govuk-table__row">
                         @if (userOrganisation.IsAwaitingActivationPIN())
