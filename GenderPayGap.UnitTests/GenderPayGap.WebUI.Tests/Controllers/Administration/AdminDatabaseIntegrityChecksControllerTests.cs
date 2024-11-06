@@ -85,6 +85,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
         [SetUp]
         public void BeforeEach()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
+            
             organisation = CreateOrganisation();
             user = CreateUser();
             userOrganisation = CreateUserOrganisation(organisation, user.UserId);

@@ -49,6 +49,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             };
         }
 
+        [SetUp]
+        public void BeforeEach()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
+
         [Test]
         [Description("AdminUnconfirmedPinsController POST: When PIN has expired create new PIN and send email")]
         public void AdminUnconfirmedPinsController_POST_When_PIN_has_expired_create_new_PIN_and_send_email()

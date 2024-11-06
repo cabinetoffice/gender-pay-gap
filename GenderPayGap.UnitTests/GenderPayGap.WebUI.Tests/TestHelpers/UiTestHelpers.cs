@@ -9,6 +9,7 @@ using Autofac;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
@@ -354,5 +355,10 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             return callingMethod;
         }
 
+        public static void SetDefaultEncryptionKeys()
+        {
+            Encryption.SetDefaultEncryptionKey("BA9138B8C0724F168A05482456802405", "45fc394a7f5b29f660bfdf3313224dac");
+        }
+        
     }
 }

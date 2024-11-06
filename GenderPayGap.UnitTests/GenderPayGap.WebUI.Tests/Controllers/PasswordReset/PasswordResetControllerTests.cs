@@ -10,6 +10,7 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
@@ -18,6 +19,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
     [SetCulture("en-GB")]
     public class PasswordResetControllerTests
     {
+
+        [SetUp]
+        public void BeforeEach()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
 
         [Test]
         [Description("POST: Password reset email is sent when valid email address is provided")]

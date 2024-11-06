@@ -7,6 +7,7 @@ using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 
@@ -16,6 +17,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
     [SetCulture("en-GB")]
     public class AccountCreationTests
     {
+
+        [SetUp]
+        public void SetUp()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
         
         [Test]
         [Description("POST: Verification email is sent after creating a user account")]

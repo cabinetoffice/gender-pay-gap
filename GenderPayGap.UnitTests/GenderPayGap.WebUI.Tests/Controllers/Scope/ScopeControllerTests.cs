@@ -4,6 +4,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Scope
@@ -12,6 +13,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
     [SetCulture("en-GB")]
     public class ScopeControllerTests
     {
+
+        [SetUp]
+        public void BeforeEach()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
 
         [Test]
         [Description("POST: Existing scopes are retired when a new scope is added")]

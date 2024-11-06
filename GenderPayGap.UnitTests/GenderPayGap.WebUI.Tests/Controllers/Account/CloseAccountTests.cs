@@ -7,6 +7,7 @@ using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Account
@@ -19,6 +20,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         [SetUp]
         public void Setup()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
             VirtualDateTime.Initialise(Config.OffsetCurrentDateTimeForSite());
         }
 
