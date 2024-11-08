@@ -7,15 +7,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningsAsErrors>NU1605;CS4014;LindhartAnalyserMissingAwaitWarning</WarningsAsErrors>
+    <WarningsAsErrors>NU1605;CS4014</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.2.0" />
-
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.6" />
