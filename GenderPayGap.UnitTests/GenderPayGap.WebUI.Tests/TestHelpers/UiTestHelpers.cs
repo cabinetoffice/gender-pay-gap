@@ -47,16 +47,12 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
     public static class UiTestHelper
     {
 
-        private const string Url = "https://localhost/";
-        public static IContainer DIContainer;
         public static Mock<IBackgroundJobsApi> MockBackgroundJobsApi;
-
-        public static Uri Uri => new Uri(Url, UriKind.Absolute);
 
         public static T GetController<T>(long userId = 0, RouteData routeData = null, params object[] dbObjects)
             where T : Controller
         {
-            DIContainer = BuildContainerIoC(dbObjects);
+            IContainer DIContainer = BuildContainerIoC(dbObjects);
 
             //Create Inversion of Control container
             Startup.ContainerIoC = DIContainer;
@@ -140,7 +136,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             responseMock.SetupGet(x => x.Cookies).Returns(responseCookies.Object);
 
             //Mock session
-            var uri = new UriBuilder(Uri);
+            var uri = new UriBuilder(new Uri("https://localhost/", UriKind.Absolute));
 
             //Mock HttpContext
             var httpContextMock = new Mock<HttpContext>();
