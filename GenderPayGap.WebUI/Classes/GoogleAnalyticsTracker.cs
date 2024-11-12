@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
 using Polly.Extensions.Http;
@@ -61,11 +62,11 @@ namespace GenderPayGap.WebUI.Classes
 
             if (string.IsNullOrWhiteSpace(pageUrl))
             {
-                pageUrl = $"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}";
+                pageUrl = controller.HttpContext.Request.GetDisplayUrl();
             }
             else if (!IsUrl(pageUrl))
             {
-                pageUrl = RelativeToAbsoluteUrl(pageUrl, new Uri($"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}"));
+                pageUrl = RelativeToAbsoluteUrl(pageUrl, new Uri(controller.HttpContext.Request.GetDisplayUrl()));
             }
 
             SendPageViewTracking(pageTitle, pageUrl);
