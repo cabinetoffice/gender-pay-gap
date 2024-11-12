@@ -11,7 +11,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
@@ -192,7 +191,7 @@ namespace GenderPayGap.WebUI
             }
 
             // BL Services
-            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<UserRepository>().As<UserRepository>().InstancePerLifetimeScope();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().InstancePerLifetimeScope();
             builder.RegisterType<OrganisationService>().As<OrganisationService>().InstancePerLifetimeScope();
             builder.RegisterType<ReturnService>().As<ReturnService>().InstancePerLifetimeScope();

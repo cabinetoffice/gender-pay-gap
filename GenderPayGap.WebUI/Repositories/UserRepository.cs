@@ -5,13 +5,12 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository
     {
         private readonly IDataRepository dataRepository;
         private readonly AuditLogger auditLogger;

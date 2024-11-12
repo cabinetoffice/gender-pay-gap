@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,7 +14,6 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BackgroundJobs;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
@@ -191,7 +190,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             //Create the mock repositories
             // BL Repository
             builder.Register(c => new SystemFileRepository()).As<IFileRepository>().SingleInstance();
-            builder.RegisterType<UserRepository>().As<IUserRepository>().SingleInstance();
+            builder.RegisterType<UserRepository>().As<UserRepository>().SingleInstance();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().SingleInstance();
             builder.RegisterType<OrganisationService>().As<OrganisationService>().InstancePerLifetimeScope();
             builder.RegisterType<ReturnService>().As<ReturnService>().InstancePerLifetimeScope();

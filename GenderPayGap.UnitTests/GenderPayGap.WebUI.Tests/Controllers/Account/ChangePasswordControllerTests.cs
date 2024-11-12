@@ -6,10 +6,10 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
+using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -26,7 +26,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
     {
         
         private Mock<IDataRepository> mockDataRepo;
-        private IUserRepository mockUserRepo;
+        private UserRepository mockUserRepo;
 
         [SetUp]
         public void BeforeEach()

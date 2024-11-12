@@ -2,8 +2,8 @@
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using Moq;
 using NUnit.Framework;
@@ -32,7 +32,7 @@ namespace Repositories.UserRepository
         }
 
         private Mock<IDataRepository> mockDataRepo;
-        private IUserRepository testUserRepo;
+        private GenderPayGap.WebUI.Repositories.UserRepository testUserRepo;
 
         [Test]
         public void CorrectPasswordShouldResetLoginAttempts()

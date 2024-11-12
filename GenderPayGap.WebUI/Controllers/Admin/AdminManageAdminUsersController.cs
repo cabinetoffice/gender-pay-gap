@@ -3,10 +3,10 @@ using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +19,12 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly IUserRepository userRepository;
+        private readonly UserRepository userRepository;
         private readonly AuditLogger auditLogger;
 
         public AdminManageAdminUsersController(
             IDataRepository dataRepository,
-            IUserRepository userRepository,
+            UserRepository userRepository,
             AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;
