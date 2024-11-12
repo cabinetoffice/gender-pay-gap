@@ -63,7 +63,7 @@ namespace GenderPayGap.WebUI
                 });
 
             //Add a dedicated httpclient for Google Analytics tracking with exponential retry policy
-            services.AddHttpClient<IWebTracker, GoogleAnalyticsTracker>(nameof(IWebTracker), GoogleAnalyticsTracker.SetupHttpClient)
+            services.AddHttpClient<GoogleAnalyticsTracker, GoogleAnalyticsTracker>(nameof(GoogleAnalyticsTracker), GoogleAnalyticsTracker.SetupHttpClient)
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(GoogleAnalyticsTracker.GetRetryPolicy());
 
@@ -228,11 +228,11 @@ namespace GenderPayGap.WebUI
 
             //Register WebTracker
             builder.RegisterType<GoogleAnalyticsTracker>()
-                .As<IWebTracker>()
+                .As<GoogleAnalyticsTracker>()
                 .SingleInstance()
                 .WithParameter(
                     (p, ctx) => p.ParameterType == typeof(HttpClient),
-                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(IWebTracker)))
+                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(GoogleAnalyticsTracker)))
                 .WithParameter("trackingId", Global.GoogleAnalyticsAccountId);
 
             //TOD: Implement AutoFac modules

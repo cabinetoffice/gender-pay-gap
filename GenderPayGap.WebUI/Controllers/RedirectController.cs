@@ -17,10 +17,10 @@ namespace GenderPayGap.WebUI.Controllers
         // This class contains redirects for outdated URLs
         // Some of these URLs might appear in emails / printed letters, so we want to redirect to an appropriate page, rather than showing a 404
 
-        private readonly IWebTracker webTracker;
+        private readonly GoogleAnalyticsTracker webTracker;
         private readonly IDataRepository dataRepository;
 
-        public RedirectController(IWebTracker webTracker, IDataRepository dataRepository)
+        public RedirectController(GoogleAnalyticsTracker webTracker, IDataRepository dataRepository)
         {
             this.webTracker = webTracker;
             this.dataRepository = dataRepository;

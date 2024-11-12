@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +11,11 @@ using Polly.Extensions.Http;
 
 namespace GenderPayGap.WebUI.Classes
 {
-    public interface IWebTracker
-    {
-        void TrackPageView(Controller controller, string pageTitle = null, string pageUrl = null);
-    }
-
-
     /// <summary>
     ///     Uses open HttpClient see
     ///     https://www.codeproject.com/Articles/1194406/Using-HttpClient-as-it-was-intended-because-you-re
     /// </summary>
-    public class GoogleAnalyticsTracker : IWebTracker, IDisposable
+    public class GoogleAnalyticsTracker : IDisposable
     {
 
         public static Uri BaseUri = new Uri("https://www.google-analytics.com");
@@ -28,14 +23,12 @@ namespace GenderPayGap.WebUI.Classes
 
         private readonly HttpClient _httpClient;
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string googleTrackingId; // UA-XXXXXXXXX-XX
 
         private readonly string googleVersion = "1";
 
-        public GoogleAnalyticsTracker(IHttpContextAccessor httpContextAccessor, HttpClient httpClient, string trackingId)
+        public GoogleAnalyticsTracker(HttpClient httpClient, string trackingId)
         {
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             _httpClient = httpClient;
             googleTrackingId = trackingId;
         }
@@ -46,8 +39,7 @@ namespace GenderPayGap.WebUI.Classes
         {
             _httpClient?.Dispose();
         }
-
-
+        
         public void TrackPageView(Controller controller, string pageTitle = null, string pageUrl = null)
         {
             if (string.IsNullOrWhiteSpace(pageTitle))
@@ -71,10 +63,14 @@ namespace GenderPayGap.WebUI.Classes
 
             SendPageViewTracking(pageTitle, pageUrl);
         }
-
-
+        
         private async void SendPageViewTracking(string title, string url)
         {
+            if (googleTrackingId == null)
+            {
+                return;
+            }
+            
             if (string.IsNullOrWhiteSpace(title))
             {
                 throw new ArgumentNullException(nameof(title));

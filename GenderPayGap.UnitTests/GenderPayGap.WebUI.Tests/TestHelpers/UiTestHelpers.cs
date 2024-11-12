@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -214,7 +214,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             
 
             //Register WebTracker
-            builder.Register(c => Mock.Of<IWebTracker>()).As<IWebTracker>().InstancePerLifetimeScope();
+            builder.RegisterType<GoogleAnalyticsTracker>().As<GoogleAnalyticsTracker>().InstancePerLifetimeScope();
 
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
             builder.RegisterType<ErrorController>().InstancePerLifetimeScope();
