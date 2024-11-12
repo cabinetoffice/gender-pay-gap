@@ -8,7 +8,16 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace GenderPayGap.Database
 {
-    public partial class GpgDatabaseContext : IDbContext
+    public interface IDbContext : IDisposable
+    {
+
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
+        void SaveChanges();
+        DatabaseFacade GetDatabase();
+
+    }
+    
+    public partial class GpgDatabaseContext : DbContext, IDbContext
     {
         
         public static string ConnectionString = @"Server=127.0.0.1;Port=5432;Database=GpgDatabase;User Id=gpg_user;Password=local_gpg_database;";
