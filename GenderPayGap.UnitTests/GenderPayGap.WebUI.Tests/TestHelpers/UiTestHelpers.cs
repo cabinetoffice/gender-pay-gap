@@ -212,7 +212,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
 
-            builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
+            builder.RegisterType<CompareViewService>().As<CompareViewService>().InstancePerLifetimeScope();
             
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
