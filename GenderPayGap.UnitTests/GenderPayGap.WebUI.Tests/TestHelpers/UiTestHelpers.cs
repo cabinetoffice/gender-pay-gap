@@ -200,13 +200,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterInstance(Config.Configuration);
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
 
-            builder.Register(
-                    c => c.ResolveAsMock<ScopeBusinessLogic>(
-                            false,
-                            typeof(IDataRepository))
-                        .Object)
-                .As<IScopeBusinessLogic>()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<ScopeBusinessLogic>().As<ScopeBusinessLogic>().SingleInstance();
 
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
 
