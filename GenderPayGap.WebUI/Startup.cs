@@ -68,7 +68,7 @@ namespace GenderPayGap.WebUI
                 .AddPolicyHandler(GoogleAnalyticsTracker.GetRetryPolicy());
 
             //Add a dedicated httpclient for Companies house API with exponential retry policy
-            services.AddHttpClient<ICompaniesHouseAPI, CompaniesHouseAPI>(nameof(ICompaniesHouseAPI), CompaniesHouseAPI.SetupHttpClient)
+            services.AddHttpClient<CompaniesHouseAPI, CompaniesHouseAPI>(nameof(CompaniesHouseAPI), CompaniesHouseAPI.SetupHttpClient)
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(CompaniesHouseAPI.GetRetryPolicy());
 
@@ -167,11 +167,11 @@ namespace GenderPayGap.WebUI
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<CompaniesHouseAPI>()
-                .As<ICompaniesHouseAPI>()
+                .As<CompaniesHouseAPI>()
                 .SingleInstance()
                 .WithParameter(
                     (p, ctx) => p.ParameterType == typeof(HttpClient),
-                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(ICompaniesHouseAPI)));
+                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(CompaniesHouseAPI)));
 
             if (!Config.IsLocal())
             {

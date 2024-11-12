@@ -20,12 +20,12 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     public class AdminOrganisationSicCodesController : Controller
     {
         private readonly IDataRepository dataRepository;
-        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly CompaniesHouseAPI companiesHouseApi;
         private readonly AuditLogger auditLogger;
 
         public AdminOrganisationSicCodesController(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi,
+            CompaniesHouseAPI companiesHouseApi,
             AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;

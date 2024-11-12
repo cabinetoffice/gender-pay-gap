@@ -22,11 +22,11 @@ namespace GenderPayGap.WebUI.Services
 
         private readonly AuditLogger auditLogger;
         private readonly IDataRepository dataRepository;
-        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly CompaniesHouseAPI companiesHouseApi;
 
         public OrganisationService(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi,
+            CompaniesHouseAPI companiesHouseApi,
             AuditLogger auditLogger)
         {
             this.dataRepository = dataRepository;

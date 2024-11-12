@@ -22,13 +22,13 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly CompaniesHouseAPI companiesHouseApi;
         private readonly OrganisationService organisationService;
         private readonly RegistrationRepository registrationRepository;
 
         public AddOrganisationFoundController(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi,
+            CompaniesHouseAPI companiesHouseApi,
             OrganisationService organisationService,
             RegistrationRepository registrationRepository)
         {
