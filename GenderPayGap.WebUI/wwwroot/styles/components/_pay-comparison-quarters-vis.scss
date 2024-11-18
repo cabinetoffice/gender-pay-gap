@@ -12,25 +12,6 @@ $pay-comparison-quarters-vis--women-color: #28a197;
         height: 60px;
     }
     
-    .pay-comparison-quarters-vis-face--face-feature {
-        fill: none;
-        stroke: none;
-    }
-    #pay-comparison-quarters-show-faces-container:has(input[type=checkbox]#pay-comparison-quarters-show-faces-checkbox:checked) ~ * .pay-comparison-quarters-vis-face--face-feature {
-        fill: white;
-        stroke: white;
-    }
-    
-    .pay-comparison-quarters-vis-face--rectangle-outline {
-        display: none;
-    }
-    #pay-comparison-quarters-show-rectangles-container:has(input[type=checkbox]#pay-comparison-quarters-show-rectangles-checkbox:checked) ~ * .pay-comparison-quarters-vis-face--rectangle-outline {
-        display: block;
-    }
-    #pay-comparison-quarters-show-rectangles-container:has(input[type=checkbox]#pay-comparison-quarters-show-rectangles-checkbox:checked) ~ * .pay-comparison-quarters-vis-face--face-outline {
-        display: none;
-    }
-    
     .pay-comparison-quarters-vis-quarter-explanation {
         text-align: center;
         font-size: 16px;
@@ -101,7 +82,7 @@ $pay-comparison-quarters-vis--women-color: #28a197;
         &.pay-comparison-quarters-vis-quarter--bottom-border {
             border-bottom-width: 2px;
             border-bottom-style: solid;
-            border-bottom-color: #ddd;
+            border-bottom-color: govuk-colour("mid-grey");
         }
         
         .pay-comparison-quarters-vis-quarter-side {
@@ -173,15 +154,7 @@ $pay-comparison-quarters-vis--women-color: #28a197;
             fill: $pay-comparison-quarters-vis--men-color;
             stroke: $pay-comparison-quarters-vis--men-color;
         }
-        &.pay-comparison-quarters-vis-face--man .pay-comparison-quarters-vis-face--rectangle-outline {
-            fill: $pay-comparison-quarters-vis--men-color;
-            stroke: $pay-comparison-quarters-vis--men-color;
-        }
         &.pay-comparison-quarters-vis-face--woman .pay-comparison-quarters-vis-face--face-outline {
-            fill: $pay-comparison-quarters-vis--women-color;
-            stroke: $pay-comparison-quarters-vis--women-color;
-        }
-        &.pay-comparison-quarters-vis-face--woman .pay-comparison-quarters-vis-face--rectangle-outline {
             fill: $pay-comparison-quarters-vis--women-color;
             stroke: $pay-comparison-quarters-vis--women-color;
         }
@@ -190,8 +163,7 @@ $pay-comparison-quarters-vis--women-color: #28a197;
     .pay-comparison-quarters-vis-caption {
         margin-top: 10px;
 
-        .pay-comparison-quarters-vis-face .pay-comparison-quarters-vis-face--face-outline,
-        .pay-comparison-quarters-vis-face .pay-comparison-quarters-vis-face--rectangle-outline {
+        .pay-comparison-quarters-vis-face .pay-comparison-quarters-vis-face--face-outline {
             fill: govuk-colour("black");
             stroke: govuk-colour("black");
         }
