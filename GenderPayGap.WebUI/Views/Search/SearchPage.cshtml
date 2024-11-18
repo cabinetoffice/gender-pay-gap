@@ -365,10 +365,11 @@
             updateSelectedCount('Sector', 'gpg-search-page--filters--sector--selected');
             updateSelectedCount('ReportedLateYear', 'gpg-search-page--filters--reported-late-years--selected');
             
-            updateOrderByVisibility(document.getElementById('EmployerName').value);
+            updateOrderByRadiosVisibility(document.getElementById('EmployerName').value);
             
             const urlQuery = getPageUrlQuery();
             setPageUrl(urlQuery);
+            hideCurrentSearchResults();
             loadSearchResults(urlQuery);
         }
         
@@ -414,9 +415,7 @@
             window.history.replaceState(null, '', newUrl);
         }
         
-        async function loadSearchResults(urlQuery) {
-            hideCurrentSearchResults();
-            
+        async function loadSearchResults(urlQuery, page = 0) {
             const searchApiPath = '@(Url.Action("SearchApi", "Search"))';
             const searchResultsId = searchResultsIdGenerator.getNextId();
             
@@ -424,17 +423,18 @@
                 const MIN_LOADING_DELAY_MILLISECONDS = 400;
                 const fetchStartTime = Date.now();
                 
-                const response = await fetch(`${searchApiPath}${urlQuery}`, { signal: aborter.abortPreviousFetchesAndGetNewAbortSignal() });
+                const urlQueryIncludingPage = urlQuery ? `${urlQuery}&Page=${page}` : `${urlQuery}?Page=${page}`;
+                const response = await fetch(`${searchApiPath}${urlQueryIncludingPage}`, { signal: aborter.abortPreviousFetchesAndGetNewAbortSignal() });
                 if (response.ok) {
                     const json = await response.json();
                     if (searchResultsIdGenerator.isCurrentId(searchResultsId)) {
                         const fetchEndTime = Date.now();
                         const fetchTimeTaken = fetchEndTime - fetchStartTime;
-                        if (fetchTimeTaken > MIN_LOADING_DELAY_MILLISECONDS) {
-                            displaySearchResults(json);
+                        if (page > 0 || fetchTimeTaken > MIN_LOADING_DELAY_MILLISECONDS) {
+                            displaySearchResults(json, urlQuery);
                         }
                         else {
-                            window.setTimeout(() => displaySearchResults(json), MIN_LOADING_DELAY_MILLISECONDS - fetchTimeTaken);
+                            window.setTimeout(() => displaySearchResults(json, urlQuery), MIN_LOADING_DELAY_MILLISECONDS - fetchTimeTaken);
                         }
                     }
                 }
@@ -448,52 +448,51 @@
         
         function hideCurrentSearchResults() {
             document.getElementById('gpg-search-page--loading').style.display = 'block';
-            // document.getElementById('gpg-search-page--order-by').style.display = 'none';
             document.getElementById('gpg-search-page--results-info').style.display = 'none';
             document.getElementById('gpg-search-page--results-info--no-results').style.display = 'none';
             document.getElementById('gpg-search-page--results').style.display = 'none';
         }
         
-        function displaySearchResults(json) {
-            document.getElementById('gpg-search-page--loading').style.display = 'none';
+        function displaySearchResults(json, urlQuery) {
+            if (json.SearchParameters.Page === 0) {
+                document.getElementById('gpg-search-page--loading').style.display = 'none';
+                
+                updateOrderByRadiosVisibility(json.SearchParameters.EmployerName);
+                
+                document.getElementById('gpg-search-page--results-info--number-of-results').innerText = json.NumberOfEmployers.toLocaleString();
+                document.getElementById('gpg-search-page--results-info--employer-employers').innerText = json.NumberOfEmployers === 1 ? 'employer' : 'employers';
+                document.getElementById('gpg-search-page--results-info--containing-search-term').innerText = json.SearchParameters.EmployerName;
+                document.getElementById('gpg-search-page--results-info--containing').style.display = json.SearchParameters.EmployerName ? 'inline' : 'none';
+                document.getElementById('gpg-search-page--results-info').style.display = 'block';
+                
+                document.getElementById('gpg-search-page--results-info--no-results').style.display = json.NumberOfEmployers > 0 ? 'none' : 'block';
+                
+                document.getElementById('gpg-search-page--results').style.display = 'block';
+                document.getElementById('gpg-search-page--results').innerHTML = '';
+            }
             
-            updateOrderByVisibility(json.SearchParameters.EmployerName);
-            
-            document.getElementById('gpg-search-page--results-info--number-of-results').innerText = json.Employers.length.toLocaleString();
-            document.getElementById('gpg-search-page--results-info--employer-employers').innerText = json.Employers.length === 1 ? 'employer' : 'employers';
-            document.getElementById('gpg-search-page--results-info--containing-search-term').innerText = json.SearchParameters.EmployerName;
-            document.getElementById('gpg-search-page--results-info--containing').style.display = json.SearchParameters.EmployerName ? 'inline' : 'none';
-            document.getElementById('gpg-search-page--results-info').style.display = 'block';
-            
-            document.getElementById('gpg-search-page--results-info--no-results').style.display = json.Employers.length > 0 ? 'none' : 'block';
-            
-            document.getElementById('gpg-search-page--results').style.display = 'block';
-            document.getElementById('gpg-search-page--results').innerHTML = '';
-            
-            displaySearchResultsFromIndex(json, 0);
+            addSearchResultsForPage(json, urlQuery);
         }
         
-        function updateOrderByVisibility(employerName) {
+        function updateOrderByRadiosVisibility(employerName) {
             const employerNameIsEmpty = (employerName == null || employerName.trim() === '');
             
             const orderByRadios = document.getElementById('gpg-search-page--order-by');
             orderByRadios.style.display = employerNameIsEmpty ? 'none' : 'block';
         }
         
-        function displaySearchResultsFromIndex(json, startIndex) {
-            if (json.Employers.length > startIndex) {
-                const numberOfResultsInThisBlock = Math.min(json.Employers.length, startIndex + NUMBER_OF_SEARCH_RESULTS_PER_TABLE);
-                const moreResults = json.Employers.length > numberOfResultsInThisBlock;
+        function addSearchResultsForPage(json, urlQuery) {
+            if (json.Employers.length > 0) {                
+                createTableOfResultsForThisBlock(json);
                 
-                createTableOfResultsForThisBlock(json,  startIndex, numberOfResultsInThisBlock);
-                
+                const moreResults = json.NumberOfEmployers > ((json.SearchParameters.Page + 1) * NUMBER_OF_SEARCH_RESULTS_PER_TABLE);
                 if (moreResults) {
-                    createMoreButton(json, numberOfResultsInThisBlock);
+                    createMoreButton(json, urlQuery);
                 }
             }
         }
         
-        function createTableOfResultsForThisBlock(json, startIndex, numberOfResultsInThisBlock) {
+        function createTableOfResultsForThisBlock(json) {
             function createThWithTextAndAddToTr(tr, th_text) {
                 const th = document.createElement('th');
                 th.innerText = th_text;
@@ -551,12 +550,12 @@
             const results_new_table = document.createElement('table');
             
             const results_new_caption = document.createElement('caption');
-            results_new_caption.innerText = `Search results ${startIndex + 1} to ${numberOfResultsInThisBlock}`;
-            // results_new_caption.classList.add('govuk-visually-hidden');
+            const firstResultIndex = json.SearchParameters.Page * NUMBER_OF_SEARCH_RESULTS_PER_TABLE + 1;
+            const lastResultIndex = Math.min(json.NumberOfEmployers, (json.SearchParameters.Page * NUMBER_OF_SEARCH_RESULTS_PER_TABLE) + json.Employers.length);
+            results_new_caption.innerText = `Search results ${firstResultIndex} to ${lastResultIndex}`;
             results_new_table.appendChild(results_new_caption);
             
             const results_new_thead = document.createElement('thead');
-            // results_new_thead.classList.add('govuk-visually-hidden');
             const results_new_thead_tr = document.createElement('tr');
             createThWithTextAndAddToTr(results_new_thead_tr, 'Employer name');
             createThWithTextAndAddToTr(results_new_thead_tr, 'Previous name');
@@ -567,8 +566,7 @@
             results_new_table.appendChild(results_new_thead);
             
             const results_new_tbody = document.createElement('tbody');
-            const employersInThisBlock = json.Employers.slice(startIndex, startIndex + numberOfResultsInThisBlock);
-            employersInThisBlock.forEach((employer) => {
+            json.Employers.forEach((employer) => {
                 const results_new_tbody_tr = document.createElement('tr');
                 createThWithLinkToEmployerAndAddToTr(results_new_tbody_tr, employer.Id, employer.Name);
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.PreviousName, 'No previous name');
@@ -591,16 +589,16 @@
             return compareCookieValue.length > 0 ? compareCookieValue.split(encodeURIComponent(',')) : [];
         }
         
-        function createMoreButton(json, numberOfResultsInThisBlock) {            
+        function createMoreButton(json, urlQuery) {            
             const resultsSection = document.getElementById('gpg-search-page--results');
             
-            const numberOfResultsInNextBlock = Math.min(json.Employers.length, numberOfResultsInThisBlock + NUMBER_OF_SEARCH_RESULTS_PER_TABLE);
-            
             const more_button = document.createElement('button');
-            more_button.innerText = `Show search results ${numberOfResultsInThisBlock+1} to ${numberOfResultsInNextBlock}`;
+            const nextBlockFirstResultIndex = ((json.SearchParameters.Page + 1) * NUMBER_OF_SEARCH_RESULTS_PER_TABLE) + 1;
+            const nextBlockLastResultIndex = Math.min(json.NumberOfEmployers, (json.SearchParameters.Page + 2) * NUMBER_OF_SEARCH_RESULTS_PER_TABLE);
+            more_button.innerText = `Show search results ${nextBlockFirstResultIndex} to ${nextBlockLastResultIndex}`;
             more_button.addEventListener('click', () => {
                 resultsSection.removeChild(more_button);
-                displaySearchResultsFromIndex(json, numberOfResultsInThisBlock);
+                loadSearchResults(urlQuery, json.SearchParameters.Page + 1);
             })
             resultsSection.appendChild(more_button);
         }
@@ -617,7 +615,7 @@
                 document.getElementById('compare-employers-notification-banner--number-of-employees').innerText = numberOfEmployersText;
             }
             
-            // Do what the button SAYS ("Add" or "Remove"), regardless of whether the org is currently in currently in the compare basket
+            // Do what the button SAYS ("Add" or "Remove"), regardless of whether the org is currently in the compare basket
             const isAddButton = compare_button.classList.contains('gpg-search-results--add-button');
             
             try {

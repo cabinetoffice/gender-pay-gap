@@ -14,6 +14,7 @@ namespace GenderPayGap.WebUI.Models.Search
         public List<string> Sector { get; set; } = new List<string>();
         public List<string> ReportedLateYear { get; set; } = new List<string>();
         public string OrderBy { get; set; } = "relevance";
+        public int Page { get; set; } = 0;
 
         [BindNever]
         public List<SicSection> PossibleSectors { get; set; }

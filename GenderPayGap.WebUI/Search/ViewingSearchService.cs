@@ -35,6 +35,8 @@ namespace GenderPayGap.WebUI.Search
         private readonly List<SicSection> sicSections;
         private readonly Dictionary<string,string> sectorsDictionary;
 
+        private const int NumberOfSearchResultsPerTable = 100;
+
         public ViewingSearchService(IDataRepository dataRepository)
         {
             sicSections = dataRepository.GetAll<SicSection>().ToList();
@@ -53,12 +55,18 @@ namespace GenderPayGap.WebUI.Search
             {
                 List<SearchCachedOrganisation> orderedOrganisations =
                     filteredOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
+
+                List<SearchCachedOrganisation> paginatedOrderedOrganisations = orderedOrganisations
+                    .Skip(searchParams.Page * NumberOfSearchResultsPerTable)
+                    .Take(NumberOfSearchResultsPerTable)
+                    .ToList();
                 
                 return new SearchApiResult
                 {
                     Sectors = sectorsDictionary,
                     SearchParameters = searchParams,
-                    Employers = orderedOrganisations.Select(ConvertToSearchApiResultEmployer).ToList()
+                    NumberOfEmployers = orderedOrganisations.Count,
+                    Employers = paginatedOrderedOrganisations.Select(ConvertToSearchApiResultEmployer).ToList()
                 };
             }
 
@@ -85,11 +93,17 @@ namespace GenderPayGap.WebUI.Search
                 ? OrderOrganisationsByRank(organisationsWithRankings)
                 : OrderOrganisationsAlphabetically(organisationsWithRankings);
             
+            List<RankedViewingSearchOrganisation> paginatedRankedOrganisations = rankedOrganisations
+                .Skip(searchParams.Page * NumberOfSearchResultsPerTable)
+                .Take(NumberOfSearchResultsPerTable)
+                .ToList();
+                
             return new SearchApiResult
             {
                 Sectors = sectorsDictionary,
                 SearchParameters = searchParams,
-                Employers = rankedOrganisations.Select(ConvertRankedOrgsToSearchApiResultEmployer).ToList()
+                NumberOfEmployers = rankedOrganisations.Count,
+                Employers = paginatedRankedOrganisations.Select(ConvertRankedOrgsToSearchApiResultEmployer).ToList()
             };
         }
 
