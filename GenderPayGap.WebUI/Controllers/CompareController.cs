@@ -285,7 +285,7 @@ namespace GenderPayGap.WebUI.Controllers
                 case "employer":
                     return RedirectToAction("ViewEmployerPage", "Redirect", new {employerIdentifier = args});
                 case "report":
-                    return RedirectToAction(nameof(ViewingController.Report), "Viewing", new {employerIdentifier = args, year});
+                    return RedirectToAction("ViewEmployerReportForYear", "Redirect", new {employerIdentifier = args, year});
             }
 
             return new HttpBadRequestResult($"Invalid command '{command}'");

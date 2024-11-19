@@ -1,0 +1,42 @@
+﻿@using GenderPayGap.WebUI.Helpers
+@model decimal
+
+<figure class="pay-comparison-vertical-bar-chart"
+        aria-hidden="true" @* We use aria-hidden="true" because the content is repeated in the text above *@>
+    <div class="pay-comparison-vertical-bar-chart-more-or-less">
+        <div class="pay-comparison-vertical-bar-chart-more-or-less-inner">
+            @(ViewReportsHelper.FormatNumberAsPoundsOrPence(Math.Abs(0 - Model) / 100))
+            <br/>
+            @(Model >= 0 ? "less" : "more")
+            <br/>
+            <span class="pay-comparison-vertical-bar-chart-more-or-less-arrow"
+                  style="transform: rotate(@(Model >= 0 ? "135" : "-45")deg)"></span>
+        </div>
+        <div class="pay-comparison-vertical-bar-chart-more-or-less-inner">
+        </div>
+    </div>
+    <div class="pay-comparison-vertical-bar-chart-bars">
+        <div class="pay-comparison-vertical-bar-chart-bar pay-comparison-vertical-bar-chart-bar--women"
+             style="height: @(ViewReportsHelper.CalculateBarChartHeightForWomen(Model))%;">
+        </div>
+        <div class="pay-comparison-vertical-bar-chart-bar pay-comparison-vertical-bar-chart-bar--men"
+             style="height: @(ViewReportsHelper.CalculateBarChartHeightForMen(Model))%;">
+        </div>
+    </div>
+    <div class="pay-comparison-vertical-bar-chart-coins">
+        <div class="pay-comparison-vertical-bar-chart-coin pay-comparison-vertical-bar-chart-coin--women">
+            @(ViewReportsHelper.FormatNumberAsPoundsOrPence((100 - Model) / 100))
+        </div>
+        <div class="pay-comparison-vertical-bar-chart-coin pay-comparison-vertical-bar-chart-coin--men">
+            £1
+        </div>
+    </div>
+    <div class="pay-comparison-vertical-bar-chart-captions">
+        <div class="pay-comparison-vertical-bar-chart-caption">
+            Women
+        </div>
+        <div class="pay-comparison-vertical-bar-chart-caption">
+            Men
+        </div>
+    </div>
+</figure>

@@ -31,5 +31,19 @@ namespace GenderPayGap.WebUI.Controllers
             return View("Employer", organisation);
         }
 
+        [HttpGet("employers/{organisationId}/reporting-year-{reportingYear}")]
+        public IActionResult ReportForYear(long organisationId, int reportingYear)
+        {
+            compareViewService.LoadComparedEmployersFromCookie();
+            
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            ControllerHelper.ThrowIfReportingYearIsOutsideOfRange(reportingYear, organisationId, dataRepository);
+            
+            Return returnForYear = ControllerHelper.LoadReturnForYearOrThrow404(organisation, reportingYear);
+
+            return View("ReportForYear", returnForYear);
+        }
+
     }
 }

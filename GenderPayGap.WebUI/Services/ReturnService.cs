@@ -217,9 +217,9 @@ namespace GenderPayGap.WebUI.Services
                 && newReturn.Organisation.Returns.Count(r => r.AccountingDate == newReturn.AccountingDate) == 1)
             {
                 string urlToPublicViewingPage = urlHelper.Action(
-                    "Report",
-                    "Viewing",
-                    new { employerIdentifier = newReturn.Organisation.GetEncryptedId(), year = newReturn.AccountingDate.Year },
+                    "ReportForYear",
+                    "ViewReports",
+                    new { organisationId = newReturn.OrganisationId, year = newReturn.AccountingDate.Year },
                     "https");
 
                 emailSendingService.SendGeoFirstTimeDataSubmissionEmail(
@@ -233,9 +233,9 @@ namespace GenderPayGap.WebUI.Services
         private void SendSuccessfulSubmissionEmailToRegisteredUsers(Return newReturn, IUrlHelper urlHelper)
         {
             string urlToPublicViewingPage = urlHelper.Action(
-                "Report",
-                "Viewing",
-                new { employerIdentifier = newReturn.Organisation.GetEncryptedId(), year = newReturn.AccountingDate.Year },
+                "ReportForYear",
+                "ViewReports",
+                new { organisationId = newReturn.OrganisationId, year = newReturn.AccountingDate.Year },
                 "https");
 
             List<Return> otherReturns =
