@@ -237,15 +237,31 @@
                  !Model.Organisation.OptedOutFromCompaniesHouseUpdate)
             {
                 <div class="govuk-details__text">
+                    <h3 class="govuk-heading-s">
+                        Name or address
+                    </h3>
                     <p class="govuk-body">
-                        If you need to change your employer name, sector information, or registered address you should do this via Companies House.
-                        Changes you make will automatically be reflected on this service.
+                        If your company’s name or address is incorrect,
+                        <a href="https://www.gov.uk/file-changes-to-a-company-with-companies-house"
+                           class="govuk-link">
+                            tell Companies House</a>.
+                        It may take some time for any changes to show on the gender pay gap service.
+                    </p>
+                    
+                    <h3 class="govuk-heading-s">
+                        SIC code
+                    </h3>
+                    <p class="govuk-body">
+                        This service shows the sector your company is in (for example, ‘Manufacturing’) based on your
+                        Standard Industrial Classification (SIC) code.
+                        It does not show the specific class for your SIC code (for example, ‘Manufacture of leather clothes’).
                     </p>
                     <p class="govuk-body">
-                        If this information is not available on Companies House, please contact
-                        <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
-                            @Global.GpgReportingEmail
-                        </a>
+                        If you need to change your SIC code, you can do it when you file your next
+                        <a href="https://www.gov.uk/file-your-confirmation-statement-with-companies-house"
+                           class="govuk-link">
+                            confirmation statement</a>.
+                        You can file a confirmation statement early if you need to change it sooner.
                     </p>
                 </div>
             }
@@ -269,6 +285,17 @@
                     @(Model.Organisation.OrganisationName)
                 </dd>
             </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Organisation.CompanyNumber))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Companies House number
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.Organisation.CompanyNumber)
+                    </dd>
+                </div>
+            }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Registered address
