@@ -95,19 +95,19 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
     public enum WhyVisitGpgSite
     {
 
-        [GovUkRadioCheckboxLabelText(Text = "I wanted to find out what the gender pay gap is")]
+        [GovUkRadioCheckboxLabelText(Text = "Find out more about the gender pay gap")]
         FindOutAboutGpg,
 
-        [GovUkRadioCheckboxLabelText(Text = "I reported my organisation's gender pay gap data")]
+        [GovUkRadioCheckboxLabelText(Text = "Submit data for my organisation")]
         ReportOrganisationGpgData,
 
-        [GovUkRadioCheckboxLabelText(Text = "I wanted to understand how I can close my organisation's gender pay gap")]
+        [GovUkRadioCheckboxLabelText(Text = "Find out how my organisation can close its gap")]
         CloseOrganisationGpg,
 
-        [GovUkRadioCheckboxLabelText(Text = "I viewed a specific organisation's gender pay gap")]
+        [GovUkRadioCheckboxLabelText(Text = "Look at gender pay gap data for specific organisations")]
         ViewSpecificOrganisationGpg,
 
-        [GovUkRadioCheckboxLabelText(Text = "I wanted to know what action other organisations are taking to close the gender pay gap")]
+        [GovUkRadioCheckboxLabelText(Text = "See what other organisations are doing to close their gap")]
         ActionsToCloseGpg,
 
         [GovUkRadioCheckboxLabelText(Text = "Other")]
@@ -118,19 +118,19 @@ namespace GenderPayGap.WebUI.Controllers.SendFeedback
     public enum WhoAreYou
     {
 
-        [GovUkRadioCheckboxLabelText(Text = "An employee interested in your organisation’s gender pay gap data?")]
+        [GovUkRadioCheckboxLabelText(Text = "Employee interested in my organisation’s gender pay gap data")]
         EmployeeInterestedInOrganisationData,
 
-        [GovUkRadioCheckboxLabelText(Text = "A manager involved in gender pay gap reporting or diversity and inclusion?")]
-        ManagerInvolvedInGpgReport,
-
-        [GovUkRadioCheckboxLabelText(Text = "A person responsible for reporting your organisation’s gender pay gap?")]
+        [GovUkRadioCheckboxLabelText(Text = "Employee responsible for submitting my organisation’s data")]
         ResponsibleForReportingGpg,
 
-        [GovUkRadioCheckboxLabelText(Text = "A person interested in the gender pay gap generally?")]
+        [GovUkRadioCheckboxLabelText(Text = "Manager involved in gender pay gap reporting or diversity and inclusion")]
+        ManagerInvolvedInGpgReport,
+
+        [GovUkRadioCheckboxLabelText(Text = "Person interested in the gender pay gap generally")]
         PersonInterestedInGeneralGpg,
 
-        [GovUkRadioCheckboxLabelText(Text = "A person interested in a specific organisation’s gender pay gap?")]
+        [GovUkRadioCheckboxLabelText(Text = "Person interested in a specific organisation’s gender pay gap")]
         PersonInterestedInSpecificOrganisationGpg,
 
         [GovUkRadioCheckboxLabelText(Text = "Other")]

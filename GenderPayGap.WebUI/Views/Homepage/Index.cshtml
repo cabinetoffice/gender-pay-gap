@@ -14,27 +14,28 @@
 <div class="hero-banner govuk-!-margin-bottom-8">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl hero-banner-content govuk-!-margin-top-6">
-                Search and compare gender pay gap data
+            <h1 class="govuk-heading-xl hero-banner-content govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                Gender pay gap service
             </h1>
+            <p class="govuk-body hero-banner-content govuk-!-margin-bottom-7">
+                The gender pay gap is the difference between the average pay of men and women in an organisation.
+            </p>
+            <h2 class="govuk-heading-m hero-banner-content govuk-!-font-size-27">
+                Search and compare gender pay gap data
+            </h2>
             <p class="govuk-body hero-banner-content">
-                Employers with 250 or more employees have published their figures comparing men and women&rsquo;s average pay across the organisation.
+                You can search and compare gender pay gap data if you are looking for data about a specific company or sector.
             </p>
             <partial name="Parts/SearchByOrganisation"/>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-3 govuk-!-margin-bottom-1">
-            <p class="govuk-body">
+            <p class="govuk-body hero-banner-content govuk-!-margin-top-3">
+                You can
                 <a href="@Url.Action("SearchPage", "Search")"
                    class="govuk-link hero-banner-content">
-                    Or browse all employers and compare data
-                </a>
-            </p>
-            <p class="govuk-body">
+                    view all employers</a>
+                or
                 <a href="@Url.Action("Download", "Download")"
                    class="govuk-link hero-banner-content">
-                    Download all gender pay gap data
+                    download all gender pay gap data
                 </a>
             </p>
 
@@ -51,6 +52,9 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">
+            Any employer with 250 or more employees on a specific date each year must report their gender pay gap data.
+        </p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-7">
             <li>
                 <a href="https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/who-needs-to-report"

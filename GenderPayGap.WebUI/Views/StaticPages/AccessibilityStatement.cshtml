@@ -1,22 +1,14 @@
 ﻿@using GenderPayGap.Core
 @{
-    ViewBag.Title = "Accessibility Statement - Gender pay gap service";
+    ViewBag.Title = "Accessibility statement - Gender pay gap service";
     Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-            Accessibility statement for Gender pay gap service
+            Accessibility statement for the gender pay gap service
         </h1>
-        <p class="govuk-body">
-            We want everyone to be able to do what they need to do with our website,
-            regardless of any access needs due to a disability or condition.
-        </p>
-        
-        <h2 class="govuk-heading-m">
-            A detailed accessibility statement about the Gender pay gap service
-        </h2>
         <p class="govuk-body">
             This page describes:
         </p>
@@ -26,15 +18,19 @@
             <li>what we are doing to meet the regulations</li>
         </ul>
         <p class="govuk-body">
-            This accessibility statement applies to the Gender pay gap service
-            but does not apply to Gender pay gap guidance documents on gov.uk.
+            This accessibility statement applies to the gender pay gap service, including all pages in the domain
+            https://gender-pay-gap.service.gov.uk.
+            There is a separate
+            <a href="https://www.gov.uk/help/accessibility-statement" target="_blank" class="govuk-link">
+                accessibility statement for GOV.UK</a>,
+            which includes the gender pay reporting guidance for employers.
         </p>
         
         <h2 class="govuk-heading-m">
-            Using our website and services
+            Using our service
         </h2>
         <p class="govuk-body">
-            This service is run by the Government Equalities Office.
+            This service is run by the Office for Equality and Opportunity (OEO).
             We want as many people as possible to be able to use this website.
             For example, that means you should be able to:
         </p>
@@ -62,24 +58,36 @@
         <p class="govuk-body">
             We know some parts of this website are not fully accessible.
         </p>
+        
         <h3 class="govuk-heading-m">
-            What to do if you cannot access parts of this website
+            If you cannot access parts of this website
         </h3>
         <p class="govuk-body">
-            If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille, contact
-            <a href="mailto:@(Global.GpgReportingEmail)" target="_blank" class="govuk-link">@(Global.GpgReportingEmail)</a>.
+            Email
+            <a href="mailto:@(Global.GpgReportingEmail)" target="_blank" class="govuk-link">
+                @(Global.GpgReportingEmail)</a>
+            if you need information in a different format, such as:
         </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>accessible PDF</li>
+            <li>large print</li>
+            <li>easy read</li>
+            <li>audio recording</li>
+            <li>braille</li>
+        </ul>
         <p class="govuk-body">
             We’ll consider your request and get back to you within 5 working days.
-        </p>   
+        </p>
+        
         <h3 class="govuk-heading-m">
             Reporting accessibility problems with this website
         </h3>
         <p class="govuk-body">
             We’re always looking to improve the accessibility of this website.
-            If you find any problems not listed on this page or think we’re not meeting accessibility requirements, contact
+            If you find any problems not listed on this page or think we’re not meeting accessibility requirements, email
             <a class="govuk-link" href="mailto:@(Global.GpgReportingEmail)" target="_blank">@(Global.GpgReportingEmail)</a>.
         </p>
+        
         <h3 class="govuk-heading-m">
             Enforcement procedure
         </h3>
@@ -95,14 +103,14 @@
             Technical information about this website’s accessibility
         </h2>
         <p class="govuk-body">
-            The Government Equalities Office is committed to making its website accessible, in accordance with the
+            We are committed to making this website accessible, in accordance with the
             Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
         </p>
         <p class="govuk-body">
             This website is partially compliant with the
             <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener" class="govuk-link">
-                Web Content Accessibility Guidelines version 2.1</a>
-            AA standard, due to ‘the non-compliances’, listed below.
+                web content accessibility guidelines version 2.1</a>
+            (WCAG 2.1), AA standard, due to ‘the non-compliances’ listed below.
         </p>
         
         <h2 class="govuk-heading-l">
@@ -111,6 +119,7 @@
         <p class="govuk-body">
             The content listed below is non-accessible for the following reasons.
         </p>
+        
         <h3 class="govuk-heading-m">
             Non-compliance with the accessibility regulations
         </h3>
@@ -119,27 +128,24 @@
         </p>
         <ul class="govuk-list govuk-list--bullet">
             <li>
-                the highlighted yellow colour of text boxes has the incorrect colour ratio and is hard to see. 
-                This fails WCAG 2.1 success criterion 1.4.11
+                on some pages, content has not been semantically marked-up so that information and relationships  are
+                programmatically determinable - this fails WCAG 2.1 success criterion 1.3.1 (information and relationships)
             </li>
             <li>
-                on some pages, content has not been semantically marked-up so that information and relationships 
-                are programmatically determinable. This fails WCAG 2.1 success criterion 1.3.1
-            </li>
-            <li>
-                the search button is slightly pixelated on magnification. This fails WCAG 2.1 success criterion 1.1.1
+                the search button is slightly pixelated on magnification - this fails WCAG 2.1 success criterion 1.1.1
+                (non-text content)
             </li>   
             <li>
                 there are links on the ‘compare employers’ page that visually look like tabs but have not been marked
-                up in this way. This fails WCAG 2.1 success criteria 2.4.3 and 4.1.2
+                up in this way - this fails WCAG 2.1 success criteria 2.4.3 (focus order) and 4.1.2 (name, role, value)
             </li>
             <li>
                 the layout and structure of some elements on the ‘employer report’ page are difficult for screen 
-                readers to understand. This fails WCAG 2.1 success criterion 1.3.1
+                readers to understand - this fails WCAG 2.1 success criterion 1.3.1 (information and relationships)
             </li>
             <li>
                 the status message on the search results page is not announced to users that rely on audio
-                feedback. This fails WCAG 2.1 success criterion 4.1.3
+                feedback - this fails WCAG 2.1 success criterion 4.1.3 (status messages)
             </li>
             <li>
                 most older PDF documents that are linked to from this website are not fully accessible 
@@ -151,29 +157,35 @@
             </li>
         </ul>
         <p class="govuk-body">
-            We have recorded these issues in our backlog and will be handling them as part of our normal workflow.
+            We have added these non-compliance issues to our backlog of work to develop the service.
         </p>
+        
         <h3 class="govuk-heading-m">
             Disproportionate burden
         </h3>
         <p class="govuk-body">
-            We have not yet identified a part of the service where it would be a disproportionate burden
-            on the Government Equalities Office to resolve the non-compliance.
+            We have not identified a part of the service where it would be a disproportionate burden to resolve the non-compliance.
             If this becomes the case, we will publish full details here explaining our decision.
         </p>
+        
         <h3 class="govuk-heading-m">
             How we tested
         </h3>
         <p class="govuk-body">
-            Testing has been conducted internally by Government Equalities Office staff and externally audited by the
-            <a href="https://digitalaccessibilitycentre.org/" target="_blank" rel="noopener" class="govuk-link">Digital Accessibility Centre</a>.
-            Where they have been checked for compliance, it has been against WCAG 2.1 AA.
+            We did accessibility testing ourselves while we developed the service.
+            We also had an external accessibility audit done by the
+            <a href="https://digitalaccessibilitycentre.org/" target="_blank" rel="noopener" class="govuk-link">
+                Digital Accessibility Centre</a>
+            in November 2022.
+            Checks for compliance were against WCAG 2.1 AA.
         </p>
+        
         <h3 class="govuk-heading-m">
-            What we’re doing to improve accessibility
+            What we are doing to improve accessibility
         </h3>
         <p class="govuk-body">
-            We have recorded these issues in our backlog and will be handling them as part of our normal workflow.
+            We have added the non-compliance issues to our backlog of work.
+            We aim to resolve the issues as we continue to develop the service.
         </p>
     </div>
 </div>

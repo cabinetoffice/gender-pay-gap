@@ -9,7 +9,7 @@ The gender pay gap is the difference between the average earnings of men and wom
 For example, ‘women earn 15% less than men per hour’.
 
 This service allows organisations to report their gender pay gap data. It then makes this data available to the general public. 
-It is managed by the Government Equalities Office (GEO) which forms part of the Cabinet Office.
+It is managed by the Office for Equality and Opportunity (OEO) which forms part of the Cabinet Office.
 
 
 ## Technical documentation
