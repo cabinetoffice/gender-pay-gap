@@ -25,11 +25,11 @@
             new CrumbViewModel
             {
                 Text = "Search and compare",
-                Href = Url.Action("SearchResults", "Viewing")
+                Href = Url.Action("SearchPage", "Search")
             }
         };
 
-        string searchResultsUrlPrefix = Url.Action("SearchResults", "Viewing", null, Context.Request.Scheme) + "?";
+        string searchResultsUrlPrefix = Url.Action("SearchPage", "Search", null, Context.Request.Scheme) + "?";
         
         if (Context.Request.Headers.TryGetValue("Referer", out StringValues referrer) &&
             referrer.Count == 1 &&

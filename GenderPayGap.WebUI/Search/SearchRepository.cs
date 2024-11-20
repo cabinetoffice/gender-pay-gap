@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using Castle.Core.Internal;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -87,6 +85,13 @@ namespace GenderPayGap.WebUI.Search
 
             CustomLogger.Information($"Search Repository: Time taken to load Scopes: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
 
+            // IMPORTANT: This variable isn't used, but running this query makes the next query much faster
+            var allOrgsWithAddresses = repository.GetAll<Organisation>()
+                .Include(o => o.OrganisationAddresses)
+                .ToList();
+
+            CustomLogger.Information($"Search Repository: Time taken to load Addresses: {VirtualDateTime.Now.Subtract(start).TotalSeconds} seconds");
+
             List<Organisation> allOrganisations = repository
                 .GetAll<Organisation>()
                 //.Include(o => o.OrganisationNames) // Moved into separate pre-load query 
@@ -103,16 +108,6 @@ namespace GenderPayGap.WebUI.Search
                 .Select(
                     o =>
                     {
-                        var sicCodeSynonyms = o.OrganisationSicCodes.Select(osc => osc.SicCode.Synonyms)
-                            .Where(s => s != null)
-                            .Select(s => new SearchReadyValue(s))
-                            .ToList();
-
-                        foreach (var osc in o.OrganisationSicCodes)
-                        {
-                            sicCodeSynonyms.Add(new SearchReadyValue(osc.SicCode.Description));
-                        }
-
                         var submittedReports = o.Returns.Where(r => r.Status == ReturnStatuses.Submitted).ToList();
 
                         return new SearchCachedOrganisation
@@ -127,26 +122,11 @@ namespace GenderPayGap.WebUI.Search
                                         .ToList(),
                                 MinEmployees = o.GetLatestReturn()?.MinEmployees ?? 0,
                                 Status = o.Status,
-                                ReportingYearToOrganisationSizesMap = submittedReports
-                                    .GroupBy(r => r.AccountingDate.Year)
-                                    .ToDictionary(
-                                        g => g.Key,
-                                        g => g.ToList().Select(r => r.OrganisationSize).Distinct().ToList()),
-                                SicSectionIds =
-                                    o.OrganisationSicCodes.Select(osc => Convert.ToChar(osc.SicCode.SicSection.SicSectionId)).ToList(),
-                                ReportingYears = submittedReports.Select(r => r.AccountingDate.Year).ToList(),
-                                ReportingYearToDateOfLatestReportMap = ReportingYearsHelper.GetReportingYears()
-                                    .ToDictionary(
-                                        y => y,
-                                        y => o.GetReturn(y) != null ? o.GetReturn(y).StatusDate.Date : new DateTime(1999, 1, 1)),
-                                ReportedWithCompanyLinkYears = submittedReports.Where(r => !r.CompanyLinkToGPGInfo.IsNullOrEmpty())
-                                    .Select(r => r.AccountingDate.Year)
-                                    .ToList(),
+                                OrganisationSizes = submittedReports.Select(r => r.OrganisationSize).Distinct().ToList(),
+                                SicSectionIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicSection.SicSectionId).Distinct().ToList(),
                                 ReportedLateYears = submittedReports.Where(r => r.IsLateSubmission).Select(r => r.AccountingDate.Year).ToList(),
-                                SicCodeIds = o.OrganisationSicCodes.Select(osc => osc.SicCode.SicCodeId.ToString()).ToList(),
-                                SicCodeSynonyms = sicCodeSynonyms,
                                 IncludeInViewingService = GetIncludeInViewingService(o),
-                                Sector = o.SectorType
+                                Address = o.GetLatestAddress()?.GetAddressString() ?? ""
                             };
                     })
                 .ToList();

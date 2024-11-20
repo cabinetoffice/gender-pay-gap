@@ -1,0 +1,123 @@
+﻿
+.gpg-search-page--filter-employerSize--not-provided {
+    display: none;
+}
+
+.gpg-search-page--filter--fieldset .govuk-form-group {
+    margin-bottom: 0;
+}
+
+.gpg-search-page--filter--fieldset .govuk-checkboxes {
+    @extend .govuk-checkboxes--small;
+}
+
+.gpg-search-page--order-by--fieldset .govuk-radios {
+    @extend .govuk-radios--small;
+    @extend .govuk-radios--inline;
+}
+
+#gpg-search-page--results {
+    
+    table {
+        display: block;
+        
+        caption {
+            @extend .govuk-visually-hidden;
+        }
+        thead {
+            @extend .govuk-visually-hidden;
+        }
+        
+        tbody {
+            display: block;
+            
+            tr {
+                display: block;
+                position: relative;
+                padding: 15px 0;
+                border-bottom: solid 1px $govuk-border-colour;
+
+                @media (min-width: 769px) {
+                    padding-right: 143px;
+                }
+                
+                th, td {
+                    display: block;
+                }
+                
+                th /* Employer Name */ {
+                    @extend .govuk-body;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                    text-align: left;
+                    
+                    a {
+                        @extend .govuk-link;
+                        @extend .govuk-\!-font-size-24;
+                    }
+                }
+                
+                td:nth-of-type(1) /* Previous Name */ {
+                    @extend .govuk-inset-text;
+                    @extend .govuk-\!-font-size-16;
+                    margin: 0 0 5px 0;
+                    padding: 10px 15px;
+                    
+                    &::before {
+                        content: 'Previously known as';
+                        display: block;
+                    }
+                    
+                    &.gpg-search-results--empty-cell {
+                        @extend .govuk-visually-hidden;
+                    }
+                }
+                
+                td:nth-of-type(2) /* Address */ {
+                    @extend .govuk-body;
+                    margin-bottom: 5px;
+                }
+                
+                td:nth-of-type(3) /* Sectors */ {
+                    @extend .govuk-body-s;
+                    margin-bottom: 5px;
+
+                    &.gpg-search-results--empty-cell {
+                        @extend .govuk-visually-hidden;
+                    }
+                }
+                
+                td:nth-of-type(4) /* The "Action2 column which contains the Add/Remove button */ {
+                    button {
+                        @extend .govuk-button;
+                        width: fit-content;
+                        margin-bottom: 0;
+                        
+                        &.gpg-search-results--remove-button {
+                            @extend .govuk-button--secondary;
+                        }
+                        
+                        span:nth-of-type(2) {
+                            @extend .govuk-visually-hidden;
+                        }
+                    }
+                    
+                    @media (min-width: 769px) {
+                        position: absolute;
+                        right: 0;
+                        top: 15px;
+                        
+                        button {
+                            max-width: 135px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    > button {
+        @extend .govuk-button;
+        margin-top: 20px;
+    }
+}

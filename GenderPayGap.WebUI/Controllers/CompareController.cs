@@ -1,5 +1,4 @@
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -15,7 +14,8 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         private readonly IDataRepository dataRepository;
-        
+        public ICompareViewService CompareViewService { get; }
+
         public CompareController(ICompareViewService compareViewService,
             IDataRepository dataRepository)
         {
@@ -38,13 +38,15 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the employer from the encrypted identifier
-            EmployerSearchModel employer = GetEmployer(employerIdentifier);
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             
             // Load the current compared employers from the cookie
             CompareViewService.LoadComparedEmployersFromCookie();
 
             //Add the employer to the compare list
-            CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
+            CompareViewService.AddToBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
@@ -68,13 +70,15 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the employer from the encrypted identifier
-            EmployerSearchModel employer = GetEmployer(employerIdentifier);
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
 
             // Load the current compared employers from the cookie
             CompareViewService.LoadComparedEmployersFromCookie();
 
             //Add the employer to the compare list
-            CompareViewService.AddToBasket(employer.OrganisationIdEncrypted);
+            CompareViewService.AddToBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
@@ -94,7 +98,7 @@ namespace GenderPayGap.WebUI.Controllers
             ViewBag.ReturnUrl = returnUrl;
 
             var model = new AddRemoveButtonViewModel {
-                OrganisationIdEncrypted = employer.OrganisationIdEncrypted, OrganisationName = employer.Name
+                OrganisationIdEncrypted = organisation.GetEncryptedId(), OrganisationName = organisation.OrganisationName
             };
 
             return PartialView("Basket_Button", model);
@@ -115,13 +119,15 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the employer from the encrypted identifier
-            EmployerSearchModel employer = GetEmployer(employerIdentifier);
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
 
             // Load the current compared employers from the cookie
             CompareViewService.LoadComparedEmployersFromCookie();
 
             //Remove the employer from the list
-            CompareViewService.RemoveFromBasket(employer.OrganisationIdEncrypted);
+            CompareViewService.RemoveFromBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
@@ -144,13 +150,15 @@ namespace GenderPayGap.WebUI.Controllers
             }
 
             //Get the employer from the encrypted identifier
-            EmployerSearchModel employer = GetEmployer(employerIdentifier);
+            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
 
             // Load the current compared employers from the cookie
             CompareViewService.LoadComparedEmployersFromCookie();
 
             //Remove the employer from the list
-            CompareViewService.RemoveFromBasket(employer.OrganisationIdEncrypted);
+            CompareViewService.RemoveFromBasket(organisation.GetEncryptedId());
 
             //Save the compared employers to the cookie
             CompareViewService.SaveComparedEmployersToCookie(Request);
@@ -170,7 +178,7 @@ namespace GenderPayGap.WebUI.Controllers
             ViewBag.ReturnUrl = returnUrl;
 
             var model = new AddRemoveButtonViewModel {
-                OrganisationIdEncrypted = employer.OrganisationIdEncrypted, OrganisationName = employer.Name
+                OrganisationIdEncrypted = organisation.GetEncryptedId(), OrganisationName = organisation.OrganisationName
             };
 
             return PartialView("Basket_Button", model);
@@ -196,31 +204,5 @@ namespace GenderPayGap.WebUI.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        #region Helpers
-
-        private EmployerSearchModel GetEmployer(string employerIdentifier, bool activeOnly = true)
-        {
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
-
-            if (activeOnly)
-            {
-                ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
-            }
-
-            EmployerSearchModel employer = organisation.ToEmployerSearchResult();
-
-            return employer;
-        }
-
-        #endregion
-
-        #region Dependencies
-
-        public ICompareViewService CompareViewService { get; }
-
-        #endregion
-
     }
-
 }

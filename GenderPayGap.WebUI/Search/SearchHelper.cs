@@ -28,14 +28,6 @@ namespace GenderPayGap.WebUI.Search
             return names.Any(name => name.Matches(searchTerms, queryContainsPunctuation));
         }
 
-        public static bool OrganisationSicCodesMatchSearchTerms(
-            SearchCachedOrganisation organisation,
-            List<string> searchTerms,
-            bool queryContainsPunctuation)
-        {
-            return organisation.SicCodeSynonyms.Any(sc => sc.Matches(searchTerms, queryContainsPunctuation, false));
-        }
-
     }
 
 }

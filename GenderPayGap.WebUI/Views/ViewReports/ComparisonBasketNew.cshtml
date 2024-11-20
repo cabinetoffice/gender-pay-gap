@@ -1,51 +1,46 @@
 ﻿@inject ICompareViewService CompareViewService
 
-@if (CompareViewService.BasketItemCount >= 1)
-{
-    <div class="govuk-notification-banner"
-         role="region"
-         aria-labelledby="govuk-notification-banner-title--comparison-basket-new"
-         data-module="govuk-notification-banner">
-        
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title"
-                id="govuk-notification-banner-title--comparison-basket-new">
-                Compare employers
-            </h2>
-        </div>
-        
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-body govuk-!-margin-bottom-2">
-                Your comparison list contains
-                <strong>
-                    @(CompareViewService.BasketItemCount)
-                    @(CompareViewService.BasketItemCount == 1 ? "employer" : "employers")
-                </strong>
-            </p>
-            <ul class="govuk-list govuk-body-s">
-                <li>
-                    <a href="@Url.Action("SearchResults", "Viewing")"
-                       class="govuk-link">
-                        Add another employer
-                    </a>
-                </li>
-                @if (CompareViewService.BasketItemCount > 0)
-                {
-                    <li>
-                        <a href="@(Url.Action("ClearEmployers", "Compare", new {returnUrl = Context.GetUri().PathAndQuery}))"
-                           class="govuk-link">
-                            Clear list
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="@Url.Action("CompareEmployersNoYear", "CompareEmployers")"
-                           class="govuk-link">
-                            View comparison
-                        </a>
-                    </li>
-                }
-            </ul>
-        </div>
+<div class="govuk-notification-banner"
+     id="compare-employers-notification-banner"
+     style="display: @(CompareViewService.BasketItemCount >= 1 ? "block" : "none");"
+     role="region"
+     aria-labelledby="govuk-notification-banner-title--comparison-basket-new"
+     data-module="govuk-notification-banner">
+    
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title"
+            id="govuk-notification-banner-title--comparison-basket-new">
+            Compare employers
+        </h2>
     </div>
-}
+    
+    <div class="govuk-notification-banner__content">
+        <p class="govuk-body govuk-!-margin-bottom-2">
+            Your comparison list contains
+            <strong id="compare-employers-notification-banner--number-of-employees">
+                @(CompareViewService.BasketItemCount)
+                @(CompareViewService.BasketItemCount == 1 ? "employer" : "employers")
+            </strong>
+        </p>
+        <ul class="govuk-list govuk-body-s">
+            <li>
+                <a href="@Url.Action("SearchPage", "Search")"
+                   class="govuk-link">
+                    Add another employer
+                </a>
+            </li>
+            <li>
+                <a href="@(Url.Action("ClearEmployers", "Compare", new {returnUrl = Context.GetUri().PathAndQuery}))"
+                   class="govuk-link">
+                    Clear list
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("CompareEmployersNoYear", "CompareEmployers")"
+                   class="govuk-link">
+                    View comparison
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

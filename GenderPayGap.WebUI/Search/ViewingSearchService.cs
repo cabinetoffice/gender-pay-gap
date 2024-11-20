@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search.CachedObjects;
 
@@ -28,23 +23,27 @@ namespace GenderPayGap.WebUI.Search
         public string OrganisationName { get; set; }
         public List<string> OrganisationPreviousNames { get; set; }
         public long OrganisationId { get; set; }
-        public string CompanyNumber { get; set; }
-        public OrganisationStatuses Status { get; set; }
         public string EncryptedId { get; set; }
+        public string Address { get; set; }
+        public List<string> Sectors { get; set; }
 
     }
 
     public class ViewingSearchService
     {
 
-        private readonly IDataRepository dataRepository;
+        private readonly List<SicSection> sicSections;
+        private readonly Dictionary<string,string> sectorsDictionary;
+
+        private const int NumberOfSearchResultsPerTable = 100;
 
         public ViewingSearchService(IDataRepository dataRepository)
         {
-            this.dataRepository = dataRepository;
+            sicSections = dataRepository.GetAll<SicSection>().ToList();
+            sectorsDictionary = sicSections.ToDictionary(sicSection => sicSection.SicSectionId, sicSection => sicSection.Description);
         }
 
-        public PagedResult<EmployerSearchModel> Search(EmployerSearchParameters searchParams, bool orderByRelevance)
+        public SearchApiResult Search(SearchPageViewModel searchParams)
         {
             List<SearchCachedOrganisation> allOrganisations = SearchRepository.CachedOrganisations
                 .Where(o => o.IncludeInViewingService)
@@ -52,189 +51,121 @@ namespace GenderPayGap.WebUI.Search
 
             List<SearchCachedOrganisation> filteredOrganisations = FilterByOrganisations(allOrganisations, searchParams);
 
-            if (searchParams.Keywords == null)
+            if (searchParams.EmployerName == null)
             {
                 List<SearchCachedOrganisation> orderedOrganisations =
                     filteredOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
 
-                List<SearchCachedOrganisation> paginatedResultsForAllOrganisations = PaginateResults(
-                    orderedOrganisations,
-                    searchParams.Page,
-                    searchParams.PageSize);
-
-                return new PagedResult<EmployerSearchModel>
+                List<SearchCachedOrganisation> paginatedOrderedOrganisations = orderedOrganisations
+                    .Skip(searchParams.Page * NumberOfSearchResultsPerTable)
+                    .Take(NumberOfSearchResultsPerTable)
+                    .ToList();
+                
+                return new SearchApiResult
                 {
-                    Results = ConvertToEmployerSearchModels(paginatedResultsForAllOrganisations),
-                    CurrentPage = searchParams.Page,
-                    PageSize = searchParams.PageSize,
-                    ActualRecordTotal = orderedOrganisations.Count,
-                    VirtualRecordTotal = orderedOrganisations.Count
+                    Sectors = sectorsDictionary,
+                    SearchParameters = searchParams,
+                    NumberOfEmployers = orderedOrganisations.Count,
+                    Employers = paginatedOrderedOrganisations.Select(ConvertToSearchApiResultEmployer).ToList()
                 };
             }
 
-            string query = searchParams.Keywords.Trim().ToLower();
+            string query = searchParams.EmployerName.Trim().ToLower();
 
             bool queryContainsPunctuation = WordSplittingRegex.ContainsPunctuationCharacters(query);
 
             List<string> searchTerms = SearchHelper.ExtractSearchTermsFromQuery(query, queryContainsPunctuation);
 
-            var matchingOrganisations = new List<SearchCachedOrganisation>();
-            var convertedResults = new List<EmployerSearchModel>();
+            List<SearchCachedOrganisation> matchingOrganisations = GetMatchingOrganisationsByName(
+                filteredOrganisations,
+                searchTerms,
+                query,
+                queryContainsPunctuation);
 
-            if (searchParams.SearchType == SearchType.NotSet)
+            List<RankedViewingSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(
+                matchingOrganisations,
+                searchTerms,
+                query,
+                queryContainsPunctuation,
+                sicSections);
+
+            List<RankedViewingSearchOrganisation> rankedOrganisations = searchParams.IsOrderByRelevance()
+                ? OrderOrganisationsByRank(organisationsWithRankings)
+                : OrderOrganisationsAlphabetically(organisationsWithRankings);
+            
+            List<RankedViewingSearchOrganisation> paginatedRankedOrganisations = rankedOrganisations
+                .Skip(searchParams.Page * NumberOfSearchResultsPerTable)
+                .Take(NumberOfSearchResultsPerTable)
+                .ToList();
+                
+            return new SearchApiResult
             {
-                throw new NotImplementedException();
-            }
-
-            if (searchParams.SearchType == SearchType.ByEmployerName)
-            {
-                matchingOrganisations = GetMatchingOrganisationsByName(
-                    filteredOrganisations,
-                    searchTerms,
-                    query,
-                    queryContainsPunctuation);
-
-                List<RankedViewingSearchOrganisation> organisationsWithRankings = CalculateOrganisationRankings(
-                    matchingOrganisations,
-                    searchTerms,
-                    query,
-                    queryContainsPunctuation);
-
-                List<RankedViewingSearchOrganisation> rankedOrganisations = orderByRelevance
-                    ? OrderOrganisationsByRank(organisationsWithRankings)
-                    : OrderOrganisationsAlphabetically(organisationsWithRankings);
-
-                List<RankedViewingSearchOrganisation> paginatedResults = PaginateResults(
-                    rankedOrganisations,
-                    searchParams.Page,
-                    searchParams.PageSize);
-
-                convertedResults = ConvertRankedOrgsToEmployerSearchModels(paginatedResults);
-            }
-
-            if (searchParams.SearchType == SearchType.BySectorType)
-            {
-                matchingOrganisations = GetMatchingOrganisationsBySicCode(
-                    filteredOrganisations,
-                    searchTerms,
-                    query,
-                    queryContainsPunctuation);
-
-                // Only alphabetically for SIC code search
-                List<SearchCachedOrganisation> orderedOrganisations =
-                    matchingOrganisations.OrderBy(o => o.OrganisationName.OriginalValue).ToList();
-
-                List<SearchCachedOrganisation> paginatedSicCodeResults = PaginateResults(
-                    orderedOrganisations,
-                    searchParams.Page,
-                    searchParams.PageSize);
-
-                convertedResults = ConvertSearchCachedOrganisationsToEmployerSearchModels(paginatedSicCodeResults);
-            }
-
-            var pagedResult = new PagedResult<EmployerSearchModel>
-            {
-                Results = convertedResults,
-                CurrentPage = searchParams.Page,
-                PageSize = searchParams.PageSize,
-                ActualRecordTotal = matchingOrganisations.Count,
-                VirtualRecordTotal = matchingOrganisations.Count
+                Sectors = sectorsDictionary,
+                SearchParameters = searchParams,
+                NumberOfEmployers = rankedOrganisations.Count,
+                Employers = paginatedRankedOrganisations.Select(ConvertRankedOrgsToSearchApiResultEmployer).ToList()
             };
+        }
 
-            return pagedResult;
+        private SearchApiResultEmployer ConvertRankedOrgsToSearchApiResultEmployer(RankedViewingSearchOrganisation rankedViewingSearchOrganisation)
+        {
+            string previousName = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationPreviousNames.Count > 0
+                ? rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationPreviousNames[0]
+                : null;
+            
+            return new SearchApiResultEmployer
+            {
+                Id = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId,
+                EncId = rankedViewingSearchOrganisation.ViewingSearchResult.EncryptedId,
+                Name = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationName,
+                PreviousName = previousName,
+                Address = rankedViewingSearchOrganisation.ViewingSearchResult.Address,
+                Sectors = rankedViewingSearchOrganisation.ViewingSearchResult.Sectors
+            };
+        }
+
+        private SearchApiResultEmployer ConvertToSearchApiResultEmployer(SearchCachedOrganisation searchCachedOrganisation)
+        {
+            string previousName = searchCachedOrganisation.OrganisationNames.Count > 1
+                ? searchCachedOrganisation.OrganisationNames[1].OriginalValue
+                : null;
+
+            return new SearchApiResultEmployer
+            {
+                Id = searchCachedOrganisation.OrganisationId,
+                EncId = searchCachedOrganisation.EncryptedId,
+                Name = searchCachedOrganisation.OrganisationName.OriginalValue,
+                PreviousName = previousName,
+                Address = searchCachedOrganisation.Address,
+                Sectors = searchCachedOrganisation.SicSectionIds
+            };
         }
 
         private List<SearchCachedOrganisation> FilterByOrganisations(List<SearchCachedOrganisation> organisations,
-            EmployerSearchParameters searchParams)
+            SearchPageViewModel searchParams)
         {
-            IEnumerable<OrganisationSizes> selectedOrganisationSizes = searchParams.FilterEmployerSizes.Select(s => (OrganisationSizes) s);
-            IEnumerable<char> selectedSicSections = searchParams.FilterSicSectionIds;
-            List<int> selectedReportingYears = searchParams.FilterReportedYears.ToList();
-            IEnumerable<SearchReportingStatusFilter> selectedReportingStatuses =
-                searchParams.FilterReportingStatus.Select(s => (SearchReportingStatusFilter) s);
+            List<int> selectedReportedLateYears = searchParams.GetReportedLateYearsAsInts();
 
             IEnumerable<SearchCachedOrganisation> filteredOrgs = organisations.AsEnumerable();
 
-            if (selectedOrganisationSizes.Any())
+            if (searchParams.EmployerSize.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.GetOrganisationSizes(selectedReportingYears).Intersect(selectedOrganisationSizes).Any());
+                filteredOrgs = filteredOrgs.Where(o => o.OrganisationSizes.Intersect(searchParams.EmployerSize).Any());
             }
 
-            if (selectedSicSections.Any())
+            if (searchParams.Sector.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.SicSectionIds.Intersect(selectedSicSections).Any());
+                filteredOrgs = filteredOrgs.Where(o => o.SicSectionIds.Intersect(searchParams.Sector).Any());
             }
 
-            if (selectedReportingYears.Any())
+            if (selectedReportedLateYears.Any())
             {
-                filteredOrgs = filteredOrgs.Where(o => o.ReportingYears.Intersect(selectedReportingYears).Any());
-            }
-
-            if (selectedReportingStatuses.Any())
-            {
-                var reportingStatusFilteredOrgs = new List<SearchCachedOrganisation>();
-
-                foreach (SearchReportingStatusFilter status in selectedReportingStatuses)
-                {
-                    reportingStatusFilteredOrgs = reportingStatusFilteredOrgs.Union(ApplyReportingStatusesFilter(filteredOrgs, status, selectedReportingYears)).ToList();
-                }
-
-                filteredOrgs = reportingStatusFilteredOrgs;
+                filteredOrgs = filteredOrgs.Where(o => o.ReportedLateYears.Intersect(selectedReportedLateYears).Any());
             }
 
             return filteredOrgs.ToList();
         }
 
-        private IEnumerable<SearchCachedOrganisation> ApplyReportingStatusesFilter(IEnumerable<SearchCachedOrganisation> organisations,
-            SearchReportingStatusFilter filter, List<int> reportingYears)
-        {
-            switch (filter)
-            {
-                case SearchReportingStatusFilter.ReportedInTheLast7Days:
-                    return organisations.Where(o => o.GetDatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-7)));
-                case SearchReportingStatusFilter.ReportedInTheLast30Days:
-                    return organisations.Where(o => o.GetDatesOfLatestReports(reportingYears).Any(d => d > VirtualDateTime.Now.AddDays(-30)));
-                case SearchReportingStatusFilter.ReportedLate:
-                    return organisations.Where(o => o.HasReportedLate(reportingYears));
-                case SearchReportingStatusFilter.ReportedWithCompanyLinkToGpgInfo:
-                    return organisations.Where(o => o.HasReportedWithCompanyLink(reportingYears));
-                default:
-                    throw new Exception();
-            }
-        }
-
-
-        private static List<T> PaginateResults<T>(List<T> results, int currentPage, int pageSize)
-        {
-            return results.Skip(pageSize * (currentPage - 1)).Take(pageSize).ToList();
-        }
-
-        private List<EmployerSearchModel> ConvertToEmployerSearchModels(List<SearchCachedOrganisation> organisations)
-        {
-            return organisations.Select(
-                    searchCachedOrganisation =>
-                    {
-                        var organisation = dataRepository.Get<Organisation>(searchCachedOrganisation.OrganisationId);
-                        string[] sicSectionNames = organisation.GetSicCodes()
-                            .Select(s => s.SicCode.SicSection.Description)
-                            .UniqueI()
-                            .ToArray();
-
-                        string previousName = searchCachedOrganisation.OrganisationNames.Count > 1
-                            ? searchCachedOrganisation.OrganisationNames[1].OriginalValue
-                            : null;
-
-                        return new EmployerSearchModel
-                        {
-                            OrganisationIdEncrypted = searchCachedOrganisation.EncryptedId,
-                            Name = searchCachedOrganisation.OrganisationName.OriginalValue,
-                            PreviousName = previousName,
-                            Address = organisation.GetLatestAddress()?.GetAddressString(),
-                            SicSectionNames = sicSectionNames
-                        };
-                    })
-                .ToList();
-        }
 
         private static List<SearchCachedOrganisation> GetMatchingOrganisationsByName(List<SearchCachedOrganisation> allOrganisations,
             List<string> searchTerms,
@@ -250,17 +181,19 @@ namespace GenderPayGap.WebUI.Search
             List<SearchCachedOrganisation> matchingOrganisations,
             List<string> searchTerms,
             string query,
-            bool queryContainsPunctuation)
+            bool queryContainsPunctuation,
+            List<SicSection> sicSections)
         {
             return matchingOrganisations
-                .Select(organisation => CalculateRankForOrganisation(organisation, searchTerms, query, queryContainsPunctuation))
+                .Select(organisation => CalculateRankForOrganisation(organisation, searchTerms, query, queryContainsPunctuation, sicSections))
                 .ToList();
         }
 
         private static RankedViewingSearchOrganisation CalculateRankForOrganisation(SearchCachedOrganisation organisation,
             List<string> searchTerms,
             string query,
-            bool queryContainsPunctuation)
+            bool queryContainsPunctuation,
+            List<SicSection> sicSections)
         {
             var rankedViewingSearchOrganisation = new RankedViewingSearchOrganisation {Names = new List<RankedName>()};
 
@@ -286,7 +219,9 @@ namespace GenderPayGap.WebUI.Search
                 OrganisationName = rankedViewingSearchOrganisation.Names[0].Name,
                 OrganisationPreviousNames = previousNames,
                 OrganisationId = organisation.OrganisationId,
-                EncryptedId = organisation.EncryptedId
+                EncryptedId = organisation.EncryptedId,
+                Address = organisation.Address,
+                Sectors = organisation.SicSectionIds
             };
 
             return rankedViewingSearchOrganisation;
@@ -305,80 +240,6 @@ namespace GenderPayGap.WebUI.Search
             List<RankedViewingSearchOrganisation> organisationsWithRankings)
         {
             return organisationsWithRankings.OrderBy(o => o.Names[0].Name).ToList();
-        }
-
-        private List<EmployerSearchModel> ConvertRankedOrgsToEmployerSearchModels(List<RankedViewingSearchOrganisation> organisations)
-        {
-            return organisations.Select(
-                    rankedViewingSearchOrganisation =>
-                    {
-                        var organisation =
-                            dataRepository.Get<Organisation>(rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationId);
-                        string[] sicSectionNames = organisation.GetSicCodes()
-                            .Select(s => s.SicCode.SicSection.Description)
-                            .UniqueI()
-                            .ToArray();
-
-                        string previousName = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationPreviousNames.Count > 0
-                            ? rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationPreviousNames[0]
-                            : null;
-
-                        return new EmployerSearchModel
-                        {
-                            OrganisationIdEncrypted = rankedViewingSearchOrganisation.ViewingSearchResult.EncryptedId,
-                            Name = rankedViewingSearchOrganisation.ViewingSearchResult.OrganisationName,
-                            PreviousName = previousName,
-                            Address = organisation.GetLatestAddress()?.GetAddressString(),
-                            SicSectionNames = sicSectionNames
-                        };
-                    })
-                .ToList();
-        }
-
-        private static List<SearchCachedOrganisation> GetMatchingOrganisationsBySicCode(List<SearchCachedOrganisation> allOrganisations,
-            List<string> searchTerms,
-            string query,
-            bool queryContainsPunctuation)
-        {
-            List<SearchCachedOrganisation> matchesOnSicCode = allOrganisations.Where(org => org.SicCodeIds.Contains(query)).ToList();
-
-            if (matchesOnSicCode.Any())
-            {
-                return matchesOnSicCode;
-            }
-
-            return allOrganisations
-                .Where(org => SearchHelper.OrganisationSicCodesMatchSearchTerms(org, searchTerms, queryContainsPunctuation))
-                .ToList();
-        }
-
-        private List<EmployerSearchModel> ConvertSearchCachedOrganisationsToEmployerSearchModels(
-            List<SearchCachedOrganisation> organisations)
-        {
-            return organisations.Select(
-                    org =>
-                    {
-                        var organisation =
-                            dataRepository.Get<Organisation>(org.OrganisationId);
-                        string[] sicSectionNames = organisation.GetSicCodes()
-                            .Select(s => s.SicCode.SicSection.Description)
-                            .UniqueI()
-                            .ToArray();
-
-                        string previousName = org.OrganisationNames.Count > 1
-                            ? org.OrganisationNames[1].OriginalValue
-                            : null;
-
-                        return new EmployerSearchModel
-                        {
-                            OrganisationIdEncrypted = org.EncryptedId,
-                            Name = org.OrganisationName.OriginalValue,
-                            PreviousName = previousName,
-                            Address = organisation.GetLatestAddress()?.GetAddressString(),
-                            SicSectionNames = sicSectionNames
-                        };
-                    })
-                .ToList();
         }
 
     }
