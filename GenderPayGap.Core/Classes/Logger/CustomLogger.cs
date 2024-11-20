@@ -56,7 +56,7 @@ namespace GenderPayGap.Core.Classes.Logger
             }
             catch (JsonSerializationException ex)
             {
-                Error("SERILOG ERROR: Can't serialize values");
+                Error("SERILOG ERROR: Can't serialize values " + ex.Path);
                 throw;
             }
 

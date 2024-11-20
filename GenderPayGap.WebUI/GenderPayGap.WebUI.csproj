@@ -23,18 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
     <Content Include=".platform\nginx\conf.d\elasticbeanstalk\00_application.conf" CopyToOutputDirectory="Always" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Remove="Sentry" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".ebextensions\upgrade-nginx.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\Shared\Patterns\ManageOrganisationBreadcrumbs.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,8 +81,6 @@
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
 
-    <PackageReference Include="AutoMapper" Version="10.0.0" />
-
     <PackageReference Include="AWSSDK.S3" Version="3.3.111.26" />
 
     <PackageReference Include="CsvHelper" Version="15.0.5" />
@@ -99,24 +92,19 @@
 
     <PackageReference Include="Kent.Cryptography.Obfuscation" Version="2.0.0" />
 
-    <PackageReference Include="Lindhart.Analyser.MissingAwaitWarning" Version="1.2.0" />
-
-    <PackageReference Include="Microsoft.AspNetCore.Buffering" Version="0.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.6" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.6" />
 
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 
     <PackageReference Include="GovukNotify" Version="4.0.0" />
-    <PackageReference Include="JWT" Version="7.3.1" />
+    <PackageReference Include="JWT" Version="7.3.1" /><!-- Used by GovukNotify -->
     
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.Network" Version="2.0.2.68" />
 
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.1.8" />
     <PackageReference Include="Sentry" Version="3.28.1" />
     <PackageReference Include="Sentry.AspNetCore" Version="3.28.1" />
   </ItemGroup>
@@ -125,29 +113,6 @@
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
     <PackageReference Include="CabinetOffice.GovUkDesignSystem" Version="1.0.0-4ef46d7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Organisation\ManageOrganisationBreadcrumbs.cshtml" />
-    <_ContentIncludedByDefault Remove="site\Web.config" />
-    <_ContentIncludedByDefault Remove="site\Web.Debug.config" />
-    <_ContentIncludedByDefault Remove="site\Web.loadtest.config" />
-    <_ContentIncludedByDefault Remove="site\Web.Release.config" />
-    <_ContentIncludedByDefault Remove="site\appsettings.DEV.json" />
-    <_ContentIncludedByDefault Remove="site\appsettings.json" />
-    <_ContentIncludedByDefault Remove="site\appsettings.LOCAL.json" />
-    <_ContentIncludedByDefault Remove="site\appsettings.PREPROD.json" />
-    <_ContentIncludedByDefault Remove="site\appsettings.PROD.json" />
-    <_ContentIncludedByDefault Remove="site\appsettings.TEST.json" />
-    <_ContentIncludedByDefault Remove="site\build-number.json" />
-    <_ContentIncludedByDefault Remove="site\GenderPayGap.WebUI.deps.json" />
-    <_ContentIncludedByDefault Remove="site\GenderPayGap.WebUI.runtimeconfig.json" />
-    <_ContentIncludedByDefault Remove="site\package-lock.json" />
-    <_ContentIncludedByDefault Remove="site\package.json" />
-    <_ContentIncludedByDefault Remove="site\runtimeConfig.template.json" />
   </ItemGroup>
 
 </Project>

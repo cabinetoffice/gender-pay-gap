@@ -257,7 +257,6 @@ namespace GenderPayGap.WebUI
             app.UseForwardedHeaders();
             if (Config.IsLocal())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -283,7 +282,7 @@ namespace GenderPayGap.WebUI
 
             app.UseRouting();
             app.UseResponseCaching();
-            app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters
+            // app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters
             app.UseSession(); //Must be before UseMvC or any middleware which requires session
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
             app.UseAuthorization();
