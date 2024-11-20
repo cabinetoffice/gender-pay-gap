@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
@@ -7,10 +6,11 @@ using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ErrorHandling;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
-using Microsoft.Extensions.Primitives;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
@@ -19,6 +19,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
     [SetCulture("en-GB")]
     public class PasswordResetControllerTests
     {
+
+        [SetUp]
+        public void BeforeEach()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
 
         [Test]
         [Description("POST: Password reset email is sent when valid email address is provided")]
@@ -108,7 +114,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
             controller.ChooseNewPasswordPost(new ChooseNewPasswordViewModel { ResetCode = "code", NewPassword = "NewPassword1", ConfirmNewPassword = "NewPassword1"});
             
             // Assert
-            Assert.AreEqual(Crypto.GetPBKDF2("NewPassword1", Convert.FromBase64String(user.Salt)), user.PasswordHash);
+            Assert.AreEqual(PasswordHelper.GetPBKDF2("NewPassword1", Convert.FromBase64String(user.Salt)), user.PasswordHash);
             Assert.IsNull(user.PasswordResetCode);
             
             Assert.AreEqual(1, controllerBuilder.EmailsSent.Count);

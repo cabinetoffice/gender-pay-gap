@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Compare;
@@ -182,7 +179,7 @@ namespace GenderPayGap.WebUI.Controllers
                         {
                             EmployerName = organisation.OrganisationName,
                             ReportStatus = reportStatusTag.ToString(),
-                            NumberOfEmployees = hasEmployerReportedForYear ? returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name : "",
+                            NumberOfEmployees = hasEmployerReportedForYear ? returnForYear.OrganisationSize.GetDisplayName() : "",
                             
                             GenderPayGap_HourlyPay_Mean_Percent = hasEmployerReportedForYear ? returnForYear.DiffMeanHourlyPayPercent.ToString() : "",
                             GenderPayGap_HourlyPay_Median_Percent = hasEmployerReportedForYear ? returnForYear.DiffMedianHourlyPercent.ToString() : "",

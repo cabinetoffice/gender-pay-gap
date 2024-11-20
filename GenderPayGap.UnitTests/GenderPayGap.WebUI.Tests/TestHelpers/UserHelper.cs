@@ -1,8 +1,6 @@
 ﻿using System;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
-using Moq;
 
 namespace GenderPayGap.Tests.TestHelpers
 {

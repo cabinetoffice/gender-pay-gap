@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -271,7 +269,7 @@ namespace GenderPayGap.WebUI.Controllers
 
                 CompanyLinkToGPGInfo = returnForYear.CompanyLinkToGPGInfo,
                 ResponsiblePerson = returnForYear.ResponsiblePerson,
-                OrganisationSize = returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
+                OrganisationSize = returnForYear.OrganisationSize.GetDisplayName(),
             };
         }
 
@@ -590,7 +588,7 @@ namespace GenderPayGap.WebUI.Controllers
                             .OrderByDescending(r => r.StatusDate)
                             .FirstOrDefault(r => r.Status == ReturnStatuses.Submitted);
 
-                        record.Size = latestReturn?.OrganisationSize.GetAttribute<DisplayAttribute>().Name;
+                        record.Size = latestReturn?.OrganisationSize.GetDisplayName();
                         record.FirstName = latestUserOrg?.User.Firstname;
                         record.LastName = latestUserOrg?.User.Lastname;
                         record.JobTitle = latestUserOrg?.User.JobTitle;

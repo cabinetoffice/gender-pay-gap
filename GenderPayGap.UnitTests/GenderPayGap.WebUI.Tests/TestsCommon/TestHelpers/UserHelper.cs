@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Helpers;
 
 namespace GenderPayGap.Tests.Common.TestHelpers
 {
@@ -13,7 +14,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
         public static List<User> CreateUsers()
         {
             byte[] salt = Convert.FromBase64String("TestSalt");
-            string passwordHash = Crypto.GetPBKDF2("ad5bda75-e514-491b-b74d-4672542cbd15", salt);
+            string passwordHash = PasswordHelper.GetPBKDF2("ad5bda75-e514-491b-b74d-4672542cbd15", salt);
 
             return new List<User> {
                 new User {

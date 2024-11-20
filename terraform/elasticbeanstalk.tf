@@ -428,6 +428,12 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DefaultEncryptionIv"
+    value     = var.ELB_DEFAULT_ENCRYPTION_IV
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DisableSearchCache"
     value     = var.ELB_DISABLE_SEARCH_CACHE
   }

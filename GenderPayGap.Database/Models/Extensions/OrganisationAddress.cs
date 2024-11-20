@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Database
 {
@@ -16,42 +15,42 @@ namespace GenderPayGap.Database
 
             if (!string.IsNullOrWhiteSpace(address.Address1))
             {
-                list.Add(address.Address1.TrimI());
+                list.Add(address.Address1.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(address.Address2))
             {
-                list.Add(address.Address2.TrimI());
+                list.Add(address.Address2.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(address.Address3))
             {
-                list.Add(address.Address3.TrimI());
+                list.Add(address.Address3.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(address.TownCity))
             {
-                list.Add(address.TownCity.TrimI());
+                list.Add(address.TownCity.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(address.County))
             {
-                list.Add(address.County.TrimI());
+                list.Add(address.County.Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(address.Country))
             {
-                list.Add(address.Country.TrimI());
+                list.Add(address.Country.Trim());
             }
             
             if (!string.IsNullOrWhiteSpace(address.GetPostCodeInAllCaps()))
             {
-                list.Add(address.GetPostCodeInAllCaps().TrimI());
+                list.Add(address.GetPostCodeInAllCaps().Trim());
             }
 
             if (!string.IsNullOrWhiteSpace(address.PoBox))
             {
-                list.Add(address.PoBox.TrimI());
+                list.Add(address.PoBox.Trim());
             }
 
             return list;
@@ -80,7 +79,7 @@ namespace GenderPayGap.Database
 
         public string GetAddressString(string delimiter = ", ")
         {
-            return this.GetAddressLines().ToDelimitedString(delimiter);
+            return string.Join(delimiter, this.GetAddressLines());
         }
 
         public bool AddressMatches(OrganisationAddress other)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GenderPayGap.Core.Models
+namespace GenderPayGap.WebUI.Models.Account
 {
 
     public class ChangeEmailVerificationToken

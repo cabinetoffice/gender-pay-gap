@@ -6,7 +6,7 @@
 @model GenderPayGap.WebUI.Models.AddOrganisation.AddOrganisationAlreadyRegisteringViewModel
 @{
     UserOrganisation userOrg = Model.ExistingUserOrganisation;
-    string encryptedOrgId = Encryption.EncryptQuerystring(userOrg.OrganisationId.ToString());
+    string encryptedOrgId = Encryption.EncryptId(userOrg.OrganisationId);
 
     ViewBag.Title = userOrg.PINConfirmedDate.HasValue
         ? "You are already registered - Gender pay gap service"

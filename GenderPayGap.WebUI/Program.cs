@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,10 +32,10 @@ namespace GenderPayGap.WebUI
             IWebHost host = BuildWebHost(args);
 
             // Set the minumum threads 
-            Console.WriteLine(Extensions.AspNetCore.Extensions.SetThreadCount());
+            Console.WriteLine(ThreadCountHelper.SetThreadCount());
 
             // Show thread availability
-            Console.WriteLine(Extensions.AspNetCore.Extensions.GetThreadCount());
+            Console.WriteLine(ThreadCountHelper.GetThreadCount());
 
             // Run the webhost
             host.Run();
@@ -44,11 +45,11 @@ namespace GenderPayGap.WebUI
         {
             var ex = e.ExceptionObject as Exception;
 
-            Console.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ex.GetDetailsText()}");
-            Debug.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ex.GetDetailsText()}");
+            Console.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ExceptionDetailsHelper.GetDetailsText(ex)}");
+            Debug.WriteLine($"UNHANDLED EXCEPTION ({Console.Title}): {ex.Message}{Environment.NewLine}{ExceptionDetailsHelper.GetDetailsText(ex)}");
 
             //Show thread availability
-            Console.WriteLine(Extensions.AspNetCore.Extensions.GetThreadCount());
+            Console.WriteLine(ThreadCountHelper.GetThreadCount());
 
             throw ex;
         }
@@ -100,7 +101,7 @@ namespace GenderPayGap.WebUI
 
             //Build the configuration
             Config.Configuration = Config.Build(configBuilder);
-            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey);
+            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey, Global.DefaultEncryptionIv);
         }
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)

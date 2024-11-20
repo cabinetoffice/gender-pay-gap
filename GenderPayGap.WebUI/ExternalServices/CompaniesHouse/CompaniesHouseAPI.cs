@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using GenderPayGap.Core;
-using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Helpers;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
@@ -36,7 +36,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
 
         public CompaniesHouseCompany GetCompany(string companyNumber)
         {
-            if (companyNumber.IsNumber())
+            if (IsDigits(companyNumber))
             {
                 companyNumber = companyNumber.PadLeft(8, '0');
             }
@@ -92,7 +92,7 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
             httpClient.BaseAddress = BaseUri;
 
             httpClient.DefaultRequestHeaders.Clear();
-            httpClient.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(ApiKey, "");
+            httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderHelper.GetBasicAuthenticationHeaderValue(ApiKey, "");
             httpClient.DefaultRequestHeaders.ConnectionClose = false;
             ServicePointManager.FindServicePoint(httpClient.BaseAddress).ConnectionLeaseTimeout = 60 * 1000;
         }
@@ -105,6 +105,16 @@ namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
                     3,
                     retryAttempt =>
                         TimeSpan.FromMilliseconds(new Random().Next(1, 1000)) + TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        }
+
+        private static bool IsDigits(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return false;
+            }
+
+            return Regex.IsMatch(input, "^\\d+$");
         }
 
     }

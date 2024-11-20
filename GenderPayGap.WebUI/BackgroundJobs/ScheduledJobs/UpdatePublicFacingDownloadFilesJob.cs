@@ -9,9 +9,10 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;
+using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Models.Download;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
@@ -66,7 +67,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                 CustomLogger.Information($"UpdateDownloadFiles: - Converting Returns into results");
                 List<DownloadResult> downloadData = returns.ToList()
-                    .Select(r => r.ToDownloadResult())
+                    .Select(r => ToDownloadResult(r))
                     .OrderBy(d => d.EmployerName)
                     .ToList();
 
@@ -118,6 +119,39 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
                     return null;
                 });
+        }
+
+        private static DownloadResult ToDownloadResult(Return ret)
+        {
+            return new DownloadResult {
+                EmployerName = ret.Organisation.GetName(ret.StatusDate)?.Name ?? ret.Organisation.OrganisationName,
+                EmployerId = ret.OrganisationId,
+                Address = ret.Organisation.GetLatestAddress()?.GetAddressString(),
+                PostCode = ret.Organisation.GetLatestAddress()?.GetPostCodeInAllCaps(),
+                CompanyNumber = ret.Organisation?.CompanyNumber,
+                SicCodes = ret.Organisation?.GetSicCodeIdsString(ret.StatusDate, "," + Environment.NewLine),
+                DiffMeanHourlyPercent = ret.DiffMeanHourlyPayPercent,
+                DiffMedianHourlyPercent = ret.DiffMedianHourlyPercent,
+                DiffMeanBonusPercent = ret.DiffMeanBonusPercent,
+                DiffMedianBonusPercent = ret.DiffMedianBonusPercent,
+                MaleBonusPercent = ret.MaleMedianBonusPayPercent,
+                FemaleBonusPercent = ret.FemaleMedianBonusPayPercent,
+                MaleLowerQuartile = ret.MaleLowerPayBand,
+                FemaleLowerQuartile = ret.FemaleLowerPayBand,
+                MaleLowerMiddleQuartile = ret.MaleMiddlePayBand,
+                FemaleLowerMiddleQuartile = ret.FemaleMiddlePayBand,
+                MaleUpperMiddleQuartile = ret.MaleUpperPayBand,
+                FemaleUpperMiddleQuartile = ret.FemaleUpperPayBand,
+                MaleTopQuartile = ret.MaleUpperQuartilePayBand,
+                FemaleTopQuartile = ret.FemaleUpperQuartilePayBand,
+                CompanyLinkToGPGInfo = ret.CompanyLinkToGPGInfo,
+                ResponsiblePerson = ret.ResponsiblePerson,
+                EmployerSize = ret.OrganisationSize.GetDisplayName(),
+                CurrentName = ret.Organisation?.OrganisationName,
+                SubmittedAfterTheDeadline = ret.IsLateSubmission,
+                DueDate = ret.GetDueDate(),
+                DateSubmitted = ret.Modified
+            };
         }
 
     }

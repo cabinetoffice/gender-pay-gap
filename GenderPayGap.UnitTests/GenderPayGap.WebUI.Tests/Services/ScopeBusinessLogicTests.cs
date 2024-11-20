@@ -84,7 +84,10 @@ namespace GenderPayGap.Tests
                     }
                 });
 
-            testOrgData.ForEach(o => o.OrganisationScopes = testOrgScopeData.Where(os => o.OrganisationId == os.OrganisationId).ToList());
+            foreach (Organisation organisation in testOrgData)
+            {
+                organisation.OrganisationScopes = testOrgScopeData.Where(os => organisation.OrganisationId == os.OrganisationId).ToList();
+            }
         }
 
         #endregion

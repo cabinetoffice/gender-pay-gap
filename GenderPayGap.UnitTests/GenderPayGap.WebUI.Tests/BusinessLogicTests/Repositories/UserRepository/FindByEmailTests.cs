@@ -2,10 +2,12 @@
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Services;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using Moq;
 using NUnit.Framework;
 
@@ -20,6 +22,8 @@ namespace Repositories.UserRepository
         [SetUp]
         public void BeforeEach()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
+            
             // mock data 
             mockDataRepo = new Mock<IDataRepository>().SetupGetAll(UserHelpers.CreateUsers());
 

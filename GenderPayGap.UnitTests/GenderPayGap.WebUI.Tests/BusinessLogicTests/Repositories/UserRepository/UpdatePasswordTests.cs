@@ -6,7 +6,9 @@ using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Services;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using Moq;
 using NUnit.Framework;
 
@@ -21,6 +23,8 @@ namespace Repositories.UserRepository
         [SetUp]
         public void BeforeEach()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
+            
             // mock data 
             mockDataRepo = new Mock<IDataRepository>().SetupGetAll(UserHelpers.CreateUsers());
 
@@ -53,7 +57,7 @@ namespace Repositories.UserRepository
 
             // Assert
             Assert.IsTrue(saveChangesCalled, "Expected SaveChanges to be called");
-            Assert.AreEqual(Crypto.GetPBKDF2(testPassword, Convert.FromBase64String(testUserToUpdate.Salt)), testUserToUpdate.PasswordHash, "Expected to change password");
+            Assert.AreEqual(PasswordHelper.GetPBKDF2(testPassword, Convert.FromBase64String(testUserToUpdate.Salt)), testUserToUpdate.PasswordHash, "Expected to change password");
             Assert.AreEqual(HashingAlgorithm.PBKDF2, testUserToUpdate.HashingAlgorithm, "Expected hashing algorithm to change");
         }
 
@@ -66,7 +70,7 @@ namespace Repositories.UserRepository
             // Arrange
             User testUserToUpdate = testUserRepo.FindByEmail(testCurrentEmail);
             DateTime testEmailVerifiedDate = VirtualDateTime.Now.Date.AddDays(-7);
-            string testExistingPasswordHash = Crypto.GetPBKDF2("ExistingPassword123", Convert.FromBase64String(testUserToUpdate.Salt));
+            string testExistingPasswordHash = PasswordHelper.GetPBKDF2("ExistingPassword123", Convert.FromBase64String(testUserToUpdate.Salt));
             testUserToUpdate.PasswordHash = testExistingPasswordHash;
             testUserToUpdate.Status = testStatus;
 

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using System.Web;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Extensions;
+using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
@@ -50,14 +49,12 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public void LoadComparedEmployersFromCookie()
         {
-            string value = httpContext.GetRequestCookieValue(CookieNames.LastCompareQuery);
-
-            if (string.IsNullOrWhiteSpace(value))
+            if (!httpContext.Request.Cookies.TryGetValue(CookieNames.LastCompareQuery, out string cookieValue))
             {
-                return;
+                cookieValue = "";
             }
 
-            string[] employerIds = value.SplitI(",");
+            string[] employerIds = cookieValue.Split(",");
 
             ComparedEmployers.Clear();
             foreach (string employerId in employerIds)
@@ -85,7 +82,8 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         public void SaveComparedEmployersToCookie()
         {
             //Save into the cookie
-            httpContext.SetResponseCookie(
+            HttpContextHelper.SetResponseCookie(
+                httpContext,
                 CookieNames.LastCompareQuery,
                 string.Join(',', ComparedEmployers),
                 VirtualDateTime.Now.AddMonths(1),

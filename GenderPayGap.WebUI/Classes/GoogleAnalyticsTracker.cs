@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Web;
-using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
@@ -63,11 +61,11 @@ namespace GenderPayGap.WebUI.Classes
 
             if (string.IsNullOrWhiteSpace(pageUrl))
             {
-                pageUrl = controller.HttpContext.GetUri().ToString();
+                pageUrl = $"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}";
             }
-            else if (!pageUrl.IsUrl())
+            else if (!IsUrl(pageUrl))
             {
-                pageUrl = Url.RelativeToAbsoluteUrl(pageUrl, controller.HttpContext.GetUri());
+                pageUrl = RelativeToAbsoluteUrl(pageUrl, new Uri($"{controller.HttpContext.Request.Path}{controller.HttpContext.Request.QueryString}"));
             }
 
             SendPageViewTracking(pageTitle, pageUrl);
@@ -86,12 +84,13 @@ namespace GenderPayGap.WebUI.Classes
                 throw new ArgumentNullException(nameof(url));
             }
 
-            if (!url.IsUrl())
+            if (!IsUrl(url))
             {
                 throw new ArgumentException("Url is not absolute", nameof(url));
             }
 
-            var postData = new List<KeyValuePair<string, string>> {
+            var postData = new List<KeyValuePair<string, string>>
+            {
                 new KeyValuePair<string, string>("v", googleVersion),
                 new KeyValuePair<string, string>("tid", googleTrackingId),
                 new KeyValuePair<string, string>("cid", googleClientId),
@@ -120,6 +119,47 @@ namespace GenderPayGap.WebUI.Classes
                     6,
                     retryAttempt =>
                         TimeSpan.FromMilliseconds(new Random().Next(1, 1000)) + TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        }
+
+        private static bool IsUrl(string url)
+        {
+            try
+            {
+                if (!url.StartsWith("http:") && !url.StartsWith("https:") && !url.StartsWith("file:"))
+                {
+                    return false;
+                }
+
+                var uri = new Uri(url, UriKind.Absolute);
+                return uri.IsAbsoluteUri;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static string RelativeToAbsoluteUrl(string relativeUrl, Uri baseUrl)
+        {
+            if (baseUrl == null)
+            {
+                throw new ArgumentNullException(nameof(baseUrl));
+            }
+
+            if (relativeUrl.StartsWith("http://") || relativeUrl.StartsWith("https://"))
+            {
+                return relativeUrl;
+            }
+
+            if (!relativeUrl.StartsWith("/"))
+            {
+                relativeUrl += $"/{relativeUrl}";
+            }
+
+            var baseUri = new Uri($"{baseUrl.Scheme}://{baseUrl.Authority}/");
+            var absoluteUri = new Uri(baseUri, relativeUrl);
+            
+            return absoluteUri.ToString();
         }
 
     }

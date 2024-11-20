@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
-using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -201,14 +198,16 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             organisation.OrganisationSicCodes.Clear();
             
             // Change snapshot date for all organisation scopes to match new sector
-            organisation.OrganisationScopes.ForEach(
-                scope => scope.SnapshotDate = organisation.SectorType.GetAccountingStartDate(scope.SnapshotDate.Year)
-            );
+            foreach (OrganisationScope scope in organisation.OrganisationScopes)
+            {
+                scope.SnapshotDate = organisation.SectorType.GetAccountingStartDate(scope.SnapshotDate.Year);
+            }
             
             // Change accounting date for all returns to match new sector
-            organisation.Returns.ForEach(
-                returnItem => returnItem.AccountingDate = organisation.SectorType.GetAccountingStartDate(returnItem.AccountingDate.Year)
-            );
+            foreach (Return returnItem in organisation.Returns)
+            {
+                returnItem.AccountingDate = organisation.SectorType.GetAccountingStartDate(returnItem.AccountingDate.Year);
+            }
 
             dataRepository.SaveChanges();
 

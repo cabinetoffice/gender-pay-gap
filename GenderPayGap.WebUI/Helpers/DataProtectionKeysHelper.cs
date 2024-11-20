@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Xml.Linq;
 using Autofac;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
@@ -28,7 +27,7 @@ namespace GenderPayGap.WebUI.Helpers
 
         public IReadOnlyCollection<XElement> GetAllElements()
         {
-            IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            IDataRepository dataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
             
             List<DataProtectionKey> dataProtectionKeys = dataRepository.GetAll<DataProtectionKey>()
                 .ToList();
@@ -57,7 +56,7 @@ namespace GenderPayGap.WebUI.Helpers
                 Xml = encryptedKey
             };
 
-            IDataRepository dataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            IDataRepository dataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
             dataRepository.Insert(dataProtectionKey);
             dataRepository.SaveChanges();
         }

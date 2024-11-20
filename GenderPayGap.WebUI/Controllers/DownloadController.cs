@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs;
 using GenderPayGap.WebUI.Classes;

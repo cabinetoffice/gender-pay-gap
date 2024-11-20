@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using GenderPayGap.Core;
@@ -8,7 +7,6 @@ using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;
@@ -78,7 +76,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                         Late = ret.IsLateSubmission,
                         LateReason = ret.LateReason,
 
-                        Employees = ret.OrganisationSize.GetAttribute<DisplayAttribute>().Name,
+                        Employees = ret.OrganisationSize.GetDisplayName(),
 
                         HourlyPayGapMean = ret.DiffMeanHourlyPayPercent,
                         HourlyPayGapMedian = ret.DiffMedianHourlyPercent,

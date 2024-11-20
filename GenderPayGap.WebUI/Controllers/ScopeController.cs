@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.ManageOrganisations;
 using GenderPayGap.WebUI.Models.Scope;
@@ -241,7 +238,10 @@ namespace GenderPayGap.WebUI.Controllers
 
         public void RetireOldScopes(Organisation organisation, int reportingYear)
         {
-            organisation.OrganisationScopes.Where(o => o.SnapshotDate.Year == reportingYear).ForEach(s => s.Status = ScopeRowStatuses.Retired);
+            foreach (OrganisationScope s in organisation.OrganisationScopes.Where(o => o.SnapshotDate.Year == reportingYear))
+            {
+                s.Status = ScopeRowStatuses.Retired;
+            }
         }
 
         public void UpdateScopes(Organisation organisation, ScopeStatuses newStatus, int reportingYear, string reasonForChange, bool? haveReadGuidance)

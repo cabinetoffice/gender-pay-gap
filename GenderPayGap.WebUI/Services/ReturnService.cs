@@ -2,11 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
-using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Services
@@ -90,7 +89,7 @@ namespace GenderPayGap.WebUI.Services
         {
             Organisation organisation = dataRepository.Get<Organisation>(draftReturn.OrganisationId);
             Return existingReturn = organisation.GetReturn(draftReturn.SnapshotYear);
-            var organisationSizeRange = draftReturn.OrganisationSize?.GetAttribute<RangeAttribute>();
+            RangeAttribute organisationSizeRange = draftReturn.OrganisationSize?.GetRange();
 
             var newReturn = new Return
             {

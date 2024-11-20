@@ -19,7 +19,7 @@ namespace GenderPayGap.WebUI.Helpers
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (System.Web.HttpContext.GetUri(httpContext).PathAndQuery.StartsWith("/health-check"))
+            if (httpContext.Request.Path.Value.StartsWith("/health-check"))
             {
                 await _next.Invoke(httpContext);
                 return;

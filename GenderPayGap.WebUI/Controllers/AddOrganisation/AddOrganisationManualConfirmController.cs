@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
@@ -8,7 +7,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -120,7 +118,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         private IActionResult RedirectToConfirmationPage(UserOrganisation userOrganisation)
         {
             string confirmationId = $"{userOrganisation.UserId}:{userOrganisation.OrganisationId}";
-            string encryptedConfirmationId = Encryption.EncryptQuerystring(confirmationId);
+            string encryptedConfirmationId = Encryption.EncryptString(confirmationId);
             return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { confirmationId = encryptedConfirmationId });
         }
 

@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
-using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
-using Microsoft.Extensions.Primitives;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Account
@@ -22,6 +20,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         [SetUp]
         public void Setup()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
             VirtualDateTime.Initialise(Config.OffsetCurrentDateTimeForSite());
         }
 

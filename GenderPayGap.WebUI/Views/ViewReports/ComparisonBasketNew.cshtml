@@ -30,7 +30,7 @@
                 </a>
             </li>
             <li>
-                <a href="@Url.Action("ClearEmployers", "CompareEmployers", new {returnUrl = Context.GetUri().PathAndQuery})"
+                <a href="@Url.Action("ClearEmployers", "CompareEmployers", new {returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}"})"
                    class="govuk-link">
                     Clear list
                 </a>

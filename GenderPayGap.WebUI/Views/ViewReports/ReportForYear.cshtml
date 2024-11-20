@@ -4,7 +4,6 @@
 @using GenderPayGap.WebUI.Helpers
 @using GenderPayGap.Core
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using System.ComponentModel.DataAnnotations
 @model GenderPayGap.Database.Return
 
 @{
@@ -494,7 +493,7 @@
                     Employee headcount
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.OrganisationSize.GetAttribute<DisplayAttribute>().Name) employees
+                    @(Model.OrganisationSize.GetDisplayName()) employees
                 </dd>
             </div>
             @if (Model.Organisation.SectorType == SectorTypes.Private)

@@ -8,7 +8,7 @@
 }
 
 @{
-    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string encryptedOrganisationId = Encryption.EncryptId(Model.Organisation.OrganisationId);
     string reportingYearsString = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear.Year);
     string reason = Model.WhyOutOfScope == WhyOutOfScope.Under250
         ? "My organisation had fewer than 250 employees on " + Model.ReportingYear.ToString("d MMMM yyyy")

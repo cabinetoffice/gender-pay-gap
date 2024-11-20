@@ -12,7 +12,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Database.Backup;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -153,7 +152,7 @@ namespace GenderPayGap.WebUI.Controllers
             var httpClient = new HttpClient();
             if (!string.IsNullOrWhiteSpace(viewModel.BasicAuthUsername) && !string.IsNullOrWhiteSpace(viewModel.BasicAuthPassword))
             {
-                httpClient.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(viewModel.BasicAuthUsername, viewModel.BasicAuthPassword);
+                httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderHelper.GetBasicAuthenticationHeaderValue(viewModel.BasicAuthUsername, viewModel.BasicAuthPassword);
             }
             string requestUrl = $"https://{viewModel.Hostname}/admin/data-migration/export-all?password={viewModel.Password}";
             string responseString = httpClient.GetStringAsync(requestUrl).Result;
@@ -266,7 +265,7 @@ namespace GenderPayGap.WebUI.Controllers
             InsertData(allData.ReminderEmails);
 
             WriteParagraph($"Starting Organisations and OrganisationPublicSectorTypes");
-            var newDataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            var newDataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
             newDataRepository.Insert(allData.Organisations);
             newDataRepository.Insert(allData.OrganisationPublicSectorTypes);
             newDataRepository.SaveChanges();
@@ -313,7 +312,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private void InsertData<T>(List<T> items) where T : class
         {
-            var newDataRepository = Global.ContainerIoC.Resolve<IDataRepository>();
+            var newDataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
 
             newDataRepository.Insert(items);
 

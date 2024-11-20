@@ -112,6 +112,10 @@ namespace GenderPayGap.Core
         {
             return scopeStatus == ScopeStatuses.InScope || scopeStatus == ScopeStatuses.PresumedInScope;
         }
+        public static bool IsOutOfScopeVariant(this ScopeStatuses scopeStatus)
+        {
+            return scopeStatus == ScopeStatuses.OutOfScope || scopeStatus == ScopeStatuses.PresumedOutOfScope;
+        }
         
         public static bool IsScopePresumed(this ScopeStatuses scopeStatus)
         {
@@ -150,6 +154,27 @@ namespace GenderPayGap.Core
         [Range(20000, int.MaxValue)]
         Employees20000OrMore = 6
 
+    }
+
+    public static class OrganisationSizesExtensions
+    {
+        public static string GetDisplayName(this OrganisationSizes organisationSize)
+        {
+            DisplayAttribute displayAttribute = organisationSize.GetType()
+                .GetMember(organisationSize.ToString())
+                .FirstOrDefault()
+                ?.GetCustomAttribute<DisplayAttribute>();
+                
+            return displayAttribute?.Name;
+        }
+        
+        public static RangeAttribute GetRange(this OrganisationSizes organisationSize)
+        {
+            return organisationSize.GetType()
+                .GetMember(organisationSize.ToString())
+                .FirstOrDefault()
+                ?.GetCustomAttribute<RangeAttribute>();
+        }
     }
 
     public enum AuditedAction

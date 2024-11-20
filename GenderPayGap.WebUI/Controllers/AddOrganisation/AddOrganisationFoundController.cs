@@ -201,7 +201,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         private IActionResult RedirectToConfirmationPage(UserOrganisation userOrganisation)
         {
             string confirmationId = $"{userOrganisation.UserId}:{userOrganisation.OrganisationId}";
-            string encryptedConfirmationId = Encryption.EncryptQuerystring(confirmationId);
+            string encryptedConfirmationId = Encryption.EncryptString(confirmationId);
             return RedirectToAction("Confirmation", "AddOrganisationConfirmation", new { confirmationId = encryptedConfirmationId });
         }
 

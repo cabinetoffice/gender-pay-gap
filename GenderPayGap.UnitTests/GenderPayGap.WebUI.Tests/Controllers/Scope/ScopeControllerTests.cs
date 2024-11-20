@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
-using Microsoft.Extensions.Primitives;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Scope
@@ -14,6 +13,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
     [SetCulture("en-GB")]
     public class ScopeControllerTests
     {
+
+        [SetUp]
+        public void BeforeEach()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
 
         [Test]
         [Description("POST: Existing scopes are retired when a new scope is added")]
@@ -39,7 +44,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
                 .Build();
 
             // Act
-            string encryptedOrganisationId = Encryption.EncryptQuerystring(organisation.OrganisationId.ToString());
+            string encryptedOrganisationId = Encryption.EncryptId(organisation.OrganisationId);
             controller.ConfirmOutOfScopeAnswers(encryptedOrganisationId, 2018, new ScopeViewModel());
             
             // Assert

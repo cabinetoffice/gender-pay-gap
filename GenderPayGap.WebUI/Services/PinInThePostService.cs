@@ -5,7 +5,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.ExternalServices;
 using Microsoft.AspNetCore.Mvc;
 using Notify.Models.Responses;
@@ -27,7 +26,7 @@ namespace GenderPayGap.WebUI.Services
 
         public bool GenerateAndSendPinInThePostAndUpdateUserOrganisationWithLetterId(UserOrganisation userOrganisation, IUrlHelper urlHelper)
         {
-            string pin = Crypto.GeneratePinInThePost();
+            string pin = GeneratePinInThePost();
 
             bool sendSuccess = SendPinInThePost(urlHelper, userOrganisation, pin, out string letterId);
 
@@ -55,7 +54,8 @@ namespace GenderPayGap.WebUI.Services
             DateTime pinExpiryDate = VirtualDateTime.Now.AddDays(Global.PinInPostExpiryDays);
 
 
-            var personalisation = new Dictionary<string, dynamic> {
+            var personalisation = new Dictionary<string, dynamic>
+            {
                 {"address_line_1", userFullNameAndJobTitle},
                 {"address_line_2", companyName},
                 {"address_line_3", address.Count > 0 ? address[0] : ""},
@@ -183,6 +183,21 @@ namespace GenderPayGap.WebUI.Services
                     return;
                 }
             }
+        }
+
+        public static string GeneratePinInThePost()
+        {
+            string pin = "";
+
+            while (pin.Length < 7)
+            {
+                int randomIndex = new Random().Next(Global.PINChars.Length);
+                char nextCharacter = Global.PINChars[randomIndex];
+                
+                pin += nextCharacter;
+            }
+            
+            return pin;
         }
 
     }

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
 using Autofac;
-using Autofac.Features.AttributeFilters;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -37,8 +34,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -46,26 +41,21 @@ using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace GenderPayGap.WebUI.Tests.TestHelpers
 {
     public static class UiTestHelper
     {
 
-        private const string Url = "https://localhost/";
-        public static IContainer DIContainer;
         public static Mock<IBackgroundJobsApi> MockBackgroundJobsApi;
-
-        public static Uri Uri => new Uri(Url, UriKind.Absolute);
 
         public static T GetController<T>(long userId = 0, RouteData routeData = null, params object[] dbObjects)
             where T : Controller
         {
-            DIContainer = BuildContainerIoC(dbObjects);
+            IContainer DIContainer = BuildContainerIoC(dbObjects);
 
             //Create Inversion of Control container
-            Global.ContainerIoC = DIContainer;
+            Startup.ContainerIoC = DIContainer;
 
             //Mock UserId as claim
             var claims = new List<Claim>();
@@ -115,7 +105,8 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             var requestHeaders = new HeaderDictionary();
             var requestCookies = new MockRequestCookieCollection(
-                new Dictionary<string, string> {
+                new Dictionary<string, string>
+                {
                     {
                         "cookie_settings",
                         JsonConvert.SerializeObject(
@@ -145,7 +136,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             responseMock.SetupGet(x => x.Cookies).Returns(responseCookies.Object);
 
             //Mock session
-            var uri = new UriBuilder(Uri);
+            var uri = new UriBuilder(new Uri("https://localhost/", UriKind.Absolute));
 
             //Mock HttpContext
             var httpContextMock = new Mock<HttpContext>();
@@ -173,18 +164,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             //var controllerContextMock = new Mock<ControllerContext>();
             var controllerContextMock = new ControllerContext {HttpContext = httpContextMock.Object, RouteData = routeData};
-
-            if (routeData == null)
-            {
-                routeData = new RouteData();
-            }
-
-            //Mock IHttpContextAccessor
-            Mock<IHttpContextAccessor> mockHttpContextAccessor = DIContainer.Resolve<IHttpContextAccessor>().GetMockFromObject();
-            mockHttpContextAccessor.SetupGet(a => a.HttpContext).Returns(httpContextMock.Object);
-
-            //Configure the global HttpContext using the mock accessor
-            System.Web.HttpContext.Configure(mockHttpContextAccessor.Object);
 
             //Create and return the controller
             var controller = DIContainer.Resolve<T>();
@@ -271,68 +250,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             return container;
         }
 
-        public static void Bind(this Controller controller, object Model)
-        {
-            var validationContext = new ValidationContext(Model, null, null);
-            var validationResults = new List<ValidationResult>();
-            Validator.TryValidateObject(Model, validationContext, validationResults, true);
-            foreach (ValidationResult validationResult in validationResults)
-            {
-                controller.ModelState.AddModelError(string.Join(", ", validationResult.MemberNames), validationResult.ErrorMessage);
-            }
-        }
-
-        /// <summary>
-        ///     Adds a new mock url to the action method of an existing or new Mock URl helper of the controller
-        /// </summary>
-        /// <param name="controller">The source controller to add the mock setup</param>
-        /// <param name="url">The url to be returned by the Action method</param>
-        /// <param name="actionName">The name of the action to mock. If null tries to get from Controller.RoutData.</param>
-        /// <param name="controllerName">
-        ///     The name of the action to mock. If null tries to get from Controller.RoutData, then uses
-        ///     the Controller name.
-        /// </param>
-        public static void AddMockUriHelper(this Controller controller, string url, string actionName = null, string controllerName = null)
-        {
-            actionName = actionName ?? controller.RouteData?.Values["Action"].ToStringOrNull();
-            if (string.IsNullOrWhiteSpace(actionName))
-            {
-                throw new ArgumentNullException(nameof(actionName));
-            }
-
-            controllerName = controllerName ?? controller.RouteData?.Values["Controller"].ToStringOrNull();
-            if (string.IsNullOrWhiteSpace(controllerName))
-            {
-                controllerName = controller.GetType().Name;
-            }
-
-            if (string.IsNullOrWhiteSpace(controllerName))
-            {
-                throw new ArgumentNullException(nameof(controllerName));
-            }
-
-            if (controllerName != null)
-            {
-                controllerName = controllerName.Replace("Controller", "");
-            }
-
-            var uri = new Uri(url);
-            if (uri.Authority.EqualsI(Uri.Authority))
-            {
-                url = uri.PathAndQuery;
-            }
-
-            Mock<IUrlHelper> mockUrlHelper = controller.Url?.GetMockFromObject() ?? new Mock<IUrlHelper>();
-            Expression<Func<IUrlHelper, string>> urlSetup = helper => helper.Action(
-                It.Is<UrlActionContext>(
-                    uac => (string.IsNullOrWhiteSpace(actionName) || uac.Action == actionName)
-                           && (string.IsNullOrWhiteSpace(controllerName) || uac.Controller == controllerName || uac.Controller == null)));
-
-            mockUrlHelper.Setup(urlSetup).Returns(url).Verifiable();
-
-            controller.Url = mockUrlHelper.Object;
-        }
-
         public static void AssertCookieAdded(this Controller controller, string key, string value)
         {
             Mock<IResponseCookies> mockCookies = Mock.Get(controller.HttpContext.Response.Cookies);
@@ -340,12 +257,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
                 c => c.Append(key, value, It.IsAny<CookieOptions>()),
                 Times.Once(),
                 $"The cookie '{key}' was not saved with value '{value}'");
-        }
-
-        public static void AssertCookieDeleted(this Controller controller, string key)
-        {
-            Mock<IResponseCookies> mockCookies = Mock.Get(controller.HttpContext.Response.Cookies);
-            mockCookies.Verify(c => c.Delete(key), Times.Once(), $"The cookie '{key}' was not deleted");
         }
 
 
@@ -366,7 +277,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             string testName = TestContext.CurrentContext.Test.FullName;
             if (string.IsNullOrWhiteSpace(testName))
             {
-                testName = MethodBase.GetCurrentMethod().FindParentWithAttribute<TestAttribute>().Name;
+                testName = GetCurrentTestName();
             }
 
             DbContextOptionsBuilder<GpgDatabaseContext> optionsBuilder =
@@ -413,5 +324,37 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             controller.Url = mockUrlHelper.Object;
         }
 
+        public static string GetCurrentTestName()
+        {
+            return FindParentMethodWithTestAttribute(MethodBase.GetCurrentMethod()).Name;
+        }
+
+        private static MethodBase FindParentMethodWithTestAttribute(MethodBase callingMethod)
+        {
+            // Iterate throught all attributes
+            StackFrame[] frames = new StackTrace().GetFrames();
+
+            for (int i = 1; i < frames.Length; i++)
+            {
+                StackFrame frame = frames[i];
+                if (frame.HasMethod())
+                {
+                    MethodBase method = frame.GetMethod();
+
+                    if (method.GetCustomAttribute<TestAttribute>() != null)
+                    {
+                        return method;
+                    }
+                }
+            }
+
+            return callingMethod;
+        }
+
+        public static void SetDefaultEncryptionKeys()
+        {
+            Encryption.SetDefaultEncryptionKey("BA9138B8C0724F168A05482456802405", "45fc394a7f5b29f660bfdf3313224dac");
+        }
+        
     }
 }

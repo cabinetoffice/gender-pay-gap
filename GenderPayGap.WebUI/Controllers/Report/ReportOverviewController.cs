@@ -1,4 +1,4 @@
-﻿using GenderPayGap.Core.Classes;
+﻿using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Controllers.Report
                 {
                     encryptedOrganisationId,
                     reportingYear,
-                    confirmationId = Encryption.EncryptQuerystring(newReturn.ReturnId.ToString())
+                    confirmationId = Encryption.EncryptId(newReturn.ReturnId)
                 });
         }
 

@@ -5,7 +5,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 
-namespace GenderPayGap.Core.Helpers
+namespace GenderPayGap.WebUI.Helpers
 {
     public static class CsvWriter
     {

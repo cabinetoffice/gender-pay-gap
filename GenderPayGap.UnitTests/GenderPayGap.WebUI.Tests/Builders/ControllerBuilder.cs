@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Security.Claims;
 using Autofac;
-using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
-using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Cookies;
@@ -21,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -70,7 +65,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
         public T Build()
         {
             IContainer DIContainer = BuildContainerIocForControllerOfType();
-            Global.ContainerIoC = DIContainer;
+            Startup.ContainerIoC = DIContainer;
 
             var httpContextMock = new Mock<HttpContext>();
 
@@ -81,13 +76,6 @@ namespace GenderPayGap.WebUI.Tests.Builders
             //Mock the httpcontext to the controllercontext
             var routeData = new RouteData();
             var controllerContextMock = new ControllerContext { HttpContext = httpContextMock.Object, RouteData = routeData };
-
-            //Mock IHttpContextAccessor
-            Mock<IHttpContextAccessor> mockHttpContextAccessor = DIContainer.Resolve<IHttpContextAccessor>().GetMockFromObject();
-            mockHttpContextAccessor.SetupGet(a => a.HttpContext).Returns(httpContextMock.Object);
-
-            //Configure the global HttpContext using the mock accessor
-            System.Web.HttpContext.Configure(mockHttpContextAccessor.Object);
 
             //Create and return the controller
             var controller = DIContainer.Resolve<T>();
@@ -205,7 +193,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
             string testName = TestContext.CurrentContext.Test.FullName;
             if (string.IsNullOrWhiteSpace(testName))
             {
-                testName = MethodBase.GetCurrentMethod().FindParentWithAttribute<TestAttribute>().Name;
+                testName = UiTestHelper.GetCurrentTestName();
             }
 
             DbContextOptionsBuilder<GpgDatabaseContext> optionsBuilder =

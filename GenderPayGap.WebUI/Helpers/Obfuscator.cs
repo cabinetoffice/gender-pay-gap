@@ -1,4 +1,6 @@
-﻿namespace GenderPayGap.Core.Classes
+﻿using GenderPayGap.Core;
+
+namespace GenderPayGap.WebUI.Helpers
 {
     public static class Obfuscator
     {

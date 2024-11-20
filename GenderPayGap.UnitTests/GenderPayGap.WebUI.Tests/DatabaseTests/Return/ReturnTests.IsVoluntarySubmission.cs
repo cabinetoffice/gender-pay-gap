@@ -1,6 +1,6 @@
 ﻿using System;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
 using NUnit.Framework;

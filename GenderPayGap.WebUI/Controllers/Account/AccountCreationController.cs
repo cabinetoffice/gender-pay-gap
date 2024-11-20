@@ -5,10 +5,9 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.Classes;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AccountCreation;
 using GenderPayGap.WebUI.Services;
-using GovUkDesignSystem;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Account
@@ -120,7 +119,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
 
             var user = CreateNewOrUpdateRetiredUser(viewModel, retiredUser);
                 
-            if (retiredUser.IsNull())
+            if (retiredUser == null)
             {
                 dataRepository.Insert(user);
             }
@@ -168,8 +167,8 @@ namespace GenderPayGap.WebUI.Controllers.Account
             // If user creates a new account with same email address as retired account, reuse the old
             // account to avoid duplicates, add status change details and update all info except created date.
             var user = retiredUser ?? new User();
-            var createdDate = retiredUser.IsNull() ? currentTime : retiredUser.Created;
-            var statusDetails = retiredUser.IsNull() ? null : "Retired user account has been reactivated";
+            var createdDate = retiredUser == null ? currentTime : retiredUser.Created;
+            var statusDetails = retiredUser == null ? null : "Retired user account has been reactivated";
 
             user.Created = createdDate;
             user.Modified = currentTime;
@@ -180,9 +179,9 @@ namespace GenderPayGap.WebUI.Controllers.Account
             user.AllowContact = viewModel.AllowContact;
             user.SendUpdates = viewModel.SendUpdates;
 
-            byte[] salt = Crypto.GetSalt();
+            byte[] salt = PasswordHelper.GetSalt();
             user.Salt = Convert.ToBase64String(salt);
-            user.PasswordHash = Crypto.GetPBKDF2(viewModel.Password, salt);
+            user.PasswordHash = PasswordHelper.GetPBKDF2(viewModel.Password, salt);
             user.HashingAlgorithm = HashingAlgorithm.PBKDF2;
 
             user.EmailVerifySendDate = null;

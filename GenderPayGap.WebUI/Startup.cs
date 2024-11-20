@@ -1,8 +1,6 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Web;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using GenderPayGap.Core;
@@ -32,9 +30,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 
 namespace GenderPayGap.WebUI
 {
@@ -43,6 +42,8 @@ namespace GenderPayGap.WebUI
 
         public static Action<IServiceCollection> ConfigureTestServices;
         public static Action<ContainerBuilder> ConfigureTestContainer;
+        
+        public static IContainer ContainerIoC;
 
         // ConfigureServices is where you register dependencies. This gets
         // called by the runtime before the ConfigureContainer method, below.
@@ -78,7 +79,7 @@ namespace GenderPayGap.WebUI
             services.AddControllersWithViews(
                     options =>
                     {
-                        options.AddStringTrimmingProvider(); //Add modelstate binder to trim input 
+                        AddStringTrimmingProvider(options); //Add modelstate binder to trim input 
                         options.ModelMetadataDetailsProviders.Add(
                             new TrimModelBinder()); //Set DisplayMetadata to input empty strings as null
                         options.Filters.Add<ErrorHandlingFilter>();
@@ -135,10 +136,10 @@ namespace GenderPayGap.WebUI
             ConfigureTestServices?.Invoke(services);
 
             //Create Inversion of Control container
-            Global.ContainerIoC = BuildContainerIoC(services);
+            ContainerIoC = BuildContainerIoC(services);
 
             // Create the IServiceProvider based on the container.
-            return new AutofacServiceProvider(Global.ContainerIoC);
+            return new AutofacServiceProvider(ContainerIoC);
         }
 
         // ConfigureContainer is where you can register things directly
@@ -275,7 +276,7 @@ namespace GenderPayGap.WebUI
                         //Caching static files is required to reduce connections since the default behavior of checking if a static file has changed and returning a 304 still requires a connection.
                         if (Global.StaticCacheSeconds > 0)
                         {
-                            ctx.Context.SetResponseCache(Global.StaticCacheSeconds);
+                            HttpContextHelper.SetResponseCache(ctx.Context, Global.StaticCacheSeconds);
                         }
                     }
                 }); //For the wwwroot folder
@@ -283,7 +284,6 @@ namespace GenderPayGap.WebUI
             app.UseRouting();
             app.UseResponseCaching();
             app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters
-            app.UseStaticHttpContext(); //Temporary fix for old static HttpContext 
             app.UseSession(); //Must be before UseMvC or any middleware which requires session
             app.UseAuthentication(); //Ensure the OIDC IDentity Server authentication services execute on each http request - Must be before UseMVC
             app.UseAuthorization();
@@ -293,8 +293,8 @@ namespace GenderPayGap.WebUI
                 MinimumSameSitePolicy = SameSiteMode.Lax,
             };
             app.UseCookiePolicy(cookiePolicyOptions);
-            app.UseMaintenancePageMiddleware(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
-            app.UseSecurityHeaderMiddleware(); //Add/remove security headers from all responses
+            app.UseMiddleware<MaintenancePageMiddleware>(Global.MaintenanceMode); //Redirect to maintenance page when Maintenance mode settings = true
+            app.UseMiddleware<SecurityHeaderMiddleware>(); //Add/remove security headers from all responses
 
             if (!string.IsNullOrWhiteSpace(Global.BasicAuthUsername)
                 && !string.IsNullOrWhiteSpace(Global.BasicAuthPassword))
@@ -330,6 +330,19 @@ namespace GenderPayGap.WebUI
                     //     may still be in flight. Shutdown will block until this event completes.
                     CustomLogger.Information("Application Stopping");
                 });
+        }
+
+        private static void AddStringTrimmingProvider(MvcOptions option)
+        {
+            IModelBinderProvider binderToFind =
+                option.ModelBinderProviders.FirstOrDefault(x => x.GetType() == typeof(SimpleTypeModelBinderProvider));
+            if (binderToFind == null)
+            {
+                return;
+            }
+
+            int index = option.ModelBinderProviders.IndexOf(binderToFind);
+            option.ModelBinderProviders.Insert(index, new TrimmingModelBinderProvider());
         }
 
     }

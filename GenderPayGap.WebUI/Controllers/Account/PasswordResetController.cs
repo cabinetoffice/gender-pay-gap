@@ -6,8 +6,8 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.BusinessLogic.Abstractions;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
+using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +93,7 @@ namespace GenderPayGap.WebUI.Controllers.Account
         private void SendPasswordResetEmail(User userForPasswordReset)
         {
             // Generate a random string as a unique identifier for the password reset
-            string resetCode = Convert.ToBase64String(Crypto.GetSalt());
+            string resetCode = Convert.ToBase64String(PasswordHelper.GetSalt());
 
             // Store the reset code on the user entity for verification
             userForPasswordReset.PasswordResetCode = resetCode;

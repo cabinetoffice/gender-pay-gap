@@ -85,6 +85,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
         [SetUp]
         public void BeforeEach()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
+            
             organisation = CreateOrganisation();
             user = CreateUser();
             userOrganisation = CreateUserOrganisation(organisation, user.UserId);
@@ -689,7 +691,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
             Assert.NotNull(result);
             var model = result.Model as List<Return>;
             Assert.AreEqual(returns.Length, model.Count);
-            returns.ForEach(r => Assert.Contains(r, model));
+
+            foreach (Return ret in returns)
+            {
+                Assert.Contains(ret, model);
+            }
         }
 
     }

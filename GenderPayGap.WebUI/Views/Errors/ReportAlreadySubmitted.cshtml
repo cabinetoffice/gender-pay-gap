@@ -2,7 +2,7 @@
 @model GenderPayGap.WebUI.ErrorHandling.ReportAlreadySubmittedException
 
 @{
-    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.OrganisationId.ToString());
+    string encryptedOrganisationId = Encryption.EncryptId(Model.OrganisationId);
     ViewBag.Title = $"Report already submitted - Gender pay gap service";
 }
 

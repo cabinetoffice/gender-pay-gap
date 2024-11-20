@@ -1,6 +1,5 @@
-﻿using System;
-using GenderPayGap.Core;
-using GenderPayGap.Core.Classes;
+﻿using GenderPayGap.Core;
+using GenderPayGap.Core.Helpers;
 using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Tests.Builders

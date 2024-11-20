@@ -2,7 +2,6 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Core
-@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core.Helpers
 @model GenderPayGap.WebUI.Models.Search.SearchPageViewModel
 
@@ -109,7 +108,7 @@
                         orgSize => orgSize,
                         orgSize => new LabelViewModel
                         {
-                            Text = orgSize.GetAttribute<DisplayAttribute>().Name
+                            Text = orgSize.GetDisplayName()
                         }
                         ),
                     classOptions: new Dictionary<OrganisationSizes, string> {{OrganisationSizes.NotProvided, "gpg-search-page--filter-employerSize--not-provided"}},

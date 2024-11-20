@@ -2,6 +2,7 @@
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
+using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
@@ -19,6 +20,8 @@ namespace Repositories.RegistrationRepository
         [SetUp]
         public void BeforeEach()
         {
+            UiTestHelper.SetDefaultEncryptionKeys();
+            
             // mock data
             GpgDatabaseContext dbContext = AutoFacHelpers.CreateInMemoryTestDatabase(UserOrganisationHelper.CreateRegistrations());
 

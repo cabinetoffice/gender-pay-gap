@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 using System.Text;
 using CsvHelper.TypeConversion;
-using GenderPayGap.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Helpers

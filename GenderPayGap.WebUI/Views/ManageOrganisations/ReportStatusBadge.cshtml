@@ -44,7 +44,7 @@
             reportTagColour = "govuk-tag--blue";
             break;
         case ReportStatusTag.Overdue:
-            int daysOverdue = VirtualDateTime.Now.Date.Subtract(Model.DeadlineDate).TotalDays.ToInt32();
+            int daysOverdue = (int)(VirtualDateTime.Now.Date.Subtract(Model.DeadlineDate).TotalDays);
             reportTagHtml = @<text>
                                 @(daysOverdue)
                                 @(daysOverdue == 1 ? "day" : "days")

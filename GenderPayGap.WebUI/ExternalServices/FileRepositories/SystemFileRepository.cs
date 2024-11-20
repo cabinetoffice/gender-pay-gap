@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
@@ -14,7 +12,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 
         public SystemFileRepository(string rootPath = null)
         {
-            rootPath = string.IsNullOrWhiteSpace(rootPath) ? AppDomain.CurrentDomain.BaseDirectory : FileSystem.ExpandLocalPath(rootPath);
+            rootPath = string.IsNullOrWhiteSpace(rootPath) ? AppDomain.CurrentDomain.BaseDirectory : ExpandLocalPath(rootPath);
             _rootDir = new DirectoryInfo(rootPath);
         }
 
@@ -135,6 +133,42 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
             }
 
             return Directory.Exists(directoryPath);
+        }
+
+        /// Expands a condensed path relative to the application path (or basePath) up to a full path
+        private static string ExpandLocalPath(string path, string basePath = null)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(basePath))
+            {
+                basePath = AppDomain.CurrentDomain.BaseDirectory;
+            }
+
+            path = path.Replace(@"/", @"\");
+            path = path.Replace(@"~\", @".\");
+            path = path.Replace(@"\\", @"\");
+
+            if (path.StartsWith(@".\") || path.StartsWith(@"..\"))
+            {
+                var uri = new Uri(Path.Combine(basePath, path));
+                return Path.GetFullPath(uri.LocalPath);
+            }
+
+            while (path.StartsWith('\\') || path.StartsWith('/'))
+            {
+                path = path.Substring(1);
+            }
+
+            if (!Path.IsPathRooted(path))
+            {
+                path = Path.Combine(basePath, path);
+            }
+
+            return path;
         }
 
     }

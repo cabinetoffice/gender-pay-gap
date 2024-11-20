@@ -1,7 +1,6 @@
 @using GenderPayGap.Core.Helpers
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@using System.ComponentModel.DataAnnotations
 @using GenderPayGap.Core
 @using GenderPayGap.WebUI.Models.Report
 @using GenderPayGap.WebUI.Views.Components.StatusMessages
@@ -9,7 +8,7 @@
 @model GenderPayGap.WebUI.Models.Report.ReportOverviewViewModel
 
 @{
-    string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
+    string encryptedOrganisationId = Encryption.EncryptId(Model.Organisation.OrganisationId);
     string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
 
     string editOrReportTitle = Model.IsEditingSubmittedReturn
@@ -212,7 +211,7 @@
                         Title = @<text>Number of employees used to establish your headcount for gender pay gap reporting, on your snapshot date</text>,
                         RightValue = !Model.SizeOfOrganisation.HasValue ? 
                             await Html.GovUkHtmlText(new HtmlText(null, "Not Provided" ))
-                            : await Html.GovUkHtmlText(new HtmlText(null, Model.SizeOfOrganisation.GetAttribute<DisplayAttribute>().Name))
+                            : await Html.GovUkHtmlText(new HtmlText(null, Model.SizeOfOrganisation.Value.GetDisplayName()))
                     }
                 }
             };
@@ -248,7 +247,7 @@
                     Model.SectorType == SectorTypes.Private ? personResponsibleSection : null,
                     employeeHeadcountSection,
                     linkToGenderPayGapInformationSection
-                }.Where(s => !s.IsNull()).ToList()
+                }.Where(s => s != null).ToList()
             };
 
             await Html.RenderPartialAsync("../Components/ReportOverview/ReportOverviewSections", reportOverviewSections);

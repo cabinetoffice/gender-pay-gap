@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using GenderPayGap.Core;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
@@ -10,7 +8,7 @@ using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
-using Microsoft.Extensions.Primitives;
+using GenderPayGap.WebUI.Tests.TestHelpers;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Account
@@ -20,6 +18,12 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
     public class ChangeEmailTests
     {
 
+        [SetUp]
+        public void SetUp()
+        {
+            UiTestHelper.SetDefaultEncryptionKeys();
+        }
+        
         [Test]
         [Description("POST: Providing a valid new email address results in a verification email being sent")]
         public void POST_Providing_A_Valid_New_Email_Address_Results_In_A_Verification_Email_Being_Sent()
