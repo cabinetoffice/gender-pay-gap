@@ -280,25 +280,6 @@ namespace GenderPayGap.WebUI
                     }
                 }); //For the wwwroot folder
 
-            // Include un-bundled js + css folders to serve the source files in dev environment
-            if (Config.IsLocal())
-            {
-                app.UseStaticFiles(
-                    new StaticFileOptions
-                    {
-                        FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
-                        RequestPath = "",
-                        OnPrepareResponse = ctx =>
-                        {
-                            //Caching static files is required to reduce connections since the default behavior of checking if a static file has changed and returning a 304 still requires a connection.
-                            if (Global.StaticCacheSeconds > 0)
-                            {
-                                ctx.Context.SetResponseCache(Global.StaticCacheSeconds);
-                            }
-                        }
-                    });
-            }
-
             app.UseRouting();
             app.UseResponseCaching();
             app.UseResponseBuffering(); //required otherwise JsonResult uses chunking and adds extra characters

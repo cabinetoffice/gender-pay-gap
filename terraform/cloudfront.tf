@@ -55,7 +55,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
     default_ttl = 604800  // caches static assets for 1 week as standard
     max_ttl     = 864000
     min_ttl     = 1
-    path_pattern           = "public/*"
+    path_pattern           = "assets/*"
   }
 
   # Cache behaviour with precedent 1
@@ -69,35 +69,7 @@ resource "aws_cloudfront_distribution" "gpg_distribution" {
     default_ttl = 604800  // caches static assets for 1 week as standard
     max_ttl     = 864000
     min_ttl     = 1
-    path_pattern           = "assets/*"
-  }
-
-  # Cache behaviour with precedent 2
-  ordered_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = local.cloudfront_origin_id
-    cache_policy_id  = aws_cloudfront_cache_policy.static_assets_caching.id
-    
-    viewer_protocol_policy = "redirect-to-https"
-    default_ttl = 604800  // caches static assets for 1 week as standard
-    max_ttl     = 864000
-    min_ttl     = 1
     path_pattern           = "compiled/*"
-  }
-
-  # Cache behaviour with precedent 3
-  ordered_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = local.cloudfront_origin_id
-    
-    cache_policy_id  = aws_cloudfront_cache_policy.static_assets_caching.id
-    viewer_protocol_policy = "redirect-to-https"
-    default_ttl = 604800  // caches static assets for 1 week as standard
-    max_ttl     = 864000
-    min_ttl     = 1
-    path_pattern           = "img/*"
   }
 
   price_class = "PriceClass_200"
