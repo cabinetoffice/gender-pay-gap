@@ -49,7 +49,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         private List<Organisation> testOrgs;
 
         // sut
-        private IScopeBusinessLogic scopeBusinessLogic;
+        private WebUI.BusinessLogic.Services.ScopeBusinessLogic scopeBusinessLogic;
 
         [TestCase(1)]
         [TestCase(2)]

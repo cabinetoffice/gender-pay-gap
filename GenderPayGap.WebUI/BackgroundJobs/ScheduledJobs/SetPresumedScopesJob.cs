@@ -5,10 +5,10 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
     public class SetPresumedScopesJob
     {
-        private readonly IScopeBusinessLogic scopeBusinessLogic;
+        private readonly ScopeBusinessLogic scopeBusinessLogic;
 
         public SetPresumedScopesJob(
-            IScopeBusinessLogic scopeBusinessLogic)
+            ScopeBusinessLogic scopeBusinessLogic)
         {
             this.scopeBusinessLogic = scopeBusinessLogic;
         }

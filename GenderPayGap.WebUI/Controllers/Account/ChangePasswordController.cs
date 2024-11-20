@@ -1,10 +1,10 @@
 ﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
+using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +17,12 @@ namespace GenderPayGap.WebUI.Controllers.Account
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly IUserRepository userRepository;
+        private readonly UserRepository userRepository;
         private readonly EmailSendingService emailSendingService;
 
         public ChangePasswordController(
             IDataRepository dataRepository,
-            IUserRepository userRepository,
+            UserRepository userRepository,
             EmailSendingService emailSendingService)
         {
             this.dataRepository = dataRepository;

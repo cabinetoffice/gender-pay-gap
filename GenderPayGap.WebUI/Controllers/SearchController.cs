@@ -14,13 +14,13 @@ namespace GenderPayGap.WebUI.Controllers
     public class SearchController : Controller
     {
 
-        private readonly ICompareViewService compareViewService;
+        private readonly CompareViewService compareViewService;
         private readonly IDataRepository dataRepository;
         private readonly ViewingSearchService viewingSearchService;
         private readonly AutoCompleteSearchService autoCompleteSearchService;
         
         public SearchController(
-            ICompareViewService compareViewService,
+            CompareViewService compareViewService,
             IDataRepository dataRepository,
             ViewingSearchService viewingSearchService,
             AutoCompleteSearchService autoCompleteSearchService)

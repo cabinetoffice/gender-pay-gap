@@ -11,15 +11,7 @@ using Polly.Extensions.Http;
 
 namespace GenderPayGap.WebUI.ExternalServices.CompaniesHouse
 {
-    public interface ICompaniesHouseAPI
-    {
-
-        CompaniesHouseCompany GetCompany(string companyNumber);
-        List<CompaniesHouseSearchResultCompany> SearchCompanies(string query);
-
-    }
-
-    public class CompaniesHouseAPI : ICompaniesHouseAPI
+    public class CompaniesHouseAPI
     {
 
         private static readonly string ApiKey = Global.CompaniesHouseApiKey;

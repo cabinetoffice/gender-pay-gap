@@ -5,7 +5,7 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
+using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Moq;
@@ -37,7 +37,7 @@ namespace Repositories.UserRepository
         }
 
         private Mock<IDataRepository> mockDataRepo;
-        private IUserRepository testUserRepo;
+        private GenderPayGap.WebUI.Repositories.UserRepository testUserRepo;
 
         [TestCase("active1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.Active)]
         [TestCase("new1@ad5bda75-e514-491b-b74d-4672542cbd15.com", UserStatuses.New, UserStatuses.New)]

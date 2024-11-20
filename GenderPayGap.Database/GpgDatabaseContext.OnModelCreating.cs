@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.Database
 {
-    public partial class GpgDatabaseContext : DbContext
+    public partial class GpgDatabaseContext
     {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

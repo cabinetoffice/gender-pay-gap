@@ -8,29 +8,7 @@ using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 namespace GenderPayGap.WebUI.Classes.Presentation
 {
 
-    public interface ICompareViewService
-    {
-
-        List<long> ComparedEmployers { get; }
-        
-        int BasketItemCount { get; }
-
-        void AddToBasket(long organisationId);
-
-        void RemoveFromBasket(long organisationId);
-
-        void ClearBasket();
-
-        void LoadComparedEmployersFromCookie();
-
-        void SaveComparedEmployersToCookie();
-        void SaveComparedEmployersToCookieIfAnyAreObfuscated();
-
-        bool BasketContains(long organisationId);
-
-    }
-
-    public class CompareViewService : ICompareViewService
+    public class CompareViewService
     {
 
         private readonly HttpContext httpContext;

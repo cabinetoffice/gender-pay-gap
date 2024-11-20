@@ -11,7 +11,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Classes.Presentation;
@@ -64,12 +63,12 @@ namespace GenderPayGap.WebUI
                 });
 
             //Add a dedicated httpclient for Google Analytics tracking with exponential retry policy
-            services.AddHttpClient<IWebTracker, GoogleAnalyticsTracker>(nameof(IWebTracker), GoogleAnalyticsTracker.SetupHttpClient)
+            services.AddHttpClient<GoogleAnalyticsTracker, GoogleAnalyticsTracker>(nameof(GoogleAnalyticsTracker), GoogleAnalyticsTracker.SetupHttpClient)
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(GoogleAnalyticsTracker.GetRetryPolicy());
 
             //Add a dedicated httpclient for Companies house API with exponential retry policy
-            services.AddHttpClient<ICompaniesHouseAPI, CompaniesHouseAPI>(nameof(ICompaniesHouseAPI), CompaniesHouseAPI.SetupHttpClient)
+            services.AddHttpClient<CompaniesHouseAPI, CompaniesHouseAPI>(nameof(CompaniesHouseAPI), CompaniesHouseAPI.SetupHttpClient)
                 .SetHandlerLifetime(TimeSpan.FromMinutes(10))
                 .AddPolicyHandler(CompaniesHouseAPI.GetRetryPolicy());
 
@@ -168,11 +167,11 @@ namespace GenderPayGap.WebUI
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<CompaniesHouseAPI>()
-                .As<ICompaniesHouseAPI>()
+                .As<CompaniesHouseAPI>()
                 .SingleInstance()
                 .WithParameter(
                     (p, ctx) => p.ParameterType == typeof(HttpClient),
-                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(ICompaniesHouseAPI)));
+                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(CompaniesHouseAPI)));
 
             if (!Config.IsLocal())
             {
@@ -192,19 +191,19 @@ namespace GenderPayGap.WebUI
             }
 
             // BL Services
-            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<UserRepository>().As<UserRepository>().InstancePerLifetimeScope();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().InstancePerLifetimeScope();
             builder.RegisterType<OrganisationService>().As<OrganisationService>().InstancePerLifetimeScope();
             builder.RegisterType<ReturnService>().As<ReturnService>().InstancePerLifetimeScope();
             builder.RegisterType<DraftReturnService>().As<DraftReturnService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<ScopeBusinessLogic>().As<IScopeBusinessLogic>().InstancePerLifetimeScope();
+            builder.RegisterType<ScopeBusinessLogic>().As<ScopeBusinessLogic>().InstancePerLifetimeScope();
 
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
 
             // register web ui services
             builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
-            builder.RegisterType<CompareViewService>().As<ICompareViewService>().InstancePerLifetimeScope();
+            builder.RegisterType<CompareViewService>().As<CompareViewService>().InstancePerLifetimeScope();
             builder.RegisterType<AdminSearchService>().As<AdminSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<AddOrganisationSearchService>().As<AddOrganisationSearchService>().InstancePerLifetimeScope();
@@ -229,11 +228,11 @@ namespace GenderPayGap.WebUI
 
             //Register WebTracker
             builder.RegisterType<GoogleAnalyticsTracker>()
-                .As<IWebTracker>()
+                .As<GoogleAnalyticsTracker>()
                 .SingleInstance()
                 .WithParameter(
                     (p, ctx) => p.ParameterType == typeof(HttpClient),
-                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(IWebTracker)))
+                    (p, ctx) => ctx.Resolve<IHttpClientFactory>().CreateClient(nameof(GoogleAnalyticsTracker)))
                 .WithParameter("trackingId", Global.GoogleAnalyticsAccountId);
 
             //TOD: Implement AutoFac modules

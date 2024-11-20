@@ -16,11 +16,11 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         private readonly IFileRepository fileRepository;
-        private readonly IWebTracker webTracker;
+        private readonly GoogleAnalyticsTracker webTracker;
 
         public DownloadController(
             IFileRepository fileRepository,
-            IWebTracker webTracker)
+            GoogleAnalyticsTracker webTracker)
         {
             this.fileRepository = fileRepository;
             this.webTracker = webTracker;

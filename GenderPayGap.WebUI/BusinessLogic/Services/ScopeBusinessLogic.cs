@@ -10,21 +10,7 @@ using GenderPayGap.WebUI.BusinessLogic.Models.Scope;
 namespace GenderPayGap.WebUI.BusinessLogic.Services
 {
 
-    public interface IScopeBusinessLogic
-    {
-
-        OrganisationScope GetLatestScopeBySnapshotYear(long organisationId, int snapshotYear = 0);
-
-        void SetPresumedScopes();
-        
-        HashSet<OrganisationMissingScope> FindOrgsWhereScopeNotSet();
-        bool FillMissingScopes(Organisation org);
-
-        void SetScopeStatuses();
-
-    }
-
-    public class ScopeBusinessLogic : IScopeBusinessLogic
+    public class ScopeBusinessLogic
     {
 
         public ScopeBusinessLogic(IDataRepository dataRepo)

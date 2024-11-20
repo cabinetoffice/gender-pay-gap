@@ -17,13 +17,13 @@ namespace GenderPayGap.WebUI.Controllers
     public class AdminOrganisationCompaniesHouseOptInOutController : Controller
     {
         private readonly AuditLogger auditLogger;
-        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly CompaniesHouseAPI companiesHouseApi;
         private readonly IDataRepository dataRepository;
         private readonly UpdateFromCompaniesHouseService updateFromCompaniesHouseService;
 
         public AdminOrganisationCompaniesHouseOptInOutController(IDataRepository dataRepository,
             AuditLogger auditLogger,
-            ICompaniesHouseAPI companiesHouseApi,
+            CompaniesHouseAPI companiesHouseApi,
             UpdateFromCompaniesHouseService updateFromCompaniesHouseService)
         {
             this.dataRepository = dataRepository;

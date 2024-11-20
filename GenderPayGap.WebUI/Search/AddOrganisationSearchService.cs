@@ -29,11 +29,11 @@ namespace GenderPayGap.WebUI.Search
         private const int MaximumNumberOfSearchResults = 100;
 
         private readonly IDataRepository dataRepository;
-        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly CompaniesHouseAPI companiesHouseApi;
 
         public AddOrganisationSearchService(
             IDataRepository dataRepository,
-            ICompaniesHouseAPI companiesHouseApi)
+            CompaniesHouseAPI companiesHouseApi)
         {
             this.dataRepository = dataRepository;
             this.companiesHouseApi = companiesHouseApi;

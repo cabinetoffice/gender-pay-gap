@@ -2,9 +2,9 @@
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
+using GenderPayGap.WebUI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +15,10 @@ namespace GenderPayGap.WebUI.Controllers.Admin
     public class AdminImpersonateUserController : Controller
     {
 
-        private readonly IUserRepository userRepository;
+        private readonly UserRepository userRepository;
         private readonly IDataRepository dataRepository;
 
-        public AdminImpersonateUserController(IUserRepository userRepository, IDataRepository dataRepository)
+        public AdminImpersonateUserController(UserRepository userRepository, IDataRepository dataRepository)
         {
             this.userRepository = userRepository;
             this.dataRepository = dataRepository;

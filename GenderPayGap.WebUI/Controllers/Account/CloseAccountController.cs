@@ -4,7 +4,6 @@ using System.Linq;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Account;
@@ -21,13 +20,13 @@ namespace GenderPayGap.WebUI.Controllers.Account
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly IUserRepository userRepository;
+        private readonly UserRepository userRepository;
         private readonly RegistrationRepository registrationRepository;
         private readonly EmailSendingService emailSendingService;
 
         public CloseAccountController(
             IDataRepository dataRepository, 
-            IUserRepository userRepository, 
+            UserRepository userRepository, 
             RegistrationRepository registrationRepository,
             EmailSendingService emailSendingService)
         {

@@ -1,9 +1,9 @@
 using System;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Login;
+using GenderPayGap.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.Login
@@ -11,9 +11,9 @@ namespace GenderPayGap.WebUI.Controllers.Login
     public class LoginController : Controller
     {
 
-        private readonly IUserRepository userRepository;
+        private readonly UserRepository userRepository;
 
-        public LoginController(IUserRepository userRepository)
+        public LoginController(UserRepository userRepository)
         {
             this.userRepository = userRepository;
         }

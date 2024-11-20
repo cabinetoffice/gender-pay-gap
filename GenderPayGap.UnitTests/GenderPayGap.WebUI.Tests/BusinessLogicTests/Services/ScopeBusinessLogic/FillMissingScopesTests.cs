@@ -31,7 +31,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
         private Mock<IDataRepository> mockDataRepository;
 
         // sut
-        private IScopeBusinessLogic scopeBusinessLogic;
+        private WebUI.BusinessLogic.Services.ScopeBusinessLogic scopeBusinessLogic;
 
         [TestCase(SectorTypes.Private)]
         [TestCase(SectorTypes.Public)]

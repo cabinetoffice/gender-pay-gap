@@ -15,11 +15,11 @@ namespace GenderPayGap.WebUI.Controllers
     public class CompareEmployersController : Controller
     {
 
-        private readonly ICompareViewService compareViewService;
+        private readonly CompareViewService compareViewService;
         private readonly IDataRepository dataRepository;
 
         public CompareEmployersController(
-            ICompareViewService compareViewService,
+            CompareViewService compareViewService,
             IDataRepository dataRepository)
         {
             this.compareViewService = compareViewService;

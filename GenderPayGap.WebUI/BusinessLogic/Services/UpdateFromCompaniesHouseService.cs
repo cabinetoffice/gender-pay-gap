@@ -18,10 +18,10 @@ namespace GenderPayGap.WebUI.BusinessLogic.Services
         private const string SourceOfChange = "CoHo";
         private const string DetailsOfChange = "Replaced by CoHo";
 
-        private readonly ICompaniesHouseAPI companiesHouseApi;
+        private readonly CompaniesHouseAPI companiesHouseApi;
         private readonly IDataRepository dataRepository;
 
-        public UpdateFromCompaniesHouseService(IDataRepository dataRepository, ICompaniesHouseAPI companiesHouseApi)
+        public UpdateFromCompaniesHouseService(IDataRepository dataRepository, CompaniesHouseAPI companiesHouseApi)
         {
             this.dataRepository = dataRepository;
             this.companiesHouseApi = companiesHouseApi;

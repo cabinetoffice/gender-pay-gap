@@ -24,7 +24,7 @@ namespace GenderPayGap.Tests
 
         private IList<Organisation> testOrgData;
         private IList<OrganisationScope> testOrgScopeData;
-        public IScopeBusinessLogic testScopeBL;
+        public ScopeBusinessLogic testScopeBL;
 
         #region Test Data
 

@@ -6,7 +6,6 @@ using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.BackgroundJobs;
-using GenderPayGap.WebUI.BusinessLogic.Abstractions;
 using GenderPayGap.WebUI.Cookies;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Repositories;
@@ -165,7 +164,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();
             builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().InstancePerLifetimeScope();
 
-            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<UserRepository>().As<UserRepository>().InstancePerLifetimeScope();
             builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().InstancePerLifetimeScope();
             builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().InstancePerLifetimeScope();
