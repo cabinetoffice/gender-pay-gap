@@ -4,7 +4,6 @@
 @using GenderPayGap.Database
 @model GenderPayGap.WebUI.Models.RemoveUserFromOrganisation.RemoveUserFromOrganisationViewModel
 @{
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     ViewBag.Title = "Confirm removal of user - Gender pay gap service";
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string encryptedUserId = Encryption.EncryptQuerystring(Model.UserToRemove.UserId.ToString());

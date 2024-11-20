@@ -6,7 +6,6 @@
 
 @{
     ViewBag.Title = "Scope declared - Gender pay gap reporting service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
 }

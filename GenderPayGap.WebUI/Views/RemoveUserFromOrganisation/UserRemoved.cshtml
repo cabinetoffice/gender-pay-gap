@@ -2,7 +2,6 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @model GenderPayGap.WebUI.Models.RemoveUserFromOrganisation.RemoveUserFromOrganisationViewModel
 @{
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     ViewBag.Title = "Remove organisation reason - Gender pay gap service";
     string encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     bool userRemovedSelf = Model.UserToRemove.UserId == Model.LoggedInUser.UserId;

@@ -14,7 +14,6 @@
     string yourChangesOrYourDraftReport = Model.IsEditingSubmittedReturn ? "your changes" : "your draft report";
 
     ViewBag.Title = $"{editOrReportTitle} - reporting year {formattedReportingYears} - {Model.Organisation.OrganisationName} - Gender pay gap service";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {

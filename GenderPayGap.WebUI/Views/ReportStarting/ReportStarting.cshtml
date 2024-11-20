@@ -5,7 +5,6 @@
 
 @{
     ViewBag.Title = $"Report gender pay gap data - reporting year {Model.ReportingYear}  - Gender pay gap service"; 
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
     
     var encryptedOrganisationId = Encryption.EncryptQuerystring(Model.Organisation.OrganisationId.ToString());
     string formattedReportingYears = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);

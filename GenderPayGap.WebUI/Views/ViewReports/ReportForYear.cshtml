@@ -10,7 +10,6 @@
 @{
     string reportingYearFormatted = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.AccountingDate.Year);
     ViewBag.Title = $"{Model.Organisation.OrganisationName} gender pay gap report for {reportingYearFormatted} reporting year";
-    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
 }
 
 @section BeforeMain {

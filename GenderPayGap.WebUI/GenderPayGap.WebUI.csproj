@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -142,7 +142,6 @@
     <_ContentIncludedByDefault Remove="site\appsettings.PROD.json" />
     <_ContentIncludedByDefault Remove="site\appsettings.TEST.json" />
     <_ContentIncludedByDefault Remove="site\build-number.json" />
-    <_ContentIncludedByDefault Remove="site\bundleconfig.json" />
     <_ContentIncludedByDefault Remove="site\GenderPayGap.WebUI.deps.json" />
     <_ContentIncludedByDefault Remove="site\GenderPayGap.WebUI.runtimeconfig.json" />
     <_ContentIncludedByDefault Remove="site\package-lock.json" />
