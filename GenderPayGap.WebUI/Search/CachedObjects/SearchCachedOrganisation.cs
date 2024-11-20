@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GenderPayGap.Core;
 
 namespace GenderPayGap.WebUI.Search.CachedObjects
@@ -8,7 +8,6 @@ namespace GenderPayGap.WebUI.Search.CachedObjects
     {
 
         public long OrganisationId { get; set; }
-        public string EncryptedId { get; set; }
         public SearchReadyValue OrganisationName { get; set; }
         public List<SearchReadyValue> OrganisationNames { get; set; } // All names (current and previous)
         public string CompanyNumber { get; set; }

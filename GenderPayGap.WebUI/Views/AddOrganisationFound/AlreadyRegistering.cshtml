@@ -1,5 +1,4 @@
 ﻿@using GenderPayGap.Core
-@using GenderPayGap.Core.Classes
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Services
 @using GovUkDesignSystem
@@ -100,7 +99,7 @@
             </p>
             <p class="govuk-body">
                 If you have received the PIN letter, please
-                <a href="@Url.Action("EnterPinGet", "AddOrganisationEnterPin", new {obfuscatedOrganisationId = Obfuscator.Obfuscate(userOrg.OrganisationId)})"
+                <a href="@Url.Action("EnterPinGet", "AddOrganisationEnterPin", new {organisationId = userOrg.OrganisationId})"
                    class="govuk-link">
                     use the PIN to activate the service.
                 </a>

@@ -142,30 +142,6 @@ namespace GenderPayGap.WebUI.Helpers
             return organisationId;
         }
 
-        public static long DeObfuscateOrganisationIdOrThrow404(string organisationIdentifier)
-        {
-            if (string.IsNullOrWhiteSpace(organisationIdentifier))
-            {
-                throw new PageNotFoundException();
-            }
-            
-            try
-            {
-                int organisationId = Obfuscator.DeObfuscate(organisationIdentifier);
-            
-                if (organisationId == 0)
-                {
-                    throw new PageNotFoundException();
-                }
-                
-                return organisationId;
-            }
-            catch (Exception e)
-            {
-                throw new PageNotFoundException();
-            }
-        }
-
         public static Organisation LoadOrganisationOrThrow404(long organisationId, IDataRepository dataRepository)
         {
             var organisation = dataRepository.Get<Organisation>(organisationId);

@@ -521,8 +521,8 @@
                 }
                 tr.appendChild(td);
             }
-            function createTdWithCompareButton(tr, org_enc_id, org_name) {
-                const orgIsInCompareList = comparedOrgIds.includes(org_enc_id);
+            function createTdWithCompareButton(tr, org_id, org_name) {
+                const orgIsInCompareList = comparedOrgIds.includes(org_id);
                 
                 const td = document.createElement('td');
                 
@@ -537,7 +537,7 @@
                 button_span_org_name.innerText = ` ${org_name}`;
                 compare_button.appendChild(button_span_org_name);
                 
-                compare_button.addEventListener('click', () => { addOrRemoveCompareButtonClicked(compare_button, button_span_action, org_enc_id) });
+                compare_button.addEventListener('click', () => { addOrRemoveCompareButtonClicked(compare_button, button_span_action, org_id) });
                 td.appendChild(compare_button);
                 
                 tr.appendChild(td);
@@ -573,7 +573,7 @@
                 createTdWithTextAndAddToTr(results_new_tbody_tr, employer.Address, 'No address');
                 const sectorsNames = employer.Sectors.map(sectorId => json.Sectors[sectorId]).join('; ').replaceAll('\n','').replaceAll('\r','');
                 createTdWithTextAndAddToTr(results_new_tbody_tr, sectorsNames, 'No sector');
-                createTdWithCompareButton(results_new_tbody_tr, employer.EncId, employer.Name);
+                createTdWithCompareButton(results_new_tbody_tr, employer.Id, employer.Name);
                 results_new_tbody.appendChild(results_new_tbody_tr);                
             });
             results_new_table.appendChild(results_new_tbody);
@@ -586,7 +586,9 @@
                 .filter(cookie => cookie.trim().startsWith('compare='))
                 .map(cookie => cookie.trim().split('=')[1]);
             const compareCookieValue = compareCookies.length === 1 ? compareCookies[0] : '';
-            return compareCookieValue.length > 0 ? compareCookieValue.split(encodeURIComponent(',')) : [];
+            const organisationIdsStrings = compareCookieValue.length > 0 ? compareCookieValue.split(encodeURIComponent(',')) : [];
+            const organisationIds = organisationIdsStrings.map(idstr => Number.parseInt(idstr));
+            return organisationIds;
         }
         
         function createMoreButton(json, urlQuery) {            
@@ -603,7 +605,7 @@
             resultsSection.appendChild(more_button);
         }
         
-        async function addOrRemoveCompareButtonClicked(compare_button, button_span_action, org_enc_id) {
+        async function addOrRemoveCompareButtonClicked(compare_button, button_span_action, org_id) {
             function updateCompareButton(orgIsInCompareList) {
                 button_span_action.innerText = orgIsInCompareList ? 'Remove from comparison' : 'Add to comparison';
                 compare_button.classList.remove(orgIsInCompareList ? 'gpg-search-results--add-button' : 'gpg-search-results--remove-button');
@@ -619,11 +621,11 @@
             const isAddButton = compare_button.classList.contains('gpg-search-results--add-button');
             
             try {
-                const addOrRemovePath = isAddButton ? '/viewing/add-employer-js/' : '/viewing/remove-employer-js/';
-                const response = await fetch(`${addOrRemovePath}${org_enc_id}?returnUrl=/`);
+                const addOrRemovePath = isAddButton ? '/compare-employers/add-js/' : '/compare-employers/remove-js/';
+                const response = await fetch(`${addOrRemovePath}${org_id}`);
                 if (response.ok) {
                     const comparedOrgIds = getComparedOrgIdsFromCookie(); // Re-check cookie
-                    const orgIsInCompareList = comparedOrgIds.includes(org_enc_id);
+                    const orgIsInCompareList = comparedOrgIds.includes(org_id);
                     updateCompareButton(orgIsInCompareList);
                     updateComparisonBasket(comparedOrgIds.length);
                 }

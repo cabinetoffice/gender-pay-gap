@@ -197,8 +197,8 @@
                 <ul class="govuk-list add-organisation-search-list">
                     @foreach (AddOrganisationSearchResult organisation in Model.SearchResults.SearchResults)
                     {
-                        string resultId = organisation.EncryptedOrganisationId != null
-                            ? $"search-result-id-{organisation.EncryptedOrganisationId}"
+                        string resultId = organisation.OrganisationId != null
+                            ? $"search-result-id-{organisation.OrganisationId}"
                             : $"search-result-coho-{organisation.CompanyNumber}";
                         <li id="@(resultId)">
                             <div>
@@ -219,8 +219,8 @@
                             </div>
                             <div class="add-organisation-add-button">
                                 @{
-                                    object foundParams = organisation.EncryptedOrganisationId != null
-                                        ? (object)new { id = organisation.EncryptedOrganisationId, query = Model.Query, sector = Model.Sector }
+                                    object foundParams = organisation.OrganisationId != null
+                                        ? (object)new { id = organisation.OrganisationId, query = Model.Query, sector = Model.Sector }
                                         : (object)new { companyNumber = organisation.CompanyNumber, query = Model.Query, sector = Model.Sector };
                                 }
                                 <a href="@Url.Action("FoundGet", "AddOrganisationFound", foundParams)"

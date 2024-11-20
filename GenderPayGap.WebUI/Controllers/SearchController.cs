@@ -35,6 +35,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult SearchPage(SearchPageViewModel viewModel)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
 
             PopulateViewModel(viewModel);
             

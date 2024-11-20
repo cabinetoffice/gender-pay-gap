@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.Database
@@ -14,26 +13,6 @@ namespace GenderPayGap.Database
     [DebuggerDisplay("{OrganisationName},{Status}")]
     public partial class Organisation
     {
-
-        private IObfuscator _obfuscator;
-
-        public Organisation(IObfuscator obfuscator)
-        {
-            _obfuscator = obfuscator;
-        }
-
-        private IObfuscator obfuscator
-        {
-            get
-            {
-                if (_obfuscator == null)
-                {
-                    _obfuscator = new InternalObfuscator();
-                }
-
-                return _obfuscator;
-            }
-        }
 
         public void SetStatus(OrganisationStatuses status, long? byUserId = null, string details = null)
         {
@@ -118,11 +97,6 @@ namespace GenderPayGap.Database
         {
             IEnumerable<OrganisationSicCode> organisationSicCodes = GetSicCodes(maxDate);
             return organisationSicCodes.Select(s => s.SicCode.SicSectionId).UniqueI().OrderBy(s => s).ToDelimitedString(delimiter);
-        }
-
-        public string GetEncryptedId()
-        {
-            return obfuscator.Obfuscate(OrganisationId.ToString());
         }
 
         #region Scope

@@ -57,14 +57,7 @@
             Gender pay gap report
         </h1>
             
-        @{
-            var addRemoveButtonViewModel = new AddRemoveButtonViewModel
-            {
-                OrganisationIdEncrypted = Model.Organisation.GetEncryptedId(),
-                OrganisationName = Model.Organisation.OrganisationName
-            };
-        }
-        <partial name="~/Views/Compare/AddRemoveEmployer.cshtml" model="addRemoveButtonViewModel"/>
+        <partial name="../CompareEmployers/AddRemoveEmployerNew.cshtml" model="Model.Organisation"/>
             
             
         <h2 class="govuk-heading-m govuk-!-margin-bottom-2">

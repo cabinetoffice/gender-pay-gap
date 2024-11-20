@@ -1,7 +1,6 @@
 ﻿@using GenderPayGap.Database
 @using GovUkDesignSystem
 @using GovUkDesignSystem.GovUkDesignSystemComponents
-@using GenderPayGap.Core.Classes
 @model GenderPayGap.WebUI.Models.ManageOrganisations.ManageOrganisationsViewModel
 
 @{
@@ -47,7 +46,7 @@
                         @if (userOrganisation.IsAwaitingActivationPIN())
                         {
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" href="@Url.Action("EnterPinGet", "AddOrganisationEnterPin", new {obfuscatedOrganisationId = Obfuscator.Obfuscate(userOrganisation.OrganisationId)})">
+                                <a class="govuk-link" href="@Url.Action("EnterPinGet", "AddOrganisationEnterPin", new {organisationId = userOrganisation.OrganisationId})">
                                     @(userOrganisation.Organisation.OrganisationName.ToUpper())
                                 </a>
                             </td>

@@ -48,7 +48,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             ThrowIfNeitherIdNorCompanyNumberIsSpecified(viewModel);
             ThrowIfBothIdAndCompanyNumberAreSpecified(viewModel);
 
-            if (!string.IsNullOrWhiteSpace(viewModel.Id))
+            if (viewModel.Id.HasValue)
             {
                 return FoundGetWithId(viewModel);
             }
@@ -60,7 +60,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private IActionResult FoundGetWithId(AddOrganisationFoundViewModel viewModel)
         {
-            Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
+            Organisation organisation = dataRepository.Get<Organisation>(viewModel.Id.Value);
 
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
 
@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     "AddOrganisationFound",
                     new
                     {
-                        id = existingOrganisation.GetEncryptedId(),
+                        id = existingOrganisation.OrganisationId,
                         query = viewModel.Query,
                         sector = viewModel.Sector
                     });
@@ -119,7 +119,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             ThrowIfNeitherIdNorCompanyNumberIsSpecified(viewModel);
             ThrowIfBothIdAndCompanyNumberAreSpecified(viewModel);
 
-            if (!string.IsNullOrWhiteSpace(viewModel.Id))
+            if (viewModel.Id.HasValue)
             {
                 return FoundPostWithId(viewModel);
             }
@@ -131,7 +131,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private IActionResult FoundPostWithId(AddOrganisationFoundViewModel viewModel)
         {
-            Organisation organisation = dataRepository.Get<Organisation>(viewModel.DeObfuscatedId);
+            Organisation organisation = dataRepository.Get<Organisation>(viewModel.Id.Value);
             
             if (viewModel.IsUkAddress is null)
             {
@@ -181,7 +181,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
                     "AddOrganisationFound",
                     new
                     {
-                        id = existingOrganisation.GetEncryptedId(),
+                        id = existingOrganisation.OrganisationId,
                         query = viewModel.Query,
                         sector = viewModel.Sector
                     });
@@ -217,7 +217,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         #region Methods to validate the view-models (used by both GET and POST requests)
         private static void ThrowIfNeitherIdNorCompanyNumberIsSpecified(AddOrganisationFoundViewModel viewModel)
         {
-            if (string.IsNullOrWhiteSpace(viewModel.Id) && string.IsNullOrWhiteSpace(viewModel.CompanyNumber))
+            if (!viewModel.Id.HasValue && string.IsNullOrWhiteSpace(viewModel.CompanyNumber))
             {
                 // One of `id` or `companyNumber` must be specified, otherwise we can't show a valid page
                 // The user possibly typed in the link incorrectly
@@ -227,7 +227,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
         private static void ThrowIfBothIdAndCompanyNumberAreSpecified(AddOrganisationFoundViewModel viewModel)
         {
-            if (!string.IsNullOrWhiteSpace(viewModel.Id) && !string.IsNullOrWhiteSpace(viewModel.CompanyNumber))
+            if (viewModel.Id.HasValue && !string.IsNullOrWhiteSpace(viewModel.CompanyNumber))
             {
                 // It is only valid to specify ONE of `id` or `companyNumber`
                 throw new PageNotFoundException();
@@ -294,7 +294,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         {
             var alreadyRegisteringViewModel = new AddOrganisationAlreadyRegisteringViewModel
             {
-                Id = foundViewModel.Id,
+                Id = foundViewModel.Id.Value,
                 Query = foundViewModel.Query
             };
 

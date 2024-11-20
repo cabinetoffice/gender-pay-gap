@@ -15,7 +15,7 @@ namespace GenderPayGap.BusinessLogic.Tests.ScopeBusinessLogic
 
     [TestFixture]
     [SetCulture("en-GB")]
-    public class FillMissingScopesTests : BaseBusinessLogicTests
+    public class FillMissingScopesTests
     {
 
         [SetUp]

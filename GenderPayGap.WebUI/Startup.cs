@@ -9,7 +9,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
-using GenderPayGap.Core.Models;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
@@ -211,7 +210,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
 
             //Register some singletons
-            builder.RegisterType<InternalObfuscator>().As<IObfuscator>().SingleInstance();
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
             builder.RegisterType<GovNotifyAPI>().As<IGovNotifyAPI>().InstancePerLifetimeScope();
             builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();

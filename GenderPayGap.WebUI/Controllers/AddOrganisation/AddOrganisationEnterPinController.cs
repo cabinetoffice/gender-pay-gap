@@ -30,11 +30,10 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
             this.auditLogger = auditLogger;
         }
         
-        [HttpGet("enter-pin/{obfuscatedOrganisationId}")]
-        public IActionResult EnterPinGet(string obfuscatedOrganisationId)
+        [HttpGet("enter-pin/{organisationId}")]
+        public IActionResult EnterPinGet(long organisationId)
         {
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(obfuscatedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserIsNotAwaitingPinInThePostForGivenOrganisation(User, dataRepository, organisationId);
             UserOrganisation userOrganisation = LoadUserOrganisation(user, organisationId);
@@ -46,11 +45,10 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
         }
 
         [ValidateAntiForgeryToken]
-        [HttpPost("enter-pin/{obfuscatedOrganisationId}")]
-        public IActionResult EnterPinPost(string obfuscatedOrganisationId, AddOrganisationEnterPinViewModel viewModel)
+        [HttpPost("enter-pin/{organisationId}")]
+        public IActionResult EnterPinPost(long organisationId, AddOrganisationEnterPinViewModel viewModel)
         {
             User user = ControllerHelper.GetGpgUserFromAspNetUser(User, dataRepository);
-            long organisationId = ControllerHelper.DeObfuscateOrganisationIdOrThrow404(obfuscatedOrganisationId);
             ControllerHelper.ThrowIfUserAccountRetiredOrEmailNotVerified(User, dataRepository);
             ControllerHelper.ThrowIfUserIsNotAwaitingPinInThePostForGivenOrganisation(User, dataRepository, organisationId);
             UserOrganisation userOrganisation = LoadUserOrganisation(user, organisationId);

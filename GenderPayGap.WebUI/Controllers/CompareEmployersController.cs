@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Helpers;
@@ -30,6 +29,68 @@ namespace GenderPayGap.WebUI.Controllers
             this.dataRepository = dataRepository;
         }
 
+        [HttpGet("/compare-employers/add/{organisationId}")]
+        public IActionResult AddEmployer(long organisationId, string returnUrl)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.AddToBasket(organisationId);
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return LocalRedirect(returnUrl);
+        }
+        
+        [HttpGet("/compare-employers/add-js/{organisationId}")]
+        public IActionResult AddEmployerJs(long organisationId)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.AddToBasket(organisationId);
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return Ok();
+        }
+        
+        [HttpGet("/compare-employers/remove/{organisationId}")]
+        public IActionResult RemoveEmployer(long organisationId, string returnUrl)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.RemoveFromBasket(organisationId);
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return LocalRedirect(returnUrl);
+        }
+        
+        [HttpGet("/compare-employers/remove-js/{organisationId}")]
+        public IActionResult RemoveEmployerJs(long organisationId)
+        {
+            Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
+            ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
+            
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.RemoveFromBasket(organisationId);
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return Ok();
+        }
+        
+        [HttpGet("/compare-employers/clear")]
+        public IActionResult ClearEmployers(string returnUrl)
+        {
+            compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.ClearBasket();
+            compareViewService.SaveComparedEmployersToCookie();
+
+            return LocalRedirect(returnUrl);
+        }
+        
         [HttpGet("/compare-employers")]
         public IActionResult CompareEmployersNoYear(string employers = null)
         {
@@ -44,6 +105,7 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult CompareEmployersForYear(int year, string employers = null)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
             var viewModel = new CompareEmployersForYearViewModel
@@ -51,20 +113,18 @@ namespace GenderPayGap.WebUI.Controllers
                 ReportingYear = year
             };
 
-            List<string> encodedEmployerIds;
+            List<long> organisationIds;
             if (!string.IsNullOrWhiteSpace(employers))
             {
-                encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                organisationIds = DecodeOrganisationIds(encodedEmployerIds);
                 viewModel.CameFromShareLink = true;
             }
             else
             {
-                encodedEmployerIds = compareViewService.ComparedEmployers;
+                organisationIds = compareViewService.ComparedEmployers;
                 viewModel.CameFromShareLink = false;
             }
-
-            // Hopefully we can remove this step one day!
-            List<long> organisationIds = DecodeOrganisationIds(encodedEmployerIds);
 
             foreach (long organisationId in organisationIds)
             {
@@ -84,23 +144,22 @@ namespace GenderPayGap.WebUI.Controllers
         public IActionResult DownloadCSVOfCompareEmployersForYear(int year, string employers = null)
         {
             compareViewService.LoadComparedEmployersFromCookie();
+            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
 
-            List<string> encodedEmployerIds;
+            List<long> organisationIds;
             if (!string.IsNullOrWhiteSpace(employers))
             {
-                encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                List<string> encodedEmployerIds = employers.Split("-", StringSplitOptions.RemoveEmptyEntries).ToList();
+                organisationIds = DecodeOrganisationIds(encodedEmployerIds);
             }
             else
             {
-                encodedEmployerIds = compareViewService.ComparedEmployers;
+                organisationIds = compareViewService.ComparedEmployers;
             }
             
-            // Hopefully we can remove this step one day!
-            List<long> organisationIds = DecodeOrganisationIds(encodedEmployerIds);
             var organisationsToDownload = new List<Organisation>();
-            
             foreach (long organisationId in organisationIds)
             {
                 try
@@ -158,8 +217,15 @@ namespace GenderPayGap.WebUI.Controllers
             {
                 try
                 {
-                    long organisationId = Obfuscator.DeObfuscate(encodedEmployerId);
-                    organisationIds.Add(organisationId);
+                    if (long.TryParse(encodedEmployerId, out long parsedOrganisationId))
+                    {
+                        organisationIds.Add(parsedOrganisationId);
+                    }
+                    else
+                    {
+                        long deObfuscatedOrganisationId = Obfuscator.DeObfuscate(encodedEmployerId);
+                        organisationIds.Add(deObfuscatedOrganisationId);
+                    }
                 }
                 catch (Exception e)
                 {}
