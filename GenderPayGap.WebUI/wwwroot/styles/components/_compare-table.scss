@@ -1,0 +1,81 @@
+﻿
+.gpg-compare-table-static-wrapper {
+    position: relative;
+    padding: 0 5px;
+    margin-right: -30px;
+    
+    @media (max-width: 641px) {
+        margin-right: -20px;
+    }
+
+    .gpg-compare-table-scroll-wrapper {
+        overflow-x: auto;
+        overscroll-behavior-x: none;
+        display: flex;
+        position: relative;
+        justify-content: space-between;
+
+        .gpg-compare-table-middle-wrapper {
+            flex-grow: 1;
+            display: flex;
+        }
+        
+        .gpg-compare-table {
+            font-size: 16px;
+            width: fit-content;
+
+            .gpg-compare-table-cell {
+                text-align: center;
+                vertical-align: middle;
+                padding: 10px;
+
+                &.gpg-compare-table-cell--border-left {
+                    border-left: 1px solid govuk-colour("mid-grey");
+                }
+            }
+        }
+        
+        .gpg-compare-table-scroll-indicator-hider {
+            background: govuk-colour("white");
+            z-index: 4;
+            width: 60px;
+            flex-shrink: 0;
+        }
+    }
+    
+    .gpg-compare-table-scroll-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 5px;
+        width: 50px;
+        background: #ccc;
+        z-index: 3;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        text-align: center;
+        
+        p {
+            margin: 0 12px;
+        }
+    }
+}
+
+.compare-table-hourly-pay-column {
+    display: none;
+}
+#compare-table-hourly-pay-checkbox-container:has(input[type=checkbox]#compare-table-hourly-pay-checkbox:checked) ~ div .compare-table-hourly-pay-column {
+    display: table-cell;
+}
+.compare-table-pay-quarters-column {
+    display: none;
+}
+#compare-table-pay-quarters-checkbox-container:has(input[type=checkbox]#compare-table-pay-quarters-checkbox:checked) ~ div .compare-table-pay-quarters-column {
+    display: table-cell;
+}
+.compare-table-bonus-pay-column {
+    display: none;
+}
+#compare-table-bonus-pay-checkbox-container:has(input[type=checkbox]#compare-table-bonus-pay-checkbox:checked) ~ div .compare-table-bonus-pay-column {
+    display: table-cell;
+}

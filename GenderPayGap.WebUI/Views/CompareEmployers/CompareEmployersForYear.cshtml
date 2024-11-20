@@ -1,0 +1,430 @@
+@using GenderPayGap.Core.Helpers
+@using GenderPayGap.Database
+@using GenderPayGap.WebUI.Helpers
+@using GenderPayGap.WebUI.Models.ViewReports
+@using GovUkDesignSystem
+@using GovUkDesignSystem.GovUkDesignSystemComponents
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using GenderPayGap.Core
+@using System.ComponentModel.DataAnnotations
+@inject ICompareViewService CompareViewService
+@model GenderPayGap.WebUI.Models.Compare.CompareEmployersForYearViewModel
+
+@{
+    string reportingYearFormatted = ReportingYearsHelper.FormatYearAsReportingPeriod(Model.ReportingYear);
+    ViewBag.Title = $"Compare employers' gender pay gaps for {reportingYearFormatted} reporting year";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+
+    string currentRelativeUrl = Context.GetUri().PathAndQuery;
+    string commaSeparatedListOfObfuscatedEmployerIds = string.Join("-", Model.Organisations.Select(org => org.GetEncryptedId()));
+}
+
+@section BeforeMain {
+    @{
+        var crumbs = new List<CrumbViewModel>
+        {
+            new CrumbViewModel
+            {
+                Text = "Homepage",
+                Href = Url.Action("Index", "Homepage")
+            },
+            new CrumbViewModel
+            {
+                Text = "Search and compare",
+                Href = Url.Action("SearchResults", "Viewing")
+            },
+            new CrumbViewModel
+            {
+                Text = "Employer comparison",
+                Href = Model.CameFromShareLink
+                    ?Url.Action("CompareEmployersNoYear", "CompareEmployers", new {employers = commaSeparatedListOfObfuscatedEmployerIds})
+                    :Url.Action("CompareEmployersNoYear", "CompareEmployers")
+            },
+            new CrumbViewModel
+            {
+                Text = $"{reportingYearFormatted} reporting year"
+            }
+        };
+    }
+
+    @(await Html.GovUkBreadcrumbs(new BreadcrumbsViewModel
+    {
+        Crumbs = crumbs
+    }))
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        
+        <h1 class="govuk-heading-xl">
+            Employer comparison
+        </h1>
+        
+        @if (!Model.CameFromShareLink)
+            // If the user came here from the Share Link, we don't want to encourage them to edit the list of compared employers, because it gets confusing!
+            // e.g. what should we do if they open up a Share Link, but already have some employers in their Comparison Basket?
+            // It's easiest to just show them the comparison for the SHare Link, and allow them to start a new search and add/remove employers from there
+        {
+            <p class="govuk-body govuk-!-margin-bottom-2">
+                Your comparison list contains
+                @(CompareViewService.BasketItemCount)
+                @(CompareViewService.BasketItemCount != 1 ? "employers" : "employer")
+            </p>
+            <ul class="govuk-list">
+                <li>
+                    <form method="GET" action="@Url.Action("SearchResults", "Viewing")">
+                        <button type="submit" class="govuk-button zgovuk-button--secondary govuk-!-margin-bottom-1" data-module="govuk-button">
+                            Add another employer
+                        </button>
+                    </form>
+                </li>
+                @if (CompareViewService.BasketItemCount > 0)
+                {
+                    <li>
+                        <form method="GET" action="@Url.Action("ClearEmployers", "Compare")">
+                            <input type="hidden" name="returnUrl" value="@(Url.Action("SearchResults", "Viewing"))" />
+                            <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-1" data-module="govuk-button">
+                                Clear list and start a new search
+                            </button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+    
+        <h2 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-2">
+            Comparison for @(reportingYearFormatted)
+        </h2>
+        
+        <details class="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Change reporting year
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <ul class="govuk-list govuk-list--bullet">
+                    @foreach (int year in ReportingYearsHelper.GetReportingYears().OrderByDescending(year => year))
+                    {
+                        bool isCurrentReportingYearPublic = year == ReportingYearsHelper.GetCurrentReportingYearForSector(SectorTypes.Public);
+                        bool isCurrentReportingYearPrivate = year == ReportingYearsHelper.GetCurrentReportingYearForSector(SectorTypes.Private);
+                        
+                        <li>
+
+                            @{
+                                string url = Model.CameFromShareLink
+                                    ? Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = year, employers = commaSeparatedListOfObfuscatedEmployerIds})
+                                    : Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = year});
+                            }
+                            <a href="@url"
+                               class="govuk-link">
+                                @(ReportingYearsHelper.FormatYearAsReportingPeriod(year))</a>
+
+                            @if (isCurrentReportingYearPublic && isCurrentReportingYearPrivate)
+                            {
+                                <span>(current reporting year)</span>
+                            }
+                            @if (isCurrentReportingYearPublic && !isCurrentReportingYearPrivate)
+                            {
+                                <span>(current reporting year for public sector employers)</span>
+                            }
+                            @if (!isCurrentReportingYearPublic && isCurrentReportingYearPrivate)
+                            {
+                                <span>(current reporting year for private sector employers)</span>
+                            }
+                            
+                            @if (ReportingYearsHelper.IsReportingYearExcludedFromLateFlagEnforcement(year))
+                            {
+                                <span>(reporting not enforced due to COVID-19)</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </details>
+        
+        <div id="compare-table-hourly-pay-checkbox-container" class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item" style="float: unset;">
+                <input class="govuk-checkboxes__input" id="compare-table-hourly-pay-checkbox" type="checkbox" checked="checked">
+                <label class="govuk-label govuk-checkboxes__label" for="compare-table-hourly-pay-checkbox">
+                    Show hourly pay
+                </label>
+            </div>
+        </div>
+        <div id="compare-table-pay-quarters-checkbox-container" class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item" style="float: unset;">
+                <input class="govuk-checkboxes__input" id="compare-table-pay-quarters-checkbox" type="checkbox">
+                <label class="govuk-label govuk-checkboxes__label" for="compare-table-pay-quarters-checkbox">
+                    Show pay quarters
+                </label>
+            </div>
+        </div>
+        <div id="compare-table-bonus-pay-checkbox-container" class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item" style="float: unset;">
+                <input class="govuk-checkboxes__input" id="compare-table-bonus-pay-checkbox" type="checkbox">
+                <label class="govuk-label govuk-checkboxes__label" for="compare-table-bonus-pay-checkbox">
+                    Show bonus pay
+                </label>
+            </div>
+        </div>
+
+        <div class="gpg-compare-table-static-wrapper">
+            <div class="gpg-compare-table-scroll-wrapper">
+                
+                <div class="gpg-compare-table-middle-wrapper">
+                    <table class="govuk-table gpg-compare-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell" rowspan="2">
+                                    Employer
+                                </th>
+                                @if (!Model.CameFromShareLink)
+                                {
+                                    <th scope="col" class="govuk-table__header gpg-compare-table-cell" rowspan="2">
+                                        Action
+                                    </th>
+                                }
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell" rowspan="2">
+                                    Status
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell gpg-compare-table-cell--border-left" rowspan="2">
+                                    Employee headcount
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell gpg-compare-table-cell--border-left compare-table-hourly-pay-column" colspan="2">
+                                    Gender pay gap (hourly pay)
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell gpg-compare-table-cell--border-left compare-table-pay-quarters-column" colspan="4">
+                                    Percentage of women in each pay quarter
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell gpg-compare-table-cell--border-left compare-table-bonus-pay-column" colspan="2">
+                                    Who received bonus pay
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell gpg-compare-table-cell--border-left compare-table-bonus-pay-column" colspan="2">
+                                    Gender pay gap (bonus pay)
+                                </th>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-hourly-pay-column gpg-compare-table-cell--border-left">
+                                    Mean
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-hourly-pay-column">
+                                    Median
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-pay-quarters-column gpg-compare-table-cell--border-left">
+                                    Lower
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-pay-quarters-column">
+                                    Lower middle
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-pay-quarters-column">
+                                    Upper middle
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-pay-quarters-column">
+                                    Upper
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-bonus-pay-column gpg-compare-table-cell--border-left">
+                                    Women
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-bonus-pay-column">
+                                    Men
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-bonus-pay-column gpg-compare-table-cell--border-left">
+                                    Mean
+                                </th>
+                                <th scope="col" class="govuk-table__header gpg-compare-table-cell compare-table-bonus-pay-column">
+                                    Median
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (Organisation organisation in Model.Organisations.OrderBy(org => org.OrganisationName))
+                            {
+                                string organisationEncodedId = organisation.GetEncryptedId();
+
+                                bool hasEmployerReportedForYear = organisation.HasSubmittedReturn(Model.ReportingYear);
+                                Return returnForYear = organisation.GetReturn(Model.ReportingYear);
+
+                                string employerUrl = hasEmployerReportedForYear
+                                    ? Url.Action("ReportForYear", "ViewReports", new {organisationId = organisation.OrganisationId, reportingYear = Model.ReportingYear})
+                                    : Url.Action("Employer", "ViewReports", new {organisationId = organisation.OrganisationId});
+                                string removeEmployerUrl = Url.Action(
+                                    "RemoveEmployer", "Compare",
+                                    new {employerIdentifier = organisationEncodedId}
+                                    );
+
+                                ReportStatusTag reportStatusTag = ReportStatusTagHelper.GetReportStatusTag(organisation, Model.ReportingYear);
+
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header gpg-compare-table-cell">
+                                        <a href="@(employerUrl)"
+                                           class="govuk-link">
+                                            @(organisation.OrganisationName)
+                                        </a>
+                                    </th>
+                                    @if (!Model.CameFromShareLink)
+                                    {
+                                        <td class="govuk-table__cell gpg-compare-table-cell">
+                                            <form method="GET" action="@removeEmployerUrl">
+                                                <button type="submit"
+                                                        class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0"
+                                                        data-module="govuk-button">
+                                                    Remove
+                                                    <span class="visuallyhidden govuk-visually-hidden">
+                                                        @(organisation.OrganisationName)
+                                                    </span>
+                                                </button>
+                                                <input type="hidden" name="returnUrl" value="@(currentRelativeUrl)">
+                                            </form>
+                                        </td>
+                                    }
+                                    <td class="govuk-table__cell gpg-compare-table-cell gpg-compare-table-cell--border-left">
+                                        @await Html.PartialAsync("../ViewReports/ReportStatusBadge",
+                                            new ReportStatusBadgeViewModel
+                                            {
+                                                ReportStatusTag = reportStatusTag,
+                                                ReportSubmittedDate = returnForYear?.Modified,
+                                                DeadlineDate = ReportingYearsHelper.GetDeadline(organisation.SectorType, Model.ReportingYear)
+                                            })
+                                    </td>
+                                    @if (hasEmployerReportedForYear)
+                                    {
+                                        <td class="govuk-table__cell gpg-compare-table-cell gpg-compare-table-cell--border-left">
+                                            @(returnForYear.OrganisationSize.GetAttribute<DisplayAttribute>().Name)
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-hourly-pay-column gpg-compare-table-cell--border-left">
+                                            @(returnForYear.DiffMeanHourlyPayPercent)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-hourly-pay-column">
+                                            @(returnForYear.DiffMedianHourlyPercent)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-pay-quarters-column gpg-compare-table-cell--border-left">
+                                            @(returnForYear.FemaleLowerPayBand)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-pay-quarters-column">
+                                            @(returnForYear.FemaleMiddlePayBand)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-pay-quarters-column">
+                                            @(returnForYear.FemaleUpperPayBand)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-pay-quarters-column">
+                                            @(returnForYear.FemaleUpperQuartilePayBand)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-bonus-pay-column gpg-compare-table-cell--border-left">
+                                            @(returnForYear.FemaleMedianBonusPayPercent)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-bonus-pay-column">
+                                            @(returnForYear.MaleMedianBonusPayPercent)%
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-bonus-pay-column gpg-compare-table-cell--border-left">
+                                            @(returnForYear.DiffMeanBonusPercent.HasValue ? returnForYear.DiffMeanBonusPercent.Value + "%" : "no data")
+                                        </td>
+                                        <td class="govuk-table__cell gpg-compare-table-cell compare-table-bonus-pay-column">
+                                            @(returnForYear.DiffMedianBonusPercent.HasValue ? returnForYear.DiffMedianBonusPercent.Value + "%" : "no data")
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="govuk-table__cell gpg-compare-table-cell gpg-compare-table-cell--border-left" colspan="100">
+                                            No report for year
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="gpg-compare-table-scroll-indicator-hider"></div>
+            </div>
+            <div class="gpg-compare-table-scroll-indicator">
+                <p class="govuk-body">
+                    Scroll for more
+                </p>
+            </div>
+        </div>
+        
+        <p class="govuk-body">
+            @{
+                string downloadCsvUrl = Model.CameFromShareLink
+                    ? Url.Action("DownloadCSVOfCompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear, employers = commaSeparatedListOfObfuscatedEmployerIds})
+                    : Url.Action("DownloadCSVOfCompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear});
+            }
+            <a href="@downloadCsvUrl"
+               class="govuk-link">
+                Download this table as a CSV file
+            </a>
+        </p>
+        <p class="govuk-body">
+            @{
+                string shareEmailUrl = Url.Action("CompareEmployersForYear", "CompareEmployers", new {year = Model.ReportingYear, employers = commaSeparatedListOfObfuscatedEmployerIds}, "https");
+                
+                string emailSubject = "Compare employers' Gender Pay Gaps";
+                string emailBody = $"Hi,%0D%0DI used the Gender Pay Gap service on Gov.UK to compare these employers.%0D%0dThought you'd like to see the results...%0D{shareEmailUrl}%0D%0D";
+            }
+            <a href="mailto:?subject=@(emailSubject)&body=@(emailBody)"
+               class="govuk-link">
+                Share by email
+            </a>
+        </p>
+
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">
+            Understanding gender pay gap figures
+        </h2>
+
+        <p class="govuk-body">
+            The gender pay gap is usually a positive or negative percentage.
+        </p>
+        <p class="govuk-body govuk-!-margin-bottom-1">
+            Positive percentage:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>women earn less than men in pay or bonuses</li>
+            <li>example: a 5% gender pay gap means women are paid 5% less than men</li>
+        </ul>
+        <p class="govuk-body govuk-!-margin-bottom-1">
+            Negative percentage:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>women earn more than men in pay or bonuses</li>
+            <li>example: a -5% gender pay gap means women are paid 5% more than men</li>
+        </ul>
+
+        <h3 class="govuk-heading-m">
+            Mean and median
+        </h3>
+        <p class="govuk-body">
+            The gender pay gap is shown as both median and mean (average).
+        </p>
+        <p class="govuk-body govuk-!-margin-bottom-1">
+            Median:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>the middle figure when hourly pay is arranged in order from highest to lowest</li>
+            <li>shows the ‘typical’ situation</li>
+            <li>not distorted by very high or low figures</li>
+            <li>may hide specific gender pay gap issues</li>
+        </ul>
+        <p class="govuk-body govuk-!-margin-bottom-1">
+            Mean (average):
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>total hourly pay of all employees divided by the number of people in the group</li>
+            <li>gives a good overall indication of the gender pay gap</li>
+            <li>can be distorted by very high or low hourly pay</li>
+        </ul>
+
+        <h3 class="govuk-heading-m">
+            Pay quarters
+        </h3>
+
+        <p class="govuk-body">
+            Pay quarters show the percentage of men and women in 4 equally-sized groups based on their hourly pay.
+            They indicate how women are represented at different levels of the organisation.
+        </p>
+
+    </div>
+</div>

@@ -137,37 +137,6 @@ namespace GenderPayGap.Extensions
             return result;
         }
 
-        public static DataTable ToDataTable<T>(this IEnumerable<T> list, string tableName = null)
-        {
-            var table = new DataTable(tableName);
-
-            foreach (T item in list)
-            {
-                var jObject = item as JObject;
-
-                if (jObject == null)
-                {
-                    jObject = JObject.FromObject(item);
-                }
-
-                DataRow row = table.NewRow();
-
-                foreach (KeyValuePair<string, JToken> col in jObject)
-                {
-                    if (!table.Columns.Contains(col.Key))
-                    {
-                        table.Columns.Add(col.Key);
-                    }
-
-                    row[col.Key] = col.Value;
-                }
-
-                table.Rows.Add(row);
-            }
-
-            return table;
-        }
-
         public static List<T> ToList<T>(this ICollection collection)
         {
             var list = new List<T>(collection.Count);

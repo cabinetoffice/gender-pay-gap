@@ -208,6 +208,14 @@ namespace GenderPayGap.WebUI.Helpers
             return user;
         }
 
+        public static void ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(int reportingYear)
+        {
+            if (!ReportingYearsHelper.GetReportingYears().Contains(reportingYear))
+            {
+                throw new PageNotFoundException();
+            }
+        }
+
         public static void ThrowIfReportingYearIsOutsideOfRange(int reportingYear, long organisationId, IDataRepository dataRepository)
         {
             Organisation organisation = dataRepository.Get<Organisation>(organisationId);

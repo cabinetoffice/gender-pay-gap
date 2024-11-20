@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes;
-using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
-using GenderPayGap.Tests.Common.TestHelpers;
-using GenderPayGap.WebUI.BusinessLogic.Models.Compare;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Models;
-using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Moq;
 using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers
@@ -590,96 +579,5 @@ namespace GenderPayGap.WebUI.Tests.Controllers
         }
         #endregion
         
-        #region CompareEmployers
-        [Test]
-        public void CompareController_CompareEmployers_NoYear_DefaultSortTheMostRecentCompletedReportingYearAsync()
-        {
-            // Arrange
-            var routeData = new RouteData();
-            routeData.Values.Add("Action", nameof(CompareController.CompareEmployers));
-            routeData.Values.Add("Controller", "Viewing");
-
-            var controller = UiTestHelper.GetController<CompareController>(0,routeData);
-
-            //Setup the mock url helper
-            var testUri = new Uri("https://localhost/Viewing/compare-employers");
-            controller.AddMockUriHelper(testUri.ToString(), "CompareEmployers");
-
-            var reportingYear = ReportingYearsHelper.GetTheMostRecentCompletedReportingYear();
-            var mockOrg = OrganisationHelper.GetOrganisationInScope(reportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(reportingYear);
-
-            //create the comparison data
-            var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
-
-            //Setup the mocked business logic
-            var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
-            mockOrgBL
-                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .Returns(expectedModel);
-            controller.OrganisationBusinessLogic = mockOrgBL.Object;
-
-            // Act
-            ViewResult result = controller.CompareEmployers(0) as ViewResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(result.ViewName, "CompareEmployers");
-            Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
-
-            var actualModel = result.Model as CompareViewModel;
-            Assert.NotNull(actualModel);
-            Assert.NotNull(actualModel.CompareReports);
-            Assert.IsTrue(actualModel.CompareReports.All(obj => actualModel.Year == reportingYear));
-            actualModel.CompareReports.Compare(expectedModel);
-        }
-
-        [Test]
-        public void CompareController_CompareEmployers_WithYear_SameSortAsync()
-        {
-            // Arrange
-            var routeData = new RouteData();
-            routeData.Values.Add("Action", nameof(CompareController.CompareEmployers));
-            routeData.Values.Add("Controller", "Viewing");
-
-            var controller = UiTestHelper.GetController<CompareController>(0, routeData);
-
-            //Setup the mock url helper
-            var testUri = new Uri("https://localhost/Viewing/compare-employers");
-            controller.AddMockUriHelper(testUri.ToString(), "CompareEmployers");
-
-            var firstReportingYear = Global.FirstReportingYear;
-
-            var mockOrg = OrganisationHelper.GetOrganisationInScope(firstReportingYear);
-            DateTime accountingDateTime = mockOrg.SectorType.GetAccountingStartDate(firstReportingYear);
-
-            //create the comparison data
-            var expectedModel = ViewingServiceHelper.GetCompareTestData(5).ToList();
-
-            //Setup the mocked business logic
-            var mockOrgBL = new Mock<IOrganisationBusinessLogic>();
-            mockOrgBL
-                .Setup(x => x.GetCompareData(It.IsAny<IEnumerable<string>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .Returns(expectedModel);
-            controller.OrganisationBusinessLogic = mockOrgBL.Object;
-
-            // Act
-            var result = controller.CompareEmployers(firstReportingYear) as ViewResult;
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.AreEqual(result.ViewName, "CompareEmployers");
-            Assert.AreEqual(controller.ViewBag.ReturnUrl, testUri.PathAndQuery);
-
-
-            var actualModel = result.Model as CompareViewModel;
-            Assert.NotNull(actualModel);
-            Assert.NotNull(actualModel.CompareReports);
-            Assert.IsTrue(actualModel.CompareReports.All(obj => actualModel.Year == firstReportingYear));
-            actualModel.CompareReports.Compare(expectedModel);
-        }
-
-        #endregion
-
     }
 }

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.Cookies;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
@@ -15,8 +14,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         List<string> ComparedEmployers { get; }
         
-        int MaxCompareBasketShareCount { get; }
-
         int MaxCompareBasketCount { get; }
 
         int BasketItemCount { get; }
@@ -88,8 +85,6 @@ namespace GenderPayGap.WebUI.Classes.Presentation
         public int BasketItemCount => ComparedEmployers.Count;
 
         public int MaxCompareBasketCount => Global.MaxCompareBasketCount;
-
-        public int MaxCompareBasketShareCount => Global.MaxCompareBasketShareCount;
 
         #endregion
 

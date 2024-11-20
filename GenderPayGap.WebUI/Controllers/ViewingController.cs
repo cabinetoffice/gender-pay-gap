@@ -8,7 +8,6 @@ using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Core.Models.HttpResultModels;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.WebUI.BusinessLogic.Services;
 using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.Helpers;
@@ -30,13 +29,11 @@ namespace GenderPayGap.WebUI.Controllers
         public ViewingController(
             IViewingService viewingService,
             ICompareViewService compareViewService,
-            IOrganisationBusinessLogic organisationBusinessLogic,
             IDataRepository dataRepository,
             AutoCompleteSearchService autoCompleteSearchService)
         {
             ViewingService = viewingService;
             CompareViewService = compareViewService;
-            OrganisationBusinessLogic = organisationBusinessLogic;
             this.autoCompleteSearchService = autoCompleteSearchService;
             this.dataRepository = dataRepository;
         }
@@ -47,7 +44,6 @@ namespace GenderPayGap.WebUI.Controllers
 
         public IViewingService ViewingService { get; }
         public ICompareViewService CompareViewService { get; }
-        public IOrganisationBusinessLogic OrganisationBusinessLogic { get; set; }
 
         #endregion
 

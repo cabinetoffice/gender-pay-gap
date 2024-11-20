@@ -103,7 +103,6 @@ namespace GenderPayGap.Core
         public static int PurgeUnusedOrganisationDays => 30;
         public static int PurgeUnconfirmedPinDays => PinInPostExpiryDays + 30;
         public static string DownloadsLocation => "Downloads";
-        public static string EmployerCodeChars => "123456789ABCDEFGHKLMNPQRSTUXYZ";
         public static string PINChars => "123456789ABCDEF";
         public static string WhoNeedsToReportGuidanceLink => "https://www.gov.uk/government/publications/gender-pay-gap-reporting-guidance-for-employers/who-needs-to-report";
         public static int FirstReportingYear => 2017;
@@ -114,9 +113,7 @@ namespace GenderPayGap.Core
                 ? "https://www.gov.uk/report-gender-pay-gap-data"
                 : null;
         public static string DoneUrl => "https://www.gov.uk/done/report-gender-pay-gap-data";
-        public static int ShowReportYearCount => 10; // Specifies how many reporting years the public can view or compare
         public static int MaxCompareBasketCount => 500; // Maximum number of employers you can add to the compare basket
-        public static int MaxCompareBasketShareCount => 195; // Maximum number of employers you can share in a mailto: protocol
         public static int EditableReportCount => 4; // Specifies how many reports an employer can edit
         public static int EditableScopeCount => 2; // Specifies how many scopes an employer can edit
         public static Dictionary<string, string> SecurityHeaders =>
