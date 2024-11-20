@@ -61,13 +61,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="App_Data\CustomErrorMessages.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Sentry" />
   </ItemGroup>
 </Project>

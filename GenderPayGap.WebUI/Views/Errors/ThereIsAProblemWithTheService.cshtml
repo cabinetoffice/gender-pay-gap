@@ -1,0 +1,26 @@
+﻿@using GenderPayGap.Core
+
+@{
+    ViewBag.Title = $"There is a problem with the service - Gender pay gap service";
+    Layout = "~/Views/GovUkFrontend/GovUkFrontendLayout.cshtml";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <h1 class="govuk-heading-xl">
+            Sorry, there is a problem with the service
+        </h1>
+
+        <p class="govuk-body">
+            Try again later.
+        </p>
+        
+        <p class="govuk-body">
+            <a href="mailto:@(Global.GpgReportingEmail)" class="govuk-link">
+                Contact the Gender Pay Gap team</a>
+            if you need to speak to someone about your organisation's gender pay gap reporting.
+        </p>
+
+    </div>
+</div>
