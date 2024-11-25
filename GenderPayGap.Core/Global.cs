@@ -83,7 +83,7 @@ namespace GenderPayGap.Core
         public static string InformationCommissionerEmail => "casework@ico.org.uk";
         public static string TestEnvironmentEmailRecipient => "genderpaygaptesting@gmail.com";
         public static int StaticCacheSeconds => 86400;
-        public static DateTime PrivacyChangedDate => DateTime.Parse("2024-11-26");
+        public static DateTime PrivacyChangedDate => DateTime.Parse("2024-11-25");
         public static DateTime PrivateAccountingDate => DateTime.Parse("2017-04-05");
         public static DateTime PublicAccountingDate => DateTime.Parse("2017-03-31");
         public static int EmailVerificationExpiryDays => 7;
