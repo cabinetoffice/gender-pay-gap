@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Helpers;
@@ -32,19 +32,26 @@ namespace GenderPayGap.WebUI.Classes.Presentation
                 cookieValue = "";
             }
 
-            string[] employerIds = cookieValue.Split(",");
-
-            ComparedEmployers.Clear();
-            foreach (string employerId in employerIds)
+            if (!string.IsNullOrWhiteSpace(cookieValue))
             {
-                if (long.TryParse(employerId, out long parsedOrganisationId))
+                string[] employerIds = cookieValue.Split(",");
+
+                ComparedEmployers.Clear();
+                foreach (string employerId in employerIds)
                 {
-                    ComparedEmployers.Add(parsedOrganisationId);
-                }
-                else
-                {
-                    areAnyIdsObfuscated = true;
-                    ComparedEmployers.Add(Obfuscator.DeObfuscate(employerId));
+                    if (string.IsNullOrWhiteSpace(employerId))
+                    {
+                        // An empty string is not a valid organisation ID, despite what the Obfuscator might tell you!
+                    }
+                    else if (long.TryParse(employerId, out long parsedOrganisationId))
+                    {
+                        ComparedEmployers.Add(parsedOrganisationId);
+                    }
+                    else
+                    {
+                        areAnyIdsObfuscated = true;
+                        ComparedEmployers.Add(Obfuscator.DeObfuscate(employerId));
+                    }
                 }
             }
         }
