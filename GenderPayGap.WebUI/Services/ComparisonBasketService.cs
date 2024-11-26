@@ -5,10 +5,10 @@ using GenderPayGap.WebUI.Helpers;
 using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
-namespace GenderPayGap.WebUI.Classes.Presentation
+namespace GenderPayGap.WebUI.Services
 {
 
-    public class CompareViewService
+    public class ComparisonBasketService
     {
 
         private readonly HttpContext httpContext;
@@ -20,7 +20,7 @@ namespace GenderPayGap.WebUI.Classes.Presentation
 
         public int MaxCompareBasketCount => Global.MaxCompareBasketCount;
 
-        public CompareViewService(IHttpContextAccessor httpContext)
+        public ComparisonBasketService(IHttpContextAccessor httpContext)
         {
             this.httpContext = httpContext.HttpContext;
         }

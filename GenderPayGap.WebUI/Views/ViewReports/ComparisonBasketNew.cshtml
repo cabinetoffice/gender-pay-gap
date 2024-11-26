@@ -1,8 +1,9 @@
-﻿@inject CompareViewService CompareViewService
+﻿@using GenderPayGap.WebUI.Services
+@inject ComparisonBasketService ComparisonBasketService
 
 <div class="govuk-notification-banner"
      id="compare-employers-notification-banner"
-     style="display: @(CompareViewService.BasketItemCount >= 1 ? "block" : "none");"
+     style="display: @(ComparisonBasketService.BasketItemCount >= 1 ? "block" : "none");"
      role="region"
      aria-labelledby="govuk-notification-banner-title--comparison-basket-new"
      data-module="govuk-notification-banner">
@@ -18,8 +19,8 @@
         <p class="govuk-body govuk-!-margin-bottom-2">
             Your comparison list contains
             <strong id="compare-employers-notification-banner--number-of-employees">
-                @(CompareViewService.BasketItemCount)
-                @(CompareViewService.BasketItemCount == 1 ? "employer" : "employers")
+                @(ComparisonBasketService.BasketItemCount)
+                @(ComparisonBasketService.BasketItemCount == 1 ? "employer" : "employers")
             </strong>
         </p>
         <ul class="govuk-list govuk-body-s">

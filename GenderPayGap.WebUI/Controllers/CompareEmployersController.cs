@@ -5,9 +5,9 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Compare;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -15,14 +15,14 @@ namespace GenderPayGap.WebUI.Controllers
     public class CompareEmployersController : Controller
     {
 
-        private readonly CompareViewService compareViewService;
+        private readonly ComparisonBasketService comparisonBasketService;
         private readonly IDataRepository dataRepository;
 
         public CompareEmployersController(
-            CompareViewService compareViewService,
+            ComparisonBasketService comparisonBasketService,
             IDataRepository dataRepository)
         {
-            this.compareViewService = compareViewService;
+            this.comparisonBasketService = comparisonBasketService;
             this.dataRepository = dataRepository;
         }
 
@@ -32,9 +32,9 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.AddToBasket(organisationId);
-            compareViewService.SaveComparedEmployersToCookie();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.AddToBasket(organisationId);
+            comparisonBasketService.SaveComparedEmployersToCookie();
 
             return LocalRedirect(returnUrl);
         }
@@ -45,9 +45,9 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.AddToBasket(organisationId);
-            compareViewService.SaveComparedEmployersToCookie();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.AddToBasket(organisationId);
+            comparisonBasketService.SaveComparedEmployersToCookie();
 
             return Ok();
         }
@@ -58,9 +58,9 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.RemoveFromBasket(organisationId);
-            compareViewService.SaveComparedEmployersToCookie();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.RemoveFromBasket(organisationId);
+            comparisonBasketService.SaveComparedEmployersToCookie();
 
             return LocalRedirect(returnUrl);
         }
@@ -71,9 +71,9 @@ namespace GenderPayGap.WebUI.Controllers
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
             
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.RemoveFromBasket(organisationId);
-            compareViewService.SaveComparedEmployersToCookie();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.RemoveFromBasket(organisationId);
+            comparisonBasketService.SaveComparedEmployersToCookie();
 
             return Ok();
         }
@@ -81,9 +81,9 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("/compare-employers/clear")]
         public IActionResult ClearEmployers(string returnUrl)
         {
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.ClearBasket();
-            compareViewService.SaveComparedEmployersToCookie();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.ClearBasket();
+            comparisonBasketService.SaveComparedEmployersToCookie();
 
             return LocalRedirect(returnUrl);
         }
@@ -101,8 +101,8 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("/compare-employers/{year}")]
         public IActionResult CompareEmployersForYear(int year, string employers = null)
         {
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
             var viewModel = new CompareEmployersForYearViewModel
@@ -119,7 +119,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                organisationIds = compareViewService.ComparedEmployers;
+                organisationIds = comparisonBasketService.ComparedEmployers;
                 viewModel.CameFromShareLink = false;
             }
 
@@ -140,8 +140,8 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("/compare-employers/{year}/download-csv")]
         public IActionResult DownloadCSVOfCompareEmployersForYear(int year, string employers = null)
         {
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             ControllerHelper.ThrowIfReportingYearIsOutsideOfRangeForAnyOrganisation(year);
 
@@ -153,7 +153,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             else
             {
-                organisationIds = compareViewService.ComparedEmployers;
+                organisationIds = comparisonBasketService.ComparedEmployers;
             }
             
             var organisationsToDownload = new List<Organisation>();

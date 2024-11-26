@@ -131,21 +131,32 @@ namespace GenderPayGap.Core.Helpers
         /// <param name="year">The starting year of the accounting period. If 0 then uses current accounting period</param>
         public static DateTime GetAccountingStartDate(this SectorTypes sectorType, int year = 0)
         {
-            var tempDay = 0;
-            var tempMonth = 0;
+            if (year == 0)
+            {
+                return GetSnapshotDateForDateWithinReportingYear(sectorType, VirtualDateTime.Now);
+            }
+            else
+            {
+                return GetSnapshotDateForDateWithinReportingYear(sectorType, new DateTime(year, 12, 31));
+            }
+        }
 
-            DateTime now = VirtualDateTime.Now;
+        public static DateTime GetSnapshotDateForDateWithinReportingYear(this SectorTypes sectorType, DateTime dateWithinReportingYear)
+        {
+            var snapshotDateDay = 0;
+            var snapshotDateMonth = 0;
 
             switch (sectorType)
             {
                 case SectorTypes.Private:
-                    tempDay = Global.PrivateAccountingDate.Day;
-                    tempMonth = Global.PrivateAccountingDate.Month;
+                    snapshotDateDay = Global.PrivateAccountingDate.Day;
+                    snapshotDateMonth = Global.PrivateAccountingDate.Month;
                     break;
                 case SectorTypes.Public:
-                    tempDay = Global.PublicAccountingDate.Day;
-                    tempMonth = Global.PublicAccountingDate.Month;
+                    snapshotDateDay = Global.PublicAccountingDate.Day;
+                    snapshotDateMonth = Global.PublicAccountingDate.Month;
                     break;
+                case SectorTypes.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(sectorType),
@@ -153,14 +164,17 @@ namespace GenderPayGap.Core.Helpers
                         "Cannot calculate accounting date for this sector type");
             }
 
-            if (year == 0)
+            var snapshotDate = new DateTime(dateWithinReportingYear.Year, snapshotDateMonth, snapshotDateDay);
+
+            // The "Date Within Reporting Year" should not be before the "Snapshot Date" (the start of the reporting year)
+            // If it is, then subtract 1 year from the Snapshot Date
+            // This will happen when the "Date Within Reporting Year" is from January to end of March / early April
+            if (dateWithinReportingYear < snapshotDate)
             {
-                year = now.Year;
+                snapshotDate = snapshotDate.AddYears(-1);
             }
-
-            var tempDate = new DateTime(year, tempMonth, tempDay);
-
-            return now > tempDate ? tempDate : tempDate.AddYears(-1);
+            
+            return snapshotDate;
         }
 
     }

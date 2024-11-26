@@ -6,7 +6,8 @@
 @using GovUkDesignSystem.GovUkDesignSystemComponents
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using GenderPayGap.Core
-@inject CompareViewService CompareViewService
+@using GenderPayGap.WebUI.Services
+@inject ComparisonBasketService ComparisonBasketService
 @model GenderPayGap.WebUI.Models.Compare.CompareEmployersForYearViewModel
 
 @{
@@ -65,8 +66,8 @@
         {
             <p class="govuk-body govuk-!-margin-bottom-2">
                 Your comparison list contains
-                @(CompareViewService.BasketItemCount)
-                @(CompareViewService.BasketItemCount != 1 ? "employers" : "employer")
+                @(ComparisonBasketService.BasketItemCount)
+                @(ComparisonBasketService.BasketItemCount != 1 ? "employers" : "employer")
             </p>
             <ul class="govuk-list">
                 <li>
@@ -76,7 +77,7 @@
                         </button>
                     </form>
                 </li>
-                @if (CompareViewService.BasketItemCount > 0)
+                @if (ComparisonBasketService.BasketItemCount > 0)
                 {
                     <li>
                         <form method="GET" action="@Url.Action("ClearEmployers", "CompareEmployers")">

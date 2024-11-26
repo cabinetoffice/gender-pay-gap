@@ -4,9 +4,9 @@ using System.Net;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Models.Search;
 using GenderPayGap.WebUI.Search;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -14,18 +14,18 @@ namespace GenderPayGap.WebUI.Controllers
     public class SearchController : Controller
     {
 
-        private readonly CompareViewService compareViewService;
+        private readonly ComparisonBasketService comparisonBasketService;
         private readonly IDataRepository dataRepository;
         private readonly ViewingSearchService viewingSearchService;
         private readonly AutoCompleteSearchService autoCompleteSearchService;
         
         public SearchController(
-            CompareViewService compareViewService,
+            ComparisonBasketService comparisonBasketService,
             IDataRepository dataRepository,
             ViewingSearchService viewingSearchService,
             AutoCompleteSearchService autoCompleteSearchService)
         {
-            this.compareViewService = compareViewService;
+            this.comparisonBasketService = comparisonBasketService;
             this.dataRepository = dataRepository;
             this.viewingSearchService = viewingSearchService;
             this.autoCompleteSearchService = autoCompleteSearchService;
@@ -34,8 +34,8 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("search")]
         public IActionResult SearchPage(SearchPageViewModel viewModel)
         {
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
 
             PopulateViewModel(viewModel);
             
