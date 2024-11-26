@@ -4,7 +4,6 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Services;

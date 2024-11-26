@@ -11,7 +11,6 @@ using GenderPayGap.Database;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
-using GenderPayGap.WebUI.Classes;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
