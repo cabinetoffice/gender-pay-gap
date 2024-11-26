@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace GenderPayGap.WebUI.Classes
+namespace GenderPayGap.WebUI.Helpers
 {
     public class TrimModelBinder : IDisplayMetadataProvider
     {
