@@ -1,7 +1,7 @@
 ﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Helpers;
+using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers
@@ -10,21 +10,21 @@ namespace GenderPayGap.WebUI.Controllers
     {
 
         private readonly IDataRepository dataRepository;
-        private readonly CompareViewService compareViewService;
+        private readonly ComparisonBasketService comparisonBasketService;
 
         public ViewReportsController(
             IDataRepository dataRepository,
-            CompareViewService compareViewService)
+            ComparisonBasketService comparisonBasketService)
         {
             this.dataRepository = dataRepository;
-            this.compareViewService = compareViewService;
+            this.comparisonBasketService = comparisonBasketService;
         }
 
         [HttpGet("employers/{organisationId}")]
         public IActionResult Employer(long organisationId)
         {
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);
@@ -35,8 +35,8 @@ namespace GenderPayGap.WebUI.Controllers
         [HttpGet("employers/{organisationId}/reporting-year-{reportingYear}")]
         public IActionResult ReportForYear(long organisationId, int reportingYear)
         {
-            compareViewService.LoadComparedEmployersFromCookie();
-            compareViewService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
+            comparisonBasketService.LoadComparedEmployersFromCookie();
+            comparisonBasketService.SaveComparedEmployersToCookieIfAnyAreObfuscated();
             
             Organisation organisation = ControllerHelper.LoadOrganisationOrThrow404(organisationId, dataRepository);
             ControllerHelper.Throw404IfOrganisationIsNotSearchable(organisation);

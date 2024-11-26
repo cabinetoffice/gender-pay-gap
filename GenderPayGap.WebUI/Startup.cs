@@ -12,7 +12,6 @@ using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration;
 using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.ErrorHandling;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
@@ -200,7 +199,7 @@ namespace GenderPayGap.WebUI
 
             // register web ui services
             builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
-            builder.RegisterType<CompareViewService>().As<CompareViewService>().InstancePerLifetimeScope();
+            builder.RegisterType<ComparisonBasketService>().As<ComparisonBasketService>().InstancePerLifetimeScope();
             builder.RegisterType<AdminSearchService>().As<AdminSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
             builder.RegisterType<AddOrganisationSearchService>().As<AddOrganisationSearchService>().InstancePerLifetimeScope();

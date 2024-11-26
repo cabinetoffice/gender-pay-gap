@@ -15,7 +15,6 @@ using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BackgroundJobs;
 using GenderPayGap.WebUI.Classes;
-using GenderPayGap.WebUI.Classes.Presentation;
 using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Controllers.Admin;
 using GenderPayGap.WebUI.Cookies;
@@ -203,7 +202,7 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
 
             builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
 
-            builder.RegisterType<CompareViewService>().As<CompareViewService>().InstancePerLifetimeScope();
+            builder.RegisterType<ComparisonBasketService>().As<ComparisonBasketService>().InstancePerLifetimeScope();
             
             builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
             builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();

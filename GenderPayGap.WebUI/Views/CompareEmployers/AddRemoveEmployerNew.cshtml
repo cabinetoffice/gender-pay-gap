@@ -1,11 +1,12 @@
-﻿@inject CompareViewService CompareViewService
+﻿@inject ComparisonBasketService ComparisonBasketService
+@using GenderPayGap.WebUI.Services
 @model GenderPayGap.Database.Organisation
 
 @{
     string returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 
-@if (CompareViewService.BasketContains(Model.OrganisationId))
+@if (ComparisonBasketService.BasketContains(Model.OrganisationId))
 {
     <form method="GET" action="@Url.Action("RemoveEmployer", "CompareEmployers", new { organisationId = Model.OrganisationId, returnUrl = returnUrl })">
         <button type="submit"
