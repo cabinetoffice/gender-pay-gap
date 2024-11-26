@@ -470,12 +470,6 @@ resource "aws_elastic_beanstalk_environment" "gpg_elastic_beanstalk_environment"
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "ObfuscationSeed"
-    value     = var.ELB_OBFUSCATION_SEED
-  }
-
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "OffsetCurrentDateTimeForSite"
     value     = var.ELB_OFFSET_CURRENT_DATE_TIME_FOR_SITE
   }

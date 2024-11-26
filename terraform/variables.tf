@@ -146,10 +146,6 @@ variable "ELB_GOVUK_NOTIFY_API_KEY" {
   type = string
 }
 
-variable "ELB_OBFUSCATION_SEED" {
-  type = string
-}
-
 variable "ELB_OFFSET_CURRENT_DATE_TIME_FOR_SITE" {
   type = string
 }
