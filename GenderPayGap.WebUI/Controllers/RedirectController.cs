@@ -162,36 +162,6 @@ namespace GenderPayGap.WebUI.Controllers
             return RedirectToAction("SearchPage", "Search", searchPageViewModel);
         }
 
-        [HttpGet("/viewing/add-employer/{employerIdentifier}")]
-        public IActionResult AddEmployer(string employerIdentifier, string returnUrl)
-        {
-            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            return RedirectToAction("AddEmployer", "CompareEmployers", new {organisationId = organisationId, returnUrl = returnUrl});
-        }
-        [HttpGet("/viewing/add-employer-js/{employerIdentifier}")]
-        public IActionResult AddEmployerJs(string employerIdentifier)
-        {
-            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            return RedirectToAction("AddEmployerJs","CompareEmployers", new {organisationId = organisationId});
-        }
-        [HttpGet("/viewing/remove-employer/{employerIdentifier}")]
-        public IActionResult RemoveEmployer(string employerIdentifier, string returnUrl)
-        {
-            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            return RedirectToAction("RemoveEmployer", "CompareEmployers", new {organisationId = organisationId, returnUrl = returnUrl});
-        }
-        [HttpGet("/viewing/remove-employer-js/{employerIdentifier}")]
-        public IActionResult RemoveEmployerJs(string employerIdentifier)
-        {
-            long organisationId = DeObfuscateOrganisationIdOrThrow404(employerIdentifier);
-            return RedirectToAction("RemoveEmployerJs","CompareEmployers", new {organisationId = organisationId});
-        }
-        [HttpGet("/viewing/clear-employers")]
-        public IActionResult ClearEmployers(string returnUrl)
-        {
-            return RedirectToAction("ClearEmployers", "CompareEmployers", new {returnUrl = returnUrl});
-        }
-
         private static long DeObfuscateOrganisationIdOrThrow404(string organisationIdentifier)
         {
             if (string.IsNullOrWhiteSpace(organisationIdentifier))
