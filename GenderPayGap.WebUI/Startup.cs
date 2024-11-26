@@ -197,8 +197,6 @@ namespace GenderPayGap.WebUI
             builder.RegisterType<ReturnService>().As<ReturnService>().InstancePerLifetimeScope();
             builder.RegisterType<DraftReturnService>().As<DraftReturnService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<ScopeBusinessLogic>().As<ScopeBusinessLogic>().InstancePerLifetimeScope();
-
             builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
 
             // register web ui services
