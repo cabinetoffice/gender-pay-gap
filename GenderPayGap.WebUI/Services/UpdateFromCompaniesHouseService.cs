@@ -10,7 +10,7 @@ using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 
-namespace GenderPayGap.WebUI.BusinessLogic.Services
+namespace GenderPayGap.WebUI.Services
 {
     public class UpdateFromCompaniesHouseService
     {

@@ -3,7 +3,7 @@ using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.WebUI.BusinessLogic.Services;
+using GenderPayGap.WebUI.Services;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 {
