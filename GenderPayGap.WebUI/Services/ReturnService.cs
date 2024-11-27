@@ -218,7 +218,7 @@ namespace GenderPayGap.WebUI.Services
                 string urlToPublicViewingPage = urlHelper.Action(
                     "ReportForYear",
                     "ViewReports",
-                    new { organisationId = newReturn.OrganisationId, year = newReturn.AccountingDate.Year },
+                    new { organisationId = newReturn.OrganisationId, reportingYear = newReturn.AccountingDate.Year },
                     "https");
 
                 emailSendingService.SendGeoFirstTimeDataSubmissionEmail(
@@ -234,7 +234,7 @@ namespace GenderPayGap.WebUI.Services
             string urlToPublicViewingPage = urlHelper.Action(
                 "ReportForYear",
                 "ViewReports",
-                new { organisationId = newReturn.OrganisationId, year = newReturn.AccountingDate.Year },
+                new { organisationId = newReturn.OrganisationId, reportingYear = newReturn.AccountingDate.Year },
                 "https");
 
             List<Return> otherReturns =
