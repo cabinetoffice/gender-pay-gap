@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (viewModel.Validate == true)
             {
-                if (viewModel.OrganisationName.IsNullOrEmpty())
+                if (string.IsNullOrWhiteSpace(viewModel.OrganisationName))
                 {
                     ModelState.AddModelError(nameof(viewModel.OrganisationName),
                         "Enter the name of the employer");

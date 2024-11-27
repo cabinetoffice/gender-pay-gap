@@ -27,7 +27,7 @@ namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 
             if (viewModel.Validate == true)
             {
-                if (viewModel.Address1.IsNullOrEmpty())
+                if (string.IsNullOrWhiteSpace(viewModel.Address1))
                 {
                     ModelState.AddModelError(nameof(viewModel.Address1), 
                         "Enter the registered address of the employer");

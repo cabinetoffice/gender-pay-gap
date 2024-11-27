@@ -85,7 +85,7 @@ namespace GenderPayGap.WebUI.Services
         {
             IEnumerable<int> sicCodeIds = organisation.GetSicCodes().Select(sicCode => sicCode.SicCodeId);
             IEnumerable<int> newSicCodeIds =
-                companySicCodes.Where(sicCode => !sicCode.IsNullOrEmpty()).Select(sicCode => int.Parse(sicCode));
+                companySicCodes.Where(sicCode => !string.IsNullOrWhiteSpace(sicCode)).Select(sicCode => int.Parse(sicCode));
 
             IEnumerable<int> idsToBeRetired = sicCodeIds.Except(newSicCodeIds);
             IEnumerable<OrganisationSicCode> sicCodesToBeRetired =
@@ -100,7 +100,7 @@ namespace GenderPayGap.WebUI.Services
         {
             IEnumerable<int> sicCodeIds = organisation.GetSicCodes().Select(sicCode => sicCode.SicCodeId);
             IEnumerable<int> newSicCodeIds =
-                companySicCodes.Where(sicCode => !sicCode.IsNullOrEmpty()).Select(sicCode => int.Parse(sicCode));
+                companySicCodes.Where(sicCode => !string.IsNullOrWhiteSpace(sicCode)).Select(sicCode => int.Parse(sicCode));
 
             IEnumerable<int> idsToBeAdded = newSicCodeIds.Except(sicCodeIds);
             foreach (int sicCodeId in idsToBeAdded)
