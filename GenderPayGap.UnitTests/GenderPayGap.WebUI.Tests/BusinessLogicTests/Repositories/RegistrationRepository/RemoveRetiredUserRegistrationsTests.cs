@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -17,6 +17,10 @@ namespace Repositories.UserRepository
     public class RemoveRetiredUserRegistrationsTests
     {
 
+        private IDataRepository mockDataRepo;
+
+        private GenderPayGap.WebUI.Repositories.RegistrationRepository testRegistrationRepo;
+
         [SetUp]
         public void BeforeEach()
         {
@@ -33,9 +37,11 @@ namespace Repositories.UserRepository
                 new GenderPayGap.WebUI.Repositories.RegistrationRepository(mockDataRepo, auditLoggerWithMocks, null, null);
         }
 
-        private IDataRepository mockDataRepo;
-
-        private GenderPayGap.WebUI.Repositories.RegistrationRepository testRegistrationRepo;
+        [TearDown]
+        public void TearDown()
+        {
+            mockDataRepo.Dispose();
+        }
 
         [Test]
         public void UnregistersAllOrganisationsForUser()
