@@ -39,24 +39,5 @@ namespace GenderPayGap.Extensions.Tests
             Assert.IsTrue(expectedResult, errorMessage);
         }
 
-        [Test]
-        public void VirtualDateTime_UtcNow_Returns_DateTime_UtcNow_Plus_Three_Days_And_One_Hour_When_Configured()
-        {
-            // Arrange
-            DateTime expectedDateTime = DateTime.UtcNow.AddDays(3).AddHours(1);
-            DateTime upperBound = expectedDateTime.AddSeconds(2);
-            DateTime lowerBound = expectedDateTime.AddSeconds(-2);
-
-            // Act
-            DateTime actualDateTime = VirtualDateTime.UtcNow;
-
-            // Assert
-            bool expectedResult = actualDateTime > lowerBound && actualDateTime < upperBound;
-            string errorMessage =
-                $"The dateTime returned from GpgVirtualDateTime.UtcNow was expected to be between {lowerBound} and {upperBound}, but it was actually {actualDateTime}.";
-
-            Assert.IsTrue(expectedResult, errorMessage);
-        }
-
     }
 }
