@@ -44,8 +44,10 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 EmailAddressDB = emailAddress,
                 Firstname = "FirstName" + userId,
                 Lastname = "LastName" + userId,
+                JobTitle = "JobTitle" + userId,
                 EmailVerifiedDate = VirtualDateTime.Now,
-                Status = UserStatuses.Active
+                Status = UserStatuses.Active,
+                PasswordHash = "PasswordHash"
             };
         }
 

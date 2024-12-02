@@ -19,6 +19,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
             return new List<User> {
                 new User {
                     UserId = 235251,
+                    Firstname = "Firstname", Lastname = "Lastname", JobTitle = "JobTitle",
                     EmailAddress = "new1@ad5bda75-e514-491b-b74d-4672542cbd15.com",
                     EmailVerifiedDate = VirtualDateTime.Now,
                     PasswordHash = passwordHash,
@@ -28,6 +29,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 },
                 new User {
                     UserId = 23322,
+                    Firstname = "Firstname", Lastname = "Lastname", JobTitle = "JobTitle",
                     EmailAddress = "active1@ad5bda75-e514-491b-b74d-4672542cbd15.com",
                     EmailVerifiedDate = VirtualDateTime.Now,
                     PasswordHash = passwordHash,
@@ -37,6 +39,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 },
                 new User {
                     UserId = 707643,
+                    Firstname = "Firstname", Lastname = "Lastname", JobTitle = "JobTitle",
                     EmailAddress = "retired1@ad5bda75-e514-491b-b74d-4672542cbd15.com",
                     EmailVerifiedDate = VirtualDateTime.Now,
                     PasswordHash = passwordHash,
@@ -46,6 +49,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 },
                 new User {
                     UserId = 21555,
+                    Firstname = "Firstname", Lastname = "Lastname", JobTitle = "JobTitle",
                     EmailAddress = "active2@ad5bda75-e514-491b-b74d-4672542cbd15.com",
                     EmailVerifiedDate = VirtualDateTime.Now,
                     PasswordHash = passwordHash,
@@ -55,6 +59,7 @@ namespace GenderPayGap.Tests.Common.TestHelpers
                 },
                 new User {
                     UserId = 24572,
+                    Firstname = "Firstname", Lastname = "Lastname", JobTitle = "JobTitle",
                     EmailAddress = "active3@ad5bda75-e514-491b-b74d-4672542cbd15.com",
                     EmailVerifiedDate = VirtualDateTime.Now,
                     PasswordHash = passwordHash,
