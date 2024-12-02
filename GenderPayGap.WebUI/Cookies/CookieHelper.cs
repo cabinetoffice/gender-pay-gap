@@ -1,10 +1,10 @@
-﻿using System;
+﻿using System; 
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Cookies
 {
-    public class CookieHelper
+    public static class CookieHelper
     {
 
         public const string CookieSettingsCookieName = "cookie_settings";
