@@ -17,52 +17,13 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         static Config()
         {
-            Console.WriteLine($"ASPNETCORE_ENVIRONMENT: {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+            Console.WriteLine($"Environment: {EnvironmentName}");
 
             Configuration = Build();
             VirtualDateTime.Initialise(OffsetCurrentDateTimeForSite());
-
-            Console.WriteLine($"Environment: {EnvironmentName}");
         }
 
-        public static string EnvironmentName
-        {
-            get
-            {
-                if (_EnvironmentName == null)
-                {
-                    _EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName))
-                    {
-                        _EnvironmentName = Environment.GetEnvironmentVariable("ASPNET_ENV");
-                    }
-
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName))
-                    {
-                        _EnvironmentName = Environment.GetEnvironmentVariable("Hosting:Environment");
-                    }
-
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName))
-                    {
-                        _EnvironmentName = Environment.GetEnvironmentVariable("Environment"); //This is used by webjobs SDK v3 
-                    }
-
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName) && Environment.GetEnvironmentVariable("DEV_ENVIRONMENT") == "true")
-                    {
-                        _EnvironmentName = "Local";
-                    }
-
-                    if (string.IsNullOrWhiteSpace(_EnvironmentName))
-                    {
-                        _EnvironmentName = "Local";
-                    }
-                }
-
-                return _EnvironmentName;
-            }
-            set => _EnvironmentName = value;
-        }
-
+        public static string EnvironmentName => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
         public static IConfiguration Build(IConfigurationBuilder builder = null)
         {
@@ -105,7 +66,7 @@ namespace GenderPayGap.Extensions.AspNetCore
         {
             foreach (string environmentName in environmentNames)
             {
-                if (EnvironmentName.Equals(environmentName, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(EnvironmentName, environmentName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     return true;
                 }

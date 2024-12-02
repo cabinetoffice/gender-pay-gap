@@ -96,7 +96,6 @@ namespace GenderPayGap.WebUI
         /// <param name="configBuilder"></param>
         private static void ConfigureAppConfiguration(WebHostBuilderContext builderContext, IConfigurationBuilder configBuilder)
         {
-            Config.EnvironmentName = builderContext.HostingEnvironment.EnvironmentName;
             Console.WriteLine($"Environment: {Config.EnvironmentName}");
 
             //Build the configuration
