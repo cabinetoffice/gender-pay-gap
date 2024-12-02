@@ -91,7 +91,8 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(userToDelete)
-                .WithDatabaseObjects(organisation1, organisation2, standardUser, userToDelete)
+                .WithDatabaseObjects(organisation1, organisation2)
+                .WithDatabaseObjects(standardUser, userToDelete)
                 .Build();
             
             // Act
