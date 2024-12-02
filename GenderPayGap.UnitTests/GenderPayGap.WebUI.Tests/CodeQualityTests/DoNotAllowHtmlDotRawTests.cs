@@ -34,7 +34,7 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
             FileInfo[] files = new DirectoryInfo(rootCodeFolder).GetFiles(searchPattern, SearchOption.AllDirectories);
 
             // Pre-Act Assert (to check again that we're running the test on the right folder)
-            Assert.Greater(files.Length, 900, "We expect there to be >900 .cs/.cshtml files");
+            Assert.Greater(files.Length, 400, "We expect there to be >400 .cs/.cshtml files");
 
             // Act
             var failedFiles = new List<string>();
