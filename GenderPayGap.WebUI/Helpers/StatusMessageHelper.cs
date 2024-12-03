@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System; 
+using System.Collections.Generic; 
+using System.Linq; 
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Helpers
 {
-    public class StatusMessageHelper
+    public static class StatusMessageHelper
     {
 
         public static void SetStatusMessage(

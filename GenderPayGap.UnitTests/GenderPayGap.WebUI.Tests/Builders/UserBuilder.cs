@@ -21,6 +21,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
                 UserId = TestIdGenerator.GenerateIdFor<User>(),
                 Firstname = "John",
                 Lastname = "Smith",
+                JobTitle = "JobTitle",
                 EmailAddress = "user@test.com",
                 AcceptedPrivacyStatement = VirtualDateTime.Now,
                 AllowContact = true,

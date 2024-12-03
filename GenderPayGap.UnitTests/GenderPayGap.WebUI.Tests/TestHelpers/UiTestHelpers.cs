@@ -23,7 +23,6 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
-using GenderPayGap.WebUI.Tests.Mocks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -218,7 +217,6 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             builder.RegisterType<AdminDatabaseIntegrityChecksController>().InstancePerLifetimeScope();
             builder.RegisterType<CookieController>().InstancePerLifetimeScope();
 
-            builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
             builder.Register(c => Mock.Of<IHttpContextAccessor>()).As<IHttpContextAccessor>().InstancePerLifetimeScope();
 
             builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Helpers
 {
-    public class BackupHelper
+    public static class BackupHelper
     {
 
         public static string LoadAllDataFromDatabaseInfoJsonString(IDataRepository dataRepository)

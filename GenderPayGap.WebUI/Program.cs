@@ -96,12 +96,10 @@ namespace GenderPayGap.WebUI
         /// <param name="configBuilder"></param>
         private static void ConfigureAppConfiguration(WebHostBuilderContext builderContext, IConfigurationBuilder configBuilder)
         {
-            Config.EnvironmentName = builderContext.HostingEnvironment.EnvironmentName;
             Console.WriteLine($"Environment: {Config.EnvironmentName}");
 
             //Build the configuration
             Config.Configuration = Config.Build(configBuilder);
-            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey, Global.DefaultEncryptionIv);
         }
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)

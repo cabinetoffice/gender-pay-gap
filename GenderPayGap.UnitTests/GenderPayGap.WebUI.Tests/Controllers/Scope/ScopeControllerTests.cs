@@ -40,7 +40,9 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Scope
                 .Build();
 
             var controller = new ControllerBuilder<ScopeController>().WithLoggedInUser(user)
-                .WithDatabaseObjects(user, organisation, organisationScope2017, organisationScope2018)
+                .WithDatabaseObjects(user)
+                .WithDatabaseObjects(organisation)
+                .WithDatabaseObjects(organisationScope2017, organisationScope2018)
                 .Build();
 
             // Act

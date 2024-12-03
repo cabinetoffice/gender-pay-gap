@@ -17,7 +17,8 @@ namespace GenderPayGap.Tests.TestHelpers
                 JobTitle = $"JobTitle{id}",
                 ContactPhoneNumber = $"ContactPhoneNumber{id}",
                 UserId = new Random().Next(5000, 9999),
-                Status = UserStatuses.Active
+                Status = UserStatuses.Active,
+                PasswordHash = "PasswordHash"
             };
         }
 

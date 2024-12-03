@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Autofac;
@@ -44,13 +44,12 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return this;
         }
 
-        public ControllerBuilder<T> WithDatabaseObjects(params object[] databaseObjects)
+        public ControllerBuilder<T> WithDatabaseObjects<TDbObj>(params TDbObj[] databaseObjects) where TDbObj: class
         {
-            foreach (object databaseObject in databaseObjects)
+            foreach (TDbObj databaseObject in databaseObjects)
             {
-                DataRepository.Insert(databaseObject);
+                DataRepository.Insert<TDbObj>(databaseObject);
             }
-            DataRepository.SaveChanges();
 
             return this;
         }
@@ -63,6 +62,8 @@ namespace GenderPayGap.WebUI.Tests.Builders
 
         public T Build()
         {
+            DataRepository.SaveChanges();
+            
             IContainer DIContainer = BuildContainerIocForControllerOfType();
             Startup.ContainerIoC = DIContainer;
 

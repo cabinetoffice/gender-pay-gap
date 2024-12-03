@@ -41,6 +41,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 ConfirmEmailAddress = "test@example.com",
                 FirstName = "Test",
                 LastName = "Example",
+                JobTitle = "JobTitle",
                 Password = "Pa55word",
                 ConfirmPassword = "Pa55word",
                 SendUpdates = true,
@@ -68,9 +69,11 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 EmailAddress = "test@example.com",
                 Firstname = "Test",
                 Lastname = "Example",
+                JobTitle = "JobTitle",
                 EmailVerifySendDate = VirtualDateTime.Now,
                 EmailVerifyHash = Guid.NewGuid().ToString("N"),
-                Status = UserStatuses.New
+                Status = UserStatuses.New,
+                PasswordHash = "PasswordHash"
             };
 
             var controller = new ControllerBuilder<AccountCreationController>()
