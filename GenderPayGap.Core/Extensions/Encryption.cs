@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using GenderPayGap.Core;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Extensions
@@ -16,6 +17,16 @@ namespace GenderPayGap.Extensions
         private static byte[] _ivBytes = null;
 
         private static Encoding EncryptionEncoding = Encoding.UTF8;
+
+        static Encryption()
+        {
+            if (Global.DefaultEncryptionKey != null && Global.DefaultEncryptionIv != null)
+            {
+                _defaultEncryptionKey = Global.DefaultEncryptionKey;
+                _keyBytes = HexDecode(Global.DefaultEncryptionKey);
+                _ivBytes = HexDecode(Global.DefaultEncryptionIv);
+            }
+        }
         
         public static void SetDefaultEncryptionKey(string defaultEncryptionKey, string defaultIv)
         {

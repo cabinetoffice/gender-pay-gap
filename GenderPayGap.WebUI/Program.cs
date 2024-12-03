@@ -100,7 +100,6 @@ namespace GenderPayGap.WebUI
 
             //Build the configuration
             Config.Configuration = Config.Build(configBuilder);
-            Encryption.SetDefaultEncryptionKey(Global.DefaultEncryptionKey, Global.DefaultEncryptionIv);
         }
 
         public static void SetupSerilogLogger(IWebHostBuilder webHostBuilder)
