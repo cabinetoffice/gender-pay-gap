@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Search
 {
@@ -23,7 +21,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                 Status = OrganisationStatuses.Retired,
                 Returns = new List<Return> {new Return {Status = ReturnStatuses.Submitted}}
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationWithSubmittedReports);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationWithSubmittedReports);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -43,7 +41,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                 SectorType = SectorTypes.Private,
                 Status = OrganisationStatuses.Retired
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationWithNoSubmittedReports);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationWithNoSubmittedReports);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -64,7 +62,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                 Status = OrganisationStatuses.Retired,
                 Returns = new List<Return> {new Return {Status = ReturnStatuses.Draft}}
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationWithDraftReports);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationWithDraftReports);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -88,7 +86,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.InScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationInScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationInScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -112,7 +110,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.PresumedInScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationPresumedInScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationPresumedInScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -136,7 +134,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Retired, ScopeStatus = ScopeStatuses.InScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationPreviouslyInScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationPreviouslyInScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -160,7 +158,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.OutOfScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(retiredOrganisationOutOfScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(retiredOrganisationOutOfScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -181,7 +179,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                 Status = OrganisationStatuses.Active,
                 Returns = new List<Return> {new Return {Status = ReturnStatuses.Submitted}}
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationWithSubmittedReports);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(activeOrganisationWithSubmittedReports);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -206,7 +204,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.PresumedInScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationWithDraftReports);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(activeOrganisationWithDraftReports);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -230,7 +228,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.InScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationInScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(activeOrganisationInScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -254,7 +252,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.PresumedInScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationPresumedInScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(activeOrganisationPresumedInScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -278,7 +276,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Active, ScopeStatus = ScopeStatuses.OutOfScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationOutOfScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(activeOrganisationOutOfScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -302,7 +300,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                     new OrganisationScope {Status = ScopeRowStatuses.Retired, ScopeStatus = ScopeStatuses.InScope}
                 }
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(activeOrganisationPreviouslyInScope);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(activeOrganisationPreviouslyInScope);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();
@@ -323,7 +321,7 @@ namespace GenderPayGap.WebUI.Tests.Search
                 Status = OrganisationStatuses.Deleted,
                 Returns = new List<Return> {new Return {Status = ReturnStatuses.Submitted}}
             };
-            Startup.ContainerIoC = UiTestHelper.BuildContainerIoC(deletedOrganisation);
+            Program.DependencyInjectionServiceProvider = UiTestHelper.BuildContainerIoC(deletedOrganisation);
 
             // Act
             SearchRepository.LoadSearchDataIntoCache();

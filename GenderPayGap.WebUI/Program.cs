@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI
     public class Program
     {
 
-        public static IServiceProvider ServiceProvider;
+        public static IServiceProvider DependencyInjectionServiceProvider;
 
         public static void Main(string[] args)
         {
@@ -51,7 +51,7 @@ namespace GenderPayGap.WebUI
             
             ConfigureApp(app);
 
-            ServiceProvider = app.Services;
+            DependencyInjectionServiceProvider = app.Services;
             
             app.Run();
 

@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Security.Claims;
-using Autofac;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -11,14 +9,15 @@ using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Builders
 {
@@ -64,8 +63,8 @@ namespace GenderPayGap.WebUI.Tests.Builders
         {
             DataRepository.SaveChanges();
             
-            IContainer DIContainer = BuildContainerIocForControllerOfType();
-            Startup.ContainerIoC = DIContainer;
+            IServiceProvider dependencyInjectionServiceProvider = BuildContainerIocForControllerOfType();
+            Program.DependencyInjectionServiceProvider = dependencyInjectionServiceProvider;
 
             var httpContextMock = new Mock<HttpContext>();
 
@@ -78,7 +77,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
             var controllerContextMock = new ControllerContext { HttpContext = httpContextMock.Object, RouteData = routeData };
 
             //Create and return the controller
-            var controller = DIContainer.Resolve<T>();
+            var controller = dependencyInjectionServiceProvider.GetService<T>();
             controller.ControllerContext = controllerContextMock;
 
             if (mockUriHelper)
@@ -149,29 +148,29 @@ namespace GenderPayGap.WebUI.Tests.Builders
             httpContextMock.SetupGet(ctx => ctx.Response.HttpContext).Returns(httpContextMock.Object);
         }
 
-        private IContainer BuildContainerIocForControllerOfType()
+        private IServiceProvider BuildContainerIocForControllerOfType()
         {
-            var builder = new ContainerBuilder();
+            WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
             // Register the Controller itself
-            builder.RegisterType<T>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<T>();
 
             // Register dependencies
             // - an in-memory version of the database
-            builder.Register(c => DataRepository).As<IDataRepository>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<IDataRepository>(c => DataRepository);
             // - the email sending API (IBackgroundJobsApi)
             SetupEmailSendingApi(builder);
 
-            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();
-            builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<EmailSendingService>();
+            builder.Services.AddScoped<IGovNotifyAPI>(g => new MockGovNotify());
 
-            builder.RegisterType<UserRepository>().As<UserRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<AuditLogger>().As<AuditLogger>().InstancePerLifetimeScope();
-            builder.RegisterType<PinInThePostService>().As<PinInThePostService>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<RegistrationRepository>();
+            builder.Services.AddScoped<AuditLogger>();
+            builder.Services.AddScoped<PinInThePostService>();
 
             // Misc other things we seem to need
-            builder.Register(c => Mock.Of<IHttpContextAccessor>()).As<IHttpContextAccessor>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<IHttpContextAccessor>(c => Mock.Of<IHttpContextAccessor>());
 
             // Things we might want in future
             //builder.Register(c => new SystemFileRepository()).As<IFileRepository>().InstancePerLifetimeScope();
@@ -183,8 +182,7 @@ namespace GenderPayGap.WebUI.Tests.Builders
             //builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
             //builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
 
-            IContainer container = builder.Build();
-            return container;
+            return builder.Services.BuildServiceProvider();
         }
 
         private IDataRepository CreateInMemoryTestDatabase()
@@ -209,13 +207,13 @@ namespace GenderPayGap.WebUI.Tests.Builders
             return dataRepository;
         }
 
-        private void SetupEmailSendingApi(ContainerBuilder builder)
+        private void SetupEmailSendingApi(WebApplicationBuilder builder)
         {
             var mockBackgroundJobsApi = new Mock<IBackgroundJobsApi>();
             mockBackgroundJobsApi
                 .Setup(q => q.AddEmailToQueue(It.IsAny<NotifyEmail>()))
                 .Callback<NotifyEmail>(notifyEmail => EmailsSent.Add(notifyEmail));
-            builder.Register(c => mockBackgroundJobsApi.Object).As<IBackgroundJobsApi>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<IBackgroundJobsApi>(c => mockBackgroundJobsApi.Object);
         }
 
     }

@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using Autofac;
+﻿using System.Xml.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GenderPayGap.WebUI.Helpers
 {
@@ -27,22 +23,25 @@ namespace GenderPayGap.WebUI.Helpers
 
         public IReadOnlyCollection<XElement> GetAllElements()
         {
-            IDataRepository dataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
-            
-            List<DataProtectionKey> dataProtectionKeys = dataRepository.GetAll<DataProtectionKey>()
-                .ToList();
+            using (var serviceScope = Program.DependencyInjectionServiceProvider.CreateScope())
+            {
+                IDataRepository dataRepository = serviceScope.ServiceProvider.GetRequiredService<IDataRepository>();
 
-            List<XElement> keysAdXmlElements = dataProtectionKeys
-                .Select(dpk =>
-                {
-                    string encryptedKey = dpk.Xml;
-                    string unencryptedString = Encryption.DecryptData(encryptedKey);
-                    XElement xmlElement = XElement.Parse(unencryptedString);
-                    return xmlElement;
-                })
-                .ToList();
+                List<DataProtectionKey> dataProtectionKeys = dataRepository.GetAll<DataProtectionKey>()
+                    .ToList();
 
-            return keysAdXmlElements;
+                List<XElement> keysAdXmlElements = dataProtectionKeys
+                    .Select(dpk =>
+                    {
+                        string encryptedKey = dpk.Xml;
+                        string unencryptedString = Encryption.DecryptData(encryptedKey);
+                        XElement xmlElement = XElement.Parse(unencryptedString);
+                        return xmlElement;
+                    })
+                    .ToList();
+
+                return keysAdXmlElements;
+            }
         }
 
         public void StoreElement(XElement element, string friendlyName)
@@ -56,9 +55,12 @@ namespace GenderPayGap.WebUI.Helpers
                 Xml = encryptedKey
             };
 
-            IDataRepository dataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
-            dataRepository.Insert(dataProtectionKey);
-            dataRepository.SaveChanges();
+            using (var serviceScope = Program.DependencyInjectionServiceProvider.CreateScope())
+            {
+                IDataRepository dataRepository = serviceScope.ServiceProvider.GetRequiredService<IDataRepository>();
+                dataRepository.Insert(dataProtectionKey);
+                dataRepository.SaveChanges();
+            }
         }
 
     }

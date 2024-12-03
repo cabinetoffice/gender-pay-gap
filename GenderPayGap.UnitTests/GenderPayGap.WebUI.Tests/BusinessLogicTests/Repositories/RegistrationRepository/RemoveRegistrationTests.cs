@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -26,7 +26,7 @@ namespace Repositories.RegistrationRepository
             UiTestHelper.SetDefaultEncryptionKeys();
             
             // mock data
-            GpgDatabaseContext dbContext = AutoFacHelpers.CreateInMemoryTestDatabase(UserOrganisationHelper.CreateRegistrations());
+            GpgDatabaseContext dbContext = InMemoryTestDabaseHelper.CreateInMemoryTestDatabase(UserOrganisationHelper.CreateRegistrations());
 
             mockDataRepo = new SqlRepository(dbContext);
             var auditLoggerWithMocks = new AuditLogger(Mock.Of<IDataRepository>());

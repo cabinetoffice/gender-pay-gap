@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;
@@ -27,9 +23,9 @@ namespace GenderPayGap.WebUI.Search
 
         public static void LoadSearchDataIntoCache()
         {
-            using (ILifetimeScope scope = Startup.ContainerIoC.BeginLifetimeScope())
+            using (var serviceScope = Program.DependencyInjectionServiceProvider.CreateScope())
             {
-                var dataRepository = scope.Resolve<IDataRepository>();
+                IDataRepository dataRepository = serviceScope.ServiceProvider.GetRequiredService<IDataRepository>();
 
                 CachedOrganisations = LoadAllOrganisations(dataRepository);
                 CalculateOrganisationWords();
