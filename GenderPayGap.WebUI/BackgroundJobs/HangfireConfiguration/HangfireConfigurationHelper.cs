@@ -1,10 +1,7 @@
-﻿using Autofac;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Extensions.AspNetCore;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
 {
@@ -26,11 +23,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.HangfireConfiguration
             {
                 services.AddHangfireServer();
             }
-        }
-
-        public static void ConfigureIOC(IContainer container)
-        {
-            GlobalConfiguration.Configuration.UseAutofacActivator(container);
         }
 
         public static void ConfigureApp(IApplicationBuilder app)
