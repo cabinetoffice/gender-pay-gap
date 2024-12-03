@@ -44,7 +44,6 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         {
             string allDataString = BackupHelper.LoadAllDataFromDatabaseInfoJsonString(dataRepository);
             byte[] allDataZippedBytes = BackupHelper.Zip(allDataString);
-            string allDataZippedString = Encoding.UTF8.GetString(allDataZippedBytes);
 
             string currentDateTime = VirtualDateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss");
             string fileName = $"{BackupFileNamePrefix}{currentDateTime}{BackupFileNameSuffix}";
