@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security.Claims;
-using Autofac;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
-using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.Tests.Common.TestHelpers;
 using GenderPayGap.WebUI.BackgroundJobs;
@@ -23,19 +18,17 @@ using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.TestHelpers
 {
@@ -47,10 +40,10 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
         public static T GetController<T>(long userId = 0, RouteData routeData = null, params object[] dbObjects)
             where T : Controller
         {
-            IContainer DIContainer = BuildContainerIoC(dbObjects);
+            IServiceProvider dependencyInjectionServiceProvider = BuildContainerIoC(dbObjects);
 
             //Create Inversion of Control container
-            Startup.ContainerIoC = DIContainer;
+            Program.DependencyInjectionServiceProvider = dependencyInjectionServiceProvider;
 
             //Mock UserId as claim
             var claims = new List<Claim>();
@@ -161,79 +154,84 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
             var controllerContextMock = new ControllerContext {HttpContext = httpContextMock.Object, RouteData = routeData};
 
             //Create and return the controller
-            var controller = DIContainer.Resolve<T>();
+            var controller = dependencyInjectionServiceProvider.GetService<T>();
 
             controller.ControllerContext = controllerContextMock;
             
             return controller;
         }
 
-        public static IContainer BuildContainerIoC(params object[] dbObjects)
+        public static IServiceProvider BuildContainerIoC(params object[] dbObjects)
         {
-            var builder = new ContainerBuilder();
+            WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
             //Create an in-memory version of the database
             if (dbObjects != null && dbObjects.Length > 0)
             {
-                builder.RegisterInMemoryTestDatabase(dbObjects);
+                RegisterInMemoryTestDatabase(builder, dbObjects);
             }
             else
             {
                 Mock<IDataRepository> mockDataRepo = MoqHelpers.CreateMockDataRepository();
-                builder.Register(c => mockDataRepo.Object).As<IDataRepository>().InstancePerLifetimeScope();
+                builder.Services.AddScoped<IDataRepository>(c => mockDataRepo.Object);
             }
 
             //Create the mock repositories
             // BL Repository
-            builder.Register(c => new SystemFileRepository()).As<IFileRepository>().SingleInstance();
-            builder.RegisterType<UserRepository>().As<UserRepository>().SingleInstance();
-            builder.RegisterType<RegistrationRepository>().As<RegistrationRepository>().SingleInstance();
-            builder.RegisterType<OrganisationService>().As<OrganisationService>().InstancePerLifetimeScope();
-            builder.RegisterType<ReturnService>().As<ReturnService>().InstancePerLifetimeScope();
-            builder.RegisterType<DraftReturnService>().As<DraftReturnService>().InstancePerLifetimeScope();
+            builder.Services.AddSingleton<IFileRepository>(_ => new SystemFileRepository());
 
-            // BL Services
-            builder.RegisterInstance(Config.Configuration);
-            builder.RegisterType<UpdateFromCompaniesHouseService>().As<UpdateFromCompaniesHouseService>().InstancePerLifetimeScope();
-
-            builder.Register(g => new MockGovNotify()).As<IGovNotifyAPI>().SingleInstance();
-
-            builder.RegisterType<PinInThePostService>().As<PinInThePostService>().SingleInstance();
-
-            builder.RegisterType<ComparisonBasketService>().As<ComparisonBasketService>().InstancePerLifetimeScope();
+            // Repositories
+            builder.Services.AddScoped<RegistrationRepository>();
+            builder.Services.AddScoped<UserRepository>();
             
-            builder.RegisterType<AuditLogger>().As<AuditLogger>().SingleInstance();
-            builder.RegisterType<AutoCompleteSearchService>().As<AutoCompleteSearchService>().InstancePerLifetimeScope();
-            builder.RegisterType<ViewingSearchService>().As<ViewingSearchService>().InstancePerLifetimeScope();
+            // Services
+            builder.Services.AddScoped<AuditLogger>();
+            builder.Services.AddScoped<ComparisonBasketService>();
+            builder.Services.AddScoped<DraftReturnService>();
+            builder.Services.AddScoped<EmailSendingService>();
+            builder.Services.AddScoped<OrganisationService>();
+            builder.Services.AddSingleton<PinInThePostService>();
+            builder.Services.AddScoped<ReturnService>();
+            builder.Services.AddScoped<UpdateFromCompaniesHouseService>();
             
+            // Search
+            builder.Services.AddScoped<AddOrganisationSearchService>();
+            builder.Services.AddScoped<AdminSearchService>();
+            builder.Services.AddScoped<AutoCompleteSearchService>();
+            builder.Services.AddHostedService<SearchCacheUpdaterService>();
+            builder.Services.AddScoped<ViewingSearchService>();
+            
+            // // BL Services
+            // builder.RegisterInstance(Config.Configuration);
 
+            builder.Services.AddScoped<IGovNotifyAPI>(g => new MockGovNotify());
+            
             //Register WebTracker
-            builder.RegisterType<GoogleAnalyticsTracker>().As<GoogleAnalyticsTracker>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<GoogleAnalyticsTracker>();
 
             //Register all controllers - this is required to ensure KeyFilter is resolved in constructors
-            builder.RegisterType<ErrorController>().InstancePerLifetimeScope();
-            
-            builder.RegisterType<AdminUnconfirmedPinsController>().InstancePerLifetimeScope();
-            builder.RegisterType<AdminDatabaseIntegrityChecksController>().InstancePerLifetimeScope();
-            builder.RegisterType<CookieController>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<ErrorController>();
 
-            builder.Register(c => Mock.Of<IHttpContextAccessor>()).As<IHttpContextAccessor>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<AdminUnconfirmedPinsController>();
+            builder.Services.AddScoped<AdminDatabaseIntegrityChecksController>();
+            builder.Services.AddScoped<CookieController>();
 
-            builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();
-            builder.Register(c => Mock.Of<IUrlHelper>()).SingleInstance();
+            // builder.Register(c => new MockCache()).As<IDistributedCache>().SingleInstance();
+            builder.Services.AddScoped<IHttpContextAccessor>(c => Mock.Of<IHttpContextAccessor>());
 
-            builder.RegisterType<EmailSendingService>().As<EmailSendingService>().InstancePerLifetimeScope();
+            // builder.RegisterType<ActionContextAccessor>().As<IActionContextAccessor>().SingleInstance();
+            // builder.Register(c => Mock.Of<IUrlHelper>()).SingleInstance();
 
             MockBackgroundJobsApi = new Mock<IBackgroundJobsApi>();
-            builder.Register(c => MockBackgroundJobsApi.Object).As<IBackgroundJobsApi>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<IBackgroundJobsApi>(c => MockBackgroundJobsApi.Object);
 
-            var environmentMock = new Mock<IHostingEnvironment>();
-            environmentMock.SetupGet(m => m.WebRootPath).Returns(Environment.CurrentDirectory);
-            builder.RegisterInstance(environmentMock.Object).As<IHostingEnvironment>().SingleInstance();
+            // var environmentMock = new Mock<IHostingEnvironment>();
+            // environmentMock.SetupGet(m => m.WebRootPath).Returns(Environment.CurrentDirectory);
+            // builder.RegisterInstance(environmentMock.Object).As<IHostingEnvironment>().SingleInstance();
+            //
+            // IContainer container = builder.Build();
 
-            IContainer container = builder.Build();
-
-            return container;
+            return builder.Services.BuildServiceProvider();
         }
 
         public static void AssertCookieAdded(this Controller controller, string key, string value)
@@ -251,10 +249,10 @@ namespace GenderPayGap.WebUI.Tests.TestHelpers
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="dbObjects"></param>
-        public static void RegisterInMemoryTestDatabase(this ContainerBuilder builder, params object[] dbObjects)
+        public static void RegisterInMemoryTestDatabase(WebApplicationBuilder builder, params object[] dbObjects)
         {
             GpgDatabaseContext dbContext = CreateInMemoryTestDatabase(dbObjects);
-            builder.Register(c => new SqlRepository(dbContext)).As<IDataRepository>().InstancePerLifetimeScope();
+            builder.Services.AddScoped<IDataRepository>(c => new SqlRepository(dbContext));
         }
 
         public static GpgDatabaseContext CreateInMemoryTestDatabase(params object[] dbObjects)

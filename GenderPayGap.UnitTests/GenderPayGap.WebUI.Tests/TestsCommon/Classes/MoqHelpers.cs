@@ -2,7 +2,7 @@
 using System.Linq;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using MockQueryable.Moq;
+using MockQueryable;
 using Moq;
 
 namespace GenderPayGap.Tests.Common.Classes
@@ -78,8 +78,8 @@ namespace GenderPayGap.Tests.Common.Classes
                 list = new List<T>(new T[] { });
             }
 
-            Mock<IQueryable<T>> mockItems = list.AsQueryable().BuildMock();
-            mockDataRepo.Setup(x => x.GetAll<T>()).Returns(mockItems.Object);
+            IQueryable<T> mockItems = list.AsQueryable().BuildMock();
+            mockDataRepo.Setup(x => x.GetAll<T>()).Returns(mockItems);
         }
 
     }

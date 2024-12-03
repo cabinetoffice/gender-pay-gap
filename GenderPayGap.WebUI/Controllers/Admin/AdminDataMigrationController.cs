@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
-using Autofac;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
@@ -265,10 +258,13 @@ namespace GenderPayGap.WebUI.Controllers
             InsertData(allData.ReminderEmails);
 
             WriteParagraph($"Starting Organisations and OrganisationPublicSectorTypes");
-            var newDataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
-            newDataRepository.Insert(allData.Organisations);
-            newDataRepository.Insert(allData.OrganisationPublicSectorTypes);
-            newDataRepository.SaveChanges();
+            using (var serviceScope = Program.DependencyInjectionServiceProvider.CreateScope())
+            {
+                IDataRepository newDataRepository = serviceScope.ServiceProvider.GetRequiredService<IDataRepository>();
+                newDataRepository.Insert(allData.Organisations);
+                newDataRepository.Insert(allData.OrganisationPublicSectorTypes);
+                newDataRepository.SaveChanges();
+            }
             allData.Organisations.Clear();
             allData.OrganisationPublicSectorTypes.Clear();
             WriteParagraph($"Organisations and OrganisationPublicSectorTypes done");
@@ -312,11 +308,14 @@ namespace GenderPayGap.WebUI.Controllers
 
         private void InsertData<T>(List<T> items) where T : class
         {
-            var newDataRepository = Startup.ContainerIoC.Resolve<IDataRepository>();
+            using (var serviceScope = Program.DependencyInjectionServiceProvider.CreateScope())
+            {
+                IDataRepository newDataRepository = serviceScope.ServiceProvider.GetRequiredService<IDataRepository>();
 
-            newDataRepository.Insert(items);
+                newDataRepository.Insert(items);
 
-            newDataRepository.SaveChanges();
+                newDataRepository.SaveChanges();
+            }
 
             items.Clear();
             WriteParagraph($"{typeof(T).Name} done");

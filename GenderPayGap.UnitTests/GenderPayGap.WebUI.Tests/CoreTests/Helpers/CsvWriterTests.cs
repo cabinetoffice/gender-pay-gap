@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using GenderPayGap.WebUI.Helpers;
 using NUnit.Framework;
@@ -17,7 +17,7 @@ namespace GenderPayGap.Core.Tests.Helpers
         {
             // Arrange
             var value = character + "test";
-            var expectedCsvRow = "\t" + character + $"test{System.Environment.NewLine}";
+            var expectedCsvRow = "\"'" + character + $"test\"{Environment.NewLine}";
 
             // Act
             var actualCsvRow = CsvWriter.Write(WriteValue(value));
@@ -31,7 +31,7 @@ namespace GenderPayGap.Core.Tests.Helpers
         {
             // Arrange
             var value = -10.2;
-            var expectedCsvRow = $"-10.2{System.Environment.NewLine}";
+            var expectedCsvRow = $"\"-10.2\"{Environment.NewLine}";
 
             // Act
             var actualCsvRow = CsvWriter.Write(WriteValue(value));
@@ -45,7 +45,7 @@ namespace GenderPayGap.Core.Tests.Helpers
         {
             // Arrange
             var value = "Test - string that doesn't start with an injection character";
-            var expectedCsvRow = $"Test - string that doesn't start with an injection character{System.Environment.NewLine}";
+            var expectedCsvRow = $"\"Test - string that doesn't start with an injection character\"{Environment.NewLine}";
 
             // Act
             var actualCsvRow = CsvWriter.Write(WriteValue(value));
