@@ -1,9 +1,6 @@
-﻿using System;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using GenderPayGap.Core;
-using Microsoft.AspNetCore.Http;
 
 namespace GenderPayGap.WebUI.Helpers
 {

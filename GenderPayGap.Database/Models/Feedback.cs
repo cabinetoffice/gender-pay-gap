@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Core;
 using Newtonsoft.Json;

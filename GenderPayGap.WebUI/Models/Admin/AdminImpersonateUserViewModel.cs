@@ -1,5 +1,4 @@
-﻿using GovUkDesignSystem;
-using GovUkDesignSystem.Attributes.ValidationAttributes;
+﻿using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {

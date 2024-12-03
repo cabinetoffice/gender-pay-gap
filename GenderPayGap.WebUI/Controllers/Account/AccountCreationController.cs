@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;

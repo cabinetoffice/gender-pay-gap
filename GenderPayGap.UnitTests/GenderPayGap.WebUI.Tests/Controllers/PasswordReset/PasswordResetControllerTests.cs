@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.Extensions;
@@ -11,7 +9,6 @@ using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.PasswordReset
 {

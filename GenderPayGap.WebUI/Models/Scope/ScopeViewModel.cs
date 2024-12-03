@@ -1,6 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
-using GovUkDesignSystem;
+﻿using GenderPayGap.Database;
 using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -11,7 +9,7 @@ namespace GenderPayGap.WebUI.Models.ScopeNew
     public class ScopeViewModel 
     {
         [BindNever]
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
         
         [BindNever]
         public DateTime ReportingYear { get; set; }

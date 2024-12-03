@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
 using Moq;

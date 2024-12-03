@@ -1,12 +1,9 @@
-﻿using System;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;
-using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Services;
 using Moq;
-using NUnit.Framework;
 
 namespace Repositories.UserRepository
 {

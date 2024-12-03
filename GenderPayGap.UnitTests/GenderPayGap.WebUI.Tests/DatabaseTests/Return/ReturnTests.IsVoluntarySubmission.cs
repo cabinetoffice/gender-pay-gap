@@ -1,9 +1,7 @@
-﻿using System;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
 using GenderPayGap.Extensions;
 using GenderPayGap.Tests.Common.TestHelpers;
-using NUnit.Framework;
 
 namespace GenderPayGap.Database.ReturnTests
 {

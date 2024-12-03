@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace GenderPayGap.WebUI.Models.AdminReferenceData
+﻿namespace GenderPayGap.WebUI.Models.AdminReferenceData
 {
     public class OldAndNew<T>
     {

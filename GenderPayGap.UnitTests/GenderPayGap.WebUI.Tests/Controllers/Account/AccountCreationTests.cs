@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers.Account;
@@ -9,7 +8,6 @@ using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {

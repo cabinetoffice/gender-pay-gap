@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Helpers;

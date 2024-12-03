@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.CodeQualityTests
 {

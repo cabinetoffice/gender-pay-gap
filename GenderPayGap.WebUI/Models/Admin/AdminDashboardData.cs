@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Helpers;
+using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.Models.Admin
@@ -123,7 +122,7 @@ namespace GenderPayGap.WebUI.Models.Admin
     {
         public AdminDashboardPage AdminDashboardPage { get; set; }
         public int ReportingYear { get; set; }
-        public List<Database.Organisation> Organisations { get; set; }
+        public List<Organisation> Organisations { get; set; }
 
     }
 }

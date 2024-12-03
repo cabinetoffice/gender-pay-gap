@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GovUkDesignSystem;
-using GovUkDesignSystem.Attributes;
-using GovUkDesignSystem.Attributes.ValidationAttributes;
+﻿using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.AccountCreation
 {

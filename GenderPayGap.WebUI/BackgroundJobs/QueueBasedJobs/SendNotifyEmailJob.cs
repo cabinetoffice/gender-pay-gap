@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Core.Classes.Logger;
+﻿using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Services;
 

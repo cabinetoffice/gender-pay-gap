@@ -1,6 +1,5 @@
 ﻿using GenderPayGap.Database;
 using GenderPayGap.WebUI.Models.AdminReferenceData;
-using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

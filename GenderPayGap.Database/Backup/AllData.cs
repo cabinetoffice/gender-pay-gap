@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Database.Models;
+﻿using GenderPayGap.Database.Models;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Database.Backup

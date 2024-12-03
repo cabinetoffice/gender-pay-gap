@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.WebUI.ExternalServices;
+﻿using GenderPayGap.WebUI.ExternalServices;
 using Notify.Models.Responses;
 
 public class MockGovNotify : IGovNotifyAPI

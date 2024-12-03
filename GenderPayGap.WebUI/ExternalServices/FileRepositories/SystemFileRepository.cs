@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
     public class SystemFileRepository : IFileRepository

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using GenderPayGap.WebUI.Helpers;
+﻿using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenderPayGap.WebUI.Controllers.AddOrganisation
 {

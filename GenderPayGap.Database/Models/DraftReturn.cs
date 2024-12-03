@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Database.Models

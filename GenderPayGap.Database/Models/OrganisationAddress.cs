@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Extensions;
 using Newtonsoft.Json;
 

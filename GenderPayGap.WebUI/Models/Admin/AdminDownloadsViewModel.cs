@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GenderPayGap.WebUI.Models.Admin
+﻿namespace GenderPayGap.WebUI.Models.Admin
 {
     public class AdminDownloadsViewModel
     {

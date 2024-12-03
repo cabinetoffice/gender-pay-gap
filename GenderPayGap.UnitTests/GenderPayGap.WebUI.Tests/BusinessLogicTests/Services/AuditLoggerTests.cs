@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GenderPayGap.Core;
-using NUnit.Framework;
+﻿using GenderPayGap.Core;
 
 namespace GenderPayGap.BusinessLogic.Tests.Services
 {

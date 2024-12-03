@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
 using GenderPayGap.WebUI.Services;
 using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Services
 {

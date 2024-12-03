@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 
 namespace GenderPayGap.WebUI.Models.ViewReports
 {

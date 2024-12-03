@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.ExternalServices.FileRepositories;

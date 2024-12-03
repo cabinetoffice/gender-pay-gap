@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using GenderPayGap.WebUI.Tests.TestHelpers;
-using NUnit.Framework;
+﻿using GenderPayGap.WebUI.Tests.TestHelpers;
 
 namespace GenderPayGap.WebUI.Tests.CodeQualityTests
 {

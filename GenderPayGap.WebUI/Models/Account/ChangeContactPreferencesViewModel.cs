@@ -1,6 +1,4 @@
-﻿using GovUkDesignSystem;
-
-namespace GenderPayGap.WebUI.Models.Account
+﻿namespace GenderPayGap.WebUI.Models.Account
 {
     public class ChangeContactPreferencesViewModel 
     {

@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-
-namespace GenderPayGap.WebUI.Helpers
+﻿namespace GenderPayGap.WebUI.Helpers
 {
     /// <summary>
     /// Adds the Cache-Control no-store header to all responses to prevent caching in browsers

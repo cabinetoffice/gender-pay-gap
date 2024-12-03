@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Net;
 using GenderPayGap.Core;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,7 @@ namespace GenderPayGap.WebUI.Controllers
 
         private void SetResponseStatusCodeIfValid(int errorCode)
         {
-            if (errorCode >= 400 && errorCode <= 599 && Enum.IsDefined(typeof(System.Net.HttpStatusCode), errorCode))
+            if (errorCode >= 400 && errorCode <= 599 && Enum.IsDefined(typeof(HttpStatusCode), errorCode))
             {
                 Response.StatusCode = errorCode;
             }

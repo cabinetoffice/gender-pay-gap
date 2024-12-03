@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 
 namespace GenderPayGap.WebUI.Models.Report
 {

@@ -1,7 +1,4 @@
-using System;
-using System.IO;
-using GenderPayGap.WebUI.Helpers;
-using NUnit.Framework;
+﻿using CsvHelper;
 
 namespace GenderPayGap.Core.Tests.Helpers
 {
@@ -20,7 +17,7 @@ namespace GenderPayGap.Core.Tests.Helpers
             var expectedCsvRow = "\"'" + character + $"test\"{Environment.NewLine}";
 
             // Act
-            var actualCsvRow = CsvWriter.Write(WriteValue(value));
+            var actualCsvRow = WebUI.Helpers.CsvWriter.Write(WriteValue(value));
 
             // Assert
             Assert.AreEqual(expectedCsvRow, actualCsvRow);
@@ -34,7 +31,7 @@ namespace GenderPayGap.Core.Tests.Helpers
             var expectedCsvRow = $"\"-10.2\"{Environment.NewLine}";
 
             // Act
-            var actualCsvRow = CsvWriter.Write(WriteValue(value));
+            var actualCsvRow = WebUI.Helpers.CsvWriter.Write(WriteValue(value));
 
             // Assert
             Assert.AreEqual(expectedCsvRow, actualCsvRow);
@@ -48,13 +45,13 @@ namespace GenderPayGap.Core.Tests.Helpers
             var expectedCsvRow = $"\"Test - string that doesn't start with an injection character\"{Environment.NewLine}";
 
             // Act
-            var actualCsvRow = CsvWriter.Write(WriteValue(value));
+            var actualCsvRow = WebUI.Helpers.CsvWriter.Write(WriteValue(value));
 
             // Assert
             Assert.AreEqual(expectedCsvRow, actualCsvRow);
         }
 
-        private Func<MemoryStream, StreamReader, StreamWriter, CsvHelper.CsvWriter, string> WriteValue<T>(T value)
+        private Func<MemoryStream, StreamReader, StreamWriter, CsvWriter, string> WriteValue<T>(T value)
         {
             return (memoryStream, streamReader, streamWriter, csvWriter) =>
             {

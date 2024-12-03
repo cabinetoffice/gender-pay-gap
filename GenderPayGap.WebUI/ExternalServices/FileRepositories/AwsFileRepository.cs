@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Net;
+﻿using System.Net;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;

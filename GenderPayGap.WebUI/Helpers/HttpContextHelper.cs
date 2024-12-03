@@ -1,6 +1,3 @@
-using System;
-using Microsoft.AspNetCore.Http;
-
 namespace GenderPayGap.WebUI.Helpers
 {
     public static class HttpContextHelper

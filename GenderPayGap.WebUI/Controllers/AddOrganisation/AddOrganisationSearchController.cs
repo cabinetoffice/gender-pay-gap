@@ -1,5 +1,4 @@
-﻿using GenderPayGap.Core;
-using GenderPayGap.Core.Interfaces;
+﻿using GenderPayGap.Core.Interfaces;
 using GenderPayGap.WebUI.Helpers;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using GenderPayGap.WebUI.Search;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions.AspNetCore;
 using GenderPayGap.WebUI.BackgroundJobs;

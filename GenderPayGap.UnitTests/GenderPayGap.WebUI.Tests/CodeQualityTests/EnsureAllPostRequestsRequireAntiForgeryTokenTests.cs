@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.CodeQualityTests
 {
@@ -14,7 +10,7 @@ namespace GenderPayGap.WebUI.Tests.CodeQualityTests
         [Test]
         public void EnsureAllPostRequestsRequireAntiForgeryToken()
         {
-            Assembly assembly = typeof(GenderPayGap.WebUI.Program).Assembly;
+            Assembly assembly = typeof(Program).Assembly;
 
             var methodsMissingAttribute = new List<MethodInfo>();
             foreach (Type type in assembly.GetTypes())

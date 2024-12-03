@@ -1,6 +1,4 @@
-﻿using System; 
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace GenderPayGap.WebUI.Cookies
 {

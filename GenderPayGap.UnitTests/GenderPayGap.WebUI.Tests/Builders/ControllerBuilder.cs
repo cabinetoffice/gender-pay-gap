@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Security.Claims;
 using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;

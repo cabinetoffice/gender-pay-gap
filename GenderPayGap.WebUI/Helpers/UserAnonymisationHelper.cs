@@ -1,8 +1,6 @@
 ﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
-using System.Linq;
 using GenderPayGap.Database.Models;
-using System.Collections.Generic;
 
 namespace GenderPayGap.WebUI.Helpers
 {

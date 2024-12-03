@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -8,7 +8,7 @@ namespace GenderPayGap.WebUI.Models.Admin
     {
 
         [BindNever]
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
         
         [BindNever]
         public List<AuditLog> SectorHistory { get; set; }

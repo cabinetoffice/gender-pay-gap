@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenderPayGap.WebUI.Models.Admin
+﻿namespace GenderPayGap.WebUI.Models.Admin
 {
     public class AdminHomepageViewModel
     {

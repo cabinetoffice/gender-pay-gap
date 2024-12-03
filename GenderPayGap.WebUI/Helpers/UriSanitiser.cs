@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenderPayGap.WebUI.Helpers
+﻿namespace GenderPayGap.WebUI.Helpers
 {
     public static class UriSanitiser
     {
