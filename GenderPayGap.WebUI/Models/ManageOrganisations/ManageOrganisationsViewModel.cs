@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using GenderPayGap.Database;
-using GovUkDesignSystem;
+﻿using GenderPayGap.Database;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.ManageOrganisations

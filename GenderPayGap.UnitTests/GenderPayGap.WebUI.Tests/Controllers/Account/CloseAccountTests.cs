@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {
@@ -31,7 +30,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>()
+            var controller = new ControllerBuilder<CloseAccountController>()
                 .WithLoggedInUser(user)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -53,7 +52,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
             // Arrange
             User user = new UserBuilder().WithPassword("password").Build();
 
-            var controller = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>()
+            var controller = new ControllerBuilder<CloseAccountController>()
                 .WithLoggedInUser(user)
                 .WithDatabaseObjects(user)
                 .Build();
@@ -88,7 +87,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
                 .WithOrganisation(organisation2)
                 .Build();
 
-            var controllerBuilder = new ControllerBuilder<WebUI.Controllers.Account.CloseAccountController>();
+            var controllerBuilder = new ControllerBuilder<CloseAccountController>();
             var controller = controllerBuilder
                 .WithLoggedInUser(userToDelete)
                 .WithDatabaseObjects(organisation1, organisation2)

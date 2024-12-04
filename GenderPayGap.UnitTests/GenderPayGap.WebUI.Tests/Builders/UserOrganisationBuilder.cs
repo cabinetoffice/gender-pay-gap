@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
 using GenderPayGap.Extensions;
 
 namespace GenderPayGap.WebUI.Tests.Builders

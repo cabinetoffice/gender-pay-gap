@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GovUkDesignSystem.Attributes;
+﻿using GovUkDesignSystem.Attributes;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using GovUkDesignSystem.ModelBinders;
 using Microsoft.AspNetCore.Mvc;

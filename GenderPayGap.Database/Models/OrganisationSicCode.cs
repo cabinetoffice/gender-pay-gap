@@ -1,5 +1,4 @@
-﻿using System;
-using GenderPayGap.Extensions;
+﻿using GenderPayGap.Extensions;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Database

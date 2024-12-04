@@ -1,7 +1,5 @@
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography;
 using GenderPayGap.Core;
 using GenderPayGap.Extensions;

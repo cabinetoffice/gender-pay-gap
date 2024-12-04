@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using GovUkDesignSystem;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account

@@ -1,6 +1,4 @@
-using System;
 using GenderPayGap.Extensions.AspNetCore;
-using NUnit.Framework;
 
 namespace GenderPayGap.Extensions.Tests
 {

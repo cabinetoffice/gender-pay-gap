@@ -5,7 +5,6 @@ using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers
 {

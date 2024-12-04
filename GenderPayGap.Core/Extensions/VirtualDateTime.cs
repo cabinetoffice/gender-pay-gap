@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenderPayGap.Extensions
+﻿namespace GenderPayGap.Extensions
 {
     public static class VirtualDateTime
     {

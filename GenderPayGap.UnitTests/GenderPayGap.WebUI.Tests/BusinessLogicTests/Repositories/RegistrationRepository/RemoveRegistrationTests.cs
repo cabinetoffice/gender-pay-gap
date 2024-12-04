@@ -1,13 +1,9 @@
-﻿using System.Linq;
-using GenderPayGap.Core.Classes;
+﻿using GenderPayGap.Core.Classes;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
-using GenderPayGap.Extensions;
-using GenderPayGap.Tests.Common.Classes;
 using GenderPayGap.WebUI.Services;
 using GenderPayGap.WebUI.Tests.TestHelpers;
 using Moq;
-using NUnit.Framework;
 
 namespace Repositories.RegistrationRepository
 {

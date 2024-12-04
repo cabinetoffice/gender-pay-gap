@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.ExternalServices.CompaniesHouse;
 using GenderPayGap.WebUI.Models.AddOrganisation;
-using GenderPayGap.WebUI.Models.Admin;
 using GenderPayGap.WebUI.Search.CachedObjects;
 
 namespace GenderPayGap.WebUI.Search

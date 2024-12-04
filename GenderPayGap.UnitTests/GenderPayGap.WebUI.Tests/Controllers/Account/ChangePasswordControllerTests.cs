@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using GenderPayGap.Core;
 using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
-using GenderPayGap.Extensions;
 using GenderPayGap.WebUI.Controllers.Account;
 using GenderPayGap.WebUI.ExternalServices;
 using GenderPayGap.WebUI.Models.Account;
@@ -16,7 +13,6 @@ using GenderPayGap.WebUI.Tests.TestHelpers;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Account
 {
@@ -40,7 +36,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
 
             // service under test
             mockUserRepo =
-                new Repositories.UserRepository(
+                new UserRepository(
                     mockDataRepo.Object,
                     auditLoggerWithMocks);
         }

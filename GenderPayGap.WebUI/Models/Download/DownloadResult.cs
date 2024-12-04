@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenderPayGap.WebUI.Models.Download
+﻿namespace GenderPayGap.WebUI.Models.Download
 {
     public class DownloadResult
     {

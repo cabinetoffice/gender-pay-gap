@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GovUkDesignSystem;
-using Microsoft.AspNetCore.Http;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {

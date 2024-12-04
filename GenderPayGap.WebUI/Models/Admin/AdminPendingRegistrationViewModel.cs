@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
 using GenderPayGap.WebUI.Models.AddOrganisation;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

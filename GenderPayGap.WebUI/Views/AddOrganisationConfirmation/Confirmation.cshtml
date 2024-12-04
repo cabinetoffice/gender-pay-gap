@@ -1,7 +1,7 @@
 ﻿@using GenderPayGap.Core
 @using GenderPayGap.Database
 @using GenderPayGap.WebUI.Services
-@model UserOrganisation
+@model GenderPayGap.Database.UserOrganisation
 @{
     UserOrganisation userOrg = Model;
     string encryptedOrgId = Encryption.EncryptId(userOrg.OrganisationId);

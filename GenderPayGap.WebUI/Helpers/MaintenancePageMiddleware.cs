@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+﻿using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace GenderPayGap.WebUI.Helpers
 {

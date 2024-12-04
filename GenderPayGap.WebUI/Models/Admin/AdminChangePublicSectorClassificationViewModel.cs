@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Database;
-using GovUkDesignSystem;
+﻿using GenderPayGap.Database;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

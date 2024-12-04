@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenderPayGap.WebUI.Search
+﻿namespace GenderPayGap.WebUI.Search
 {
     public class FuzzySearch
     {

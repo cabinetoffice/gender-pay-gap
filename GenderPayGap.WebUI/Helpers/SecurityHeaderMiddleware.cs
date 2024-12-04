@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using GenderPayGap.Core;
-using Microsoft.AspNetCore.Http;
+﻿using GenderPayGap.Core;
 
 namespace GenderPayGap.WebUI.Helpers
 {

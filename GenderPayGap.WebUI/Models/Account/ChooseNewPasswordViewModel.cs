@@ -1,7 +1,4 @@
-﻿using GenderPayGap.Database;
-using GovUkDesignSystem;
-using GovUkDesignSystem.Attributes.ValidationAttributes;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using GovUkDesignSystem.Attributes.ValidationAttributes;
 
 namespace GenderPayGap.WebUI.Models.Account
 {

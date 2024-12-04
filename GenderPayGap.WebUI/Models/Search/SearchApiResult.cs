@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GenderPayGap.WebUI.Models.Search
+﻿namespace GenderPayGap.WebUI.Models.Search
 {
     public class SearchApiResult
     {

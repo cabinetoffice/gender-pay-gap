@@ -1,6 +1,4 @@
-﻿using GovUkDesignSystem;
-
-namespace GenderPayGap.WebUI.Models.AccountCreation
+﻿namespace GenderPayGap.WebUI.Models.AccountCreation
 {
     public class ConfirmEmailAddressViewModel  
     {

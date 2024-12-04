@@ -2,7 +2,6 @@
 using GenderPayGap.Database;
 using GenderPayGap.Database.Models;
 using GenderPayGap.WebUI.Models.Report;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Helpers

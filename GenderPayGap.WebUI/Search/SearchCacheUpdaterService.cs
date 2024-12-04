@@ -1,9 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using GenderPayGap.Core;
+﻿using GenderPayGap.Core;
 using GenderPayGap.Core.Classes.Logger;
-using Microsoft.Extensions.Hosting;
 
 namespace GenderPayGap.WebUI.Search {
 

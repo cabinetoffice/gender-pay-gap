@@ -1,4 +1,5 @@
-﻿using GovUkDesignSystem.Attributes.ValidationAttributes;
+﻿using GenderPayGap.Database;
+using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GenderPayGap.WebUI.Models.ManageOrganisations
@@ -13,7 +14,7 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
         public int PreviousReportingYear { get; set; }
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
 
     }
     

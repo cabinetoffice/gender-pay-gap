@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
@@ -19,7 +18,7 @@ namespace GenderPayGap.WebUI.Models.Admin
         public string Reason { get; set; }
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public List<InactiveUserOrganisation> InactiveUserOrganisations { get; set; }
 

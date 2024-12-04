@@ -1,4 +1,3 @@
-using System;
 using GenderPayGap.Core;
 using GenderPayGap.Database;
 using GenderPayGap.WebUI.Helpers;

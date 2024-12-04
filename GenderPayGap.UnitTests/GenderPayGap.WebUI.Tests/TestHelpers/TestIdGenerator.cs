@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenderPayGap.WebUI.Tests.TestHelpers
+﻿namespace GenderPayGap.WebUI.Tests.TestHelpers
 {
     public static class TestIdGenerator
     {

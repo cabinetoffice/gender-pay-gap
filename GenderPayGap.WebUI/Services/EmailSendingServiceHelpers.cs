@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Services

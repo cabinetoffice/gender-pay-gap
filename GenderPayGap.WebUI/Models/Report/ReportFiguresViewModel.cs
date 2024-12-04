@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using GovUkDesignSystem;
-using GovUkDesignSystem.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
+using GenderPayGap.Database;
 using GovUkDesignSystem.Attributes.ValidationAttributes;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -16,7 +14,7 @@ namespace GenderPayGap.WebUI.Models.Report
         private const string OneDecimalPlaceErrorMessage = "Value can't have more than 1 decimal place";
 
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]
         public int ReportingYear { get; set; }
         [BindNever /* Output Only - only used for sending data from the Controller to the View */]

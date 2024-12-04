@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GenderPayGap.Database;
+﻿using GenderPayGap.Database;
 
 namespace GenderPayGap.WebUI.Models.Admin
 {

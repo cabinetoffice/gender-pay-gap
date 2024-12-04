@@ -5,7 +5,6 @@ using GenderPayGap.WebUI.Controllers;
 using GenderPayGap.WebUI.Models.ScopeNew;
 using GenderPayGap.WebUI.Tests.Builders;
 using GenderPayGap.WebUI.Tests.TestHelpers;
-using NUnit.Framework;
 
 namespace GenderPayGap.WebUI.Tests.Controllers.Scope
 {

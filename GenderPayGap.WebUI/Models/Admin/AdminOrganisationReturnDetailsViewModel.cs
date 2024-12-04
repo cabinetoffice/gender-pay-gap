@@ -1,8 +1,10 @@
-﻿namespace GenderPayGap.WebUI.Models.Admin
+﻿using GenderPayGap.Database;
+
+namespace GenderPayGap.WebUI.Models.Admin
 {
     public class AdminOrganisationReturnDetailsViewModel
     {
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
         public int Year { get; set; }
     }
 }

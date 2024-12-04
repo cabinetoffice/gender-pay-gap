@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Core.Interfaces;

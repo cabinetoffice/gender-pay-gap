@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GenderPayGap.WebUI.Search.CachedObjects;
+﻿using GenderPayGap.WebUI.Search.CachedObjects;
 
 namespace GenderPayGap.WebUI.Search
 {

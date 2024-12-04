@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
+﻿namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 {
     public interface IFileRepository
     {

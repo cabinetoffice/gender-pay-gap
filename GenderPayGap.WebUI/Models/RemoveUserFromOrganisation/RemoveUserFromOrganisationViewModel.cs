@@ -7,7 +7,7 @@ namespace GenderPayGap.WebUI.Models.RemoveUserFromOrganisation
 
         public User LoggedInUser { get; set; }
         public User UserToRemove { get; set; }
-        public Database.Organisation Organisation { get; set; }
+        public Organisation Organisation { get; set; }
 
     }
 }
