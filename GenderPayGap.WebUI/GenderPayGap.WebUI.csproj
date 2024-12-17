@@ -97,7 +97,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GenderPayGap.Core\GenderPayGap.Core.csproj" />
     <ProjectReference Include="..\GenderPayGap.Database\GenderPayGap.Database.csproj" />
-    <PackageReference Include="CabinetOffice.GovUkDesignSystem" Version="1.0.0-4ef46d7" />
+    <PackageReference Include="CabinetOffice.GovUkDesignSystem" Version="2.0.1" />
   </ItemGroup>
 
 </Project>
