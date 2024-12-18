@@ -54,4 +54,11 @@ jobs:
 
       - name: 'Test .Net code'
         run: |
-          dotnet test GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj
+          dotnet test GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj --logger trx --results-directory test-results
+
+      - name: 'Upload .Net test results'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+        if: ${{ always() }}  # Use always() to always run this step to publish test results when there are test failures
