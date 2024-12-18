@@ -32,3 +32,8 @@ jobs:
         run: |
           npm ci
         working-directory: GenderPayGap.WebUI
+      
+      - name: 'Build JS and SCSS code'
+        run: |
+          npm run build
+        working-directory: GenderPayGap.WebUI
