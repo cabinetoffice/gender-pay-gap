@@ -47,3 +47,11 @@ jobs:
         run: |
           echo '{ "BuildNumber": "${{ github.run_id }}", "git_commit": "${{ github.sha }}", "git_branch": "${{ github.ref_name }}", "github_action_name": "${{ github.workflow }}", "github_action_run_url": "https://github.com/${{github.repository}}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}" }' > build-number.json
         working-directory: GenderPayGap.WebUI
+
+      - name: 'Build .Net code'
+        run: |
+          dotnet build GenderPayGap.WebUI/GenderPayGap.WebUI.csproj
+
+      - name: 'Test .Net code'
+        run: |
+          dotnet test GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj
