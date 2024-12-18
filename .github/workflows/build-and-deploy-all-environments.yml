@@ -15,3 +15,10 @@ jobs:
     steps:
       - name: 'Checkout Code'
         uses: actions/checkout@v4
+        
+      - name: 'Install .Net (nuget) dependencies'
+        run: |
+          dotnet restore GenderPayGap.Core/GenderPayGap.Core.csproj
+          dotnet restore GenderPayGap.Database/GenderPayGap.Database.csproj
+          dotnet restore GenderPayGap.WebUI/GenderPayGap.WebUI.csproj
+          dotnet restore GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj
