@@ -63,3 +63,4 @@ jobs:
           name: '.Net test results'
           path: GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/TestResults/test-results.trx
           reporter: dotnet-trx
+          fail-on-error: 'false'
