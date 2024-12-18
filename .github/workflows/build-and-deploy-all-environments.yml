@@ -15,7 +15,12 @@ jobs:
     steps:
       - name: 'Checkout Code'
         uses: actions/checkout@v4
-        
+      
+      - name: 'Install dotnet 8.0.x'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
       - name: 'Install .Net (nuget) dependencies'
         run: |
           dotnet restore GenderPayGap.Core/GenderPayGap.Core.csproj
