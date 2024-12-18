@@ -22,3 +22,13 @@ jobs:
           dotnet restore GenderPayGap.Database/GenderPayGap.Database.csproj
           dotnet restore GenderPayGap.WebUI/GenderPayGap.WebUI.csproj
           dotnet restore GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj
+      
+      - name: 'Install Node.JS version 20 (v22 caused an error during npm ci)'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: 'Install Node.JS (npm) dependencies'
+        run: |
+          npm ci
+        working-directory: GenderPayGap.WebUI
