@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
+      - '*'
 
 concurrency: ${{ github.workflow }}  # Prevents more than one instance of this workflow running at the same time
 
