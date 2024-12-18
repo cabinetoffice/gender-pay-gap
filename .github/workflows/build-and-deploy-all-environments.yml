@@ -54,11 +54,12 @@ jobs:
 
       - name: 'Test .Net code'
         run: |
-          dotnet test GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj --logger trx --results-directory test-results
+          dotnet test GenderPayGap.UnitTests/GenderPayGap.WebUI.Tests/GenderPayGap.WebUI.Tests.csproj --logger "trx;LogFileName=test-results.trx"
 
-      - name: 'Upload .Net test results'
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: test-results
+      - name: 'Publish .Net test results'
+        uses: dorny/test-reporter@v1
         if: ${{ always() }}  # Use always() to always run this step to publish test results when there are test failures
+        with:
+          name: '.Net test results'
+          path: test-results.trx
+          reporter: dotnet-trx
