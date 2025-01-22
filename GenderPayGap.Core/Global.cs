@@ -38,6 +38,7 @@ namespace GenderPayGap.Core
 
         #region Settings that we expect to want to update at short notice
 
+        public static TimeSpan OffsetCurrentDateTimeForSite => TimeSpan.Parse(Config.GetAppSetting("OffsetCurrentDateTimeForSite", "0"));
         public static bool MaintenanceMode => Config.GetAppSettingBool("MaintenanceMode", defaultValue: false);
         public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSettingDateTime("MaintenanceModeUpAgainTime");
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>

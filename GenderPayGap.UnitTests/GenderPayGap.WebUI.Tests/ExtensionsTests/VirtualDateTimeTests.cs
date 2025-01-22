@@ -1,3 +1,4 @@
+using GenderPayGap.Core;
 using GenderPayGap.Extensions.AspNetCore;
 
 namespace GenderPayGap.Extensions.Tests
@@ -15,7 +16,7 @@ namespace GenderPayGap.Extensions.Tests
         [TearDown]
         public void TearDown()
         {
-            VirtualDateTime.Initialise(Config.OffsetCurrentDateTimeForSite());
+            VirtualDateTime.Initialise(Global.OffsetCurrentDateTimeForSite);
         }
 
         [Test]
