@@ -1,0 +1,130 @@
+name: '(shared functionality) Terraform'
+
+on:
+  workflow_call:
+    inputs:
+      GITHUB_ACTIONS_ENVIRONMENT:
+        required: true
+        type: string
+      TERRAFORM_ENVIRONMENT_NAME:
+        required: true
+        type: string
+      TERRAFORM_STATE_FILE:
+        required: true
+        type: string
+      TERRAFORM_TFVARS_FILE:
+        required: true
+        type: string
+      OFFSET_CURRENT_DATE_TIME_FOR_SITE:
+        required: true
+        type: string
+      MAINTENANCE_MODE:
+        required: true
+        type: string
+      MAINTENANCE_MODE_UP_AGAIN_TIME:
+        required: true
+        type: string
+    secrets:
+      TERRAFORM_AWS_ACCESS_KEY_ID:
+        required: true
+      TERRAFORM_AWS_SECRET_ACCESS_KEY:
+        required: true
+      POSTGRES_PASSWORD:
+        required: true
+      DEFAULT_ENCRYPTION_KEY:
+        required: true
+      DEFAULT_ENCRYPTION_IV:
+        required: true
+      DATA_MIGRATION_PASSWORD:
+        required: true
+      COMPANIES_HOUSE_API_KEY:
+        required: true
+      GOV_UK_NOTIFY_API_KEY:
+        required: true
+      BASIC_AUTH_USERNAME:
+        required: false
+      BASIC_AUTH_PASSWORD:
+        required: false
+      EHRC_API_TOKEN:
+        required: true
+    outputs:
+      main_app_elastic_beanstalk_application_name:
+        value: ${{ jobs.terraform.outputs.main_app_elastic_beanstalk_application_name }}
+      main_app_elastic_beanstalk_environment_name:
+        value: ${{ jobs.terraform.outputs.main_app_elastic_beanstalk_environment_name }}
+      main_app_elastic_beanstalk_code_s3_bucket:
+        value: ${{ jobs.terraform.outputs.main_app_elastic_beanstalk_code_s3_bucket }}
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: eu-west-2
+  TERRAFORM_STATE_BUCKET: uk-gov-equality-hub-terraform-state-bucket
+
+jobs:
+  terraform:
+    name: 'Terraform (${{ inputs.GITHUB_ACTIONS_ENVIRONMENT }})'
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.GITHUB_ACTIONS_ENVIRONMENT }}
+
+    outputs:
+      main_app_elastic_beanstalk_application_name: ${{ steps.step_elastic_beanstalk_application_name.outputs.test }}
+      main_app_elastic_beanstalk_environment_name: ${{ steps.step_elastic_beanstalk_environment_name.outputs.test }}
+      main_app_elastic_beanstalk_code_s3_bucket: ${{ steps.step_elastic_beanstalk_code_s3_bucket.outputs.test }}
+
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v4
+
+      - name: 'Install Terraform'
+        uses: hashicorp/setup-terraform@v3
+
+      - name: 'Init Terraform'
+        run: |
+          terraform init "-backend-config=bucket=${{ env.TERRAFORM_STATE_BUCKET }}" "-backend-config=key=${{ inputs.TERRAFORM_STATE_FILE }}" "-backend-config=region=${{ env.AWS_DEFAULT_REGION }}" "-backend-config=access_key=${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}" "-backend-config=secret_key=${{ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }}"
+        working-directory: ./terraform
+
+      - name: 'Apply Terraform changes'
+        run: |
+          terraform apply \
+          -var-file "${{ inputs.TERRAFORM_TFVARS_FILE }}" \
+          -var "github_url=https://github.com/${{ github.repository }}" \
+          -var "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
+          -var "DEFAULT_ENCRYPTION_KEY=${{ secrets.DEFAULT_ENCRYPTION_KEY }}" \
+          -var "DEFAULT_ENCRYPTION_IV=${{ secrets.DEFAULT_ENCRYPTION_IV }}" \
+          -var "DATA_MIGRATION_PASSWORD=${{ secrets.DATA_MIGRATION_PASSWORD }}" \
+          -var "COMPANIES_HOUSE_API_KEY=${{ secrets.COMPANIES_HOUSE_API_KEY }}" \
+          -var "GOV_UK_NOTIFY_API_KEY=${{ secrets.GOV_UK_NOTIFY_API_KEY }}" \
+          -var "BASIC_AUTH_USERNAME=${{ secrets.BASIC_AUTH_USERNAME }}" \
+          -var "BASIC_AUTH_PASSWORD=${{ secrets.BASIC_AUTH_PASSWORD }}" \
+          -var "EHRC_API_TOKEN=${{ secrets.EHRC_API_TOKEN }}" \
+          -var "OFFSET_CURRENT_DATE_TIME_FOR_SITE=${{ inputs.OFFSET_CURRENT_DATE_TIME_FOR_SITE }}" \
+          -var "MAINTENANCE_MODE=${{ inputs.MAINTENANCE_MODE }}" \
+          -var "MAINTENANCE_MODE_UP_AGAIN_TIME=${{ inputs.MAINTENANCE_MODE_UP_AGAIN_TIME }}" \
+          -auto-approve
+        working-directory: ./terraform
+
+      - name: 'Download the TFState file'
+        run: |
+          aws s3 cp "s3://${{ env.TERRAFORM_STATE_BUCKET }}/${{ inputs.TERRAFORM_STATE_FILE }}" ./current_tf_state.json
+
+      - id: step_elastic_beanstalk_application_name
+        name: 'Find the name of the Elastic Beanstalk application name'
+        run: |
+          echo test=$(jq -r '.resources[] | select(.name == "main_app_elastic_beanstalk_application").instances[].attributes.name' current_tf_state.json) >> main_app_elastic_beanstalk_application_name.txt
+          cat main_app_elastic_beanstalk_application_name.txt
+          cat main_app_elastic_beanstalk_application_name.txt >> $GITHUB_OUTPUT
+
+      - id: step_elastic_beanstalk_environment_name
+        name: 'Find the name of the Elastic Beanstalk environment name'
+        run: |
+          echo test=$(jq -r '.resources[] | select(.name == "main_app_elastic_beanstalk_environment").instances[].attributes.name' current_tf_state.json) >> main_app_elastic_beanstalk_environment_name.txt
+          cat main_app_elastic_beanstalk_environment_name.txt
+          cat main_app_elastic_beanstalk_environment_name.txt >> $GITHUB_OUTPUT
+
+      - id: step_elastic_beanstalk_code_s3_bucket
+        name: 'Find the name of the Elastic Beanstalk application code versions S3 bucket'
+        run: |
+          echo test=$(jq -r '.resources[] | select(.name == "main_app_elastic_beanstalk_code_s3_bucket").instances[].attributes.bucket' current_tf_state.json) >> main_app_elastic_beanstalk_code_s3_bucket.txt
+          cat main_app_elastic_beanstalk_code_s3_bucket.txt
+          cat main_app_elastic_beanstalk_code_s3_bucket.txt >> $GITHUB_OUTPUT
