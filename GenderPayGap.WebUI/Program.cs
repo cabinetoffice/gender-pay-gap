@@ -17,6 +17,7 @@ using GenderPayGap.WebUI.Repositories;
 using GenderPayGap.WebUI.Search;
 using GenderPayGap.WebUI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
@@ -130,6 +131,13 @@ namespace GenderPayGap.WebUI
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 });
+
+            // Configure forwarded headers - this is so that the anti-forgery middleware (see below) is allowed to set a "Secure only" cookie
+            services.Configure<ForwardedHeadersOptions>(
+                options =>
+                {
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                });
             
             // Add anti-forgery token by default to forms making sure the Secure flag is always set
             services.AddAntiforgery(
@@ -237,6 +245,8 @@ namespace GenderPayGap.WebUI
             {
                 app.Urls.Add($"http://*:{Environment.GetEnvironmentVariable("PORT")}/");
             }
+
+            app.UseForwardedHeaders();
             
             app.UseStaticFiles();
 
