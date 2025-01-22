@@ -64,7 +64,7 @@ namespace GenderPayGap.WebUI.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception($"Could not read or write a file: {e.Message}");
+                throw new Exception($"Could not read or write a file: {e.Message}", e);
             }
         }
 

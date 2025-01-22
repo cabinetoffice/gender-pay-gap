@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using GenderPayGap.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace GenderPayGap.Extensions.AspNetCore
@@ -11,14 +12,12 @@ namespace GenderPayGap.Extensions.AspNetCore
 
         public static IConfiguration Configuration;
 
-        private static TimeSpan? SingletonOffsetCurrentDateTimeForSite;
-
         static Config()
         {
             Console.WriteLine($"Environment: {EnvironmentName}");
 
             Configuration = Build();
-            VirtualDateTime.Initialise(OffsetCurrentDateTimeForSite());
+            VirtualDateTime.Initialise(Global.OffsetCurrentDateTimeForSite);
         }
 
         public static string EnvironmentName => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -105,9 +104,14 @@ namespace GenderPayGap.Extensions.AspNetCore
             return defaultValue;
         }
 
-        public static DateTime GetAppSettingDateTime(string key)
+        public static DateTime? GetAppSettingDateTime(string key)
         {
             string settingValue = GetAppSetting(key);
+
+            if (settingValue == "null")
+            {
+                return null;
+            }
 
             if (DateTime.TryParseExact(settingValue, "yyMMddHHmmss", null, DateTimeStyles.AssumeLocal, out DateTime parsedValueShortFormat))
             {
@@ -119,7 +123,7 @@ namespace GenderPayGap.Extensions.AspNetCore
                 return parsedValueOtherFormat;
             }
 
-            return DateTime.MinValue;
+            return null;
         }
 
         private static IConfiguration GetAppSettings()
@@ -137,18 +141,6 @@ namespace GenderPayGap.Extensions.AspNetCore
         {
             IConfiguration appSettings = GetAppSettings();
             appSettings[key] = value;
-        }
-
-        public static TimeSpan OffsetCurrentDateTimeForSite()
-        {
-            if (SingletonOffsetCurrentDateTimeForSite == null)
-            {
-                SingletonOffsetCurrentDateTimeForSite = IsProduction()
-                    ? TimeSpan.Zero
-                    : TimeSpan.Parse(GetAppSetting("OffsetCurrentDateTimeForSite", "0"));
-            }
-
-            return (TimeSpan) SingletonOffsetCurrentDateTimeForSite;
         }
 
     }

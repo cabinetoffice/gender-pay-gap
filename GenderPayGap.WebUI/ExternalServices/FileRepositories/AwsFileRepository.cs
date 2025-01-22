@@ -175,8 +175,7 @@ namespace GenderPayGap.WebUI.ExternalServices.FileRepositories
 
         private AmazonS3Client CreateAmazonS3Client()
         {
-            var credentials = new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
-            var amazonS3Client = new AmazonS3Client(credentials, RegionEndpoint.GetBySystemName(awsRegion));
+            var amazonS3Client = new AmazonS3Client();
 
             return amazonS3Client;
         }

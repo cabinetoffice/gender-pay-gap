@@ -20,7 +20,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Account
         public void Setup()
         {
             UiTestHelper.SetDefaultEncryptionKeys();
-            VirtualDateTime.Initialise(Config.OffsetCurrentDateTimeForSite());
+            VirtualDateTime.Initialise(Global.OffsetCurrentDateTimeForSite);
         }
 
         [Test]

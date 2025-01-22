@@ -1,4 +1,4 @@
-﻿using GenderPayGap.Extensions.AspNetCore;
+using GenderPayGap.Extensions.AspNetCore;
 using Newtonsoft.Json;
 
 namespace GenderPayGap.Core
@@ -19,9 +19,9 @@ namespace GenderPayGap.Core
                 : "SslMode=Require;Trust Server Certificate=true");
 
         public static string S3BucketName => Config.GetAppSetting("S3_BUCKET_NAME");
-        public static string S3BucketAwsAccessKeyId => Config.GetAppSetting("S3_BUCKET_AWS_ACCESS_KEY_ID");
-        public static string S3BucketAwsSecretAccessKey => Config.GetAppSetting("S3_BUCKET_AWS_SECRET_ACCESS_KEY");
-        public static string S3BucketAwsRegion => Config.GetAppSetting("S3_BUCKET_AWS_REGION");
+        public static string S3BucketAwsAccessKeyId => Config.GetAppSetting("AWS_ACCESS_KEY_ID");
+        public static string S3BucketAwsSecretAccessKey => Config.GetAppSetting("AWS_SECRET_ACCESS_KEY");
+        public static string S3BucketAwsRegion => Config.GetAppSetting("AWS_DEFAULT_REGION");
 
         public static string CompaniesHouseApiKey => Config.GetAppSetting("CompaniesHouseApiKey");
         public static string GovUkNotifyApiKey => Config.GetAppSetting("GovUkNotifyApiKey");
@@ -38,6 +38,7 @@ namespace GenderPayGap.Core
 
         #region Settings that we expect to want to update at short notice
 
+        public static TimeSpan OffsetCurrentDateTimeForSite => TimeSpan.Parse(Config.GetAppSetting("OffsetCurrentDateTimeForSite", "0"));
         public static bool MaintenanceMode => Config.GetAppSettingBool("MaintenanceMode", defaultValue: false);
         public static DateTime? MaintenanceModeUpAgainTime => Config.GetAppSettingDateTime("MaintenanceModeUpAgainTime");
         public static List<int> ReportingStartYearsToExcludeFromLateFlagEnforcement =>

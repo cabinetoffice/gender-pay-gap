@@ -1,3 +1,4 @@
+using GenderPayGap.Core;
 using GenderPayGap.Extensions.AspNetCore;
 
 namespace Tests
@@ -13,7 +14,7 @@ namespace Tests
             var expectedOffsetCurrentDateTimeForSite = new TimeSpan(917, 0, 0, 0, 0);
 
             // Act
-            TimeSpan actualOffsetCurrentDateTimeForSite = Config.OffsetCurrentDateTimeForSite();
+            TimeSpan actualOffsetCurrentDateTimeForSite = Global.OffsetCurrentDateTimeForSite;
 
             // Assert
             Assert.AreEqual(

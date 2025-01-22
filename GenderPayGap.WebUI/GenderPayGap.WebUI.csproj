@@ -16,12 +16,6 @@
   <ItemGroup>
     <Content Include=".platform\nginx\conf.d\elasticbeanstalk\00_application.conf" CopyToOutputDirectory="Always" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <None Include=".ebextensions\upgrade-nginx.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
