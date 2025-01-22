@@ -210,7 +210,6 @@ namespace GenderPayGap.WebUI.Controllers
                 DELETE FROM ""DraftReturns"" WHERE 1 = 1;
                 DELETE FROM ""InactiveUserOrganisations"" WHERE 1 = 1;
 
-                DELETE FROM ""ReturnStatus"" WHERE 1 = 1;
                 DELETE FROM ""Returns"" WHERE 1 = 1;
                 DELETE FROM ""AuditLogs"" WHERE 1 = 1;
 
@@ -221,7 +220,6 @@ namespace GenderPayGap.WebUI.Controllers
                 DELETE FROM ""OrganisationScopes"" WHERE 1 = 1;
                 DELETE FROM ""UserOrganisations"" WHERE 1 = 1;
                 DELETE FROM ""OrganisationStatus"" WHERE 1 = 1;
-                DELETE FROM ""OrganisationReferences"" WHERE 1 = 1;
                 DELETE FROM ""OrganisationAddresses"" WHERE 1 = 1;
                 DELETE FROM ""OrganisationNames"" WHERE 1 = 1;
 
