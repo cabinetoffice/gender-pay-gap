@@ -2,8 +2,8 @@ DO $$
 
     DECLARE
         -- A high starting number to ensure that the IDs don't interfere with any existing data
-        STARTING_ID INTEGER := 300000000;
-        NUM_OF_USERS INTEGER := 20000;
+        STARTING_ID INTEGER := 3000000;
+        NUM_OF_USERS INTEGER := 10;
         INDEX INTEGER := 1;
 
 -- Remove all test entities
@@ -19,7 +19,6 @@ DO $$
         DELETE FROM "OrganisationSicCodes" WHERE "OrganisationSicCodes"."OrganisationId" > STARTING_ID;
         DELETE FROM "OrganisationAddresses" WHERE "OrganisationAddresses"."AddressId" > STARTING_ID;
         DELETE FROM "DraftReturns" WHERE "OrganisationId" > STARTING_ID;
-        DELETE FROM "ReturnStatus" WHERE "ReturnStatus"."ByUserId" > STARTING_ID;
         DELETE FROM "Returns" WHERE "Returns"."OrganisationId" > STARTING_ID;
 
         -- Delete users created using registration journey
@@ -37,9 +36,9 @@ DO $$
 
                 -- Create test organisations that are linked to test users
                 INSERT INTO "Organisations"
-                ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "Modified", "OptedOutFromCompaniesHouseUpdate", "EmployerReference")
+                ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "OptedOutFromCompaniesHouseUpdate")
                 VALUES
-                (STARTING_ID + INDEX, '99999' || CAST(NUM_OF_USERS + INDEX AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 1, 3, '01/10/2021 12:26:44', 'PIN Confirmed', '01/10/2021 12:26:44', '01/10/2021 12:26:44', true, 'ABCDE' || CAST(INDEX AS VARCHAR(16)));
+                (STARTING_ID + INDEX, '99999' || CAST(NUM_OF_USERS + INDEX AS VARCHAR(16)), 'test_' || CAST(INDEX + NUM_OF_USERS AS VARCHAR(16)), 1, 3, '01/10/2021 12:26:44', 'PIN Confirmed', '01/10/2021 12:26:44', true);
 
                 INSERT INTO "OrganisationNames"
                 ("OrganisationNameId", "OrganisationId", "Name", "Source", "Created")
@@ -47,15 +46,15 @@ DO $$
                 (STARTING_ID + INDEX, STARTING_ID + INDEX, 'test_' || CAST(INDEX AS VARCHAR(16)), 'User', '01/10/2021 12:26:44');
 
                 INSERT INTO "OrganisationScopes"
-                ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "RegisterStatusId", "RegisterStatusDate", "SnapshotDate", "StatusId")
+                ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "SnapshotDate", "StatusId")
                 VALUES
-                (STARTING_ID + INDEX, STARTING_ID + INDEX, 1, '01/10/2021 12:26:44', 0, '01/10/2021 12:26:44', '05/04/2021 00:00:00', 3),
-                (STARTING_ID + 2 * NUM_OF_USERS + INDEX, STARTING_ID + INDEX, 1, '01/10/2020 12:26:44', 0, '01/10/2020 12:26:44', '05/04/2020 00:00:00', 3);
+                (STARTING_ID + INDEX, STARTING_ID + INDEX, 1, '01/10/2021 12:26:44', '05/04/2021 00:00:00', 3),
+                (STARTING_ID + 2 * NUM_OF_USERS + INDEX, STARTING_ID + INDEX, 1, '01/10/2020 12:26:44', '05/04/2020 00:00:00', 3);
 
                 INSERT INTO "OrganisationAddresses"
-                ("AddressId", "OrganisationId", "CreatedByUserId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
+                ("AddressId", "OrganisationId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
                 VALUES
-                (STARTING_ID + INDEX, STARTING_ID + INDEX, STARTING_ID + INDEX, 'test street', 'United Kingdom', 'NWN NWN', 3, '01/10/2021 12:26:44', '01/10/2021 12:26:44', 'User', 'True');
+                (STARTING_ID + INDEX, STARTING_ID + INDEX, 'test street', 'United Kingdom', 'NWN NWN', 3, '01/10/2021 12:26:44', '01/10/2021 12:26:44', 'User', 'True');
 
                 INSERT INTO "OrganisationSicCodes"
                 ("OrganisationSicCodeId", "OrganisationId", "SicCodeId", "Created", "Source")
@@ -63,16 +62,16 @@ DO $$
                 (STARTING_ID + INDEX, STARTING_ID + INDEX, 2200, '01/10/2021 12:26:44', 'User');
 
                 INSERT INTO "UserOrganisations"
-                ("UserId", "OrganisationId", "ConfirmAttempts", "Created", "Modified", "PINConfirmedDate")
+                ("UserId", "OrganisationId", "ConfirmAttempts", "Created", "PINConfirmedDate")
                 VALUES
-                (STARTING_ID + INDEX, STARTING_ID + INDEX, 0, '01/10/2021 12:26:44', '01/10/2021 12:26:44', '01/10/2021 12:26:44');
+                (STARTING_ID + INDEX, STARTING_ID + INDEX, 0, '01/10/2021 12:26:44', '01/10/2021 12:26:44');
 
                 -- Create test organisations that are NOT linked to test users
                 -- These have the same names as linked Organisations, so they appear in the search results together
                 INSERT INTO "Organisations"
-                ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "Modified", "OptedOutFromCompaniesHouseUpdate", "EmployerReference")
+                ("OrganisationId", "CompanyNumber", "OrganisationName", "SectorTypeId", "StatusId", "StatusDate", "StatusDetails", "Created", "OptedOutFromCompaniesHouseUpdate")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, '99999' || CAST(2 * NUM_OF_USERS + INDEX AS VARCHAR(16)), 'test_' || CAST(NUM_OF_USERS * 2 + INDEX AS VARCHAR(16)), 1, 3, '01/10/2021 12:26:44', 'PIN Confirmed', '01/10/2021 12:26:44', '01/10/2021 12:26:44', true, 'ABCDE' || CAST(2 * NUM_OF_USERS + INDEX AS VARCHAR(16)));
+                (STARTING_ID + NUM_OF_USERS + INDEX, '99999' || CAST(2 * NUM_OF_USERS + INDEX AS VARCHAR(16)), 'test_' || CAST(NUM_OF_USERS * 2 + INDEX AS VARCHAR(16)), 1, 3, '01/10/2021 12:26:44', 'PIN Confirmed', '01/10/2021 12:26:44', true);
 
                 INSERT INTO "OrganisationNames"
                 ("OrganisationNameId", "OrganisationId", "Name", "Source", "Created")
@@ -80,14 +79,14 @@ DO $$
                 (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 'test_' || CAST(NUM_OF_USERS * 2 + INDEX AS VARCHAR(16)), 'User', '01/10/2021 12:26:44');
 
                 INSERT INTO "OrganisationScopes"
-                ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "RegisterStatusId", "RegisterStatusDate", "SnapshotDate", "StatusId")
+                ("OrganisationScopeId", "OrganisationId", "ScopeStatusId", "ScopeStatusDate", "SnapshotDate", "StatusId")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 1, '01/10/2021 12:26:44', 0, '01/10/2021 12:26:44', '05/04/2021 00:00:00', 3);
+                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 1, '01/10/2021 12:26:44', '05/04/2021 00:00:00', 3);
 
                 INSERT INTO "OrganisationAddresses"
-                ("AddressId", "OrganisationId", "CreatedByUserId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
+                ("AddressId", "OrganisationId", "Address1", "Country", "PostCode", "StatusId", "StatusDate", "Created", "Source", "IsUkAddress")
                 VALUES
-                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 'test street', 'United Kingdom', 'NWN NWN', 3, '01/10/2021 12:26:44', '01/10/2021 12:26:44', 'User', 'True');
+                (STARTING_ID + NUM_OF_USERS + INDEX, STARTING_ID + NUM_OF_USERS + INDEX, 'test street', 'United Kingdom', 'NWN NWN', 3, '01/10/2021 12:26:44', '01/10/2021 12:26:44', 'User', 'True');
 
                 INSERT INTO "OrganisationSicCodes"
                 ("OrganisationSicCodeId", "OrganisationId", "SicCodeId", "Created", "Source")
