@@ -8,9 +8,9 @@ import {
     feed,
     repeat,
     tryMax,
-    rampUsers, substring, exitBlockOnFail, jmesPath
+    rampUsers, substring, exitBlockOnFail, jmesPath, ChainBuilder, regex
 } from "@gatling.io/core";
-import {http, status} from "@gatling.io/http";
+import {header, http, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
@@ -19,6 +19,8 @@ export default simulation((setUp) => {
 	// Pauses are uniform duration between these two:
 	const PAUSE_MIN_DURATION = 1;  // seconds
 	const PAUSE_MAX_DURATION = 10;  // seconds
+    
+    const MOST_RECENTLY_COMPLETED_REPORTING_YEAR = 2023;
 
     const domainName = "dev.gender-pay-gap.service.gov.uk";
 
@@ -57,39 +59,40 @@ export default simulation((setUp) => {
     // );
 
     const Homepage = {
-        visit:
-            exec(http("Homepage (visit)")
+        visit: (): ChainBuilder =>
+            exec(http("Homepage - visit")
                 .get("/")
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
-                    substring("Search and compare gender pay gap data")
+                    substring("Search and compare gender pay gap data"),
                 )
                 .resources(
-                    http("Homepage (visit) - Load favicon")
+                    http("Homepage - Load favicon")
                         .get("/assets/images/favicon.ico")
                         .headers(image_get_headers),
-                    http("Homepage (visit) - Load crown")
+                    http("Homepage - Load crown")
                         .get("/assets/images/govuk-apple-touch-icon-180x180.png")
                         .headers(image_get_headers),
-                    http("Homepage (visit) - Load crest")
+                    http("Homepage - Load crest")
                         .get("/assets/images/govuk-crest.png")
                         .headers(image_get_headers),
-                    http("Homepage (visit) - Load bold font")
+                    http("Homepage - Load bold font")
                         .get("/assets/images/govuk-crest.png")
                         .headers(font_get_headers),
-                    http("Homepage (visit) - Load light font")
+                    http("Homepage - Load light font")
                         .get("/assets/fonts/light-94a07e06a1-v2.woff2")
                         .headers(font_get_headers),
                 )
             ).pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
-        suggestAutoComplete:
+        suggestAutoComplete: (): ChainBuilder =>
             exec(http("Homepage (suggest search box: te)")
                 .get("/search/suggest-employer-name-js?search=te")
                 .headers(ajax_get_headers)
                 .check(
                     status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
                     jmesPath("length(Matches)").ofInt().is(10),
                 )
             )
@@ -98,6 +101,7 @@ export default simulation((setUp) => {
                 .headers(ajax_get_headers)
                 .check(
                     status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
                     jmesPath("length(Matches)").ofInt().is(10),
                 )
             )
@@ -106,6 +110,7 @@ export default simulation((setUp) => {
                 .headers(ajax_get_headers)
                 .check(
                     status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
                     jmesPath("length(Matches)").ofInt().is(10),
                 )
             )
@@ -114,38 +119,127 @@ export default simulation((setUp) => {
                 .headers(ajax_get_headers)
                 .check(
                     status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
                     jmesPath("length(Matches)").ofInt().is(10),
                 )
             ).pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
     
     const SearchAndView = {
-        searchPage:
-            exec(http("Search page (visit)")
+        searchPage: (): ChainBuilder =>
+            exec(http("Search page - visit")
                 .get("/search?EmployerName=test")
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
-                    substring("Search by employer name")
+                    substring("Search by employer name"),
                 )
-                .resources(
-                    // http("Homepage (visit) - Load favicon")
-                    //     .get("/assets/images/favicon.ico")
-                    //     .headers(image_get_headers),
-                    // http("Homepage (visit) - Load crown")
-                    //     .get("/assets/images/govuk-apple-touch-icon-180x180.png")
-                    //     .headers(image_get_headers),
-                    // http("Homepage (visit) - Load crest")
-                    //     .get("/assets/images/govuk-crest.png")
-                    //     .headers(image_get_headers),
-                    // http("Homepage (visit) - Load bold font")
-                    //     .get("/assets/images/govuk-crest.png")
-                    //     .headers(font_get_headers),
-                    // http("Homepage (visit) - Load light font")
-                    //     .get("/assets/fonts/light-94a07e06a1-v2.woff2")
-                    //     .headers(font_get_headers),
+                .resources()
+            )
+            .exec(http("Search page - API request 1")
+                .get("/search-api?EmployerName=test&Page=0")
+                .headers(ajax_get_headers)
+                .check(
+                    status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
+                    jmesPath("length(Employers)").ofInt().is(100),
+                ),
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION)
+            .exec(http("Search page - API request 2")
+                .get("/search-api?EmployerName=test_&Page=0")
+                .headers(ajax_get_headers)
+                .check(
+                    status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
+                    jmesPath("length(Employers)").ofInt().is(100),
+                ),
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION)
+            .exec(http("Search page - API request 3")
+                .get("/search-api?EmployerName=test_&Sector=A&Page=0")
+                .headers(ajax_get_headers)
+                .check(
+                    status().is(200),
+                    header("Content-Type").is("application/json; charset=utf-8"),
+                    jmesPath("length(Employers)").ofInt().gte(10),
+                ),
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        viewEmployer: (): ChainBuilder =>
+            exec(http("View Employer")
+                .get("/employers/5816")
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Gender pay gap reports for"),
+                    substring("H M Government Cabinet Office"),
                 )
-            ).pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        viewReportsForYear: (year: int): ChainBuilder =>
+            exec(http(`View Report for Employer - ${year}`)
+                .get(`/employers/5816/reporting-year-${year}`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("H M Government Cabinet Office"),
+                    regex(`${year}-${(year + 1) % 100}\\s*Gender pay gap report`),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    }
+    
+    const Compare = {
+        addToCompare: (organisationId: int, employersInComparisonBasket: string): ChainBuilder =>
+            exec(http("Add to Compare - visit")
+                .get(`/compare-employers/add/${organisationId}?returnUrl=%2Femployers%2F${organisationId}`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(302),
+                    header("Location").is(`/employers/${organisationId}`),
+                )
+                .resources()
+            )
+            .exec(http("Add to Compare - redirect to View Employer")
+                .get(`/employers/${organisationId}`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Your comparison list contains"),
+                    substring(employersInComparisonBasket),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        comparePageDefault: (): ChainBuilder =>
+            exec(http("Compare Table (default redirect)")
+                .get(`/compare-employers`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(302),
+                    header("Location").is(`/compare-employers/${MOST_RECENTLY_COMPLETED_REPORTING_YEAR}`),
+                )
+                .resources()
+            ),
+        
+        comparePageForYear: (year: int): ChainBuilder =>
+            exec(http(`Compare Table For Year - ${year}`)
+                .get(`/compare-employers/${year}`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring(`Comparison for ${year}`),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
     }
 
     // // repeat is a loop resolved at RUNTIME
@@ -186,8 +280,35 @@ export default simulation((setUp) => {
     // const admins = scenario("Admins").exec(search, browse, edit);
 
     const userActions = exec(
-        Homepage.visit,
-        Homepage.suggestAutoComplete
+        // Journey: Search for an employer and view their reports
+        Homepage.visit(),
+        Homepage.suggestAutoComplete(),
+
+        SearchAndView.searchPage(),
+        
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2020),
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2021),
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2022),
+
+        // Journey: Compare employers
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(5816, '1 employer'),
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(491, '2 employers'),
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(234, '3 employers'),
+        
+        Compare.comparePageDefault(),
+        Compare.comparePageForYear(2023),
+        Compare.comparePageForYear(2022),
+        Compare.comparePageForYear(2021),
+        SearchAndView.viewReportsForYear(2021),
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
