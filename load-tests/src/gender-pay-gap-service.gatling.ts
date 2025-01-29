@@ -10,7 +10,7 @@ import {
     tryMax,
     rampUsers, substring, exitBlockOnFail, jmesPath, ChainBuilder, regex
 } from "@gatling.io/core";
-import {header, http, status} from "@gatling.io/http";
+import {currentLocation, header, http, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
@@ -22,10 +22,11 @@ export default simulation((setUp) => {
     
     const MOST_RECENTLY_COMPLETED_REPORTING_YEAR = 2023;
 
-    const domainName = "dev.gender-pay-gap.service.gov.uk";
+    const DOMAIN_NAME = "dev.gender-pay-gap.service.gov.uk";
+    const BASE_URL = "https://" + DOMAIN_NAME;
 
     const httpProtocol = http
-        .baseUrl("https://" + domainName)
+        .baseUrl(BASE_URL)
         .inferHtmlResources()
 		.authorizationHeader(authorizationHeader)
         .acceptLanguageHeader("en-GB,en;q=0.5")
@@ -195,35 +196,28 @@ export default simulation((setUp) => {
     }
     
     const Compare = {
-        addToCompare: (organisationId: int, employersInComparisonBasket: string): ChainBuilder =>
-            exec(http("Add to Compare - visit")
+        addToCompare: (organisationId: int, employersInComparisonBasket: int): ChainBuilder =>
+            exec(http(`Add to Compare - add and redirect - org:${organisationId}`)
                 .get(`/compare-employers/add/${organisationId}?returnUrl=%2Femployers%2F${organisationId}`)
                 .headers(html_get_headers)
                 .check(
-                    status().is(302),
-                    header("Location").is(`/employers/${organisationId}`),
-                )
-                .resources()
-            )
-            .exec(http("Add to Compare - redirect to View Employer")
-                .get(`/employers/${organisationId}`)
-                .headers(html_get_headers)
-                .check(
                     status().is(200),
+                    currentLocation().is(`${BASE_URL}/employers/${organisationId}`),
                     substring("Your comparison list contains"),
-                    substring(employersInComparisonBasket),
+                    regex(`${employersInComparisonBasket}\\s*employer`),
                 )
                 .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
         comparePageDefault: (): ChainBuilder =>
-            exec(http("Compare Table (default redirect)")
+            exec(http("Compare Table - redirect and visit")
                 .get(`/compare-employers`)
                 .headers(html_get_headers)
                 .check(
-                    status().is(302),
-                    header("Location").is(`/compare-employers/${MOST_RECENTLY_COMPLETED_REPORTING_YEAR}`),
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/compare-employers/${MOST_RECENTLY_COMPLETED_REPORTING_YEAR}`),
+                    substring(`Comparison for ${MOST_RECENTLY_COMPLETED_REPORTING_YEAR}`),
                 )
                 .resources()
             ),
@@ -296,19 +290,19 @@ export default simulation((setUp) => {
         // Journey: Compare employers
         SearchAndView.searchPage(),
         SearchAndView.viewEmployer(),
-        Compare.addToCompare(5816, '1 employer'),
+        Compare.addToCompare(5816, 1),
         SearchAndView.searchPage(),
         SearchAndView.viewEmployer(),
-        Compare.addToCompare(491, '2 employers'),
+        Compare.addToCompare(491, 2),
         SearchAndView.searchPage(),
         SearchAndView.viewEmployer(),
-        Compare.addToCompare(234, '3 employers'),
+        Compare.addToCompare(234, 3),
         
         Compare.comparePageDefault(),
-        Compare.comparePageForYear(2023),
         Compare.comparePageForYear(2022),
         Compare.comparePageForYear(2021),
-        SearchAndView.viewReportsForYear(2021),
+        Compare.comparePageForYear(2020),
+        SearchAndView.viewReportsForYear(2020),
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
