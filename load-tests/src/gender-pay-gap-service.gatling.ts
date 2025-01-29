@@ -14,13 +14,15 @@ import {currentLocation, header, http, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
-    const feeder = csv("search.csv").random();
+    const usersFeeder = csv("users.csv").eager().circular();
 
 	// Pauses are uniform duration between these two:
 	const PAUSE_MIN_DURATION = 1;  // seconds
 	const PAUSE_MAX_DURATION = 10;  // seconds
     
     const MOST_RECENTLY_COMPLETED_REPORTING_YEAR = 2023;
+    
+    const RUN_ID = 1;
 
     const DOMAIN_NAME = "dev.gender-pay-gap.service.gov.uk";
     const BASE_URL = "https://" + DOMAIN_NAME;
@@ -46,6 +48,14 @@ export default simulation((setUp) => {
         "Accept": "*/*",
         "X-Requested-With": "XMLHttpRequest"
     };
+    const html_post_headers = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Origin": BASE_URL,
+    };
+    
+    function emailAddressFromUserId(userId: string): string {
+        return `loadtest-run-${RUN_ID}-user-${userId}@example.com`;
+    }
 
     // const search = exec(
     //     http("Home").get("/"),
@@ -233,8 +243,101 @@ export default simulation((setUp) => {
                 .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
-        
     }
+    
+    const CreateAccount = {
+        alreadyCreatedAnAccountQuestion: (): ChainBuilder =>
+            exec(http("Already Created An Account? - visit")
+                .get(`/already-created-an-account-question`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Have you previously created a user account?"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        alreadyCreatedAnAccountAnswer: (): ChainBuilder =>
+            exec(http("Already Created An Account? - Answer NO and redirect")
+                .get(`/already-created-an-account-question?HaveYouAlreadyCreatedYourUserAccount=No`)
+                .headers(html_get_headers)
+                .disableFollowRedirect()
+                .check(
+                    status().is(302),
+                    header("Location").is("/create-user-account?isPartOfGovUkReportingJourney=True"),
+                )
+            ),
+
+        createAccountGet: (): ChainBuilder =>
+            exec(http("Create Account - visit")
+                .get(`/create-user-account`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Create my account"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        createAccountPost: (): ChainBuilder =>
+            feed(usersFeeder)
+                .exec(http("Create Account - visit")
+                .post(`/create-user-account`)
+                .headers(html_post_headers)
+                .formParam("GovUk_Text_EmailAddress", emailAddressFromUserId("${userId}"))
+                .formParam("GovUk_Text_ConfirmEmailAddress", emailAddressFromUserId("${userId}"))
+                .formParam("GovUk_Text_FirstName", "Test")
+                .formParam("GovUk_Text_LastName", "Example")
+                .formParam("GovUk_Text_JobTitle", "Tester")
+                .formParam("GovUk_Text_Password", "GenderPayGap123")
+                .formParam("GovUk_Text_ConfirmPassword", "GenderPayGap123")
+                .formParam("AllowContact", "true")
+                .formParam("SendUpdates", "false")
+                .formParam("__RequestVerificationToken", "${requestVerificationToken}")
+                .check(
+                    status().is(200),
+                    regex("Confirm your email address")
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    }
+
+    // const Login = {
+    //     loginPage: (): ChainBuilder =>
+    //         exec(http("Login Page - redirect and visit")
+    //             .get(`/account/organisations`)
+    //             .headers(html_get_headers)
+    //             .check(
+    //                 status().is(200),
+    //                 currentLocation().is("/login?ReturnUrl=%2Faccount%2Forganisations"),
+    //                 substring("If you have a user account, enter your email address and password."),
+    //                 css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
+    //                 css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+    //             )
+    //             .resources()
+    //         )
+    //         .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    //    
+    //     loginPage:(): ChainBuilder =>
+    //         exec(http("Login Page - redirect and visit")
+    //             .get(`/account/organisations`)
+    //             .headers(html_get_headers)
+    //             .check(
+    //                 status().is(200),
+    //                 currentLocation().is("/login?ReturnUrl=%2Faccount%2Forganisations"),
+    //                 substring("If you have a user account, enter your email address and password."),
+    //                 css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
+    //                 css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+    //             )
+    //             .resources()
+    //         )
+    //         .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    //    
+    // }
 
     // // repeat is a loop resolved at RUNTIME
     // const browse =
@@ -303,6 +406,12 @@ export default simulation((setUp) => {
         Compare.comparePageForYear(2021),
         Compare.comparePageForYear(2020),
         SearchAndView.viewReportsForYear(2020),
+        
+        // Journey: Create account
+        CreateAccount.alreadyCreatedAnAccountQuestion(),
+        CreateAccount.alreadyCreatedAnAccountAnswer(),
+        CreateAccount.createAccountGet(),
+        CreateAccount.createAccountPost()
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
