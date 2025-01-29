@@ -270,7 +270,7 @@ export default simulation((setUp) => {
             ),
 
         createAccountGet: (): ChainBuilder =>
-            exec(http("Create Account - visit")
+            exec(http("Create Account - get")
                 .get(`/create-user-account`)
                 .headers(html_get_headers)
                 .check(
@@ -284,16 +284,16 @@ export default simulation((setUp) => {
 
         createAccountPost: (): ChainBuilder =>
             feed(usersFeeder)
-                .exec(http("Create Account - visit")
+                .exec(http("Create Account - post")
                 .post(`/create-user-account`)
                 .headers(html_post_headers)
-                .formParam("GovUk_Text_EmailAddress", emailAddressFromUserId("${userId}"))
-                .formParam("GovUk_Text_ConfirmEmailAddress", emailAddressFromUserId("${userId}"))
-                .formParam("GovUk_Text_FirstName", "Test")
-                .formParam("GovUk_Text_LastName", "Example")
-                .formParam("GovUk_Text_JobTitle", "Tester")
-                .formParam("GovUk_Text_Password", "GenderPayGap123")
-                .formParam("GovUk_Text_ConfirmPassword", "GenderPayGap123")
+                .formParam("EmailAddress", emailAddressFromUserId("${userId}"))
+                .formParam("ConfirmEmailAddress", emailAddressFromUserId("${userId}"))
+                .formParam("FirstName", "Test")
+                .formParam("LastName", "Example")
+                .formParam("JobTitle", "Tester")
+                .formParam("Password", "GenderPayGap123")
+                .formParam("ConfirmPassword", "GenderPayGap123")
                 .formParam("AllowContact", "true")
                 .formParam("SendUpdates", "false")
                 .formParam("__RequestVerificationToken", "${requestVerificationToken}")
