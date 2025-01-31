@@ -23,6 +23,7 @@ DO $$
 
         -- Delete users created using registration journey
         DELETE FROM "UserStatus" WHERE "ByUserId" IN (SELECT "UserId" FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester');
+        DELETE FROM "Users" WHERE "Users"."Firstname" = 'Test' AND "Users"."Lastname" = 'Example' AND "Users"."JobTitle" = 'Tester';
 
         DELETE FROM "Users" WHERE "Users"."UserId" > STARTING_ID;
         DELETE FROM "Organisations" WHERE "Organisations"."OrganisationId" > STARTING_ID;
@@ -32,7 +33,7 @@ DO $$
                 INSERT INTO "Users"
                 ("UserId", "Firstname", "Lastname", "JobTitle", "StatusId", "StatusDate", "LoginAttempts", "LoginDate", "ResetAttempts", "VerifyAttempts", "Created", "Modified", "EmailAddress", "PasswordHash", "Salt", "HashingAlgorithm", "EmailVerifiedDate", "SendUpdates", "AllowContact")
                 VALUES
-                (STARTING_ID + INDEX, 'test', 'test', 'test', 3, '01/10/2021 12:26:44', 0, '01/10/2021 12:26:44', 0, 0, '01/10/2021 12:26:44', '01/10/2021 12:26:44', 'loadtest' || CAST(INDEX AS VARCHAR(16)) || '@example.com', 'EsbXTRJaMnDBhGEerRu1eqbMoInXkOz4P5rNZyq1VKU=','9jjDqTsUzGqk/+Rl8JeR4A==', 2, '01/10/2021 12:26:44', false, false);
+                (STARTING_ID + INDEX, 'test', 'test', 'test', 3, '01/10/2021 12:26:44', 0, '01/10/2021 12:26:44', 0, 0, '01/10/2021 12:26:44', '01/10/2021 12:26:44', 'loadtest' || CAST(INDEX AS VARCHAR(16)) || '@example.com', 'j2oZzqG9OQ4M8YUcv3zWFqgIO9+duNMFvMkxNCSgik0=','Xlatiovx5jcOsfU/opJxEw==', 2, '01/10/2021 12:26:44', false, false);
 
                 -- Create test organisations that are linked to test users
                 INSERT INTO "Organisations"

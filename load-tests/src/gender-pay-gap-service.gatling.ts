@@ -20,6 +20,8 @@ export default simulation((setUp) => {
 	const PAUSE_MIN_DURATION = 1;  // seconds
 	const PAUSE_MAX_DURATION = 10;  // seconds
     
+    const STARTING_ID = 3000000;
+    
     const MOST_RECENTLY_COMPLETED_REPORTING_YEAR = 2023;
     
     const RUN_ID = 2;
@@ -58,6 +60,11 @@ export default simulation((setUp) => {
     }
     function alreadySetupEmailAddressFromUserId(userId: string): string {
         return `loadtest${userId}@example.com`;
+    }
+    function organisationNameFromUserId(userId: string): string {
+        const userIdInt: int = parseInt(userId);
+        const organisationId = STARTING_ID + userIdInt;
+        return `test_${organisationId}`;
     }
 
     // const search = exec(
@@ -331,9 +338,9 @@ export default simulation((setUp) => {
                     .post("/login")
                     .headers(html_post_headers)
                     .formParam("EmailAddress", alreadySetupEmailAddressFromUserId("#{userId}"))
-                    .formParam("Password", "Genderpaygap1")
+                    .formParam("Password", "GenderPayGap123")
                     .formParam("ReturnUrl", "#{returnUrl}")
-                    .formParam("__RequestVerificationToken", "${requestVerificationToken}")
+                    .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
                     .check(
                         status().is(200),
                         currentLocation().is(`${BASE_URL}/privacy-policy`),
@@ -344,55 +351,126 @@ export default simulation((setUp) => {
                 )
                 .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
+        acceptPrivacyPolicyPost:(): ChainBuilder =>
+            feed(usersFeeder)
+                .exec(http("Accept privacy policy")
+                    .post("/privacy-policy")
+                    .headers(html_post_headers)
+                    .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                    .check(
+                        status().is(200),
+                        currentLocation().is(`${BASE_URL}/account/organisations`),
+                        regex("Add or select an employer you're reporting for"),
+                        css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
+                    )
+                    .resources()
+                )
+                .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    }
+    
+    const AddOrganisation = {
+        chooseEmployerTypeVisit: (): ChainBuilder =>
+            exec(http("Add Organisation: Choose Employer Type - visit")
+                .get(`/add-employer/choose-employer-type`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("What type of employer do you want to add?"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        chooseEmployerTypeAnswer: (): ChainBuilder =>
+            exec(http("Add Organisation: Choose Employer Type - answer")
+                .get(`/add-employer/choose-employer-type?Sector=Private&Validate=True`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/add-employer/private/search`),
+                    substring("Find your employer"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        searchByOrganisationName: (): ChainBuilder =>
+            exec(http("Add Organisation: Search for organiation by name")
+                .get(`/add-employer/private/search?query=${organisationNameFromUserId("#{userId}")}`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Your search"),
+                    substring("Can't find your employer?"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        manualEnterName: (): ChainBuilder =>
+            exec(http("Add Organisation: Manual: Employer name")
+                .get(`/add-employer/manual/name?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Employer name"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
     }
 
     const userActions = exec(
         // Journey: Search for an employer and view their reports
-        Homepage.visit(),
-        Homepage.suggestAutoComplete(),
-
-        SearchAndView.searchPage(),
-
-        SearchAndView.viewEmployer(),
-        SearchAndView.viewReportsForYear(2020),
-        SearchAndView.viewEmployer(),
-        SearchAndView.viewReportsForYear(2021),
-        SearchAndView.viewEmployer(),
-        SearchAndView.viewReportsForYear(2022),
-
-        // Journey: Compare employers
-        SearchAndView.searchPage(),
-        SearchAndView.viewEmployer(),
-        Compare.addToCompare(5816, 1),
-        SearchAndView.searchPage(),
-        SearchAndView.viewEmployer(),
-        Compare.addToCompare(491, 2),
-        SearchAndView.searchPage(),
-        SearchAndView.viewEmployer(),
-        Compare.addToCompare(234, 3),
-
-        Compare.comparePageDefault(),
-        Compare.comparePageForYear(2022),
-        Compare.comparePageForYear(2021),
-        Compare.comparePageForYear(2020),
-        SearchAndView.viewReportsForYear(2020),
+        // Homepage.visit(),
+        // Homepage.suggestAutoComplete(),
+        //
+        // SearchAndView.searchPage(),
+        //
+        // SearchAndView.viewEmployer(),
+        // SearchAndView.viewReportsForYear(2020),
+        // SearchAndView.viewEmployer(),
+        // SearchAndView.viewReportsForYear(2021),
+        // SearchAndView.viewEmployer(),
+        // SearchAndView.viewReportsForYear(2022),
+        //
+        // // Journey: Compare employers
+        // SearchAndView.searchPage(),
+        // SearchAndView.viewEmployer(),
+        // Compare.addToCompare(5816, 1),
+        // SearchAndView.searchPage(),
+        // SearchAndView.viewEmployer(),
+        // Compare.addToCompare(491, 2),
+        // SearchAndView.searchPage(),
+        // SearchAndView.viewEmployer(),
+        // Compare.addToCompare(234, 3),
+        //
+        // Compare.comparePageDefault(),
+        // Compare.comparePageForYear(2022),
+        // Compare.comparePageForYear(2021),
+        // Compare.comparePageForYear(2020),
+        // SearchAndView.viewReportsForYear(2020),
+        //
+        // // Journey: Create account
+        // CreateAccount.alreadyCreatedAnAccountQuestion(),
+        // CreateAccount.alreadyCreatedAnAccountAnswer(),
+        // CreateAccount.createAccountGet(),
+        // CreateAccount.createAccountPost(),
+        //
+        // // Journey: Login
+        // Login.loginPageGet(),
+        // Login.loginPagePost(),
+        // Login.acceptPrivacyPolicyPost(),
         
-        // Journey: Create account
-        CreateAccount.alreadyCreatedAnAccountQuestion(),
-        CreateAccount.alreadyCreatedAnAccountAnswer(),
-        CreateAccount.createAccountGet(),
-        CreateAccount.createAccountPost(),
-        
-        // Journey: Login
-        Login.loginPageGet(),
-        Login.loginPagePost(),
+        // Journey: Add an organisation
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
 
     setUp(
         gpgScenario.injectOpen(
-            rampUsers(10).during(10)
+            rampUsers(1).during(1)
         )
     ).protocols(httpProtocol);
 });
