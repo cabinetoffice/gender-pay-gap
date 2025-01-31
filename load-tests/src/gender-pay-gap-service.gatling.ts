@@ -10,7 +10,7 @@ import {
     tryMax,
     rampUsers, substring, exitBlockOnFail, jmesPath, ChainBuilder, regex
 } from "@gatling.io/core";
-import {currentLocation, header, http, status} from "@gatling.io/http";
+import {currentLocation, currentLocationRegex, header, http, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
@@ -65,6 +65,9 @@ export default simulation((setUp) => {
         const userIdInt: int = parseInt(userId);
         const organisationId = STARTING_ID + userIdInt;
         return `test_${organisationId}`;
+    }
+    function percent20(url: string): string {
+        return url.replaceAll(' ', '%20');
     }
 
     // const search = exec(
@@ -369,8 +372,8 @@ export default simulation((setUp) => {
     }
     
     const AddOrganisation = {
-        chooseEmployerTypeVisit: (): ChainBuilder =>
-            exec(http("Add Organisation: Choose Employer Type - visit")
+        chooseEmployerTypeQuestion: (): ChainBuilder =>
+            exec(http("Add Organisation: Choose Employer Type - question")
                 .get(`/add-employer/choose-employer-type`)
                 .headers(html_get_headers)
                 .check(
@@ -383,7 +386,9 @@ export default simulation((setUp) => {
 
         chooseEmployerTypeAnswer: (): ChainBuilder =>
             exec(http("Add Organisation: Choose Employer Type - answer")
-                .get(`/add-employer/choose-employer-type?Sector=Private&Validate=True`)
+                .get(`/add-employer/choose-employer-type`)
+                .queryParam("Validate", "True")
+                .queryParam("Sector", "Private")
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -396,10 +401,12 @@ export default simulation((setUp) => {
         
         searchByOrganisationName: (): ChainBuilder =>
             exec(http("Add Organisation: Search for organiation by name")
-                .get(`/add-employer/private/search?query=${organisationNameFromUserId("#{userId}")}`)
+                .get(`/add-employer/private/search`)
+                .queryParam("query", organisationNameFromUserId("#{userId}"))
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
+                    substring("Find your employer"),
                     substring("Your search"),
                     substring("Can't find your employer?"),
                 )
@@ -407,8 +414,8 @@ export default simulation((setUp) => {
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
-        manualEnterName: (): ChainBuilder =>
-            exec(http("Add Organisation: Manual: Employer name")
+        manualEnterNameQuestion: (): ChainBuilder =>
+            exec(http("Add Organisation: Manual: Employer name - question")
                 .get(`/add-employer/manual/name?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}`)
                 .headers(html_get_headers)
                 .check(
@@ -419,51 +426,136 @@ export default simulation((setUp) => {
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
+        manualEnterNameAnswer: (): ChainBuilder =>
+            exec(http("Add Organisation: Manual: Employer name - answer")
+                .get(`/add-employer/manual/name`)
+                .queryParam("Validate", "True")
+                .queryParam("Sector", "Private")
+                .queryParam("Query", organisationNameFromUserId("#{userId}"))
+                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/add-employer/manual/address?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}`),
+                    substring("Registered address of employer"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        manualEnterAddressAnswer: (): ChainBuilder =>
+            exec(http("Add Organisation: Manual: Employer address - answer")
+                .get(`/add-employer/manual/address`)
+                .queryParam("Validate", "True")
+                .queryParam("Sector", "Private")
+                .queryParam("Query", organisationNameFromUserId("#{userId}"))
+                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .queryParam("Address1", "1 Imaginary Street")
+                .queryParam("IsUkAddress", "Yes")
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(percent20(`${BASE_URL}/add-employer/manual/sic-codes?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}&Address1=1 Imaginary Street&IsUkAddress=Yes`)),
+                    substring("Add a sector code to your employer"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        manualEnterSicCodesAnswer: (): ChainBuilder =>
+            exec(http("Add Organisation: Manual: Employer SIC codes - answer")
+                .get(`/add-employer/manual/sic-codes`)
+                .queryParam("Validate", "True")
+                .queryParam("Sector", "Private")
+                .queryParam("Query", organisationNameFromUserId("#{userId}"))
+                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .queryParam("Address1", "1 Imaginary Street")
+                .queryParam("IsUkAddress", "Yes")
+                .queryParam("SicCodes", "41100")
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(percent20(`${BASE_URL}/add-employer/manual/confirm?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}&Address1=1 Imaginary Street&IsUkAddress=Yes&SicCodes=41100`)),
+                    substring("Confirm your employer's details"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        manualConfirmPost: (): ChainBuilder =>
+            exec(http("Add Organisation: Manual: Confirm answers - POST")
+                .post(`/add-employer/manual/confirm`)
+                .queryParam("Sector", "Private")
+                .queryParam("Query", organisationNameFromUserId("#{userId}"))
+                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .queryParam("Address1", "1 Imaginary Street")
+                .queryParam("IsUkAddress", "Yes")
+                .queryParam("SicCodes", "41100")
+                .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                .headers(html_post_headers)
+                .check(
+                    status().is(200),
+                    currentLocationRegex("://[^/]*(/.*)\\?.*").is("/add-employer/confirmation"),
+                    substring("We've got your details."),
+                    substring("We'll review them and email you to confirm."),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
 
     const userActions = exec(
         // Journey: Search for an employer and view their reports
-        // Homepage.visit(),
-        // Homepage.suggestAutoComplete(),
-        //
-        // SearchAndView.searchPage(),
-        //
-        // SearchAndView.viewEmployer(),
-        // SearchAndView.viewReportsForYear(2020),
-        // SearchAndView.viewEmployer(),
-        // SearchAndView.viewReportsForYear(2021),
-        // SearchAndView.viewEmployer(),
-        // SearchAndView.viewReportsForYear(2022),
-        //
-        // // Journey: Compare employers
-        // SearchAndView.searchPage(),
-        // SearchAndView.viewEmployer(),
-        // Compare.addToCompare(5816, 1),
-        // SearchAndView.searchPage(),
-        // SearchAndView.viewEmployer(),
-        // Compare.addToCompare(491, 2),
-        // SearchAndView.searchPage(),
-        // SearchAndView.viewEmployer(),
-        // Compare.addToCompare(234, 3),
-        //
-        // Compare.comparePageDefault(),
-        // Compare.comparePageForYear(2022),
-        // Compare.comparePageForYear(2021),
-        // Compare.comparePageForYear(2020),
-        // SearchAndView.viewReportsForYear(2020),
-        //
-        // // Journey: Create account
-        // CreateAccount.alreadyCreatedAnAccountQuestion(),
-        // CreateAccount.alreadyCreatedAnAccountAnswer(),
-        // CreateAccount.createAccountGet(),
-        // CreateAccount.createAccountPost(),
-        //
-        // // Journey: Login
-        // Login.loginPageGet(),
-        // Login.loginPagePost(),
-        // Login.acceptPrivacyPolicyPost(),
+        Homepage.visit(),
+        Homepage.suggestAutoComplete(),
+
+        SearchAndView.searchPage(),
+
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2020),
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2021),
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2022),
+
+        // Journey: Compare employers
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(5816, 1),
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(491, 2),
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(234, 3),
+
+        Compare.comparePageDefault(),
+        Compare.comparePageForYear(2022),
+        Compare.comparePageForYear(2021),
+        Compare.comparePageForYear(2020),
+        SearchAndView.viewReportsForYear(2020),
+
+        // Journey: Create account
+        CreateAccount.alreadyCreatedAnAccountQuestion(),
+        CreateAccount.alreadyCreatedAnAccountAnswer(),
+        CreateAccount.createAccountGet(),
+        CreateAccount.createAccountPost(),
+
+        // Journey: Login
+        Login.loginPageGet(),
+        Login.loginPagePost(),
+        Login.acceptPrivacyPolicyPost(),
         
         // Journey: Add an organisation
+        AddOrganisation.chooseEmployerTypeQuestion(),
+        AddOrganisation.chooseEmployerTypeAnswer(),
+        AddOrganisation.searchByOrganisationName(),
+        AddOrganisation.manualEnterNameQuestion(),
+        AddOrganisation.manualEnterNameAnswer(),
+        AddOrganisation.manualEnterAddressAnswer(),
+        AddOrganisation.manualEnterSicCodesAnswer(),
+        AddOrganisation.manualConfirmPost(),
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
