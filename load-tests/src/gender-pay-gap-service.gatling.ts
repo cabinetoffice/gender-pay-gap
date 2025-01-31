@@ -22,7 +22,7 @@ export default simulation((setUp) => {
     
     const MOST_RECENTLY_COMPLETED_REPORTING_YEAR = 2023;
     
-    const RUN_ID = 1;
+    const RUN_ID = 2;
 
     const DOMAIN_NAME = "dev.gender-pay-gap.service.gov.uk";
     const BASE_URL = "https://" + DOMAIN_NAME;
@@ -53,8 +53,11 @@ export default simulation((setUp) => {
         "Origin": BASE_URL,
     };
     
-    function emailAddressFromUserId(userId: string): string {
+    function newEmailAddressFromUserId(userId: string): string {
         return `loadtest-run-${RUN_ID}-user-${userId}@example.com`;
+    }
+    function alreadySetupEmailAddressFromUserId(userId: string): string {
+        return `loadtest${userId}@example.com`;
     }
 
     // const search = exec(
@@ -285,96 +288,63 @@ export default simulation((setUp) => {
         createAccountPost: (): ChainBuilder =>
             feed(usersFeeder)
                 .exec(http("Create Account - post")
-                .post(`/create-user-account`)
-                .headers(html_post_headers)
-                .formParam("EmailAddress", emailAddressFromUserId("${userId}"))
-                .formParam("ConfirmEmailAddress", emailAddressFromUserId("${userId}"))
-                .formParam("FirstName", "Test")
-                .formParam("LastName", "Example")
-                .formParam("JobTitle", "Tester")
-                .formParam("Password", "GenderPayGap123")
-                .formParam("ConfirmPassword", "GenderPayGap123")
-                .formParam("AllowContact", "true")
-                .formParam("SendUpdates", "false")
-                .formParam("__RequestVerificationToken", "${requestVerificationToken}")
+                    .post(`/create-user-account`)
+                    .headers(html_post_headers)
+                    .formParam("EmailAddress", newEmailAddressFromUserId("#{userId}"))
+                    .formParam("ConfirmEmailAddress", newEmailAddressFromUserId("#{userId}"))
+                    .formParam("FirstName", "Test")
+                    .formParam("LastName", "Example")
+                    .formParam("JobTitle", "Tester")
+                    .formParam("Password", "GenderPayGap123")
+                    .formParam("ConfirmPassword", "GenderPayGap123")
+                    .formParam("AllowContact", "true")
+                    .formParam("SendUpdates", "false")
+                    .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                    .check(
+                        status().is(200),
+                        regex("Confirm your email address")
+                    )
+                    .resources()
+                )
+                .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    }
+
+    const Login = {
+        loginPageGet: (): ChainBuilder =>
+            exec(http("Login Page - redirect and get")
+                .get(`/account/organisations`)
+                .headers(html_get_headers)
                 .check(
                     status().is(200),
-                    regex("Confirm your email address")
+                    currentLocation().is(`${BASE_URL}/login?ReturnUrl=%2Faccount%2Forganisations`),
+                    substring("If you have a user account, enter your email address and password."),
+                    css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
                 )
                 .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        loginPagePost:(): ChainBuilder =>
+            feed(usersFeeder)
+                .exec(http("Login Page - post and redirect to Privacy Policy")
+                    .post("/login")
+                    .headers(html_post_headers)
+                    .formParam("EmailAddress", alreadySetupEmailAddressFromUserId("#{userId}"))
+                    .formParam("Password", "Genderpaygap1")
+                    .formParam("ReturnUrl", "#{returnUrl}")
+                    .formParam("__RequestVerificationToken", "${requestVerificationToken}")
+                    .check(
+                        status().is(200),
+                        currentLocation().is(`${BASE_URL}/privacy-policy`),
+                        regex("Privacy Policy"),
+                        css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
+                    )
+                    .resources()
+                )
+                .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
     }
-
-    // const Login = {
-    //     loginPage: (): ChainBuilder =>
-    //         exec(http("Login Page - redirect and visit")
-    //             .get(`/account/organisations`)
-    //             .headers(html_get_headers)
-    //             .check(
-    //                 status().is(200),
-    //                 currentLocation().is("/login?ReturnUrl=%2Faccount%2Forganisations"),
-    //                 substring("If you have a user account, enter your email address and password."),
-    //                 css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
-    //                 css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-    //             )
-    //             .resources()
-    //         )
-    //         .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
-    //    
-    //     loginPage:(): ChainBuilder =>
-    //         exec(http("Login Page - redirect and visit")
-    //             .get(`/account/organisations`)
-    //             .headers(html_get_headers)
-    //             .check(
-    //                 status().is(200),
-    //                 currentLocation().is("/login?ReturnUrl=%2Faccount%2Forganisations"),
-    //                 substring("If you have a user account, enter your email address and password."),
-    //                 css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
-    //                 css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
-    //             )
-    //             .resources()
-    //         )
-    //         .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
-    //    
-    // }
-
-    // // repeat is a loop resolved at RUNTIME
-    // const browse =
-    //     // Note how we force the counter name, so we can reuse it
-    //     repeat(4, "i").on(http("Page #{i}").get("/computers?p=#{i}"), pause(1));
-    //
-    // // Note we should be using a feeder here
-    // // let's demonstrate how we can retry: let's make the request fail randomly and retry a given
-    // // number of times
-
-    // const edit =
-    //     // let's try at max 2 times
-    //     tryMax(2)
-    //         .on(
-    //             http("Form").get("/computers/new"),
-    //             pause(1),
-    //             http("Post")
-    //                 .post("/computers")
-    //                 .headers(html_get_headers)
-    //                 .formParam("name", "Beautiful Computer")
-    //                 .formParam("introduced", "2012-05-30")
-    //                 .formParam("discontinued", "")
-    //                 .formParam("company", "37")
-    //                 .check(
-    //                     status().is(
-    //                         // we do a check on a condition that's been customized with
-    //                         // a lambda. It will be evaluated every time a user executes
-    //                         // the request
-    //                         (session) => 200 + Math.floor(Math.random() * 2) // +0 or +1 at random
-    //                     )
-    //                 )
-    //         )
-    //         // if the chain didn't finally succeed, have the user exit the whole scenario
-    //         .exitHereIfFailed();
-
-    // const users = scenario("Users").exec(search, browse);
-    // const admins = scenario("Admins").exec(search, browse, edit);
 
     const userActions = exec(
         // Journey: Search for an employer and view their reports
@@ -382,7 +352,7 @@ export default simulation((setUp) => {
         Homepage.suggestAutoComplete(),
 
         SearchAndView.searchPage(),
-        
+
         SearchAndView.viewEmployer(),
         SearchAndView.viewReportsForYear(2020),
         SearchAndView.viewEmployer(),
@@ -400,7 +370,7 @@ export default simulation((setUp) => {
         SearchAndView.searchPage(),
         SearchAndView.viewEmployer(),
         Compare.addToCompare(234, 3),
-        
+
         Compare.comparePageDefault(),
         Compare.comparePageForYear(2022),
         Compare.comparePageForYear(2021),
@@ -411,7 +381,11 @@ export default simulation((setUp) => {
         CreateAccount.alreadyCreatedAnAccountQuestion(),
         CreateAccount.alreadyCreatedAnAccountAnswer(),
         CreateAccount.createAccountGet(),
-        CreateAccount.createAccountPost()
+        CreateAccount.createAccountPost(),
+        
+        // Journey: Login
+        Login.loginPageGet(),
+        Login.loginPagePost(),
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
