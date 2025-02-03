@@ -23,6 +23,7 @@ export default simulation((setUp) => {
     const STARTING_ID = 3000000;
     
     const MOST_RECENTLY_COMPLETED_REPORTING_YEAR = 2023;
+    const CURRENT_REPORTING_YEAR = 2024;
     
     const RUN_ID = 2;
 
@@ -69,18 +70,6 @@ export default simulation((setUp) => {
     function percent20(url: string): string {
         return url.replaceAll(' ', '%20');
     }
-
-    // const search = exec(
-    //     http("Home").get("/"),
-    //     pause(1),
-    //     feed(feeder),
-    //     http("Search")
-    //         .get("/computers?f=#{searchCriterion}")
-    //         .check(css("a:contains('#{searchComputerName}')", "href").saveAs("computerUrl")),
-    //     pause(1),
-    //     http("Select").get("#{computerUrl}").check(status().is(200)),
-    //     pause(1)
-    // );
 
     const Homepage = {
         visit: (): ChainBuilder =>
@@ -289,7 +278,7 @@ export default simulation((setUp) => {
                 .check(
                     status().is(200),
                     substring("Create my account"),
-                    css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
                 .resources()
             )
@@ -309,7 +298,7 @@ export default simulation((setUp) => {
                     .formParam("ConfirmPassword", "GenderPayGap123")
                     .formParam("AllowContact", "true")
                     .formParam("SendUpdates", "false")
-                    .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                    .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
                     .check(
                         status().is(200),
                         regex("Confirm your email address")
@@ -329,7 +318,7 @@ export default simulation((setUp) => {
                     currentLocation().is(`${BASE_URL}/login?ReturnUrl=%2Faccount%2Forganisations`),
                     substring("If you have a user account, enter your email address and password."),
                     css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
-                    css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
                 .resources()
             )
@@ -343,12 +332,12 @@ export default simulation((setUp) => {
                     .formParam("EmailAddress", alreadySetupEmailAddressFromUserId("#{userId}"))
                     .formParam("Password", "GenderPayGap123")
                     .formParam("ReturnUrl", "#{returnUrl}")
-                    .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                    .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
                     .check(
                         status().is(200),
                         currentLocation().is(`${BASE_URL}/privacy-policy`),
                         regex("Privacy Policy"),
-                        css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
+                        css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
                     )
                     .resources()
                 )
@@ -359,12 +348,12 @@ export default simulation((setUp) => {
                 .exec(http("Accept privacy policy")
                     .post("/privacy-policy")
                     .headers(html_post_headers)
-                    .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                    .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
                     .check(
                         status().is(200),
                         currentLocation().is(`${BASE_URL}/account/organisations`),
                         regex("Add or select an employer you're reporting for"),
-                        css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken")
+                        css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
                     )
                     .resources()
                 )
@@ -477,7 +466,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     currentLocation().is(percent20(`${BASE_URL}/add-employer/manual/confirm?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}&Address1=1 Imaginary Street&IsUkAddress=Yes&SicCodes=41100`)),
                     substring("Confirm your employer's details"),
-                    css("input[name='__RequestVerificationToken']", "value").saveAs("requestVerificationToken"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
                 .resources()
             )
@@ -486,13 +475,13 @@ export default simulation((setUp) => {
         manualConfirmPost: (): ChainBuilder =>
             exec(http("Add Organisation: Manual: Confirm answers - POST")
                 .post(`/add-employer/manual/confirm`)
-                .queryParam("Sector", "Private")
-                .queryParam("Query", organisationNameFromUserId("#{userId}"))
-                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
-                .queryParam("Address1", "1 Imaginary Street")
-                .queryParam("IsUkAddress", "Yes")
-                .queryParam("SicCodes", "41100")
-                .formParam("__RequestVerificationToken", "#{requestVerificationToken}")
+                .formParam("Sector", "Private")
+                .formParam("Query", organisationNameFromUserId("#{userId}"))
+                .formParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .formParam("Address1", "1 Imaginary Street")
+                .formParam("IsUkAddress", "Yes")
+                .formParam("SicCodes", "41100")
+                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
@@ -504,6 +493,82 @@ export default simulation((setUp) => {
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
+    
+    const ReportGpgData = {
+        manageAllOrganisations: (): ChainBuilder =>
+            exec(http("Report: Manage All Organisations page")
+                .get(`/account/organisations`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Add or select an employer you're reporting for"),
+                    css("a[loadtest-id='organisation-link']", "href")
+                        .transform((href) => {
+                            const regex = /\/([^/]*)$/;  // Extracts the last part of the URL: the encrypted organisation ID.
+                            const match = href.match(regex);
+                            return match != null && match.length > 0 ? match[1] : null;
+                        })
+                        .saveAs("ENCRYPTED_ORGANISATION_ID")
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        manageOrganisation: (): ChainBuilder =>
+            exec(http("Report: Manage Organisation page")
+                .get("/account/organisations/#{ENCRYPTED_ORGANISATION_ID}")
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Manage your employer's reporting"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        startReport: (): ChainBuilder =>
+            exec(http("Report: Start page")
+                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/start`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Report your gender pay gap data"),
+                    substring("Before you start"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        numberOfEmployeesQuestion: (): ChainBuilder =>
+            exec(http("Report: Number of Employees - question")
+                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("How many employees did you have on your snapshot date?"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+        numberOfEmployeesAnswer: (): ChainBuilder =>
+            exec(http("Report: Number of Employees - answer")
+                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
+                .formParam("SizeOfOrganisation", "Employees250To499")
+                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .headers(html_post_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    substring("Review your gender pay gap data"),
+                    substring("More information is required to complete your submission"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+        
+}
 
     const userActions = exec(
         // Journey: Search for an employer and view their reports
@@ -556,6 +621,11 @@ export default simulation((setUp) => {
         AddOrganisation.manualEnterAddressAnswer(),
         AddOrganisation.manualEnterSicCodesAnswer(),
         AddOrganisation.manualConfirmPost(),
+        
+        // Journey: Report GPG data
+        ReportGpgData.manageAllOrganisations(),
+        ReportGpgData.manageOrganisation(),
+        ReportGpgData.startReport(),
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
