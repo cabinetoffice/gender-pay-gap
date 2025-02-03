@@ -567,8 +567,125 @@ export default simulation((setUp) => {
                 .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
-        
-}
+
+        figuresQuestion: (): ChainBuilder =>
+            exec(http("Report: Figures - question")
+                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Enter gender pay gap data"),
+                    substring("Enter your figures as whole percentages or rounded to one decimal place."),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        figuresAnswer: (): ChainBuilder =>
+            exec(http("Report: Figures - answer")
+                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
+                .formParam("DiffMeanHourlyPayPercent", "0")
+                .formParam("DiffMedianHourlyPercent", "0")
+                .formParam("MaleUpperPayBand", "50")
+                .formParam("FemaleUpperPayBand", "50")
+                .formParam("MaleUpperMiddlePayBand", "50")
+                .formParam("FemaleUpperMiddlePayBand", "50")
+                .formParam("MaleLowerMiddlePayBand", "50")
+                .formParam("FemaleLowerMiddlePayBand", "50")
+                .formParam("MaleLowerPayBand", "50")
+                .formParam("FemaleLowerPayBand", "50")
+                .formParam("FemaleBonusPayPercent", "100")
+                .formParam("MaleBonusPayPercent", "100")
+                .formParam("DiffMeanBonusPercent", "0")
+                .formParam("DiffMedianBonusPercent", "0")
+                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .headers(html_post_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    substring("Review your gender pay gap data"),
+                    substring("More information is required to complete your submission"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        responsiblePersonQuestion: (): ChainBuilder =>
+            exec(http("Report: Responsible Person - question")
+                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Person responsible in your organisation"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        responsiblePersonAnswer: (): ChainBuilder =>
+            exec(http("Report: Responsible Person - answer")
+                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
+                .formParam("ResponsiblePersonFirstName", "FirstName")
+                .formParam("ResponsiblePersonLastName", "LastName")
+                .formParam("ResponsiblePersonJobTitle", "Tester")
+                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .headers(html_post_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    substring("Review your gender pay gap data"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        supportingNarrativeQuestion: (): ChainBuilder =>
+            exec(http("Report: Supporting Narrative - question")
+                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
+                .headers(html_get_headers)
+                .check(
+                    status().is(200),
+                    substring("Provide a link to your supporting narrative"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        supportingNarrativeAnswer: (): ChainBuilder =>
+            exec(http("Report: Supporting Narrative - answer")
+                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
+                .formParam("LinkToOrganisationWebsite", "https://example.com/gpg")
+                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .headers(html_post_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    substring("Review your gender pay gap data"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+
+        submitPost: (): ChainBuilder =>
+            exec(http("Report: Submit - POST")
+                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/submit`)
+                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .headers(html_post_headers)
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocationRegex("://[^/]*(/.*)\\?.*").is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/confirmation`),
+                    substring("You've submitted your gender pay gap data"),
+                    substring("Your gender pay gap information has now been published on the Gender pay gap service."),
+                )
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+    }
 
     const userActions = exec(
         // Journey: Search for an employer and view their reports
@@ -626,6 +743,15 @@ export default simulation((setUp) => {
         ReportGpgData.manageAllOrganisations(),
         ReportGpgData.manageOrganisation(),
         ReportGpgData.startReport(),
+        ReportGpgData.numberOfEmployeesQuestion(),
+        ReportGpgData.numberOfEmployeesAnswer(),
+        ReportGpgData.figuresQuestion(),
+        ReportGpgData.figuresAnswer(),
+        ReportGpgData.responsiblePersonQuestion(),
+        ReportGpgData.responsiblePersonAnswer(),
+        ReportGpgData.supportingNarrativeQuestion(),
+        ReportGpgData.supportingNarrativeAnswer(),
+        ReportGpgData.submitPost()
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
