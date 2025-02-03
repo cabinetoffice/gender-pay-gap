@@ -8,9 +8,9 @@ import {
     feed,
     repeat,
     tryMax,
-    rampUsers, substring, exitBlockOnFail, jmesPath, ChainBuilder, regex
+    rampUsers, substring, exitBlockOnFail, jmesPath, ChainBuilder, regex, Session
 } from "@gatling.io/core";
-import {currentLocation, currentLocationRegex, header, http, status} from "@gatling.io/http";
+import {currentLocation, currentLocationRegex, header, http, HttpRequestActionBuilder, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
@@ -18,7 +18,7 @@ export default simulation((setUp) => {
 
 	// Pauses are uniform duration between these two:
 	const PAUSE_MIN_DURATION = 1;  // seconds
-	const PAUSE_MAX_DURATION = 10;  // seconds
+	const PAUSE_MAX_DURATION = 3;  // seconds
     
     const STARTING_ID = 3000000;
     
@@ -65,10 +65,14 @@ export default simulation((setUp) => {
     function organisationNameFromUserId(userId: string): string {
         const userIdInt: int = parseInt(userId);
         const organisationId = STARTING_ID + userIdInt;
-        return `test_${organisationId}`;
+        return `test_${userId}_${organisationId}`;
     }
     function percent20(url: string): string {
         return url.replaceAll(' ', '%20');
+    }
+
+    function getEncryptedOrganisationId(encryptedOrganisationId: string): string {
+        return encryptedOrganisationId.replaceAll('Z', 'Z');
     }
 
     const Homepage = {
@@ -285,27 +289,26 @@ export default simulation((setUp) => {
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
         createAccountPost: (): ChainBuilder =>
-            feed(usersFeeder)
-                .exec(http("Create Account - post")
-                    .post(`/create-user-account`)
-                    .headers(html_post_headers)
-                    .formParam("EmailAddress", newEmailAddressFromUserId("#{userId}"))
-                    .formParam("ConfirmEmailAddress", newEmailAddressFromUserId("#{userId}"))
-                    .formParam("FirstName", "Test")
-                    .formParam("LastName", "Example")
-                    .formParam("JobTitle", "Tester")
-                    .formParam("Password", "GenderPayGap123")
-                    .formParam("ConfirmPassword", "GenderPayGap123")
-                    .formParam("AllowContact", "true")
-                    .formParam("SendUpdates", "false")
-                    .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
-                    .check(
-                        status().is(200),
-                        regex("Confirm your email address")
-                    )
-                    .resources()
+            exec(http("Create Account - post")
+                .post(`/create-user-account`)
+                .headers(html_post_headers)
+                .formParam("EmailAddress", (session: Session) => newEmailAddressFromUserId(session.get('USER_ID')))
+                .formParam("ConfirmEmailAddress", (session: Session) => newEmailAddressFromUserId(session.get('USER_ID')))
+                .formParam("FirstName", "Test")
+                .formParam("LastName", "Example")
+                .formParam("JobTitle", "Tester")
+                .formParam("Password", "GenderPayGap123")
+                .formParam("ConfirmPassword", "GenderPayGap123")
+                .formParam("AllowContact", "true")
+                .formParam("SendUpdates", "false")
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
+                .check(
+                    status().is(200),
+                    regex("Confirm your email address")
                 )
-                .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
 
     const Login = {
@@ -317,7 +320,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     currentLocation().is(`${BASE_URL}/login?ReturnUrl=%2Faccount%2Forganisations`),
                     substring("If you have a user account, enter your email address and password."),
-                    css("input[name='ReturnUrl'","value").saveAs("returnUrl"),
+                    css("input[name='ReturnUrl'","value").saveAs("RETURN_URL"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
                 .resources()
@@ -325,39 +328,37 @@ export default simulation((setUp) => {
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
         loginPagePost:(): ChainBuilder =>
-            feed(usersFeeder)
-                .exec(http("Login Page - post and redirect to Privacy Policy")
-                    .post("/login")
-                    .headers(html_post_headers)
-                    .formParam("EmailAddress", alreadySetupEmailAddressFromUserId("#{userId}"))
-                    .formParam("Password", "GenderPayGap123")
-                    .formParam("ReturnUrl", "#{returnUrl}")
-                    .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
-                    .check(
-                        status().is(200),
-                        currentLocation().is(`${BASE_URL}/privacy-policy`),
-                        regex("Privacy Policy"),
-                        css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
-                    )
-                    .resources()
+            exec(http("Login Page - post and redirect to Privacy Policy")
+                .post("/login")
+                .headers(html_post_headers)
+                .formParam("EmailAddress", (session: Session) => alreadySetupEmailAddressFromUserId(session.get('USER_ID')))
+                .formParam("Password", "GenderPayGap123")
+                .formParam("ReturnUrl", (session: Session) => session.get('RETURN_URL'))
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/privacy-policy`),
+                    regex("Privacy Policy"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
                 )
-                .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
         acceptPrivacyPolicyPost:(): ChainBuilder =>
-            feed(usersFeeder)
-                .exec(http("Accept privacy policy")
-                    .post("/privacy-policy")
-                    .headers(html_post_headers)
-                    .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
-                    .check(
-                        status().is(200),
-                        currentLocation().is(`${BASE_URL}/account/organisations`),
-                        regex("Add or select an employer you're reporting for"),
-                        css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
-                    )
-                    .resources()
+            exec(http("Accept privacy policy")
+                .post("/privacy-policy")
+                .headers(html_post_headers)
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
+                .check(
+                    status().is(200),
+                    currentLocation().is(`${BASE_URL}/account/organisations`),
+                    regex("Add or select an employer you're reporting for"),
+                    css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
                 )
-                .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
+                .resources()
+            )
+            .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
     
     const AddOrganisation = {
@@ -391,7 +392,7 @@ export default simulation((setUp) => {
         searchByOrganisationName: (): ChainBuilder =>
             exec(http("Add Organisation: Search for organiation by name")
                 .get(`/add-employer/private/search`)
-                .queryParam("query", organisationNameFromUserId("#{userId}"))
+                .queryParam("query", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -405,7 +406,7 @@ export default simulation((setUp) => {
         
         manualEnterNameQuestion: (): ChainBuilder =>
             exec(http("Add Organisation: Manual: Employer name - question")
-                .get(`/add-employer/manual/name?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}`)
+                .get((session: Session) => `/add-employer/manual/name?Sector=Private&Query=${organisationNameFromUserId(session.get("USER_ID"))}`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -420,12 +421,12 @@ export default simulation((setUp) => {
                 .get(`/add-employer/manual/name`)
                 .queryParam("Validate", "True")
                 .queryParam("Sector", "Private")
-                .queryParam("Query", organisationNameFromUserId("#{userId}"))
-                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .queryParam("Query", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
+                .queryParam("OrganisationName", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(`${BASE_URL}/add-employer/manual/address?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}`),
+                    currentLocation().is((session) => `${BASE_URL}/add-employer/manual/address?Sector=Private&Query=${organisationNameFromUserId(session.get("USER_ID"))}&OrganisationName=${organisationNameFromUserId(session.get("USER_ID"))}`),
                     substring("Registered address of employer"),
                 )
                 .resources()
@@ -437,14 +438,14 @@ export default simulation((setUp) => {
                 .get(`/add-employer/manual/address`)
                 .queryParam("Validate", "True")
                 .queryParam("Sector", "Private")
-                .queryParam("Query", organisationNameFromUserId("#{userId}"))
-                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .queryParam("Query", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
+                .queryParam("OrganisationName", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
                 .queryParam("Address1", "1 Imaginary Street")
                 .queryParam("IsUkAddress", "Yes")
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(percent20(`${BASE_URL}/add-employer/manual/sic-codes?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}&Address1=1 Imaginary Street&IsUkAddress=Yes`)),
+                    currentLocation().is((session: Session) => percent20(`${BASE_URL}/add-employer/manual/sic-codes?Sector=Private&Query=${organisationNameFromUserId(session.get('USER_ID'))}&OrganisationName=${organisationNameFromUserId(session.get('USER_ID'))}&Address1=1 Imaginary Street&IsUkAddress=Yes`)),
                     substring("Add a sector code to your employer"),
                 )
                 .resources()
@@ -456,15 +457,15 @@ export default simulation((setUp) => {
                 .get(`/add-employer/manual/sic-codes`)
                 .queryParam("Validate", "True")
                 .queryParam("Sector", "Private")
-                .queryParam("Query", organisationNameFromUserId("#{userId}"))
-                .queryParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .queryParam("Query", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
+                .queryParam("OrganisationName", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
                 .queryParam("Address1", "1 Imaginary Street")
                 .queryParam("IsUkAddress", "Yes")
                 .queryParam("SicCodes", "41100")
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(percent20(`${BASE_URL}/add-employer/manual/confirm?Sector=Private&Query=${organisationNameFromUserId("#{userId}")}&OrganisationName=${organisationNameFromUserId("#{userId}")}&Address1=1 Imaginary Street&IsUkAddress=Yes&SicCodes=41100`)),
+                    currentLocation().is((session: Session) => percent20(`${BASE_URL}/add-employer/manual/confirm?Sector=Private&Query=${organisationNameFromUserId(session.get('USER_ID'))}&OrganisationName=${organisationNameFromUserId(session.get('USER_ID'))}&Address1=1 Imaginary Street&IsUkAddress=Yes&SicCodes=41100`)),
                     substring("Confirm your employer's details"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
@@ -476,12 +477,12 @@ export default simulation((setUp) => {
             exec(http("Add Organisation: Manual: Confirm answers - POST")
                 .post(`/add-employer/manual/confirm`)
                 .formParam("Sector", "Private")
-                .formParam("Query", organisationNameFromUserId("#{userId}"))
-                .formParam("OrganisationName", organisationNameFromUserId("#{userId}"))
+                .formParam("Query", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
+                .formParam("OrganisationName", (session: Session) => organisationNameFromUserId(session.get('USER_ID')))
                 .formParam("Address1", "1 Imaginary Street")
                 .formParam("IsUkAddress", "Yes")
                 .formParam("SicCodes", "41100")
-                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
@@ -493,7 +494,7 @@ export default simulation((setUp) => {
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
-    
+
     const ReportGpgData = {
         manageAllOrganisations: (): ChainBuilder =>
             exec(http("Report: Manage All Organisations page")
@@ -516,7 +517,7 @@ export default simulation((setUp) => {
 
         manageOrganisation: (): ChainBuilder =>
             exec(http("Report: Manage Organisation page")
-                .get("/account/organisations/#{ENCRYPTED_ORGANISATION_ID}")
+                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -528,7 +529,7 @@ export default simulation((setUp) => {
         
         startReport: (): ChainBuilder =>
             exec(http("Report: Start page")
-                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/start`)
+                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/start`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -541,7 +542,7 @@ export default simulation((setUp) => {
 
         numberOfEmployeesQuestion: (): ChainBuilder =>
             exec(http("Report: Number of Employees - question")
-                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
+                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -554,23 +555,23 @@ export default simulation((setUp) => {
         
         numberOfEmployeesAnswer: (): ChainBuilder =>
             exec(http("Report: Number of Employees - answer")
-                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
+                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
                 .formParam("SizeOfOrganisation", "Employees250To499")
-                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) =>`${BASE_URL}/account/organisations/${organisationNameFromUserId(session.get("USER_ID"))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
                     substring("Review your gender pay gap data"),
                     substring("More information is required to complete your submission"),
                 )
-                .resources()
+                .resources(),
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
         figuresQuestion: (): ChainBuilder =>
             exec(http("Report: Figures - question")
-                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
+                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -584,7 +585,7 @@ export default simulation((setUp) => {
 
         figuresAnswer: (): ChainBuilder =>
             exec(http("Report: Figures - answer")
-                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
+                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
                 .formParam("DiffMeanHourlyPayPercent", "0")
                 .formParam("DiffMedianHourlyPercent", "0")
                 .formParam("MaleUpperPayBand", "50")
@@ -599,11 +600,11 @@ export default simulation((setUp) => {
                 .formParam("MaleBonusPayPercent", "100")
                 .formParam("DiffMeanBonusPercent", "0")
                 .formParam("DiffMedianBonusPercent", "0")
-                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId("session.get('ENCRYPTED_ORGANISATION_ID')"))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
                     substring("Review your gender pay gap data"),
                     substring("More information is required to complete your submission"),
                 )
@@ -613,7 +614,7 @@ export default simulation((setUp) => {
 
         responsiblePersonQuestion: (): ChainBuilder =>
             exec(http("Report: Responsible Person - question")
-                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
+                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -626,15 +627,15 @@ export default simulation((setUp) => {
 
         responsiblePersonAnswer: (): ChainBuilder =>
             exec(http("Report: Responsible Person - answer")
-                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
+                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
                 .formParam("ResponsiblePersonFirstName", "FirstName")
                 .formParam("ResponsiblePersonLastName", "LastName")
                 .formParam("ResponsiblePersonJobTitle", "Tester")
-                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId("session.get('ENCRYPTED_ORGANISATION_ID')"))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
                     substring("Review your gender pay gap data"),
                 )
                 .resources()
@@ -643,7 +644,7 @@ export default simulation((setUp) => {
 
         supportingNarrativeQuestion: (): ChainBuilder =>
             exec(http("Report: Supporting Narrative - question")
-                .get(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
+                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -656,13 +657,13 @@ export default simulation((setUp) => {
 
         supportingNarrativeAnswer: (): ChainBuilder =>
             exec(http("Report: Supporting Narrative - answer")
-                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
+                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
                 .formParam("LinkToOrganisationWebsite", "https://example.com/gpg")
-                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId(session.get('ENCRYPTED_ORGANISATION_ID')))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
                     substring("Review your gender pay gap data"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
@@ -672,13 +673,12 @@ export default simulation((setUp) => {
 
         submitPost: (): ChainBuilder =>
             exec(http("Report: Submit - POST")
-                .post(`/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/submit`)
-                .formParam("__RequestVerificationToken", "#{REQUEST_VERIFICATION_TOKEN}")
+                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/submit`)
+                .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
-                    currentLocationRegex("://[^/]*(/.*)\\?.*").is(`${BASE_URL}/account/organisations/#{ENCRYPTED_ORGANISATION_ID}/reporting-year-${CURRENT_REPORTING_YEAR}/report/confirmation`),
+                    currentLocationRegex("://[^/]*(/.*)\\?.*").is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId(session.get('ENCRYPTED_ORGANISATION_ID')))}/reporting-year-${CURRENT_REPORTING_YEAR}/report/confirmation`),
                     substring("You've submitted your gender pay gap data"),
                     substring("Your gender pay gap information has now been published on the Gender pay gap service."),
                 )
@@ -687,42 +687,42 @@ export default simulation((setUp) => {
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
 
-    const userActions = exec(
+    const userActions = feed(usersFeeder).exec(
         // Journey: Search for an employer and view their reports
-        Homepage.visit(),
-        Homepage.suggestAutoComplete(),
-
-        SearchAndView.searchPage(),
-
-        SearchAndView.viewEmployer(),
-        SearchAndView.viewReportsForYear(2020),
-        SearchAndView.viewEmployer(),
-        SearchAndView.viewReportsForYear(2021),
-        SearchAndView.viewEmployer(),
-        SearchAndView.viewReportsForYear(2022),
-
-        // Journey: Compare employers
-        SearchAndView.searchPage(),
-        SearchAndView.viewEmployer(),
-        Compare.addToCompare(5816, 1),
-        SearchAndView.searchPage(),
-        SearchAndView.viewEmployer(),
-        Compare.addToCompare(491, 2),
-        SearchAndView.searchPage(),
-        SearchAndView.viewEmployer(),
-        Compare.addToCompare(234, 3),
-
-        Compare.comparePageDefault(),
-        Compare.comparePageForYear(2022),
-        Compare.comparePageForYear(2021),
-        Compare.comparePageForYear(2020),
-        SearchAndView.viewReportsForYear(2020),
-
-        // Journey: Create account
-        CreateAccount.alreadyCreatedAnAccountQuestion(),
-        CreateAccount.alreadyCreatedAnAccountAnswer(),
-        CreateAccount.createAccountGet(),
-        CreateAccount.createAccountPost(),
+        // Homepage.visit(),
+        // Homepage.suggestAutoComplete(),
+        //
+        // SearchAndView.searchPage(),
+        //
+        // SearchAndView.viewEmployer(),
+        // SearchAndView.viewReportsForYear(2020),
+        // SearchAndView.viewEmployer(),
+        // SearchAndView.viewReportsForYear(2021),
+        // SearchAndView.viewEmployer(),
+        // SearchAndView.viewReportsForYear(2022),
+        //
+        // // Journey: Compare employers
+        // SearchAndView.searchPage(),
+        // SearchAndView.viewEmployer(),
+        // Compare.addToCompare(5816, 1),
+        // SearchAndView.searchPage(),
+        // SearchAndView.viewEmployer(),
+        // Compare.addToCompare(491, 2),
+        // SearchAndView.searchPage(),
+        // SearchAndView.viewEmployer(),
+        // Compare.addToCompare(234, 3),
+        //
+        // Compare.comparePageDefault(),
+        // Compare.comparePageForYear(2022),
+        // Compare.comparePageForYear(2021),
+        // Compare.comparePageForYear(2020),
+        // SearchAndView.viewReportsForYear(2020),
+        //
+        // // Journey: Create account
+        // CreateAccount.alreadyCreatedAnAccountQuestion(),
+        // CreateAccount.alreadyCreatedAnAccountAnswer(),
+        // CreateAccount.createAccountGet(),
+        // CreateAccount.createAccountPost(),
 
         // Journey: Login
         Login.loginPageGet(),
@@ -739,19 +739,19 @@ export default simulation((setUp) => {
         AddOrganisation.manualEnterSicCodesAnswer(),
         AddOrganisation.manualConfirmPost(),
         
-        // Journey: Report GPG data
-        ReportGpgData.manageAllOrganisations(),
-        ReportGpgData.manageOrganisation(),
-        ReportGpgData.startReport(),
-        ReportGpgData.numberOfEmployeesQuestion(),
-        ReportGpgData.numberOfEmployeesAnswer(),
-        ReportGpgData.figuresQuestion(),
-        ReportGpgData.figuresAnswer(),
-        ReportGpgData.responsiblePersonQuestion(),
-        ReportGpgData.responsiblePersonAnswer(),
-        ReportGpgData.supportingNarrativeQuestion(),
-        ReportGpgData.supportingNarrativeAnswer(),
-        ReportGpgData.submitPost()
+        // // Journey: Report GPG data
+        // ReportGpgData.manageAllOrganisations(),
+        // ReportGpgData.manageOrganisation(),
+        // ReportGpgData.startReport(),
+        // ReportGpgData.numberOfEmployeesQuestion(),
+        // ReportGpgData.numberOfEmployeesAnswer(),
+        // ReportGpgData.figuresQuestion(),
+        // ReportGpgData.figuresAnswer(),
+        // ReportGpgData.responsiblePersonQuestion(),
+        // ReportGpgData.responsiblePersonAnswer(),
+        // ReportGpgData.supportingNarrativeQuestion(),
+        // ReportGpgData.supportingNarrativeAnswer(),
+        // ReportGpgData.submitPost()
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
