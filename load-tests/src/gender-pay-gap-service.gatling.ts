@@ -3,14 +3,11 @@ import {
     scenario,
     exec,
     csv,
-    pause,
     css,
     feed,
-    repeat,
-    tryMax,
-    rampUsers, substring, exitBlockOnFail, jmesPath, ChainBuilder, regex, Session
+    rampUsers, substring, jmesPath, ChainBuilder, regex, Session
 } from "@gatling.io/core";
-import {currentLocation, currentLocationRegex, header, http, HttpRequestActionBuilder, status} from "@gatling.io/http";
+import {currentLocation, currentLocationRegex, header, http, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
@@ -65,14 +62,10 @@ export default simulation((setUp) => {
     function organisationNameFromUserId(userId: string): string {
         const userIdInt: int = parseInt(userId);
         const organisationId = STARTING_ID + userIdInt;
-        return `test_${userId}_${organisationId}`;
+        return `test_${organisationId}`;
     }
     function percent20(url: string): string {
         return url.replaceAll(' ', '%20');
-    }
-
-    function getEncryptedOrganisationId(encryptedOrganisationId: string): string {
-        return encryptedOrganisationId.replaceAll('Z', 'Z');
     }
 
     const Homepage = {
@@ -517,7 +510,7 @@ export default simulation((setUp) => {
 
         manageOrganisation: (): ChainBuilder =>
             exec(http("Report: Manage Organisation page")
-                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')`)
+                .get((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -529,7 +522,7 @@ export default simulation((setUp) => {
         
         startReport: (): ChainBuilder =>
             exec(http("Report: Start page")
-                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/start`)
+                .get((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/start`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -542,7 +535,7 @@ export default simulation((setUp) => {
 
         numberOfEmployeesQuestion: (): ChainBuilder =>
             exec(http("Report: Number of Employees - question")
-                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
+                .get((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -555,13 +548,13 @@ export default simulation((setUp) => {
         
         numberOfEmployeesAnswer: (): ChainBuilder =>
             exec(http("Report: Number of Employees - answer")
-                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
+                .post((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/size-of-organisation`)
                 .formParam("SizeOfOrganisation", "Employees250To499")
                 .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is((session: Session) =>`${BASE_URL}/account/organisations/${organisationNameFromUserId(session.get("USER_ID"))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) =>`${BASE_URL}/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
                     substring("Review your gender pay gap data"),
                     substring("More information is required to complete your submission"),
                 )
@@ -571,7 +564,7 @@ export default simulation((setUp) => {
 
         figuresQuestion: (): ChainBuilder =>
             exec(http("Report: Figures - question")
-                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
+                .get((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -585,7 +578,7 @@ export default simulation((setUp) => {
 
         figuresAnswer: (): ChainBuilder =>
             exec(http("Report: Figures - answer")
-                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
+                .post((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/figures`)
                 .formParam("DiffMeanHourlyPayPercent", "0")
                 .formParam("DiffMedianHourlyPercent", "0")
                 .formParam("MaleUpperPayBand", "50")
@@ -604,7 +597,7 @@ export default simulation((setUp) => {
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId("session.get('ENCRYPTED_ORGANISATION_ID')"))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report?initialSubmission=False`),
                     substring("Review your gender pay gap data"),
                     substring("More information is required to complete your submission"),
                 )
@@ -614,7 +607,7 @@ export default simulation((setUp) => {
 
         responsiblePersonQuestion: (): ChainBuilder =>
             exec(http("Report: Responsible Person - question")
-                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
+                .get((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -627,7 +620,7 @@ export default simulation((setUp) => {
 
         responsiblePersonAnswer: (): ChainBuilder =>
             exec(http("Report: Responsible Person - answer")
-                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
+                .post((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/responsible-person`)
                 .formParam("ResponsiblePersonFirstName", "FirstName")
                 .formParam("ResponsiblePersonLastName", "LastName")
                 .formParam("ResponsiblePersonJobTitle", "Tester")
@@ -635,7 +628,7 @@ export default simulation((setUp) => {
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId("session.get('ENCRYPTED_ORGANISATION_ID')"))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report?initialSubmission=False`),
                     substring("Review your gender pay gap data"),
                 )
                 .resources()
@@ -644,7 +637,7 @@ export default simulation((setUp) => {
 
         supportingNarrativeQuestion: (): ChainBuilder =>
             exec(http("Report: Supporting Narrative - question")
-                .get((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
+                .get((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
                 .headers(html_get_headers)
                 .check(
                     status().is(200),
@@ -657,13 +650,13 @@ export default simulation((setUp) => {
 
         supportingNarrativeAnswer: (): ChainBuilder =>
             exec(http("Report: Supporting Narrative - answer")
-                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
+                .post((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/link-to-organisation-website`)
                 .formParam("LinkToOrganisationWebsite", "https://example.com/gpg")
                 .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId(session.get('ENCRYPTED_ORGANISATION_ID')))}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
+                    currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report`),
                     substring("Review your gender pay gap data"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
@@ -673,12 +666,12 @@ export default simulation((setUp) => {
 
         submitPost: (): ChainBuilder =>
             exec(http("Report: Submit - POST")
-                .post((session: Session) => `/account/organisations/session.get('ENCRYPTED_ORGANISATION_ID')/reporting-year-${CURRENT_REPORTING_YEAR}/report/submit`)
+                .post((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/submit`)
                 .formParam("__RequestVerificationToken", (session: Session) => session.get('REQUEST_VERIFICATION_TOKEN'))
                 .headers(html_post_headers)
                 .check(
                     status().is(200),
-                    currentLocationRegex("://[^/]*(/.*)\\?.*").is((session: Session) => `${BASE_URL}/account/organisations/${(getEncryptedOrganisationId(session.get('ENCRYPTED_ORGANISATION_ID')))}/reporting-year-${CURRENT_REPORTING_YEAR}/report/confirmation`),
+                    currentLocationRegex("://[^/]*(/.*)\\?.*").is((session: Session) => `/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report/confirmation`),
                     substring("You've submitted your gender pay gap data"),
                     substring("Your gender pay gap information has now been published on the Gender pay gap service."),
                 )
@@ -689,40 +682,40 @@ export default simulation((setUp) => {
 
     const userActions = feed(usersFeeder).exec(
         // Journey: Search for an employer and view their reports
-        // Homepage.visit(),
-        // Homepage.suggestAutoComplete(),
-        //
-        // SearchAndView.searchPage(),
-        //
-        // SearchAndView.viewEmployer(),
-        // SearchAndView.viewReportsForYear(2020),
-        // SearchAndView.viewEmployer(),
-        // SearchAndView.viewReportsForYear(2021),
-        // SearchAndView.viewEmployer(),
-        // SearchAndView.viewReportsForYear(2022),
-        //
-        // // Journey: Compare employers
-        // SearchAndView.searchPage(),
-        // SearchAndView.viewEmployer(),
-        // Compare.addToCompare(5816, 1),
-        // SearchAndView.searchPage(),
-        // SearchAndView.viewEmployer(),
-        // Compare.addToCompare(491, 2),
-        // SearchAndView.searchPage(),
-        // SearchAndView.viewEmployer(),
-        // Compare.addToCompare(234, 3),
-        //
-        // Compare.comparePageDefault(),
-        // Compare.comparePageForYear(2022),
-        // Compare.comparePageForYear(2021),
-        // Compare.comparePageForYear(2020),
-        // SearchAndView.viewReportsForYear(2020),
-        //
-        // // Journey: Create account
-        // CreateAccount.alreadyCreatedAnAccountQuestion(),
-        // CreateAccount.alreadyCreatedAnAccountAnswer(),
-        // CreateAccount.createAccountGet(),
-        // CreateAccount.createAccountPost(),
+        Homepage.visit(),
+        Homepage.suggestAutoComplete(),
+
+        SearchAndView.searchPage(),
+
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2020),
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2021),
+        SearchAndView.viewEmployer(),
+        SearchAndView.viewReportsForYear(2022),
+
+        // Journey: Compare employers
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(5816, 1),
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(491, 2),
+        SearchAndView.searchPage(),
+        SearchAndView.viewEmployer(),
+        Compare.addToCompare(234, 3),
+
+        Compare.comparePageDefault(),
+        Compare.comparePageForYear(2022),
+        Compare.comparePageForYear(2021),
+        Compare.comparePageForYear(2020),
+        SearchAndView.viewReportsForYear(2020),
+
+        // Journey: Create account
+        CreateAccount.alreadyCreatedAnAccountQuestion(),
+        CreateAccount.alreadyCreatedAnAccountAnswer(),
+        CreateAccount.createAccountGet(),
+        CreateAccount.createAccountPost(),
 
         // Journey: Login
         Login.loginPageGet(),
@@ -739,19 +732,19 @@ export default simulation((setUp) => {
         AddOrganisation.manualEnterSicCodesAnswer(),
         AddOrganisation.manualConfirmPost(),
         
-        // // Journey: Report GPG data
-        // ReportGpgData.manageAllOrganisations(),
-        // ReportGpgData.manageOrganisation(),
-        // ReportGpgData.startReport(),
-        // ReportGpgData.numberOfEmployeesQuestion(),
-        // ReportGpgData.numberOfEmployeesAnswer(),
-        // ReportGpgData.figuresQuestion(),
-        // ReportGpgData.figuresAnswer(),
-        // ReportGpgData.responsiblePersonQuestion(),
-        // ReportGpgData.responsiblePersonAnswer(),
-        // ReportGpgData.supportingNarrativeQuestion(),
-        // ReportGpgData.supportingNarrativeAnswer(),
-        // ReportGpgData.submitPost()
+        // Journey: Report GPG data
+        ReportGpgData.manageAllOrganisations(),
+        ReportGpgData.manageOrganisation(),
+        ReportGpgData.startReport(),
+        ReportGpgData.numberOfEmployeesQuestion(),
+        ReportGpgData.numberOfEmployeesAnswer(),
+        ReportGpgData.figuresQuestion(),
+        ReportGpgData.figuresAnswer(),
+        ReportGpgData.responsiblePersonQuestion(),
+        ReportGpgData.responsiblePersonAnswer(),
+        ReportGpgData.supportingNarrativeQuestion(),
+        ReportGpgData.supportingNarrativeAnswer(),
+        ReportGpgData.submitPost()
     );
 
     const gpgScenario = scenario("Gender Pay Gap scenario").exec(userActions);
