@@ -751,7 +751,7 @@ export default simulation((setUp) => {
 
     setUp(
         gpgScenario.injectOpen(
-            rampUsers(1).during(1)
+            rampUsers(1000).during(1000)
         )
     ).protocols(httpProtocol);
 });
