@@ -2,17 +2,14 @@ import {
     simulation,
     scenario,
     exec,
-    csv,
     css,
     feed,
-    rampUsers, substring, jmesPath, ChainBuilder, regex, Session
+    rampUsers, substring, jmesPath, ChainBuilder, regex, Session, arrayFeeder
 } from "@gatling.io/core";
 import {currentLocation, currentLocationRegex, header, http, status} from "@gatling.io/http";
 import {authorizationHeader} from './authorization-header';
 
 export default simulation((setUp) => {
-    const usersFeeder = csv("users.csv").eager().circular();
-
 	// Pauses are uniform duration between these two:
 	const PAUSE_MIN_DURATION = 1;  // seconds
 	const PAUSE_MAX_DURATION = 3;  // seconds
@@ -23,9 +20,21 @@ export default simulation((setUp) => {
     const CURRENT_REPORTING_YEAR = 2024;
     
     const RUN_ID = 2;
-
+    
     const DOMAIN_NAME = "dev.gender-pay-gap.service.gov.uk";
     const BASE_URL = "https://" + DOMAIN_NAME;
+
+    const TOTAL_USERS = 1000;
+    
+    const USER_IDS_ARRAY: { USER_ID: number }[] = (function() {
+        let array = [];
+        for (let userId = 1; userId <= TOTAL_USERS; userId++) {
+            array.push({ USER_ID: userId });
+        }
+        return array;
+    })();
+
+    const usersFeeder = arrayFeeder(USER_IDS_ARRAY).circular();
 
     const httpProtocol = http
         .baseUrl(BASE_URL)
@@ -144,7 +153,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     substring("Search by employer name"),
                 )
-                .resources()
+                // .resources()
             )
             .exec(http("Search page - API request 1")
                 .get("/search-api?EmployerName=test&Page=0")
@@ -186,7 +195,7 @@ export default simulation((setUp) => {
                     substring("Gender pay gap reports for"),
                     substring("H M Government Cabinet Office"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -199,7 +208,7 @@ export default simulation((setUp) => {
                     substring("H M Government Cabinet Office"),
                     regex(`${year}-${(year + 1) % 100}\\s*Gender pay gap report`),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
@@ -215,7 +224,7 @@ export default simulation((setUp) => {
                     substring("Your comparison list contains"),
                     regex(`${employersInComparisonBasket}\\s*employer`),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -228,7 +237,7 @@ export default simulation((setUp) => {
                     currentLocation().is(`${BASE_URL}/compare-employers/${MOST_RECENTLY_COMPLETED_REPORTING_YEAR}`),
                     substring(`Comparison for ${MOST_RECENTLY_COMPLETED_REPORTING_YEAR}`),
                 )
-                .resources()
+                // .resources()
             ),
         
         comparePageForYear: (year: int): ChainBuilder =>
@@ -239,7 +248,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     substring(`Comparison for ${year}`),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
@@ -253,7 +262,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     substring("Have you previously created a user account?"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -277,7 +286,7 @@ export default simulation((setUp) => {
                     substring("Create my account"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -299,7 +308,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     regex("Confirm your email address")
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
@@ -316,7 +325,7 @@ export default simulation((setUp) => {
                     css("input[name='ReturnUrl'","value").saveAs("RETURN_URL"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -334,7 +343,7 @@ export default simulation((setUp) => {
                     regex("Privacy Policy"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -349,7 +358,7 @@ export default simulation((setUp) => {
                     regex("Add or select an employer you're reporting for"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN")
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
@@ -363,7 +372,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     substring("What type of employer do you want to add?"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -378,7 +387,7 @@ export default simulation((setUp) => {
                     currentLocation().is(`${BASE_URL}/add-employer/private/search`),
                     substring("Find your employer"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -393,7 +402,7 @@ export default simulation((setUp) => {
                     substring("Your search"),
                     substring("Can't find your employer?"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -405,7 +414,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     substring("Employer name"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -422,7 +431,7 @@ export default simulation((setUp) => {
                     currentLocation().is((session) => `${BASE_URL}/add-employer/manual/address?Sector=Private&Query=${organisationNameFromUserId(session.get("USER_ID"))}&OrganisationName=${organisationNameFromUserId(session.get("USER_ID"))}`),
                     substring("Registered address of employer"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -441,7 +450,7 @@ export default simulation((setUp) => {
                     currentLocation().is((session: Session) => percent20(`${BASE_URL}/add-employer/manual/sic-codes?Sector=Private&Query=${organisationNameFromUserId(session.get('USER_ID'))}&OrganisationName=${organisationNameFromUserId(session.get('USER_ID'))}&Address1=1 Imaginary Street&IsUkAddress=Yes`)),
                     substring("Add a sector code to your employer"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -462,7 +471,7 @@ export default simulation((setUp) => {
                     substring("Confirm your employer's details"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -483,7 +492,7 @@ export default simulation((setUp) => {
                     substring("We've got your details."),
                     substring("We'll review them and email you to confirm."),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
@@ -504,7 +513,7 @@ export default simulation((setUp) => {
                         })
                         .saveAs("ENCRYPTED_ORGANISATION_ID")
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -516,7 +525,7 @@ export default simulation((setUp) => {
                     status().is(200),
                     substring("Manage your employer's reporting"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -529,7 +538,7 @@ export default simulation((setUp) => {
                     substring("Report your gender pay gap data"),
                     substring("Before you start"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -542,7 +551,7 @@ export default simulation((setUp) => {
                     substring("How many employees did you have on your snapshot date?"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
         
@@ -558,7 +567,7 @@ export default simulation((setUp) => {
                     substring("Review your gender pay gap data"),
                     substring("More information is required to complete your submission"),
                 )
-                .resources(),
+                // .resources(),
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -572,7 +581,7 @@ export default simulation((setUp) => {
                     substring("Enter your figures as whole percentages or rounded to one decimal place."),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -601,7 +610,7 @@ export default simulation((setUp) => {
                     substring("Review your gender pay gap data"),
                     substring("More information is required to complete your submission"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -614,7 +623,7 @@ export default simulation((setUp) => {
                     substring("Person responsible in your organisation"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -631,7 +640,7 @@ export default simulation((setUp) => {
                     currentLocation().is((session: Session) => `${BASE_URL}/account/organisations/${session.get('ENCRYPTED_ORGANISATION_ID')}/reporting-year-${CURRENT_REPORTING_YEAR}/report?initialSubmission=False`),
                     substring("Review your gender pay gap data"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -644,7 +653,7 @@ export default simulation((setUp) => {
                     substring("Provide a link to your supporting narrative"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -660,7 +669,7 @@ export default simulation((setUp) => {
                     substring("Review your gender pay gap data"),
                     css("input[name='__RequestVerificationToken']", "value").saveAs("REQUEST_VERIFICATION_TOKEN"),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
 
@@ -675,7 +684,7 @@ export default simulation((setUp) => {
                     substring("You've submitted your gender pay gap data"),
                     substring("Your gender pay gap information has now been published on the Gender pay gap service."),
                 )
-                .resources()
+                // .resources()
             )
             .pause(PAUSE_MIN_DURATION, PAUSE_MAX_DURATION),
     }
@@ -751,7 +760,7 @@ export default simulation((setUp) => {
 
     setUp(
         gpgScenario.injectOpen(
-            rampUsers(1000).during(1000)
+            rampUsers(TOTAL_USERS).during(1000)
         )
     ).protocols(httpProtocol);
 });
