@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void UpdateDownloadFiles()
         {
-            JobHelpers.RunAndLogJob(UpdateDownloadFilesAction, nameof(UpdateDownloadFiles));
+            JobHelpers.RunAndLogSingletonJob(UpdateDownloadFilesAction, nameof(UpdateDownloadFiles));
         }
 
         private void UpdateDownloadFilesAction()

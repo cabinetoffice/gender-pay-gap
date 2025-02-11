@@ -69,7 +69,13 @@ namespace GenderPayGap.WebUI.Models.ManageOrganisations
 
         public bool OrganisationIsRequiredToSubmit(int reportingYear)
         {
-            return Organisation.GetScopeForYear(reportingYear).IsInScopeVariant()
+            OrganisationScope scopeForYear = Organisation.GetScopeForYear(reportingYear);
+            if (scopeForYear == null)
+            {
+                return true;
+            }
+            
+            return scopeForYear.IsInScopeVariant()
                    && !Global.ReportingStartYearsToExcludeFromLateFlagEnforcement.Contains(reportingYear);
         }
 

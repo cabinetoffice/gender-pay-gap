@@ -1,0 +1,1 @@
+export const authorizationHeader = "Basic BASE_64_ENCODED_USERNAME_AND_PASSWORD_HERE";

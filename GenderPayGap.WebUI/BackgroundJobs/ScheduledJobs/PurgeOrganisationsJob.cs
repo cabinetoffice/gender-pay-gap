@@ -25,7 +25,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         //Remove any unverified users their addresses, UserOrgs, Org and addresses and archive to zip
         public void PurgeOrganisations()
         {
-            JobHelpers.RunAndLogJob(PurgeOrganisationsAction, nameof(PurgeOrganisations));
+            JobHelpers.RunAndLogSingletonJob(PurgeOrganisationsAction, nameof(PurgeOrganisations));
         }
 
         private void PurgeOrganisationsAction()

@@ -20,7 +20,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   // Sizing
   serverlessv2_scaling_configuration {
     min_capacity = 0.5
-    max_capacity = 8
+    max_capacity = 64
   }
   
   // Connection & security details

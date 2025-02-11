@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         //Remove any duplicate retired user details
         public void AnonymiseRetiredDuplicateUsers()
         {
-            JobHelpers.RunAndLogJob(AnonymiseRetiredDuplicateUsersAction, nameof(AnonymiseRetiredDuplicateUsers));
+            JobHelpers.RunAndLogSingletonJob(AnonymiseRetiredDuplicateUsersAction, nameof(AnonymiseRetiredDuplicateUsers));
         }
 
         private void AnonymiseRetiredDuplicateUsersAction()

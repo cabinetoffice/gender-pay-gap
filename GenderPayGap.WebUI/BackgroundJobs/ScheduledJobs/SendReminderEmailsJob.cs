@@ -29,7 +29,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void SendReminderEmails()
         {
-            JobHelpers.RunAndLogJob(SendReminderEmailsAction, nameof(SendReminderEmails));
+            JobHelpers.RunAndLogSingletonJob(SendReminderEmailsAction, nameof(SendReminderEmails));
         }
 
         private void SendReminderEmailsAction(string runId)

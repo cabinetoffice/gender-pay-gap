@@ -1,7 +1,7 @@
-﻿
+
 locals {
   main_app_elastic_beanstalk_solution_stack_name = "64bit Amazon Linux 2023 v3.2.2 running .NET 8"
-  main_app_elastic_beanstalk_ec2_instance_type = "t4g.large"
+  main_app_elastic_beanstalk_ec2_instance_type = "t4g.xlarge"
   main_app_elastic_beanstalk_root_volume_size = 64  // Disk space (in GB) to give each EC2 instance
 
   main_app_elastic_beanstalk_min_instances = 2
