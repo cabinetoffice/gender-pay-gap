@@ -42,6 +42,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DocumentationNested", "Docu
 		SlnRelativePath = "Documentation\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoldingPage", "HoldingPage\HoldingPage.csproj", "{FF42BD3D-5B78-4BC7-81A5-A759E7119918}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,10 @@ Global
 		{ADB4DCF7-1D43-41EF-9FD3-DA4C36D923AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{81A83AB9-45C8-4F86-873E-052B08604269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81A83AB9-45C8-4F86-873E-052B08604269}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF42BD3D-5B78-4BC7-81A5-A759E7119918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF42BD3D-5B78-4BC7-81A5-A759E7119918}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF42BD3D-5B78-4BC7-81A5-A759E7119918}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF42BD3D-5B78-4BC7-81A5-A759E7119918}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
