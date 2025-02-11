@@ -22,7 +22,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void FetchCompaniesHouseData()
         {
-            JobHelpers.RunAndLogJob(UpdateFromCompaniesHouse, nameof(FetchCompaniesHouseData));
+            JobHelpers.RunAndLogSingletonJob(UpdateFromCompaniesHouse, nameof(FetchCompaniesHouseData));
         }
 
         private void UpdateFromCompaniesHouse(string runId)

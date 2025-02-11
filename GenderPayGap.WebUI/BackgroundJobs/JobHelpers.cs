@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using GenderPayGap.Core.Classes.Logger;
 using GenderPayGap.Extensions;
 using GenderPayGap.Extensions.AspNetCore;
@@ -12,9 +13,35 @@ namespace GenderPayGap.WebUI.BackgroundJobs {
 
     internal static class JobHelpers {
 
+        private static readonly ConcurrentDictionary<string, string> ActionsCurrentlyRunning = [];
+
+        public static void RunAndLogSingletonJob(Action action, string actionName, JobErrorsLogged logErrors = JobErrorsLogged.Automatically)
+        {
+            RunAndLogSingletonJob(unusedRunId => action(), actionName, logErrors);
+        }
+
+        public static void RunAndLogSingletonJob(Action<string> action, string actionName, JobErrorsLogged logErrors = JobErrorsLogged.Automatically)
+        {
+            if (ActionsCurrentlyRunning.TryAdd(actionName, ""))
+            {
+                try
+                {
+                    RunAndLogJob(action, actionName, logErrors);
+                }
+                finally
+                {
+                    ActionsCurrentlyRunning.Remove(actionName, out _);
+                }
+            }
+            else
+            {
+                CustomLogger.Information($"Function already running: {actionName}", new {environment = Config.EnvironmentName});
+            }
+        }
+        
         public static void RunAndLogJob(Action action, string actionName, JobErrorsLogged logErrors = JobErrorsLogged.Automatically)
         {
-            RunAndLogJob(unusedRunId => action(), actionName, logErrors);
+            RunAndLogJob(_ => action(), actionName, logErrors);
         }
 
         public static void RunAndLogJob(Action<string> action, string actionName, JobErrorsLogged logErrors = JobErrorsLogged.Automatically)

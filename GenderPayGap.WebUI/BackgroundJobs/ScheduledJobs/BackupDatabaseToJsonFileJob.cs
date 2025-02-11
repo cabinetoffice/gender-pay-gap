@@ -28,7 +28,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void RunBackup()
         {
-            JobHelpers.RunAndLogJob(RunBackupAction, nameof(RunBackup));
+            JobHelpers.RunAndLogSingletonJob(RunBackupAction, nameof(RunBackup));
         }
 
         private void RunBackupAction()

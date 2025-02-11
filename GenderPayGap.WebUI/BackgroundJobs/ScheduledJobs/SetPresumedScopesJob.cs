@@ -20,7 +20,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         //Set presumed scope of previous years and current years
         public void SetPresumedScopes()
         {
-            JobHelpers.RunAndLogJob(SetPresumedScopesAction, nameof(SetPresumedScopes));
+            JobHelpers.RunAndLogSingletonJob(SetPresumedScopesAction, nameof(SetPresumedScopes));
         }
 
         private void SetPresumedScopesAction()

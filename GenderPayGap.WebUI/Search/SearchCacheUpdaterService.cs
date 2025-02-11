@@ -7,6 +7,8 @@ namespace GenderPayGap.WebUI.Search {
     {
         private Timer timer;
 
+        private bool updateInProgress = false;
+
         public Task StartAsync(CancellationToken stoppingToken)
         {
             CustomLogger.Information("Starting timer (SearchRepository.StartCacheUpdateThread)");
@@ -27,18 +29,29 @@ namespace GenderPayGap.WebUI.Search {
 
         private void DoWork(object state)
         {
+            if (updateInProgress)
+            {
+                CustomLogger.Information("Cache update postponed - another update is already in progress (SearchRepository.StartCacheUpdateThread)");
+                return;
+            }
+
+            updateInProgress = true;
             CustomLogger.Information("Starting cache update (SearchRepository.StartCacheUpdateThread)");
 
             try
             {
                 SearchRepository.LoadSearchDataIntoCache();
+
+                CustomLogger.Information("Finished cache update (SearchRepository.StartCacheUpdateThread)");
             }
             catch (Exception ex)
             {
                 CustomLogger.Error($"Error during cache update (SearchRepository.StartCacheUpdateThread): {ex.Message} {ex.StackTrace}", ex);
             }
-
-            CustomLogger.Information("Finished cache update (SearchRepository.StartCacheUpdateThread)");
+            finally
+            {
+                updateInProgress = false;
+            }
         }
 
         public Task StopAsync(CancellationToken stoppingToken)

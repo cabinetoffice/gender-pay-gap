@@ -16,7 +16,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void AnonymiseFeedback()
         {
-            JobHelpers.RunAndLogJob(GetAndAnonymiseFeedback, nameof(AnonymiseFeedback));
+            JobHelpers.RunAndLogSingletonJob(GetAndAnonymiseFeedback, nameof(AnonymiseFeedback));
         }
 
         public void GetAndAnonymiseFeedback()

@@ -20,7 +20,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
 
         public void NotifyUsersAndRetireInactiveAccounts()
         {
-            JobHelpers.RunAndLogJob(NotifyUsersAndRetireInactiveAccountsAction, nameof(NotifyUsersAndRetireInactiveAccounts));
+            JobHelpers.RunAndLogSingletonJob(NotifyUsersAndRetireInactiveAccountsAction, nameof(NotifyUsersAndRetireInactiveAccounts));
         }
 
         private void NotifyUsersAndRetireInactiveAccountsAction()

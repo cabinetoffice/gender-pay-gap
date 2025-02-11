@@ -23,7 +23,7 @@ namespace GenderPayGap.WebUI.BackgroundJobs.ScheduledJobs
         //Remove any incomplete registrations
         public void PurgeRegistrations()
         {
-            JobHelpers.RunAndLogJob(PurgeRegistrationsAction, nameof(PurgeRegistrations));
+            JobHelpers.RunAndLogSingletonJob(PurgeRegistrationsAction, nameof(PurgeRegistrations));
         }
 
         private void PurgeRegistrationsAction()
