@@ -33,6 +33,15 @@ variable "dns_record_subdomain_including_dot" {
   description = "The subdomain (including dot - e.g. 'dev.' or just '' for production) for the Route53 alias record"
 }
 
+variable "create_redirect_from_www_domain" {
+  type = bool
+  description = "Should terraform create a CloudFront distribution to redirect the www. domain to the root domain"
+}
+variable "dns_record_www_domain_including_dot" {
+  type = string
+  description = "The www. domain (including dot - e.g. 'www.dev.' or just 'www.' for production) for the www domain redirect"
+}
+
 // SECRETS
 // These variables are set in GitHub Actions environment-specific secrets
 // Most of these are passed to the application via Elastic Beanstalk environment variables
