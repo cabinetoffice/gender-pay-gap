@@ -58,13 +58,14 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   price_class = "PriceClass_100"
 
-  aliases = ["${var.dns_record_subdomain_including_dot}${data.aws_route53_zone.route_53_zone_for_our_domain.name}"]
-
+  # aliases = ["${var.dns_record_subdomain_including_dot}${data.aws_route53_zone.route_53_zone_for_our_domain.name}"]
+  
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate_validation.certificate_validation_waiter.certificate_arn
-    cloudfront_default_certificate = false
-    minimum_protocol_version = "TLSv1"
-    ssl_support_method = "sni-only"
+    # acm_certificate_arn = aws_acm_certificate_validation.certificate_validation_waiter.certificate_arn
+    # cloudfront_default_certificate = false
+    # minimum_protocol_version = "TLSv1"
+    # ssl_support_method = "sni-only"
+    cloudfront_default_certificate = true
   }
 
   enabled = true
