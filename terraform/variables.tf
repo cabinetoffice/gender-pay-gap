@@ -42,6 +42,13 @@ variable "dns_record_www_domain_including_dot" {
   description = "The www. domain (including dot - e.g. 'www.dev.' or just 'www.' for production) for the www domain redirect"
 }
 
+variable "prevent_email_spoofing" {
+  type = bool
+  description = "Should terraform create DNS records to prevent email spoofing (only required for the prod environment)"
+  default = false
+}
+
+
 // SECRETS
 // These variables are set in GitHub Actions environment-specific secrets
 // Most of these are passed to the application via Elastic Beanstalk environment variables
