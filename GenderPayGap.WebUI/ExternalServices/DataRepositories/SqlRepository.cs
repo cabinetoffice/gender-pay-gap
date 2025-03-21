@@ -1,6 +1,9 @@
-﻿using GenderPayGap.Core.Interfaces;
+﻿using System.Linq.Expressions;
+using System.Reflection;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GenderPayGap.Core.Classes
@@ -45,6 +48,11 @@ namespace GenderPayGap.Core.Classes
             GetDbContext().GetDatabase().ExecuteSqlRaw(sql);
         }
 
+        public IQueryable<T> SqlQueryRaw<T>(string sql)
+        {
+            return GetDbContext().GetDatabase().SqlQueryRaw<T>(sql);
+        }
+
         public IDbContext GetDbContext()
         {
             return DbContext;
@@ -63,6 +71,32 @@ namespace GenderPayGap.Core.Classes
             }
 
             DbContext.SaveChanges();
+        }
+
+        public ITableDetails<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            return new TableDetails<TEntity>(DbContext);
+        }
+
+        private class TableDetails<TEntity>(IDbContext dbContext) : ITableDetails<TEntity> where TEntity : class
+        {
+            public string GetColumnName<TProperty>(Expression<Func<TEntity, TProperty>> propertyExpression)
+            {
+                IEntityType entityType = dbContext.Model.FindEntityType(typeof(TEntity));
+                if (entityType == null)
+                {
+                    return null;
+                }
+            
+                MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
+                string propertyName = memberExpression?.Member.Name;
+
+                IEnumerable<IProperty> properties = entityType.GetProperties();
+                IProperty property = properties.First(p => p.Name == propertyName);
+                return property.GetColumnName();
+            }
+
+            public string Name => dbContext.Model.FindEntityType(typeof(TEntity))?.GetSchemaQualifiedTableName();
         }
 
         public void Dispose()
