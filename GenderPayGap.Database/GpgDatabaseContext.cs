@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using GenderPayGap.Database.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GenderPayGap.Database
 {
@@ -11,6 +12,7 @@ namespace GenderPayGap.Database
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         void SaveChanges();
         DatabaseFacade GetDatabase();
+        IModel Model { get; }
 
     }
     
