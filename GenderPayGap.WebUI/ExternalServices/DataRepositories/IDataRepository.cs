@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace GenderPayGap.Core.Interfaces
 {
@@ -15,6 +15,7 @@ namespace GenderPayGap.Core.Interfaces
         void Insert<TEntity>(TEntity entity) where TEntity : class;
         void Insert<TEntity>(List<TEntity> entities) where TEntity : class;
         void ExecuteRawSql(string sql);
+        IQueryable<T> SqlQueryRaw<T>(string sql);
 
         DbSet<TEntity> GetEntities<TEntity>() where TEntity : class;
 

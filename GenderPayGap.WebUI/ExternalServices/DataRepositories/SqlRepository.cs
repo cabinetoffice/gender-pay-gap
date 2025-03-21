@@ -1,4 +1,4 @@
-﻿using GenderPayGap.Core.Interfaces;
+using GenderPayGap.Core.Interfaces;
 using GenderPayGap.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -43,6 +43,11 @@ namespace GenderPayGap.Core.Classes
         public void ExecuteRawSql(string sql)
         {
             GetDbContext().GetDatabase().ExecuteSqlRaw(sql);
+        }
+
+        public IQueryable<T> SqlQueryRaw<T>(string sql)
+        {
+            return GetDbContext().GetDatabase().SqlQueryRaw<T>(sql);
         }
 
         public IDbContext GetDbContext()
