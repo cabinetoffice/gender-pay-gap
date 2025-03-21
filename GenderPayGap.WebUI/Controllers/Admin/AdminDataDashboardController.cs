@@ -24,7 +24,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("data-dashboard/now")]
         public IActionResult DataDashboardNow()
         {
-            AdminDashboardData dashboardData = CalculateAdminDashboardData();
+            AdminDashboardData dashboardData = CalculateAdminDashboardDataForNow();
             dashboardData.AdminDashboardPage = AdminDashboardPage.Now;
 
             return View("DataDashboard", dashboardData);
@@ -33,15 +33,106 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         [HttpGet("data-dashboard/deadline-day")]
         public IActionResult DataDashboardDeadlineDay()
         {
-            AdminDashboardData dashboardData = CalculateAdminDashboardData(onDeadlineDay: true);
+            AdminDashboardData dashboardData = CalculateAdminDashboardDataForDeadlineDay();
             dashboardData.AdminDashboardPage = AdminDashboardPage.DeadlineDay;
 
             return View("DataDashboard", dashboardData);
         }
 
-        private AdminDashboardData CalculateAdminDashboardData(bool onDeadlineDay = false)
+        public class DataDashboardQueryRow
         {
-            var dashboardData = new AdminDashboardData(onDeadlineDay);
+            public int OrganisationId { get; set; }
+            public SectorTypes SectorType { get; set; }
+            public OrganisationStatuses OrganisationStatus { get; set; }
+            public int ReportingYear { get; set; }
+            public ScopeStatuses ScopeStatus { get; set; }
+            public ReturnStatuses? ReturnStatus { get; set; }
+        }
+
+        private AdminDashboardData CalculateAdminDashboardDataForNow()
+        {
+            var dashboardData = new AdminDashboardData(onDeadlineDay: false);
+
+            string tbl_OrganisationScopes = dataRepository.GetTable<OrganisationScope>().Name;
+            string os_OrganisationId = dataRepository.GetTable<OrganisationScope>().GetColumnName(os => os.OrganisationId);
+            string os_SnapshotDate = dataRepository.GetTable<OrganisationScope>().GetColumnName(os => os.SnapshotDate);
+            string os_ScopeStatusId = dataRepository.GetTable<OrganisationScope>().GetColumnName(os => os.ScopeStatus);
+            string os_StatusId = dataRepository.GetTable<OrganisationScope>().GetColumnName(os => os.Status);
+            
+            string tbl_Returns = dataRepository.GetTable<Return>().Name;
+            string r_OrganisationId = dataRepository.GetTable<Return>().GetColumnName(r => r.OrganisationId);
+            string r_AccountingDate = dataRepository.GetTable<Return>().GetColumnName(r => r.AccountingDate);
+            string r_StatusId = dataRepository.GetTable<Return>().GetColumnName(r => r.Status);
+            
+            string tbl_Organisations = dataRepository.GetTable<Organisation>().Name;
+            string o_OrganisationId = dataRepository.GetTable<Organisation>().GetColumnName(r => r.OrganisationId);
+            string o_SectorTypeId = dataRepository.GetTable<Organisation>().GetColumnName(r => r.SectorType);
+            string o_statusId = dataRepository.GetTable<Organisation>().GetColumnName(r => r.Status);
+            
+            string sql = @$"
+                WITH
+                ""LatestScopeStatus"" AS (
+                    SELECT
+                        ""{os_OrganisationId}"",
+                        ""{os_SnapshotDate}"",
+                        ""{os_ScopeStatusId}""
+                    FROM
+                        ""{tbl_OrganisationScopes}""
+                    WHERE
+                        ""{os_StatusId}"" = {(int)ScopeRowStatuses.Active}
+                ),
+                ""HasSubmittedReturn"" AS (
+                    SELECT
+                        ""{r_OrganisationId}"",
+                        ""{r_AccountingDate}"",
+                        MAX(""{r_StatusId}"") AS ""ReturnStatusId""
+                    FROM
+                        ""{tbl_Returns}""
+                    WHERE
+                        ""{r_StatusId}"" = {(int)ReturnStatuses.Submitted}
+                    GROUP BY
+                        ""{r_OrganisationId}"",
+                        ""{r_AccountingDate}""
+                )
+                SELECT
+                    Org.""{o_OrganisationId}"" AS ""{nameof(DataDashboardQueryRow.OrganisationId)}"",
+                    Org.""{o_SectorTypeId}"" AS ""{nameof(DataDashboardQueryRow.SectorType)}"",
+                    Org.""{o_statusId}"" AS ""{nameof(DataDashboardQueryRow.OrganisationStatus)}"",
+                    CAST(date_part('year', ""LatestScopeStatus"".""{os_SnapshotDate}"") AS INTEGER) AS ""{nameof(DataDashboardQueryRow.ReportingYear)}"",
+                    ""LatestScopeStatus"".""{os_ScopeStatusId}"" AS ""{nameof(DataDashboardQueryRow.ScopeStatus)}"",
+                    ""HasSubmittedReturn"".""ReturnStatusId"" AS ""{nameof(DataDashboardQueryRow.ReturnStatus)}""
+                FROM
+                    ""{tbl_Organisations}"" Org
+                LEFT JOIN ""LatestScopeStatus""
+                    ON Org.""{o_OrganisationId}"" = ""LatestScopeStatus"".""{os_OrganisationId}""
+                LEFT JOIN ""HasSubmittedReturn""
+                    ON Org.""{o_OrganisationId}"" = ""HasSubmittedReturn"".""{r_OrganisationId}""
+                    AND ""HasSubmittedReturn"".""{r_AccountingDate}"" = ""LatestScopeStatus"".""{os_SnapshotDate}""
+                ORDER BY
+                    Org.""{o_OrganisationId}"",
+                    ""LatestScopeStatus"".""{os_SnapshotDate}""
+            ";
+            
+            List<DataDashboardQueryRow> allRows = dataRepository.SqlQueryRaw<DataDashboardQueryRow>(sql).ToList();
+
+            foreach (DataDashboardQueryRow row in allRows)
+            {
+                DashboardDataForReportingYear dataForYear = dashboardData.DashboardDataForReportingYears.Single(dataForYear => dataForYear.ReportingYear == row.ReportingYear);
+                DashboardDataForReportingYearAndSector sectorData = dataForYear.DataFor(row.SectorType);
+                
+                OrganisationStatuses status = row.OrganisationStatus;
+                ScopeStatuses scope = row.ScopeStatus;
+                bool hasSubmittedReturn = row.ReturnStatus.HasValue;
+                
+                AddToSectorData(sectorData, status, scope, hasSubmittedReturn);
+            }
+
+            return dashboardData;
+        }
+
+        private AdminDashboardData CalculateAdminDashboardDataForDeadlineDay()
+        {
+            var dashboardData = new AdminDashboardData(onDeadlineDay: true);
             
             List<Organisation> allOrganisations = dataRepository.GetAll<Organisation>()
                 .Include(org => org.OrganisationScopes)
@@ -57,7 +148,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     OrganisationStatuses status = sectorData.Date.HasValue
                         ? organisation.GetStatusAsOfDate(sectorData.Date.Value)
                         : organisation.Status;
-
+                    
                     ScopeStatuses scope = sectorData.Date.HasValue
                         ? organisation.GetScopeStatusForYearAsOfDate(dataForYear.ReportingYear, sectorData.Date.Value)
                         : organisation.GetScopeStatusForYear(dataForYear.ReportingYear);
@@ -72,7 +163,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             return dashboardData;
         }
-
+        
         private static void AddToSectorData(DashboardDataForReportingYearAndSector sectorData, OrganisationStatuses status, ScopeStatuses scope, bool hasSubmittedReturn)
         {
             if (status == OrganisationStatuses.Active || status == OrganisationStatuses.Retired)
