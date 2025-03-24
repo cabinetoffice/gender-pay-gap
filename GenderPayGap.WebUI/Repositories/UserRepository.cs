@@ -23,8 +23,7 @@ namespace GenderPayGap.WebUI.Repositories
         {
             return dataRepository.GetAll<User>()
                 .Where(user => filterStatuses.Length == 0 || filterStatuses.ToList().Contains(user.Status))
-                .AsEnumerable( /* Needed to prevent "The LINQ expression could not be translated" - user.EmailAddress cannot be translated */)
-                .FirstOrDefault(user => user.EmailAddress.ToLower() == email.ToLower());
+                .FirstOrDefault(user => user.EmailAddressDB == User.EncryptEmailAddress(email));
         }
 
         public bool CheckPassword(User user, string password, bool isReset = false)
