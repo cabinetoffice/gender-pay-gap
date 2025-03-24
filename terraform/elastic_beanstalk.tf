@@ -91,6 +91,11 @@ resource "aws_elastic_beanstalk_environment" "main_app_elastic_beanstalk_environ
     name      = "SecurityGroups"
     value     = aws_security_group.security_group_main_app_instances.id
   }
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "MonitoringInterval"
+    value     = "1 minute"
+  }
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
