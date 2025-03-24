@@ -25,10 +25,14 @@ namespace GenderPayGap.Database
         {
             // This empty constructor is needed for Entity Framework to create migrations
             // When you run `dotnet ef migrations add "MigrationName"` it will fail without this constructor
+            
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
         
         public GpgDatabaseContext(string connectionString = null, bool useMigrations = false)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            
             if (!string.IsNullOrWhiteSpace(connectionString))
             {
                 ConnectionString = connectionString;
@@ -44,6 +48,8 @@ namespace GenderPayGap.Database
 
         public GpgDatabaseContext(DbContextOptions<GpgDatabaseContext> options, bool useMigrations = false) : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            
             if (useMigrations)
             {
                 EnsureMigrated();
