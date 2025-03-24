@@ -44,7 +44,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Select(nameAndCount => nameAndCount.Name)
                     .ToList();
 
-            return PartialView("ActiveOrganisationsWithTheSameName", duplicateOrganisationNames);
+            return View("ActiveOrganisationsWithTheSameName", duplicateOrganisationNames);
         }
 
         [HttpGet("database-integrity-checks/active-organisations-with-the-same-company-number")]
@@ -61,7 +61,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Select(nameAndCompanyNumber => nameAndCompanyNumber.CompanyNumber)
                     .ToList();
 
-            return PartialView("ActiveOrganisationsWithTheSameCompanyNumber", duplicateOrganisationCompanyNumbers);
+            return View("ActiveOrganisationsWithTheSameCompanyNumber", duplicateOrganisationCompanyNumbers);
         }
 
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-addresses")]
@@ -72,7 +72,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(o => o.OrganisationAddresses.Count(oa => oa.Status == AddressStatuses.Active) > 2)
                     .ToList();
 
-            return PartialView("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
+            return View("OrganisationsWithMultipleActiveAddresses", organisationsWithMultipleActiveAddresses);
         }
 
         [HttpGet("database-integrity-checks/organisations-without-an-active-address")]
@@ -83,7 +83,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(o => !o.OrganisationAddresses.Any(oa => oa.Status == AddressStatuses.Active))
                     .ToList();
 
-            return PartialView("OrganisationsWithoutAnActiveAddress", organisationsWithoutAnActiveAddress);
+            return View("OrganisationsWithoutAnActiveAddress", organisationsWithoutAnActiveAddress);
         }
 
         [HttpGet("database-integrity-checks/organisations-where-latest-address-is-not-active")]
@@ -97,7 +97,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(o => o.GetLatestAddress().Status != AddressStatuses.Active)
                     .ToList();
 
-            return PartialView("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
+            return View("OrganisationsWhereLatestAddressIsNotActive", organisationsWhereLatestAddressIsNotActive);
         }
 
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-scopes-for-a-single-year")]
@@ -112,7 +112,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                             .Any(grouping => grouping.Count() > 1))
                     .ToList();
 
-            return PartialView("OrganisationsWithMultipleActiveScopesForASingleYear", organisationsWithMultipleActiveScopesForASingleYear);
+            return View("OrganisationsWithMultipleActiveScopesForASingleYear", organisationsWithMultipleActiveScopesForASingleYear);
         }
 
         [HttpGet("database-integrity-checks/organisations-with-no-active-scope-for-every-year")]
@@ -152,7 +152,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 }
             }
 
-            return PartialView("OrganisationsWithNoActiveScopeForEveryYear", organisationsWithNoActiveScopeForEveryYear);
+            return View("OrganisationsWithNoActiveScopeForEveryYear", organisationsWithNoActiveScopeForEveryYear);
         }
 
         [HttpGet("database-integrity-checks/organisations-with-multiple-active-returns-for-a-single-year")]
@@ -167,7 +167,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                             .Any(g => g.Count() > 1))
                     .ToList();
 
-            return PartialView("OrganisationsWithMultipleActiveReturnsForASingleYear", organisationsWithMultipleActiveReturnsForASingleYear);
+            return View("OrganisationsWithMultipleActiveReturnsForASingleYear", organisationsWithMultipleActiveReturnsForASingleYear);
         }
 
         [HttpGet("database-integrity-checks/public-sector-organisations-without-a-public-sector-type")]
@@ -184,7 +184,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(o => o.GetCurrentScope().ScopeStatus == ScopeStatuses.InScope || o.GetCurrentScope().ScopeStatus == ScopeStatuses.PresumedInScope)
                     .ToList();
 
-            return PartialView("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
+            return View("PublicSectorOrganisationsWithoutAPublicSectorType", publicSectorOrganisationsWithoutAPublicSectorType);
         }
 
         [HttpGet("database-integrity-checks/private-sector-organisations-with-a-public-sector-type")]
@@ -197,7 +197,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(organisation => organisation.LatestPublicSectorType != null)
                     .ToList();
 
-            return PartialView("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
+            return View("PrivateSectorOrganisationsWithAPublicSectorType", privateSectorOrganisationsWithAPublicSectorType);
         }
 
         [HttpGet("database-integrity-checks/organisations-to-consider-for-de-scoping/{reportingYear}")]
@@ -218,7 +218,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                 ReportingYear = reportingYear
             };
 
-            return PartialView("OrganisationsToConsiderForDeScoping", viewModel);
+            return View("OrganisationsToConsiderForDeScoping", viewModel);
         }
 
         [HttpGet("database-integrity-checks/new-or-active-users-with-the-same-email-address")]
@@ -242,7 +242,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(u => duplicateUserEmailAddresses.Contains(u.EmailAddress))
                     .ToList();
 
-            return PartialView("NewOrActiveUsersWithTheSameEmailAddress", duplicateUsers);
+            return View("NewOrActiveUsersWithTheSameEmailAddress", duplicateUsers);
         }
 
         [HttpGet("database-integrity-checks/returns-with-figures-with-more-than-one-decimal-place")]
@@ -269,7 +269,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                              || HasMoreThanOneDecimalPlace(r.DiffMeanHourlyPayPercent))
                     .ToList();
 
-            return PartialView("ReturnsWithFiguresWithMoreThanOneDecimalPlace", invalidReturns);
+            return View("ReturnsWithFiguresWithMoreThanOneDecimalPlace", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-quarters-figures-sum-different-than-100")]
@@ -286,7 +286,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                              || r.FemaleUpperQuartilePayBand + r.MaleUpperQuartilePayBand != 100)
                     .ToList();
 
-            return PartialView("ReturnsWithQuartersFiguresSumDifferentThan100", invalidReturns);
+            return View("ReturnsWithQuartersFiguresSumDifferentThan100", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-quarters-figures")]
@@ -298,7 +298,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(HasInvalidPayQuarterFigures())
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidQuartersFigures", invalidReturns);
+            return View("ReturnsWithInvalidQuartersFigures", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-mean-median-figures")]
@@ -312,7 +312,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                              || r.DiffMeanHourlyPayPercent > 100)
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidMeanMedianFigures", invalidReturns);
+            return View("ReturnsWithInvalidMeanMedianFigures", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-bonus-figures")]
@@ -326,7 +326,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                              || r.MaleMedianBonusPayPercent > 100 || r.MaleMedianBonusPayPercent < 0)
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidBonusFigures", invalidReturns);
+            return View("ReturnsWithInvalidBonusFigures", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-bonus-mean-median-figures")]
@@ -338,7 +338,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(r => r.DiffMedianBonusPercent > 100 || r.DiffMeanBonusPercent > 100)
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidBonusMeanMedianFigures", invalidReturns);
+            return View("ReturnsWithInvalidBonusMeanMedianFigures", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-missing-figures")]
@@ -350,7 +350,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(HasMissingFigures())
                     .ToList();
 
-            return PartialView("ReturnsWithMissingFigures", invalidReturns);
+            return View("ReturnsWithMissingFigures", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/private-employers-returns-without-responsible-person")]
@@ -362,7 +362,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(r => String.IsNullOrEmpty(r.FirstName) || String.IsNullOrEmpty(r.LastName) || String.IsNullOrEmpty(r.JobTitle))
                     .ToList();
 
-            return PartialView("PrivateEmployersReturnsWithoutResponsiblePerson", invalidReturns);
+            return View("PrivateEmployersReturnsWithoutResponsiblePerson", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-bonus-figures-given-no-women-bonus")]
@@ -375,7 +375,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(r => r.DiffMeanBonusPercent != 100 && r.DiffMedianBonusPercent != 100)
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidBonusFiguresGivenNoWomenBonus", invalidReturns);
+            return View("ReturnsWithInvalidBonusFiguresGivenNoWomenBonus", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-text-fields-values")]
@@ -389,7 +389,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                              || r.LateReason != null && r.LateReason.Length > 200)
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidTextFieldsValues", invalidReturns);
+            return View("ReturnsWithInvalidTextFieldsValues", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-company-link")]
@@ -405,7 +405,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                                     ))
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidCompanyLink", invalidReturns);
+            return View("ReturnsWithInvalidCompanyLink", invalidReturns);
         }
 
         [HttpGet("database-integrity-checks/returns-with-invalid-opted-out-of-reporting-pay-quarters-value")]
@@ -417,7 +417,7 @@ namespace GenderPayGap.WebUI.Controllers.Admin
                     .Where(IsNotReportingYearWithFurloughScheme())
                     .ToList();
 
-            return PartialView("ReturnsWithInvalidOptedOutOfReportingPayQuartersValue", invalidReturns);
+            return View("ReturnsWithInvalidOptedOutOfReportingPayQuartersValue", invalidReturns);
         }
 
         private Expression<Func<Return, bool>> HasInvalidPayQuarterFigures()
