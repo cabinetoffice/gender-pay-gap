@@ -249,6 +249,24 @@ namespace GenderPayGap.WebUI.Controllers.Admin
             return View("NewOrActiveUsersWithTheSameEmailAddress", duplicateUsers);
         }
 
+        [HttpGet("database-integrity-checks/migrate-anonymised-users")]
+        public IActionResult MigrateAnonymisedUsers()
+        {
+            List<User> anonymisedUsers =
+                dataRepository.GetAll<User>()
+                    .Where(u => u.EmailAddressDB == Database.User.EncryptEmailAddress("anonymised"))
+                    .ToList();
+
+            foreach (var user in anonymisedUsers)
+            {
+                user.EmailAddress = $"anonymised-{user.UserId}";
+            }
+            
+            dataRepository.SaveChanges();
+
+            return Ok();
+        }
+
         [HttpGet("database-integrity-checks/returns-with-figures-with-more-than-one-decimal-place")]
         public IActionResult ReturnsWithFiguresWithMoreThanOneDecimalPlace()
         {
