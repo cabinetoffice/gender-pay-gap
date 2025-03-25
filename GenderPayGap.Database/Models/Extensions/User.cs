@@ -15,59 +15,39 @@ namespace GenderPayGap.Database
         [NotMapped]
         public string EmailAddress
         {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(EmailAddressDB))
-                {
-                    try
-                    {
-                        return Encryption.DecryptData(EmailAddressDB);
-                    }
-                    catch (CryptographicException) { }
-                }
-
-                return EmailAddressDB;
-            }
-            set
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    EmailAddressDB = Encryption.EncryptData(value.ToLower());
-                }
-                else
-                {
-                    EmailAddressDB = value;
-                }
-            }
+            get => DecryptEmailAddress(EmailAddressDB);
+            set => EmailAddressDB = EncryptEmailAddress(value);
         }
-        
+
         [NotMapped]
         public string NewEmailAddress
         {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(NewEmailAddressDB))
-                {
-                    try
-                    {
-                        return Encryption.DecryptData(NewEmailAddressDB);
-                    }
-                    catch (CryptographicException) { }
-                }
+            get => DecryptEmailAddress(NewEmailAddressDB);
+            set => NewEmailAddressDB = EncryptEmailAddress(value);
+        }
 
-                return NewEmailAddressDB;
-            }
-            set
+        public static string DecryptEmailAddress(string emailAddressDb)
+        {
+            if (!string.IsNullOrWhiteSpace(emailAddressDb))
             {
-                if (!string.IsNullOrWhiteSpace(value))
+                try
                 {
-                    NewEmailAddressDB = Encryption.EncryptData(value.ToLower());
+                    return Encryption.DecryptData(emailAddressDb);
                 }
-                else
-                {
-                    NewEmailAddressDB = value;
-                }
+                catch (CryptographicException) { }
             }
+
+            return emailAddressDb;
+        }
+
+        public static string EncryptEmailAddress(string value)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                return Encryption.EncryptData(value.ToLower());
+            }
+
+            return value;
         }
 
         [NotMapped]

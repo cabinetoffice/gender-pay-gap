@@ -139,7 +139,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithFiguresWithMoreThanOneDecimalPlace() as PartialViewResult;
+            var result = controller.ReturnsWithFiguresWithMoreThanOneDecimalPlace() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -185,7 +185,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithQuartersFiguresSumDifferentThan100() as PartialViewResult;
+            var result = controller.ReturnsWithQuartersFiguresSumDifferentThan100() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -251,7 +251,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidQuartersFigures() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidQuartersFigures() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn1, invalidReturn2);
@@ -297,7 +297,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidMeanMedianFigures() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidMeanMedianFigures() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -343,7 +343,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidBonusFigures() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidBonusFigures() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -389,7 +389,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidBonusMeanMedianFigures() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidBonusMeanMedianFigures() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -453,7 +453,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithMissingFigures() as PartialViewResult;
+            var result = controller.ReturnsWithMissingFigures() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn1, invalidReturn2);
@@ -496,7 +496,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.PrivateEmployersReturnsWithoutResponsiblePerson() as PartialViewResult;
+            var result = controller.PrivateEmployersReturnsWithoutResponsiblePerson() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -542,7 +542,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidBonusFiguresGivenNoWomenBonus() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidBonusFiguresGivenNoWomenBonus() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -588,7 +588,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidTextFieldsValues() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidTextFieldsValues() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -634,7 +634,7 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidCompanyLink() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidCompanyLink() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
@@ -680,13 +680,13 @@ namespace GenderPayGap.WebUI.Tests.Controllers.Administration
                 validReturn);
 
             // Act
-            var result = controller.ReturnsWithInvalidOptedOutOfReportingPayQuartersValue() as PartialViewResult;
+            var result = controller.ReturnsWithInvalidOptedOutOfReportingPayQuartersValue() as ViewResult;
 
             // Assert
             AssertReturnsAreDisplayed(result, invalidReturn);
         }
 
-        private void AssertReturnsAreDisplayed(PartialViewResult result, params Return[] returns)
+        private void AssertReturnsAreDisplayed(ViewResult result, params Return[] returns)
         {
             Assert.NotNull(result);
             var model = result.Model as List<Return>;
