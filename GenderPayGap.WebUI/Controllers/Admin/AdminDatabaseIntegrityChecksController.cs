@@ -222,11 +222,15 @@ namespace GenderPayGap.WebUI.Controllers.Admin
         }
 
         [HttpGet("database-integrity-checks/new-or-active-users-with-the-same-email-address")]
-        public IActionResult NewOrActiveUsersWithTheSameEmailAddress()
+        public IActionResult NewOrActiveUsersWithTheSameEmailAddress(bool all)
         {
+            Func<User,bool> allOrNewActiveUsersFilter = all
+                ? _ => true /* Choose all users */
+                : u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active; /* Choose just the new and active users */
+            
             List<string> duplicateUserEmailAddresses =
                 dataRepository.GetAll<User>()
-                    .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active /* Choose just the new and active users */)
+                    .Where(allOrNewActiveUsersFilter)
                     .AsEnumerable() /* LINQ to SQL cannot convert EmailAddress (because it calls a complex method) so we need to load the users into memory by calling .AsEnumerable() */
                     .Select(u => u.EmailAddress /* Just get their email address (makes the query run faster) */)
                     .GroupBy(uemail => uemail /* Group by the email address */)
@@ -237,12 +241,30 @@ namespace GenderPayGap.WebUI.Controllers.Admin
 
             List<User> duplicateUsers =
                 dataRepository.GetAll<User>()
-                    .Where(u => u.Status == UserStatuses.New || u.Status == UserStatuses.Active /* Choose just the new and active users */)
+                    .Where(allOrNewActiveUsersFilter)
                     .AsEnumerable()
                     .Where(u => duplicateUserEmailAddresses.Contains(u.EmailAddress))
                     .ToList();
 
             return View("NewOrActiveUsersWithTheSameEmailAddress", duplicateUsers);
+        }
+
+        [HttpGet("database-integrity-checks/migrate-anonymised-users")]
+        public IActionResult MigrateAnonymisedUsers()
+        {
+            List<User> anonymisedUsers =
+                dataRepository.GetAll<User>()
+                    .Where(u => u.EmailAddressDB == Database.User.EncryptEmailAddress("anonymised"))
+                    .ToList();
+
+            foreach (var user in anonymisedUsers)
+            {
+                user.EmailAddress = $"anonymised-{user.UserId}";
+            }
+            
+            dataRepository.SaveChanges();
+
+            return Ok();
         }
 
         [HttpGet("database-integrity-checks/returns-with-figures-with-more-than-one-decimal-place")]
